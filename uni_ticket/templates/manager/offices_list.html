@@ -1,0 +1,62 @@
+{% load i18n %}
+{% load static %}
+
+<div class="pb-3">
+    <div class="btn-example pt-3 clearfix">
+        <a role="button"
+           class="btn btn-outline-secondary float-right btn-xs mb-3"
+           href="{% url 'uni_ticket:manager_office_add_new' structure_slug=structure.slug %}">
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-plus-circle"></use>
+            </svg> {% trans "Aggiungi nuovo ufficio" %}
+        </a>
+    </div>
+    <div class="row">
+      {% for office in offices %}
+      <div class="col-12 col-lg-4">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+          <div class="card card-bg no-after">
+            <div class="card-body">
+                {% if office.is_active %}
+                    <span class="badge badge-pill badge-success mb-2">
+                        {% trans "Attivo" %}
+                    </span>
+                {% else %}
+                    <span class="badge badge-pill badge-danger mb-2">
+                        {% trans "Non attivo" %}
+                    </span>
+                {% endif %}
+                {% if office.is_default %}
+                    <span class="badge badge-pill badge-warning mb-2">
+                        {% trans "Ufficio predefinito" %}
+                    </span>
+                {% endif %}
+                <a class="read-more" href="{% url 'uni_ticket:manager_office_detail' structure_slug=structure.slug office_slug=office.slug %}">
+                    <h5 class="card-title">{{ office.name }}</h5>
+                </a>
+              <p class="card-text">{{ office.description }}</p>
+              <p class="card-text">
+                  <b>{% trans 'Operatori' %}:</b>
+                  {{ office.organizationalstructureofficeemployee_set.all|length }}
+                  <br>
+                  <b>{% trans 'Ticket assegnati' %}:</b>
+                  {{ office.ticketassignment_set.all|length }}
+                  <br>
+                  <b>{% trans 'Categorie di competenza' %}:</b>
+                    {% if office.ticketcategory_set.all %}
+                      {% for office_cat in office.ticketcategory_set.all %}
+                         {% if not forloop.first %},{% endif %} {{ office_cat }}
+                      {% endfor %}
+                    {% else %}
+                        {% trans "Nessuna" %}
+                    {% endif %}
+              </p>
+            </div>
+          </div>
+        </div>
+        <!--end card-->
+      </div>
+      {% endfor %}
+    </div>
+</div>

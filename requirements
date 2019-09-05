@@ -1,0 +1,49 @@
+Django>=2,<2.3
+
+beautifulsoup4
+django-bootstrap-form>=3.3,<4
+django_ckeditor
+django-countries
+django-markdown-deux
+email-reply-parser
+lxml
+python-magic
+pytz
+shortuuid
+simplejson
+six
+
+# datatables ajax
+git+https://github.com/peppelinux/django-datatables-ajax.git
+
+# development
+ipython
+
+# django-form-builder
+git+https://github.com/UniversitaDellaCalabria/django-form-builder
+
+# Javascript Django Formset
+# django-formset-js-improved
+
+# FileSignatureValidator
+git+https://github.com/peppelinux/FileSignatureValidator.git
+
+#nested admin inlines
+django-nested-admin
+
+# SAML2
+git+https://github.com/peppelinux/pysaml2.git@pplnx-dev
+git+https://github.com/peppelinux/djangosaml2.git@pplnx-dev
+
+# SASS dynamic compiler
+libsass
+django_sass_processor
+
+# settings dependencies
+mysqlclient
+
+#unical template
+git+https://github.com/italia/design-django-theme
+git+https://github.com/UniversitaDellaCalabria/django-unical-agid-template.git
+
+

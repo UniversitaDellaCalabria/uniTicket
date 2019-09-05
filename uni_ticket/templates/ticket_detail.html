@@ -1,0 +1,110 @@
+{% load django_form_builder_tags %}
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+{% if not ticket.is_valid %}
+<div class="callout danger">
+	<div class="callout-title">
+        <svg class="icon icon-danger">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close-circle"></use>
+        </svg> {% trans "C'è un problema" %}</div>
+	<p>{% trans "Uno o più allegati obbligatori risultano mancanti" %}</p>
+</div>
+{% endif %}
+<table class="table table-striped table-hover">
+    <tbody>
+        <tr>
+            <th scope="row">{% trans 'Stato' %}</th>
+            <td>{{ ticket.get_status }}</td>
+        </tr>
+        {% if ticket.is_closed %}
+        <tr>
+            <th scope="row">{% trans 'Motivazione chiusura' %}</th>
+            <td>{{ ticket.motivazione_chiusura }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th scope="row">{% trans 'Priorità' %}</th>
+            <td>{{ priority }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans 'Creato da' %}</th>
+            <td>{{ ticket.created_by }} - {{ ticket.created }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans 'Assegnato' %}</th>
+            <td>
+                <ul class="list-unstyled">
+                    {% for assignment in ticket_assignments %}
+                    <li>
+                        {% if not assignment.follow %}
+                        <span class="badge badge-danger">
+                            {% trans "Competenza trasferita" %}
+                        </span>
+                        {% endif %}
+                        <b>{{ assignment.office }}</b> -
+                        {{ assignment.created }} ({{ assignment.assigned_by }})
+                        {% if assignment.note %}
+                            <br>
+                            {{ assignment.note }}
+                        {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans 'Categoria' %}</th>
+            <td>{{ ticket.input_module.ticket_category }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans 'Oggetto' %}</th>
+            <td>{{ ticket.subject }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans 'Descrizione' %}</th>
+            <td>{{ ticket.description }}</td>
+        </tr>
+        {% for k,v in details.items %}
+        {% get_label_from_form ticket_form k as field_label %}
+        <tr>
+            <th scope="row">
+                {% if field_label %}
+                    {{ field_label }}
+                {% else %}
+                    {{ k|no_slugged }}
+                {% endif %}
+            </th>
+            <td>{{ v }}</td>
+        </tr>
+        {% endfor %}
+
+        {% if allegati %}
+        <tr>
+            <th scope="row">{% trans 'Allegati' %}</th>
+            <td>
+                <ul class="list-unstyled">
+                {% for k, v in allegati.items %}
+                    <li>
+                        <a href="{% url 'uni_ticket:download_attachment' ticket_id=ticket.code attachment=k %}">
+                            <svg class="icon">
+                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-clip"></use>
+                            </svg>{{ k }}: {{ v }}
+                        </a>
+                        {% get_attachment_sign_details ticket_form path_allegati k v as sign_details %}
+                        {% if sign_details %}
+                            <ul>
+                            {% for kk, vv in sign_details.items %}
+                                <li>{{ kk }}: {{ vv }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+                </ul>
+            </td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>

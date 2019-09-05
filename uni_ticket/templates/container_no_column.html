@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+<!-- From app django-sass-processor -->
+{% load sass_tags %}
+{% load static %}
+
+{% block container %}
+<div class="container">
+    <div class="col-12 py-md-5 bd-content">
+        {% include 'messages.html' %}
+        {% include 'title_display.html' %}
+    </div>
+    <div class="row">
+        <main class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 py-md-3">
+        {% block container_inner %}{% endblock container_inner %}
+        </main>
+    </div>
+</div>
+{% endblock container %}

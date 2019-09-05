@@ -1,0 +1,2502 @@
+[
+{
+  "model": "uni_ticket.ticketcategory",
+  "pk": 1,
+  "fields": {
+    "name": "Ricevimento docenti",
+    "slug": "ricevimento-docenti",
+    "description": "",
+    "created": "2019-04-18T07:31:20.304Z",
+    "modified": "2019-04-18T07:31:20.304Z",
+    "organizational_structure": 21,
+    "organizational_office": 17,
+    "is_active": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategory",
+  "pk": 2,
+  "fields": {
+    "name": "Rete e Internet",
+    "slug": "rete-e-internet",
+    "description": "",
+    "created": "2019-04-15T11:54:42.927Z",
+    "modified": "2019-04-15T11:54:42.927Z",
+    "organizational_structure": 21,
+    "organizational_office": null,
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategory",
+  "pk": 3,
+  "fields": {
+    "name": "Aule",
+    "slug": "aule",
+    "description": "",
+    "created": "2019-04-03T08:42:03.105Z",
+    "modified": "2019-04-03T08:42:03.105Z",
+    "organizational_structure": 22,
+    "organizational_office": 15,
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategory",
+  "pk": 4,
+  "fields": {
+    "name": "Dimes nuova",
+    "slug": "dimes-nuova",
+    "description": "",
+    "created": "2019-04-11T13:52:57.171Z",
+    "modified": "2019-04-11T13:52:57.171Z",
+    "organizational_structure": 22,
+    "organizational_office": 19,
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategory",
+  "pk": 5,
+  "fields": {
+    "name": "Categoria di test 2",
+    "slug": "categoria-test-2",
+    "description": "daj aks hakdjsh akjdasdasda",
+    "created": "2019-04-15T10:02:51.001Z",
+    "modified": "2019-04-15T10:02:51.001Z",
+    "organizational_structure": 21,
+    "organizational_office": null,
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategory",
+  "pk": 7,
+  "fields": {
+    "name": "Nuova categoria",
+    "slug": "nuova-cat",
+    "description": "asd adk asldk aldkjlasdasda",
+    "created": "2019-04-15T10:02:42.193Z",
+    "modified": "2019-04-15T10:02:42.193Z",
+    "organizational_structure": 21,
+    "organizational_office": 18,
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategory",
+  "pk": 9,
+  "fields": {
+    "name": "Categoria modificata",
+    "slug": "jghgqk",
+    "description": "jhg",
+    "created": "2019-04-15T09:34:16.642Z",
+    "modified": "2019-04-19T07:26:59.076Z",
+    "organizational_structure": 21,
+    "organizational_office": 23,
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 2,
+  "fields": {
+    "name": "Modulo 13/03/2019",
+    "ticket_category": 2,
+    "created": "2019-03-11T15:37:23.163Z",
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 3,
+  "fields": {
+    "name": "Modulo 1",
+    "ticket_category": 3,
+    "created": "2019-04-01T12:12:59.408Z",
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 4,
+  "fields": {
+    "name": "Modulo",
+    "ticket_category": 4,
+    "created": "2019-04-11T13:52:39.000Z",
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 6,
+  "fields": {
+    "name": "Modulo 15 aprile 2019",
+    "ticket_category": 1,
+    "created": "2019-04-15T13:15:50.298Z",
+    "is_active": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 7,
+  "fields": {
+    "name": "Modulo di input 1",
+    "ticket_category": 9,
+    "created": "2019-04-19T07:10:01.053Z",
+    "is_active": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 8,
+  "fields": {
+    "name": "Modulo 16 aprile",
+    "ticket_category": 1,
+    "created": "2019-04-16T06:28:30.173Z",
+    "is_active": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 10,
+  "fields": {
+    "name": "Modulo modificato da Francesco 2asdasd",
+    "ticket_category": 9,
+    "created": "2019-04-19T07:13:27.496Z",
+    "is_active": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 11,
+  "fields": {
+    "name": "Modulo di input 1",
+    "ticket_category": 7,
+    "created": "2019-04-19T10:58:10.473Z",
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 12,
+  "fields": {
+    "name": "asasd",
+    "ticket_category": 9,
+    "created": "2019-04-29T09:04:20.139Z",
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 13,
+  "fields": {
+    "name": "tt",
+    "ticket_category": 7,
+    "created": "2019-04-29T10:36:11.885Z",
+    "is_active": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 14,
+  "fields": {
+    "name": "asd",
+    "ticket_category": 5,
+    "created": "2019-04-30T13:31:23.935Z",
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 15,
+  "fields": {
+    "name": "Modulo aggiornato al 2 maggio",
+    "ticket_category": 1,
+    "created": "2019-05-02T08:33:20.081Z",
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 16,
+  "fields": {
+    "name": "data e ora test",
+    "ticket_category": 2,
+    "created": "2019-05-03T06:37:21.250Z",
+    "is_active": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 5,
+  "fields": {
+    "name": "Pdf",
+    "field_type": "CustomFileField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 2,
+    "aiuto": "asdasdsa",
+    "ordinamento": 3
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 6,
+  "fields": {
+    "name": "Asdasd",
+    "field_type": "CustomFileField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 2,
+    "aiuto": "dasdasdas",
+    "ordinamento": 4
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 7,
+  "fields": {
+    "name": "Titolo della selectbox",
+    "field_type": "CustomSelectBoxField",
+    "valore": "ciao;sono;io;tua;madre",
+    "is_required": true,
+    "category_module": 2,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 8,
+  "fields": {
+    "name": "numero",
+    "field_type": "ProtocolloField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 2,
+    "aiuto": "",
+    "ordinamento": 2
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 10,
+  "fields": {
+    "name": "Titolo del radiobox",
+    "field_type": "CustomRadioBoxField",
+    "valore": "ciao;sono;io;tua;madre",
+    "is_required": true,
+    "category_module": 2,
+    "aiuto": "",
+    "ordinamento": 1
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 11,
+  "fields": {
+    "name": "File",
+    "field_type": "CustomFileField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 3,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 12,
+  "fields": {
+    "name": "chec",
+    "field_type": "CheckBoxField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 3,
+    "aiuto": "",
+    "ordinamento": 1
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 13,
+  "fields": {
+    "name": "Field",
+    "field_type": "CustomCharField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 4,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 14,
+  "fields": {
+    "name": "File input",
+    "field_type": "CustomFileField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 6,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 15,
+  "fields": {
+    "name": "Radio box",
+    "field_type": "CustomRadioBoxField",
+    "valore": "lista;di;scelte",
+    "is_required": true,
+    "category_module": 6,
+    "aiuto": "",
+    "ordinamento": 1
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 24,
+  "fields": {
+    "name": "Protocollo",
+    "field_type": "DateStartEndComplexField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 11,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 25,
+  "fields": {
+    "name": "Data",
+    "field_type": "BaseDateTimeField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 8,
+    "aiuto": "",
+    "ordinamento": 3
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 26,
+  "fields": {
+    "name": "date",
+    "field_type": "BaseDateTimeField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 12,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 27,
+  "fields": {
+    "name": "Tabella di campi",
+    "field_type": "CustomComplexTableField",
+    "valore": "col1({'type':'CustomSelectBoxField', 'choices': 'ciao;sono;un;valore',})#co({'type':'CustomRadioBoxField', 'choices': 'ciao;sono;un;valore',})#ccc#data({'type':'BaseDateField',})",
+    "is_required": false,
+    "category_module": 12,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 28,
+  "fields": {
+    "name": "asdasd",
+    "field_type": "DateStartEndComplexField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 13,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 31,
+  "fields": {
+    "name": "asdasd",
+    "field_type": "CustomRadioBoxField",
+    "valore": "1;2;3",
+    "is_required": true,
+    "category_module": 14,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 32,
+  "fields": {
+    "name": "asdasdas",
+    "field_type": "CustomSelectBoxField",
+    "valore": "4;7;5",
+    "is_required": true,
+    "category_module": 14,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 33,
+  "fields": {
+    "name": "protocollo",
+    "field_type": "ProtocolloField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 13,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 34,
+  "fields": {
+    "name": "Data di inizio",
+    "field_type": "BaseDateField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 15,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 35,
+  "fields": {
+    "name": "Numero e data protocollo",
+    "field_type": "ProtocolloField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 15,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 36,
+  "fields": {
+    "name": "asdasd",
+    "field_type": "CheckBoxField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 15,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 37,
+  "fields": {
+    "name": "Data e Ora",
+    "field_type": "BaseDateTimeField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 16,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 38,
+  "fields": {
+    "name": "Data",
+    "field_type": "BaseDateField",
+    "valore": "",
+    "is_required": true,
+    "category_module": 16,
+    "aiuto": "",
+    "ordinamento": 0
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 11,
+  "fields": {
+    "code": "d4b0c114-5f8c-11e9-af6d-0050b61b7106",
+    "subject": "asdasd",
+    "description": "asdasdasd",
+    "modulo_compilato": "{}",
+    "created": "2019-04-15T15:05:38.013Z",
+    "created_by": 1,
+    "input_module": 6,
+    "is_preso_in_carico": true,
+    "is_chiuso": true,
+    "data_chiusura": "2019-04-24T10:26:17.002Z",
+    "motivazione_chiusura": "chiusura del ticket",
+    "priority": -2
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 12,
+  "fields": {
+    "code": "2763ba2a-659f-11e9-aa17-0050b61b7106",
+    "subject": "test",
+    "description": "test allegato",
+    "modulo_compilato": "{\n  \"chec\": \"on\",\n  \"allegati\": {}\n}",
+    "created": "2019-04-23T10:47:54.929Z",
+    "created_by": 1,
+    "input_module": 3,
+    "is_preso_in_carico": true,
+    "is_chiuso": false,
+    "data_chiusura": null,
+    "motivazione_chiusura": null,
+    "priority": 0
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 13,
+  "fields": {
+    "code": "e2565664-65a2-11e9-aa17-0050b61b7106",
+    "subject": "tesadas 2",
+    "description": "dasdasdasdasd",
+    "modulo_compilato": "{\n  \"chec\": \"on\",\n  \"allegati\": {\n    \"file\": \"02 - corsi.png\"\n  }\n}",
+    "created": "2019-04-26T08:33:54.901Z",
+    "created_by": 3,
+    "input_module": 3,
+    "is_preso_in_carico": false,
+    "is_chiuso": false,
+    "data_chiusura": null,
+    "motivazione_chiusura": null,
+    "priority": 0
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 16,
+  "fields": {
+    "code": "1bb63362-65ac-11e9-aa17-0050b61b7106",
+    "subject": "asdasdasd",
+    "description": "asdasdasdas",
+    "modulo_compilato": "{\n  \"data\": \"2018-02-08\"\n}",
+    "created": "2019-04-23T10:31:27.309Z",
+    "created_by": 1,
+    "input_module": 8,
+    "is_preso_in_carico": true,
+    "is_chiuso": false,
+    "data_chiusura": "2019-04-24T11:54:40.586Z",
+    "motivazione_chiusura": "asd asd ad",
+    "priority": -1
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 18,
+  "fields": {
+    "code": "00a1c378-6a4a-11e9-b43a-94e97991c0ef",
+    "subject": "test 1",
+    "description": "test 1",
+    "modulo_compilato": "{\n  \"condizioni_field_id\": \"on\"\n}",
+    "created": "2019-04-29T06:42:48.245Z",
+    "created_by": 1,
+    "input_module": 10,
+    "is_preso_in_carico": true,
+    "is_chiuso": false,
+    "data_chiusura": null,
+    "motivazione_chiusura": null,
+    "priority": -2
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 19,
+  "fields": {
+    "code": "b3b0804a-6a58-11e9-b43a-94e97991c0ef",
+    "subject": "asdasdas",
+    "description": "dasdasdasda",
+    "modulo_compilato": "{\n  \"condizioni_field_id\": \"on\"\n}",
+    "created": "2019-04-29T08:28:01.604Z",
+    "created_by": 1,
+    "input_module": 10,
+    "is_preso_in_carico": true,
+    "is_chiuso": false,
+    "data_chiusura": null,
+    "motivazione_chiusura": null,
+    "priority": -2
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 22,
+  "fields": {
+    "code": "2d5983d0-6a75-11e9-b43a-94e97991c0ef",
+    "subject": "sss 1123",
+    "description": "sss 1231321",
+    "modulo_compilato": "{}",
+    "created": "2019-04-29T11:55:23.136Z",
+    "created_by": 1,
+    "input_module": 7,
+    "is_preso_in_carico": false,
+    "is_chiuso": false,
+    "data_chiusura": null,
+    "motivazione_chiusura": null,
+    "priority": 0
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 23,
+  "fields": {
+    "code": "2f39b250-6b2f-11e9-ab8d-0050b61b7106",
+    "subject": "test tabella",
+    "description": "descrizione",
+    "modulo_compilato": "{\n  \"date\": \"2019-04-17\",\n  \"col1_0_dyn\": \"\",\n  \"co_1_dyn\": \"un\",\n  \"ccc_2_dyn\": \"ciao\",\n  \"data_3_dyn\": \"2019-11-11\"\n}",
+    "created": "2019-04-30T15:10:56.450Z",
+    "created_by": 1,
+    "input_module": 12,
+    "is_preso_in_carico": false,
+    "is_chiuso": false,
+    "data_chiusura": null,
+    "motivazione_chiusura": null,
+    "priority": 0
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 24,
+  "fields": {
+    "code": "84398058-6cb2-11e9-b846-0050b61b7106",
+    "subject": "asdkjasldkj asd asd asdasd",
+    "description": "asdkljasldk",
+    "modulo_compilato": "{\n  \"asdasd\": \"2\",\n  \"asdasdas\": \"4\"\n}",
+    "created": "2019-05-02T08:16:35.175Z",
+    "created_by": 1,
+    "input_module": 14,
+    "is_preso_in_carico": true,
+    "is_chiuso": true,
+    "data_chiusura": "2019-05-02T14:38:58.631Z",
+    "motivazione_chiusura": "asd",
+    "priority": -1
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 25,
+  "fields": {
+    "code": "4c13413e-6cc9-11e9-b846-0050b61b7106",
+    "subject": "asdasddas",
+    "description": "aasdasd",
+    "modulo_compilato": "{\n  \"asdasd\": \"1\",\n  \"asdasdas\": \"4\"\n}",
+    "created": "2019-05-02T10:59:03.207Z",
+    "created_by": 1,
+    "input_module": 14,
+    "is_preso_in_carico": false,
+    "is_chiuso": false,
+    "data_chiusura": null,
+    "motivazione_chiusura": null,
+    "priority": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 23,
+  "fields": {
+    "ticket": 11,
+    "office": 17,
+    "created": "2019-04-15T14:43:28.031Z",
+    "note": null,
+    "assigned_by": 1,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 24,
+  "fields": {
+    "ticket": 11,
+    "office": 14,
+    "created": "2019-04-15T15:02:25.727Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 25,
+  "fields": {
+    "ticket": 11,
+    "office": 15,
+    "created": "2019-04-16T07:06:21.452Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 26,
+  "fields": {
+    "ticket": 11,
+    "office": 19,
+    "created": "2019-04-18T14:43:15.348Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 27,
+  "fields": {
+    "ticket": 11,
+    "office": 23,
+    "created": "2019-04-19T10:44:01.039Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 28,
+  "fields": {
+    "ticket": 12,
+    "office": 15,
+    "created": "2019-04-23T08:09:44.707Z",
+    "note": null,
+    "assigned_by": 1,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 29,
+  "fields": {
+    "ticket": 13,
+    "office": 15,
+    "created": "2019-04-23T08:36:26.858Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 32,
+  "fields": {
+    "ticket": 16,
+    "office": 17,
+    "created": "2019-04-23T09:42:28.578Z",
+    "note": null,
+    "assigned_by": 1,
+    "follow": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 33,
+  "fields": {
+    "ticket": 16,
+    "office": 15,
+    "created": "2019-04-24T12:24:00.188Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 35,
+  "fields": {
+    "ticket": 18,
+    "office": 23,
+    "created": "2019-04-29T06:42:48.289Z",
+    "note": null,
+    "assigned_by": 1,
+    "follow": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 36,
+  "fields": {
+    "ticket": 19,
+    "office": 23,
+    "created": "2019-04-29T08:28:01.642Z",
+    "note": null,
+    "assigned_by": 1,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 39,
+  "fields": {
+    "ticket": 22,
+    "office": 23,
+    "created": "2019-04-29T11:51:51.627Z",
+    "note": null,
+    "assigned_by": 1,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 40,
+  "fields": {
+    "ticket": 23,
+    "office": 23,
+    "created": "2019-04-30T10:03:21.166Z",
+    "note": null,
+    "assigned_by": 1,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 41,
+  "fields": {
+    "ticket": 24,
+    "office": 18,
+    "created": "2019-05-02T08:15:59.019Z",
+    "note": null,
+    "assigned_by": 1,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 42,
+  "fields": {
+    "ticket": 24,
+    "office": 15,
+    "created": "2019-05-02T08:21:35.896Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 43,
+  "fields": {
+    "ticket": 19,
+    "office": 18,
+    "created": "2019-05-02T09:30:18.001Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 45,
+  "fields": {
+    "ticket": 19,
+    "office": 12,
+    "created": "2019-05-02T10:50:21.478Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 46,
+  "fields": {
+    "ticket": 18,
+    "office": 12,
+    "created": "2019-05-02T10:58:37.305Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 47,
+  "fields": {
+    "ticket": 25,
+    "office": 12,
+    "created": "2019-05-02T10:59:03.224Z",
+    "note": null,
+    "assigned_by": 1,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 48,
+  "fields": {
+    "ticket": 18,
+    "office": 15,
+    "created": "2019-05-02T12:12:54.530Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 54,
+  "fields": {
+    "ticket": 18,
+    "office": 19,
+    "created": "2019-05-02T14:04:04.751Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 55,
+  "fields": {
+    "ticket": 16,
+    "office": 12,
+    "created": "2019-05-02T15:15:10.151Z",
+    "note": null,
+    "assigned_by": 3,
+    "follow": true
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 93,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-15T14:57:02.050Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Normale"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 94,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-15T14:58:18.856Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Normale"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 95,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-15T14:59:26.813Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Normale"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 96,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-15T15:00:55.073Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Bassa"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 97,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-15T15:02:00.957Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Normale"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 98,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-15T15:02:25.749Z",
+    "note": "Nuova competenza: DIATIC, Dipartimento - Rete e Internet"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 99,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-15T15:16:57.675Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Molto bassa"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 100,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-16T07:06:21.471Z",
+    "note": "Nuova competenza: DIMES, Dipartimento - Aule"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 101,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-17T14:19:16.826Z",
+    "note": "Priorit\u00e0 assegnata: Alta"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 102,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-18T14:43:15.379Z",
+    "note": "Nuova competenza: DIMES, Dipartimento - Dimes nuova"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 103,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-19T10:44:01.067Z",
+    "note": "Nuova competenza: DIATIC, Dipartimento - Categoria modificata"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 104,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-19T10:57:30.460Z",
+    "note": "Priorit\u00e0 assegnata: Molto bassa"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 105,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T09:43:56.933Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 106,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T09:46:05.814Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 107,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T09:48:13.519Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 108,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T09:51:51.506Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 109,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T09:52:29.036Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 110,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T09:52:36.013Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 111,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T09:54:22.824Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 112,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T09:56:50.330Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 113,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T09:59:58.520Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 114,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:04:19.850Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 115,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:05:29.157Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 116,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:10:32.628Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 117,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:10:57.928Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 118,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:12:01.047Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 119,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:12:20.435Z",
+    "note": "Elimina allegato"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 120,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:13:14.315Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 121,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:13:21.118Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 122,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:13:33.031Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 123,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:13:38.349Z",
+    "note": "Elimina allegato"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 124,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:16:41.108Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 125,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:17:17.359Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 126,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:19:34.078Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 127,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:20:02.767Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 128,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:21:23.926Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 129,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:21:51.395Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 130,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:25:30.797Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 131,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:26:02.415Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 132,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:27:26.265Z",
+    "note": "Elimina allegato"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 133,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:29:19.299Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 134,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:31:02.091Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 135,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:31:04.816Z",
+    "note": "Elimina allegato"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 136,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:31:10.313Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 137,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:31:27.324Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 138,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:42:04.973Z",
+    "note": "Elimina allegato"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 139,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:47:48.571Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 140,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 1,
+    "modified": "2019-04-23T10:47:54.949Z",
+    "note": "Elimina allegato"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 141,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-23T14:51:36.593Z",
+    "note": "Priorit\u00e0 assegnata: Molto alta"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 142,
+  "fields": {
+    "ticket": 12,
+    "modified_by": 3,
+    "modified": "2019-04-24T06:46:14.028Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Normale"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 143,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-24T08:20:30.168Z",
+    "note": "Aggiunto task: Task 1 - ticket: asdasd (d4b0c114-5f8c-11e9-af6d-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 144,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-24T08:22:16.439Z",
+    "note": "Rimosso task: Task 1 - ticket: asdasd (d4b0c114-5f8c-11e9-af6d-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 145,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-24T08:22:59.982Z",
+    "note": "Aggiunto task: Task 2 - ticket: asdasd (d4b0c114-5f8c-11e9-af6d-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 146,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:13:25.957Z",
+    "note": "Task Task 2 - ticket: asdasd (d4b0c114-5f8c-11e9-af6d-0050b61b7106) - Priorit\u00e0 assegnata: Molto alta"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 147,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:15:28.881Z",
+    "note": "Chiusura task: chiusura task"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 148,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:22:40.146Z",
+    "note": "Riapertura task Task 2 - ticket: asdasd (d4b0c114-5f8c-11e9-af6d-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 149,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:25:46.591Z",
+    "note": "Chiusura task: chiusura task"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 150,
+  "fields": {
+    "ticket": 11,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:26:17.029Z",
+    "note": "Chiusura ticket: chiusura del ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 151,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:28:45.105Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Alta"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 152,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:29:10.990Z",
+    "note": "Aggiunto task: Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 153,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:29:59.356Z",
+    "note": "Chiusura task: Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106) - Fatto tutto"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 154,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T11:53:43.626Z",
+    "note": "Riapertura task Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 155,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T11:54:24.449Z",
+    "note": "Chiusura task: Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106) - asdasd"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 156,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T11:54:40.602Z",
+    "note": "Chiusura ticket: asd asd ad"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 157,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T11:54:58.149Z",
+    "note": "Riapertura ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 158,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T12:21:32.398Z",
+    "note": "Riapertura task Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 159,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T12:21:46.380Z",
+    "note": "Task Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106) modificato"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 160,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T12:24:00.206Z",
+    "note": "Nuova competenza: DIMES, Dipartimento - Aule"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 161,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-04-24T12:28:06.348Z",
+    "note": "Task Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106) - Priorit\u00e0 assegnata: Molto bassa"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 162,
+  "fields": {
+    "ticket": 13,
+    "modified_by": 3,
+    "modified": "2019-04-26T08:33:54.915Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 163,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-04-29T10:11:19.489Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Molto alta"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 164,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-04-29T10:11:30.820Z",
+    "note": "Aggiunta dipendenza da ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 165,
+  "fields": {
+    "ticket": 19,
+    "modified_by": 3,
+    "modified": "2019-04-29T11:04:44.001Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Molto alta"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 166,
+  "fields": {
+    "ticket": 22,
+    "modified_by": 1,
+    "modified": "2019-04-29T11:53:22.816Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 167,
+  "fields": {
+    "ticket": 22,
+    "modified_by": 1,
+    "modified": "2019-04-29T11:55:23.152Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 168,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T11:08:57.279Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 169,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T12:23:30.843Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 170,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T12:27:08.847Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 171,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T12:50:08.872Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 172,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T14:52:37.418Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 173,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T14:52:43.724Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 174,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T14:52:51.221Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 175,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T14:55:22.128Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 176,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T15:02:43.118Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 177,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T15:03:02.391Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 178,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T15:05:32.199Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 179,
+  "fields": {
+    "ticket": 23,
+    "modified_by": 1,
+    "modified": "2019-04-30T15:10:56.469Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 180,
+  "fields": {
+    "ticket": 19,
+    "modified_by": 3,
+    "modified": "2019-05-02T07:27:17.994Z",
+    "note": "Aggiunto task: Task esempio - ticket: asdasdas (b3b0804a-6a58-11e9-b43a-94e97991c0ef)"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 181,
+  "fields": {
+    "ticket": 19,
+    "modified_by": 3,
+    "modified": "2019-05-02T07:28:11.558Z",
+    "note": "Chiusura task: Task esempio - ticket: asdasdas (b3b0804a-6a58-11e9-b43a-94e97991c0ef) - motivazione"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 182,
+  "fields": {
+    "ticket": 24,
+    "modified_by": 1,
+    "modified": "2019-05-02T08:16:35.190Z",
+    "note": "Modifica ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 183,
+  "fields": {
+    "ticket": 24,
+    "modified_by": 3,
+    "modified": "2019-05-02T08:19:49.246Z",
+    "note": "Preso in carico. Priorit\u00e0 assegnata: Alta"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 184,
+  "fields": {
+    "ticket": 24,
+    "modified_by": 3,
+    "modified": "2019-05-02T08:21:35.912Z",
+    "note": "Nuova competenza: DIMES, Dipartimento - Aule"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 185,
+  "fields": {
+    "ticket": 24,
+    "modified_by": 3,
+    "modified": "2019-05-02T08:24:34.552Z",
+    "note": "Aggiunto task: Operazione 1 necessaria - ticket: asdkjasldkj asd asd asdasd (84398058-6cb2-11e9-b846-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 186,
+  "fields": {
+    "ticket": 24,
+    "modified_by": 3,
+    "modified": "2019-05-02T08:26:42.347Z",
+    "note": "Chiusura task: Operazione 1 necessaria - ticket: asdkjasldkj asd asd asdasd (84398058-6cb2-11e9-b846-0050b61b7106) - task completato"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 187,
+  "fields": {
+    "ticket": 24,
+    "modified_by": 3,
+    "modified": "2019-05-02T08:57:52.846Z",
+    "note": "Chiusura ticket: asdasd"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 188,
+  "fields": {
+    "ticket": 19,
+    "modified_by": 3,
+    "modified": "2019-05-02T09:29:59.617Z",
+    "note": "Nuova competenza: DIATIC, Dipartimento - Categoria modificata"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 189,
+  "fields": {
+    "ticket": 19,
+    "modified_by": 3,
+    "modified": "2019-05-02T09:30:18.031Z",
+    "note": "Nuova competenza: DIATIC, Dipartimento - Nuova categoria"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 190,
+  "fields": {
+    "ticket": 19,
+    "modified_by": 3,
+    "modified": "2019-05-02T09:44:26.950Z",
+    "note": "Nuova competenza: DIATIC, Dipartimento - Categoria modificata"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 191,
+  "fields": {
+    "ticket": 19,
+    "modified_by": 3,
+    "modified": "2019-05-02T09:48:05.647Z",
+    "note": "Nuova competenza: DIATIC, Dipartimento - Categoria modificata"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 192,
+  "fields": {
+    "ticket": 19,
+    "modified_by": 3,
+    "modified": "2019-05-02T09:59:04.039Z",
+    "note": "Nuova competenza: DIATIC, Dipartimento - Ricevimento docenti"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 193,
+  "fields": {
+    "ticket": 19,
+    "modified_by": 3,
+    "modified": "2019-05-02T10:50:21.504Z",
+    "note": "Nuova competenza: DIATIC, Dipartimento - (DIATIC, Dipartimento) Help-Desk"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 194,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T10:58:37.327Z",
+    "note": "Nuova competenza: DIATIC, Dipartimento - (DIATIC, Dipartimento) Help-Desk - Categoria: Categoria di test 2"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 195,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T12:12:54.550Z",
+    "note": "Nuova competenza: <b>DIMES, Dipartimento - (DIMES, Dipartimento) Didattica</b> - Categoria: <b>Aule</b>"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 196,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T12:14:08.343Z",
+    "note": "Nuova competenza: <b>DIMES, Dipartimento - (DIMES, Dipartimento) Ufficio Tecnico</b> - Categoria: <b>Dimes nuova</b>"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 197,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T12:43:22.884Z",
+    "note": "Nuova competenza: <b>DIATIC, Dipartimento - (DIATIC, Dipartimento) Area Finanziaria</b> - Categoria: <b>Nuova categoria</b>"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 198,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T12:44:55.432Z",
+    "note": "Nuova competenza: <b>DIATIC, Dipartimento - (DIATIC, Dipartimento) Area Finanziaria</b> - Categoria: <b>Nuova categoria</b>"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 199,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T12:48:06.699Z",
+    "note": "Nuova competenza: <b>DIATIC, Dipartimento - (DIATIC, Dipartimento) Area Finanziaria</b> - Categoria: <b>Nuova categoria</b>"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 200,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T12:49:10.158Z",
+    "note": "Nuova competenza: <b>DIATIC, Dipartimento - (DIATIC, Dipartimento) Area Finanziaria</b> - Categoria: <b>Nuova categoria</b>"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 201,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T14:04:04.688Z",
+    "note": "Competenza abbandonata - Ufficio: (DIATIC, Dipartimento) Ufficio di prova"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 202,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T14:04:04.705Z",
+    "note": "Competenza abbandonata - Ufficio: (DIATIC, Dipartimento) Help-Desk"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 203,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T14:04:04.720Z",
+    "note": "Competenza abbandonata - Ufficio: (DIMES, Dipartimento) Didattica"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 204,
+  "fields": {
+    "ticket": 18,
+    "modified_by": 3,
+    "modified": "2019-05-02T14:04:04.789Z",
+    "note": "Nuova competenza: DIMES, Dipartimento - (DIMES, Dipartimento) Ufficio Tecnico - Categoria: Dimes nuova"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 205,
+  "fields": {
+    "ticket": 24,
+    "modified_by": 3,
+    "modified": "2019-05-02T14:38:47.664Z",
+    "note": "Riapertura ticket"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 206,
+  "fields": {
+    "ticket": 24,
+    "modified_by": 3,
+    "modified": "2019-05-02T14:38:58.649Z",
+    "note": "Chiusura ticket: asd"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 207,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-05-02T15:15:10.122Z",
+    "note": "Competenza trasferita - Ufficio: (DIATIC, Dipartimento) Ufficio Sinistri"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 208,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-05-02T15:15:10.136Z",
+    "note": "Competenza trasferita - Ufficio: (DIMES, Dipartimento) Didattica"
+  }
+},
+{
+  "model": "uni_ticket.tickethistory",
+  "pk": 209,
+  "fields": {
+    "ticket": 16,
+    "modified_by": 3,
+    "modified": "2019-05-02T15:15:10.183Z",
+    "note": "Nuova competenza: DIATIC, Dipartimento - (DIATIC, Dipartimento) Help-Desk - Categoria: Rete e Internet"
+  }
+},
+{
+  "model": "uni_ticket.ticketreply",
+  "pk": 1,
+  "fields": {
+    "ticket": 11,
+    "user": 3,
+    "structure": 21,
+    "subject": "Richiesta di intervento",
+    "text": "asd asd asdasdasdasd",
+    "attachment": "",
+    "created": "2019-04-17T08:26:06.222Z"
+  }
+},
+{
+  "model": "uni_ticket.ticketreply",
+  "pk": 2,
+  "fields": {
+    "ticket": 11,
+    "user": 3,
+    "structure": 21,
+    "subject": "sub",
+    "text": "asdasd",
+    "attachment": "ticket/d4b0c114-5f8c-11e9-af6d-0050b61b7106/updates/858214173.pdf",
+    "created": "2019-04-19T06:31:13.894Z"
+  }
+},
+{
+  "model": "uni_ticket.ticketreply",
+  "pk": 3,
+  "fields": {
+    "ticket": 19,
+    "user": 1,
+    "structure": null,
+    "subject": "Richiesta di assistenza",
+    "text": "Ciao,\r\nvolevo alcune informazioni",
+    "attachment": "",
+    "created": "2019-04-29T15:26:36.331Z"
+  }
+},
+{
+  "model": "uni_ticket.ticketreply",
+  "pk": 4,
+  "fields": {
+    "ticket": 19,
+    "user": 1,
+    "structure": null,
+    "subject": "test aallegato",
+    "text": "test",
+    "attachment": "ticket/b3b0804a-6a58-11e9-b43a-94e97991c0ef/updates/1.pdf",
+    "created": "2019-04-29T15:49:47.313Z"
+  }
+},
+{
+  "model": "uni_ticket.ticketreply",
+  "pk": 5,
+  "fields": {
+    "ticket": 16,
+    "user": 3,
+    "structure": 21,
+    "subject": "test 1",
+    "text": "test",
+    "attachment": "",
+    "created": "2019-04-29T15:54:32.190Z"
+  }
+},
+{
+  "model": "uni_ticket.ticketreply",
+  "pk": 6,
+  "fields": {
+    "ticket": 24,
+    "user": 1,
+    "structure": null,
+    "subject": "Errore nel ticket",
+    "text": "mi sono reso conto che ho sbasalifas\u00f2 as\u00f2das",
+    "attachment": "",
+    "created": "2019-05-02T08:22:42.707Z"
+  }
+},
+{
+  "model": "uni_ticket.ticketreply",
+  "pk": 7,
+  "fields": {
+    "ticket": 24,
+    "user": 3,
+    "structure": 21,
+    "subject": "Ok, nessun problem",
+    "text": "askjasldk jasldk jasdlk",
+    "attachment": "",
+    "created": "2019-05-02T08:23:10.116Z"
+  }
+},
+{
+  "model": "uni_ticket.ticket2ticket",
+  "pk": 1,
+  "fields": {
+    "slave_ticket": 18,
+    "master_ticket": 16
+  }
+},
+{
+  "model": "uni_ticket.task",
+  "pk": 4,
+  "fields": {
+    "subject": "Task 2",
+    "code": "2bd56fe2-666a-11e9-bafc-0050b61b7106",
+    "description": "Descrizione",
+    "created": "2019-04-24T08:22:59.949Z",
+    "created_by": null,
+    "ticket": 11,
+    "is_chiuso": true,
+    "data_chiusura": "2019-04-24T10:25:46.560Z",
+    "motivazione_chiusura": "chiusura task",
+    "priority": -2
+  }
+},
+{
+  "model": "uni_ticket.task",
+  "pk": 5,
+  "fields": {
+    "subject": "Attivit\u00e0 1",
+    "code": "cc82113c-667b-11e9-bafc-0050b61b7106",
+    "description": "Completare questa prima di tutto.\r\nAggiornamento.",
+    "created": "2019-04-24T10:29:10.960Z",
+    "created_by": 3,
+    "ticket": 16,
+    "is_chiuso": false,
+    "data_chiusura": "2019-04-24T11:54:24.406Z",
+    "motivazione_chiusura": "asdasd",
+    "priority": 2
+  }
+},
+{
+  "model": "uni_ticket.task",
+  "pk": 6,
+  "fields": {
+    "subject": "Task esempio",
+    "code": "b72aa228-6cab-11e9-b846-0050b61b7106",
+    "description": "trasdasd",
+    "created": "2019-05-02T07:27:17.976Z",
+    "created_by": 3,
+    "ticket": 19,
+    "is_chiuso": true,
+    "data_chiusura": "2019-05-02T07:28:11.510Z",
+    "motivazione_chiusura": "motivazione",
+    "priority": 0
+  }
+},
+{
+  "model": "uni_ticket.task",
+  "pk": 7,
+  "fields": {
+    "subject": "Operazione 1 necessaria",
+    "code": "b7846f1c-6cb3-11e9-b846-0050b61b7106",
+    "description": "asdkl jalsdkj asldkj asldkjasdklj",
+    "created": "2019-05-02T08:24:34.536Z",
+    "created_by": 3,
+    "ticket": 24,
+    "is_chiuso": true,
+    "data_chiusura": "2019-05-02T08:26:42.318Z",
+    "motivazione_chiusura": "task completato",
+    "priority": 0
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 1,
+  "fields": {
+    "task": 4,
+    "modified_by": 3,
+    "modified": "2019-04-24T09:44:29.503Z",
+    "note": "Priorit\u00e0 assegnata: Alta"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 2,
+  "fields": {
+    "task": 4,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:13:25.943Z",
+    "note": "Task Task 2 - ticket: asdasd (d4b0c114-5f8c-11e9-af6d-0050b61b7106) - Priorit\u00e0 assegnata: Molto alta"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 3,
+  "fields": {
+    "task": 4,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:15:28.860Z",
+    "note": "Chiusura task: chiusura task"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 4,
+  "fields": {
+    "task": 4,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:22:40.117Z",
+    "note": "Riapertura task Task 2 - ticket: asdasd (d4b0c114-5f8c-11e9-af6d-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 5,
+  "fields": {
+    "task": 4,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:25:46.578Z",
+    "note": "Chiusura task: chiusura task"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 6,
+  "fields": {
+    "task": 5,
+    "modified_by": 3,
+    "modified": "2019-04-24T10:29:59.329Z",
+    "note": "Chiusura task: Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106) - Fatto tutto"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 7,
+  "fields": {
+    "task": 5,
+    "modified_by": 3,
+    "modified": "2019-04-24T11:53:43.612Z",
+    "note": "Riapertura task Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 8,
+  "fields": {
+    "task": 5,
+    "modified_by": 3,
+    "modified": "2019-04-24T11:54:24.426Z",
+    "note": "Chiusura task: Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106) - asdasd"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 9,
+  "fields": {
+    "task": 5,
+    "modified_by": 3,
+    "modified": "2019-04-24T12:21:32.385Z",
+    "note": "Riapertura task Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106)"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 10,
+  "fields": {
+    "task": 5,
+    "modified_by": 3,
+    "modified": "2019-04-24T12:21:46.367Z",
+    "note": "Task Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106) modificato"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 11,
+  "fields": {
+    "task": 5,
+    "modified_by": 3,
+    "modified": "2019-04-24T12:28:06.323Z",
+    "note": "Task Attivit\u00e0 1 - ticket: asdasdasd (1bb63362-65ac-11e9-aa17-0050b61b7106) - Priorit\u00e0 assegnata: Molto bassa"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 12,
+  "fields": {
+    "task": 6,
+    "modified_by": 3,
+    "modified": "2019-05-02T07:28:11.537Z",
+    "note": "Chiusura task: Task esempio - ticket: asdasdas (b3b0804a-6a58-11e9-b43a-94e97991c0ef) - motivazione"
+  }
+},
+{
+  "model": "uni_ticket.taskhistory",
+  "pk": 13,
+  "fields": {
+    "task": 7,
+    "modified_by": 3,
+    "modified": "2019-05-02T08:26:42.334Z",
+    "note": "Chiusura task: Operazione 1 necessaria - ticket: asdkjasldkj asd asd asdasd (84398058-6cb2-11e9-b846-0050b61b7106) - task completato"
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorycondition",
+  "pk": 1,
+  "fields": {
+    "category": 1,
+    "title": "Assicurati di morire",
+    "text": "Questo \u00e8 un testo di esempio che serve per mostrare il contenuto",
+    "ordinamento": 0,
+    "is_active": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorycondition",
+  "pk": 2,
+  "fields": {
+    "category": 9,
+    "title": "Accorgimenti necessari 2",
+    "text": "Ricorda di fare queste operazioni primas dkjad akj d\r\nad\r\nasda skdjlasdkjaskd jalsdj aksdja \r\nsdas \u00f2k dja\r\nsd\u00f2kjas\r\ndasdasd",
+    "ordinamento": 1,
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorycondition",
+  "pk": 3,
+  "fields": {
+    "category": 9,
+    "title": "Controllo struttura",
+    "text": "Assicurati di aver controllato tutte le postazioni dei colleghi",
+    "ordinamento": 3,
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorycondition",
+  "pk": 4,
+  "fields": {
+    "category": 5,
+    "title": "Condizioni da accettare",
+    "text": "Descrizione condizioni da accettare",
+    "ordinamento": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorycondition",
+  "pk": 5,
+  "fields": {
+    "category": 1,
+    "title": "Privacy",
+    "text": "Dichiaro di accettare il regoas lkajslkja sdl asdas",
+    "ordinamento": 0,
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorycondition",
+  "pk": 6,
+  "fields": {
+    "category": 1,
+    "title": "aslkdjaslkdjaslk",
+    "text": "lkasjdlkajs dlasdasda",
+    "ordinamento": 0,
+    "is_active": true
+  }
+}
+]

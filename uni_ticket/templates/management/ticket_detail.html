@@ -1,0 +1,204 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block right_button %}
+<a role="button" class="btn btn-outline-secondary float-right"
+   href="{% url 'uni_ticket:ticket_detail_print' ticket_id=ticket.code %}"
+   target="_blank"
+   data-toggle="tooltip"
+   title="{% trans 'Versione stampabile' %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-print"></use>
+    </svg>
+</a>
+{% endblock %}
+
+
+{% block top_buttons %}
+{% if ticket.is_closed %}
+<a role="button"
+       class="btn btn-outline-secondary"
+       href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+        </svg> {% trans "Torna ai ticket chiusi" %}
+    </a>
+{% elif ticket.is_taken %}
+<a role="button"
+       class="btn btn-outline-secondary"
+       href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+        </svg> {% trans "Torna ai ticket aperti" %}
+    </a>
+{% else %}
+<a role="button"
+   class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna ai ticket da prendere in carico" %}
+</a>
+{% endif %}
+
+{% if ticket.is_open %}
+<a role="button"
+   href="{% url 'uni_ticket:manage_ticket_message_url' structure_slug=structure.slug ticket_id=ticket.code %}"
+   class="btn btn-outline-secondary">
+    {% with ticket.get_unread_replies as unread_replies %}
+        {% if unread_replies > 0 %}
+        <span class="badge badge-primary">{{ unread_replies }}</span>
+        {% else %}
+        <span class="badge badge-light">{{ unread_replies }}</span>
+        {% endif %}
+    {% endwith %}
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-comment"></use>
+    </svg> {% trans "Messaggi" %}
+</a>
+{% endif %}
+
+{% if ticket.is_taken and ticket.is_closed %}
+    <button type="button"
+        class="btn btn-outline-warning"
+        data-toggle="modal"
+        data-target="#reopenTicket">
+        <svg class="icon icon-xs icon-warning">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-exchange-circle"></use>
+        </svg> {% trans "Riapri ticket" %}
+    </button>
+    <div class="modal fade" tabindex="-1" role="dialog" id="reopenTicket">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {% trans "Riapertura ticket" %}
+                    </h5>
+                    <button class="close"
+                            type="button"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                       <svg class="icon">
+                          <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                       </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>{% trans "Vuoi davvero riaprire il ticket" %}
+                       <br>
+                       <b>{{ ticket }}</b> ?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <a role="button" class="btn btn-warning"
+                       href="{% url 'uni_ticket:reopen_ticket' structure_slug=structure.slug ticket_id=ticket.code %}">
+                        {% trans "Si, riapri il ticket" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% elif ticket.is_open %}
+    <a role="button"
+       href="{% url 'uni_ticket:add_ticket_task_url' structure_slug=structure.slug ticket_id=ticket.code %}"
+       class="btn btn-outline-secondary">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-list"></use>
+        </svg> {% trans "Aggiungi attività" %}
+    </a>
+    <a role="button"
+       href="{% url 'uni_ticket:add_ticket_competence_url' structure_slug=structure.slug ticket_id=ticket.code %}"
+       class="btn btn-outline-secondary">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-share"></use>
+        </svg> {% trans "Aggiungi competenza" %}
+    </a>
+    <a role="button"
+       href="{% url 'uni_ticket:add_ticket_dependence_url' structure_slug=structure.slug ticket_id=ticket.code %}"
+       class="btn btn-outline-secondary">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-link"></use>
+        </svg> {% trans "Aggiungi dipendenza" %}
+    </a>
+    {% if ticket.is_closable %}
+        <a role="button"
+           href="{% url 'uni_ticket:close_ticket' structure_slug=structure.slug ticket_id=ticket.code %}"
+           class="btn btn-outline-secondary">
+           <svg class="icon icon-xs">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+           </svg> {% trans "Chiudi" %}
+        </a>
+    {% endif %}
+{% endif %}
+{% endblock top_buttons %}
+
+{% block page_content %}
+    {% include 'ticket_detail.html' %}
+
+    {% block ticket_options %}
+        {% include 'management/ticket_options.html' %}
+    {% endblock ticket_options %}
+
+    {% block ticket_management_buttons %}
+        {% if not ticket.is_closed %}
+        <div class="mt-5">
+            <form method="post" enctype="multipart/form-data">
+                {% include 'form_template.html' %}
+                {% block form_buttons %}
+                <div>
+                    <button type="button"
+                            class="btn btn-success btn-block"
+                            data-toggle="modal"
+                            data-target="#action">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                            </svg>
+                            {% if not ticket.is_taken %}
+                                {% trans "Prendi il ticket in carico" %}
+                            {% else %}
+                                {% trans "Modifica la priorità" %}
+                            {% endif %}
+                    </button>
+                    <div class="modal fade"
+                         tabindex="-1"
+                         role="dialog"
+                         id="action">
+                        <div class="modal-dialog modal-dialog-centered"
+                             role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        {% trans "Modifica ticket" %}
+                                    </h5>
+                                    <button class="close"
+                                            type="button"
+                                            data-dismiss="modal"
+                                            aria-label="Close">
+                                       <svg class="icon">
+                                          <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                                       </svg>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>{% trans "Vuoi davvero procedere modificando il ticket" %}
+                                       <br>
+                                       <b>{{ ticket }}</b> ?
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <input class="btn btn-success"
+                                           type="submit"
+                                           value="{% trans 'Si, procedi' %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock form_buttons %}
+            </form>
+        </div>
+        {% endif %}
+    {% endblock ticket_management_buttons %}
+{% endblock page_content %}

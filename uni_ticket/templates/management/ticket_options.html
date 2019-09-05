@@ -1,0 +1,221 @@
+{% extends "ticket_options.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block ticket_dependences %}
+{% if dependences %}
+<div class="it-list-wrapper">
+    <ul class="it-list">
+        {% for dependence in dependences %}
+        <li class="py-2 clearfix">
+            <b>{{ dependence.master_ticket }}</b>
+            {% if dependence.master_ticket.is_closed %}
+                <span class="badge badge-danger">
+                    {% trans "Chiuso" %}
+                </span>
+            {% else %}
+                <span class="badge badge-success">
+                    {% trans "Aperto" %}
+                </span>
+            {% endif %}
+            {% if dependence.note %}
+            <br>
+            {{ dependence.note }}
+            {% endif %}
+            {% if not ticket.is_closed %}
+            <button type="button"
+                class="mx-1 btn btn-outline-danger btn-xs float-right"
+                data-toggle="modal"
+                data-target="#deleteDependence{{ forloop.counter0 }}">
+                {% trans "Rimuovi dipendenza" %}
+            </button>
+            <div class="modal fade"
+                 tabindex="-1"
+                 role="dialog"
+                 id="deleteDependence{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Eliminazione dipendenza" %}
+                            </h5>
+                            <button class="close" type="button"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero eliminare la dipendenza dal ticket" %}
+                               <br>
+                               <b>{{ dependence }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-danger"
+                               href="{% url 'uni_ticket:remove_ticket_dependence' structure_slug=structure.slug ticket_id=ticket.code master_ticket_id=dependence.master_ticket.code %}">
+                                {% trans "Si, elimina la dipendenza" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+{% trans "Nessuna dipendenza" %}
+{% endif %}
+<div>
+    <a class="btn btn-outline-success btn-block mt-4"
+       href="{% url 'uni_ticket:add_ticket_dependence_url' structure_slug=structure.slug ticket_id=ticket.code %}">
+        <svg class="icon icon-xs icon-success">
+            <use xlink:href="/static/images/svg/sprite.svg#it-plus-circle"></use>
+        </svg> {% trans "Aggiungi nuova dipendenza" %}
+    </a>
+</div>
+{% endblock ticket_dependences %}
+
+{% block ticket_task %}
+{% if ticket_task %}
+<div class="it-list-wrapper">
+    <ul class="it-list">
+        {% for task in ticket_task %}
+        <li class="py-2 clearfix">
+            <b>{{ task }}</b>
+            {% if task.is_closed %}
+                <span class="badge badge-danger">
+                    {% trans "Chiuso" %}
+                </span>
+            {% else %}
+                <span class="badge badge-success">
+                    {% trans "Aperto" %}
+                </span>
+            {% endif %}
+
+
+            {% if not ticket.is_closed %}
+            <button type="button"
+                class="mx-1 btn btn-outline-danger btn-xs float-right"
+                data-toggle="modal"
+                data-target="#deleteTask{{ forloop.counter0 }}">
+                {% trans "Elimina attività" %}
+            </button>
+            {% else %}
+            <button type="button"
+                class="mx-1 btn btn-secondary disabled btn-xs float-right">
+                {% trans "Elimina attività" %}
+            </button>
+            {% endif %}
+
+            {% if task.is_closed %}
+            <button type="button"
+                class="mx-1 btn btn-outline-warning btn-xs float-right"
+                data-toggle="modal"
+                data-target="#reopenTask{{ forloop.counter0 }}">
+                {% trans "Riapri attività" %}
+            </button>
+            {% else %}
+            <a role="button"
+               class="mx-1 btn btn-outline-success btn-xs float-right"
+               href="{% url 'uni_ticket:close_task' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code %}">
+                {% trans "Chiudi attività" %}
+            </a>
+            {% endif %}
+
+            <a role="button"
+               class="mx-1 btn btn-outline-secondary btn-xs float-right"
+               href="{% url 'uni_ticket:manage_task_detail_url' structure_slug=structure.slug ticket_id=ticket.code task_id=task.code %}">
+                {% trans "Dettagli" %}
+            </a>
+            {% if not ticket.is_closed %}
+            <div class="modal fade"
+                 tabindex="-1"
+                 role="dialog"
+                 id="deleteTask{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Eliminazione attività" %}
+                            </h5>
+                            <button class="close" type="button"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero eliminare l'attività dal ticket" %}
+                               <br>
+                               <b>{{ task }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-danger"
+                               href="{% url 'uni_ticket:task_remove' structure_slug=structure.slug ticket_id=ticket.code task_id=task.code %}">
+                                {% trans "Si, elimina l'attività" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if task.is_closed %}
+            <div class="modal fade" tabindex="-1" role="dialog" id="reopenTask{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Riapertura task" %}
+                            </h5>
+                            <button class="close" type="button"
+                                    data-dismiss="modal" aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero riaprire il task" %}
+                               <br>
+                               <b>{{ task }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-warning"
+                               href="{% url 'uni_ticket:reopen_task' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code %}">
+                                {% trans "Si, riapri il task" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+{% trans "Nessuna attività" %}
+{% endif %}
+<div>
+    <a class="btn btn-outline-success btn-block mt-4"
+       href="{% url 'uni_ticket:add_ticket_task_url' structure_slug=structure.slug ticket_id=ticket.code %}">
+        <svg class="icon icon-xs icon-success">
+            <use xlink:href="/static/images/svg/sprite.svg#it-plus-circle"></use>
+        </svg> {% trans "Aggiungi nuova attività" %}
+    </a>
+</div>
+{% endblock ticket_task %}

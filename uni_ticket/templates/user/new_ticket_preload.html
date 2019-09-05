@@ -1,0 +1,74 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_links %}
+{% include 'user/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block page_content %}
+<b><label for="struttura_slug">{% trans "Struttura" %}</label></b>
+{% comment %}
+<!-- Bootstrap Italia select -->
+<div class="bootstrap-select-wrapper">
+{% endcomment %}
+<div>
+    {% if struttura_slug %}
+    <select onchange="window.location = replace_last_param(window.location.href, $(this).val());"
+    {% else %}
+    <select onchange="window.location = window.location.href + $(this).val();"
+    {% endif %}
+            id="struttura_slug"
+            name="struttura_slug"
+            title="{% trans 'A chi è indirizzata la richiesta?' %}"
+            data-live-search="true" data-live-search-placeholder="Cerca...">
+        <option value="">{% trans "Scegli un'opzione" %}</option>
+        {% for struttura in strutture %}
+        <option value="{{ struttura.slug }}"
+        {% if struttura.slug == struttura_slug %} selected {% endif %}>
+            {{ struttura }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div style="padding: 1.5rem 0 1rem" >
+    <b><label for="categoria_slug">{% trans "Categoria" %}</label></b>
+    {% if not struttura_slug %}
+    <div class="alert alert-warning" role="alert">
+      {% trans "Seleziona la struttura a cui inoltrare il ticket" %}
+    </div>
+    {% elif not categorie %}
+    <div class="alert alert-danger" role="alert">
+      {% trans "Nessuna categoria disponibile per questa struttura o per questa tipologia di utente" %}
+    </div>
+    {% else %}
+    {% comment %}
+    <!-- Bootstrap Italia select -->
+    <div class="bootstrap-select-wrapper">
+    {% endcomment %}
+    <div>
+        <select onchange="window.location = window.location.href + $(this).val();"
+                {% if not struttura_slug %}disabled{% endif %}
+                name="categoria_slug"
+                title="{% trans 'A chi è indirizzata la richiesta?' %}"
+                data-live-search="true" data-live-search-placeholder="Cerca...">
+            <option value="">{% trans "Scegli un'opzione" %}</option>
+            {% for categoria in categorie %}
+            <option value="{{ categoria.slug }}">{{ categoria }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock page_content %}
+
+{% block extra_scripts %}
+<script type="text/javascript">
+function replace_last_param(url, new_param){
+    return url.split('/').slice(0,-2).join('/')+'/'+new_param
+}
+</script>
+{% endblock extra_scripts %}

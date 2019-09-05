@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block container_inner %}
+    {% block top_buttons_surround %}
+    <div class="pb-4">
+    {% block top_buttons %}
+    {% endblock top_buttons %}
+    </div>
+    {% endblock top_buttons_surround %}
+
+    {% block over_content %}{% endblock over_content %}
+
+    {% block clean_content %}
+    <div class="row">
+        <div class="col">
+            <div class="card-space card-wrapper">
+                <div class="card card-bg no-after">
+                    <div class="card-body">
+                        {% block page_content %}
+                        {% endblock page_content %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock clean_content %}
+{% endblock container_inner %}

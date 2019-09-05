@@ -1,0 +1,102 @@
+<!-- Extends default Bootstrap Unical Italia template -->
+<!--
+base-setup.html
+-->
+{% extends 'bootstrap-italia-base.html' %}
+
+{% load i18n %}
+<!-- From app django-sass-processor -->
+{% if debug %}{% load sass_tags %}{% endif %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+<!-- Return to Agid native template -->
+{% block extra_head %}
+{{ block.super }}
+{% if debug %}
+<link rel="stylesheet" href="{% sass_src 'css/uni_ticket.scss' %}">
+{% else %}
+<link rel="stylesheet" href="{% static 'css/uni_ticket.css' %}">
+{% endif %}
+{% endblock extra_head %}
+
+<!-- Page Title -->
+{% block page_title %}
+Ticket System - Università della Calabria
+{% endblock page_title %}
+
+<!-- URL link top left -->
+{% block header_slim_org_url %}
+{% endblock header_slim_org_url %}
+
+<!-- Name top left -->
+{% block header_slim_org_name %}
+{% current_date as current_date %}
+{{ current_date }}
+{% endblock header_slim_org_name %}
+
+{% block header_slim_sub_menu %}{% endblock header_slim_sub_menu %}
+
+<!-- Mobile slim_org_name -->
+{% block header_slim_mobile_org_name %}
+{% endblock header_slim_mobile_org_name %}
+
+<!-- Make empty areas -->
+{% block header_mobile_arrow %}{% endblock header_mobile_arrow %}
+{% block header_mobile_slim_menu %}{% endblock header_mobile_slim_menu %}
+
+
+<!-- Header Profile / Logout buttons -->
+{% block header_slim_buttons %}
+{% include 'header_slim_buttons.html' %}
+{% endblock header_slim_buttons %}
+
+{% block header_center_search %}{% endblock header_center_search %}
+
+{% block menu_links %}
+{% include 'main_menu.html' %}
+{% endblock menu_links %}
+
+<!-- Container -->
+{% block container %}
+<div class="container">
+    {% block content_title %}
+    <div class="py-md-5 bd-content clearfix">
+        {% include 'title_display.html' %}
+        {% block right_button %}
+        {% endblock right_button %}
+    </div>
+    {% endblock content_title %}
+    <div class="row">
+        {% block content_rows %}
+        <main class="col mb-5">
+        {% block container_inner %}{% endblock container_inner %}
+        </main>
+        {% endblock content_rows %}
+    </div>
+    <a href="#" aria-hidden="true"
+       data-attribute="back-to-top"
+       class="back-to-top back-to-top-small">
+        <svg class="icon icon-light">
+          <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-up"></use>
+        </svg>
+    </a>
+</div>
+<div class="cookiebar">
+    <p>{% trans "Questo sito utilizza cookie tecnici, analytics e di terze parti." %}
+       <br>
+       {% trans "Proseguendo nella navigazione accetti l’utilizzo dei cookie." %}
+    </p>
+    <div class="cookiebar-buttons">
+        <a href="#" class="cookiebar-btn">
+            {% trans "Preferenze" %} <span class="sr-only">cookies</span>
+        </a>
+        <button data-accept="cookiebar" class="cookiebar-btn cookiebar-confirm">
+            {% trans "Accetto" %}<span class="sr-only"> i cookies</span>
+        </button>
+    </div>
+</div>
+{% endblock container %}
+
+{% block footer_menu_section %}
+{% endblock footer_menu_section %}

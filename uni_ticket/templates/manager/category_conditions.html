@@ -1,0 +1,141 @@
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+<div class="it-list-wrapper">
+    {% if category.ticketcategorycondition_set.all %}
+    <ul class="it-list">
+        {% for condition in category.ticketcategorycondition_set.all %}
+        <li class="py-2 clearfix">
+            <b>{{ condition.title }}</b>
+            {% if condition.is_active %}
+                <span class="badge badge-success">
+                    {% trans "attiva" %}
+                </span>
+            {% else %}
+                <span class="badge badge-danger">
+                    {% trans "non attiva" %}
+                </span>
+            {% endif %}
+
+            <button type="button"
+                class="mx-1 btn btn-outline-danger btn-xs float-right"
+                data-toggle="modal"
+                data-target="#deleteCondition{{ forloop.counter0 }}">
+                {% trans "Elimina clausola" %}
+            </button>
+
+            {% if condition.is_active %}
+            <button type="button"
+                class="mx-1 btn btn-outline-secondary btn-xs float-right"
+                data-toggle="modal"
+                data-target="#disableCondition{{ forloop.counter0 }}">
+                {% trans "Disattiva clausola" %}
+            </button>
+            {% else %}
+            <button type="button"
+                class="mx-1 btn btn-outline-success btn-xs float-right"
+                data-toggle="modal"
+                data-target="#enableCondition{{ forloop.counter0 }}">
+                {% trans "Attiva clausola" %}
+            </button>
+            {% endif %}
+            <a role="button"
+               class="mx-1 btn btn-outline-secondary btn-xs float-right"
+               href="{% url 'uni_ticket:manager_category_condition_detail' structure_slug=structure.slug category_slug=category.slug condition_id=condition.pk %}">
+                {% trans "Dettagli" %}
+            </a>
+
+
+            <div class="modal fade" tabindex="-1" role="dialog" id="enableCondition{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Attivazione clausola" %}
+                            </h5>
+                            <button class="close" type="button"
+                                    data-dismiss="modal" aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero attivare la clausola " %}
+                               <b>{{ condition }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-success"
+                               href="{% url 'uni_ticket:manager_category_condition_enable' structure_slug=structure.slug category_slug=category.slug condition_id=condition.pk %}">
+                                {% trans "Si, attiva la clausola" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" tabindex="-1" role="dialog" id="disableCondition{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Disattivazione clausola" %}
+                            </h5>
+                            <button class="close" type="button"
+                                    data-dismiss="modal" aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero disattivare la clausola " %}
+                               <b>{{ condition }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-danger"
+                               href="{% url 'uni_ticket:manager_category_condition_disable' structure_slug=structure.slug category_slug=category.slug condition_id=condition.pk %}">
+                                {% trans "Si, disattiva la clausola" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" tabindex="-1" role="dialog" id="deleteCondition{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Eliminazione clausola" %}
+                            </h5>
+                            <button class="close" type="button"
+                                    data-dismiss="modal" aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero eliminare la clausola " %}
+                               <b>{{ condition }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-danger"
+                               href="{% url 'uni_ticket:manager_category_condition_delete' structure_slug=structure.slug category_slug=category.slug condition_id=condition.pk %}">
+                                {% trans "Si, elimina la clausola" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+        {% endfor %}
+    </ul>
+    {% else %}
+    {% trans "Nessuna clausola presente" %}
+    {% endif %}
+</div>

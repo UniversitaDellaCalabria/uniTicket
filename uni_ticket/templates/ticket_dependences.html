@@ -1,0 +1,29 @@
+{% load i18n %}
+{% load static %}
+
+{% if dependences %}
+<div class="it-list-wrapper">
+    <ul class="it-list">
+        {% for dependence in dependences %}
+        <li class="py-2">
+            <b>{{ dependence.master_ticket }}</b>
+            {% if dependence.is_closed %}
+                <span class="badge badge-danger">
+                    {% trans "Chiuso" %}
+                </span>
+            {% else %}
+                <span class="badge badge-success">
+                    {% trans "Aperto" %}
+                </span>
+            {% endif %}
+            {% if dependence.note %}
+            <br>
+            {{ dependence.note }}
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+{% trans "Nessuna dipendenza" %}
+{% endif %}

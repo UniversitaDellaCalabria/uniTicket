@@ -1,0 +1,16 @@
+<div class="it-list-wrapper">
+    <ul class="it-list">
+        {% for event in ticket_history %}
+        <li>
+            <a>
+                <div class="it-right-zone">
+                    <span class="text">{{ event.note|safe }}<em>{{ event.modified_by }}</em></span>
+                    <span class="it-multiple">
+                        <span class="metadata">{{ event.modified }}</span>
+                    </span>
+                </div>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

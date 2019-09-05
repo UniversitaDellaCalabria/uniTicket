@@ -1,0 +1,50 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_links %}
+{% include 'user/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:user_dashboard' %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Dashboard" %}
+</a>
+{% endblock top_buttons %}
+
+{% block clean_content %}
+{% if tickets_with_messages %}
+<table class="table table-striped table-hover">
+    <thead>
+        <tr role="row">
+            <th>Codice</th>
+            <th>Oggetto</th>
+            <th>Categoria</th>
+            <th>Stato</th>
+            <th>Priorità</th>
+            <th>Messaggi</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tm in tickets_with_messages %}
+            <tr>
+                <td><a href="{% url 'uni_ticket:ticket_message' ticket_id=tm.ticket.code %}">{{ tm.ticket.code }}</a></td>
+                <td>{{ tm.ticket.subject }}</td>
+                <td>{{ tm.ticket.get_category }}</td>
+                <td>{{ tm.ticket.get_status }}</td>
+                <td>{{ tm.ticket.get_priority }}</td>
+                <td>{{ tm.messages }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="alert alert-warning" role="alert">
+  {% trans "Non ci sono messaggi da leggere" %}
+</div>
+{% endif %}
+{% endblock clean_content %}

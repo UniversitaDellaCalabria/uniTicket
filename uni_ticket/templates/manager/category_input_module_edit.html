@@ -1,0 +1,28 @@
+{% extends "form_complete.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_links %}
+{% include 'manager/main_menu.html' %}
+{% endblock menu_links %}
+
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_category_input_module' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna alla modulo" %}
+</a>
+{% endblock top_buttons %}
+
+{% block form_buttons %}
+<div>
+    <button class="btn btn-success btn-block" type="submit">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+        </svg> {% trans 'Modifica modulo di inserimento' %}
+    </button>
+</div>
+{% endblock form_buttons %}

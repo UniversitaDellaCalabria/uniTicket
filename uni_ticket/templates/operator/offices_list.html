@@ -1,0 +1,43 @@
+{% load i18n %}
+{% load static %}
+
+<div class="pb-3">
+    <div class="row">
+      {% for office in offices %}
+      <div class="col-12 col-lg-4">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+          <div class="card card-bg no-after">
+            <div class="card-body">
+                {% if office.is_active %}
+                    <span class="badge badge-pill badge-success mb-2">
+                        {% trans "Attivo" %}
+                    </span>
+                {% else %}
+                    <span class="badge badge-pill badge-danger mb-2">
+                        {% trans "Non attivo" %}
+                    </span>
+                {% endif %}
+              <h5 class="card-title">{{ office.name }}</h5>
+              <p class="card-text">{{ office.description }}</p>
+              <p class="card-text">
+                  <b>{% trans 'Operatori' %}:</b>
+                  {{ office.organizationalstructureofficeemployee_set.all|length }}
+              <br>
+                  <b>{% trans 'Categorie di competenza' %}:</b>
+                    {% if office.ticketcategory_set.all %}
+                      {% for office_cat in office.ticketcategory_set.all %}
+                         {% if not forloop.first %},{% endif %} {{ office_cat }}
+                      {% endfor %}
+                    {% else %}
+                        {% trans "Nessuna" %}
+                    {% endif %}
+              </p>
+            </div>
+          </div>
+        </div>
+        <!--end card-->
+      </div>
+      {% endfor %}
+    </div>
+</div>

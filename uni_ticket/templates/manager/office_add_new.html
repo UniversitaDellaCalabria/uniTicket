@@ -1,0 +1,18 @@
+{% extends "form_complete.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_links %}
+{% include 'manager/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block form_buttons %}
+<div>
+    <button class="btn btn-success btn-block" type="submit">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-plus-circle"></use>
+        </svg> {% trans 'Crea nuovo ufficio' %}
+    </button>
+</div>
+{% endblock form_buttons %}

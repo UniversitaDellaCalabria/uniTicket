@@ -1,0 +1,288 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+{% block menu_links %}
+{% include 'manager/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=category.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna alla categoria" %}
+</a>
+<a role="button"
+   class="btn btn-outline-secondary"
+   href=""
+   onclick="window.open('{% url 'uni_ticket:manager_category_input_module_preview' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}','winname','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=890,height=600');">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-password-visible"></use>
+    </svg> {% trans "Vedi anteprima" %}
+</a>
+<a role="button"
+   class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_category_input_module_edit' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-pencil"></use>
+    </svg> {% trans "Rinomina" %}
+</a>
+{% if module.is_active %}
+<button type="button"
+    class="btn btn-outline-secondary"
+    data-toggle="modal"
+    data-target="#disableModule">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-password-invisible"></use>
+    </svg> {% trans "Disattiva" %}
+</button>
+{% else %}
+<button type="button"
+    class="btn btn-outline-secondary"
+    data-toggle="modal"
+    data-target="#enableModule">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-password-visible"></use>
+    </svg> {% trans "Attiva" %}
+</button>
+{% endif %}
+{% if module.is_eliminabile %}
+<button type="button"
+    class="btn btn-outline-danger"
+    data-toggle="modal"
+    data-target="#deleteModule">
+    <svg class="icon icon-xs icon-danger">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close-circle"></use>
+    </svg> {% trans "Elimina" %}
+</button>
+{% endif %}
+{% endblock top_buttons %}
+
+
+
+{% block page_content %}
+{% if module.ticketcategoryinputlist_set.all %}
+<table class="table table-hover">
+    <tbody>
+        <tr>
+            <th scope="row">{% trans 'Nome' %}</th>
+            <th scope="row">{% trans 'Tipo' %}</th>
+            <th scope="row">{% trans 'Valore' %}</th>
+            <th scope="row">{% trans 'Required' %}</th>
+            <th scope="row">{% trans 'Aiuto' %}</th>
+            <th scope="row">{% trans 'Ord.' %}</th>
+            {% if module.is_eliminabile %}
+            <th scope="row"></th>
+            {% endif %}
+        </tr>
+        {% for field in module.ticketcategoryinputlist_set.all %}
+        <tr>
+            <td>{{ field.name }}</td>
+            <td>{{ field.field_type|get_dyn_field_name }}</td>
+            <td>
+                {% if field.valore %}
+                {{ field.valore }}
+                {% else %}
+                -
+                {% endif %}
+            </td>
+            <td>{{ field.is_required }}</td>
+            <td>
+                {% if field.aiuto %}
+                {{ field.aiuto }}
+                {% else %}
+                -
+                {% endif %}
+            </td>
+            <td>{{ field.ordinamento }}</td>
+            {% if module.is_eliminabile %}
+            <td class="text-right">
+                <a role="button"
+                   class="btn btn-outline-secondary btn-sm"
+                   href="{% url 'uni_ticket:manager_category_input_field_edit' structure_slug=structure.slug category_slug=category.slug module_id=module.pk field_id=field.pk %}">
+                    {% trans "Modifica" %}
+                </a>
+
+                <button type="button"
+                        class="btn btn-outline-danger btn-sm"
+                        data-toggle="modal"
+                        data-target="#removeField{{ forloop.counter0 }}">
+                        {% trans "Rimuovi" %}
+                </button>
+            </td>
+            {% endif %}
+        </tr>
+        <div class="modal fade"
+             tabindex="-1"
+             role="dialog"
+             id="removeField{{ forloop.counter0 }}">
+            <div class="modal-dialog modal-dialog-centered"
+                 role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            {% trans "Eliminazione campo di input" %}
+                        </h5>
+                        <button class="close"
+                                type="button"
+                                data-dismiss="modal"
+                                -label="Close">
+                           <svg class="icon">
+                              <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                           </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{% trans "Vuoi davvero eliminare il campo" %}
+                            <b>{{ field.name }}</b> ?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger"
+                            role="button"
+                            href="{% url 'uni_ticket:manager_category_input_field_delete' structure_slug=structure.slug category_slug=category.slug module_id=module.pk field_id=field.pk %}">
+                            {% trans 'Si, procedi' %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <div class="alert alert-info" role="alert">
+         {% trans "Nessun campo di input personalizzato presente" %}
+    </div>
+{% endif %}
+
+{% if module.is_active %}
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="disableModule">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Disattivazione modulo" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Disattivando questo modulo, verrà disattivata anche l'intera categoria.<br>Vuoi procedere?" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-danger"
+                   href="{% url 'uni_ticket:manager_category_input_module_disable' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
+                    {% trans "Si, disattiva il modulo" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="enableModule">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Attivazione modulo" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Attivando questo modulo, quello attualmente attivo verrà disabilitato.<br>Vuoi procedere?" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-success"
+                   href="{% url 'uni_ticket:manager_category_input_module_enable' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
+                    {% trans "Si, attiva il modulo" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if module.is_eliminabile %}
+<h5 class="card-title pb-3 mt-5">{% trans "Aggiungi un campo di input" %}</h5>
+<form method="post" enctype="multipart/form-data">
+    {% include 'form_template.html' %}
+    {% block form_buttons %}
+    <div>
+        <button type="submit"
+                class="btn btn-success btn-block">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-plus-circle"></use>
+                </svg> {% trans "Aggiungi campo di input" %}
+        </button>
+    </div>
+    {% endblock form_buttons %}
+</form>
+
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="deleteModule">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Eliminazione modulo" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero eliminare il modulo " %}
+                   <b>{{ module }}</b> ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-danger"
+                   href="{% url 'uni_ticket:manager_category_input_module_delete' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
+                    {% trans "Si, elimina il modulo" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="mt-4 alert alert-danger" role="alert">
+  {% trans "Impossibile aggiungere ulteriori campi al modulo." %}
+  {% trans "Quest'ultimo risulta attualmente attivo o ci sono ticket collegati" %}
+</div>
+{% endif %}
+{% endblock page_content %}

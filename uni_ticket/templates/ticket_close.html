@@ -1,0 +1,57 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block top_buttons %}
+{% endblock top_buttons %}
+
+{% block page_content %}
+<form method="post" enctype="multipart/form-data">
+    {% include 'form_template.html' %}
+    {% block form_buttons %}
+    <div>
+        <button type="button"
+                class="btn btn-success btn-block"
+                data-toggle="modal"
+                data-target="#closeticket">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                </svg> {% trans "Chiudi il ticket" %}
+        </button>
+        <div class="modal fade" tabindex="-1" role="dialog" id="closeticket">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            {% trans "Chiusura ticket" %}
+                        </h5>
+                        <button class="close" type="button"
+                                data-dismiss="modal" aria-label="Close">
+                           <svg class="icon">
+                              <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                           </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{% trans "Vuoi davvero chiudere il ticket" %}
+                           <br>
+                           <b>{{ ticket }}</b> ?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <input class="btn btn-success"
+                               type="submit"
+                               value="{% trans 'Si, chiudi il ticket' %}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock form_buttons %}
+</form>
+{% endblock page_content %}
+
+{% block extra_scripts %}
+{{ form.media }}
+{% endblock extra_scripts %}

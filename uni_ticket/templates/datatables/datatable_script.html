@@ -1,0 +1,101 @@
+{% load i18n %}
+{% load static %}
+
+<script charset="utf8" src="{% static 'js/datatables/datatables.min.js' %}"></script>
+<script>
+$.urlParam = function(name){
+	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+	return results[1] || 0;
+}
+var url = "{{ var_url }}";
+$(document).ready(function() {
+    var datatable = $('.datatable-responsive-serverside').DataTable({
+        dom: 'lrtip',
+        aLengthMenu: [
+            [10, 25, 50, 100, ], // -1],
+            [10, 25, 50, 100, ] //"All"]
+        ],
+        paging: true,
+        //responsive: true,
+        processing: true,
+        serverSide: true,
+
+        columnDefs: [
+            {
+                visible: false,
+                orderable: false,
+                className: "select-checkbox",
+                targets:   [ 0 ],
+                data: null,
+                defaultContent: "",
+                render: function ( data, type, row ) {
+                    return "<input type='checkbox' name='ticket_id' value='"+row[0]+"' />";
+                }
+            } ,
+            {
+                targets: [ 1 ],
+                render: function ( data, type, row ) {
+                    return "<a href='"+url+row[1]+"'>"+data+"</a>";
+                }
+            },
+            {
+                targets: [ 3 ],
+                orderable: false,
+            },
+            {
+                targets: [ 5 ],
+                orderable: false,
+            },
+            {
+                targets: [ 6 ],
+                //render: function ( data, type, row ) {
+                    //if(data) return "Si";
+                    //return "No";
+                //}
+                orderable: false,
+            },
+        ],
+        language: {
+            "emptyTable":     "{% trans 'Nessun record presente' %}",
+            "info":           "{% trans 'Visibili' %} _END_ {% trans 'di' %} _TOTAL_ {% trans 'record totali' %}",
+            "infoEmpty":      "{% trans 'Visibili' %} 0 {% trans 'record' %}",
+            "infoPostFix":    "",
+            "thousands":      ",",
+            "lengthMenu":     "{% trans 'Mostra' %} _MENU_",
+            "loadingRecords": "Loading...",
+            "processing":     "Processing...",
+            "zeroRecords":    "{% trans 'Nessun record trovato' %}",
+            "paginate": {
+                "first":      "{% trans 'Prima' %}",
+                "last":       "{% trans 'Ultima' %}",
+                "next":       "{% trans 'Successiva' %}",
+                "previous":   "{% trans 'Precedente' %}"
+            },
+        },
+        ajax: {
+            url: "{{ ajax_url }}",
+            method: "post",
+            data: function(args) {
+                return{
+                    "args": JSON.stringify(args),
+                    {% for k,v in request.GET.items %}
+                        "{{ k }}": "{{ v }}",
+                    {% endfor %}
+                };
+            }
+        },
+    });
+
+    $('#search_box').on( 'keyup', function () {
+        datatable.search($('#search_box').val()).draw();
+    } );
+    $('#year_box').on( 'change', function () {
+        datatable.search($('#year_box').val()).draw();
+    } );
+
+});
+
+//$.extend($('.datatable-responsive-serverside').DataTable.ext.classes, {
+    //"sLengthSelect" : "uni_ticket_select",
+//} );
+</script>

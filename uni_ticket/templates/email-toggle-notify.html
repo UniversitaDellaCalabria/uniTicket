@@ -1,0 +1,54 @@
+{% load i18n %}
+{% load static %}
+
+{% if request.user.email %}
+<div class="row">
+    <div class="col">
+        <div class="card-wrapper card-space pb-3">
+            <div class="card card-bg no-after">
+                <div class="card-body">
+                    <div id="email-notify-message"></div>
+                    <form>
+                        <div class="form-check form-check-group">
+                            <div class="toggles">
+                              <label for="notifyEmail">
+                                    <svg class="icon icon-xs">
+                                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-mail"></use>
+                                    </svg> {% trans "Notifiche e-mail" %}
+
+                                <input type="checkbox"
+                                       ic-post-to="{% url 'uni_ticket:email_notify_change' %}"
+                                       ic-target="#email-notify-message"
+                                       ic-select-from-response="#intercooler-notify"
+                                       id="notifyEmail"
+                                       aria-labelledby="notify-email-help"
+                                       {% if request.user.email_notify %}
+                                       checked
+                                       {% endif %}
+                                        >
+                                <span class="lever"></span>
+                              </label>
+                            </div>
+                            <small id="notify-email-help" class="form-text">
+                                    {% trans "Se attiva, questa funzione invierà sulla mail" %}
+                                    <b>{{ request.user.email }}</b>
+                                    {% trans "le notifiche inerenti ai tuoi ticket e un rapporto periodico di riepilogo." %}
+                                    {% trans "Disattivandola, non verrà recapitato alcun messaggio." %}
+                            </small>
+                        </div>
+                        {% csrf_token %}
+                    </form>
+                </div>
+            </div>
+        </div>
+   </div>
+</div>
+{% else %}
+<div class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
+     {% trans "Nessun indirizzo e-mail associato alla tua utenza." %}
+    {% trans "Contatta il supporto tecnico per risolvere il problema." %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}

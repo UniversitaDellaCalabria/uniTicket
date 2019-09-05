@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load static %}
+
+{% if ticket_task %}
+<div class="it-list-wrapper">
+    <ul class="it-list">
+        {% for task in ticket_task %}
+        <li class="py-2">
+            <b>{{ task }}</b>
+            {% if task.is_closed %}
+                <span class="badge badge-danger">
+                    {% trans "Chiuso" %}
+                </span>
+            {% else %}
+                <span class="badge badge-success">
+                    {% trans "Aperto" %}
+                </span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+{% trans "Nessuna attività" %}
+{% endif %}

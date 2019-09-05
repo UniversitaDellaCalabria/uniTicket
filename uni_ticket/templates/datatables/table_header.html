@@ -1,0 +1,20 @@
+{% load i18n %}
+{% load static %}
+
+<form method="post" id="ticket_mass_update">
+<table class="table table-striped table-hover datatable-responsive-serverside">
+        <!--id="ticketTable"-->
+        <thead>
+        <tr>
+            <th></th>
+            <th>{% trans "Codice" %}</th>
+            <th>{% trans "Oggetto" %}</th>
+            <th>{% trans "Categoria" %}</th>
+            <th>{% trans "Creato il" %}</th>
+            <th>{% trans "Priorità" %}</th>
+            <th>{% trans "Stato" %}</th>
+        </tr>
+    </thead>
+</table>
+{% csrf_token %}
+</form>

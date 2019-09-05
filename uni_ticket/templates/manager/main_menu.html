@@ -1,0 +1,40 @@
+{% extends 'main_menu.html' %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_pre_buttons %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'uni_ticket:manager_dashboard' structure_slug=structure.slug %}">
+        <span>{% trans "Dashboard" %}</span>
+        {% comment %}
+        <span class="sr-only">current</span>
+        {% endcomment %}
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'uni_ticket:manager_tickets' structure_slug=structure.slug %}">
+        <span>{% trans "Ticket" %}</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'uni_ticket:manager_categories' structure_slug=structure.slug %}">
+        <span>{% trans "Categorie" %}</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'uni_ticket:manager_offices' structure_slug=structure.slug %}">
+        <span>{% trans "Uffici" %}</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'uni_ticket:manager_messages' structure_slug=structure.slug %}">
+        <span>{% trans "Messaggi" %}</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'uni_ticket:manager_user_settings' structure_slug=structure.slug %}">
+        <span>{% trans "Configurazione" %}</span>
+    </a>
+</li>
+{% endblock menu_pre_buttons %}

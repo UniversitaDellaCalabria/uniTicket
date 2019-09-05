@@ -1,0 +1,74 @@
+[
+{
+  "model": "unical_accounts.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$120000$mXu27cDOBKdv$eJPkoADFF6M64lN7fnTHmV9Xc5YXeRxSybGkBimLKjI=",
+    "last_login": "2019-05-03T10:24:31.953Z",
+    "is_superuser": true,
+    "username": "felix",
+    "is_staff": true,
+    "date_joined": "2019-02-26T08:07:57.076Z",
+    "is_active": true,
+    "email": "",
+    "matricola_dipendente": null,
+    "matricola_studente": null,
+    "first_name": "Francesco",
+    "last_name": "Filicetti",
+    "codice_fiscale": null,
+    "gender": null,
+    "place_of_birth": null,
+    "birth_date": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "unical_accounts.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$120000$8xyFT9qTC8y4$glndMG0HX95uIUzN9UjNvhIIB2KRmQ2z1QSavPVpLBA=",
+    "last_login": "2019-04-11T13:13:30.702Z",
+    "is_superuser": false,
+    "username": "user",
+    "is_staff": false,
+    "date_joined": "2019-03-01T14:10:23.590Z",
+    "is_active": true,
+    "email": "",
+    "matricola_dipendente": null,
+    "matricola_studente": null,
+    "first_name": "Utente",
+    "last_name": "Demo",
+    "codice_fiscale": null,
+    "gender": null,
+    "place_of_birth": null,
+    "birth_date": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "unical_accounts.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$120000$Jt4HIS6q3Xox$ekfRwV/rt0+maX7OkLeBlQkrYFZkipehfEWcAH7gPBU=",
+    "last_login": "2019-04-29T06:13:50.176Z",
+    "is_superuser": false,
+    "username": "manager",
+    "is_staff": true,
+    "date_joined": "2019-03-28T09:07:51.728Z",
+    "is_active": true,
+    "email": "",
+    "matricola_dipendente": null,
+    "matricola_studente": null,
+    "first_name": "Manager",
+    "last_name": "Filicetti",
+    "codice_fiscale": null,
+    "gender": null,
+    "place_of_birth": null,
+    "birth_date": null,
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

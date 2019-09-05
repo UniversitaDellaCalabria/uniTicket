@@ -1,0 +1,60 @@
+{% load i18n %}
+{% load uni_ticket_tags %}
+
+{% if request.user.is_authenticated %}
+
+{% not_a_simple_user request.user as not_a_simple_user %}
+{% simple_user_context_name as simple_user_context_name %}
+<div class="nav-item dropdown">
+    {% if not_a_simple_user %}
+     <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">
+        <div class="it-access-top-wrapper">
+            <button class="btn btn-primary btn-sm" href="#" type="button">
+                {% trans "Stai operando come: " %}
+                {% if structure %}
+                    {% get_usertype request.user structure as usertype %}
+                    {{ structure }} ({{ usertype|capfirst }})
+                {% else %}
+                    {{ simple_user_context_name }}
+                {% endif %}
+            </button>
+        </div>
+    </a>
+    <div class="dropdown-menu">
+        <div class="row">
+            <div class="col-12">
+                <div class="link-list-wrapper">
+                    <ul class="link-list">
+                        <li>
+                            <a class="list-item" href="{% url 'uni_ticket:user_dashboard' %}">
+                                <span>{{ simple_user_context_name }}</span>
+                            </a>
+                        </li>
+                        {% for structure in not_a_simple_user %}
+                        <li>
+                            <a class="list-item" href="{% url 'uni_ticket:manage' structure_slug=structure.slug %}">
+                                <span>{{ structure.name }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                        <li>
+                            <a class="list-item" href="{% url 'logout' %}">
+                                <span>{% trans "Logout" %}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="it-access-top-wrapper">
+        <a href="{% url 'logout' %}">
+            <button class="btn btn-primary btn-sm" type="button">
+                {% trans "Esci" %}
+            </button>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endif %}

@@ -1,0 +1,33 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_links %}
+{% include 'operator/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manage' structure_slug=structure.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Dashboard" %}
+</a>
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:operator_tickets' structure_slug=structure.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-list"></use>
+    </svg> {% trans "Torna ai ticket" %}
+</a>
+{% endblock top_buttons %}
+
+{% block page_content %}
+{% include 'datatables/table.html' %}
+{% endblock page_content %}
+
+{% block extra_scripts %}
+{% url 'uni_ticket:manage_ticket_url' structure.slug as var_url %}
+{% url 'uni_ticket:operator_closed_ticket_json' structure.slug as ajax_url %}
+{% include 'datatables/datatable_script.html' with var_url=var_url ajax_url=ajax_url %}
+{% endblock extra_scripts %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_links %}
+{% include 'manager/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block container_inner %}
+<div class="pb-4">
+    {% include 'manager/categories_list.html' %}
+</div>
+{% endblock container_inner %}
+
+

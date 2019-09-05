@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+<!-- From app django-sass-processor -->
+{% load sass_tags %}
+{% load static %}
+
+{% block container %}
+<div class="container">
+    <div class="col-12 py-md-5 bd-content">
+        {% include 'messages.html' %}
+        {% include 'title_display.html' %}
+    </div>
+    <div class="row">
+        <main class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 py-md-3">
+        {% block container_inner %}{% endblock container_inner %}
+        </main>
+        <div class="sidebar-wrapper col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 py-md-3 offset-md-1">
+          <div class="sidebar-linklist-wrapper">
+            <div class="link-list-wrapper">
+              <ul class="link-list">
+                <li>
+                  <a class="list-item large medium right-icon active" href="#collapseOne" data-toggle="collapse" aria-expanded="true" aria-controls="collapseOne"><span>Link list selected </span><svg class="icon icon-sm icon-primary right" aria-hidden="true"><use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-expand"></use></svg></a>
+                  <ul class="link-sublist collapse show" id="collapseOne">
+                    <li><a class="list-item active" href="#"><span>Link list 1 active </span></a>
+                    </li>
+                    <li><a class="list-item" href="#"><span>Link list 1 </span></a>
+                    </li>
+                    <li><a class="list-item" href="#"><span>Link list 1 </span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="list-item large medium right-icon" href="#collapseTwo" data-toggle="collapse" aria-expanded="false" aria-controls="collapseTwo"><span>Link list 1 </span><svg class="icon icon-sm icon-primary right" aria-hidden="true"><use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-expand"></use></svg></a>
+                  <ul class="link-sublist collapse" id="collapseTwo">
+                    <li><a class="list-item" href="#"><span>Link list 1 </span></a>
+                    </li>
+                    <li><a class="list-item" href="#"><span>Link list 1 </span></a>
+                    </li>
+                    <li><a class="list-item" href="#"><span>Link list 1 </span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a class="list-item large medium right-icon" href="#collapseThree" data-toggle="collapse" aria-expanded="false" aria-controls="collapseThree"><span>Link list 1 </span><svg class="icon icon-sm icon-primary right" aria-hidden="true"><use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-expand"></use></svg></a>
+                  <ul class="link-sublist collapse" id="collapseThree">
+                    <li><a class="list-item" href="#"><span>Link list 1 </span></a>
+                    </li>
+                    <li><a class="list-item" href="#"><span>Link list 1 </span></a>
+                    </li>
+                    <li><a class="list-item" href="#"><span>Link list 1 </span></a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="sidebar-linklist-wrapper linklist-secondary">
+            <div class="link-list-wrapper">
+              <ul class="link-list">
+                <li><a class="list-item" href="#"><span>Secondary item </span></a>
+                </li>
+                <li><a class="list-item active" href="#"><span>Secondary item active </span></a>
+                </li>
+                <li><a class="list-item" href="#"><span>Secondary item </span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock container %}

@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load static %}
+
+<div id="collapseDiv1-lft" class="collapse-div collapse-left-icon" role="tablist">
+    <div class="collapse-header" id="heading2-lft">
+        <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
+            {% trans "Aggiornamenti di stato" %} ({{ task_history|length }})
+        </button>
+    </div>
+    <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
+        <div class="collapse-body">
+            {% include "task_history.html" %}
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,33 @@
+{% load i18n %}
+{% load static %}
+
+<div class="row">
+    <div class="col">
+        <div class="card-wrapper card-space pb-3">
+            <div class="card card-bg no-after">
+                <div class="card-body">
+                    <table class="table table-striped table-hover">
+                        <tbody>
+                            <tr>
+                                <th scope="row">{% trans "Nome" %}</th>
+                                <td>{{ request.user.first_name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{% trans "Cognome" %}</th>
+                                <td>{{ request.user.last_name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{% trans "E-mail" %}</th>
+                                <td>{{ request.user.email }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">{% trans "Codice fiscale" %}</th>
+                                <td>{{ request.user.codice_fiscale }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+   </div>
+</div>

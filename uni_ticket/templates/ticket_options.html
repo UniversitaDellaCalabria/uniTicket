@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load static %}
+
+{% if ticket.is_taken or ticket.is_closed %}
+<div id="collapseDiv1-lft" class="collapse-div collapse-left-icon" role="tablist">
+    <div class="collapse-header" id="heading2-lft">
+        <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
+            {% trans "Aggiornamenti di stato" %} ({{ ticket_history|length }})
+        </button>
+    </div>
+    <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
+        <div class="collapse-body">
+            {% include "ticket_history.html" %}
+        </div>
+    </div>
+    <div class="collapse-header" id="heading3-lft">
+        <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
+            {% trans "Attività del ticket" %} ({{ ticket_task|length }})
+        </button>
+    </div>
+    <div id="collapse3-lft" class="collapse" role="tabpanel" aria-labelledby="heading3-lft">
+        <div class="collapse-body">
+            {% block ticket_task %}
+                {% include "ticket_task.html" %}
+            {% endblock ticket_task %}
+        </div>
+    </div>
+    <div class="collapse-header" id="heading4-lft">
+        <button data-toggle="collapse" data-target="#collapse4-lft" aria-expanded="false" aria-controls="collapse4-lft">
+            {% trans "Dipendenze da altri ticket" %} ({{ dependences|length }})
+        </button>
+    </div>
+    <div id="collapse4-lft" class="collapse" role="tabpanel" aria-labelledby="heading4-lft">
+        <div class="collapse-body">
+            {% block ticket_dependences %}
+                {% include "ticket_dependences.html" %}
+            {% endblock ticket_dependences %}
+        </div>
+    </div>
+</div>
+{% endif %}

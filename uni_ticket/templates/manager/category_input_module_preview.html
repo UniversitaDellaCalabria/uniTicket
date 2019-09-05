@@ -1,0 +1,39 @@
+{% extends "form_complete.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block header_wrapper %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block top_buttons_surround %}{% endblock %}
+
+{% block over_content %}
+    {% if conditions %}
+    <div class="pb-4">
+        <div class="row">
+            <div class="col">
+                <div class="card-space card-wrapper">
+                    <div class="card card-bg no-after">
+                        <div class="card-body">
+                            {% for condition in conditions %}
+                            <h5 class="card-title text-left">{{ condition.title }}</h5>
+                            <p class="card-text">{{ condition.text }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock over_content %}
+
+{% block form_buttons %}
+<div>
+    <a class="btn btn-success btn-block" href="#">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-plus-circle"></use>
+        </svg> {% trans "Crea ticket" %}
+    </a>
+</div>
+{% endblock %}

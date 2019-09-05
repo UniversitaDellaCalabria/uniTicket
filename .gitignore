@@ -1,0 +1,14 @@
+*.pyc
+*.html.py
+*~
+*__pycache__*
+*/.~lock*
+tmp/*
+!tmp/README.md
+django_helpdesk/settingslocal.py
+static/*
+data/static/*
+data/media/*
+!data/static/README.md
+!data/media/README.md
+docs/*

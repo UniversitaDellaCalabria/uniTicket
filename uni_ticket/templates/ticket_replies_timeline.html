@@ -1,0 +1,49 @@
+{% if ticket_replies %}
+<div id="collapseDiv2" class="collapse-div" role="tablist">
+  <div class="collapse-header" id="heading1a">
+    <button data-toggle="collapse" data-target="#collapse1a" aria-expanded="false" aria-controls="collapse1a">
+      Collapse header 1
+    </button>
+  </div>
+  <div id="collapse1a" class="collapse show" role="tabpanel" aria-labelledby="heading1a">
+    <div class="collapse-body">
+<div class="it-timeline-wrapper">
+  <div class="row">
+    <div class="col-12">
+      <div class="timeline-element">
+        <div class="it-pin-wrapper it-evidence">
+          <div class="pin-icon">
+            <svg class="icon">
+              <use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-code-circle"></use>
+            </svg>
+          </div>
+          <div class="pin-text"><span>maggio 2018</span></div>
+        </div>
+        <div class="card-wrapper">
+          <div class="card">
+            <div class="card-body">
+              <div class="category-top">
+                <a class="category" href="#">Category</a>
+                <span class="data">10/12/2018</span>
+              </div>
+              <h5 class="card-title big-heading">Lorem ipsum dolor sit amet, consectetur adipiscing elit…</h5>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+              <span class="card-signature">di Federico De Paolis</span>
+              <a class="read-more" href="#">
+                <span class="text">Leggi di più</span>
+                <svg class="icon">
+                  <use xlink:href="/bootstrap-italia/dist/svg/sprite.svg#it-arrow-right"></use>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endif %}

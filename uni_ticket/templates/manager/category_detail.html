@@ -1,0 +1,327 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_links %}
+{% include 'manager/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manage' structure_slug=structure.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Dashboard" %}
+</a>
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_categories' structure_slug=structure.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-folder"></use>
+    </svg> {% trans "Torna alle categorie" %}
+</a>
+<a role="button"
+   href="{% url 'uni_ticket:manager_category_edit' structure_slug=structure.slug category_slug=category.slug %}"
+   class="btn btn-outline-secondary">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-pencil"></use>
+    </svg> {% trans "Modifica" %}
+</a>
+<a role="button"
+   href="{% url 'uni_ticket:manager_category_new_input_module' structure_slug=structure.slug category_slug=category.slug %}"
+   class="btn btn-outline-secondary">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-file"></use>
+    </svg> {% trans "Aggiungi modulo" %}
+</a>
+<a role="button"
+   href="{% url 'uni_ticket:manager_category_condition_new' structure_slug=structure.slug category_slug=category.slug %}"
+   class="btn btn-outline-secondary">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-warning-circle"></use>
+    </svg> {% trans "Aggiungi clausola" %}
+</a>
+{% if category.is_active %}
+<button type="button"
+        class="btn btn-outline-secondary"
+        data-toggle="modal"
+        data-target="#disableCategory">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-password-invisible"></use>
+        </svg> {% trans "Disattiva" %}
+</button>
+{% else %}
+<button type="button"
+        class="btn btn-outline-secondary"
+        data-toggle="modal"
+        data-target="#enableCategory">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-password-visible"></use>
+        </svg> {% trans "Attiva" %}
+</button>
+{% endif %}
+<button type="button"
+        class="btn btn-outline-danger"
+        data-toggle="modal"
+        data-target="#deleteCategory">
+        <svg class="icon icon-xs icon-danger">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close-circle"></use>
+        </svg> {% trans "Elimina" %}
+</button>
+{% endblock top_buttons %}
+
+{% block page_content %}
+<table class="table table-striped table-hover">
+    <tbody>
+        <tr>
+            <th scope="row">{% trans 'Denominazione' %}</th>
+            <td>{{ category.name }}</td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans 'Stato' %}</th>
+            <td>
+                {% if category.is_active %}
+                <span class="text-success">
+                    <b>{% trans "Attiva" %}</b>
+                </span>
+                {% else %}
+                <span class="text-danger">
+                    <b>{% trans "Non attiva" %}</b>
+                </span>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans 'Descrizione' %}</th>
+            <td>
+                {% if category.description %}
+                    {{ category.description }}
+                {% else %}-{% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans 'Ufficio di competenza' %}</th>
+            <td>
+                {% if category.organizational_office %}
+                   {{ category.organizational_office }}
+                   <button type="button"
+                        class="btn btn-outline-danger btn-xs float-right"
+                        data-toggle="modal"
+                        data-target="#removeOffice">
+                        {% trans "Rimuovi" %}
+                    </button>
+                    <a role="button" class="mx-1 btn btn-outline-secondary btn-xs float-right"
+                       href="{% url 'uni_ticket:manager_office_detail' structure_slug=structure.slug office_slug=category.organizational_office.slug %}">
+                        {% trans "Dettagli" %}
+                    </a>
+                    <div class="modal fade" tabindex="-1" role="dialog" id="removeOffice">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        {% trans "Rimozione competenza ufficio" %}
+                                    </h5>
+                                    <button class="close" type="button"
+                                            data-dismiss="modal" aria-label="Close">
+                                       <svg class="icon">
+                                          <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                                       </svg>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>{% trans "Vuoi davvero togliere la competenza della categoria" %}
+                                       <b>{{ category }}</b> {% trans "all'ufficio" %}
+                                       <b>{{ category.organizational_office }}</b> ?
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a role="button" class="btn btn-danger"
+                                       href="{% url 'uni_ticket:manager_remove_category_office' structure_slug=structure.slug category_slug=category.slug office_slug=category.organizational_office.slug %}">
+                                        {% trans "Si, rimuovi" %}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    {% trans "Nessuno" %}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans 'Accessibile agli ospiti' %}</th>
+            <td>
+                <svg class="icon icon-sm icon-secondary">
+                {% if category.allow_guest %}
+                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                {% else %}
+                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                {% endif %}
+                </svg>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans "Accessibile agli utenti dell'organizzazione" %}</th>
+            <td>
+                <svg class="icon icon-sm icon-secondary">
+                {% if category.allow_user %}
+                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                {% else %}
+                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                {% endif %}
+                </svg>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">{% trans 'Accessibile agli operatori' %}</th>
+            <td>
+                <svg class="icon icon-sm icon-secondary">
+                {% if category.allow_employee %}
+                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                {% else %}
+                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                {% endif %}
+                </svg>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+{% block category_options %}
+    {% include 'manager/category_options.html' %}
+{% endblock category_options %}
+
+{% if not category.organizational_office %}
+<div class="mt-5">
+    <form method="post" enctype="multipart/form-data">
+        {% include 'form_template.html' %}
+        {% block form_buttons %}
+        <div>
+            <button type="button"
+                    class="btn btn-outline-success btn-block"
+                    data-toggle="modal"
+                    data-target="#action">
+                    <svg class="icon icon-xs icon-success">
+                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                    </svg> {% trans "Aggiungi ufficio presso la struttura" %}
+            </button>
+            <div class="modal fade" tabindex="-1" role="dialog" id="action">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Aggiunta competenza ufficio" %}
+                            </h5>
+                            <button class="close" type="button"
+                                    data-dismiss="modal" aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero assegnare la categoria all'ufficio selezionato?" %}
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <input class="btn btn-success"
+                                   type="submit"
+                                   value="{% trans 'Si, procedi' %}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock form_buttons %}
+    </form>
+</div>
+{% endif %}
+
+{% if category.is_active %}
+<div class="modal fade" tabindex="-1" role="dialog" id="disableCategory">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Disattivazione categoria" %}
+                </h5>
+                <button class="close" type="button"
+                        data-dismiss="modal" aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero disattivare la categoria " %}
+                   <b>{{ category }}</b> ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-danger"
+                   href="{% url 'uni_ticket:manager_disable_category' structure_slug=structure.slug category_slug=category.slug %}">
+                    {% trans "Si, disattiva" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="modal fade" tabindex="-1" role="dialog" id="enableCategory">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Attivazione categoria" %}
+                </h5>
+                <button class="close" type="button"
+                        data-dismiss="modal" aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero attivare la categoria " %}
+                   <b>{{ category }}</b> ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-success"
+                   href="{% url 'uni_ticket:manager_enable_category' structure_slug=structure.slug category_slug=category.slug %}">
+                    {% trans "Si, attiva" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="modal fade" tabindex="-1" role="dialog" id="deleteCategory">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Eliminazione categoria" %}
+                </h5>
+                <button class="close" type="button"
+                        data-dismiss="modal" aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero eliminare la categoria " %}
+                   <b>{{ category }}</b> ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-danger"
+                   href="{% url 'uni_ticket:manager_delete_category' structure_slug=structure.slug category_slug=category.slug %}">
+                    {% trans "Si, elimina" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock page_content %}

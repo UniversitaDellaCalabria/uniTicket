@@ -1,0 +1,63 @@
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+<div class="pb-3">
+    <div class="btn-example pt-3 clearfix">
+        <a role="button"
+           class="btn btn-outline-secondary float-right btn-xs mb-3"
+           href="{% url 'uni_ticket:manager_category_add_new' structure_slug=structure.slug %}">
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-plus-circle"></use>
+            </svg> {% trans "Aggiungi nuova categoria" %}
+        </a>
+    </div>
+
+    <div class="row">
+      {% for category in categories %}
+      <div class="col-12 col-lg-4">
+        <!--start card-->
+        <div class="card-wrapper card-space">
+          <div class="card card-bg no-after">
+            <div class="card-body">
+                {% if category.is_active %}
+                    <span class="badge badge-pill badge-success mb-2">
+                        {% trans "Attiva" %}
+                    </span>
+                {% else %}
+                    <span class="badge badge-pill badge-danger mb-2">
+                        {% trans "Non attiva" %}
+                    </span>
+                {% endif %}
+            <a class="read-more" href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=category.slug %}">
+                <h5 class="card-title">{{ category.name }}</h5>
+            </a>
+              <p class="card-text">{{ category.description }}</p>
+              <p class="card-text">
+                  <b>{% trans 'Ufficio competente' %}:</b>
+                  {% if category.organizational_office %}
+                  <a href="{% url 'uni_ticket:manager_office_detail' structure_slug=structure.slug office_slug=category.organizational_office.slug %}">
+                    {{ category.organizational_office.name }}
+                  </a>
+                  {% else %}
+                    {% trans "Nessuno (competenza struttura)" %}
+                  {% endif %}
+                  <br>
+                  <b>{% trans 'Ticket in questa categoria' %}:</b>
+                  {% ticket_in_category category as ticket_in_category %}
+                  {{ ticket_in_category }}
+                  <br>
+                  <b>{% trans 'Clausole attive' %}:</b>
+                  {% conditions_in_category category as conditions_in_category %}
+                  {{ conditions_in_category }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <!--end card-->
+      </div>
+      {% endfor %}
+    </div>
+</div>
+
+

@@ -1,0 +1,19 @@
+{% extends "base_page_schema.html" %}
+
+{% block menu_links %}
+{% include 'manager/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+{% include 'management/ticket_cards.html' %}
+{% endblock top_buttons %}
+
+{% block page_content %}
+{% include 'datatables/table.html' %}
+{% endblock page_content %}
+
+{% block extra_scripts %}
+{% url 'uni_ticket:manage_ticket_url' structure.slug as var_url %}
+{% url 'uni_ticket:manager_not_closed_ticket_json' structure.slug as ajax_url %}
+{% include 'datatables/datatable_script.html' with var_url=var_url ajax_url=ajax_url %}
+{% endblock extra_scripts %}

@@ -1,0 +1,245 @@
+[
+{
+  "model": "organizational_area.organizationalstructuretype",
+  "pk": 1,
+  "fields": {
+    "name": "Dipartimento",
+    "description": "",
+    "create_date": "2019-03-05T10:30:40.548Z"
+  }
+},
+{
+  "model": "organizational_area.organizationalstructure",
+  "pk": 21,
+  "fields": {
+    "name": "DIATIC",
+    "slug": "diatic",
+    "unique_code": "diatic",
+    "structure_type": 1,
+    "description": "",
+    "create_date": "2019-03-12T14:03:02.978Z",
+    "url": "https://diatic.unical.it",
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructure",
+  "pk": 22,
+  "fields": {
+    "name": "DIMES",
+    "slug": "dimes",
+    "unique_code": "dimes",
+    "structure_type": 1,
+    "description": "",
+    "create_date": "2019-03-18T09:11:39.150Z",
+    "url": null,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructurefunction",
+  "pk": 2,
+  "fields": {
+    "name": "Laboratorio",
+    "description": "",
+    "create_date": "2019-03-05T10:24:26.142Z"
+  }
+},
+{
+  "model": "organizational_area.organizationalstructurefunction",
+  "pk": 3,
+  "fields": {
+    "name": "Aula",
+    "description": "",
+    "create_date": "2019-03-05T10:24:34.743Z"
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 12,
+  "fields": {
+    "name": "Help-Desk",
+    "slug": "help-desk",
+    "organizational_structure": 21,
+    "description": "Help-Desk Office",
+    "is_default": true,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 13,
+  "fields": {
+    "name": "Help-Desk",
+    "slug": "help-desk",
+    "organizational_structure": 22,
+    "description": "Help-Desk Office",
+    "is_default": true,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 14,
+  "fields": {
+    "name": "Manutenzione 2",
+    "slug": "manutenzione",
+    "organizational_structure": 21,
+    "description": "asd asd asd",
+    "is_default": false,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 15,
+  "fields": {
+    "name": "Didattica",
+    "slug": "didattica",
+    "organizational_structure": 22,
+    "description": "",
+    "is_default": false,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 17,
+  "fields": {
+    "name": "Ufficio Sinistri",
+    "slug": "ufficio-sinistri",
+    "organizational_structure": 21,
+    "description": "Fantozzi & Filini",
+    "is_default": false,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 18,
+  "fields": {
+    "name": "Area Finanziaria",
+    "slug": "area-finanziaria",
+    "organizational_structure": 21,
+    "description": "asda sd asd asdasd  asdaasdasd asdasdasda sd asd asdasd  asdaasdasd asdasdasda sd asd asdasd  asdaasdasd asdasdasda sd asd asdasd  asdaasdasd asdasd",
+    "is_default": false,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 19,
+  "fields": {
+    "name": "Ufficio Tecnico",
+    "slug": "ufficio-tecnico",
+    "organizational_structure": 22,
+    "description": "",
+    "is_default": false,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 20,
+  "fields": {
+    "name": "Test creato",
+    "slug": "test-nuovo",
+    "organizational_structure": 21,
+    "description": "tadsa sd asdas das",
+    "is_default": false,
+    "is_active": false
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 23,
+  "fields": {
+    "name": "Ufficio di prova",
+    "slug": "ufficio-prova",
+    "organizational_structure": 21,
+    "description": "Descrizione ufficio di prova",
+    "is_default": false,
+    "is_active": false
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 5,
+  "fields": {
+    "employee": 3,
+    "office": 19,
+    "create_date": "2019-04-11T09:05:51.175Z",
+    "description": ""
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 8,
+  "fields": {
+    "employee": 3,
+    "office": 15,
+    "create_date": "2019-04-11T09:39:50.951Z",
+    "description": ""
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 13,
+  "fields": {
+    "employee": 2,
+    "office": 13,
+    "create_date": "2019-04-11T13:58:39.968Z",
+    "description": ""
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 18,
+  "fields": {
+    "employee": 3,
+    "office": 12,
+    "create_date": "2019-04-12T09:19:14.909Z",
+    "description": ""
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 20,
+  "fields": {
+    "employee": 3,
+    "office": 14,
+    "create_date": "2019-04-12T10:48:57.142Z",
+    "description": ""
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 22,
+  "fields": {
+    "employee": 3,
+    "office": 23,
+    "create_date": "2019-04-15T09:33:40.608Z",
+    "description": "ghhgfhgfghmn klkljlkjlk j"
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 23,
+  "fields": {
+    "employee": 3,
+    "office": 18,
+    "create_date": "2019-04-16T07:14:19.326Z",
+    "description": ""
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 24,
+  "fields": {
+    "employee": 3,
+    "office": 17,
+    "create_date": "2019-05-02T08:54:49.227Z",
+    "description": "Aggiunto questo perch\u00e8 \u00e8 bravo"
+  }
+}
+]

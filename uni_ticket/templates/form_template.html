@@ -1,0 +1,23 @@
+{% for field in form %}
+    {% if field.field.widget.input_type != 'hidden' %}
+    <div style="padding: 0 0 1rem">
+        <b>{{ field.label_tag }}</b>
+        {% if field.field.required %}*{% endif %}
+    {% endif %}
+    {{ field }}
+    {% if field.help_text %}
+        <small class="form-text text-muted">
+            {{ field.help_text|safe }}
+        </small>
+    {% endif %}
+    {% if field.errors %}
+        <small class="text-danger">
+            {{ field.errors }}
+        </small>
+    {% endif %}
+
+    {% if field.field.widget.input_type != 'hidden' %}
+    </div>
+    {% endif %}
+{% endfor %}
+{% csrf_token %}

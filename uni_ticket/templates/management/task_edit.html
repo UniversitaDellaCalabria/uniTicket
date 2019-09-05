@@ -1,0 +1,106 @@
+{% extends "form_complete.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manage_task_detail_url' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna all'attività" %}
+</a>
+{% endblock top_buttons %}
+
+{% block form_buttons %}
+<div>
+    <button class="btn btn-success btn-block" type="submit">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+        </svg> {% trans 'Modifica attività' %}
+    </button>
+</div>
+{% endblock form_buttons %}
+
+{% block allegati %}
+    <!--
+    Se ci sono allegati inseriti
+    -->
+    {% if allegati %}
+    <div class="pt-4">
+        <h5>Allegati:</h5>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>{% trans "Nome campo" %}</th>
+                    <th>{% trans "Nome file" %}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for k,v in allegati.items %}
+                    <tr>
+                        <td class="collapsing">
+                            <b>{{k}}</b>
+                        </td>
+                        <td>{{v}}</td>
+                        <!--
+                        Se la domanda è modificabile,
+                        il pulsante Rimuovi allegato viene mostrato
+                        -->
+                        <td class="collapsing">
+                            <button type="button"
+                                    class="mx-1 btn btn-outline-danger btn-xs float-right"
+                                    data-toggle="modal"
+                                    data-target="#delete_allegato_{{ k }}">
+                                {% trans 'Elimina allegato' %}
+                            </button>
+                            <a download
+                               href="{% url 'uni_ticket:download_task_attachment' ticket_id=task.ticket.code task_id=task.code %}"
+                               role="button"
+                               class="mx-1 btn btn-outline-secondary btn-xs float-right">
+                                <i class="icon download"></i>
+                                Vedi allegato
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% for k,v in allegati.items %}
+        <div class="modal fade" tabindex="-1" role="dialog" id="delete_allegato_{{ k }}">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            {% trans "Eliminazione allegato" %}
+                        </h5>
+                        <button class="close"
+                                type="button"
+                                data-dismiss="modal"
+                                aria-label="Close">
+                           <svg class="icon">
+                              <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                           </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{% trans "Vuoi davvero eliminare l'allegato" %}
+                            <b>{{ v }}</b> ?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <a role="button"
+                           class="btn btn-danger"
+                           href="{% url 'uni_ticket:manage_elimina_allegato_task' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code %}">
+                           {% trans "Si, elimina" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endblock allegati %}

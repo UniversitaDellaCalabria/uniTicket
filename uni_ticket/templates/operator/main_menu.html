@@ -1,0 +1,27 @@
+{% extends 'main_menu.html' %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_pre_buttons %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'uni_ticket:operator_dashboard' structure_slug=structure.slug %}">
+        <span>{% trans "Dashboard" %}</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'uni_ticket:operator_tickets' structure_slug=structure.slug %}">
+        <span>{% trans "Ticket" %}</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
+        <span>{% trans "Messaggi" %}</span>
+    </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'uni_ticket:operator_user_settings' structure_slug=structure.slug %}">
+        <span>{% trans "Configurazione" %}</span>
+    </a>
+</li>
+{% endblock menu_pre_buttons %}
