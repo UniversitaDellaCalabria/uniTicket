@@ -9,14 +9,14 @@ Featurset:
 - Multi role, multiple ticket ownership;
 - Possibility to add data consent or agreement submission before a ticket being created;
 - ticket interdependencies;
-- todo list for every ticket, to follow user to do things before;
-- Custom fields, custom complex field, custom multi row (table) field, with fancy widgets;
-- Pdf and p7m signed field with validation on data integrity (attachment);
-- Report summarya via email, of open tickets, to office's operators;
+- todo list for every ticket, to follow user to do things before submission;
+- Custom fields, custom complex field, custom multi row (table) fields with configurable fancy widgets;
+- Pdf and p7m signed fields, with validation on data integrity (attachment);
+- Report summary via email about pending tickets to office's operators;
 - datatables ajax server side processing, very good performances on mobile device;
-- Responsive template for a better mobile expercience;
+- Responsive template for a better mobile experience;
 - SAML2 SSO integration (pySAML2);
-- Agid visual guidelines fully compliance.
+- Fully compliant Agid visual guidelines.
 
 
 Gallery
