@@ -5,10 +5,11 @@
 */.~lock*
 tmp/*
 !tmp/README.md
-django_helpdesk/settingslocal.py
+uni_ticket_project/settingslocal.py
 static/*
 data/static/*
 data/media/*
 !data/static/README.md
 !data/media/README.md
-docs/*
+docs/build/*
+uni_ticket_project_cache/*

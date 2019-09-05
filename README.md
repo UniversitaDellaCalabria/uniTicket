@@ -1,5 +1,5 @@
-Django Helpdesk
----------------
+uniTicket
+---------
 
 Is a support Software that let us manage tickets and generic submission modules with our user.
 Featurset:
