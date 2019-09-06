@@ -9,7 +9,7 @@ uniTicket - Documentazione
 Sistema di ticketing e di digitalizzazione delle procedure per la Pubblica Amministrazione
 sviluppato con Django Framework.
 
-**Github:** link github
+**Github:** https://github.com/UniversitaDellaCalabria/uniTicket
 
 ---------------------------------------
 
