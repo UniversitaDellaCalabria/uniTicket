@@ -10,6 +10,8 @@ Strutture
 | Questa gestisce per competenza uno o più uffici secondo un principio di ripartizione delle responsabilità.
 | In una Università, ad esempio, una struttura potrebbe essere rappresentata da un Dipartimento (o Facoltà).
 
+**Solo gli amministratori della piattaforma web (che accedono al backend di Django) possono creare/modificare/eliminare le strutture.**
+
 
 Uffici
 ======
@@ -23,6 +25,7 @@ Stati
 - **Attivo**: visibile agli operatori in fase di gestione delle competenze
 - **Non attivo**: non visibile agli operatori in fase di gestione delle competenze
 
+.. _ufficio_predefinito:
 
 Ufficio predefinito della struttura
 -----------------------------------

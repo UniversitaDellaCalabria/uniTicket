@@ -28,7 +28,7 @@ git+https://github.com/UniversitaDellaCalabria/django-form-builder
 # FileSignatureValidator
 git+https://github.com/peppelinux/FileSignatureValidator.git
 
-#nested admin inlines
+# nested admin inlines
 django-nested-admin
 
 # SAML2
@@ -42,7 +42,7 @@ django_sass_processor
 # settings dependencies
 mysqlclient
 
-#unical template
+# unical template
 git+https://github.com/italia/design-django-theme
 git+https://github.com/UniversitaDellaCalabria/django-unical-agid-template.git
 
