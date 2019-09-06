@@ -25,7 +25,49 @@ DATABASES = {
     }
 }
 
+# This parameters define the roles of users to open ticket
+# If True, an employee is a user that has this parameter filled (in user model)
+# If False, an employee is a user that is mapped as OrganizationalStructureOfficeEmployee
+EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
+# If True, an internal user (not guest) is a user that has this filled (in user model)
+# If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
+USER_ATTRIBUTE_NAME = 'matricola_studente'
+
 # needed to have debug var in template context
 INTERNAL_IPS = (
     '127.0.0.1',
 )
+
+# for logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'djangosaml2': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    }
+}
+

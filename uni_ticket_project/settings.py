@@ -159,10 +159,3 @@ if 'djangosaml2'  in INSTALLED_APPS:
         'django.contrib.auth.backends.ModelBackend',
         'djangosaml2.backends.Saml2Backend',
     )
-
-# This parameter defines the roles of users to open ticket
-# If True, an employee is a user that has the parameter 'matricola_dipendente' filled
-# If False, an employee is a user that is mapped as OrganizationalStructureOfficeEmployee
-# IS_UNIVERSITY = True
-EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
-USER_ATTRIBUTE_NAME = 'matricola_studente'

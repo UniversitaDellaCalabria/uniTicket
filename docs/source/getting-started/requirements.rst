@@ -58,14 +58,17 @@ Nel file di configurazione generale **uni_ticket_project/settings.py** è possib
         # 'CustomRadioBoxField': 'django.forms.widgets.RadioSelect',
     }
 
-- Gestire la definizione degli utenti "employee" in base al tipo di organizzazione
+- Gestire la definizione degli utenti "employee" e "internal user" in base al tipo di organizzazione (università o altro)
 
 .. code-block:: python
 
-    # This parameter defines the roles of users to open ticket
-    # If True, an employee is a user that has the parameter 'matricola_dipendente' filled
+    # This parameters define the roles of users to open ticket
+    # If True, an employee is a user that has this parameter filled
     # If False, an employee is a user that is mapped as OrganizationalStructureOfficeEmployee
-    IS_UNIVERSITY = True
+    EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
+    # If True, an internal user (not guest) is a user that has this filled
+    # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
+    USER_ATTRIBUTE_NAME = 'matricola_studente'
 
 Nel file di configurazione **uni_ticket/settings.py** è possibile:
 
