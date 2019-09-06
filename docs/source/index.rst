@@ -1,4 +1,4 @@
-.. django-helpdesk documentation master file, created by
+.. uniTicket documentation master file, created by
    sphinx-quickstart on Tue Jul  2 08:50:49 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -6,7 +6,7 @@
 uniTicket - Documentazione
 ==========================
 
-Sistema di ticketing e di digitalizzazione delle procedure per la Pubblica Amministrazione 
+Sistema di ticketing e di digitalizzazione delle procedure per la Pubblica Amministrazione
 sviluppato con Django Framework.
 
 **Github:** link github
@@ -77,7 +77,7 @@ sviluppato con Django Framework.
    :caption: Caratteristiche del sistema
 
    Template Bootstrap Italia <features/bootstrap-italia.rst>
-  
+
 
 
 

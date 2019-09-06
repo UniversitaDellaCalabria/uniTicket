@@ -19,8 +19,8 @@ Download del software e dipendenze
 
 .. code-block:: python
 
-    git clone git@bitbucket.org:unical-ict-dev/django-helpdesk.git
-    cd django-helpdesk
+    git clone https://github.com/UniversitaDellaCalabria/uniTicket.git
+    cd uniTicket
     pip3 install -r requirements
 
 Setup parametri
@@ -28,12 +28,12 @@ Setup parametri
 
 .. code-block:: python
 
-    cd django-helpdesk
+    cd uni_ticket_project
 
     # copy and modify as your needs
     cp settingslocal.py.example settingslocal.py
 
-Nel file di configurazione generale **django-helpdesk/settings.py** è possibile:
+Nel file di configurazione generale **uni_ticket_project/settings.py** è possibile:
 
 - Definire i formati delle date da utilizzare
 
@@ -118,7 +118,7 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile:
 - Modificare la denominazione di ogni tipologia di utente per la definizione degli URL
 
 .. code-block:: python
-    
+
     CONTEXT_SIMPLE_USER = _('Utente semplice')
 
     # To change the URLs prefix for every user type
@@ -135,7 +135,7 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile:
 - Definizione dei testi da utilizzare
 
 .. code-block:: python
-    
+
     # Accesso sul ticket in sola lettura
     NO_MORE_COMPETENCE_OVER_TICKET = _("Hai accesso sul ticket in sola lettura")
 
@@ -201,8 +201,8 @@ Per un ulteriore controllo in fase di debug è possibile utilizzare i comandi se
 
 .. code-block:: python
 
-    /etc/init.d/django-helpdesk stop
-    uwsgi --ini /opt/django-helpdesk/uwsgi_setup/uwsgi.ini.debug
+    /etc/init.d/uni_ticket stop
+    uwsgi --ini /opt/uni_ticket/uwsgi_setup/uwsgi.ini.debug
 
 
 

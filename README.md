@@ -22,8 +22,11 @@ Featurset:
 Gallery
 -------
 
-[screen shots here]
+![Home](data/gallery/user_dashboard.png)
+_**Image 1:** Example of user dashboard_
 
+![Home](data/gallery/manager_dashboard.png)
+_**Image 2:** Example of manager dashboard_
 
 Requirements
 ------------

@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Django Helpdesk'
+project = 'uniTicket'
 copyright = '2019, Università della Calabria'
 author = 'Università della Calabria'
 
