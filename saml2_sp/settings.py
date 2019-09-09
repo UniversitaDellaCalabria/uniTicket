@@ -80,7 +80,6 @@ SAML_CONFIG = {
             'want_response_signed': True,
             'want_assertions_signed': True, # reference: https://github.com/IdentityPython/pysaml2/pull/485
 
-
             # When set to true, the SP will consume unsolicited SAML Responses,
             # i.e. SAML Responses for which it has not sent a respective SAML Authentication Request.
             # example, a page refresh after a POST from IDP, as unsolicitated will work
