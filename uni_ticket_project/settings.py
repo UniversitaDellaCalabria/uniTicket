@@ -40,32 +40,6 @@ TMP_DIR = os.path.sep.join((BASE_DIR, CACHE_DIR, 'tmp'))
 if not os.path.exists(TMP_DIR):
     pathlib.Path(TMP_DIR).mkdir(parents=True, exist_ok=True)
 
-# Application definition
-INSTALLED_APPS = [
-    'unical_accounts',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.humanize',
-    'django.contrib.messages',
-    'django.contrib.sessions',
-    'django.contrib.staticfiles',
-    'ckeditor',
-    'datatables_ajax',
-    'sass_processor',
-    'bootstrap_italia_template',
-    'unical_agid_template',
-    'bootstrapform',
-    'uni_ticket',
-    'django_form_builder',
-    'nested_admin',
-    'organizational_area',
-
-    # SAML2 SP
-    'djangosaml2',
-    'saml2_sp',
-]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -134,28 +108,3 @@ USE_TZ = True
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 DEFAULT_DATETIME_FORMAT = '{} %H:%M'.format(DEFAULT_DATE_FORMAT)
 DATE_INPUT_FORMATS = [DEFAULT_DATE_FORMAT, '%d/%m/%Y']
-
-CUSTOM_WIDGETS = {
-    'BaseDateField': 'bootstrap_italia_template.widgets.BootstrapItaliaDateWidget',
-    # 'BaseDateTimeField': 'bootstrap_italia_template.widgets.BootstrapItaliaTimeWidget',
-    #'CustomSelectBoxField': 'bootstrap_italia_template.widgets.BootstrapItaliaSelectWidget',
-    'CustomRadioBoxField': 'bootstrap_italia_template.widgets.BootstrapItaliaRadioWidget',
-    # 'BaseDateField': 'django.forms.widgets.DateInput',
-    # 'DateField': 'django.forms.widgets.DateInput',
-    # 'CustomSelectBoxField': 'django.forms.widgets.Select',
-    # 'CustomRadioBoxField': 'django.forms.widgets.RadioSelect',
-}
-
-if 'saml2_sp' in INSTALLED_APPS:
-    from saml2_sp.settings import *
-
-# DjangoSAML2 conf
-if 'djangosaml2'  in INSTALLED_APPS:
-    # from . import sp_pysaml2
-    # pySAML2 SP mandatory
-    # SESSION_EXPIRE_AT_BROWSER_CLOSE=True
-
-    AUTHENTICATION_BACKENDS = (
-        'django.contrib.auth.backends.ModelBackend',
-        'djangosaml2.backends.Saml2Backend',
-    )
