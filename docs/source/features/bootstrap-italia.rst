@@ -37,9 +37,22 @@ Gestione ottimizzata dei record delle tabelle, che velocizza il caricamento dell
 
 https://datatables.net/
 
-Single Sign On + SPID
+Single Sign On (SAML2)
 =====================
 
-@toDo
+Federare uniTicket in un systema SSO SAML2 è una operazione estremamente semplice.
+All'interno dei requirements già otteniamo le dipendenze a ``djangosaml2`` e ``pysaml2``.
+Per federare uniTicket presso un IdP basterà ereditare la configurazione presso ``saml2_sp/settings.py`` e
+modificarla a proprio piacimento.
 
+Nello specifico i parametri rilevanti sono:
+- entityid
+- required_attributes
+- metadata.remote
 
+Modificare questi ultimi ed eventuali altri sulla base dei parametri tecnici per la federazione alla organizzazione di propria appartenenza.
+Per attivare la configurazione scelta basterà includere in ``settingslocal.py`` una dichiarazione di questo genere:
+
+::
+    if 'saml2_sp' in INSTALLED_APPS:
+        from saml2_sp.settings import *
