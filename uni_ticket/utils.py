@@ -39,7 +39,7 @@ def user_manage_something(user):
     structures = []
     for eo in employee_offices:
         structure = eo.office.organizational_structure
-        if structure not in structures:
+        if structure.is_active and structure not in structures:
             structures.append(structure)
     return structures
 

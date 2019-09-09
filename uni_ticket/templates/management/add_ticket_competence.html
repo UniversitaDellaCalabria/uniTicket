@@ -70,17 +70,32 @@
             </select>
         </div>
         <div class="alert alert-warning" role="alert" style="margin-top: 1.5rem">
-            <b>
-                <label for="id_follow">
-                    {% trans "Mantieni la possibilità di gestire il ticket:" %}
-                </label>
-            </b>
-            <input type="checkbox" name="follow" id="id_follow"
-                   class=""
-                   checked>
-            <small class="form-text text-muted">
-                {% trans "Deselezionando questa opzione si avrà accesso al ticket in sola lettura" %}
-            </small>
+            <div class="mb-2">
+                <b>
+                    <label for="id_follow" class="mb-0">
+                        {% trans "Mantieni la possibilità di gestire il ticket:" %}
+                    </label>
+                </b>
+                <input type="checkbox" name="follow" id="id_follow"
+                       class=""
+                       onclick="hide_readonly()"
+                       checked>
+                <small class="form-text text-muted">
+                    {% trans "Deselezionando questa opzione non si avrà più accesso al ticket" %}
+                </small>
+            </div>
+            <div id="readonly_div">
+                <b>
+                    <label for="id_readonly" class="mb-0">
+                        {% trans "Accedi al ticket in sola lettura:" %}
+                    </label>
+                </b>
+                <input type="checkbox" name="readonly" id="id_readonly"
+                       class="">
+                <small class="form-text text-muted">
+                    {% trans "Selezionando questa opzione insieme a quella precedente si avrà accesso al ticket in sola lettura" %}
+                </small>
+            </div>
         </div>
         {% endif %}
     </div>
@@ -103,6 +118,18 @@
 <script type="text/javascript">
 function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
+}
+</script>
+
+<script type="text/javascript">
+function hide_readonly() {
+  var checkBox = document.getElementById("id_follow");
+  var readonly_div = document.getElementById("readonly_div");
+  if (checkBox.checked == true){
+    readonly_div.style.display = "block";
+  } else {
+     readonly_div.style.display = "none";
+  }
 }
 </script>
 {% endblock extra_scripts %}

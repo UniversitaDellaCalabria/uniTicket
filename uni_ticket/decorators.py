@@ -21,7 +21,8 @@ def is_manager(func_to_decorate):
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
         structure_slug = original_kwargs['structure_slug']
-        structure = OrganizationalStructure.objects.filter(slug=structure_slug).first()
+        structure = OrganizationalStructure.objects.filter(slug=structure_slug,
+                                                           is_active=True).first()
         if user_is_manager(request.user, structure):
             original_kwargs['structure'] = structure
             return func_to_decorate(*original_args, **original_kwargs)
@@ -37,7 +38,8 @@ def is_operator(func_to_decorate):
         request = original_args[0]
         structure_slug = original_kwargs['structure_slug']
         structure = get_object_or_404(OrganizationalStructure,
-                                      slug=structure_slug)
+                                      slug=structure_slug,
+                                      is_active=True)
         if user_is_manager(request.user, structure):
             return custom_message(request,
                                   _("Accesso da operatore non consentito."
@@ -73,7 +75,8 @@ def has_admin_privileges(func_to_decorate):
         request = original_args[0]
         structure_slug = original_kwargs['structure_slug']
         structure = get_object_or_404(OrganizationalStructure,
-                                      slug=structure_slug)
+                                      slug=structure_slug,
+                                      is_active=True)
         original_kwargs['structure'] = structure
         ticket_id = original_kwargs['ticket_id']
         ticket = get_object_or_404(Ticket, code=ticket_id)
@@ -82,14 +85,16 @@ def has_admin_privileges(func_to_decorate):
         can_manage = False
 
         if is_manager:
-            assignment = ticket.is_followed_in_structure(structure=structure)
-            if assignment: can_manage = True
+            can_manage = ticket.is_followed_in_structure(structure=structure)
+            if not can_manage: return custom_message(request, _("Permesso negato!"))
             original_kwargs['can_manage'] = can_manage
             return func_to_decorate(*original_args, **original_kwargs)
 
         offices = ticket.get_assigned_to_offices()
-        assignment = ticket.is_followed_by_one_of_offices(offices=offices)
-        if assignment: can_manage = True
+        can_manage = ticket.is_followed_by_one_of_offices(offices=offices)
+        if not can_manage:
+            return custom_message(request, _("Permesso negato!"))
+
         original_kwargs['can_manage'] = can_manage
         # Check if user is operator of the ticket office
         is_operator = False
@@ -155,7 +160,8 @@ def ticket_assigned_to_structure(func_to_decorate):
         ticket = get_object_or_404(Ticket, code=ticket_id)
         original_kwargs['ticket'] = ticket
         struct = get_object_or_404(OrganizationalStructure,
-                                   slug=structure_slug)
+                                   slug=structure_slug,
+                                   is_active=True)
         if struct not in ticket.get_assigned_to_structures():
             return custom_message(request, _("Il ticket non è stato assegnato"
                                              " a questa struttura"))

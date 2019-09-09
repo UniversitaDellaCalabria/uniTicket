@@ -38,8 +38,10 @@ MANAGEMENT_URL_PREFIX = {'manager': MANAGER_PREFIX,
                          'user': USER_PREFIX}
 # Do not edit! - END
 
+# Competenza sul ticket abbandonata
+NO_MORE_COMPETENCE_OVER_TICKET = _("Nessuna competenza sul ticket")
 # Accesso sul ticket in sola lettura
-NO_MORE_COMPETENCE_OVER_TICKET = _("Hai accesso sul ticket in sola lettura")
+READONLY_COMPETENCE_OVER_TICKET = _("Hai accesso sul ticket in sola lettura")
 
 SUMMARY_USER_EMAIL = _("Dear {user},"
                        "the following ticket {event_msg}:"

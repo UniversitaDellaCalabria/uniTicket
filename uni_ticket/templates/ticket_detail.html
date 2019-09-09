@@ -40,7 +40,11 @@
                     <li>
                         {% if not assignment.follow %}
                         <span class="badge badge-danger">
-                            {% trans "Competenza trasferita" %}
+                            {% trans "Competenza abbandonata" %}
+                        </span>
+                        {% elif assignment.follow and assignment.readonly %}
+                        <span class="badge badge-warning">
+                            {% trans "Accesso in sola lettura" %}
                         </span>
                         {% endif %}
                         <b>{{ assignment.office }}</b> -

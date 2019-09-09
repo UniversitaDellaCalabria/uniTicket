@@ -377,7 +377,7 @@ class Ticket(SavedFormContent):
         new_competence.save()
         return new_competence
 
-    def block_competence(self, user, structure):
+    def block_competence(self, user, structure, allow_readonly=True):
         """
         """
         usertype = get_user_type(user, structure)
@@ -396,8 +396,11 @@ class Ticket(SavedFormContent):
             if off.organizational_structure == structure:
                 competence = TicketAssignment.objects.get(ticket=self,
                                                           office=off)
-                competence.follow = False
-                competence.save(update_fields = ['follow'])
+                competence.follow = allow_readonly
+                competence.readonly = allow_readonly
+                competence.save(update_fields = ['follow',
+                                                 'modified',
+                                                 'readonly'])
         return offices
 
     def get_dependences(self):
@@ -473,29 +476,38 @@ class Ticket(SavedFormContent):
             replies = query.filter(structure=None)
         return replies.count()
 
+    def _check_assignment_privileges(self, queryset):
+        if not queryset: return False
+        if queryset.filter(readonly=False):
+            readonly_value = False
+        elif queryset.filter(readonly=True):
+            readonly_value = True
+        d = {}
+        d['follow'] = True
+        d['readonly'] = readonly_value
+        return d
+        # return json.loads(d)
+
     def is_followed_in_structure(self, structure):
         if not structure: return False
         assignment = TicketAssignment.objects.filter(ticket=self,
                                                      office__organizational_structure=structure,
                                                      follow=True)
-        if assignment: return True
-        return False
+        return self._check_assignment_privileges(assignment)
 
     def is_followed_by_office(self, office):
         if not office: return False
         assignment = TicketAssignment.objects.filter(ticket=self,
                                                      office=office,
                                                      follow=True)
-        if assignment: return True
-        return False
+        return self._check_assignment_privileges(assignment)
 
     def is_followed_by_one_of_offices(self, offices):
         if not offices: return False
         assignment = TicketAssignment.objects.filter(ticket=self,
                                                      office__in=offices,
                                                      follow=True)
-        if assignment: return True
-        return False
+        return self._check_assignment_privileges(assignment)
 
     def __str__(self):
         return '{} ({})'.format(self.subject, self.code)
@@ -509,11 +521,13 @@ class TicketAssignment(models.Model):
     office = models.ForeignKey(OrganizationalStructureOffice,
                                on_delete=models.PROTECT)
     created = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(auto_now=True)
     note = models.TextField(blank=True, null=True)
     assigned_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                     on_delete=models.PROTECT,
                                     null=True)
     follow = models.BooleanField(default=True)
+    readonly = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ("ticket", "office")
@@ -522,7 +536,7 @@ class TicketAssignment(models.Model):
         verbose_name_plural = _("Competenza Ticket")
 
     @staticmethod
-    def get_ticket_per_structure(structure):
+    def get_ticket_per_structure(structure, follow_check=True):
         """
         """
         offices = OrganizationalStructureOffice.objects.filter(organizational_structure=structure)
@@ -530,18 +544,22 @@ class TicketAssignment(models.Model):
         ticket_assignments = TicketAssignment.objects.filter(office__in=offices)
         ticket_list = []
         for assignment in ticket_assignments:
+            if follow_check and assignment.follow is False:
+                continue
             ticket = assignment.ticket
             if ticket.pk not in ticket_list:
                 ticket_list.append(ticket.pk)
         return ticket_list
 
     @staticmethod
-    def get_ticket_in_office_list(office_list):
+    def get_ticket_in_office_list(office_list, follow_check=True):
         """
         """
         ticket_assignments = TicketAssignment.objects.filter(office__in=office_list)
         ticket_list = []
         for assignment in ticket_assignments:
+            if follow_check and assignment.follow is False:
+                continue
             ticket = assignment.ticket
             if ticket.pk not in ticket_list:
                 ticket_list.append(ticket.pk)

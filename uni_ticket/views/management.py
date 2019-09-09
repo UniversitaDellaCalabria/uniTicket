@@ -17,7 +17,9 @@ from uni_ticket.decorators import (has_admin_privileges,
                                    ticket_is_not_taken)
 from uni_ticket.forms import *
 from uni_ticket.models import *
-from uni_ticket.settings import NO_MORE_COMPETENCE_OVER_TICKET, PRIORITY_LEVELS
+from uni_ticket.settings import (NO_MORE_COMPETENCE_OVER_TICKET,
+                                 PRIORITY_LEVELS,
+                                 READONLY_COMPETENCE_OVER_TICKET)
 from uni_ticket.utils import *
 
 
@@ -132,13 +134,13 @@ def manage_ticket_url_detail(request, structure_slug, ticket_id,
     :type structure_slug: String
     :type ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket(from @ticket_assigned_to_structure)
 
     :param structure_slug: slug of structure to manage
     :param ticket_id: code of ticket
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
 
     :return: redirect
@@ -160,14 +162,14 @@ def ticket_detail(request, structure_slug, ticket_id,
     :type structure_slug: String
     :type ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: slug of structure to manage
     :param ticket_id: code
     :param structure: OrganizationalStructure (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param office_employee: operator offices queryset (from @is_operator)
     :param ticket: Ticket (from @ticket_assigned_to_structure)
 
@@ -195,6 +197,8 @@ def ticket_detail(request, structure_slug, ticket_id,
     if request.method == 'POST':
         if not can_manage:
             return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+        if can_manage['readonly']:
+            return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
         if ticket.is_closed:
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare un ticket chiuso"))
@@ -293,14 +297,14 @@ def ticket_take(request, structure_slug, ticket_id,
     :type structure_slug: String
     :type ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: the slug of structure to manage
     :param ticket_id: ticket code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -308,6 +312,8 @@ def ticket_take(request, structure_slug, ticket_id,
     """
     if not can_manage:
         return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
     user = request.user
     ticket.is_taken = True
     ticket.save(update_fields=['is_taken'])
@@ -348,25 +354,27 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
     :type structure_slug: String
     :type ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
+    if not can_manage:
+        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
     # Se il ticket non è aperto non è possibile aggiungere dipendenze
     if ticket.is_closed:
         return custom_message(request,
                               _("Il ticket {} è chiuso".format(master_ticket)))
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_dependence.html".format(user_type)
     title = _('Aggiungi dipendenza ticket')
@@ -435,24 +443,26 @@ def ticket_dependence_remove(request, structure_slug,
     :type ticket_id: String
     :type master_ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param master_ticket_id: master ticket code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
 
     :return: redirect
     """
+    if not can_manage:
+        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
     # Se il ticket non è aperto non è possibile rimuovere dipendenze
     if ticket.is_closed:
         return custom_message(request,
                               _("Il ticket {} è chiuso".format(master_ticket)))
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     user_type = get_user_type(request.user, structure)
     master_ticket = get_object_or_404(Ticket, code=master_ticket_id)
     to_remove = get_object_or_404(Ticket2Ticket,
@@ -505,26 +515,28 @@ def ticket_close(request, structure_slug, ticket_id,
     :type structure_slug: String
     :type ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
+    if not can_manage:
+        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
     # Se il ticket non è chiudibile (per dipendenze attive)
     if not ticket.is_closable():
         return custom_message(request,
                               _("Non è possibile chiudere il ticket,"
                                 " ci sono dipendenze attive!"))
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     title = _('Chiusura del ticket')
     sub_title = ticket
     form = ChiusuraForm()
@@ -568,25 +580,27 @@ def ticket_reopen(request, structure_slug, ticket_id,
     :type structure_slug: String
     :type ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
 
     :return: redirect
     """
     # Se il ticket non è chiuso blocca
+    if not can_manage:
+        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
     if not ticket.is_closed:
         return custom_message(request, _("Il ticket {} è già aperto"))
     if not ticket.is_taken:
         return custom_message(request, _("Il ticket {} è stato chiuso dall'utente, "
                                          " pertanto non può essere riaperto"))
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     ticket.is_closed = False
     ticket.save(update_fields = ['is_closed'])
     ticket.update_history(user=request.user,
@@ -628,25 +642,27 @@ def ticket_competence_add_new(request, structure_slug, ticket_id,
     :type structure_slug: String
     :type ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
+    if not can_manage:
+        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
     # Se il ticket è chiuso blocca
     if ticket.is_closed:
         return custom_message(request,
                               _("Il ticket {} è chiuso".format(master_ticket)))
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_competence.html".format(user_type)
     title = _('Aggiungi competenza ticket')
@@ -672,7 +688,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     :type ticket_id: String
     :type str_slug: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
@@ -680,18 +696,20 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     :param ticket_id: ticket code
     :param str_slug: selected structure slug
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
+    if not can_manage:
+        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
     # Se il ticket è chiuso blocca
     if ticket.is_closed:
         return custom_message(request,
                               _("Il ticket {} è chiuso".format(master_ticket)))
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     strutture = OrganizationalStructure.objects.filter(is_active = True)
     # Lista uffici ai quali il ticket è assegnato
     ticket_offices = ticket.get_assigned_to_offices(office_active=False)
@@ -701,10 +719,14 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     categorie = TicketCategory.objects.filter(organizational_structure=struttura.pk,
                                               is_active=True)
     if request.method == 'POST':
+        # import pdb; pdb.set_trace()
         categoria_slug = request.POST.get('categoria_slug')
         follow_value = request.POST.get('follow')
+        readonly_value = request.POST.get('readonly')
         follow = False
+        readonly = False
         if follow_value == 'on': follow = True
+        if readonly_value == 'on': readonly = True
         # La categoria passata in POST esiste?
         categoria = get_object_or_404(TicketCategory,
                                       slug=categoria_slug,
@@ -715,30 +737,48 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
             new_office = categoria.organizational_office
 
         if new_office in ticket_offices:
-            messages.add_message(request, messages.WARNING,
+            messages.add_message(request, messages.ERROR,
                                  _("Il ticket è già di competenza"
                                    " dell'ufficio <b>{}</b>, responsabile"
                                    " della categoria <b>{}</b>".format(new_office,
-                                                               categoria)))
+                                                                       categoria)))
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
+
+        messages.add_message(request, messages.SUCCESS,
+                             _("Competenza <b>{}</b> aggiunta"
+                               " correttamente".format(new_office)))
+
+        # If not follow anymore
         if not follow:
-            abandoned_offices = ticket.block_competence(request.user,
-                                                        structure)
+            abandoned_offices = ticket.block_competence(user=request.user,
+                                                        structure=structure,
+                                                        allow_readonly=False)
+            for off in abandoned_offices:
+                ticket.update_history(user=request.user,
+                                      note= _("Competenza abbandonata da"
+                                              " Ufficio: {}".format(off)))
+            return redirect('uni_ticket:manager_dashboard',
+                            structure_slug=structure_slug)
+
+        # If follow but readonly
+        if readonly:
+            abandoned_offices = ticket.block_competence(user=request.user,
+                                                        structure=structure)
             for off in abandoned_offices:
                 ticket.update_history(user=request.user,
                                       note= _("Competenza trasferita da"
+                                              " (accesso in sola lettura)"
                                               " Ufficio: {}".format(off)))
+        # If follow and want to manage
         ticket.add_competence(office=new_office, user=request.user)
         ticket.update_history(user=request.user,
                               note= _("Nuova competenza: {} - {}"
                                       " - Categoria: {}".format(struttura,
                                                                 new_office,
                                                                 categoria)))
-        messages.add_message(request, messages.SUCCESS,
-                             _("Competenza <b>{}</b> aggiunta"
-                               " correttamente".format(new_office)))
+
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -787,14 +827,14 @@ def ticket_message(request, structure_slug, ticket_id,
     :type structure_slug: String
     :type ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -821,11 +861,13 @@ def ticket_message(request, structure_slug, ticket_id,
             reply.save(update_fields = ['read_by', 'read_date'])
 
     if request.method == 'POST':
+        if not can_manage:
+            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+        if can_manage['readonly']:
+            return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
         # Se il ticket non è aperto non è possibile scrivere
         if not ticket.is_open():
             return custom_message(request, _("Il ticket non è modificabile"))
-        if not can_manage:
-            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
             ticket_reply = TicketReply()
@@ -884,24 +926,25 @@ def task_add_new(request, structure_slug, ticket_id,
     :type structure_slug: String
     :type ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
+    if not can_manage:
+            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
-
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_task.html".format(user_type)
     title = _('Aggiungi Attività')
@@ -951,23 +994,24 @@ def task_remove(request, structure_slug,
     :type ticket_id: String
     :type task_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param task_id: task code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
 
     :return: render
     """
+    if not can_manage:
+            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
-
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     user_type = get_user_type(request.user, structure)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     elimina_file(file_name=task.attachment)
@@ -1015,7 +1059,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
     :type ticket_id: String
     :type task_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
@@ -1023,7 +1067,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
     :param ticket_id: ticket code
     :param task_id: task code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -1038,6 +1082,8 @@ def task_detail(request, structure_slug, ticket_id, task_id,
     if request.method == 'POST':
         if not can_manage:
             return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+        if can_manage['readonly']:
+            return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
         if task.is_closed:
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare un'attività chiusa"))
@@ -1114,7 +1160,7 @@ def task_close(request, structure_slug, ticket_id, task_id,
     :type ticket_id: String
     :type task_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
@@ -1122,12 +1168,17 @@ def task_close(request, structure_slug, ticket_id, task_id,
     :param ticket_id: ticket code
     :param task_id: task code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
+    if not can_manage:
+            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
 
@@ -1137,8 +1188,6 @@ def task_close(request, structure_slug, ticket_id, task_id,
         return custom_message(request, _("Task già chiuso!"))
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
 
     title = _('Chiusura del task')
     sub_title = task
@@ -1188,18 +1237,23 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
     :type ticket_id: String
     :type task_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param task_id: task code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
 
     :return: redirect
     """
+    if not can_manage:
+            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
 
@@ -1209,8 +1263,7 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
         return custom_message(request, _("Il task è già aperto"))
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+
     task.is_closed = False
     task.save(update_fields = ['is_closed'])
     msg = _("Riapertura task {}".format(task))
@@ -1259,7 +1312,7 @@ def task_edit(request, structure_slug, ticket_id, task_id,
     :type ticket_id: String
     :type task_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
@@ -1267,12 +1320,17 @@ def task_edit(request, structure_slug, ticket_id, task_id,
     :param ticket_id: ticket code
     :param task_id: task code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
+    if not can_manage:
+            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
 
@@ -1344,7 +1402,7 @@ def task_attachment_delete(request, structure_slug,
     :type ticket_id: String
     :type task_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Boolean (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
@@ -1352,12 +1410,17 @@ def task_attachment_delete(request, structure_slug,
     :param ticket_id: ticket code
     :param task_id: task code
     :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or read only (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
     :return: redirect
     """
+    if not can_manage:
+            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
+    if can_manage['readonly']:
+        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     if task.created_by != request.user:
         return custom_message(request, _("Permessi di modifica del task mancanti"))

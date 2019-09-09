@@ -42,13 +42,13 @@ def dashboard(request, structure_slug, structure, office_employee):
     aperti = tickets.filter(is_taken=True, is_closed=False)
     chiusi = tickets.filter(is_closed=True)
 
-    assistance_messages = 0
+    messages = 0
     for ticket in tickets:
         if not ticket.is_followed_by_one_of_offices(offices):
             continue
-        assistance_messages += ticket.get_unread_replies()
+        messages += ticket.get_unread_replies()
 
-    d = {'assistance_messages': assistance_messages,
+    d = {'messages': messages,
          'offices': offices,
          'structure': structure,
          'sub_title': sub_title,
