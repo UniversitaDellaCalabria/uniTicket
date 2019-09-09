@@ -53,6 +53,7 @@ Nello specifico i parametri rilevanti sono:
 Modificare questi ultimi ed eventuali altri sulla base dei parametri tecnici per la federazione alla organizzazione di propria appartenenza.
 Per attivare la configurazione scelta basterà includere in ``settingslocal.py`` una dichiarazione di questo genere:
 
-::
+.. code-block:: python
+
     if 'saml2_sp' in INSTALLED_APPS:
         from saml2_sp.settings import *

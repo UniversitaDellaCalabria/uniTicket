@@ -10,6 +10,7 @@ from django.utils.translation import gettext as _
 
 from django_form_builder import dynamic_fields
 from uni_ticket.models import (Ticket,
+                               TicketAssignment,
                                TicketCategoryCondition,
                                TicketCategoryModule)
 from uni_ticket.settings import (CONTEXT_SIMPLE_USER,
@@ -60,13 +61,10 @@ def current_date():
 
 @register.simple_tag
 def ticket_in_category(category):
-    modules = TicketCategoryModule.objects.filter(ticket_category=category)
-    if not modules: return 0
     result = 0
-    for m in modules:
-        tickets = Ticket.objects.filter(input_module=m).count()
-        result += tickets
-    return result
+    office = category.organizational_office
+    tickets = TicketAssignment.get_ticket_in_office_list(office_list=[office,])
+    return len(tickets)
 
 @register.simple_tag
 def conditions_in_category(category):

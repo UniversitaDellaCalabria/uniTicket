@@ -196,11 +196,11 @@ def dashboard(request):
     aperti = tickets.filter(is_taken=True, is_closed=False)
     chiusi = tickets.filter(is_closed=True)
 
-    assistance_messages = 0
+    messages = 0
     for ticket in tickets:
-        assistance_messages += ticket.get_unread_replies(want_structure=True)
+        messages += ticket.get_unread_replies(want_structure=True)
 
-    d = {'assistance_messages': assistance_messages,
+    d = {'ticket_messages': messages,
          'priority_levels': PRIORITY_LEVELS,
          'sub_title': sub_title,
          'ticket_aperti': aperti,

@@ -759,8 +759,6 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                 ticket.update_history(user=request.user,
                                       note= _("Competenza abbandonata da"
                                               " Ufficio: {}".format(off)))
-            return redirect('uni_ticket:manager_dashboard',
-                            structure_slug=structure_slug)
 
         # If follow but readonly
         if readonly:

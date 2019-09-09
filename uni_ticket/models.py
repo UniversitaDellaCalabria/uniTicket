@@ -396,6 +396,7 @@ class Ticket(SavedFormContent):
             if off.organizational_structure == structure:
                 competence = TicketAssignment.objects.get(ticket=self,
                                                           office=off)
+                if not competence.follow: continue
                 competence.follow = allow_readonly
                 competence.readonly = allow_readonly
                 competence.save(update_fields = ['follow',
@@ -544,8 +545,7 @@ class TicketAssignment(models.Model):
         ticket_assignments = TicketAssignment.objects.filter(office__in=offices)
         ticket_list = []
         for assignment in ticket_assignments:
-            if follow_check and assignment.follow is False:
-                continue
+            if follow_check and not assignment.follow: continue
             ticket = assignment.ticket
             if ticket.pk not in ticket_list:
                 ticket_list.append(ticket.pk)
@@ -558,8 +558,7 @@ class TicketAssignment(models.Model):
         ticket_assignments = TicketAssignment.objects.filter(office__in=office_list)
         ticket_list = []
         for assignment in ticket_assignments:
-            if follow_check and assignment.follow is False:
-                continue
+            if follow_check and not assignment.follow: continue
             ticket = assignment.ticket
             if ticket.pk not in ticket_list:
                 ticket_list.append(ticket.pk)

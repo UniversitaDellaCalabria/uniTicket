@@ -59,7 +59,7 @@ def dashboard(request, structure_slug, structure):
             continue
         messages += ticket.get_unread_replies()
 
-    d = {'assistance_messages': messages,
+    d = {'ticket_messages': messages,
          'categories': categories,
          'offices': offices,
          'structure': structure,
