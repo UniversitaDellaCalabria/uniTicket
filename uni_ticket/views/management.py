@@ -195,10 +195,11 @@ def ticket_detail(request, structure_slug, ticket_id,
     ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
     form = PriorityForm()
     if request.method == 'POST':
-        if not can_manage:
-            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
         if can_manage['readonly']:
-            return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+            messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                            structure_slug=structure_slug,
+                            ticket_id=ticket_id)
         if ticket.is_closed:
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare un ticket chiuso"))
@@ -310,10 +311,11 @@ def ticket_take(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
     user = request.user
     ticket.is_taken = True
     ticket.save(update_fields=['is_taken'])
@@ -367,10 +369,11 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
     # Se il ticket non è aperto non è possibile aggiungere dipendenze
     if ticket.is_closed:
         return custom_message(request,
@@ -455,10 +458,11 @@ def ticket_dependence_remove(request, structure_slug,
 
     :return: redirect
     """
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
     # Se il ticket non è aperto non è possibile rimuovere dipendenze
     if ticket.is_closed:
         return custom_message(request,
@@ -528,10 +532,11 @@ def ticket_close(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
     # Se il ticket non è chiudibile (per dipendenze attive)
     if not ticket.is_closable():
         return custom_message(request,
@@ -591,11 +596,11 @@ def ticket_reopen(request, structure_slug, ticket_id,
 
     :return: redirect
     """
-    # Se il ticket non è chiuso blocca
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
     if not ticket.is_closed:
         return custom_message(request, _("Il ticket {} è già aperto"))
     if not ticket.is_taken:
@@ -655,10 +660,11 @@ def ticket_competence_add_new(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
     # Se il ticket è chiuso blocca
     if ticket.is_closed:
         return custom_message(request,
@@ -702,10 +708,11 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if not can_manage:
-        return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
     # Se il ticket è chiuso blocca
     if ticket.is_closed:
         return custom_message(request,
@@ -859,10 +866,11 @@ def ticket_message(request, structure_slug, ticket_id,
             reply.save(update_fields = ['read_by', 'read_date'])
 
     if request.method == 'POST':
-        if not can_manage:
-            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
         if can_manage['readonly']:
-            return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+            messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                            structure_slug=structure_slug,
+                            ticket_id=ticket_id)
         # Se il ticket non è aperto non è possibile scrivere
         if not ticket.is_open():
             return custom_message(request, _("Il ticket non è modificabile"))
@@ -937,10 +945,11 @@ def task_add_new(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if not can_manage:
-            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
     user_type = get_user_type(request.user, structure)
@@ -1004,10 +1013,11 @@ def task_remove(request, structure_slug,
 
     :return: render
     """
-    if not can_manage:
-            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
     user_type = get_user_type(request.user, structure)
@@ -1078,10 +1088,11 @@ def task_detail(request, structure_slug, ticket_id, task_id,
     task_history = TaskHistory.objects.filter(task=task)
     form = PriorityForm()
     if request.method == 'POST':
-        if not can_manage:
-            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
         if can_manage['readonly']:
-            return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+            messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                            structure_slug=structure_slug,
+                            ticket_id=ticket_id)
         if task.is_closed:
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare un'attività chiusa"))
@@ -1172,10 +1183,11 @@ def task_close(request, structure_slug, ticket_id, task_id,
 
     :return: render
     """
-    if not can_manage:
-            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
 
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
@@ -1247,10 +1259,11 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
 
     :return: redirect
     """
-    if not can_manage:
-            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
 
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
@@ -1324,10 +1337,11 @@ def task_edit(request, structure_slug, ticket_id, task_id,
 
     :return: render
     """
-    if not can_manage:
-            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
 
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
@@ -1414,10 +1428,11 @@ def task_attachment_delete(request, structure_slug,
 
     :return: redirect
     """
-    if not can_manage:
-            return custom_message(request, NO_MORE_COMPETENCE_OVER_TICKET)
     if can_manage['readonly']:
-        return custom_message(request, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
 
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     if task.created_by != request.user:

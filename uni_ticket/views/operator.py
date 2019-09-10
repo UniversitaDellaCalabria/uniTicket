@@ -8,7 +8,9 @@ from organizational_area.models import *
 from uni_ticket.decorators import is_operator
 from uni_ticket.models import *
 from uni_ticket.settings import OPERATOR_PREFIX
-from uni_ticket.utils import user_is_operator, visible_tickets_to_user
+from uni_ticket.utils import (user_is_operator,
+                              user_offices_list,
+                              visible_tickets_to_user)
 
 @login_required
 @is_operator
@@ -29,10 +31,7 @@ def dashboard(request, structure_slug, structure, office_employee):
     title = _("Dashboard")
     sub_title = OPERATOR_PREFIX
     template = "operator/dashboard.html"
-    offices = []
-    for oe in office_employee:
-        if oe.office not in offices:
-            offices.append(oe.office)
+    offices = user_offices_list(office_employee)
     user_tickets = visible_tickets_to_user(user=request.user,
                                            structure=structure,
                                            office_employee=office_employee)

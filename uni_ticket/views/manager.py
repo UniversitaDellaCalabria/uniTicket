@@ -483,8 +483,7 @@ def office_delete(request, structure_slug, office_slug, structure):
         messages.add_message(request, messages.SUCCESS,
                              _("Ufficio {} eliminato correttamente".format(office)))
         office.delete()
-        return redirect('uni_ticket:manage',
-                    structure_slug=structure_slug)
+        return redirect('uni_ticket:manage', structure_slug=structure_slug)
     messages.add_message(request, messages.ERROR,
                          _("Impossibile eliminare l'ufficio {}."
                            " Ci sono ticket assegnati"

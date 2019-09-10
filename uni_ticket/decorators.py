@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext as _
 
@@ -10,7 +11,8 @@ from .models import Ticket, TicketAssignment
 from .utils import (custom_message,
                     user_is_manager,
                     user_is_operator,
-                    user_is_office_operator)
+                    user_is_office_operator,
+                    user_offices_list)
 
 
 def is_manager(func_to_decorate):
@@ -83,17 +85,27 @@ def has_admin_privileges(func_to_decorate):
         is_manager = user_is_manager(request.user, structure)
 
         can_manage = False
+        message_string = _("Permesso di accesso al ticket <b>{}</b> negato".format(ticket))
 
         if is_manager:
             can_manage = ticket.is_followed_in_structure(structure=structure)
-            if not can_manage: return custom_message(request, _("Permesso negato!"))
+            if not can_manage:
+                messages.add_message(request, messages.ERROR,
+                                     message_string)
+                return redirect('uni_ticket:manage',
+                                structure_slug=structure_slug)
             original_kwargs['can_manage'] = can_manage
             return func_to_decorate(*original_args, **original_kwargs)
 
-        offices = ticket.get_assigned_to_offices()
+        office_employee = user_is_operator(request.user, structure)
+        offices = user_offices_list(office_employee)
         can_manage = ticket.is_followed_by_one_of_offices(offices=offices)
+
         if not can_manage:
-            return custom_message(request, _("Permesso negato!"))
+            messages.add_message(request, messages.ERROR,
+                                     message_string)
+            return redirect('uni_ticket:manage',
+                            structure_slug=structure_slug)
 
         original_kwargs['can_manage'] = can_manage
         # Check if user is operator of the ticket office
@@ -103,7 +115,10 @@ def has_admin_privileges(func_to_decorate):
                 is_operator = True
                 break
         if is_operator: return func_to_decorate(*original_args, **original_kwargs)
-        return custom_message(request, _("Permesso negato!"))
+        messages.add_message(request, messages.ERROR,
+                             message_string)
+        return redirect('uni_ticket:manage',
+                        structure_slug=structure_slug)
     return new_func
 
 def has_access_to_ticket(func_to_decorate):

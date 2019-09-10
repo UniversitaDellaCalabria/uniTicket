@@ -326,6 +326,14 @@ def send_summary_email(users=[]):
     return {'success': success,
             'failed': failed}
 
+def user_offices_list(office_employee_queryset):
+    if not office_employee_queryset: return []
+    offices = []
+    for oe in office_employee_queryset:
+        if oe.office not in offices:
+            offices.append(oe.office)
+    return offices
+
 # START Roles 'get' methods
 def user_is_employee(user):
     if not user: return False

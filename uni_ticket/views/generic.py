@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from django_form_builder.utils import get_as_dict
+from organizational_area.models import OrganizationalStructure
 
 from uni_ticket.decorators import *
 from uni_ticket.models import *
@@ -22,11 +23,17 @@ from uni_ticket.utils import *
 from uni_ticket.views import user
 
 # @login_required
-# def index(request):
+# def index(request, structure_slug=None):
     # """
     # Pagina iniziale
     # """
-    # return redirect('uni_ticket:user_dashboard')
+    # structure = None
+    # if structure_slug:
+        # structure = get_object_or_404(OrganizationalStructure,
+                                      # slug=structure_slug)
+    # user_type = get_user_type(request.user, structure)
+    # return redirect('uni_ticket:{}_ticket_message'.format(user_type),
+                    # structure_slug, ticket_id)
 
 @login_required
 @has_access_to_ticket
