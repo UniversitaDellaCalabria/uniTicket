@@ -9,6 +9,8 @@ Template Bootstrap Italia (linee guida AGID)
 | La libreria Bootstrap Italia è il modo più semplice e sicuro per costruire interfacce web moderne, inclusive e semplici da mantenere.
 | Completamente open-source, costruita sulle fondamenta di **Bootstrap 4.3.1**, di cui eredita tutte le funzionalità, componenti, griglie e classi di utilità, personalizzandole secondo le Linee Guida di Design per i siti web della Pubblica Amministrazione, Bootstrap Italia usa i pattern e i componenti definiti nello UI Kit di Designers Italia e li trasforma in codice già pronto all'uso!
 
+https://github.com/italia/design-django-theme
+
 Gestione allegati firmati digitalmente
 ======================================
 
@@ -16,12 +18,17 @@ Grazie all’integrazione della libreria Django Dynamic Form e di FileSig, la pi
 
 .. thumbnail:: images/signed_attachments.png
 
+Il Django Form Field utilizzato per questa feature è stato basato su:
+https://github.com/peppelinux/FileSignatureValidator
+
 Costruzione dinamica dei form
 =============================
 
-App *django-form-builder* integrata
+Gestione ottimizzata dei record delle tabelle, che velocizza il caricamento delle pagine e non sovraccarica il server e il client in fase di renderizzazione dei risultati di una ricerca.
 
-https://github.com/UniversitaDellaCalabria/django-form-builder
+
+| https://datatables.net/	https://datatables.net/
+| https://github.com/peppelinux/django-datatables-ajax
 
 Gestione Javascript di Django Formsets
 ======================================
@@ -38,7 +45,7 @@ Gestione ottimizzata dei record delle tabelle, che velocizza il caricamento dell
 https://datatables.net/
 
 Single Sign On (SAML2)
-=====================
+======================
 
 Federare uniTicket in un systema SSO SAML2 è una operazione estremamente semplice.
 All'interno dei requirements già otteniamo le dipendenze a ``djangosaml2`` e ``pysaml2``.
@@ -46,9 +53,9 @@ Per federare uniTicket presso un IdP basterà ereditare la configurazione presso
 modificarla a proprio piacimento.
 
 Nello specifico i parametri rilevanti sono:
-- entityid
-- required_attributes
-- metadata.remote
+- entityid;
+- metadata.remote	- required_attributes;
+- metadata['remote'].
 
 Modificare questi ultimi ed eventuali altri sulla base dei parametri tecnici per la federazione alla organizzazione di propria appartenenza.
 Per attivare la configurazione scelta basterà includere in ``settingslocal.py`` una dichiarazione di questo genere:

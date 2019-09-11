@@ -31,8 +31,10 @@ In qualsiasi momento della vita del ticket è possibile aggiornare la sua priori
 Gestione competenza uffici
 --------------------------
 
-| E’ possibile condividere la competenza del ticket con altri uffici, per motivi organizzativi e gestionali, o scegliere di assegnarla abbandonando i propri privilegi di gestione.
-| Un operatore che sceglie la seconda opzione mantiene comunque la possibilità di visualizzare il dettaglio del ticket, senza poter più agire su di esso.
+E’ possibile condividere la competenza del ticket con altri uffici, per motivi organizzativi e gestionali, o scegliere di trasferirla scegliendo di:
+
+- abbandonare completamente i propri privilegi di gestione del ticket;
+- mantenere ancora l'accesso ma in sola lettura.
 
 .. thumbnail:: images/ticket_competence.png
 

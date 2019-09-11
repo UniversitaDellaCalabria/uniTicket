@@ -17,66 +17,66 @@ sviluppato con Django Framework.
    :maxdepth: 2
    :caption: Installazione e Setup
 
-   Requisiti <getting-started/requirements.rst>
+   Requisiti <01_getting-started/getting_started.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Ticket, Categorie e Attività
 
-   Ticket <elements/ticket.rst>
-   Categorie <elements/categories.rst>
-   Attività <elements/task.rst>
+   Ticket <02_elements/ticket.rst>
+   Categorie <02_elements/categories.rst>
+   Attività <02_elements/task.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Aree Organizzative
 
-   Strutture <organizational-areas/structures.rst>
+   Strutture <03_organizational-areas/organizational_areas.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Tipologie utenti
 
-   Manager <usertypes/usertypes.rst>
+   Manager <04_usertypes/usertypes.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Gestione Ticket (Management)
 
-   Ticket <management/ticket.rst>
+   Ticket <05_management/management.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Manager
 
-   Dashboard <manager/dashboard.rst>
-   Categorie <manager/categories.rst>
-   Uffici <manager/offices.rst>
+   Dashboard <06_manager/dashboard.rst>
+   Categorie <06_manager/categories.rst>
+   Uffici <06_manager/offices.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Operatore
 
-   Dashboard <operator/dashboard.rst>
+   Dashboard <07_operator/dashboard.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Utente utilizzatore
 
-   Dashboard <user/dashboard.rst>
-   Ticket <user/ticket.rst>
+   Dashboard <08_user/dashboard.rst>
+   Ticket <08_user/ticket.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Operazioni comuni a tutti gli utenti
 
-   Messaggi <common-operations/messages.rst>
+   Messaggi <09_common-operations/common_operations.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Caratteristiche del sistema
 
-   Template Bootstrap Italia <features/bootstrap-italia.rst>
+   Template Bootstrap Italia <10_features/features.rst>
 
 
 
