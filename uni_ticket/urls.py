@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.urls import path, include
+from django.urls import include, path, re_path
 from django.utils.text import slugify
+from django.views.generic import RedirectView
 
 from . decorators import is_manager, is_operator, is_the_owner
 from . settings import MANAGEMENT_URL_PREFIX
@@ -10,11 +11,15 @@ from . views import (datatables, generic, management,
 
 app_name="uni_ticket"
 
+_dashboard_name = 'dashboard'
+
 # System/Generic URLs
 ticket = 'ticket/<str:ticket_id>'
 urlpatterns = [
+    path('', RedirectView.as_view(url='/{}/'.format(_dashboard_name))),
+
     # Router url di responsabilità su struttura (manager/operator/user)
-    path('', user.dashboard, name='index'),
+    re_path(r'^manage/(?:(?P<structure_slug>[-\w]+))?$', generic.manage, name='manage'),
 
     # path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     # path('logout/', auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'), name='logout'),
@@ -62,7 +67,8 @@ task = '{}/task'.format(ticket_id)
 task_id = '{}/<str:task_id>'.format(task)
 
 urlpatterns += [
-    path('{}/'.format(base), management.manage, name='manage'),
+    # path('{}/'.format(base), management.manage, name='manage'),
+    # re_path(r'^manage/(?:(?P<structure_slug>[-\w]+))?$', management.manage, name='manage'),
 
     # Ticket
     path('{}/opened/'.format(tickets), management.manage_opened_ticket_url, name='manage_opened_ticket_url'),
@@ -107,7 +113,7 @@ condition = '{}/conditions/condition'.format(category_id)
 condition_id = '{}/<int:condition_id>'.format(condition)
 
 urlpatterns += [
-    path('{}/dashboard/'.format(base), manager.dashboard, name='manager_dashboard'),
+    path('{}/{}/'.format(base, _dashboard_name), manager.dashboard, name='manager_dashboard'),
 
     # Ticket
     path('{}/opened/'.format(tickets), is_manager(generic.opened_ticket), name='manager_opened_ticket'),
@@ -180,7 +186,7 @@ task = '{}/activities'.format(ticket_id)
 task_id = '{}/<str:task_id>'.format(task)
 
 urlpatterns += [
-    path('{}/dashboard/'.format(base), operator.dashboard, name='operator_dashboard'),
+    path('{}/{}/'.format(base, _dashboard_name), operator.dashboard, name='operator_dashboard'),
 
     # Ticket
     path('{}/opened/'.format(tickets), is_operator(generic.opened_ticket), name='operator_opened_ticket'),
@@ -210,7 +216,7 @@ ticket = '{}/ticket'.format(tickets)
 ticket_id = '{}/<str:ticket_id>'.format(ticket)
 
 urlpatterns += [
-    path('dashboard/', user.dashboard, name='user_dashboard'),
+    path('{}/'.format(_dashboard_name), user.dashboard, name='user_dashboard'),
     path('{}/opened/'.format(tickets), generic.opened_ticket, name='user_opened_ticket'),
     path('{}/unassigned/'.format(tickets), generic.unassigned_ticket, name='user_unassigned_ticket'),
     path('{}/closed/'.format(tickets), generic.closed_ticket, name='user_closed_ticket'),

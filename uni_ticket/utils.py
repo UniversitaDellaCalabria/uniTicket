@@ -20,17 +20,17 @@ from organizational_area.models import (OrganizationalStructure,
 from . settings import *
 
 
-def custom_message(request, message=''):
+def custom_message(request, message='', structure_slug=''):
     """
     """
     return render(request, 'custom_message.html',
-                  {'avviso': message})
+                  {'avviso': message,
+                   'structure_slug': structure_slug})
 
 def user_manage_something(user):
     """
     Tells us if the user is a manager or operator in some structure/office
     """
-    # import pdb; pdb.set_trace()
     if not user: return False
     osoe = OrganizationalStructureOfficeEmployee
     employee_offices = osoe.objects.filter(employee=user,

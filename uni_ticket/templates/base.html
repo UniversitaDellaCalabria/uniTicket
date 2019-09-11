@@ -22,7 +22,7 @@ base-setup.html
 
 <!-- Page Title -->
 {% block page_title %}
-Ticket System - Università della Calabria
+uniTicket - Università della Calabria
 {% endblock page_title %}
 
 <!-- URL link top left -->
@@ -31,7 +31,7 @@ Ticket System - Università della Calabria
 
 <!-- URL link logo and org name -->
 {% block header_center_url %}
-#
+{% url 'uni_ticket:manage' structure_slug=structure.slug %}
 {% endblock header_center_url %}
 
 <!-- Name top left -->
