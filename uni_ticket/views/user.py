@@ -104,7 +104,8 @@ def ticket_add_new(request, struttura_slug, categoria_slug):
                                   is_active=True)
 
     if not categoria.allowed_to_user(request.user):
-        return custom_message(request, _("Permesso negato a questa tipologia di utente."))
+        return custom_message(request, _("Permesso negato a questa tipologia di utente."),
+                              struttura.slug)
 
     title = _("Apri un nuovo ticket")
     template = 'user/ticket_add_new.html'

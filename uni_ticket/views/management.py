@@ -24,25 +24,6 @@ from uni_ticket.utils import *
 
 
 @login_required
-def manage(request, structure_slug):
-    """
-    Makes URL redirect to manage a structure depending of user role
-
-    :type structure_slug: String
-
-    :param structure_slug: slug of structure to manage
-
-    :return: redirect
-    """
-    if not structure_slug: return ('uni_ticket:user_dashboard')
-    structure = get_object_or_404(OrganizationalStructure,
-                                  slug=structure_slug)
-    user_type = get_user_type(request.user, structure)
-    if user_type == 'user': return ('uni_ticket:user_dashboard')
-    return redirect('uni_ticket:{}_dashboard'.format(user_type),
-                    structure_slug=structure_slug)
-
-@login_required
 def manage_opened_ticket_url(request, structure_slug):
     """
     Makes URL redirect to opened ticket page depending of user role
@@ -121,7 +102,7 @@ def manage_ticket_url(request, structure_slug):
 
     :return: render
     """
-    return custom_message(request, _("Permesso negato"))
+    return custom_message(request, _("Permesso negato"), structure_slug)
 
 @login_required
 @has_admin_privileges
@@ -377,7 +358,8 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
     # Se il ticket non è aperto non è possibile aggiungere dipendenze
     if ticket.is_closed:
         return custom_message(request,
-                              _("Il ticket {} è chiuso".format(master_ticket)))
+                              _("Il ticket {} è chiuso".format(master_ticket)),
+                              structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_dependence.html".format(user_type)
     title = _('Aggiungi dipendenza ticket')
@@ -466,7 +448,8 @@ def ticket_dependence_remove(request, structure_slug,
     # Se il ticket non è aperto non è possibile rimuovere dipendenze
     if ticket.is_closed:
         return custom_message(request,
-                              _("Il ticket {} è chiuso".format(master_ticket)))
+                              _("Il ticket {} è chiuso".format(master_ticket)),
+                              structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     master_ticket = get_object_or_404(Ticket, code=master_ticket_id)
     to_remove = get_object_or_404(Ticket2Ticket,
@@ -477,7 +460,8 @@ def ticket_dependence_remove(request, structure_slug,
         return custom_message(request,
                               _("Il ticket <b>{}</b> non è stato assegnato"
                                 " a questa struttura, pertanto"
-                                " non puoi gestirlo".format(master_ticket)))
+                                " non puoi gestirlo".format(master_ticket)),
+                              structure_slug=structure.slug)
     else:
         to_remove.delete()
         ticket.update_history(user = request.user,
@@ -541,7 +525,8 @@ def ticket_close(request, structure_slug, ticket_id,
     if not ticket.is_closable():
         return custom_message(request,
                               _("Non è possibile chiudere il ticket,"
-                                " ci sono dipendenze attive!"))
+                                " ci sono dipendenze attive!"),
+                              structure_slug=structure.slug)
     title = _('Chiusura del ticket')
     sub_title = ticket
     form = ChiusuraForm()
@@ -602,10 +587,12 @@ def ticket_reopen(request, structure_slug, ticket_id,
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
     if not ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è già aperto"))
+        return custom_message(request, _("Il ticket {} è già aperto"),
+                              structure_slug=structure.slug)
     if not ticket.is_taken:
         return custom_message(request, _("Il ticket {} è stato chiuso dall'utente, "
-                                         " pertanto non può essere riaperto"))
+                                         " pertanto non può essere riaperto"),
+                              structure_slug=structure.slug)
     ticket.is_closed = False
     ticket.save(update_fields = ['is_closed'])
     ticket.update_history(user=request.user,
@@ -668,7 +655,8 @@ def ticket_competence_add_new(request, structure_slug, ticket_id,
     # Se il ticket è chiuso blocca
     if ticket.is_closed:
         return custom_message(request,
-                              _("Il ticket {} è chiuso".format(master_ticket)))
+                              _("Il ticket {} è chiuso".format(master_ticket)),
+                              structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_competence.html".format(user_type)
     title = _('Aggiungi competenza ticket')
@@ -716,7 +704,8 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     # Se il ticket è chiuso blocca
     if ticket.is_closed:
         return custom_message(request,
-                              _("Il ticket {} è chiuso".format(master_ticket)))
+                              _("Il ticket {} è chiuso".format(master_ticket)),
+                              structure_slug=structure.slug)
     strutture = OrganizationalStructure.objects.filter(is_active = True)
     # Lista uffici ai quali il ticket è assegnato
     ticket_offices = ticket.get_assigned_to_offices(office_active=False)
@@ -726,7 +715,6 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     categorie = TicketCategory.objects.filter(organizational_structure=struttura.pk,
                                               is_active=True)
     if request.method == 'POST':
-        # import pdb; pdb.set_trace()
         categoria_slug = request.POST.get('categoria_slug')
         follow_value = request.POST.get('follow')
         readonly_value = request.POST.get('readonly')
@@ -846,7 +834,8 @@ def ticket_message(request, structure_slug, ticket_id,
     :return: render
     """
     if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
+        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
+                              structure_slug=structure.slug)
 
     title = _("Messaggi")
     sub_title = ticket
@@ -873,7 +862,8 @@ def ticket_message(request, structure_slug, ticket_id,
                             ticket_id=ticket_id)
         # Se il ticket non è aperto non è possibile scrivere
         if not ticket.is_open():
-            return custom_message(request, _("Il ticket non è modificabile"))
+            return custom_message(request, _("Il ticket non è modificabile"),
+                                  structure_slug=structure.slug)
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
             ticket_reply = TicketReply()
@@ -951,7 +941,8 @@ def task_add_new(request, structure_slug, ticket_id,
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
     if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
+        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
+                              structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_task.html".format(user_type)
     title = _('Aggiungi Attività')
@@ -1019,7 +1010,8 @@ def task_remove(request, structure_slug,
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
     if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
+        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
+                              structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     elimina_file(file_name=task.attachment)
@@ -1190,14 +1182,17 @@ def task_close(request, structure_slug, ticket_id, task_id,
                         ticket_id=ticket_id)
 
     if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
+        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
+                              structure_slug=structure.slug)
 
     # Se il ticket non è chiudibile (per dipendenze attive)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     if task.is_closed:
-        return custom_message(request, _("Task già chiuso!"))
+        return custom_message(request, _("Task già chiuso!"),
+                              structure_slug=structure.slug)
     if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
+        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
+                              structure_slug=structure.slug)
 
     title = _('Chiusura del task')
     sub_title = task
@@ -1266,14 +1261,17 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
                         ticket_id=ticket_id)
 
     if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
+        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
+                              structure_slug=structure.slug)
 
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     # Se il ticket non è chiuso blocca
     if not task.is_closed:
-        return custom_message(request, _("Il task è già aperto"))
+        return custom_message(request, _("Il task è già aperto"),
+                              structure_slug=structure.slug)
     if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
+        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
+                              structure_slug=structure.slug)
 
     task.is_closed = False
     task.save(update_fields = ['is_closed'])
@@ -1344,7 +1342,8 @@ def task_edit(request, structure_slug, ticket_id, task_id,
                         ticket_id=ticket_id)
 
     if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)))
+        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
+                              structure_slug=structure.slug)
 
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     usertype = get_user_type(request.user, structure)
@@ -1436,7 +1435,8 @@ def task_attachment_delete(request, structure_slug,
 
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     if task.created_by != request.user:
-        return custom_message(request, _("Permessi di modifica del task mancanti"))
+        return custom_message(request, _("Permessi di modifica del task mancanti"),
+                              structure_slug=structure.slug)
 
     # Rimuove il riferimento all'allegato dalla base dati
     path_allegato = get_path_allegato_task(task)

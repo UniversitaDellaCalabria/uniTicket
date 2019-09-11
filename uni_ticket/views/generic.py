@@ -36,6 +36,25 @@ from uni_ticket.views import user
                     # structure_slug, ticket_id)
 
 @login_required
+def manage(request, structure_slug=None):
+    """
+    Makes URL redirect to manage a structure depending of user role
+
+    :type structure_slug: String
+
+    :param structure_slug: slug of structure to manage
+
+    :return: redirect
+    """
+    if not structure_slug: return redirect('uni_ticket:user_dashboard')
+    structure = get_object_or_404(OrganizationalStructure,
+                                  slug=structure_slug)
+    user_type = get_user_type(request.user, structure)
+    if user_type == 'user': return redirect('uni_ticket:user_dashboard')
+    return redirect('uni_ticket:{}_dashboard'.format(user_type),
+                    structure_slug=structure_slug)
+
+@login_required
 @has_access_to_ticket
 def download_attachment(request, ticket_id, attachment, ticket):
     """
@@ -328,22 +347,25 @@ def ticket_message_delete(request, ticket_message_id):
     :return: redirect
     """
     ticket_message = get_object_or_404(TicketReply, pk=ticket_message_id)
+    structure = ticket_message.structure
     # if message doesn't exist
     if not ticket_message:
-        return custom_message(request, _("Impossibile recuperare il messaggio"))
+        return custom_message(request, _("Impossibile recuperare il messaggio"),
+                              structure_slug=structure.slug)
     # if user isn't the owner of message
     if ticket_message.owner!=request.user:
-        return custom_message(request, _("Permesso negato"))
+        return custom_message(request, _("Permesso negato"),
+                              structure_slug=structure.slug)
     # if message has already been read
     if ticket_message.read_date:
         return custom_message(request, _("Impossibile eliminare il"
-                                         " messaggio dopo che è stato letto"))
-
-    structure = ticket_message.structure
+                                         " messaggio dopo che è stato letto"),
+                              structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     # if message is from a manager/operator and user_type is 'user'
     if structure and user_type=='user':
-        return custom_message(request, _("Permesso negato"))
+        return custom_message(request, _("Permesso negato"),
+                              structure_slug=structure.slug)
     ticket = ticket_message.ticket
     messages.add_message(request, messages.SUCCESS,
                          _("Messaggio <b>{}</b> eliminato con successo.".format(ticket_message)))

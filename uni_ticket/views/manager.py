@@ -304,7 +304,8 @@ def office_add_category(request, structure_slug, office_slug, structure):
                         structure_slug=structure_slug,
                         office_slug=office_slug)
     return custom_message(request, _("Impossibile accedere a questo URL "
-                                     "senza passare dal form collegato."))
+                                     "senza passare dal form collegato."),
+                          structure_slug=structure.slug)
 
 @login_required
 @is_manager
@@ -380,7 +381,8 @@ def office_remove_operator(request, structure_slug,
                                          " privilegi di Amministratore."
                                          " Questa operazione, pertanto,"
                                          " non può essere eseguita in autonomia."
-                                         " Contattare l'assistenza tecnica."))
+                                         " Contattare l'assistenza tecnica."),
+                              structure_slug=structure.slug)
     m = OrganizationalStructureOfficeEmployee
     office_employee = m.objects.get(office=office,
                                     employee=employee)
@@ -483,7 +485,7 @@ def office_delete(request, structure_slug, office_slug, structure):
         messages.add_message(request, messages.SUCCESS,
                              _("Ufficio {} eliminato correttamente".format(office)))
         office.delete()
-        return redirect('uni_ticket:manage', structure_slug=structure_slug)
+        return redirect('uni_ticket:manager_dashboard', structure_slug=structure_slug)
     messages.add_message(request, messages.ERROR,
                          _("Impossibile eliminare l'ufficio {}."
                            " Ci sono ticket assegnati"
@@ -785,7 +787,7 @@ def category_delete(request, structure_slug, category_slug, structure):
         messages.add_message(request, messages.SUCCESS,
                              _("Categoria {} eliminata correttamente".format(category)))
         category.delete()
-        return redirect('uni_ticket:manage',
+        return redirect('uni_ticket:manager_dashboard',
                         structure_slug=structure_slug)
     messages.add_message(request, messages.ERROR,
                          _("Impossibile eliminare la categoria {}."

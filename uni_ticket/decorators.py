@@ -28,7 +28,9 @@ def is_manager(func_to_decorate):
         if user_is_manager(request.user, structure):
             original_kwargs['structure'] = structure
             return func_to_decorate(*original_args, **original_kwargs)
-        return custom_message(request, _("Accesso da manager non consentito"))
+        return custom_message(request,
+                              _("Accesso da manager non consentito"),
+                              structure_slug=structure_slug)
     return new_func
 
 def is_operator(func_to_decorate):
@@ -45,13 +47,16 @@ def is_operator(func_to_decorate):
         if user_is_manager(request.user, structure):
             return custom_message(request,
                                   _("Accesso da operatore non consentito."
-                                    " Sei un manager."))
+                                    " Sei un manager."),
+                                  structure_slug=structure_slug)
         oe = user_is_operator(request.user, structure)
         if oe:
             original_kwargs['office_employee'] = oe
             original_kwargs['structure'] = structure
             return func_to_decorate(*original_args, **original_kwargs)
-        return custom_message(request, _("Accesso da operatore non consentito"))
+        return custom_message(request,
+                              _("Accesso da operatore non consentito"),
+                              structure_slug=structure_slug)
     return new_func
 
 def is_the_owner(func_to_decorate):
@@ -179,6 +184,7 @@ def ticket_assigned_to_structure(func_to_decorate):
                                    is_active=True)
         if struct not in ticket.get_assigned_to_structures():
             return custom_message(request, _("Il ticket non è stato assegnato"
-                                             " a questa struttura"))
+                                             " a questa struttura"),
+                                  structure_slug=structure_slug)
         return func_to_decorate(*original_args, **original_kwargs)
     return new_func
