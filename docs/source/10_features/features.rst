@@ -66,3 +66,25 @@ Per attivare la configurazione scelta basterà includere in ``settingslocal.py``
 
     if 'saml2_sp' in INSTALLED_APPS:
         from saml2_sp.settings import *
+
+Per rendere operativa l'autenticazione tramite SAML2 includere le app ``djangosaml2`` e ``saml2_sp``
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        ...
+
+        ##SAML2 SP
+        'djangosaml2',
+        'saml2_sp',
+    ]
+
+e commentare gli url ``login`` e ``logout`` nel file *urls.py* del progetto
+
+.. code-block:: python
+
+    # Login/Logou URLs
+    # for local auth
+    # disable these for SAML2 auth or others
+    path('{}/'.format(settings.LOGIN_URL), auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('{}/'.format(settings.LOGOUT_URL), auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'), name='logout'),

@@ -21,9 +21,6 @@ urlpatterns = [
     # Router url di responsabilità su struttura (manager/operator/user)
     re_path(r'^manage/(?:(?P<structure_slug>[-\w]+))?$', generic.manage, name='manage'),
 
-    # path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    # path('logout/', auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'), name='logout'),
-
     # Attachments download
     path('{}/download/attachment/<str:attachment>/'.format(ticket), generic.download_attachment, name='download_attachment'),
     path('{}/reply/<str:reply_id>/download/attachment/'.format(ticket), generic.download_message_attachment, name='download_message_attachment'),
