@@ -333,6 +333,20 @@ class Ticket(SavedFormContent):
 
     def update_history(self, user, note=None):
         if not user: return False
+
+        # Send mail to ticket owner
+        d = {'hostname': settings.HOSTNAME,
+             'user': user,
+             'message': note,
+             'ticket': ticket
+            }
+        m_subject = _('{} - ticket {} deleted'.format(settings.HOSTNAME,
+                                                      ticket))
+        send_custom_mail(subject=m_subject,
+                         body=TICKET_UPDATED.format(**d),
+                         recipient=user)
+        # End send mail to ticket owner
+
         update = TicketHistory(ticket=self,
                                modified_by=user,
                                note=note)

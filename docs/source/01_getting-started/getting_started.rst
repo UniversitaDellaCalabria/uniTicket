@@ -139,8 +139,39 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile:
 
 .. code-block:: python
 
+    # Competenza sul ticket abbandonata
+    NO_MORE_COMPETENCE_OVER_TICKET = _("Nessuna competenza sul ticket")
     # Accesso sul ticket in sola lettura
-    NO_MORE_COMPETENCE_OVER_TICKET = _("Hai accesso sul ticket in sola lettura")
+    READONLY_COMPETENCE_OVER_TICKET = _("Hai accesso al ticket in sola lettura")
+
+    # E-mail messages
+    NEW_TICKET_UPDATE = _("Dear {user},"
+                          "you have successfully {status} the ticket:"
+                          ""
+                          "{ticket}"
+                          ""
+                          "This message was sent to you by {hostname}."
+                          "Please do not reply to this email.")
+
+    USER_TICKET_MESSAGE = _("Dear {user},"
+                            "you have successfully {status} a message for ticket:"
+                            ""
+                            "{ticket}"
+                            ""
+                            "This message was sent to you by {hostname}."
+                            "Please do not reply to this email.")
+
+    TICKET_UPDATED = _("Dear {user},"
+                       "the ticket:"
+                       ""
+                       "{ticket}"
+                       ""
+                       "has been updated with the message:"
+                       ""
+                       "{message}."
+                       ""
+                       "This message was sent to you by {hostname}."
+                       "Please do not reply to this email.")
 
     SUMMARY_USER_EMAIL = _("Dear {user},"
                            "the following ticket {event_msg}:"

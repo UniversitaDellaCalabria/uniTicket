@@ -874,6 +874,20 @@ def ticket_message(request, structure_slug, ticket_id,
             ticket_reply.structure = structure
             ticket_reply.owner = request.user
             ticket_reply.save()
+
+            # Send mail to ticket owner
+            mail_params = {'hostname': settings.HOSTNAME,
+                           'status': _('received'),
+                           'ticket': ticket,
+                           'user': ticket.created_by
+                          }
+            m_subject = _('{} - ticket {} message received'.format(settings.HOSTNAME,
+                                                                   ticket))
+            send_custom_mail(subject=m_subject,
+                             body=USER_TICKET_MESSAGE.format(**mail_params),
+                             recipient=ticket.created_by)
+            # END Send mail to ticket owner
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Messaggio inviato con successo"))
             return redirect('uni_ticket:manage_ticket_message_url',

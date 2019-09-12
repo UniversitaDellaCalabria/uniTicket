@@ -308,16 +308,10 @@ def send_summary_email(users=[]):
              'tickets_per_office': ''.join(msg),
              'hostname': settings.HOSTNAME,
              'user': user}
-
-        sent = send_mail(_('{} ticket summary'.format(settings.HOSTNAME)),
-                         SUMMARY_EMPLOYEE_EMAIL.format(**d),
-                         settings.EMAIL_SENDER,
-                         [user.email,],
-                         fail_silently=False,
-                         auth_user=None,
-                         auth_password=None,
-                         connection=None,
-                         html_message=None)
+        m_subject = _('{} - ticket summary'.format(settings.HOSTNAME))
+        sent = send_custom_mail(subject=m_subject,
+                                body=SUMMARY_EMPLOYEE_EMAIL.format(**d),
+                                recipient=user)
         if not sent:
             failed.append(user)
         else:
@@ -333,6 +327,21 @@ def user_offices_list(office_employee_queryset):
         if oe.office not in offices:
             offices.append(oe.office)
     return offices
+
+# Custom email sender
+def send_custom_mail(subject, body, recipient):
+    if not recipient: return False
+    if not recipient.email_notify: return False
+    result = send_mail(subject,
+                       body,
+                       settings.EMAIL_SENDER,
+                       [recipient.email,],
+                       fail_silently=False,
+                       auth_user=None,
+                       auth_password=None,
+                       connection=None,
+                       html_message=None)
+    return result
 
 # START Roles 'get' methods
 def user_is_employee(user):

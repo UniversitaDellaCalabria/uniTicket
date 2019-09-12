@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -169,6 +170,20 @@ def ticket_add_new(request, struttura_slug, categoria_slug):
                                                  assigned_by=request.user)
             ticket_assignment.save()
             ticket_detail_url = reverse('uni_ticket:ticket_detail', args=[code])
+
+            # Send mail to ticket owner
+            mail_params = {'hostname': settings.HOSTNAME,
+                           'user': request.user,
+                           'status': _('submitted'),
+                           'ticket': ticket
+                          }
+            m_subject = _('{} - ticket {} submitted'.format(settings.HOSTNAME,
+                                                            ticket))
+            send_custom_mail(subject = m_subject,
+                             body=NEW_TICKET_UPDATE.format(**mail_params),
+                             recipient=request.user)
+            # END Send mail to ticket owner
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket creato con successo "
                                    "con il codice <b>{}</b>").format(code))
@@ -356,8 +371,20 @@ def ticket_delete(request, ticket_id):
     for event in ticket_history:
         event.delete()
 
-    ticket.delete()
+    # Send mail to ticket owner
+    mail_params = {'hostname': settings.HOSTNAME,
+                   'user': request.user,
+                   'status': _('deleted'),
+                   'ticket': ticket
+                  }
+    m_subject = _('{} - ticket {} deleted'.format(settings.HOSTNAME,
+                                                  ticket))
+    send_custom_mail(subject=m_subject,
+                     body=NEW_TICKET_UPDATE.format(**mail_params),
+                     recipient=request.user)
+    # END Send mail to ticket owner
 
+    ticket.delete()
     messages.add_message(request, messages.SUCCESS,
                          _("Ticket {} eliminato correttamente".format(code)))
     return redirect('uni_ticket:user_unassigned_ticket')
@@ -454,6 +481,20 @@ def ticket_message(request, ticket_id):
             ticket_reply.ticket = ticket
             ticket_reply.owner = request.user
             ticket_reply.save()
+
+            # Send mail to ticket owner
+            mail_params = {'hostname': settings.HOSTNAME,
+                           'status': _('submitted'),
+                           'ticket': ticket,
+                           'user': request.user
+                          }
+            m_subject = _('{} - ticket {} message submitted'.format(settings.HOSTNAME,
+                                                                    ticket))
+            send_custom_mail(subject=m_subject,
+                             body=USER_TICKET_MESSAGE.format(**mail_params),
+                             recipient=request.user)
+            # END Send mail to ticket owner
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Messaggio inviato con successo"))
             return redirect('uni_ticket:ticket_message',

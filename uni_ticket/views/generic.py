@@ -374,6 +374,20 @@ def ticket_message_delete(request, ticket_message_id):
     # delete message
     ticket_message.delete()
     if user_type=='user':
+
+        # Send mail to ticket owner
+        mail_params = {'hostname': settings.HOSTNAME,
+                       'status': _('deleted'),
+                       'ticket': ticket,
+                       'user': request.user
+                      }
+        m_subject = _('{} - ticket {} message deleted'.format(settings.HOSTNAME,
+                                                              ticket))
+        send_custom_mail(subject=m_subject,
+                         body=USER_TICKET_MESSAGE.format(**mail_params),
+                         recipient=request.user)
+        # END Send mail to ticket owner
+
         return redirect('uni_ticket:ticket_message',
                         ticket_id=ticket.code)
     return redirect('uni_ticket:manage_ticket_message_url',
