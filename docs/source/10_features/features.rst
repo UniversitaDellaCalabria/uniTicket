@@ -26,7 +26,6 @@ Costruzione dinamica dei form
 
 Gestione ottimizzata dei record delle tabelle, che velocizza il caricamento delle pagine e non sovraccarica il server e il client in fase di renderizzazione dei risultati di una ricerca.
 
-
 | https://datatables.net/
 | https://github.com/peppelinux/django-datatables-ajax
 
@@ -42,8 +41,8 @@ JQuery Datatables
 
 Gestione ottimizzata dei record delle tabelle, che velocizza il caricamento delle pagine e non sovraccarica il server e il client in fase di renderizzazione dei risultati di una ricerca.
 
-https://datatables.net/
-https://github.com/peppelinux/django-datatables-ajax
+| https://datatables.net/
+| https://github.com/peppelinux/django-datatables-ajax
 
 Single Sign On (SAML2)
 ======================
