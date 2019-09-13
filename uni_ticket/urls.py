@@ -64,9 +64,6 @@ task = '{}/task'.format(ticket_id)
 task_id = '{}/<str:task_id>'.format(task)
 
 urlpatterns += [
-    # path('{}/'.format(base), management.manage, name='manage'),
-    # re_path(r'^manage/(?:(?P<structure_slug>[-\w]+))?$', management.manage, name='manage'),
-
     # Ticket
     path('{}/opened/'.format(tickets), management.manage_opened_ticket_url, name='manage_opened_ticket_url'),
     path('{}/unassigned/'.format(tickets), management.manage_unassigned_ticket_url, name='manage_unassigned_ticket_url'),
