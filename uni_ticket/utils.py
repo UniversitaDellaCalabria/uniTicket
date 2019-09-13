@@ -336,7 +336,7 @@ def send_custom_mail(subject, body, recipient):
                        body,
                        settings.EMAIL_SENDER,
                        [recipient.email,],
-                       fail_silently=False,
+                       fail_silently=True,
                        auth_user=None,
                        auth_password=None,
                        connection=None,
