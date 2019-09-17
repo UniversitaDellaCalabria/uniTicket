@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LogoutView
 from django.urls import path, include
 
@@ -22,16 +23,16 @@ from djangosaml2 import views
 
 urlpatterns = [
     path('gestione/', admin.site.urls),
+
+    # Login/Logou URLs
+    # for local auth
+    # disable these for SAML2 auth or others
+    path('{}/'.format(settings.LOGIN_URL), auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('{}/'.format(settings.LOGOUT_URL), auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'), name='logout'),
 ]
 
 import uni_ticket.urls
 urlpatterns += path('', include(uni_ticket.urls, namespace='uni_ticket')),
-
-# import helpdesk.urls
-# urlpatterns += path('', include(helpdesk.urls, namespace='helpdesk')),
-
-# import unical_ticket.urls
-# urlpatterns += path('', include(unical_ticket.urls, namespace='unical_ticket')),
 
 if settings.DEBUG:
     # STATICS FILE SERVE

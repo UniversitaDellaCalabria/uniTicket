@@ -26,9 +26,7 @@ Costruzione dinamica dei form
 
 Gestione ottimizzata dei record delle tabelle, che velocizza il caricamento delle pagine e non sovraccarica il server e il client in fase di renderizzazione dei risultati di una ricerca.
 
-
-| https://datatables.net/	https://datatables.net/
-| https://github.com/peppelinux/django-datatables-ajax
+https://docs.djangoproject.com/en/2.2/topics/forms/formsets/
 
 Gestione Javascript di Django Formsets
 ======================================
@@ -42,7 +40,8 @@ JQuery Datatables
 
 Gestione ottimizzata dei record delle tabelle, che velocizza il caricamento delle pagine e non sovraccarica il server e il client in fase di renderizzazione dei risultati di una ricerca.
 
-https://datatables.net/
+| https://datatables.net/
+| https://github.com/peppelinux/django-datatables-ajax
 
 Single Sign On (SAML2)
 ======================
@@ -53,8 +52,9 @@ Per federare uniTicket presso un IdP basterà ereditare la configurazione presso
 modificarla a proprio piacimento.
 
 Nello specifico i parametri rilevanti sono:
+
 - entityid;
-- metadata.remote	- required_attributes;
+- required_attributes;
 - metadata['remote'].
 
 Modificare questi ultimi ed eventuali altri sulla base dei parametri tecnici per la federazione alla organizzazione di propria appartenenza.
@@ -64,3 +64,25 @@ Per attivare la configurazione scelta basterà includere in ``settingslocal.py``
 
     if 'saml2_sp' in INSTALLED_APPS:
         from saml2_sp.settings import *
+
+Per rendere operativa l'autenticazione tramite SAML2 includere le app ``djangosaml2`` e ``saml2_sp``
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        ...
+
+        ##SAML2 SP
+        'djangosaml2',
+        'saml2_sp',
+    ]
+
+e commentare gli url ``login`` e ``logout`` nel file *urls.py* del progetto
+
+.. code-block:: python
+
+    # Login/Logou URLs
+    # for local auth
+    # disable these for SAML2 auth or others
+    path('{}/'.format(settings.LOGIN_URL), auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    path('{}/'.format(settings.LOGOUT_URL), auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'), name='logout'),

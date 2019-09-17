@@ -21,6 +21,7 @@ from . dynamic_form import DynamicForm
 from . settings import *
 from . utils import (get_folder_allegato,
                      get_user_type,
+                     send_custom_mail,
                      user_is_employee,
                      user_is_in_organization)
 
@@ -333,6 +334,20 @@ class Ticket(SavedFormContent):
 
     def update_history(self, user, note=None):
         if not user: return False
+
+        # Send mail to ticket owner
+        d = {'hostname': settings.HOSTNAME,
+             'user': user,
+             'message': note,
+             'ticket': self
+            }
+        m_subject = _('{} - ticket {} deleted'.format(settings.HOSTNAME,
+                                                      self))
+        send_custom_mail(subject=m_subject,
+                         body=TICKET_UPDATED.format(**d),
+                         recipient=user)
+        # End send mail to ticket owner
+
         update = TicketHistory(ticket=self,
                                modified_by=user,
                                note=note)

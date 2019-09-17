@@ -174,7 +174,7 @@ def ticket_detail(request, structure_slug, ticket_id,
     ticket_dependences = ticket.get_dependences()
     assigned_to = []
     ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
-    form = PriorityForm()
+    form = PriorityForm(data={'priorita':ticket.priority})
     if request.method == 'POST':
         if can_manage['readonly']:
             messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
@@ -874,6 +874,20 @@ def ticket_message(request, structure_slug, ticket_id,
             ticket_reply.structure = structure
             ticket_reply.owner = request.user
             ticket_reply.save()
+
+            # Send mail to ticket owner
+            mail_params = {'hostname': settings.HOSTNAME,
+                           'status': _('received'),
+                           'ticket': ticket,
+                           'user': ticket.created_by
+                          }
+            m_subject = _('{} - ticket {} message received'.format(settings.HOSTNAME,
+                                                                   ticket))
+            send_custom_mail(subject=m_subject,
+                             body=USER_TICKET_MESSAGE.format(**mail_params),
+                             recipient=ticket.created_by)
+            # END Send mail to ticket owner
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Messaggio inviato con successo"))
             return redirect('uni_ticket:manage_ticket_message_url',
@@ -1078,7 +1092,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
     priority = task.get_priority()
     # allegati = ticket.get_allegati_dict()
     task_history = TaskHistory.objects.filter(task=task)
-    form = PriorityForm()
+    form = PriorityForm(data={'priorita': task.priority})
     if request.method == 'POST':
         if can_manage['readonly']:
             messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
@@ -1348,7 +1362,8 @@ def task_edit(request, structure_slug, ticket_id, task_id,
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     usertype = get_user_type(request.user, structure)
     data = {'subject': task.subject,
-            'description': task.description}
+            'description': task.description,
+            'priority': task.priority,}
     form = TaskForm(initial=data)
     if request.method == 'POST':
         if task.is_closed:
@@ -1362,14 +1377,20 @@ def task_edit(request, structure_slug, ticket_id, task_id,
         form = TaskForm(data=request.POST,
                         files=request.FILES)
         if form.is_valid():
+            msg = _("Modifica attività {}".format(task))
             task.subject = request.POST.get('subject')
             task.description = request.POST.get('description')
+            if task.priority != request.POST.get('priority'):
+                msg = msg + _(" e Priorità assegnata: {}"
+                              "".format(dict(PRIORITY_LEVELS).get(request.POST.get('priority'))))
+            task.priority = request.POST.get('priority')
             if request.FILES.get('attachment'):
                 task.attachment = request.FILES.get('attachment')
             task.save(update_fields = ['subject',
                                        'description',
+                                       'priority',
                                        'attachment'])
-            msg = _("Modifica attività {}".format(task))
+
             task.update_history(user=request.user,
                                 note=msg)
             ticket.update_history(user=request.user,

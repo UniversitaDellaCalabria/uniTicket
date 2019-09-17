@@ -46,9 +46,9 @@ INSTALLED_APPS = [
     'nested_admin',
     'organizational_area',
 
-    # SAML2 SP
-    'djangosaml2',
-    'saml2_sp',
+    ##SAML2 SP
+    # 'djangosaml2',
+    # 'saml2_sp',
 ]
 
 
