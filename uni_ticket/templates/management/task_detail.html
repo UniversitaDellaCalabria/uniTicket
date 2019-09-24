@@ -11,7 +11,7 @@
     </svg> {% trans "Torna al ticket" %}
 </a>
 
-{% if task.is_closed and not task.ticket.is_chiuso %}
+{% if task.is_closed and not task.ticket.is_closed %}
 <button type="button"
     class="btn btn-outline-warning"
     data-toggle="modal"
