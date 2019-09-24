@@ -26,7 +26,7 @@
         {% endif %}
         {{ ticket_messages }}</span>
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-comment"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
         </svg>
         {% trans 'Messaggi' %}
     </a>
@@ -35,7 +35,7 @@
        class="btn btn-success float-right"
        href="{% url 'uni_ticket:new_ticket_preload' %}">
             <svg class="icon icon-xs icon-white">
-                <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-plus-circle"></use>
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
             </svg> {% trans "Apri un nuovo ticket" %}
     </a>
 

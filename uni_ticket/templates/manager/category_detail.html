@@ -11,34 +11,34 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manager_dashboard' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Dashboard" %}
 </a>
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manager_categories' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-folder"></use>
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-folder"></use>
     </svg> {% trans "Torna alle categorie" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_edit' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-pencil"></use>
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
     </svg> {% trans "Modifica" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_new_input_module' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-file"></use>
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-file"></use>
     </svg> {% trans "Aggiungi modulo" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_condition_new' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-warning-circle"></use>
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
     </svg> {% trans "Aggiungi clausola" %}
 </a>
 {% if category.is_active %}
@@ -47,7 +47,7 @@
         data-toggle="modal"
         data-target="#disableCategory">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-password-invisible"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-invisible"></use>
         </svg> {% trans "Disattiva" %}
 </button>
 {% else %}
@@ -56,7 +56,7 @@
         data-toggle="modal"
         data-target="#enableCategory">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-password-visible"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-visible"></use>
         </svg> {% trans "Attiva" %}
 </button>
 {% endif %}
@@ -65,7 +65,7 @@
         data-toggle="modal"
         data-target="#deleteCategory">
         <svg class="icon icon-xs icon-danger">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close-circle"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
         </svg> {% trans "Elimina" %}
 </button>
 {% endblock top_buttons %}
@@ -124,7 +124,7 @@
                                     <button class="close" type="button"
                                             data-dismiss="modal" aria-label="Close">
                                        <svg class="icon">
-                                          <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                                        </svg>
                                     </button>
                                 </div>
@@ -153,9 +153,9 @@
             <td>
                 <svg class="icon icon-sm icon-secondary">
                 {% if category.allow_guest %}
-                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
                 {% else %}
-                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                 {% endif %}
                 </svg>
             </td>
@@ -165,9 +165,9 @@
             <td>
                 <svg class="icon icon-sm icon-secondary">
                 {% if category.allow_user %}
-                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
                 {% else %}
-                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                 {% endif %}
                 </svg>
             </td>
@@ -177,9 +177,9 @@
             <td>
                 <svg class="icon icon-sm icon-secondary">
                 {% if category.allow_employee %}
-                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
                 {% else %}
-                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                 {% endif %}
                 </svg>
             </td>
@@ -202,7 +202,7 @@
                     data-toggle="modal"
                     data-target="#action">
                     <svg class="icon icon-xs icon-success">
-                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
                     </svg> {% trans "Aggiungi ufficio presso la struttura" %}
             </button>
             <div class="modal fade" tabindex="-1" role="dialog" id="action">
@@ -215,7 +215,7 @@
                             <button class="close" type="button"
                                     data-dismiss="modal" aria-label="Close">
                                <svg class="icon">
-                                  <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                                </svg>
                             </button>
                         </div>
@@ -248,7 +248,7 @@
                 <button class="close" type="button"
                         data-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>
@@ -277,7 +277,7 @@
                 <button class="close" type="button"
                         data-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>
@@ -306,7 +306,7 @@
                 <button class="close" type="button"
                         data-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>

@@ -10,7 +10,7 @@
    data-toggle="tooltip"
    title="{% trans 'Versione stampabile' %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-print"></use>
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-print"></use>
     </svg>
 </a>
 {% endblock %}
@@ -22,7 +22,7 @@
        class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
         </svg> {% trans "Torna ai ticket chiusi" %}
     </a>
 {% elif ticket.is_taken %}
@@ -30,7 +30,7 @@
        class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
         </svg> {% trans "Torna ai ticket aperti" %}
     </a>
 {% else %}
@@ -38,7 +38,7 @@
    class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna ai ticket da prendere in carico" %}
 </a>
 {% endif %}
@@ -55,7 +55,7 @@
         {% endif %}
     {% endwith %}
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-comment"></use>
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
     </svg> {% trans "Messaggi" %}
 </a>
 {% endif %}
@@ -66,7 +66,7 @@
         data-toggle="modal"
         data-target="#reopenTicket">
         <svg class="icon icon-xs icon-warning">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-exchange-circle"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-exchange-circle"></use>
         </svg> {% trans "Riapri ticket" %}
     </button>
     <div class="modal fade" tabindex="-1" role="dialog" id="reopenTicket">
@@ -81,7 +81,7 @@
                             data-dismiss="modal"
                             aria-label="Close">
                        <svg class="icon">
-                          <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                        </svg>
                     </button>
                 </div>
@@ -105,21 +105,21 @@
        href="{% url 'uni_ticket:add_ticket_task_url' structure_slug=structure.slug ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-list"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-list"></use>
         </svg> {% trans "Aggiungi attività" %}
     </a>
     <a role="button"
        href="{% url 'uni_ticket:add_ticket_competence_url' structure_slug=structure.slug ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-share"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-share"></use>
         </svg> {% trans "Aggiungi competenza" %}
     </a>
     <a role="button"
        href="{% url 'uni_ticket:add_ticket_dependence_url' structure_slug=structure.slug ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-link"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-link"></use>
         </svg> {% trans "Aggiungi dipendenza" %}
     </a>
     {% if ticket.is_closable %}
@@ -127,7 +127,7 @@
            href="{% url 'uni_ticket:close_ticket' structure_slug=structure.slug ticket_id=ticket.code %}"
            class="btn btn-outline-secondary">
            <svg class="icon icon-xs">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
            </svg> {% trans "Chiudi" %}
         </a>
     {% endif %}
@@ -153,7 +153,7 @@
                             data-toggle="modal"
                             data-target="#action">
                             <svg class="icon icon-xs icon-white">
-                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
                             </svg>
                             {% if not ticket.is_taken %}
                                 {% trans "Prendi il ticket in carico" %}
@@ -177,7 +177,7 @@
                                             data-dismiss="modal"
                                             aria-label="Close">
                                        <svg class="icon">
-                                          <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                                        </svg>
                                     </button>
                                 </div>

@@ -45,7 +45,7 @@
             <td>
                 <a href="{% url 'uni_ticket:download_task_attachment' ticket_id=task.ticket.code task_id=task.code %}">
                     <svg class="icon">
-                        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-clip"></use>
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
                     </svg> {{ task.attachment|filename }}
                 </a>
             </td>

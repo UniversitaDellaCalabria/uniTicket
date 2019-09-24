@@ -28,13 +28,13 @@
                     {% endif %}
                         <span class="data">
                             <svg class="icon icon-xs icon-secondary">
-                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-calendar"></use>
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-calendar"></use>
                             </svg> {{ reply.created }}
                         </span>
                         {% if reply.read_date %}
                         <span title="{% trans 'Visualizzato da' %} {{ reply.read_by }} - {{ reply.read_date }}" class="float-right">
                             <svg class="icon icon-xs icon-primary">
-                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check-circle"></use>
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
                             </svg>
                         </span>
                         {% endif %}
@@ -45,7 +45,7 @@
                     <p class="card-text">
                         <a href="{% url 'uni_ticket:download_message_attachment' ticket_id=reply.ticket.code reply_id=reply.id %}">
                             <svg class="icon">
-                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-clip"></use>
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
                             </svg> {{ reply.attachment|filename }}
                         </a>
                     </p>
@@ -65,7 +65,7 @@
                                         <button class="close" type="button"
                                                 data-dismiss="modal" aria-label="Close">
                                            <svg class="icon">
-                                              <use xlink:href="/static/images/svg/sprite.svg#it-close"></use>
+                                              <use xlink:href="/static/svg/sprite.svg#it-close"></use>
                                            </svg>
                                         </button>
                                     </div>
@@ -108,7 +108,7 @@
                         <div>
                             <button class="btn btn-success btn-block" type="submit">
                                 <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
                                 </svg> {% trans 'Invia' %}
                             </button>
                         </div>
