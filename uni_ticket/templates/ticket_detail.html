@@ -7,7 +7,7 @@
 <div class="callout danger">
 	<div class="callout-title">
         <svg class="icon icon-danger">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close-circle"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
         </svg> {% trans "C'è un problema" %}</div>
 	<p>{% trans "Uno o più allegati obbligatori risultano mancanti" %}</p>
 </div>
@@ -93,7 +93,7 @@
                     <li>
                         <a href="{% url 'uni_ticket:download_attachment' ticket_id=ticket.code attachment=k %}">
                             <svg class="icon">
-                                <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-clip"></use>
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
                             </svg>{{ k }}: {{ v }}
                         </a>
                         {% get_attachment_sign_details ticket_form path_allegati k v as sign_details %}

@@ -9,7 +9,7 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:ticket_detail' ticket_id=ticket.code %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna al ticket" %}
 </a>
 {% endblock top_buttons %}
@@ -88,7 +88,7 @@
                                 data-dismiss="modal"
                                 aria-label="Close">
                            <svg class="icon">
-                              <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-close"></use>
+                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                            </svg>
                         </button>
                     </div>
@@ -116,7 +116,7 @@
 <div>
     <button type="submit" class="btn btn-success btn-block">
         <svg class="icon icon-xs icon-white">
-            <use xlink:href="{% static 'images/svg/sprite.svg' %}#it-check"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
         </svg> {% trans 'Modifica' %}
     </button>
 </div>

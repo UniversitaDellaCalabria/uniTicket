@@ -534,7 +534,7 @@ def ticket_close(request, structure_slug, ticket_id,
         form = ChiusuraForm(request.POST)
         if form.is_valid():
             motivazione = request.POST.get('note')
-            ticket.is_chiuso = True
+            ticket.is_closed = True
             ticket.motivazione_chiusura = motivazione
             ticket.data_chiusura = timezone.now()
             ticket.save(update_fields = ['is_closed',
