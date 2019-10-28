@@ -7,8 +7,11 @@ SECRET_KEY = 'rz82a_#y1#s=l+loeqgn_4xslwchu%yxtpdf)h7b$6kn+p+sca'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 HOSTNAME = ''
-ALLOWED_HOSTS = ['localhost',
-                 HOSTNAME]
+ALLOWED_HOSTS = [
+                'localhost',
+                HOSTNAME,
+                '127.0.0.1',
+                ]
 EMAIL_SENDER = 'no-reply@{}'.format(HOSTNAME)
 
 DATABASES = {
@@ -123,4 +126,3 @@ LOGGING = {
         },
     }
 }
-
