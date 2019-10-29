@@ -24,9 +24,9 @@ https://github.com/peppelinux/FileSignatureValidator
 Costruzione dinamica dei form
 =============================
 
-Gestione ottimizzata dei record delle tabelle, che velocizza il caricamento delle pagine e non sovraccarica il server e il client in fase di renderizzazione dei risultati di una ricerca.
+App *django-form-builder* integrata per la costruzione di form dinamici e la definizione di nuovi campi custom.
 
-https://docs.djangoproject.com/en/2.2/topics/forms/formsets/
+https://github.com/UniversitaDellaCalabria/django-form-builder
 
 Gestione Javascript di Django Formsets
 ======================================
