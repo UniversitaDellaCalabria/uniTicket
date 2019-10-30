@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_form_builder',
     'nested_admin',
     'organizational_area',
+    'unical_accounts',
 
     ##SAML2 SP
     # 'djangosaml2',
