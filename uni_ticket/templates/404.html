@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content_title %}
+<div class="py-md-5 bd-content clearfix">
+    {% include 'messages.html' %}
+
+    <h4 class="float-left">
+       {% trans "Errore 404" %}
+    </h4>
+
+    {% block right_button %}
+    {% endblock %}
+</div>
+{% endblock content_title %}
+
+{% block container_inner %}
+<div class="container">
+Pagina non trovata
+</div>
+{% endblock %}
