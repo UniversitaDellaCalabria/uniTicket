@@ -37,7 +37,7 @@ git+https://github.com/peppelinux/djangosaml2.git@pplnx-dev
 
 # SASS dynamic compiler
 libsass
-django_sass_processor
+git+https://github.com/jrief/django-sass-processor.git
 
 # settings dependencies
 mysqlclient
