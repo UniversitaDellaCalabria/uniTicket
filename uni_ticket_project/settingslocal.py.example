@@ -1,6 +1,6 @@
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
+import os
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'rz82a_#y1#s=l+loeqgn_4xslwchu%yxtpdf)h7b$6kn+p+sca'
 
@@ -16,12 +16,12 @@ EMAIL_SENDER = 'no-reply@{}'.format(HOSTNAME)
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': '',
-        'HOST': 'localhost',
-        'USER': '',
-        'PASSWORD': '',
-        'PORT': '',
+        'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.mysql'),
+        'NAME': os.environ.get('SQL_DATABASE', 'uniauth'),
+        'HOST': os.environ.get('SQL_HOST','localhost'),
+        'USER': os.environ.get('SQL_USER','root'),
+        'PASSWORD': os.environ.get('SQL_PASSWORD','mypass'),
+        'PORT': os.environ.get('SQL_PORT','3306'),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },

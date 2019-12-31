@@ -1,0 +1,34 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mariadb
+    container_name: uniticket-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: uniticketdb
+      MYSQL_USER: uniticket
+      MYSQL_PASSWORD: changeme
+      MYSQL_ROOT_PASSWORD: mypass
+
+  uniticket:
+    image: uniticket
+    container_name: uniticket
+    restart: always
+    environment:
+      SQL_HOST: uniticket-db
+      SQL_USER: uniticket
+      SQL_PASSWORD: changeme
+      SQL_DATABASE: uniticketdb
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             python manage.py shell -c \"from django.contrib.auth import get_user_model; get_user_model().objects.filter(username='admin').exists() or get_user_model().objects.create_superuser('admin', 'admin@example.com', 'adminpass')\" &&
+             python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - 8000:8000
+    links:
+      - db:uniticket-db
+    depends_on:
+      - db
