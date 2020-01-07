@@ -21,8 +21,9 @@ from django.urls import path, include
 
 from djangosaml2 import views
 
+
 urlpatterns = [
-    path('gestione/', admin.site.urls),
+    path('{}/'.format(getattr(settings, 'ADMIN_PATH', 'admin')), admin.site.urls),
 
     # Login/Logou URLs
     # for local auth
@@ -71,7 +72,10 @@ if 'saml2_sp' in settings.INSTALLED_APPS:
                         {'next_page': settings.LOGOUT_REDIRECT_URL},
                         name='logout'),
 
-
 if 'djangosaml2' in settings.INSTALLED_APPS:
     import djangosaml2.urls
-    urlpatterns += path('', include((djangosaml2.urls, 'djangosaml2',))),
+    urlpatterns += path('', include(djangosaml2.urls, 'djangosaml2',)),
+
+if 'rest_framework' in settings.INSTALLED_APPS:
+    import api_rest.urls
+    urlpatterns += path('', include(api_rest.urls)),

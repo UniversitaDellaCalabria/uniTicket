@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
@@ -22,18 +24,23 @@ class DTD(DjangoDatatablesServerProc):
         """
         Sets DataTable tickets common queryset
         """
-        data_year = self.request.GET.get('created__year') or \
-                    self.request.POST.get('created__year') or \
-                    timezone.localdate().year
         if self.search_key:
-            self.aqs = self.model.filter(created__year=data_year)\
-                .filter(\
-                Q(code__icontains=self.search_key) | \
-                Q(subject__icontains=self.search_key) | \
-                Q(input_module__ticket_category__name__icontains=self.search_key) | \
-                Q(created__icontains=self.search_key))
-        else:
-            self.aqs = self.model.filter(created__year=data_year)
+            params = json.loads(self.search_key)
+            year = params['year']
+            text = params['text']
+            if not year and not text:
+                self.aqs = self.model.all()
+            if year:
+                self.aqs = self.model.filter(created__year=year)
+            if text:
+                model = self.model
+                if self.aqs: model = self.aqs
+                self.aqs = model.filter(
+                    Q(code__icontains=text) | \
+                    Q(subject__icontains=text) | \
+                    Q(input_module__ticket_category__name__icontains=text) | \
+                    Q(created__icontains=text))
+        else: self.aqs = self.model.all()
 
 @csrf_exempt
 @login_required

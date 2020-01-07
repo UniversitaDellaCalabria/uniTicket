@@ -12,6 +12,9 @@ ALLOWED_HOSTS = [
                 HOSTNAME,
                 '127.0.0.1',
                 ]
+
+ADMIN_PATH = 'gestione'
+
 EMAIL_SENDER = 'no-reply@{}'.format(HOSTNAME)
 
 DATABASES = {

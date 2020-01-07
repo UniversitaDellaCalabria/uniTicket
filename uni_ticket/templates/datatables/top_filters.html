@@ -5,10 +5,10 @@
 <div class="row">
     <div class="col-2">
         <div class="bootstrap-select-wrapper">
-            <select id="year_box"
-                    name="year_box">
+            <select id="year" name="year">
+                <option value="" selected>- Tutti gli anni -</option>
                 {% for year in year_list %}
-                <option value="{{ year }}" {% if year|slugify == current_year %}selected{% endif %}>
+                <option value="{{ year }}">
                     {{ year }}
                 </option>
                 {% endfor %}

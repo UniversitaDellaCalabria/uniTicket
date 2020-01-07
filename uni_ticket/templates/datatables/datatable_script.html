@@ -9,6 +9,7 @@ $.urlParam = function(name){
 }
 var url = "{{ var_url }}";
 $(document).ready(function() {
+
     var datatable = $('.datatable-responsive-serverside').DataTable({
         dom: 'lrtip',
         aLengthMenu: [
@@ -19,7 +20,6 @@ $(document).ready(function() {
         //responsive: true,
         processing: true,
         serverSide: true,
-
         columnDefs: [
             {
                 visible: false,
@@ -86,12 +86,15 @@ $(document).ready(function() {
         },
     });
 
-    $('#search_box').on( 'keyup', function () {
-        datatable.search($('#search_box').val()).draw();
+    $('#year, #search_box').on('change keyup', function () {
+        var year = $('#year').val();
+        var text = $('#search_box').val();
+        var args = '{"year": "'+year+'", "text": "'+text+'"}';
+        datatable.search(args).draw();
     } );
-    $('#year_box').on( 'change', function () {
-        datatable.search($('#year_box').val()).draw();
-    } );
+    //$('#year_box').on( 'change', function () {
+        //datatable.search($('#year_box').val()).draw();
+    //} );
 
 });
 

@@ -46,4 +46,8 @@ mysqlclient
 git+https://github.com/italia/design-django-theme
 git+https://github.com/UniversitaDellaCalabria/django-unical-agid-template.git
 
+# Django REST
+djangorestframework
+markdown
+django-filter
 
