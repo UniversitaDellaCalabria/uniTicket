@@ -5,6 +5,7 @@ import os
 import pytz
 
 from django import template
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
@@ -99,3 +100,11 @@ def get_dyn_field_name(value):
 def get_unread_replies(ticket, want_structure=True):
     replies = ticket.get_unread_replies(want_structure)
     return replies
+
+@register.simple_tag
+def user_from_pk(user_id):
+    if not user_id: return False
+    user_model = get_user_model()
+    user = user_model.objects.get(pk=user_id)
+    if not user: return False
+    return user

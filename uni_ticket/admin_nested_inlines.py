@@ -68,17 +68,17 @@ class TicketAssignmentNestedInline(nested_admin.NestedTabularInline):
 
 
 # Ticket History
-class TicketHistoryModelForm(forms.ModelForm):
+# class TicketHistoryModelForm(forms.ModelForm):
 
-    class Meta:
-        model = TicketHistory
-        fields = ('__all__')
+    # class Meta:
+        # model = TicketHistory
+        # fields = ('__all__')
 
 
-class TicketHistoryNestedInline(nested_admin.NestedTabularInline):
-    model = TicketHistory
-    form = TicketHistoryModelForm
-    extra = 0
+# class TicketHistoryNestedInline(nested_admin.NestedTabularInline):
+    # model = TicketHistory
+    # form = TicketHistoryModelForm
+    # extra = 0
 
 
 # Ticket Reply

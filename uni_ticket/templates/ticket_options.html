@@ -1,18 +1,18 @@
 {% load i18n %}
 {% load static %}
 
-{% if ticket.is_taken or ticket.is_closed %}
 <div id="collapseDiv1-lft" class="collapse-div collapse-left-icon" role="tablist">
     <div class="collapse-header" id="heading2-lft">
         <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
-            {% trans "Aggiornamenti di stato" %} ({{ ticket_history|length }})
+            {% trans "Aggiornamenti di stato (Log)" %} ({{ logs|length }})
         </button>
     </div>
     <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
         <div class="collapse-body">
-            {% include "ticket_history.html" %}
+            {% include "logs.html" %}
         </div>
     </div>
+    {% if ticket.is_taken or ticket.is_closed %}
     <div class="collapse-header" id="heading3-lft">
         <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
             {% trans "Attività del ticket" %} ({{ ticket_task|length }})
@@ -37,5 +37,5 @@
             {% endblock ticket_dependences %}
         </div>
     </div>
+    {% endif %}
 </div>
-{% endif %}

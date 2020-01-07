@@ -3,8 +3,10 @@ import os
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.html import strip_tags
@@ -169,7 +171,8 @@ def ticket_detail(request, structure_slug, ticket_id,
     path_allegati = get_path_allegato(ticket)
     ticket_form = ticket.input_module.get_form(files=allegati,
                                                remove_filefields=False)
-    ticket_history = TicketHistory.objects.filter(ticket=ticket)
+    ticket_logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(ticket).pk,
+                                          object_id=ticket.pk)
     ticket_task = Task.objects.filter(ticket=ticket)
     ticket_dependences = ticket.get_dependences()
     assigned_to = []
@@ -200,7 +203,7 @@ def ticket_detail(request, structure_slug, ticket_id,
                 msg = _("Priorità assegnata: {}".format(priority_text))
             ticket.priority = priority
             ticket.save(update_fields = ['priority'])
-            ticket.update_history(user=request.user,
+            ticket.update_log(user=request.user,
                                   note=msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket <b>{}</b> aggiornato"
@@ -223,7 +226,7 @@ def ticket_detail(request, structure_slug, ticket_id,
          'ticket': ticket,
          'ticket_assignments': ticket_assignments,
          'ticket_form': ticket_form,
-         'ticket_history': ticket_history,
+         'logs': ticket_logs,
          'ticket_task': ticket_task,
          'title': title,}
     template = "{}/ticket_detail.html".format(user_type)
@@ -300,7 +303,7 @@ def ticket_take(request, structure_slug, ticket_id,
     user = request.user
     ticket.is_taken = True
     ticket.save(update_fields=['is_taken'])
-    ticket.update_history(user=request.user,
+    ticket.update_log(user=request.user,
                           note= _("Preso in carico"))
     messages.add_message(request, messages.SUCCESS,
                          _("Ticket <b>{}</b> preso in carico"
@@ -395,7 +398,7 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                                 master_ticket=master_ticket,
                                 note=note)
             t2t.save()
-            ticket.update_history(user = request.user,
+            ticket.update_log(user = request.user,
                                   note = _("Aggiunta dipendenza dal ticket:"
                                            " <b>{}</b>".format(master_ticket)))
             messages.add_message(request, messages.SUCCESS,
@@ -464,7 +467,7 @@ def ticket_dependence_remove(request, structure_slug,
                               structure_slug=structure.slug)
     else:
         to_remove.delete()
-        ticket.update_history(user = request.user,
+        ticket.update_log(user = request.user,
                               note = _("Rimossa dipendenza dal ticket:"
                                        " <b>{}</b>".format(master_ticket)))
         messages.add_message(request, messages.SUCCESS,
@@ -540,7 +543,7 @@ def ticket_close(request, structure_slug, ticket_id,
             ticket.save(update_fields = ['is_closed',
                                          'motivazione_chiusura',
                                          'data_chiusura'])
-            ticket.update_history(user = request.user,
+            ticket.update_log(user = request.user,
                                   note = _("Chiusura ticket: {}".format(motivazione)))
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket {} chiuso correttamente".format(ticket)))
@@ -595,7 +598,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                               structure_slug=structure.slug)
     ticket.is_closed = False
     ticket.save(update_fields = ['is_closed'])
-    ticket.update_history(user=request.user,
+    ticket.update_log(user=request.user,
                           note= _("Riapertura ticket"))
     messages.add_message(request, messages.SUCCESS,
                          _("Ticket {} riaperto correttamente".format(ticket)))
@@ -751,7 +754,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                                         structure=structure,
                                                         allow_readonly=False)
             for off in abandoned_offices:
-                ticket.update_history(user=request.user,
+                ticket.update_log(user=request.user,
                                       note= _("Competenza abbandonata da"
                                               " Ufficio: {}".format(off)))
 
@@ -760,13 +763,13 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
             abandoned_offices = ticket.block_competence(user=request.user,
                                                         structure=structure)
             for off in abandoned_offices:
-                ticket.update_history(user=request.user,
+                ticket.update_log(user=request.user,
                                       note= _("Competenza trasferita da"
                                               " (accesso in sola lettura)"
                                               " Ufficio: {}".format(off)))
         # If follow and want to manage
         ticket.add_competence(office=new_office, user=request.user)
-        ticket.update_history(user=request.user,
+        ticket.update_log(user=request.user,
                               note= _("Nuova competenza: {} - {}"
                                       " - Categoria: {}".format(struttura,
                                                                 new_office,
@@ -974,7 +977,7 @@ def task_add_new(request, structure_slug, ticket_id,
             new_task.created_by = request.user
             new_task.code = uuid_code()
             new_task.save()
-            ticket.update_history(user = request.user,
+            ticket.update_log(user = request.user,
                                   note = _("Aggiunto task:"
                                            " {}".format(new_task)))
             messages.add_message(request, messages.SUCCESS,
@@ -1030,7 +1033,7 @@ def task_remove(request, structure_slug,
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     elimina_file(file_name=task.attachment)
     task.delete()
-    ticket.update_history(user = request.user,
+    ticket.update_log(user = request.user,
                           note = _("Rimosso task: {}".format(task)))
     messages.add_message(request, messages.SUCCESS,
                          _("Task {} rimosso correttamente".format(task)))
@@ -1091,7 +1094,8 @@ def task_detail(request, structure_slug, ticket_id, task_id,
     title = _("Dettaglio attività")
     priority = task.get_priority()
     # allegati = ticket.get_allegati_dict()
-    task_history = TaskHistory.objects.filter(task=task)
+    task_logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(task).pk,
+                                        object_id=task.pk)
     form = PriorityForm(data={'priorita': task.priority})
     if request.method == 'POST':
         if can_manage['readonly']:
@@ -1115,9 +1119,9 @@ def task_detail(request, structure_slug, ticket_id, task_id,
                                                               priority_text))
             task.priority = priority
             task.save(update_fields = ['priority'])
-            task.update_history(user=request.user,
+            task.update_log(user=request.user,
                                 note=msg)
-            ticket.update_history(user=request.user,
+            ticket.update_log(user=request.user,
                                   note=msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Attività aggiornata con successo"))
@@ -1134,7 +1138,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
        'structure': structure,
        'sub_title': task,
        'task': task,
-       'task_history': task_history,
+       'logs': task_logs,
        'title': title}
     user_type = get_user_type(request.user, structure)
     template = "{}/task_detail.html".format(user_type)
@@ -1222,9 +1226,9 @@ def task_close(request, structure_slug, ticket_id, task_id,
                                        'motivazione_chiusura',
                                        'data_chiusura'])
             msg = _("Chiusura task: {} - {}".format(task, motivazione))
-            task.update_history(user = request.user,
+            task.update_log(user = request.user,
                                 note = msg)
-            ticket.update_history(user = request.user,
+            ticket.update_log(user = request.user,
                                   note = msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Task {} chiuso correttamente".format(task)))
@@ -1290,9 +1294,9 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
     task.is_closed = False
     task.save(update_fields = ['is_closed'])
     msg = _("Riapertura task {}".format(task))
-    task.update_history(user=request.user,
+    task.update_log(user=request.user,
                         note=msg)
-    ticket.update_history(user=request.user,
+    ticket.update_log(user=request.user,
                           note=msg)
     messages.add_message(request, messages.SUCCESS,
                          _("Task {} riaperto correttamente".format(task)))
@@ -1391,9 +1395,9 @@ def task_edit(request, structure_slug, ticket_id, task_id,
                                        'priority',
                                        'attachment'])
 
-            task.update_history(user=request.user,
+            task.update_log(user=request.user,
                                 note=msg)
-            ticket.update_history(user=request.user,
+            ticket.update_log(user=request.user,
                                   note=msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Attività aggiornata con successo"))
@@ -1470,9 +1474,9 @@ def task_attachment_delete(request, structure_slug,
     task.save(update_fields = ['attachment'])
 
     msg = _("Allegato task {} eliminato".format(task.code))
-    task.update_history(user=request.user,
+    task.update_log(user=request.user,
                           note=_("Allegato eliminato"))
-    ticket.update_history(user=request.user,
+    ticket.update_log(user=request.user,
                           note=msg)
     messages.add_message(request, messages.SUCCESS, msg)
     return redirect('uni_ticket:edit_task',

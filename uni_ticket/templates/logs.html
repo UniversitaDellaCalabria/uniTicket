@@ -1,12 +1,15 @@
+{% load uni_ticket_tags %}
+
 <div class="it-list-wrapper">
     <ul class="it-list">
-        {% for event in task_history %}
+        {% for log in logs %}
+        {% user_from_pk log.user_id as user %}
         <li>
             <a>
                 <div class="it-right-zone">
-                    <span class="text">{{ event.note }}<em>{{ event.modified_by }}</em></span>
+                    <span class="text">{{ log.change_message }}<em>{{ user }}</em></span>
                     <span class="it-multiple">
-                        <span class="metadata">{{ event.modified }}</span>
+                        <span class="metadata">{{ log.action_time }}</span>
                     </span>
                 </div>
             </a>

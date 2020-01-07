@@ -4,6 +4,8 @@ import re
 
 from collections import OrderedDict
 from django.conf import settings
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -332,7 +334,7 @@ class Ticket(SavedFormContent):
         if not self.is_taken: return _("In attesa di essere preso in carico")
         return _("Aperto")
 
-    def update_history(self, user, note=None):
+    def update_log(self, user, note=None):
         if not user: return False
 
         # Send mail to ticket owner
@@ -341,17 +343,19 @@ class Ticket(SavedFormContent):
              'message': note,
              'ticket': self
             }
-        m_subject = _('{} - ticket {} deleted'.format(settings.HOSTNAME,
+        m_subject = _('{} - ticket {} updated'.format(settings.HOSTNAME,
                                                       self))
         send_custom_mail(subject=m_subject,
                          body=TICKET_UPDATED.format(**d),
                          recipient=user)
         # End send mail to ticket owner
 
-        update = TicketHistory(ticket=self,
-                               modified_by=user,
-                               note=note)
-        update.save()
+        LogEntry.objects.log_action(user_id         = user.pk,
+                                    content_type_id = ContentType.objects.get_for_model(self).pk,
+                                    object_id       = self.pk,
+                                    object_repr     = self.__str__(),
+                                    action_flag     = CHANGE,
+                                    change_message  = note)
 
     def get_assigned_to_offices(self, office_active=True):
         """
@@ -591,24 +595,24 @@ class TicketAssignment(models.Model):
         return '{} - {}'.format(self.ticket, self.office)
 
 
-class TicketHistory(models.Model):
-    """
-    Cronologia degli stati di avanzamento del Ticket
-    """
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                    on_delete=models.PROTECT,
-                                    null=True)
-    modified = models.DateTimeField(auto_now=True)
-    note = models.TextField(blank=True, null=True)
+# class TicketHistory(models.Model):
+    # """
+    # Cronologia degli stati di avanzamento del Ticket
+    # """
+    # ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    # modified_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                    # on_delete=models.PROTECT,
+                                    # null=True)
+    # modified = models.DateTimeField(auto_now=True)
+    # note = models.TextField(blank=True, null=True)
 
-    class Meta:
-        ordering = ["ticket", "-modified"]
-        verbose_name = _("Cronologia Stati Ticket")
-        verbose_name_plural = _("Cronologia Stati Ticket")
+    # class Meta:
+        # ordering = ["ticket", "-modified"]
+        # verbose_name = _("Cronologia Stati Ticket")
+        # verbose_name_plural = _("Cronologia Stati Ticket")
 
-    def __str__(self):
-        return '{} - {}'.format(self.ticket, self.note)
+    # def __str__(self):
+        # return '{} - {}'.format(self.ticket, self.note)
 
 
 class TicketReply(models.Model):
@@ -703,11 +707,13 @@ class Task(models.Model):
         """
         return dict(PRIORITY_LEVELS).get(str(self.priority))
 
-    def update_history(self, user, note=None):
-        update = TaskHistory(task=self,
-                             modified_by=user,
-                             note=note)
-        update.save()
+    def update_log(self, user, note=None):
+        LogEntry.objects.log_action(user_id         = user.pk,
+                                    content_type_id = ContentType.objects.get_for_model(self).pk,
+                                    object_id       = self.pk,
+                                    object_repr     = self.__str__(),
+                                    action_flag     = CHANGE,
+                                    change_message  = note)
 
     def __str__(self):
         return '{} - ticket: {}'.format(self.subject, self.ticket)
@@ -732,27 +738,6 @@ class Task2Ticket(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.task, self.ticket)
-
-
-class TaskHistory(models.Model):
-    """
-    Cronologia degli stati del Task
-    """
-    task = models.ForeignKey(Task,
-                             on_delete=models.CASCADE)
-    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                    on_delete=models.PROTECT,
-                                    null=True)
-    modified = models.DateTimeField(auto_now=True)
-    note = models.TextField(blank=True, null=True)
-
-    class Meta:
-        ordering = ["task", "-modified"]
-        verbose_name = _("Cronologia Stati Task")
-        verbose_name_plural = _("Cronologie Stati Task")
-
-    def __str__(self):
-        return '{} - {}'.format(self.task, self.note)
 
 
 class TicketCategoryCondition(models.Model):

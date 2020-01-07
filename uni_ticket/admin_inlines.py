@@ -62,17 +62,17 @@ class TicketAssignmentInline(admin.TabularInline):
 
 
 # Ticket History
-class TicketHistoryModelForm(forms.ModelForm):
+# class TicketHistoryModelForm(forms.ModelForm):
 
-    class Meta:
-        model = TicketHistory
-        fields = ('__all__')
+    # class Meta:
+        # model = TicketHistory
+        # fields = ('__all__')
 
 
-class TicketHistoryInline(admin.TabularInline):
-    model = TicketHistory
-    form = TicketHistoryModelForm
-    extra = 0
+# class TicketHistoryInline(admin.TabularInline):
+    # model = TicketHistory
+    # form = TicketHistoryModelForm
+    # extra = 0
 
 
 # Ticket Reply

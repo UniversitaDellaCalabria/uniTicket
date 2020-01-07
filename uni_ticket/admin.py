@@ -31,7 +31,6 @@ class TicketAdmin(nested_admin.NestedModelAdmin):
 
     inlines = [# TicketAttachmentNestedInline,
                TicketAssignmentNestedInline,
-               TicketHistoryNestedInline,
                TicketReplyNestedInline,
                Ticket2TicketNestedInline,]
 
@@ -43,10 +42,6 @@ class TaskAdmin(nested_admin.NestedModelAdmin):
                     'ticket')
     list_filter = ('created',)
     search_fields = ('name', 'description')
-
-    # inline TaskAttachment
-    # inline TaskHistory
-    # inline Task2Ticket
 
     def get_status(self, obj):
         status_list = TaskHistory.objects.filter(task=obj)

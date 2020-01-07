@@ -2,7 +2,9 @@ import json
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.auth.decorators import login_required
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.forms import formset_factory
 from django.http import HttpResponse, HttpResponseRedirect
@@ -293,8 +295,8 @@ def ticket_edit(request, ticket_id):
                              request.POST.get(TICKET_DESCRIPTION_ID),
                              json_response)
             # data di modifica
-            ticket.update_history(user=request.user,
-                                  note=_("Modifica ticket"))
+            ticket.update_log(user=request.user,
+                              note=_("Modifica ticket"))
             # Allega il messaggio al redirect
             messages.add_message(request, messages.SUCCESS,
                                  _("Modifica effettuata con successo"))
@@ -336,8 +338,8 @@ def delete_my_attachment(request, ticket_id, attachment):
                  path=path_allegato)
     set_as_dict(ticket, ticket_details)
     allegati = ticket.get_allegati_dict(ticket_dict=ticket_details)
-    ticket.update_history(user=request.user,
-                          note=_("Elimina allegato"))
+    ticket.update_log(user=request.user,
+                      note=_("Elimina allegato"))
 
     messages.add_message(request, messages.SUCCESS,
                          _("Allegato eliminato correttamente"))
@@ -366,10 +368,6 @@ def ticket_delete(request, ticket_id):
 
     ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
     ticket_assignment.delete()
-
-    ticket_history = TicketHistory.objects.filter(ticket=ticket)
-    for event in ticket_history:
-        event.delete()
 
     # Send mail to ticket owner
     mail_params = {'hostname': settings.HOSTNAME,
@@ -412,7 +410,9 @@ def ticket_detail(request, ticket_id, template='user/ticket_detail.html'):
     ticket_form = ticket.input_module.get_form(files=allegati,
                                                remove_filefields=False)
     priority = ticket.get_priority()
-    ticket_history = TicketHistory.objects.filter(ticket=ticket)
+
+    ticket_logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(ticket).pk,
+                                          object_id=ticket.pk)
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
     ticket_task = Task.objects.filter(ticket=ticket)
     ticket_dependences = ticket.get_dependences()
@@ -430,7 +430,7 @@ def ticket_detail(request, ticket_id, template='user/ticket_detail.html'):
        'ticket': ticket,
        'ticket_assignments': ticket_assignments,
        'ticket_form': ticket_form,
-       'ticket_history': ticket_history,
+       'logs': ticket_logs,
        'ticket_task': ticket_task,
        'title': title,}
     template = template
@@ -563,8 +563,8 @@ def ticket_close(request, ticket_id):
             ticket.save(update_fields = ['is_closed',
                                          'motivazione_chiusura',
                                          'data_chiusura'])
-            ticket.update_history(user = request.user,
-                                  note = _("Chiusura ticket: {}".format(motivazione)))
+            ticket.update_log(user=request.user,
+                              note=_("Chiusura ticket: {}".format(motivazione)))
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket {} chiuso correttamente".format(ticket)))
             return redirect('uni_ticket:ticket_detail', ticket.code)
