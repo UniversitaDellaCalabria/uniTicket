@@ -13,7 +13,7 @@ services:
       MYSQL_ROOT_PASSWORD: mypass
 
   uniticket:
-    image: itcnr/uniticket
+    image: unical/uniticket
     container_name: uniticket
     restart: always
     environment:
@@ -21,8 +21,11 @@ services:
       SQL_USER: uniticket
       SQL_PASSWORD: changeme
       SQL_DATABASE: uniticketdb
+      WAIT_HOSTS: uniticket-db:3306
     command: >
-      sh -c "python manage.py migrate --noinput &&
+      sh -c "/wait &&
+             python manage.py test --noinput &&
+             python manage.py migrate --noinput &&
              python manage.py collectstatic --noinput &&
              python manage.py shell -c \"from django.contrib.auth import get_user_model; get_user_model().objects.filter(username='admin').exists() or get_user_model().objects.create_superuser('admin', 'admin@example.com', 'adminpass')\" &&
              python manage.py runserver 0.0.0.0:8000"
