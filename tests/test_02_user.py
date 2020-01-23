@@ -6,37 +6,13 @@ from uni_ticket.models import *
 from uni_ticket.urls import *
 from uni_ticket.utils import *
 
-from . base_ticket_env import BaseCategoryEnvironment
+from . base_ticket_env import BaseTicketEnvironment
 
 
 logger = logging.getLogger('my_logger')
 
 
-class Test_UserFunctions(BaseCategoryEnvironment):
-
-    def setUp(self):
-        super().setUp()
-
-        # Create new ticket
-        # New ticket preload (select category)
-        response = self.client.get(reverse('uni_ticket:new_ticket_preload',
-                                           kwargs={'structure_slug': self.structure_1.slug,}),
-                                   follow=True)
-        assert self.category_1 in response.context['categorie']
-
-        # Add ticket (base form with an attachment)
-        attachment = self.create_fake_file()
-        subject = 'Ticket 1'
-        params = {'ticket_subject': subject,
-                  'ticket_description': 'Description category 1',
-                  'file_field_1': attachment}
-        response = self.client.post(reverse('uni_ticket:add_new_ticket',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1.slug}),
-                                    params,
-                                    follow=True)
-        self.ticket = Ticket.objects.first()
-        assert self.ticket
+class Test_UserFunctions(BaseTicketEnvironment):
 
     def test_user_dashboard(self):
         # Dashboard

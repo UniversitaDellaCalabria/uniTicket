@@ -6,13 +6,13 @@ from uni_ticket.models import *
 from uni_ticket.urls import *
 from uni_ticket.utils import *
 
-from . base_ticket_env import BaseCategoryEnvironment
+from . base_ticket_env import BaseTicketEnvironment
 
 
 logger = logging.getLogger('my_logger')
 
 
-class Test_ManFunctions(BaseCategoryEnvironment):
+class Test_ManagerFunctions(BaseTicketEnvironment):
 
     def setUp(self):
         super().setUp()
@@ -382,30 +382,11 @@ class Test_ManFunctions(BaseCategoryEnvironment):
         self.assertFalse(office_deleted)
 
     def test_take_ticket_and_message(self):
-        # Create new ticket
-        # New ticket preload (select category)
-        response = self.client.get(reverse('uni_ticket:new_ticket_preload',
-                                           kwargs={'structure_slug': self.structure_1.slug,}),
-                                   follow=True)
-
-        # Add ticket (base form with an attachment)
-        attachment = self.create_fake_file()
-        subject = 'Ticket 1'
-        params = {'ticket_subject': subject,
-                  'ticket_description': 'Description category 1',
-                  'file_field_1': attachment}
-        response = self.client.post(reverse('uni_ticket:add_new_ticket',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1.slug}),
-                                    params,
-                                    follow=True)
-        ticket = Ticket.objects.first()
-
         # Take ticket
         params = {'priorita': 0}
         response = self.client.post(reverse('uni_ticket:manager_manage_ticket',
                                             kwargs={'structure_slug': self.structure_1.slug,
-                                                    'ticket_id': ticket.code}),
+                                                    'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
 
@@ -414,7 +395,7 @@ class Test_ManFunctions(BaseCategoryEnvironment):
         params = {'subject': subject,
                   'text': 'Ticket message'}
         response = self.client.post(reverse('uni_ticket:ticket_message',
-                                            kwargs={'ticket_id': ticket.code}),
+                                            kwargs={'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
-        assert TicketReply.objects.filter(ticket=ticket, owner=self.staff_1)
+        assert TicketReply.objects.filter(ticket=self.ticket, owner=self.staff_1)
