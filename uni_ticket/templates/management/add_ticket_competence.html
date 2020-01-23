@@ -17,25 +17,25 @@
     <form method="post" enctype="multipart/form-data">
     {% endif %}
 
-    <b><label for="struttura_slug">{% trans "Struttura" %}</label></b>
+    <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
     {% comment %}
     <!-- Bootstrap Italia select -->
     <div class="bootstrap-select-wrapper">
     {% endcomment %}
     <div>
-        {% if struttura_slug %}
+        {% if structure_slug %}
         <select onchange="window.location = replace_last_param(window.location.href, $(this).val());"
         {% else %}
         <select onchange="window.location = window.location.href + $(this).val();"
         {% endif %}
-                id="struttura_slug"
-                name="struttura_slug"
+                id="structure_slug"
+                name="structure_slug"
                 title="{% trans 'A chi è indirizzata la richiesta?' %}"
                 data-live-search="true" data-live-search-placeholder="Cerca...">
             <option value="">{% trans "Seleziona un'opzione" %}</option>
             {% for struttura in strutture %}
             <option value="{{ struttura.slug }}"
-            {% if struttura.slug == struttura_slug %} selected {% endif %}>
+            {% if struttura.slug == structure_slug %} selected {% endif %}>
                 {{ struttura }}
             </option>
             {% endfor %}
@@ -43,8 +43,8 @@
     </div>
 
     <div style="padding: 1.5rem 0 1rem">
-        <b><label for="categoria_slug">{% trans "Categoria" %}</label></b>
-        {% if not struttura_slug %}
+        <b><label for="category_slug">{% trans "Categoria" %}</label></b>
+        {% if not structure_slug %}
         <div class="alert alert-warning" role="alert">
           {% trans "Seleziona la struttura a cui inoltrare il ticket" %}
         </div>
@@ -59,8 +59,8 @@
         {% endcomment %}
         <div>
             <select required
-                {% if not struttura_slug %}disabled{% endif %}
-                name="categoria_slug"
+                {% if not structure_slug %}disabled{% endif %}
+                name="category_slug"
                 title="{% trans 'A chi è indirizzata la richiesta?' %}"
                 data-live-search="true">
                 <option value="">{% trans "Seleziona un'opzione" %}</option>

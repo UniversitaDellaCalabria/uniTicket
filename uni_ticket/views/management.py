@@ -718,14 +718,14 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     categorie = TicketCategory.objects.filter(organizational_structure=struttura.pk,
                                               is_active=True)
     if request.method == 'POST':
-        categoria_slug = request.POST.get('categoria_slug')
+        category_slug = request.POST.get('category_slug')
         follow_value = request.POST.get('follow')
         readonly_value = request.POST.get('readonly')
         follow = True if follow_value == 'on' else False
         readonly = True if readonly_value == 'on' else False
         # La categoria passata in POST esiste?
         categoria = get_object_or_404(TicketCategory,
-                                      slug=categoria_slug,
+                                      slug=category_slug,
                                       organizational_structure=struttura,
                                       is_active=True)
         new_office = structure.get_default_office()
@@ -784,7 +784,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     d = {'can_manage': can_manage,
          'categorie': categorie,
          'structure': structure,
-         'struttura_slug': str_slug,
+         'structure_slug': str_slug,
          'strutture': strutture,
          'sub_title': sub_title,
          'ticket': ticket,

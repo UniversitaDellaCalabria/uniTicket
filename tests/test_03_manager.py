@@ -1,45 +1,34 @@
 import logging
 
-from django.test import RequestFactory
 from django.urls import reverse
 
-from organizational_area.models import OrganizationalStructureOffice
 from uni_ticket.models import *
-from uni_ticket.views import manager
 from uni_ticket.urls import *
 from uni_ticket.utils import *
 
-from . base import BaseTest
+from . base_ticket_env import BaseCategoryEnvironment
 
 
 logger = logging.getLogger('my_logger')
 
-class Test_ManagerFunctions(BaseTest):
+
+class Test_ManFunctions(BaseCategoryEnvironment):
 
     def setUp(self):
         super().setUp()
-        # Staff_1 User login (manager of Structure 1)
-        self.client.force_login(self.staff_1)
-
-        # Create category 1
-        cat_name = 'Category 1'
-        params = {'name': cat_name,
-                  'description': 'Description category 1'}
-        response = self.client.post(reverse('uni_ticket:manager_category_add_new',
-                                            kwargs={'structure_slug': self.structure_1.slug}),
-                                    params,
-                                    follow=True)
-        self.category_1 = TicketCategory.objects.get(name=cat_name)
 
         # Create category 2
-        cat_name2 = 'Category 2'
-        params = {'name': cat_name2,
-                  'description': 'Description category 2'}
+        cat_name = 'Category 2'
+        params = {'name': cat_name,
+                  'description': 'Description category 2',
+                  'allow_employee': True,
+                  'allow_user': True,
+                  'allow_guest': True}
         response = self.client.post(reverse('uni_ticket:manager_category_add_new',
                                             kwargs={'structure_slug': self.structure_1.slug}),
                                     params,
                                     follow=True)
-        self.category_2 = TicketCategory.objects.get(name=cat_name2)
+        self.category_2 = TicketCategory.objects.get(name=cat_name)
 
         # Create Office 1
         # Create a new office in Structure 1
@@ -62,15 +51,25 @@ class Test_ManagerFunctions(BaseTest):
         check_manager = user_is_manager(self.user_1, self.structure_1)
         self.assertFalse(check_manager)
 
-    def test_category(self):
+    def test_enable_empty_category(self):
         # Enable category without input modules (fails!)
         self.client.get(reverse('uni_ticket:manager_enable_category',
                                 kwargs={'structure_slug': self.structure_1.slug,
-                                        'category_slug': self.category_1.slug}),
+                                        'category_slug': self.category_2.slug}),
                          follow=True)
-        self.category_1.refresh_from_db()
-        self.assertFalse(self.category_1.is_active)
+        self.category_2.refresh_from_db()
+        self.assertFalse(self.category_2.is_active)
 
+    def test_disable_category(self):
+        # Disable category
+        self.client.get(reverse('uni_ticket:manager_disable_category',
+                                kwargs={'structure_slug': self.structure_1.slug,
+                                        'category_slug': self.category_1.slug}),
+                        follow=True)
+        self.category_1.refresh_from_db()
+        assert not self.category_1.is_active
+
+    def test_edit_category(self):
         # Edit
         name = 'new name'
         params =  {'name': name,}
@@ -82,6 +81,7 @@ class Test_ManagerFunctions(BaseTest):
         self.category_1.refresh_from_db()
         assert self.category_1.name == name
 
+    def test_edit_category_same_name_other(self):
         # Edit with same name (fails!)
         name = 'Category 2'
         params =  {'name': name,}
@@ -93,97 +93,54 @@ class Test_ManagerFunctions(BaseTest):
         self.category_1.refresh_from_db()
         self.assertFalse(self.category_1.name == name)
 
-        # Delete
+    def test_delete_category(self):
+        # Delete (no ticket linked, success!)
+        name = 'Category 2'
         self.client.get(reverse('uni_ticket:manager_delete_category',
                                 kwargs={'structure_slug': self.structure_1.slug,
                                         'category_slug': self.category_2.slug}),
                          follow=True)
         self.assertFalse(TicketCategory.objects.filter(name=name))
 
-    def test_category_input_module(self):
-        # Create
-        name = 'module name'
-        params = {'name': name,}
-        response = self.client.post(reverse('uni_ticket:manager_category_new_input_module',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1.slug}),
-                                    params,
-                                    follow=True)
-        module = TicketCategoryModule.objects.get(name=name,
-                                                  ticket_category=self.category_1)
-        assert module
-        self.assertFalse(module.is_active)
-
-        # Add field
-        field_name = 'date_field'
+    def test_category_field_edit(self):
+        # Edit input module field
+        field_name = 'file_field_1 edited'
         params = {'name': field_name,
-                  'field_type': 'BaseDateField',
-                  'is_required': False}
-        response = self.client.post(reverse('uni_ticket:manager_category_input_module',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1.slug,
-                                                    'module_id': module.pk}),
-                                    params,
-                                    follow=True)
-        input_field = TicketCategoryInputList.objects.filter(category_module=module,
-                                                            name=field_name).first()
-        assert input_field
-
-        # Edit field
-        field_name = 'date_field edited'
-        params = {'name': field_name,
-                  'field_type': 'BaseDateField',
+                  'field_type': 'CustomFileField',
                   'is_required': True}
         response = self.client.post(reverse('uni_ticket:manager_category_input_field_edit',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'category_slug': self.category_1.slug,
-                                                    'module_id': module.pk,
-                                                    'field_id': input_field.pk}),
+                                                    'module_id': self.module.pk,
+                                                    'field_id': self.input_field.pk}),
                                     params,
                                     follow=True)
-        input_field.refresh_from_db()
-        assert input_field.name == field_name
+        self.input_field.refresh_from_db()
+        assert self.input_field.name == field_name
 
+    def test_category_field_remove(self):
         # Remove field
-        field_name = 'date_field'
         response = self.client.get(reverse('uni_ticket:manager_category_input_field_delete',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'category_slug': self.category_1.slug,
-                                                    'module_id': module.pk,
-                                                    'field_id': input_field.pk}),
+                                                    'module_id': self.module.pk,
+                                                    'field_id': self.input_field.pk}),
                                     follow=True)
-        input_field = TicketCategoryInputList.objects.filter(category_module=module,
-                                                            name=field_name).first()
-        assert not input_field
+        assert not TicketCategoryInputList.objects.filter(category_module=self.module).first()
 
-        # Enable
-        self.client.get(reverse('uni_ticket:manager_category_input_module_enable',
-                                kwargs={'structure_slug': self.structure_1.slug,
-                                        'category_slug': self.category_1.slug,
-                                        'module_id': module.pk}),
-                        follow=True)
-        module.refresh_from_db()
-        assert module.is_active
-
+    def test_add_inactive_category_in_office_competences(self):
         # Add category in office competences
         # Category must be enabled (fails!)
-        params = {'category': self.category_1.pk,}
+        params = {'category': self.category_2.pk,}
         response = self.client.post(reverse('uni_ticket:manager_add_office_category',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'office_slug': self.office_1.slug}),
                                     params,
                                     follow=True)
-        self.category_1.refresh_from_db()
+        self.category_2.refresh_from_db()
         self.assertFalse(self.category_1.organizational_office == self.office_1)
 
-        # Enable category after enable input module
-        self.client.get(reverse('uni_ticket:manager_enable_category',
-                                kwargs={'structure_slug': self.structure_1.slug,
-                                        'category_slug': self.category_1.slug}),
-                        follow=True)
-        self.category_1.refresh_from_db()
-        assert self.category_1.is_active
-
+    def test_add_active_category_in_office_competences(self):
         # Add category in office competences
         # Category must be enabled (now is ok!)
         params = {'category': self.category_1.pk,}
@@ -195,6 +152,7 @@ class Test_ManagerFunctions(BaseTest):
         self.category_1.refresh_from_db()
         assert self.category_1.organizational_office == self.office_1
 
+    def test_remove_category_from_office_competences(self):
         # Remove category from office competences
         # Category must be enabled (now is ok!)
         response = self.client.get(reverse('uni_ticket:manager_remove_office_category',
@@ -205,34 +163,54 @@ class Test_ManagerFunctions(BaseTest):
         self.category_1.refresh_from_db()
         self.assertFalse(self.category_1.organizational_office == self.office_1)
 
-        # Disable category
-        self.client.get(reverse('uni_ticket:manager_disable_category',
-                                kwargs={'structure_slug': self.structure_1.slug,
-                                        'category_slug': self.category_1.slug}),
-                        follow=True)
-        self.category_1.refresh_from_db()
-        assert not self.category_1.is_active
-
-        # Disable
+    def test_disable_input_module(self):
+        # Disable input module and category
         self.client.get(reverse('uni_ticket:manager_category_input_module_disable',
                                 kwargs={'structure_slug': self.structure_1.slug,
                                         'category_slug': self.category_1.slug,
-                                        'module_id': module.pk}),
+                                        'module_id': self.module.pk}),
                         follow=True)
-        module.refresh_from_db()
-        self.assertFalse(module.is_active)
+        self.module.refresh_from_db()
+        self.assertFalse(self.module.is_active)
+        self.assertFalse(self.category_1.is_active)
 
+    def test_edit_input_module(self):
         # Edit
         new_name = 'new module name'
         new_params = {'name': new_name,}
         self.client.post(reverse('uni_ticket:manager_category_input_module_edit',
                                 kwargs={'structure_slug': self.structure_1.slug,
                                         'category_slug': self.category_1.slug,
-                                        'module_id': module.pk}),
+                                        'module_id': self.module.pk}),
                         new_params,
                         follow=True)
-        module.refresh_from_db()
-        assert module.name == new_name
+        self.module.refresh_from_db()
+        assert self.module.name == new_name
+
+    def test_delete_input_module(self):
+        # Delete
+        pk = self.module.pk
+        self.client.get(reverse('uni_ticket:manager_category_input_module_delete',
+                                kwargs={'structure_slug': self.structure_1.slug,
+                                        'category_slug': self.category_1.slug,
+                                        'module_id': self.module.pk}),
+                        follow=True)
+        assert not TicketCategoryModule.objects.filter(pk=pk)
+        assert not self.category_1.is_active
+
+    def test_offices(self):
+        response = self.client.get(reverse('uni_ticket:manager_offices',
+                                           kwargs={'structure_slug': self.structure_1.slug,}),
+                                   follow=False)
+        assert response.context['offices']
+
+    def test_categories(self):
+        response = self.client.get(reverse('uni_ticket:manager_categories',
+                                           kwargs={'structure_slug': self.structure_1.slug,}),
+                                   follow=False)
+        assert response.context['categories']
+
+
 
     def test_category_condition(self):
         # Create
@@ -295,7 +273,19 @@ class Test_ManagerFunctions(BaseTest):
                                                            title=title)
         self.assertFalse(condition)
 
-    def test_office_and_operator(self):
+    def test_add_inactive_office_in_category_competences(self):
+        # Add office in category competences
+        # Category must be enabled (now is ok!)
+        params = {'office': self.office_1.pk,}
+        response = self.client.post(reverse('uni_ticket:manager_category_detail',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1.slug}),
+                                    params,
+                                    follow=True)
+        self.category_1.refresh_from_db()
+        assert not self.category_1.organizational_office == self.office_1
+
+    def test_enable_office_and_assignment(self):
         # Enable office
         self.client.get(reverse('uni_ticket:manager_enable_office',
                                 kwargs={'structure_slug': self.structure_1.slug,
@@ -317,7 +307,7 @@ class Test_ManagerFunctions(BaseTest):
 
         # Remove office from category competences
         # Category must be enabled (now is ok!)
-        response = self.client.get(reverse('uni_ticket:manager_remove_office_category',
+        response = self.client.get(reverse('uni_ticket:manager_remove_category_office',
                                            kwargs={'structure_slug': self.structure_1.slug,
                                                    'category_slug': self.category_1.slug,
                                                    'office_slug': self.office_1.slug}),
@@ -325,6 +315,15 @@ class Test_ManagerFunctions(BaseTest):
         self.category_1.refresh_from_db()
         self.assertFalse(self.category_1.organizational_office == self.office_1)
 
+        # Disable office
+        self.client.get(reverse('uni_ticket:manager_disable_office',
+                                kwargs={'structure_slug': self.structure_1.slug,
+                                        'office_slug': self.office_1.slug}),
+                        follow=True)
+        self.office_1.refresh_from_db()
+        self.assertFalse(self.office_1.is_active)
+
+    def test_edit_office(self):
         # Edit office
         new_name = 'Office 1 Edited'
         new_descr = 'Description office 1 edited'
@@ -339,14 +338,22 @@ class Test_ManagerFunctions(BaseTest):
         assert self.office_1.name == new_name
         assert self.office_1.description == new_descr
 
+    def test_add_office_operator(self):
+        # Enable office
+        self.client.get(reverse('uni_ticket:manager_enable_office',
+                                kwargs={'structure_slug': self.structure_1.slug,
+                                        'office_slug': self.office_1.slug}),
+                        follow=True)
+        self.office_1.refresh_from_db()
+
         # Add office operator
         new_params = {'operatore': self.user_1.pk,
                       'description': 'operatore'}
         response = self.client.post(reverse('uni_ticket:manager_office_detail',
-                                 kwargs={'structure_slug': self.structure_1.slug,
-                                         'office_slug': self.office_1.slug}),
-                         new_params,
-                         follow=True)
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'office_slug': self.office_1.slug}),
+                                    new_params,
+                                    follow=True)
         assert user_is_operator(self.user_1, self.structure_1)
         assert user_is_office_operator(self.user_1, self.office_1)
 
@@ -364,14 +371,7 @@ class Test_ManagerFunctions(BaseTest):
         assert user_is_operator(self.user_1, self.structure_1)
         assert user_is_office_operator(self.user_1, self.office_1)
 
-        # Disable office
-        self.client.get(reverse('uni_ticket:manager_disable_office',
-                                kwargs={'structure_slug': self.structure_1.slug,
-                                        'office_slug': self.office_1.slug}),
-                        follow=True)
-        self.office_1.refresh_from_db()
-        self.assertFalse(self.office_1.is_active)
-
+    def test_delete_office(self):
         # Delete office
         self.client.get(reverse('uni_ticket:manager_delete_office',
                                 kwargs={'structure_slug': self.structure_1.slug,
@@ -381,14 +381,40 @@ class Test_ManagerFunctions(BaseTest):
                                                                       organizational_structure=self.structure_1)
         self.assertFalse(office_deleted)
 
-    def test_offices(self):
-        response = self.client.get(reverse('uni_ticket:manager_offices',
+    def test_take_ticket_and_message(self):
+        # Create new ticket
+        # New ticket preload (select category)
+        response = self.client.get(reverse('uni_ticket:new_ticket_preload',
                                            kwargs={'structure_slug': self.structure_1.slug,}),
-                                   follow=False)
-        assert response.context['offices']
+                                   follow=True)
 
-    def test_categories(self):
-        response = self.client.get(reverse('uni_ticket:manager_categories',
-                                           kwargs={'structure_slug': self.structure_1.slug,}),
-                                   follow=False)
-        assert response.context['categories']
+        # Add ticket (base form with an attachment)
+        attachment = self.create_fake_file()
+        subject = 'Ticket 1'
+        params = {'ticket_subject': subject,
+                  'ticket_description': 'Description category 1',
+                  'file_field_1': attachment}
+        response = self.client.post(reverse('uni_ticket:add_new_ticket',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1.slug}),
+                                    params,
+                                    follow=True)
+        ticket = Ticket.objects.first()
+
+        # Take ticket
+        params = {'priorita': 0}
+        response = self.client.post(reverse('uni_ticket:manager_manage_ticket',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'ticket_id': ticket.code}),
+                                    params,
+                                    follow=True)
+
+        # Submit message (only if the ticket is open)
+        subject = 'Ticket 1 message'
+        params = {'subject': subject,
+                  'text': 'Ticket message'}
+        response = self.client.post(reverse('uni_ticket:ticket_message',
+                                            kwargs={'ticket_id': ticket.code}),
+                                    params,
+                                    follow=True)
+        assert TicketReply.objects.filter(ticket=ticket, owner=self.staff_1)

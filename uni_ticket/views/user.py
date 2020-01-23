@@ -29,7 +29,7 @@ from uni_ticket.utils import *
 
 
 @login_required
-def ticket_new_preload(request, struttura_slug=None):
+def ticket_new_preload(request, structure_slug=None):
     """
     Choose the OrganizationalStructure and the category of the ticket
 
@@ -50,9 +50,9 @@ def ticket_new_preload(request, struttura_slug=None):
     template = "user/new_ticket_preload.html"
     title = _("Apri un nuovo ticket")
     sub_title = _("Seleziona la struttura")
-    if struttura_slug:
+    if structure_slug:
         struttura = get_object_or_404(OrganizationalStructure,
-                                      slug=struttura_slug,
+                                      slug=structure_slug,
                                       is_active=True)
         categorie = TicketCategory.objects.filter(organizational_structure=struttura.pk,
                                                   is_active=True)
@@ -75,22 +75,22 @@ def ticket_new_preload(request, struttura_slug=None):
 
         sub_title = _("Seleziona la Categoria")
     d = {'categorie': categorie,
-         'struttura_slug': struttura_slug,
+         'structure_slug': structure_slug,
          'strutture': strutture,
          'sub_title': sub_title,
          'title': title,}
     return render(request, template, d)
 
 @login_required
-def ticket_add_new(request, struttura_slug, categoria_slug):
+def ticket_add_new(request, structure_slug, category_slug):
     """
     Create the ticket
 
     :type structure_slug: String
-    :type categoria_slug: String
+    :type category_slug: String
 
     :param structure_slug: slug of structure
-    :param categoria_slug: slug of category
+    :param category_slug: slug of category
 
     :return: render
     """
@@ -101,10 +101,10 @@ def ticket_add_new(request, struttura_slug, categoria_slug):
         return redirect(reverse('uni_ticket:user_dashboard'))
 
     struttura = get_object_or_404(OrganizationalStructure,
-                                  slug=struttura_slug,
+                                  slug=structure_slug,
                                   is_active=True)
     categoria = get_object_or_404(TicketCategory,
-                                  slug=categoria_slug,
+                                  slug=category_slug,
                                   is_active=True)
 
     if not categoria.allowed_to_user(request.user):
@@ -125,6 +125,7 @@ def ticket_add_new(request, struttura_slug, categoria_slug):
        'struttura': struttura,
        'sub_title': sub_title,
        'title': title}
+    # import pdb; pdb.set_trace()
     if request.POST:
         form = modulo.get_form(data=request.POST,
                                files=request.FILES,
@@ -160,7 +161,7 @@ def ticket_add_new(request, struttura_slug, categoria_slug):
                               path_allegati,
                               request.FILES.get(key)._name)
                     value = request.FILES.get(key)._name
-                    json_stored[ATTACHMENTS_DICT_PREFIX]["{}".format(key)]="{}".format(value)
+                    json_stored[ATTACHMENTS_DICT_PREFIX][key] = value
                 set_as_dict(ticket, json_stored)
             office = categoria.organizational_office or struttura.get_default_office()
             if not office:
@@ -328,10 +329,10 @@ def delete_my_attachment(request, ticket_id, attachment):
     ticket = get_object_or_404(Ticket, code=ticket_id)
     json_dict = json.loads(ticket.modulo_compilato)
     ticket_details = get_as_dict(compiled_module_json=json_dict)
-    nome_file = ticket_details[ATTACHMENTS_DICT_PREFIX]["{}".format(attachment)]
+    nome_file = ticket_details[ATTACHMENTS_DICT_PREFIX][attachment]
 
     # Rimuove il riferimento all'allegato dalla base dati
-    del ticket_details[ATTACHMENTS_DICT_PREFIX]["{}".format(attachment)]
+    del ticket_details[ATTACHMENTS_DICT_PREFIX][attachment]
     path_allegato = get_path_allegato(ticket)
 
     # Rimuove l'allegato dal disco

@@ -1,0 +1,114 @@
+import logging
+
+from django.urls import reverse
+
+from uni_ticket.models import *
+from uni_ticket.urls import *
+from uni_ticket.utils import *
+
+from . base_ticket_env import BaseCategoryEnvironment
+
+
+logger = logging.getLogger('my_logger')
+
+
+class Test_UserFunctions(BaseCategoryEnvironment):
+
+    def setUp(self):
+        super().setUp()
+
+        # Create new ticket
+        # New ticket preload (select category)
+        response = self.client.get(reverse('uni_ticket:new_ticket_preload',
+                                           kwargs={'structure_slug': self.structure_1.slug,}),
+                                   follow=True)
+        assert self.category_1 in response.context['categorie']
+
+        # Add ticket (base form with an attachment)
+        attachment = self.create_fake_file()
+        subject = 'Ticket 1'
+        params = {'ticket_subject': subject,
+                  'ticket_description': 'Description category 1',
+                  'file_field_1': attachment}
+        response = self.client.post(reverse('uni_ticket:add_new_ticket',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1.slug}),
+                                    params,
+                                    follow=True)
+        self.ticket = Ticket.objects.first()
+        assert self.ticket
+
+    def test_user_dashboard(self):
+        # Dashboard
+        response = self.client.get(reverse('uni_ticket:user_dashboard'),
+                                   follow=True)
+        assert self.ticket in response.context['ticket_non_gestiti']
+
+    def test_edit_ticket(self):
+        # Edit ticket
+        subject = 'Ticket 1 Edited'
+        params = {'ticket_subject': subject,
+                  'ticket_description': 'Description category 1 Edited'}
+        response = self.client.post(reverse('uni_ticket:ticket_edit',
+                                            kwargs={'ticket_id': self.ticket.code}),
+                                    params,
+                                    follow=True)
+        self.ticket.refresh_from_db()
+        assert self.ticket.subject == subject
+
+    def test_delete_attachment(self):
+        # Delete attachment
+        assert self.ticket.get_allegati_dict()
+        response = self.client.get(reverse('uni_ticket:delete_my_attachment',
+                                            kwargs={'ticket_id': self.ticket.code,
+                                                    'attachment': 'file_field_1'}),
+                                   follow=True)
+        self.ticket.refresh_from_db()
+        assert not self.ticket.get_allegati_dict()
+
+    def test_close_ticket(self):
+        # Close ticket
+        params = {'note': 'My notes'}
+        response = self.client.post(reverse('uni_ticket:user_close_ticket',
+                                            kwargs={'ticket_id': self.ticket.code}),
+                                    params,
+                                    follow=True)
+        self.ticket.refresh_from_db()
+        assert self.ticket.is_closed
+
+        # Delete ticket (fails because ticket is closed!)
+        response = self.client.get(reverse('uni_ticket:ticket_delete',
+                                           kwargs={'ticket_id': self.ticket.code}),
+                                   follow=True)
+        self.ticket.refresh_from_db()
+        assert self.ticket
+
+    def test_ticket_deletion(self):
+        # Delete ticket
+        response = self.client.get(reverse('uni_ticket:ticket_delete',
+                                           kwargs={'ticket_id': self.ticket.code}),
+                                   follow=True)
+        assert not Ticket.objects.first()
+
+    def test_ticket_message(self):
+        # Submit message (fails until ticket is not taken)
+        subject = 'Ticket 1 message'
+        params = {'subject': subject,
+                  'text': 'Ticket message'}
+        response = self.client.post(reverse('uni_ticket:ticket_message',
+                                            kwargs={'ticket_id': self.ticket.code}),
+                                    params,
+                                    follow=True)
+        assert not TicketReply.objects.filter(ticket=self.ticket,
+                                              owner=self.staff_1)
+
+    def test_message_untaken_ticket(self):
+        # Submit message (only if the ticket is open)
+        subject = 'Ticket 1 message'
+        params = {'subject': subject,
+                  'text': 'Ticket message'}
+        response = self.client.post(reverse('uni_ticket:ticket_message',
+                                            kwargs={'ticket_id': self.ticket.code}),
+                                    params,
+                                    follow=True)
+        assert not TicketReply.objects.filter(ticket=self.ticket, owner=self.staff_1)

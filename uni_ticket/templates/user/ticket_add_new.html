@@ -9,7 +9,7 @@
 
 {% block top_buttons %}
 <a role="button" class="btn btn-outline-secondary"
-   href="{% url 'uni_ticket:new_ticket_preload' struttura_slug=struttura.slug %}">
+   href="{% url 'uni_ticket:new_ticket_preload' structure_slug=struttura.slug %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna alla selezione categoria" %}
