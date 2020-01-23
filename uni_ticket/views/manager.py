@@ -19,7 +19,7 @@ from uni_ticket.decorators import (has_access_to_ticket,
 from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.settings import MANAGER_PREFIX
-from uni_ticket.utils import custom_message, office_is_eliminabile
+from uni_ticket.utils import custom_message, office_can_be_deleted
 
 @login_required
 @is_manager
@@ -227,7 +227,6 @@ def office_detail(request, structure_slug, office_slug, structure):
                                  office_slug=office_slug,
                                  current_user=request.user)
     category_form = OfficeAddCategoryForm(structure=structure)
-
     if request.method == 'POST':
         form = OfficeAddOperatorForm(request.POST,
                                      structure=structure,
@@ -481,7 +480,7 @@ def office_delete(request, structure_slug, office_slug, structure):
     office = get_object_or_404(OrganizationalStructureOffice,
                                organizational_structure=structure,
                                slug=office_slug)
-    if office_is_eliminabile(office):
+    if office_can_be_deleted(office):
         messages.add_message(request, messages.SUCCESS,
                              _("Ufficio {} eliminato correttamente".format(office)))
         office.delete()
@@ -783,7 +782,7 @@ def category_delete(request, structure_slug, category_slug, structure):
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    if category.is_eliminabile():
+    if category.can_be_deleted():
         messages.add_message(request, messages.SUCCESS,
                              _("Categoria {} eliminata correttamente".format(category)))
         category.delete()
@@ -1002,7 +1001,7 @@ def category_input_module_delete(request, structure_slug,
     module = get_object_or_404(TicketCategoryModule,
                                pk=module_id,
                                ticket_category=category)
-    if not module.is_eliminabile():
+    if not module.can_be_deleted():
         messages.add_message(request, messages.ERROR,
                              _("Impossibile eliminare il modulo {}."
                                " Ci sono dei ticket collegati".format(module)))
@@ -1047,7 +1046,7 @@ def category_input_module_details(request, structure_slug,
     module = get_object_or_404(TicketCategoryModule, pk=module_id)
     form = CategoryInputListForm()
     if request.method == 'POST':
-        if not module.is_eliminabile():
+        if not module.can_be_deleted():
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare il modulo"))
             return redirect('uni_ticket:manager_category_input_module',
@@ -1117,7 +1116,7 @@ def category_input_field_delete(request, structure_slug,
     module = get_object_or_404(TicketCategoryModule,
                                pk=module_id,
                                ticket_category=category)
-    if not module.is_eliminabile():
+    if not module.can_be_deleted():
         messages.add_message(request, messages.ERROR,
                              _("Impossibile eliminare il modulo {}."
                                " Ci sono dei ticket collegati".format(module)))
@@ -1204,7 +1203,7 @@ def category_input_field_edit(request, structure_slug,
                               category_module=module)
     form = CategoryInputListForm(instance=field)
     if request.method ==  'POST':
-        if not module.is_eliminabile():
+        if not module.can_be_deleted():
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare il campo"))
             return redirect('uni_ticket:manager_category_input_module',
@@ -1361,9 +1360,6 @@ def category_condition_delete(request, structure_slug, category_slug,
     messages.add_message(request, messages.SUCCESS,
                          _("Clausola {} eliminata correttamente".format(condition)))
     condition.delete()
-    messages.add_message(request, messages.ERROR,
-                         _("Impossibile eliminare l'ufficio {}."
-                           " Ci sono ticket assegnati.".format(office)))
     return redirect('uni_ticket:manager_category_detail',
                             structure_slug=structure_slug,
                             category_slug=category_slug)

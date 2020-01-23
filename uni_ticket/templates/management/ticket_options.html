@@ -23,6 +23,7 @@
             <br>
             {{ dependence.note }}
             {% endif %}
+
             {% if not ticket.is_closed %}
             <button type="button"
                 class="mx-1 btn btn-outline-danger btn-xs float-right"
@@ -65,6 +66,11 @@
                 </div>
             </div>
             {% endif %}
+            <a role="button"
+               class="mx-1 btn btn-outline-secondary btn-xs float-right"
+               href="{% url 'uni_ticket:manage_ticket_url_detail' structure_slug=structure.slug ticket_id=dependence.master_ticket.code %}">
+                {% trans "Vai al ticket" %}
+            </a>
         </li>
         {% endfor %}
     </ul>

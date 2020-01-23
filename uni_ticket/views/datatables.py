@@ -29,18 +29,18 @@ class DTD(DjangoDatatablesServerProc):
             year = params['year']
             text = params['text']
             if not year and not text:
-                self.aqs = self.model.all()
+                self.aqs = self.queryset
             if year:
-                self.aqs = self.model.filter(created__year=year)
+                self.aqs = self.queryset.filter(created__year=year)
             if text:
-                model = self.model
-                if self.aqs: model = self.aqs
-                self.aqs = model.filter(
+                queryset = self.queryset
+                if self.aqs: queryset = self.aqs
+                self.aqs = queryset.filter(
                     Q(code__icontains=text) | \
                     Q(subject__icontains=text) | \
                     Q(input_module__ticket_category__name__icontains=text) | \
                     Q(created__icontains=text))
-        else: self.aqs = self.model.all()
+        else: self.aqs = self.queryset
 
 @csrf_exempt
 @login_required

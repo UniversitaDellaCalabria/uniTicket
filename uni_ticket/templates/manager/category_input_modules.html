@@ -19,7 +19,7 @@
                 </span>
             {% endif %}
 
-            {% if module.is_eliminabile %}
+            {% if module.can_be_deleted %}
             <button type="button"
                 class="mx-1 btn btn-outline-secondary btn-xs float-right"
                 data-toggle="modal"
@@ -114,7 +114,7 @@
                     </div>
                 </div>
             </div>
-            {% if module.is_eliminabile %}
+            {% if module.can_be_deleted %}
             <div class="modal fade" tabindex="-1" role="dialog" id="deleteModule{{ forloop.counter0 }}">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">

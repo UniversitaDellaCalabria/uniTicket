@@ -147,9 +147,9 @@ urlpatterns += [
     path('{}/disable/'.format(category_id), manager.category_disable, name='manager_disable_category'),
     path('{}/enable/'.format(category_id), manager.category_enable, name='manager_enable_category'),
     path('{}/delete/'.format(category_id), manager.category_delete, name='manager_delete_category'),
-    path('{}/new/'.format(category_id).format(cat_input), manager.category_input_module_new, name='manager_category_new_input_module'),
 
     # Category input modules
+    path('{}/new/'.format(cat_input), manager.category_input_module_new, name='manager_category_new_input_module'),
     path('{}/'.format(cat_input_id), manager.category_input_module_details, name='manager_category_input_module'),
     path('{}/edit/'.format(cat_input_id), manager.category_input_module_edit, name='manager_category_input_module_edit'),
     path('{}/enable/'.format(cat_input_id), manager.category_input_module_enable, name='manager_category_input_module_enable'),

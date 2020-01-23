@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext as _
 
+from django_form_builder.settings import ATTACHMENTS_DICT_PREFIX
 from django_form_builder.utils import (get_as_dict,
                                        get_labeled_errors,
                                        get_POST_as_json,
@@ -152,14 +153,14 @@ def ticket_add_new(request, struttura_slug, categoria_slug):
             json_dict = json.loads(ticket.modulo_compilato)
             json_stored = get_as_dict(compiled_module_json=json_dict)
             if request.FILES:
-                json_stored["allegati"] = {}
+                json_stored[ATTACHMENTS_DICT_PREFIX] = {}
                 path_allegati = get_path_allegato(ticket)
                 for key, value in request.FILES.items():
-                    salva_file(request.FILES.get(key),
-                               path_allegati,
-                               request.FILES.get(key)._name)
+                    save_file(request.FILES.get(key),
+                              path_allegati,
+                              request.FILES.get(key)._name)
                     value = request.FILES.get(key)._name
-                    json_stored["allegati"]["{}".format(key)]="{}".format(value)
+                    json_stored[ATTACHMENTS_DICT_PREFIX]["{}".format(key)]="{}".format(value)
                 set_as_dict(ticket, json_stored)
             office = categoria.organizational_office or struttura.get_default_office()
             if not office:
@@ -266,7 +267,7 @@ def ticket_edit(request, ticket_id):
                                      fields_to_pop=fields_to_pop)
         json_response=json.loads(json_post)
         # Costruisco il form con il json dei dati inviati e tutti gli allegati
-        # json_response["allegati"]=allegati
+        # json_response[ATTACHMENTS_DICT_PREFIX]=allegati
         # rimuovo solo gli allegati che sono stati già inseriti
         modulo = ticket.get_form_module()
         form = modulo.get_form(data=json_response,
@@ -277,19 +278,19 @@ def ticket_edit(request, ticket_id):
 
         if form.is_valid():
             if request.FILES:
-                json_response["allegati"] = allegati
+                json_response[ATTACHMENTS_DICT_PREFIX] = allegati
                 path_allegati = get_path_allegato(ticket)
                 for key, value in request.FILES.items():
                     # form.validate_attachment(request.FILES.get(key))
-                    salva_file(request.FILES.get(key),
-                               path_allegati,
-                               request.FILES.get(key)._name)
+                    save_file(request.FILES.get(key),
+                              path_allegati,
+                              request.FILES.get(key)._name)
                     nome_allegato = request.FILES.get(key)._name
-                    json_response["allegati"]["{}".format(key)] = "{}".format(nome_allegato)
+                    json_response[ATTACHMENTS_DICT_PREFIX]["{}".format(key)] = "{}".format(nome_allegato)
             elif allegati:
                 # Se non ho aggiornato i miei allegati lasciandoli invariati rispetto
                 # all'inserimento precedente
-                json_response["allegati"] = allegati
+                json_response[ATTACHMENTS_DICT_PREFIX] = allegati
             # salva il modulo
             ticket.save_data(request.POST.get(TICKET_SUBJECT_ID),
                              request.POST.get(TICKET_DESCRIPTION_ID),
@@ -327,14 +328,14 @@ def delete_my_attachment(request, ticket_id, attachment):
     ticket = get_object_or_404(Ticket, code=ticket_id)
     json_dict = json.loads(ticket.modulo_compilato)
     ticket_details = get_as_dict(compiled_module_json=json_dict)
-    nome_file = ticket_details["allegati"]["{}".format(attachment)]
+    nome_file = ticket_details[ATTACHMENTS_DICT_PREFIX]["{}".format(attachment)]
 
     # Rimuove il riferimento all'allegato dalla base dati
-    del ticket_details["allegati"]["{}".format(attachment)]
+    del ticket_details[ATTACHMENTS_DICT_PREFIX]["{}".format(attachment)]
     path_allegato = get_path_allegato(ticket)
 
     # Rimuove l'allegato dal disco
-    elimina_file(file_name=nome_file,
+    delete_file(file_name=nome_file,
                  path=path_allegato)
     set_as_dict(ticket, ticket_details)
     allegati = ticket.get_allegati_dict(ticket_dict=ticket_details)
@@ -363,8 +364,8 @@ def ticket_delete(request, ticket_id):
     code = ticket.code
     json_dict = json.loads(ticket.modulo_compilato)
     ticket_details = get_as_dict(compiled_module_json=json_dict)
-    if "allegati" in ticket_details:
-        elimina_directory(ticket_id)
+    if ATTACHMENTS_DICT_PREFIX in ticket_details:
+        delete_directory(ticket_id)
 
     ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
     ticket_assignment.delete()

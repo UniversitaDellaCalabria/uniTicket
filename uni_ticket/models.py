@@ -13,7 +13,8 @@ from django.utils.translation import gettext as _
 
 from django_form_builder.dynamic_fields import format_field_name, get_fields_types
 from django_form_builder.models import DynamicFieldMap, SavedFormContent
-from django_form_builder.settings import MANAGEMENT_FORMSET_STRINGS
+from django_form_builder.settings import (ATTACHMENTS_DICT_PREFIX,
+                                          MANAGEMENT_FORMSET_STRINGS)
 from django_form_builder.utils import get_as_dict, set_as_dict
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
@@ -71,13 +72,13 @@ class TicketCategory(models.Model):
     allow_user = models.BooleanField(_("Accessibile agli utenti dell'organizzazione"), default=True)
     allow_employee = models.BooleanField(_("Accessibile ai dipendenti dell'organizzazione"), default=True)
 
-    def is_eliminabile(self):
+    def can_be_deleted(self):
         """
         Ritorna True se è possibile eliminare la categoria
         """
         moduli = TicketCategoryModule.objects.filter(ticket_category=self)
         for modulo in moduli:
-            if not modulo.is_eliminabile():
+            if not modulo.can_be_deleted():
                 return False
         return True
 
@@ -115,15 +116,15 @@ class TicketCategoryModule(models.Model):
     name = models.CharField(max_length=255)
     ticket_category = models.ForeignKey(TicketCategory,
                                         on_delete = models.CASCADE)
-    created = models.DateTimeField(auto_now = True)
-    is_active = models.BooleanField(default = False)
+    created = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["-created"]
         verbose_name = _("Modulo di Inserimento Ticket")
         verbose_name_plural = _("Moduli di Inserimento Ticket")
 
-    def is_eliminabile(self):
+    def can_be_deleted(self):
         """
         """
         # if self.is_active: return False
@@ -279,18 +280,17 @@ class Ticket(SavedFormContent):
     def get_allegati_dict(self, ticket_dict={}):
         allegati_dict = {}
         if ticket_dict:
-            allegati_dict = ticket_dict.get('allegati')
+            allegati_dict = ticket_dict.get(ATTACHMENTS_DICT_PREFIX)
         else:
             json_dict = json.loads(self.modulo_compilato)
-            allegati_dict = get_as_dict(compiled_module_json=json_dict).get('allegati')
+            allegati_dict = get_as_dict(compiled_module_json=json_dict).get(ATTACHMENTS_DICT_PREFIX)
         return allegati_dict
 
     def get_form_module(self):
         """
         Ritorna il modulo di input con cui il ticket è stato compilato
         """
-        modulo = self.input_module
-        return modulo
+        return self.input_module
 
     def compiled_form(self, files=None,
                       remove_filefields=True,
@@ -309,17 +309,6 @@ class Ticket(SavedFormContent):
                                               remove_filefields=remove_filefields,
                                               remove_datafields=remove_datafields,
                                               form_source=modulo)
-        # modulo = self.get_form_module()
-        # if not modulo: return False
-        # json_dict = json.loads(self.modulo_compilato)
-        # data = get_as_dict(compiled_module_json=json_dict,
-                           # allegati=False)
-        # data[TICKET_SUBJECT_ID] = self.subject
-        # data[TICKET_DESCRIPTION_ID] = self.description
-        # form = modulo.get_form(data=data,
-                               # files=files,
-                               # remove_filefields=remove_filefields,
-                               # remove_datafields=remove_datafields)
         return form
 
     def save_data(self, subject, description, ticket_dict):
@@ -357,7 +346,7 @@ class Ticket(SavedFormContent):
                                     action_flag     = CHANGE,
                                     change_message  = note)
 
-    def get_assigned_to_offices(self, office_active=True):
+    def get_assigned_to_offices(self, office_active=True, structure=None):
         """
         Returns to wicth offices ticket is assigned
         """
@@ -365,6 +354,8 @@ class Ticket(SavedFormContent):
         offices = []
         for assignment in assignments:
             office = assignment.office
+            if structure and not office.organizational_structure==structure:
+                continue
             if not office_active: offices.append(office)
             elif office.is_active: offices.append(office)
         return offices
@@ -402,7 +393,8 @@ class Ticket(SavedFormContent):
         usertype = get_user_type(user, structure)
         if usertype == 'user': return False
         offices = []
-        offices = self.get_assigned_to_offices(office_active=False)
+        offices = self.get_assigned_to_offices(office_active=False,
+                                               structure=structure)
         offices_to_disable = []
         if usertype == 'operator':
             for office in offices:
@@ -412,15 +404,14 @@ class Ticket(SavedFormContent):
                     offices_to_disable.append(office)
         elif usertype == 'manager': offices_to_disable = offices
         for off in offices_to_disable:
-            if off.organizational_structure == structure:
-                competence = TicketAssignment.objects.get(ticket=self,
-                                                          office=off)
-                if not competence.follow: continue
-                competence.follow = allow_readonly
-                competence.readonly = allow_readonly
-                competence.save(update_fields = ['follow',
-                                                 'modified',
-                                                 'readonly'])
+            competence = TicketAssignment.objects.get(ticket=self,
+                                                      office=off)
+            if not competence.follow: continue
+            competence.follow = allow_readonly
+            competence.readonly = allow_readonly
+            competence.save(update_fields = ['follow',
+                                             'modified',
+                                             'readonly'])
         return offices
 
     def get_dependences(self):
@@ -470,8 +461,8 @@ class Ticket(SavedFormContent):
         """
         json_dict = json.loads(self.modulo_compilato)
         ticket_dict = get_as_dict(json_dict)
-        if not "allegati" in ticket_dict: return True
-        allegati = ticket_dict.get('allegati')
+        if not ATTACHMENTS_DICT_PREFIX in ticket_dict: return True
+        allegati = ticket_dict.get(ATTACHMENTS_DICT_PREFIX)
         # valido solo i campi File vuoti del form
         # evito di validare tutti gli altri campi, sicuramente corretti
         form = self.compiled_form(files=None,
@@ -593,26 +584,6 @@ class TicketAssignment(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.ticket, self.office)
-
-
-# class TicketHistory(models.Model):
-    # """
-    # Cronologia degli stati di avanzamento del Ticket
-    # """
-    # ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    # modified_by = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                    # on_delete=models.PROTECT,
-                                    # null=True)
-    # modified = models.DateTimeField(auto_now=True)
-    # note = models.TextField(blank=True, null=True)
-
-    # class Meta:
-        # ordering = ["ticket", "-modified"]
-        # verbose_name = _("Cronologia Stati Ticket")
-        # verbose_name_plural = _("Cronologia Stati Ticket")
-
-    # def __str__(self):
-        # return '{} - {}'.format(self.ticket, self.note)
 
 
 class TicketReply(models.Model):

@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
+from django_form_builder.settings import ATTACHMENTS_DICT_PREFIX
 from django_form_builder.utils import get_as_dict
 from organizational_area.models import OrganizationalStructure
 
@@ -75,7 +76,7 @@ def download_attachment(request, ticket_id, attachment, ticket):
     ticket_details = get_as_dict(compiled_module_json=json_dict)
     if attachment:
         # get ticket attachments
-        attachments = ticket_details["allegati"]
+        attachments = ticket_details[ATTACHMENTS_DICT_PREFIX]
         # get the attachment
         documento = attachments[attachment]
         # get ticket folder path
@@ -370,7 +371,7 @@ def ticket_message_delete(request, ticket_message_id):
     messages.add_message(request, messages.SUCCESS,
                          _("Messaggio <b>{}</b> eliminato con successo.".format(ticket_message)))
     # delete message attachment
-    elimina_file(file_name=ticket_message.attachment)
+    delete_file(file_name=ticket_message.attachment)
     # delete message
     ticket_message.delete()
     if user_type=='user':

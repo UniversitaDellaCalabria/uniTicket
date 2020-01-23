@@ -49,7 +49,7 @@
     </svg> {% trans "Attiva" %}
 </button>
 {% endif %}
-{% if module.is_eliminabile %}
+{% if module.can_be_deleted %}
 <button type="button"
     class="btn btn-outline-danger"
     data-toggle="modal"
@@ -74,7 +74,7 @@
             <th scope="row">{% trans 'Required' %}</th>
             <th scope="row">{% trans 'Aiuto' %}</th>
             <th scope="row">{% trans 'Ord.' %}</th>
-            {% if module.is_eliminabile %}
+            {% if module.can_be_deleted %}
             <th scope="row"></th>
             {% endif %}
         </tr>
@@ -98,7 +98,7 @@
                 {% endif %}
             </td>
             <td>{{ field.ordinamento }}</td>
-            {% if module.is_eliminabile %}
+            {% if module.can_be_deleted %}
             <td class="text-right">
                 <a role="button"
                    class="btn btn-outline-secondary btn-sm"
@@ -229,7 +229,7 @@
 </div>
 {% endif %}
 
-{% if module.is_eliminabile %}
+{% if module.can_be_deleted %}
 <h5 class="card-title pb-3 mt-5">{% trans "Aggiungi un campo di input" %}</h5>
 <form method="post" enctype="multipart/form-data">
     {% include 'form_template.html' %}

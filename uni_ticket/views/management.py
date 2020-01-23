@@ -662,7 +662,7 @@ def ticket_competence_add_new(request, structure_slug, ticket_id,
                               structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_competence.html".format(user_type)
-    title = _('Aggiungi competenza ticket')
+    title = _('Trasferisci competenza ticket')
     sub_title = '{} ({})'.format(ticket.subject, ticket_id)
     strutture = OrganizationalStructure.objects.filter(is_active=True)
     d = {'structure': structure,
@@ -721,10 +721,8 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
         categoria_slug = request.POST.get('categoria_slug')
         follow_value = request.POST.get('follow')
         readonly_value = request.POST.get('readonly')
-        follow = False
-        readonly = False
-        if follow_value == 'on': follow = True
-        if readonly_value == 'on': readonly = True
+        follow = True if follow_value == 'on' else False
+        readonly = True if readonly_value == 'on' else False
         # La categoria passata in POST esiste?
         categoria = get_object_or_404(TicketCategory,
                                       slug=categoria_slug,
@@ -755,8 +753,8 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                                         allow_readonly=False)
             for off in abandoned_offices:
                 ticket.update_log(user=request.user,
-                                      note= _("Competenza abbandonata da"
-                                              " Ufficio: {}".format(off)))
+                                  note= _("Competenza abbandonata da"
+                                          " Ufficio: {}".format(off)))
 
         # If follow but readonly
         if readonly:
@@ -764,16 +762,16 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                                         structure=structure)
             for off in abandoned_offices:
                 ticket.update_log(user=request.user,
-                                      note= _("Competenza trasferita da"
-                                              " (accesso in sola lettura)"
-                                              " Ufficio: {}".format(off)))
+                                  note= _("Competenza trasferita da"
+                                          " (accesso in sola lettura)"
+                                          " Ufficio: {}".format(off)))
         # If follow and want to manage
         ticket.add_competence(office=new_office, user=request.user)
         ticket.update_log(user=request.user,
-                              note= _("Nuova competenza: {} - {}"
-                                      " - Categoria: {}".format(struttura,
-                                                                new_office,
-                                                                categoria)))
+                          note= _("Nuova competenza: {} - {}"
+                                  " - Categoria: {}".format(struttura,
+                                                            new_office,
+                                                            categoria)))
 
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
@@ -781,7 +779,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
 
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_competence.html".format(user_type)
-    title = _('Aggiungi competenza ticket')
+    title = _('Trasferisci competenza ticket')
     sub_title = '{} ({})'.format(ticket.subject, ticket_id)
     d = {'can_manage': can_manage,
          'categorie': categorie,
@@ -1031,7 +1029,7 @@ def task_remove(request, structure_slug,
                               structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
-    elimina_file(file_name=task.attachment)
+    delete_file(file_name=task.attachment)
     task.delete()
     ticket.update_log(user = request.user,
                           note = _("Rimosso task: {}".format(task)))
@@ -1467,8 +1465,8 @@ def task_attachment_delete(request, structure_slug,
     path_allegato = get_path_allegato_task(task)
 
     # Rimuove l'allegato dal disco
-    elimina_file(file_name=os.path.basename(task.attachment.name),
-                 path=path_allegato)
+    delete_file(file_name=os.path.basename(task.attachment.name),
+                path=path_allegato)
 
     task.attachment=None
     task.save(update_fields = ['attachment'])

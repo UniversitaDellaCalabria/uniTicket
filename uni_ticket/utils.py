@@ -136,7 +136,7 @@ def get_path_ticket_reply(ticket_reply):
                           TICKET_REPLY_ATTACHMENT_SUBFOLDER)
     return path
 
-def elimina_file(file_name, path=settings.MEDIA_ROOT):
+def delete_file(file_name, path=settings.MEDIA_ROOT):
     """
     Deletes a file from disk
     """
@@ -147,7 +147,7 @@ def elimina_file(file_name, path=settings.MEDIA_ROOT):
     except:
         return False
 
-def elimina_directory(ticket_id):
+def delete_directory(ticket_id):
     """
     Deletes a ticket attachments directory from disk
     """
@@ -160,7 +160,7 @@ def elimina_directory(ticket_id):
     except:
         return False
 
-def salva_file(f, path, nome_file):
+def save_file(f, path, nome_file):
     """
     Saves a file on disk
     """
@@ -211,7 +211,7 @@ def visible_tickets_to_user(user, structure, office_employee):
     tickets = model.get_ticket_in_office_list(offices)
     return tickets
 
-def office_is_eliminabile(office):
+def office_can_be_deleted(office):
     """
     Returns True if office can be deleted
     """

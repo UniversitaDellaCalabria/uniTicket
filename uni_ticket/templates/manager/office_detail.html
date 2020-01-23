@@ -223,26 +223,27 @@
                                                </svg>
                                             </button>
                                         </div>
+                                        {% if usertype_tuple.0 == 'manager' and office.is_default %}
                                         <div class="modal-body">
-                                            {% if usertype_tuple.0 == 'manager' and office.is_default %}
-                                                <p>{% trans "Eliminando l'afferenza dell'utente a questo ufficio, egli perderà i privilegi di Amministratore. " %}</p>
-                                                <p>{% trans "Questa operazione, pertanto, non può essere eseguita in autonomia. " %}</p>
-                                                <p>{% trans "Contattare l'assistenza tecnica." %}</p>
-                                            {% else %}
-                                                <p>{% trans "Vuoi davvero rimuovere l'operatore " %}
-                                                   <b>{{ employee.employee }}</b> dalla gestione
-                                                   dell'ufficio <b>{{ office }}</b> ?
-                                                </p>
-                                            {% endif %}
+                                            <p>{% trans "Eliminando l'afferenza dell'utente a questo ufficio, egli perderà i privilegi di Amministratore. " %}</p>
+                                            <p>{% trans "Questa operazione, pertanto, non può essere eseguita in autonomia. " %}</p>
+                                            <p>{% trans "Contattare l'assistenza tecnica." %}</p>
+                                        </div>
+                                        <div class="modal-footer"></div>
+                                        {% else %}
+                                        <div class="modal-body">
+                                            <p>{% trans "Vuoi davvero rimuovere l'operatore " %}
+                                               <b>{{ employee.employee }}</b> dalla gestione
+                                               dell'ufficio <b>{{ office }}</b> ?
+                                            </p>
                                         </div>
                                         <div class="modal-footer">
-                                            {% if usertype_tuple.0 != 'manager' %}
                                             <a role="button" class="btn btn-danger"
                                                href="{% url 'uni_ticket:manager_remove_office_operator' structure_slug=structure.slug office_slug=office.slug employee_id=employee.employee.pk %}">
                                                 {% trans "Si, rimuovi" %}
                                             </a>
-                                            {% endif %}
                                         </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

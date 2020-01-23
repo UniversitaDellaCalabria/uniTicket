@@ -1,0 +1,13 @@
+# .coveragerc to control coverage.py
+[run]
+include = */uni_ticket/views/*
+          */uni_ticket/decorators.py
+          */uni_ticket/dynamic_form.py
+          */uni_ticket/models.py
+          */uni_ticket/forms.py
+          */uni_ticket/utils.py
+
+          */organizational_area/models.py
+          */organizational_area/views.py
+          */organizational_area/signals.py
+

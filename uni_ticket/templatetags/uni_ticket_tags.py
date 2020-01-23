@@ -20,7 +20,7 @@ from uni_ticket.utils import (download_file,
                               format_slugged_name,
                               get_path_allegato,
                               get_user_type,
-                              office_is_eliminabile,
+                              office_can_be_deleted,
                               user_manage_something)
 
 register = template.Library()
