@@ -13,7 +13,7 @@ from . base_category_env import BaseCategoryEnvironment
 logger = logging.getLogger('my_logger')
 
 
-class BaseTicketEnvironment(BaseTest):
+class BaseTicketEnvironment(BaseCategoryEnvironment):
 
     def create_fake_file(self, name="test", ext="pdf",
                          content_type="application/pdf"):
