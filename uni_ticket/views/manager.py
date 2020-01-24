@@ -15,7 +15,7 @@ from organizational_area.models import *
 from uni_ticket.decorators import (has_access_to_ticket,
                                    is_manager,
                                    ticket_assigned_to_structure,
-                                   ticket_is_not_taken)
+                                   ticket_is_not_taken_and_not_closed)
 from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.settings import MANAGER_PREFIX
@@ -1061,9 +1061,9 @@ def category_input_module_details(request, structure_slug,
                                      _("Esiste già un campo con questo"
                                        " nome: <b>{}</b>".format(name)))
             else:
-                is_required_value = request.POST.get('is_required')
-                is_required = False
-                if is_required_value == 'on': is_required=True
+                # is_required_value = request.POST.get('is_required')
+                # is_required = False
+                # if is_required_value == 'on': is_required=True
                 input_list = form.save(commit=False)
                 input_list.category_module = module
                 input_list.save()

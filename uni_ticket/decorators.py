@@ -154,7 +154,7 @@ def has_access_to_ticket(func_to_decorate):
         return custom_message(request, _("Accesso al ticket negato."))
     return new_func
 
-def ticket_is_not_taken(func_to_decorate):
+def ticket_is_not_taken_and_not_closed(func_to_decorate):
     """
     Check if current ticket is not taken
     """
@@ -164,6 +164,21 @@ def ticket_is_not_taken(func_to_decorate):
         ticket = get_object_or_404(Ticket, code=ticket_id)
         if ticket.is_taken:
             return custom_message(request, _("Il ticket è stato preso in carico"))
+        if ticket.is_closed:
+            return custom_message(request, _("Il ticket è chiuso"))
+        return func_to_decorate(*original_args, **original_kwargs)
+    return new_func
+
+def ticket_is_taken_and_not_closed(func_to_decorate):
+    """
+    Check if current ticket is taken
+    """
+    def new_func(*original_args, **original_kwargs):
+        request = original_args[0]
+        ticket_id = original_kwargs['ticket_id']
+        ticket = get_object_or_404(Ticket, code=ticket_id)
+        if not ticket.is_taken:
+            return custom_message(request, _("Il ticket non è stato preso in carico"))
         if ticket.is_closed:
             return custom_message(request, _("Il ticket è chiuso"))
         return func_to_decorate(*original_args, **original_kwargs)

@@ -6,13 +6,13 @@ from uni_ticket.models import *
 from uni_ticket.urls import *
 from uni_ticket.utils import *
 
-from . base_ticket_env import BaseTicketEnvironment
+from . base_category_env import BaseCategoryEnvironment
 
 
 logger = logging.getLogger('my_logger')
 
 
-class Test_ManagerFunctions(BaseTicketEnvironment):
+class Test_ManagerFunctions(BaseCategoryEnvironment):
 
     def setUp(self):
         super().setUp()
@@ -380,22 +380,4 @@ class Test_ManagerFunctions(BaseTicketEnvironment):
         office_deleted = OrganizationalStructureOffice.objects.filter(name='Office 1',
                                                                       organizational_structure=self.structure_1)
         self.assertFalse(office_deleted)
-
-    def test_take_ticket_and_message(self):
-        # Take ticket
-        params = {'priorita': 0}
-        response = self.client.post(reverse('uni_ticket:manager_manage_ticket',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'ticket_id': self.ticket.code}),
-                                    params,
-                                    follow=True)
-
-        # Submit message (only if the ticket is open)
-        subject = 'Ticket 1 message'
-        params = {'subject': subject,
-                  'text': 'Ticket message'}
-        response = self.client.post(reverse('uni_ticket:ticket_message',
-                                            kwargs={'ticket_id': self.ticket.code}),
-                                    params,
-                                    follow=True)
-        assert TicketReply.objects.filter(ticket=self.ticket, owner=self.staff_1)
+        self.assertFalse(office_deleted)

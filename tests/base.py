@@ -35,7 +35,12 @@ class BaseTest(TestCase):
         self.staff_1 = user_model.objects.create_user(username='staff1', password='passw',
                                                      first_name="Staff 1",
                                                      last_name="Lastname Staff 1",
-                                                     email="staff@test.it",
+                                                     email="staff1@test.it",
+                                                     is_staff=True)
+        self.staff_2 = user_model.objects.create_user(username='staff2', password='passw',
+                                                     first_name="Staff 2",
+                                                     last_name="Lastname Staff 2",
+                                                     email="staff2@test.it",
                                                      is_staff=True)
         self.user_1 = user_model.objects.create_user(username='user1', password='passw',
                                                      first_name="User 1",
@@ -51,6 +56,10 @@ class BaseTest(TestCase):
         default_office_s1 = self.structure_1.get_default_office()
         employee_manager_1 = OrganizationalStructureOfficeEmployee.objects.create(employee=self.staff_1,
                                                                                   office=default_office_s1)
+
+        default_office_s2 = self.structure_2.get_default_office()
+        employee_manager_2 = OrganizationalStructureOfficeEmployee.objects.create(employee=self.staff_2,
+                                                                                  office=default_office_s2)
         # Create a standard operator in default office
         # Manager can move it
         employee_standard_1 = OrganizationalStructureOfficeEmployee.objects.create(employee=self.user_1,

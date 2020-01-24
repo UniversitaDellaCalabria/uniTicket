@@ -16,7 +16,8 @@ from django_form_builder.utils import get_as_dict, get_labeled_errors
 from organizational_area.models import *
 from uni_ticket.decorators import (has_admin_privileges,
                                    ticket_assigned_to_structure,
-                                   ticket_is_not_taken)
+                                   ticket_is_taken_and_not_closed,
+                                   ticket_is_not_taken_and_not_closed)
 from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.settings import (NO_MORE_COMPETENCE_OVER_TICKET,
@@ -195,6 +196,7 @@ def ticket_detail(request, structure_slug, ticket_id,
         if form.is_valid():
             priority = request.POST.get('priorita')
             priority_text = dict(PRIORITY_LEVELS).get(priority)
+
             if not ticket.is_taken:
                 ticket.is_taken = True
                 ticket.save(update_fields = ['is_taken'])
@@ -272,7 +274,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
-@ticket_is_not_taken
+@ticket_is_not_taken_and_not_closed
 def ticket_take(request, structure_slug, ticket_id,
                 structure, can_manage, ticket,
                 office_employee=None):
@@ -332,6 +334,7 @@ def ticket_dependence_add_url(request, structure_slug, ticket_id):
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def ticket_dependence_add_new(request, structure_slug, ticket_id,
                               structure, can_manage, ticket, office_employee=None):
     """
@@ -358,11 +361,7 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
-    # Se il ticket non è aperto non è possibile aggiungere dipendenze
-    if ticket.is_closed:
-        return custom_message(request,
-                              _("Il ticket {} è chiuso".format(master_ticket)),
-                              structure_slug=structure.slug)
+
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_dependence.html".format(user_type)
     title = _('Aggiungi dipendenza ticket')
@@ -421,6 +420,7 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def ticket_dependence_remove(request, structure_slug,
                              ticket_id, master_ticket_id,
                              structure, can_manage, ticket):
@@ -448,11 +448,7 @@ def ticket_dependence_remove(request, structure_slug,
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
-    # Se il ticket non è aperto non è possibile rimuovere dipendenze
-    if ticket.is_closed:
-        return custom_message(request,
-                              _("Il ticket {} è chiuso".format(master_ticket)),
-                              structure_slug=structure.slug)
+
     user_type = get_user_type(request.user, structure)
     master_ticket = get_object_or_404(Ticket, code=master_ticket_id)
     to_remove = get_object_or_404(Ticket2Ticket,
@@ -498,6 +494,7 @@ def ticket_close_url(request, structure_slug, ticket_id):
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def ticket_close(request, structure_slug, ticket_id,
                  structure, can_manage, ticket, office_employee=None):
     """
@@ -628,6 +625,7 @@ def ticket_competence_add_url(request, structure_slug, ticket_id):
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def ticket_competence_add_new(request, structure_slug, ticket_id,
                               structure, can_manage, ticket,
                               office_employee=None):
@@ -655,11 +653,7 @@ def ticket_competence_add_new(request, structure_slug, ticket_id,
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
-    # Se il ticket è chiuso blocca
-    if ticket.is_closed:
-        return custom_message(request,
-                              _("Il ticket {} è chiuso".format(master_ticket)),
-                              structure_slug=structure.slug)
+
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_competence.html".format(user_type)
     title = _('Trasferisci competenza ticket')
@@ -675,15 +669,16 @@ def ticket_competence_add_new(request, structure_slug, ticket_id,
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def ticket_competence_add_final(request, structure_slug, ticket_id,
-                                str_slug, structure, can_manage, ticket,
+                                new_structure_slug, structure, can_manage, ticket,
                                 office_employee=None):
     """
     Adds new ticket competence (second step)
 
     :type structure_slug: String
     :type ticket_id: String
-    :type str_slug: String
+    :type new_structure_slug: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
     :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
@@ -691,7 +686,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
-    :param str_slug: selected structure slug
+    :param new_structure_slug: selected structure slug
     :param structure: structure object (from @has_admin_privileges)
     :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
@@ -704,31 +699,33 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
-    # Se il ticket è chiuso blocca
-    if ticket.is_closed:
-        return custom_message(request,
-                              _("Il ticket {} è chiuso".format(master_ticket)),
-                              structure_slug=structure.slug)
+
     strutture = OrganizationalStructure.objects.filter(is_active = True)
     # Lista uffici ai quali il ticket è assegnato
     ticket_offices = ticket.get_assigned_to_offices(office_active=False)
-    struttura = get_object_or_404(OrganizationalStructure,
-                                  slug=str_slug,
-                                  is_active=True)
-    categorie = TicketCategory.objects.filter(organizational_structure=struttura.pk,
+    new_structure = get_object_or_404(OrganizationalStructure,
+                                      slug=new_structure_slug,
+                                      is_active=True)
+    categorie = TicketCategory.objects.filter(organizational_structure=new_structure.pk,
                                               is_active=True)
     if request.method == 'POST':
         category_slug = request.POST.get('category_slug')
-        follow_value = request.POST.get('follow')
-        readonly_value = request.POST.get('readonly')
-        follow = True if follow_value == 'on' else False
-        readonly = True if readonly_value == 'on' else False
+        follow = request.POST.get('follow')
+        readonly = request.POST.get('readonly')
+
+        # Refactor
+        # follow_value = request.POST.get('follow')
+        # readonly_value = request.POST.get('readonly')
+        # follow = True if follow_value == 'on' else False
+        # readonly = True if readonly_value == 'on' else False
+
         # La categoria passata in POST esiste?
         categoria = get_object_or_404(TicketCategory,
                                       slug=category_slug,
-                                      organizational_structure=struttura,
+                                      organizational_structure=new_structure,
                                       is_active=True)
-        new_office = structure.get_default_office()
+        # new_office = structure.get_default_office()
+        new_office = new_structure.get_default_office()
         if categoria.organizational_office:
             new_office = categoria.organizational_office
 
@@ -769,7 +766,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
         ticket.add_competence(office=new_office, user=request.user)
         ticket.update_log(user=request.user,
                           note= _("Nuova competenza: {} - {}"
-                                  " - Categoria: {}".format(struttura,
+                                  " - Categoria: {}".format(new_structure,
                                                             new_office,
                                                             categoria)))
 
@@ -784,7 +781,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     d = {'can_manage': can_manage,
          'categorie': categorie,
          'structure': structure,
-         'structure_slug': str_slug,
+         'structure_slug': new_structure_slug,
          'strutture': strutture,
          'sub_title': sub_title,
          'ticket': ticket,
@@ -813,6 +810,7 @@ def ticket_message_url(request, structure_slug, ticket_id):
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def ticket_message(request, structure_slug, ticket_id,
                    structure, can_manage, ticket, office_employee=None):
     """
@@ -834,9 +832,6 @@ def ticket_message(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
-                              structure_slug=structure.slug)
 
     title = _("Messaggi")
     sub_title = ticket
@@ -929,6 +924,7 @@ def task_add_new_url(request, structure_slug, ticket_id):
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def task_add_new(request, structure_slug, ticket_id,
                  structure, can_manage, ticket, office_employee=None):
     """
@@ -955,9 +951,6 @@ def task_add_new(request, structure_slug, ticket_id,
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
-    if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
-                              structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_task.html".format(user_type)
     title = _('Aggiungi Attività')
@@ -997,6 +990,7 @@ def task_add_new(request, structure_slug, ticket_id,
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def task_remove(request, structure_slug,
                 ticket_id, task_id,
                 structure, can_manage, ticket):
@@ -1024,9 +1018,7 @@ def task_remove(request, structure_slug,
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
-    if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
-                              structure_slug=structure.slug)
+
     user_type = get_user_type(request.user, structure)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     delete_file(file_name=task.attachment)
@@ -1168,6 +1160,7 @@ def task_close_url(request, structure_slug, ticket_id, task_id):
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def task_close(request, structure_slug, ticket_id, task_id,
                structure, can_manage, ticket, office_employee=None):
     """
@@ -1196,10 +1189,6 @@ def task_close(request, structure_slug, ticket_id, task_id,
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
-
-    if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
-                              structure_slug=structure.slug)
 
     # Se il ticket non è chiudibile (per dipendenze attive)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
@@ -1249,6 +1238,7 @@ def task_close(request, structure_slug, ticket_id, task_id,
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def task_reopen(request, structure_slug, ticket_id, task_id,
                 structure, can_manage, ticket):
     """
@@ -1275,10 +1265,6 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
-
-    if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
-                              structure_slug=structure.slug)
 
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     # Se il ticket non è chiuso blocca
@@ -1328,6 +1314,7 @@ def task_edit_url(request, structure_slug, ticket_id, task_id):
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def task_edit(request, structure_slug, ticket_id, task_id,
               structure, can_manage, ticket, office_employee=None):
     """
@@ -1356,10 +1343,6 @@ def task_edit(request, structure_slug, ticket_id, task_id,
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
-
-    if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
-                              structure_slug=structure.slug)
 
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     usertype = get_user_type(request.user, structure)
@@ -1426,6 +1409,7 @@ def task_edit(request, structure_slug, ticket_id, task_id,
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
 def task_attachment_delete(request, structure_slug,
                            ticket_id, task_id,
                            structure, can_manage, ticket, office_employee=None):

@@ -231,7 +231,7 @@ def dashboard(request):
 
 @login_required
 @is_the_owner
-@ticket_is_not_taken
+@ticket_is_not_taken_and_not_closed
 def ticket_edit(request, ticket_id):
     """
     Edit ticket details while it is unassigned
@@ -312,7 +312,7 @@ def ticket_edit(request, ticket_id):
 
 @login_required
 @is_the_owner
-@ticket_is_not_taken
+@ticket_is_not_taken_and_not_closed
 def delete_my_attachment(request, ticket_id, attachment):
     """
     Delete ticket attachment while it is unassigned
@@ -349,7 +349,7 @@ def delete_my_attachment(request, ticket_id, attachment):
 
 @login_required
 @is_the_owner
-@ticket_is_not_taken
+@ticket_is_not_taken_and_not_closed
 def ticket_delete(request, ticket_id):
     """
     Delete ticket while it is unassigned

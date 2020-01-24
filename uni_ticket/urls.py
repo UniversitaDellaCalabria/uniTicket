@@ -118,7 +118,7 @@ urlpatterns += [
     path('{}/'.format(ticket_id), is_manager(management.ticket_detail), name='manager_manage_ticket'),
     path('{}/messages/'.format(ticket_id), is_manager(management.ticket_message), name='manager_ticket_message'),
     path('{}/competence/add/'.format(ticket_id), is_manager(management.ticket_competence_add_new), name='manager_add_ticket_competence'),
-    path('{}/competence/add/<str:str_slug>/'.format(ticket_id), is_manager(management.ticket_competence_add_final), name='manager_add_ticket_competence'),
+    path('{}/competence/add/<str:new_structure_slug>/'.format(ticket_id), is_manager(management.ticket_competence_add_final), name='manager_add_ticket_competence'),
     path('{}/dependence/add/'.format(ticket_id), is_manager(management.ticket_dependence_add_new), name='manager_add_ticket_dependence'),
     path('{}/close/'.format(ticket_id), is_manager(management.ticket_close), name='manager_close_ticket'),
 
@@ -191,7 +191,7 @@ urlpatterns += [
     path('{}/'.format(ticket_id), is_operator(management.ticket_detail), name='operator_manage_ticket'),
     path('{}/messages/'.format(ticket_id), is_operator(management.ticket_message), name='operator_ticket_message'),
     path('{}/competence/add/'.format(ticket_id), is_operator(management.ticket_competence_add_new), name='operator_add_ticket_competence'),
-    path('{}/competence/add/<str:str_slug>/'.format(ticket_id), is_operator(management.ticket_competence_add_final), name='operator_add_ticket_competence'),
+    path('{}/competence/add/<str:new_structure_slug>/'.format(ticket_id), is_operator(management.ticket_competence_add_final), name='operator_add_ticket_competence'),
     path('{}/dependence/add/'.format(ticket_id), is_operator(management.ticket_dependence_add_new), name='operator_add_ticket_dependence'),
     path('{}/close/'.format(ticket_id), is_operator(management.ticket_close), name='operator_close_ticket'),
 
