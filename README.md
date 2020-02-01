@@ -97,5 +97,8 @@ Single node Docker swarm [WiP]
 docker swarm init
 
 # create a service
-docker service create --name="uniticket" unical/uniticket
+docker service create --name="uniticket" --publish 8000:8000/tcp --replicas 2 unical/uniticket:latest 
+
+# see status
+docker service ps uniticket
 ````
