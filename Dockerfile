@@ -10,7 +10,9 @@ RUN pip install --upgrade pip
 
 # install dependencies
 RUN apt-get update \
-    && apt-get install -y poppler-utils git locales xmlsec1 gcc libmagic-dev libmariadbclient-dev libssl-dev libsasl2-dev libldap2-dev \
+    && apt-get install -y poppler-utils git locales xmlsec1 gcc \
+                          libmagic-dev libmariadbclient-dev libssl-dev \
+                          libsasl2-dev libldap2-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install virtualenv

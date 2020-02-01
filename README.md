@@ -55,3 +55,47 @@ _**Image 1:** Example of user dashboard_
 
 ![Home](data/gallery/manager_dashboard.png)
 _**Image 2:** Example of manager dashboard_
+
+Docker Image
+------------
+
+````
+apt install docker docker.io docker-compose
+
+cd uniTicket
+
+# build the containers and run them
+sudo docker-compose up
+````
+
+Docker hints
+````
+docker ps
+
+# get state and id of containers
+docker container ls
+
+# get a terminal into a running container
+docker container exec -it b075a1193428 /bin/bash
+
+# list changed file in the container
+docker container diff b075a1193428
+
+# resource live statistics about a container
+docker container stats b075a1193428
+
+# inspect container environemnt
+docker container inspect b075a1193428
+
+# display running processes in the container
+docker container top b075a1193428
+````
+
+Single node Docker swarm [WiP]
+````
+# create the swam
+docker swarm init
+
+# create a service
+docker service create --name="uniticket" unical/uniticket
+````
