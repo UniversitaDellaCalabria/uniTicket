@@ -90,6 +90,9 @@ docker container exec -it b075a1193428 /bin/bash
 
 # list changed file in the container
 docker container diff b075a1193428
+# install and mofiy things with apt/vi ...
+# commit changes in a new image (don't do this is you haven't yet created a registry, see next chapter)
+docker container commit ab7e1c57b31a uniticket:v1.2
 
 # resource live statistics about a container
 docker container stats b075a1193428
@@ -106,9 +109,27 @@ Single node Docker swarm [WiP]
 # create the swam
 docker swarm init
 
+# create a local registry, otherwise docker service will use alway docker hub
+# exec registry as an app on localhost
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+# tag a local docker image by its uid in the registry
+docker tag 46c4806e5d61 localhost:5000/uniticket
+# upload it
+docker push localhost:5000/uniticket
+
 # create a service
-docker service create --name="uniticket" --publish 8000:8000/tcp --replicas 2 unical/uniticket:latest 
+docker service create --name="uniticket" --publish 8000:8000/tcp --replicas 2 localhost:5000/uniticket 
 
 # see status
 docker service ps uniticket --no-trunc
+
+# see wich network (gateway) is associated to the service
+docker network ls
+docker network inspect uniticket_default
+
+# connect your browser to http://172.18.0.1:8000 ...
+
+# update a service with a new image (HA failed, 5 seconds od downtime registered here!)
+docker service update --image uniticket:v1.2 uniticket
+
 ````
