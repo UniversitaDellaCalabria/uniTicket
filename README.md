@@ -63,7 +63,7 @@ Docker Image
 # please do not use standard distribution package
 # apt install docker docker.io docker-compose
 
-# use official docker repositories
+# use official docker repositories instead
 apt-get install docker-ce docker-ce-cli containerd.io
 
 cd uniTicket
@@ -71,14 +71,16 @@ cd uniTicket
 # build the containers and run them
 # sudo docker-compose up
 
-# build without composer: more transparent/verbose
+# build without composer
 docker image build --tag unical/uniticket .
 
-# Run
+# Run on localhost:8000
 docker run -t -i -p 8000:8000 --name uniticket unical/uniticket
 ````
 
-Docker hints
+Docker Container
+----------------
+
 ````
 docker ps
 
@@ -94,6 +96,10 @@ docker container diff b075a1193428
 # commit changes in a new image (don't do this is you haven't yet created a registry, see next chapter)
 docker container commit ab7e1c57b31a uniticket:v1.2
 
+# backup and restore an image
+docker save uniticket:v1.2 -o uniticket.v1.2.docker.img
+docker image load -i uniticket.v1.2.docker.img
+
 # resource live statistics about a container
 docker container stats b075a1193428
 
@@ -104,12 +110,15 @@ docker container inspect b075a1193428
 docker container top b075a1193428
 ````
 
-Single node Docker swarm [WiP]
+Docker Swarm
+------------
+Single node Docker swarm [health check WiP]
+
 ````
 # create the swam
 docker swarm init
 
-# create a local registry, otherwise docker service will use alway docker hub
+# create a registry is swarm is composed by more then one node ...
 # exec registry as an app on localhost
 docker run -d -p 5000:5000 --restart=always --name registry registry:2
 # tag a local docker image by its uid in the registry
@@ -129,7 +138,6 @@ docker network inspect uniticket_default
 
 # connect your browser to http://172.18.0.1:8000 ...
 
-# update a service with a new image (HA failed, 5 seconds od downtime registered here!)
+# update a service with a new image (HA failed, 5 seconds od downtime registered here... still need to implement an health check)
 docker service update --image uniticket:v1.2 uniticket
-
 ````
