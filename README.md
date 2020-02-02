@@ -60,12 +60,22 @@ Docker Image
 ------------
 
 ````
-apt install docker docker.io docker-compose
+# please do not use standard distribution package
+# apt install docker docker.io docker-compose
+
+# use official docker repositories
+apt-get install docker-ce docker-ce-cli containerd.io
 
 cd uniTicket
 
 # build the containers and run them
-sudo docker-compose up
+# sudo docker-compose up
+
+# build without composer: more transparent/verbose
+docker image build --tag unical/uniticket .
+
+# Run
+docker run -t -i -p 8000:8000 --name uniticket unical/uniticket
 ````
 
 Docker hints
@@ -100,5 +110,5 @@ docker swarm init
 docker service create --name="uniticket" --publish 8000:8000/tcp --replicas 2 unical/uniticket:latest 
 
 # see status
-docker service ps uniticket
+docker service ps uniticket --no-trunc
 ````
