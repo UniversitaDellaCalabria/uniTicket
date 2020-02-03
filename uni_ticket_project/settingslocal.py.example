@@ -1,36 +1,43 @@
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 import os
+
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'rz82a_#y1#s=l+loeqgn_4xslwchu%yxtpdf)h7b$6kn+p+sca'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 HOSTNAME = ''
-ALLOWED_HOSTS = [
-                'localhost',
-                HOSTNAME,
-                '127.0.0.1',
-                ]
+ALLOWED_HOSTS = ['*']
 
 ADMIN_PATH = 'gestione'
 
 EMAIL_SENDER = 'no-reply@{}'.format(HOSTNAME)
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.mysql'),
+#         'NAME': os.environ.get('SQL_DATABASE', 'uniauth'),
+#         'HOST': os.environ.get('SQL_HOST','localhost'),
+#         'USER': os.environ.get('SQL_USER','root'),
+#         'PASSWORD': os.environ.get('SQL_PASSWORD','mypass'),
+#         'PORT': os.environ.get('SQL_PORT','3306'),
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         },
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.mysql'),
-        'NAME': os.environ.get('SQL_DATABASE', 'uniauth'),
-        'HOST': os.environ.get('SQL_HOST','localhost'),
-        'USER': os.environ.get('SQL_USER','root'),
-        'PASSWORD': os.environ.get('SQL_PASSWORD','mypass'),
-        'PORT': os.environ.get('SQL_PORT','3306'),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Application definition
 INSTALLED_APPS = [

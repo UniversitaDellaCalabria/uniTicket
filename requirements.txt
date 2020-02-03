@@ -32,7 +32,7 @@ git+https://github.com/peppelinux/FileSignatureValidator.git
 django-nested-admin
 
 # SAML2
-git+https://github.com/peppelinux/pysaml2.git@pplnx-dev
+git+https://github.com/peppelinux/pysaml2.git@pplnx-v5
 git+https://github.com/peppelinux/djangosaml2.git@pplnx-dev
 
 # SASS dynamic compiler

@@ -1,27 +1,25 @@
-version: '3.1'
-
+version: '2.0'
 services:
-
-  db:
-    image: mariadb
-    container_name: uniticket-db
-    restart: always
-    environment:
-      MYSQL_DATABASE: uniticketdb
-      MYSQL_USER: uniticket
-      MYSQL_PASSWORD: changeme
-      MYSQL_ROOT_PASSWORD: mypass
+  #db:
+    #image: mariadb
+    #container_name: uniticket-db
+    #restart: always
+    #environment:
+      #MYSQL_DATABASE: uniticketdb
+      #MYSQL_USER: uniticket
+      #MYSQL_PASSWORD: changeme
+      #MYSQL_ROOT_PASSWORD: mypass
 
   uniticket:
     image: unical/uniticket
     container_name: uniticket
     restart: always
-    environment:
-      SQL_HOST: uniticket-db
-      SQL_USER: uniticket
-      SQL_PASSWORD: changeme
-      SQL_DATABASE: uniticketdb
-      WAIT_HOSTS: uniticket-db:3306
+    #environment:
+      #SQL_HOST: uniticket-db
+      #SQL_USER: uniticket
+      #SQL_PASSWORD: changeme
+      #SQL_DATABASE: uniticketdb
+      #WAIT_HOSTS: uniticket-db:3306
     command: >
       sh -c "/wait &&
              python manage.py test --noinput &&
@@ -30,8 +28,10 @@ services:
              python manage.py shell -c \"from django.contrib.auth import get_user_model; get_user_model().objects.filter(username='admin').exists() or get_user_model().objects.create_superuser('admin', 'admin@example.com', 'adminpass')\" &&
              python manage.py runserver 0.0.0.0:8000"
     ports:
-      - 8000:8000
-    links:
-      - db:uniticket-db
-    depends_on:
-      - db
+      # HOST:CONTAINER
+      - "8000:8000/tcp"
+      - "80:8000/tcp"
+    #links:
+      #- db:uniticket-db
+    #depends_on:
+      #- db

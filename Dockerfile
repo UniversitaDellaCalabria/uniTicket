@@ -10,7 +10,9 @@ RUN pip install --upgrade pip
 
 # install dependencies
 RUN apt-get update \
-    && apt-get install -y poppler-utils git locales xmlsec1 gcc libmagic-dev libmariadbclient-dev libssl-dev libsasl2-dev libldap2-dev \
+    && apt-get install -y poppler-utils git locales xmlsec1 gcc \
+                          libmagic-dev libmariadbclient-dev libssl-dev \
+                          libsasl2-dev libldap2-dev net-tools \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install virtualenv
@@ -27,12 +29,13 @@ ENV LC_ALL it_IT.UTF-8
 
 COPY . /uniTicket
 WORKDIR /uniTicket
-RUN pip3 install -r requirements
+RUN pip3 install -r requirements.txt
 RUN cp uni_ticket_project/settingslocal.py.example uni_ticket_project/settingslocal.py 
 
 ## Add the wait script to the image
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.2/wait /wait
 RUN chmod +x /wait
 
+RUN python manage.py migrate
 EXPOSE 8000
 CMD /wait && python manage.py runserver 0.0.0.0:8000
