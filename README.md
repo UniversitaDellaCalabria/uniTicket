@@ -72,10 +72,10 @@ cd uniTicket
 # sudo docker-compose up
 
 # build without composer
-docker image build --tag unical/uniticket .
+docker image build --tag uniticket:v1 .
 
 # Run on localhost:8000
-docker run -t -i -p 8000:8000 --name uniticket unical/uniticket
+docker run -t -i -p 8000:8000 --name uniticket uniticket:v1
 ````
 
 Docker Container
@@ -127,7 +127,7 @@ docker tag 46c4806e5d61 localhost:5000/uniticket
 docker push localhost:5000/uniticket
 
 # create a service
-docker service create --name="uniticket" --publish 8000:8000/tcp --replicas 2 localhost:5000/uniticket 
+docker service create --name="uniticket" --publish 8000:8000/tcp --replicas 2 localhost:5000/uniticket
 
 # see status
 docker service ps uniticket --no-trunc
