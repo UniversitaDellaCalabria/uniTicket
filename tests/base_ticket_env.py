@@ -38,12 +38,27 @@ class BaseTicketEnvironment(BaseCategoryEnvironment):
         attachment = self.create_fake_file()
         subject = 'Ticket 1'
         params = {'ticket_subject': subject,
-                  'ticket_description': 'Description category 1',
+                  'ticket_description': 'Description ticket 1',
                   'file_field_1': attachment}
         response = self.client.post(reverse('uni_ticket:add_new_ticket',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'category_slug': self.category_1.slug}),
                                     params,
                                     follow=True)
-        self.ticket = Ticket.objects.first()
+        self.ticket = Ticket.objects.filter(subject=subject).first()
         assert self.ticket
+
+        # Add ticket 2(base form)
+        # Create the ticket with the same user (Staff 1... he is a simple user too!)
+        attachment = self.create_fake_file()
+        subject = 'Ticket 2'
+        params = {'ticket_subject': subject,
+                  'ticket_description': 'Description ticket 2',
+                  'file_field_1': attachment}
+        response = self.client.post(reverse('uni_ticket:add_new_ticket',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1.slug}),
+                                    params,
+                                    follow=True)
+        self.ticket_2 = Ticket.objects.filter(subject=subject).first()
+        assert self.ticket_2

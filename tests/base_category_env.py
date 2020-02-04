@@ -18,8 +18,10 @@ class BaseCategoryEnvironment(BaseTest):
     def setUp(self):
         super().setUp()
 
-        # Staff_2 User login (manager of Structure 2)
-        self.client.force_login(self.staff_2)
+        # Category in Structure 2
+        # Structure 2 Manager login
+        self.structure_2_manager_login()
+
         # Create category 3
         cat_name = 'Category 3'
         params = {'name': cat_name,
@@ -27,6 +29,14 @@ class BaseCategoryEnvironment(BaseTest):
                   'allow_employee': True,
                   'allow_user': True,
                   'allow_guest': True}
+        # This fails, user doesn't manage Structure_1
+        response = self.client.post(reverse('uni_ticket:manager_category_add_new',
+                                            kwargs={'structure_slug': self.structure_1.slug}),
+                                    params,
+                                    follow=True)
+        self.category_3 = TicketCategory.objects.filter(name=cat_name).first()
+        assert not self.category_3
+        # This success, user manages Structure_2
         response = self.client.post(reverse('uni_ticket:manager_category_add_new',
                                             kwargs={'structure_slug': self.structure_2.slug}),
                                     params,
@@ -57,8 +67,9 @@ class BaseCategoryEnvironment(BaseTest):
                                         'category_slug': self.category_3.slug}),
                         follow=True)
 
+        # Category in Structure 1
         # Staff_1 User login (manager of Structure 1)
-        self.client.force_login(self.staff_1)
+        self.structure_1_manager_login()
 
         # Create category 1
         cat_name = 'Category 1'

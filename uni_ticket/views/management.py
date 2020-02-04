@@ -271,46 +271,47 @@ def tickets(request, structure_slug, structure, office_employee=None):
          'title': title,}
     return render(request, template, d)
 
-@login_required
-@has_admin_privileges
-@ticket_assigned_to_structure
-@ticket_is_not_taken_and_not_closed
-def ticket_take(request, structure_slug, ticket_id,
-                structure, can_manage, ticket,
-                office_employee=None):
-    """
-    Take ticket
+# Not used
+# @login_required
+# @has_admin_privileges
+# @ticket_assigned_to_structure
+# @ticket_is_not_taken_and_not_closed
+# def ticket_take(request, structure_slug, ticket_id,
+                # structure, can_manage, ticket,
+                # office_employee=None):
+    # """
+    # Take ticket
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
-    :type ticket: Ticket (from @ticket_assigned_to_structure)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
+    # :type structure_slug: String
+    # :type ticket_id: String
+    # :type structure: OrganizationalStructure (from @has_admin_privileges)
+    # :type can_manage: Dictionary (from @has_admin_privileges)
+    # :type ticket: Ticket (from @ticket_assigned_to_structure)
+    # :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
-    :param structure_slug: the slug of structure to manage
-    :param ticket_id: ticket code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
-    :param ticket: ticket object (from @ticket_assigned_to_structure)
-    :param office_employee: operator offices queryset (from @is_operator)
+    # :param structure_slug: the slug of structure to manage
+    # :param ticket_id: ticket code
+    # :param structure: structure object (from @has_admin_privileges)
+    # :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    # :param ticket: ticket object (from @ticket_assigned_to_structure)
+    # :param office_employee: operator offices queryset (from @is_operator)
 
-    :return: render
-    """
-    if can_manage['readonly']:
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
-    user = request.user
-    ticket.is_taken = True
-    ticket.save(update_fields=['is_taken'])
-    ticket.update_log(user=request.user,
-                          note= _("Preso in carico"))
-    messages.add_message(request, messages.SUCCESS,
-                         _("Ticket <b>{}</b> preso in carico"
-                           " correttamente".format(ticket.code)))
-    return redirect('uni_ticket:manage', structure_slug)
+    # :return: render
+    # """
+    # if can_manage['readonly']:
+        # messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        # return redirect('uni_ticket:manage_ticket_url_detail',
+                        # structure_slug=structure_slug,
+                        # ticket_id=ticket_id)
+    # user = request.user
+    # ticket.is_taken = True
+    # ticket.save(update_fields=['is_taken'])
+    # ticket.update_log(user=request.user,
+                          # note= _("Preso in carico"))
+    # messages.add_message(request, messages.SUCCESS,
+                         # _("Ticket <b>{}</b> preso in carico"
+                           # " correttamente".format(ticket.code)))
+    # return redirect('uni_ticket:manage', structure_slug)
 
 @login_required
 def ticket_dependence_add_url(request, structure_slug, ticket_id):

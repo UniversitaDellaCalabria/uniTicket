@@ -61,10 +61,11 @@ class Test_UserFunctions(BaseTicketEnvironment):
 
     def test_ticket_deletion(self):
         # Delete ticket
+        code = self.ticket.code
         response = self.client.get(reverse('uni_ticket:ticket_delete',
-                                           kwargs={'ticket_id': self.ticket.code}),
+                                           kwargs={'ticket_id': code}),
                                    follow=True)
-        assert not Ticket.objects.first()
+        assert not Ticket.objects.filter(code=code)
 
     def test_ticket_message(self):
         # Submit message (fails until ticket is not taken)
