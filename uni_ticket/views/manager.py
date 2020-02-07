@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
@@ -41,7 +42,7 @@ def dashboard(request, structure_slug, structure):
 
     ta = TicketAssignment
     structure_tickets = ta.get_ticket_per_structure(structure=structure)
-    tickets = Ticket.objects.filter(pk__in=structure_tickets)
+    tickets = Ticket.objects.filter(code__in=structure_tickets)
     non_gestiti = tickets.filter(is_taken=False,
                                  is_closed=False)
     aperti = tickets.filter(is_taken=True, is_closed=False)
@@ -57,7 +58,7 @@ def dashboard(request, structure_slug, structure):
     for ticket in tickets:
         if not ticket.is_followed_in_structure(structure=structure):
             continue
-        messages += ticket.get_unread_replies()
+        messages += ticket.get_messages_count()[1]
 
     d = {'ticket_messages': messages,
          'categories': categories,
@@ -226,12 +227,12 @@ def office_detail(request, structure_slug, office_slug, structure):
     form = OfficeAddOperatorForm(structure=structure,
                                  office_slug=office_slug,
                                  current_user=request.user)
-    category_form = OfficeAddCategoryForm(structure=structure)
+    category_form = OfficeAddCategoryForm(structure=structure,
+                                          office=office)
     if request.method == 'POST':
         form = OfficeAddOperatorForm(request.POST,
-                                     structure=structure,
-                                     office_slug=office_slug,
-                                     current_user=request.user)
+                                     structure=structure)
+
         if form.is_valid():
             employee_id = request.POST.get('operatore')
             description = request.POST['description']
@@ -284,13 +285,13 @@ def office_add_category(request, structure_slug, office_slug, structure):
                                    organizational_structure=structure,
                                    slug=office_slug)
         form = OfficeAddCategoryForm(request.POST,
-                                     structure=structure)
+                                     structure=structure,
+                                     office=office)
         if form.is_valid():
-            category_id = request.POST.get('category')
+            category_slug = request.POST.get('category')
             category = get_object_or_404(TicketCategory,
-                                         pk=category_id,
-                                         organizational_structure=structure,
-                                         organizational_office=None)
+                                         slug=category_slug,
+                                         organizational_structure=structure)
             category.organizational_office = office
             category.save(update_fields = ['organizational_office'])
             messages.add_message(request, messages.SUCCESS,
@@ -338,11 +339,12 @@ def office_remove_category(request, structure_slug,
                                " questo ufficio"))
     else:
         category.organizational_office = None
-        category.save(update_fields = ['organizational_office'])
+        category.is_active = False
+        category.save(update_fields = ['organizational_office', 'is_active'])
         messages.add_message(request, messages.SUCCESS,
                              _("La categoria <b>{}</b> non è più di competenza "
-                               " dell'ufficio <b>{}</b> rimosso correttamente".format(category,
-                                                                                      office)))
+                               " dell'ufficio <b>{}</b> ed è stata disattivata".format(category,
+                                                                                       office)))
     return redirect('uni_ticket:manager_office_detail',
                     structure_slug=structure_slug,
                     office_slug=office_slug)
@@ -415,14 +417,31 @@ def office_disable(request, structure_slug, office_slug, structure):
     office = get_object_or_404(OrganizationalStructureOffice,
                                organizational_structure=structure,
                                slug=office_slug)
-    if office.is_active:
+    one_tickets_for_this_office = False
+    tickets_per_office = TicketAssignment.objects.filter(office=office,
+                                                             follow=True).annotate(num_tickets=Count('ticket'))
+    for tpo in tickets_per_office:
+        if tpo == 1:
+            one_tickets_for_this_office = True
+            break
+    if office.is_default:
+        messages.add_message(request, messages.ERROR,
+                             _("Impossibile disattivare questo ufficio"))
+    elif one_tickets_for_this_office:
+        messages.add_message(request, messages.ERROR,
+                             _("Impossibile disattivare questo ufficio."
+                               " Alcuni ticket potrebbero rimanere privi di gestione"))
+    elif office.is_active:
+        assigned_categories = TicketCategory.objects.filter(organizational_office=office)
+        for cat in assigned_categories:
+            cat.is_active = False
+            cat.save(update_fields = ['is_active'])
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Categoria {} disattivata correttamente".format(cat)))
         office.is_active = False
         office.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
                              _("Ufficio {} disattivato con successo".format(office)))
-    elif office.is_default:
-        messages.add_message(request, messages.ERROR,
-                             _("Impossibile disattivare questo ufficio"))
     else:
         messages.add_message(request, messages.ERROR,
                              _("Ufficio {} già disattivato".format(office)))
@@ -481,6 +500,12 @@ def office_delete(request, structure_slug, office_slug, structure):
                                organizational_structure=structure,
                                slug=office_slug)
     if office_can_be_deleted(office):
+        assigned_categories = TicketCategory.objects.filter(organizational_office=office)
+        for cat in assigned_categories:
+            cat.is_active = False
+            cat.save(update_fields = ['is_active'])
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Categoria {} disattivata correttamente".format(cat)))
         messages.add_message(request, messages.SUCCESS,
                              _("Ufficio {} eliminato correttamente".format(office)))
         office.delete()
@@ -526,10 +551,10 @@ def category_detail(request, structure_slug, category_slug, structure):
         form = CategoryAddOfficeForm(request.POST,
                                      structure=structure)
         if form.is_valid():
-            office_id = request.POST.get('office')
+            office_slug = request.POST.get('office')
             m = OrganizationalStructureOffice
             office = m.objects.get(organizational_structure=structure,
-                                   pk=office_id)
+                                   slug=office_slug)
             category.organizational_office = office
             category.save(update_fields = ['organizational_office'])
             messages.add_message(request, messages.SUCCESS,
@@ -746,10 +771,19 @@ def category_enable(request, structure_slug, category_slug, structure):
                                  organizational_structure=structure,
                                  slug=category_slug)
     category_module = TicketCategoryModule.objects.filter(ticket_category=category,
-                                                              is_active=True)
+                                                          is_active=True)
     if category.is_active:
         messages.add_message(request, messages.ERROR,
                              _("Categoria {} già attivata".format(category)))
+    elif not category.organizational_office:
+        messages.add_message(request, messages.ERROR,
+                             _("Per attivare la categoria <b>{}</b> è necessario"
+                               " assegnare un ufficio di competenza".format(category)))
+    elif not category.organizational_office.is_active:
+        messages.add_message(request, messages.ERROR,
+                             _("Per attivare la categoria <b>{}</b> è necessario"
+                               " attivare l'ufficio <b>{}</b>".format(category,
+                                                                      category.organizational_office)))
     elif not category_module:
         messages.add_message(request, messages.ERROR,
                              _("Per attivare la categoria <b>{}</b> è necessario"

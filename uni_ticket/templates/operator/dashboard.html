@@ -13,10 +13,9 @@
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
         {% if ticket_messages > 0 %}
         <span class="badge badge-primary">
-        {% else %}
-        <span class="badge badge-light">
+            {{ ticket_messages }}
+        </span>
         {% endif %}
-        {{ ticket_messages }}</span>
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
         </svg>

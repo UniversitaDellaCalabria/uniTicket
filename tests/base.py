@@ -8,57 +8,44 @@ from organizational_area.models import *
 
 class BaseTest(TestCase):
 
-    def create_structure(self, name, slug, unique_code, structure_type_name=''):
-        if not structure_type_name:
-            structure_type_name = "Macro Area"
-        structure_type = OrganizationalStructureType.objects.get_or_create(name=structure_type_name)[0]
+    def create_structure(self, name):
+        structure_type = OrganizationalStructureType.objects.get_or_create(name="Macro Area")[0]
         return OrganizationalStructure.objects.create(name=name,
                                                       slug=slugify(name),
-                                                      unique_code=unique_code,
+                                                      unique_code=slugify(name),
                                                       structure_type=structure_type)
 
+    def create_user(self, name, is_staff=False):
+        user_model = apps.get_model(settings.AUTH_USER_MODEL)
+        return user_model.objects.create_user(username=slugify(name),
+                                              password='passw',
+                                              first_name=name,
+                                              last_name="Lastname {}".format(name),
+                                              email="{}@test.it".format(slugify(name)),
+                                              is_staff=is_staff)
+
     def assign_user_to_structure(self, user, structure):
-        if not user: return False
-        if not structure: return False
+        # Assign users to structure default office
+        # Staff users become manager
         default_office = structure.get_default_office()
-        osoe = OrganizationalStructureOfficeEmployee.objects.create(employee=user,
-                                                                    office=default_office)
+        osoe_model = OrganizationalStructureOfficeEmployee
+        osoe = osoe_model.objects.create(employee=user,
+                                         office=default_office)
 
     def setUp(self):
         self.client = Client()
 
         # Create structures
-        self.structure_1 = self.create_structure(name="Structure 1",
-                                                 slug="structure-1",
-                                                 unique_code="code_structure_1")
-        self.structure_2 = self.create_structure(name="Structure 2",
-                                                 slug="structure-2",
-                                                 unique_code="code_structure_2")
+        self.structure_1 = self.create_structure(name="Structure 1")
+        self.structure_2 = self.create_structure(name="Structure 2")
 
         # Create users
-        user_model = apps.get_model(settings.AUTH_USER_MODEL)
-        # Staff 1
-        self.staff_1 = user_model.objects.create_user(username='staff1', password='passw',
-                                                     first_name="Staff 1",
-                                                     last_name="Lastname Staff 1",
-                                                     email="staff1@test.it",
-                                                     is_staff=True)
-        # Staff 2
-        self.staff_2 = user_model.objects.create_user(username='staff2', password='passw',
-                                                     first_name="Staff 2",
-                                                     last_name="Lastname Staff 2",
-                                                     email="staff2@test.it",
-                                                     is_staff=True)
-        # User 1
-        self.user_1 = user_model.objects.create_user(username='user1', password='passw',
-                                                     first_name="User 1",
-                                                     last_name="Lastname User 1",
-                                                     email="user1@test.it")
-        # User 2
-        self.user_2 = user_model.objects.create_user(username='user2', password='passw',
-                                                     first_name="User 2",
-                                                     last_name="Lastname User 2",
-                                                     email="user2@test.it")
+        # Staff users
+        self.staff_1 = self.create_user(name="Staff 1", is_staff=True)
+        self.staff_2 = self.create_user(name="Staff 2", is_staff=True)
+        # Simple users
+        self.user_1 = self.create_user(name="User 1", is_staff=False)
+        self.user_2 = self.create_user(name="User 2", is_staff=False)
 
         # Assign users to structures
         # These are staff users and for this reason they will be structure managers

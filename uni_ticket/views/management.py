@@ -14,6 +14,7 @@ from django.utils.translation import gettext as _
 
 from django_form_builder.utils import get_as_dict, get_labeled_errors
 from organizational_area.models import *
+from organizational_area.settings import DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE
 from uni_ticket.decorators import (has_admin_privileges,
                                    ticket_assigned_to_structure,
                                    ticket_is_taken_and_not_closed,
@@ -205,8 +206,7 @@ def ticket_detail(request, structure_slug, ticket_id,
                 msg = _("Priorità assegnata: {}".format(priority_text))
             ticket.priority = priority
             ticket.save(update_fields = ['priority'])
-            ticket.update_log(user=request.user,
-                                  note=msg)
+            ticket.update_log(user=request.user, note=msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket <b>{}</b> aggiornato"
                                    " con successo".format(ticket.code)))
@@ -254,13 +254,13 @@ def tickets(request, structure_slug, structure, office_employee=None):
     title = _('Gestione ticket')
     sub_title = _("Aperti o non ancora presi in carico")
     structure_ticket = TicketAssignment.get_ticket_per_structure(structure)
-    non_gestiti = Ticket.objects.filter(pk__in=structure_ticket,
+    non_gestiti = Ticket.objects.filter(code__in=structure_ticket,
                                         is_taken=False,
                                         is_closed=False)
-    aperti = Ticket.objects.filter(pk__in=structure_ticket,
+    aperti = Ticket.objects.filter(code__in=structure_ticket,
                                    is_taken=True,
                                    is_closed=False)
-    chiusi = Ticket.objects.filter(pk__in=structure_ticket,
+    chiusi = Ticket.objects.filter(code__in=structure_ticket,
                                    is_closed=True)
 
     d = {'ticket_aperti': aperti,
@@ -369,22 +369,22 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
     sub_title = '{} ({})'.format(ticket.subject, ticket_id)
     # Lista dei pk dei ticket da cui quello corrente dipende
     ticket_dependences = ticket.get_dependences()
-    ticket_dependences_id_list = []
+    ticket_dependences_code_list = []
     for td in ticket_dependences:
-        if td.master_ticket.pk not in ticket_dependences_id_list:
-            ticket_dependences_id_list.append(td.master_ticket.pk)
+        if td.master_ticket.code not in ticket_dependences_code_list:
+            ticket_dependences_code_list.append(td.master_ticket.code)
     form = TicketDependenceForm(structure=structure,
-                                ticket_id=ticket.pk,
-                                ticket_dependences=ticket_dependences_id_list)
+                                ticket_id=ticket.code,
+                                ticket_dependences=ticket_dependences_code_list)
     if request.method == 'POST':
         form = TicketDependenceForm(request.POST,
                                     structure=structure,
-                                    ticket_id=ticket.pk,
-                                    ticket_dependences=ticket_dependences_id_list)
+                                    ticket_id=ticket.code,
+                                    ticket_dependences=ticket_dependences_code_list)
         if form.is_valid():
-            ticket_master_pk = request.POST.get('ticket')
+            ticket_master_code = request.POST.get('ticket')
             note = request.POST.get('note')
-            master_ticket = get_object_or_404(Ticket, pk=ticket_master_pk)
+            master_ticket = get_object_or_404(Ticket, code=ticket_master_code)
             # Se il ticket scelto come master dipende da altri ticket
             if Ticket2Ticket.master_is_already_used(master_ticket) or ticket.blocks_some_ticket():
                 messages.add_message(request, messages.ERROR,
@@ -398,9 +398,9 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                                 master_ticket=master_ticket,
                                 note=note)
             t2t.save()
-            ticket.update_log(user = request.user,
-                                  note = _("Aggiunta dipendenza dal ticket:"
-                                           " <b>{}</b>".format(master_ticket)))
+            ticket.update_log(user=request.user,
+                              note=_("Aggiunta dipendenza dal ticket:"
+                                     " {}".format(master_ticket)))
             messages.add_message(request, messages.SUCCESS,
                                  _("Dipendenza dal ticket <b>{}</b>"
                                    " aggiunta con successo".format(master_ticket.code)))
@@ -464,9 +464,9 @@ def ticket_dependence_remove(request, structure_slug,
                               structure_slug=structure.slug)
     else:
         to_remove.delete()
-        ticket.update_log(user = request.user,
-                              note = _("Rimossa dipendenza dal ticket:"
-                                       " <b>{}</b>".format(master_ticket)))
+        ticket.update_log(user=request.user,
+                          note=_("Rimossa dipendenza dal ticket:"
+                                 " {}".format(master_ticket)))
         messages.add_message(request, messages.SUCCESS,
                              _("Dipendenza rimossa correttamente"))
     return redirect('uni_ticket:manage_ticket_url_detail',
@@ -541,8 +541,8 @@ def ticket_close(request, structure_slug, ticket_id,
             ticket.save(update_fields = ['is_closed',
                                          'motivazione_chiusura',
                                          'data_chiusura'])
-            ticket.update_log(user = request.user,
-                                  note = _("Chiusura ticket: {}".format(motivazione)))
+            ticket.update_log(user=request.user,
+                              note=_("Chiusura ticket: {}".format(motivazione)))
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket {} chiuso correttamente".format(ticket)))
             return redirect('uni_ticket:manage', structure_slug)
@@ -725,10 +725,26 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                       slug=category_slug,
                                       organizational_structure=new_structure,
                                       is_active=True)
-        # new_office = structure.get_default_office()
-        new_office = new_structure.get_default_office()
-        if categoria.organizational_office:
-            new_office = categoria.organizational_office
+
+        # Se alla categoria non è associato alcun ufficio,
+        # all'utente viene mostrato il messaggio di errore
+        # Perchè l'ufficio speciale Help-Desk è già competente sul ticket
+        if not categoria.organizational_office:
+            messages.add_message(request, messages.ERROR,
+                                 _("Il ticket è già di competenza"
+                                   " dell'ufficio speciale <b>{}</b>,"
+                                   " che ha la competenza della categoria "
+                                   "<b>{}</b>".format(DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+                                               categoria)))
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                            structure_slug=structure_slug,
+                            ticket_id=ticket_id)
+
+        # new_office = new_structure.get_default_office()
+        # if categoria.organizational_office:
+            # new_office = categoria.organizational_office
+        new_office = categoria.organizational_office
+
 
         if new_office in ticket_offices:
             messages.add_message(request, messages.ERROR,
@@ -969,9 +985,8 @@ def task_add_new(request, structure_slug, ticket_id,
             new_task.created_by = request.user
             new_task.code = uuid_code()
             new_task.save()
-            ticket.update_log(user = request.user,
-                                  note = _("Aggiunto task:"
-                                           " {}".format(new_task)))
+            ticket.update_log(user=request.user,
+                              note = _("Aggiunto task: {}".format(new_task)))
             messages.add_message(request, messages.SUCCESS,
                                  _("Task {} creato con successo".format(new_task)))
             return redirect('uni_ticket:manage_ticket_url_detail',
@@ -1024,8 +1039,8 @@ def task_remove(request, structure_slug,
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     delete_file(file_name=task.attachment)
     task.delete()
-    ticket.update_log(user = request.user,
-                          note = _("Rimosso task: {}".format(task)))
+    ticket.update_log(user=request.user,
+                      note=_("Rimosso task: {}".format(task)))
     messages.add_message(request, messages.SUCCESS,
                          _("Task {} rimosso correttamente".format(task)))
     return redirect('uni_ticket:manage_ticket_url_detail',
@@ -1110,10 +1125,8 @@ def task_detail(request, structure_slug, ticket_id, task_id,
                                                               priority_text))
             task.priority = priority
             task.save(update_fields = ['priority'])
-            task.update_log(user=request.user,
-                                note=msg)
-            ticket.update_log(user=request.user,
-                                  note=msg)
+            task.update_log(user=request.user, note=msg)
+            ticket.update_log(user=request.user, note=msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Attività aggiornata con successo"))
             return redirect('uni_ticket:manage_task_detail_url',
@@ -1214,10 +1227,8 @@ def task_close(request, structure_slug, ticket_id, task_id,
                                        'motivazione_chiusura',
                                        'data_chiusura'])
             msg = _("Chiusura task: {} - {}".format(task, motivazione))
-            task.update_log(user = request.user,
-                                note = msg)
-            ticket.update_log(user = request.user,
-                                  note = msg)
+            task.update_log(user=request.user,note=msg)
+            ticket.update_log(user=request.user,note=msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Task {} chiuso correttamente".format(task)))
             return redirect('uni_ticket:manage_ticket_url_detail',
@@ -1279,10 +1290,8 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
     task.is_closed = False
     task.save(update_fields = ['is_closed'])
     msg = _("Riapertura task {}".format(task))
-    task.update_log(user=request.user,
-                        note=msg)
-    ticket.update_log(user=request.user,
-                          note=msg)
+    task.update_log(user=request.user,note=msg)
+    ticket.update_log(user=request.user,note=msg)
     messages.add_message(request, messages.SUCCESS,
                          _("Task {} riaperto correttamente".format(task)))
     return redirect('uni_ticket:manage_ticket_url_detail',
@@ -1377,10 +1386,8 @@ def task_edit(request, structure_slug, ticket_id, task_id,
                                        'priority',
                                        'attachment'])
 
-            task.update_log(user=request.user,
-                                note=msg)
-            ticket.update_log(user=request.user,
-                                  note=msg)
+            task.update_log(user=request.user,note=msg)
+            ticket.update_log(user=request.user,note=msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Attività aggiornata con successo"))
             return redirect('uni_ticket:edit_task',
@@ -1457,10 +1464,8 @@ def task_attachment_delete(request, structure_slug,
     task.save(update_fields = ['attachment'])
 
     msg = _("Allegato task {} eliminato".format(task.code))
-    task.update_log(user=request.user,
-                          note=_("Allegato eliminato"))
-    ticket.update_log(user=request.user,
-                          note=msg)
+    task.update_log(user=request.user, note=_("Allegato eliminato"))
+    ticket.update_log(user=request.user, note=msg)
     messages.add_message(request, messages.SUCCESS, msg)
     return redirect('uni_ticket:edit_task',
                     structure_slug=structure.slug,

@@ -35,7 +35,7 @@ def dashboard(request, structure_slug, structure, office_employee):
     user_tickets = visible_tickets_to_user(user=request.user,
                                            structure=structure,
                                            office_employee=office_employee)
-    tickets = Ticket.objects.filter(pk__in=user_tickets)
+    tickets = Ticket.objects.filter(code__in=user_tickets)
     non_gestiti = tickets.filter(is_taken=False,
                                  is_closed=False)
     aperti = tickets.filter(is_taken=True, is_closed=False)
@@ -45,7 +45,7 @@ def dashboard(request, structure_slug, structure, office_employee):
     for ticket in tickets:
         if not ticket.is_followed_by_one_of_offices(offices):
             continue
-        messages += ticket.get_unread_replies()
+        messages += ticket.get_messages_count()[1]
 
     d = {'ticket_messages': messages,
          'offices': offices,

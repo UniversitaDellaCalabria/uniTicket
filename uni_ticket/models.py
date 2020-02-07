@@ -254,17 +254,6 @@ class Ticket(SavedFormContent):
         """
         return self.created.year
 
-    def is_assigned_to(self, office):
-        """
-        Ritorna True se l'ufficio passato come argomento
-        è nella lista delle assegnazioni di competenza del ticket
-        """
-        if not office: return False
-        if not office.is_active: return False
-        assegnazione = TicketAssignment.objects.filter(ticket=self,
-                                                       office=office).first()
-        if assegnazione: return True
-
     def is_open(self):
         if self.is_closed: return False
         if not self.is_taken: return False
@@ -346,11 +335,16 @@ class Ticket(SavedFormContent):
                                     action_flag     = CHANGE,
                                     change_message  = note)
 
-    def get_assigned_to_offices(self, office_active=True, structure=None):
+    def get_assigned_to_offices(self,
+                                office_active=True,
+                                structure=None,
+                                ignore_follow=True):
         """
         Returns to wicth offices ticket is assigned
         """
         assignments = TicketAssignment.objects.filter(ticket=self)
+        if not ignore_follow:
+            assignments = assignments.filter(follow=True)
         offices = []
         for assignment in assignments:
             office = assignment.office
@@ -360,11 +354,12 @@ class Ticket(SavedFormContent):
             elif office.is_active: offices.append(office)
         return offices
 
-    def get_assigned_to_structures(self):
+    def get_assigned_to_structures(self, ignore_follow=True):
         """
         Returns to wich structures ticket is assigned
         """
-        offices = self.get_assigned_to_offices(office_active=False)
+        offices = self.get_assigned_to_offices(office_active=False,
+                                               ignore_follow=ignore_follow)
         structures = []
         for office in offices:
             struct = office.organizational_structure
@@ -476,16 +471,19 @@ class Ticket(SavedFormContent):
         """
         return dict(PRIORITY_LEVELS).get(str(self.priority))
 
-    def get_unread_replies(self, want_structure=False):
+    def get_messages_count(self, want_structure=False):
+        all_messages = TicketReply.objects.filter(ticket=self)
+        first_created = all_messages.first()
         # If I'm a manager/operator
-        query = TicketReply.objects.filter(ticket=self,
-                                           read_date=None)
+        unread_messages = all_messages.filter(read_date=None)
         # if I'm a simple user, I want my agents replies
         if want_structure:
-            replies = query.exclude(structure=None)
+            unread_messages = unread_messages.exclude(structure=None)
         else:
-            replies = query.filter(structure=None)
-        return replies.count()
+            unread_messages = unread_messages.filter(structure=None)
+        return (all_messages.count(),
+                unread_messages.count(),
+                first_created.created if first_created else None)
 
     def _check_assignment_privileges(self, queryset):
         if not queryset: return False
@@ -493,9 +491,8 @@ class Ticket(SavedFormContent):
             readonly_value = False
         elif queryset.filter(readonly=True):
             readonly_value = True
-        d = {}
-        d['follow'] = True
-        d['readonly'] = readonly_value
+        d = {'follow': True,
+             'readonly': readonly_value}
         return d
         # return json.loads(d)
 
@@ -503,6 +500,7 @@ class Ticket(SavedFormContent):
         if not structure: return False
         assignment = TicketAssignment.objects.filter(ticket=self,
                                                      office__organizational_structure=structure,
+                                                     office__is_active=True,
                                                      follow=True)
         return self._check_assignment_privileges(assignment)
 
@@ -510,6 +508,7 @@ class Ticket(SavedFormContent):
         if not office: return False
         assignment = TicketAssignment.objects.filter(ticket=self,
                                                      office=office,
+                                                     office__is_active=True,
                                                      follow=True)
         return self._check_assignment_privileges(assignment)
 
@@ -550,28 +549,29 @@ class TicketAssignment(models.Model):
     def get_ticket_per_structure(structure, follow_check=True):
         """
         """
-        offices = OrganizationalStructureOffice.objects.filter(organizational_structure=structure)
-                                                               # is_active = True)
+        offices = OrganizationalStructureOffice.objects.filter(organizational_structure=structure,
+                                                               is_active = True)
         ticket_assignments = TicketAssignment.objects.filter(office__in=offices)
         ticket_list = []
         for assignment in ticket_assignments:
             if follow_check and not assignment.follow: continue
             ticket = assignment.ticket
-            if ticket.pk not in ticket_list:
-                ticket_list.append(ticket.pk)
+            if ticket.code not in ticket_list:
+                ticket_list.append(ticket.code)
         return ticket_list
 
     @staticmethod
     def get_ticket_in_office_list(office_list, follow_check=True):
         """
         """
-        ticket_assignments = TicketAssignment.objects.filter(office__in=office_list)
+        ticket_assignments = TicketAssignment.objects.filter(office__in=office_list,
+                                                             office__is_active=True)
         ticket_list = []
         for assignment in ticket_assignments:
             if follow_check and not assignment.follow: continue
             ticket = assignment.ticket
             if ticket.pk not in ticket_list:
-                ticket_list.append(ticket.pk)
+                ticket_list.append(ticket.code)
         return ticket_list
 
     def get_assegnazioni_office(self, office):
@@ -613,7 +613,7 @@ class TicketReply(models.Model):
         verbose_name_plural = _("Domande/Risposte Ticket")
 
     def __str__(self):
-        return '{} - {}'.format(self.ticket, self.created)
+        return '{} - {}'.format(self.subject, self.ticket)
 
 
 class Ticket2Ticket(models.Model):

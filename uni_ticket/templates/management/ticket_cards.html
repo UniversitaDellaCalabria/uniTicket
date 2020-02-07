@@ -22,7 +22,7 @@
         <div class="card-body no-after">
             <a class="read-more" href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
                 <h5 class="card-title light-style">
-                    <span class="badge badge-pill badge-warning">
+                    <span class="badge badge-warning">
                         {{ ticket_non_gestiti|length }}
                     </span> {% trans 'Ticket in attesa' %}
                 </h5>
@@ -40,7 +40,7 @@
         <div class="card-body no-after">
             <a class="read-more" href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
                 <h5 class="card-title light-style">
-                    <span class="badge badge-pill badge-success">
+                    <span class="badge badge-success">
                     {{ ticket_aperti|length }}
                     </span> {% trans 'Ticket aperti' %}
                 </h5>
@@ -58,7 +58,7 @@
         <div class="card-body no-after">
             <a class="read-more" href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
                 <h5 class="card-title light-style">
-                    <span class="badge badge-pill badge-danger">
+                    <span class="badge badge-danger">
                     {{ ticket_chiusi|length }}
                     </span> {% trans 'Ticket chiusi' %}
                 </h5>

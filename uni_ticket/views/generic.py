@@ -4,6 +4,7 @@ import os
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import (HttpResponse,
                          HttpResponseRedirect,
                          Http404,
@@ -23,18 +24,6 @@ from uni_ticket.settings import *
 from uni_ticket.utils import *
 from uni_ticket.views import user
 
-# @login_required
-# def index(request, structure_slug=None):
-    # """
-    # Pagina iniziale
-    # """
-    # structure = None
-    # if structure_slug:
-        # structure = get_object_or_404(OrganizationalStructure,
-                                      # slug=structure_slug)
-    # user_type = get_user_type(request.user, structure)
-    # return redirect('uni_ticket:{}_ticket_message'.format(user_type),
-                    # structure_slug, ticket_id)
 
 @login_required
 def manage(request, structure_slug=None):
@@ -301,35 +290,38 @@ def ticket_messages(request, structure_slug=None,
     :return: response
     """
     user_type = get_user_type(request.user, structure)
-
+    want_structure = False
     if user_type=='user':
         tickets = Ticket.objects.filter(created_by=request.user)
+        # if user_type is 'user', retrieve messages leaved by a manager/operator
+        # (linked to a structure)
+        want_structure = True
     elif user_type=='operator':
         # if user is an operator, retrieve his tickets
         user_tickets = visible_tickets_to_user(user=request.user,
                                                structure=structure,
                                                office_employee=office_employee)
-        tickets = Ticket.objects.filter(pk__in=user_tickets)
+        tickets = Ticket.objects.filter(code__in=user_tickets)
     else:
         # if user is a manager, get structure tickets
         ta = TicketAssignment
         structure_tickets = ta.get_ticket_per_structure(structure=structure)
-        tickets = Ticket.objects.filter(pk__in=structure_tickets)
-
+        tickets = Ticket.objects.filter(code__in=structure_tickets)
     tickets_with_messages = []
     for ticket in tickets:
-        want_structure = False
-        # if user_type is 'user', retrieve messages leaved by a manager/operator
-        # (linked to a structure)
-        if user_type=='user': want_structure = True
-        messages = ticket.get_unread_replies(want_structure=want_structure)
-        # fill the messages list
-        if messages > 0:
-            tm = {'ticket': ticket, 'messages': messages}
+        messages = ticket.get_messages_count(want_structure=want_structure)
+        # fill the messages list (of tuples)
+        if messages[0] > 0:
+            # Tuple with messages infos
+            # ticket, all_ticket_messages, ticket_unread_messages, first_ticket_creation_date
+            tm = (ticket, messages[0], messages[1], messages[2])
             tickets_with_messages.append(tm)
-
+    tickets_with_messages.sort(key=lambda e: (e[2], e[3]), reverse=True)
+    paginator = Paginator(tickets_with_messages, 10)
+    page = request.GET.get('page')
+    tickets_with_messages = paginator.get_page(page)
     template = "{}/ticket_messages.html".format(user_type)
-    title = _("Messaggi da leggere")
+    title = _("Tutti i messaggi")
     d = {'structure': structure,
          'tickets_with_messages': tickets_with_messages,
          'title': title,}
@@ -348,6 +340,7 @@ def ticket_message_delete(request, ticket_message_id):
     :return: redirect
     """
     ticket_message = get_object_or_404(TicketReply, pk=ticket_message_id)
+    last_message = TicketReply.objects.filter(ticket=ticket_message.ticket).last()
     structure = ticket_message.structure
     # if message doesn't exist
     if not ticket_message:
@@ -361,6 +354,13 @@ def ticket_message_delete(request, ticket_message_id):
     if ticket_message.read_date:
         return custom_message(request, _("Impossibile eliminare il"
                                          " messaggio dopo che è stato letto"),
+                              structure_slug=structure.slug)
+    user_type = get_user_type(request.user, structure)
+    # if message is not the last in chat
+    if ticket_message != last_message:
+        return custom_message(request, _("Impossibile eliminare il"
+                                         " messaggio dopo che è stato letto"
+                                         " da altri operatori"),
                               structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     # if message is from a manager/operator and user_type is 'user'

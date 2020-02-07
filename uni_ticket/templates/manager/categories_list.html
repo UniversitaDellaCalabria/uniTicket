@@ -21,11 +21,11 @@
           <div class="card card-bg no-after">
             <div class="card-body">
                 {% if category.is_active %}
-                    <span class="badge badge-pill badge-success mb-2">
+                    <span class="badge badge-success mb-2">
                         {% trans "Attiva" %}
                     </span>
                 {% else %}
-                    <span class="badge badge-pill badge-danger mb-2">
+                    <span class="badge badge-danger mb-2">
                         {% trans "Non attiva" %}
                     </span>
                 {% endif %}
@@ -40,7 +40,7 @@
                     {{ category.organizational_office.name }}
                   </a>
                   {% else %}
-                    {% trans "Nessuno (competenza struttura)" %}
+                    {% trans "Nessuno" %}
                   {% endif %}
                   <br>
                   <b>{% trans 'Ticket in questa categoria' %}:</b>

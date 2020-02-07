@@ -16,15 +16,17 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
 
     def setUp(self):
         super().setUp()
+        self.structure_1_manager_login()
         # Create Office 1
         # Create a new office in Structure 1
-        off_name = 'Office 1'
+        off_name = 'New Office'
         params = {'name': off_name,
-                  'description': 'Description office 1'}
+                  'description': 'Description new office'}
         response = self.client.post(reverse('uni_ticket:manager_office_add_new',
                                             kwargs={'structure_slug': self.structure_1.slug,}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         self.office_1 = OrganizationalStructureOffice.objects.get(name=off_name)
 
     def test_tickets(self):
@@ -32,6 +34,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         response = self.client.post(reverse('uni_ticket:manager_tickets',
                                             kwargs={'structure_slug': self.structure_1.slug}),
                                     follow=True)
+        assert response.status_code == 200
         assert self.ticket in response.context['ticket_non_gestiti']
 
     def test_take_ticket_and_test(self):
@@ -42,6 +45,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
 
         # Submit message (only if the ticket is open)
         subject = 'Ticket 1 message'
@@ -51,13 +55,25 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                             kwargs={'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
-        assert TicketReply.objects.filter(ticket=self.ticket, owner=self.staff_1)
+        assert response.status_code == 200
+        message = TicketReply.objects.filter(ticket=self.ticket,
+                                             owner=self.staff_1).first()
+        assert message
+
+        # Submit message (fails until ticket is not taken)
+        response = self.client.get(reverse('uni_ticket:message_delete',
+                                           kwargs={'ticket_message_id': message.pk}),
+                                   follow=True)
+        assert response.status_code == 200
+        self.assertFalse(TicketReply.objects.filter(ticket=self.ticket,
+                                                    owner=self.staff_1))
 
         # Delete ticket
         # Fails, ticket is taken
         response = self.client.get(reverse('uni_ticket:ticket_delete',
                                            kwargs={'ticket_id': self.ticket.code}),
                                    follow=True)
+        assert response.status_code == 200
         assert self.ticket
 
         # Close ticket
@@ -67,6 +83,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                    'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         self.ticket.refresh_from_db()
         assert self.ticket.is_closed
 
@@ -75,8 +92,9 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'ticket_id': self.ticket.code}),
                                    follow=True)
+        assert response.status_code == 200
         self.ticket.refresh_from_db()
-        assert not self.ticket.is_closed
+        self.assertFalse(self.ticket.is_closed)
 
 
     def test_category_field_edit(self):
@@ -88,24 +106,26 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                   'is_required': False}
         response = self.client.post(reverse('uni_ticket:manager_category_input_field_edit',
                                             kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1.slug,
-                                                    'module_id': self.module.pk,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'module_id': self.module_2.pk,
                                                     'field_id': self.input_field.pk}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         self.input_field.refresh_from_db()
-        assert not self.input_field.name == field_name
+        self.assertFalse(self.input_field.name == field_name)
 
     def test_category_field_remove(self):
         # Remove field
         # This fails, because a ticket exists with this input module
         response = self.client.get(reverse('uni_ticket:manager_category_input_field_delete',
                                             kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1.slug,
-                                                    'module_id': self.module.pk,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'module_id': self.module_2.pk,
                                                     'field_id': self.input_field.pk}),
                                     follow=True)
-        assert TicketCategoryInputList.objects.filter(category_module=self.module).first()
+        assert response.status_code == 200
+        assert TicketCategoryInputList.objects.filter(category_module=self.module_2).first()
 
     def test_add_field_to_input_module(self):
         # Add file field to input module
@@ -116,12 +136,13 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                   'is_required': False}
         response = self.client.post(reverse('uni_ticket:manager_category_input_module',
                                             kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1.slug,
-                                                    'module_id': self.module.pk}),
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'module_id': self.module_2.pk}),
                                     params,
                                     follow=True)
-        assert not TicketCategoryInputList.objects.filter(category_module=self.module,
-                                                          name=field_name).first()
+        assert response.status_code == 200
+        self.assertFalse(TicketCategoryInputList.objects.filter(category_module=self.module_2,
+                                                                name=field_name).first())
 
     def test_add_ticket_competence_and_manage(self):
         # Take ticket
@@ -131,6 +152,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         self.ticket.refresh_from_db()
         assert self.ticket.priority == 2
         assert self.ticket.is_taken
@@ -145,7 +167,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
 
         # Assign ticket to Category_3 (Structure 2)
         # Follow and continue to manage ticket (staff_1, manager of Structure 1)
-        params = {'category_slug': self.category_3.slug,
+        params = {'category_slug': self.category_1_str_2.slug,
                   'follow': 'on',
                   # 'readonly': False,
         }
@@ -156,8 +178,8 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                     params,
                                     follow=True)
         assert response.status_code == 200
-        assert self.ticket.pk in TicketAssignment.get_ticket_per_structure(self.structure_1)
-        assert self.ticket.pk in TicketAssignment.get_ticket_per_structure(self.structure_2)
+        assert self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_1)
+        assert self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_2)
 
         # Change priority to ticket
         params = {'priorita': 1}
@@ -166,6 +188,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         self.ticket.refresh_from_db()
         assert self.ticket.priority == 1
 
@@ -179,6 +202,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         self.ticket.refresh_from_db()
         assert not self.ticket.priority == -1
 
@@ -189,6 +213,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         self.ticket.refresh_from_db()
         assert self.ticket.priority == -1
 
@@ -200,6 +225,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         self.ticket.refresh_from_db()
         assert self.ticket.priority == 2
         assert self.ticket.is_taken
@@ -214,7 +240,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
 
         # Assign ticket to Category_3 (Structure 2)
         # Follow and continue to manage ticket (staff_1, manager of Structure 1)
-        params = {'category_slug': self.category_3.slug,
+        params = {'category_slug': self.category_1_str_2.slug,
                   'follow': 'on',
                   'readonly': True,
         }
@@ -225,8 +251,8 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                     params,
                                     follow=True)
         assert response.status_code == 200
-        assert self.ticket.pk in TicketAssignment.get_ticket_per_structure(self.structure_1)
-        assert self.ticket.pk in TicketAssignment.get_ticket_per_structure(self.structure_2)
+        assert self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_1)
+        assert self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_2)
 
         # Change priority to ticket (this fails, is readonly!)
         params = {'priorita': 1}
@@ -246,6 +272,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
 
         params = {'priorita': 2}
         response = self.client.post(reverse('uni_ticket:manager_manage_ticket',
@@ -253,16 +280,18 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket_2.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         self.ticket_2.refresh_from_db()
         assert self.ticket_2.priority == 2
 
-        params = {'ticket': self.ticket_2.pk,
+        params = {'ticket': self.ticket_2.code,
                   'note': "Il ticket 1 dipende dal ticket 2"}
         response = self.client.post(reverse('uni_ticket:manager_add_ticket_dependence',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         t2t = Ticket2Ticket.objects.filter(slave_ticket=self.ticket,
                                            master_ticket=self.ticket_2).first()
         assert t2t
@@ -272,9 +301,10 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code,
                                                     'master_ticket_id': self.ticket_2.code}),
                                     follow=True)
+        assert response.status_code == 200
         t2t = Ticket2Ticket.objects.filter(slave_ticket=self.ticket,
                                            master_ticket=self.ticket_2)
-        assert not t2t
+        self.assertFalse(t2t)
 
     def test_ticket_message(self):
         # Take ticket
@@ -294,6 +324,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         assert TicketReply.objects.filter(ticket=self.ticket,
                                               owner=self.staff_1,
                                               subject=subject)
@@ -306,6 +337,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
 
         # Create new task
         subject = 'Ticket 1 task 1'
@@ -317,6 +349,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         task = Task.objects.filter(ticket=self.ticket,
                                    subject=subject,
                                    priority=1).first()
@@ -330,23 +363,45 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'task_id': task.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         task.refresh_from_db()
         assert task.priority == 2
 
-        # Edit task description
+        # Edit task
+        attachment = self.create_fake_file()
         subject = "Ticket 1 task edited"
         params = {'subject': subject,
                   'description': "new descr",
-                  'priority': -1}
+                  'priority': -1,
+                  'attachment': attachment}
         response = self.client.post(reverse('uni_ticket:manager_edit_task',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'ticket_id': self.ticket.code,
                                                     'task_id': task.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         task.refresh_from_db()
         assert task.priority == -1
+        assert task.attachment
         assert task.subject == subject
+
+        # Download attachment
+        response = self.client.get(reverse('uni_ticket:download_task_attachment',
+                                           kwargs={'ticket_id': self.ticket.code,
+                                                   'task_id': task.code}),
+                                   follow=True)
+        self.assertFalse(response.status_code == 404)
+
+        # Delete attachment
+        response = self.client.get(reverse('uni_ticket:manage_elimina_allegato_task',
+                                           kwargs={'structure_slug': self.structure_1.slug,
+                                                   'ticket_id': self.ticket.code,
+                                                   'task_id': task.code}),
+                                   follow=True)
+        assert response.status_code == 200
+        task.refresh_from_db()
+        self.assertFalse(task.attachment)
 
         # Close task without motivation (fails!)
         params = {}
@@ -356,6 +411,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'task_id': task.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         task.refresh_from_db()
         assert not task.is_closed
 
@@ -367,6 +423,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'task_id': task.code}),
                                     params,
                                     follow=True)
+        assert response.status_code == 200
         task.refresh_from_db()
         assert task.is_closed
 
@@ -376,6 +433,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code,
                                                     'task_id': task.code}),
                                    follow=True)
+        assert response.status_code == 200
         task.refresh_from_db()
         assert not task.is_closed
 
@@ -385,5 +443,6 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                                     'ticket_id': self.ticket.code,
                                                     'task_id': task.code}),
                                    follow=True)
-        assert not Task.objects.filter(ticket=self.ticket)
+        assert response.status_code == 200
+        self.assertFalse(Task.objects.filter(ticket=self.ticket))
 

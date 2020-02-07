@@ -68,7 +68,7 @@
                 {{ office.name }}
                 {% if office.is_default %}
                 <span class="badge badge-warning">
-                    {% trans "Ufficio predefinito" %}
+                    {% trans "Ufficio speciale" %}
                 </span>
                 {% endif %}
             </td>
@@ -103,6 +103,15 @@
                     {% for office_cat in office.ticketcategory_set.all %}
                         <li class="clearfix pb-2">
                             {{ office_cat }}
+                            <svg class="icon icon-sm icon-secondary">
+                            {% if office_cat.is_active %}
+                                <title>{% trans 'Attiva' %}</title>
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                            {% else %}
+                                <title>{% trans 'Non attiva' %}</title>
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                            {% endif %}
+                            </svg>
                             <button type="button"
                                 class="btn btn-outline-danger btn-xs float-right"
                                 data-toggle="modal"
@@ -315,7 +324,9 @@
             </div>
             <div class="modal-body">
                 <p>{% trans "Vuoi davvero disattivare l'ufficio " %}
-                   <b>{{ office }}</b> ?
+                   <b>{{ office }}</b>?
+                   Disattivando questo ufficio verranno disattivate anche
+                   le categorie di sua competenza.
                 </p>
             </div>
             <div class="modal-footer">
@@ -344,7 +355,7 @@
             </div>
             <div class="modal-body">
                 <p>{% trans "Vuoi davvero attivare l'ufficio " %}
-                   <b>{{ office }}</b> ?
+                   <b>{{ office }}</b>?
                 </p>
             </div>
             <div class="modal-footer">
@@ -373,7 +384,9 @@
             </div>
             <div class="modal-body">
                 <p>{% trans "Vuoi davvero eliminare l'ufficio " %}
-                   <b>{{ office }}</b> ?
+                   <b>{{ office }}</b>?
+                   Disattivando questo ufficio verranno disattivate anche
+                   le categorie di sua competenza.
                 </p>
             </div>
             <div class="modal-footer">

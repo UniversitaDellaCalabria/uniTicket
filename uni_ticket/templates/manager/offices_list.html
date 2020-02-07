@@ -19,17 +19,17 @@
           <div class="card card-bg no-after">
             <div class="card-body">
                 {% if office.is_active %}
-                    <span class="badge badge-pill badge-success mb-2">
+                    <span class="badge badge-success mb-2">
                         {% trans "Attivo" %}
                     </span>
                 {% else %}
-                    <span class="badge badge-pill badge-danger mb-2">
+                    <span class="badge badge-danger mb-2">
                         {% trans "Non attivo" %}
                     </span>
                 {% endif %}
                 {% if office.is_default %}
-                    <span class="badge badge-pill badge-warning mb-2">
-                        {% trans "Ufficio predefinito" %}
+                    <span class="badge badge-warning mb-2">
+                        {% trans "Ufficio speciale" %}
                     </span>
                 {% endif %}
                 <a class="read-more" href="{% url 'uni_ticket:manager_office_detail' structure_slug=structure.slug office_slug=office.slug %}">

@@ -47,12 +47,10 @@
 {% if ticket.is_open %}
 <a role="button" href="{% url 'uni_ticket:ticket_message' ticket_id=ticket.code %}"
    class="btn btn-outline-secondary">
-    {% get_unread_replies ticket=ticket as unread_replies %}
-        {% if unread_replies > 0 %}
-        <span class="badge badge-primary">{{ unread_replies }}</span>
-        {% else %}
-        <span class="badge badge-light">{{ unread_replies }}</span>
-        {% endif %}
+    {% get_unread_messages ticket=ticket as unread_messages %}
+    {% if unread_messages > 0 %}
+    <span class="badge badge-primary">{{ unread_messages }}</span>
+    {% endif %}
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
     </svg> {% trans "Messaggi" %}

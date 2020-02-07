@@ -3,7 +3,7 @@
 {% year_list as year_list %}
 {% now 'Y' as current_year %}
 <div class="row">
-    <div class="col-2">
+    <div class="col-md-4 col-lg-2">
         <div class="bootstrap-select-wrapper">
             <select id="year" name="year">
                 <option value="" selected>- Tutti gli anni -</option>
@@ -15,7 +15,7 @@
             </select>
         </div>
     </div>
-    <div class="col-10">
+    <div class="col-md-8 col-lg-10">
         <div class="form-group">
             <input type="text" id="search_box" placeholder="{% trans 'Cerca...' %}">
         </div>

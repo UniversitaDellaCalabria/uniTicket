@@ -76,10 +76,11 @@ def user_is_operator(user, structure):
                              office__is_active=True)
     if oe: return oe
 
-def user_is_office_operator(user, office):
+def user_manage_office(user, office):
     """
     Returns True if user is a operator of an office for the structure
     """
+    if not user: return False
     if not office: return False
     if not office.is_active: return False
     # If user is an operator of structure's default office,
@@ -200,8 +201,9 @@ def visible_tickets_to_user(user, structure, office_employee):
     Returns a list of tickets that are visible to user
     """
     model = apps.get_model('uni_ticket', 'TicketAssignment')
-    default_office = office_employee.filter(office__is_default=True).first()
-    if default_office:
+    # default_office = office_employee.filter(office__is_default=True).first()
+    # if default_office:
+    if user_is_in_default_office(user, structure):
         tickets = model.get_ticket_per_structure(structure)
         return tickets
     offices = []

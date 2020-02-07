@@ -2,54 +2,56 @@
 {% load static %}
 {% load uni_ticket_tags %}
 
-<table class="table table-striped table-hover">
-    <tbody>
-        <tr>
-            <th scope="row">{% trans 'Stato' %}</th>
-            <td>
-                {% if task.is_closed %}
-                <span class="text-danger">
-                    <b> {% trans "Chiuso" %}</b>
-                </span>
-                {% else %}
-                <span class="text-success">
-                    <b> {% trans "Aperto" %}</b>
-                </span>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Priorità' %}</th>
-            <td>{{ priority }}</td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Creato da' %}</th>
-            <td>{{ task.created_by }} - {{ task.created }}</td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Ticket' %}</th>
-            <td>{{ task.ticket }}</td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Oggetto' %}</th>
-            <td>{{ task.subject }}</td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Descrizione' %}</th>
-            <td>{{ task.description }}</td>
-        </tr>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <tbody>
+            <tr>
+                <th scope="row">{% trans 'Stato' %}</th>
+                <td>
+                    {% if task.is_closed %}
+                    <span class="text-danger">
+                        <b> {% trans "Chiuso" %}</b>
+                    </span>
+                    {% else %}
+                    <span class="text-success">
+                        <b> {% trans "Aperto" %}</b>
+                    </span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Priorità' %}</th>
+                <td>{{ priority }}</td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Creato da' %}</th>
+                <td>{{ task.created_by }} - {{ task.created }}</td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Ticket' %}</th>
+                <td>{{ task.ticket }}</td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Oggetto' %}</th>
+                <td>{{ task.subject }}</td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Descrizione' %}</th>
+                <td>{{ task.description }}</td>
+            </tr>
 
-        {% if task.attachment %}
-        <tr>
-            <th scope="row">{% trans 'Allegato' %}</th>
-            <td>
-                <a href="{% url 'uni_ticket:download_task_attachment' ticket_id=task.ticket.code task_id=task.code %}">
-                    <svg class="icon">
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
-                    </svg> {{ task.attachment|filename }}
-                </a>
-            </td>
-        </tr>
-        {% endif %}
-    </tbody>
-</table>
+            {% if task.attachment %}
+            <tr>
+                <th scope="row">{% trans 'Allegato' %}</th>
+                <td>
+                    <a href="{% url 'uni_ticket:download_task_attachment' ticket_id=task.ticket.code task_id=task.code %}">
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                        </svg> {{ task.attachment|filename }}
+                    </a>
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>

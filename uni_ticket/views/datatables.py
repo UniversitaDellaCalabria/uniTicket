@@ -14,11 +14,11 @@ from uni_ticket.models import Ticket, TicketAssignment
 from uni_ticket.utils import visible_tickets_to_user
 
 
-_columns = ['pk','code','subject','get_category',
-            'created','get_priority','get_status']
+_ticket_columns = ['pk','code','subject','get_category',
+                   'created','get_priority','get_status']
 
 
-class DTD(DjangoDatatablesServerProc):
+class TicketDTD(DjangoDatatablesServerProc):
 
     def get_queryset(self):
         """
@@ -51,7 +51,7 @@ def user_all_tickets(request):
     :return: JsonResponse
     """
     ticket_list = Ticket.objects.filter(created_by=request.user)
-    dtd = DTD( request, ticket_list, _columns )
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -65,7 +65,7 @@ def user_unassigned_ticket(request):
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_taken=False,
                                         is_closed=False)
-    dtd = DTD( request, ticket_list, _columns )
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -79,7 +79,7 @@ def user_opened_ticket(request):
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_taken=True,
                                         is_closed=False)
-    dtd = DTD( request, ticket_list, _columns )
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -92,7 +92,7 @@ def user_closed_ticket(request):
     """
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_closed=True)
-    dtd = DTD( request, ticket_list, _columns )
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -110,9 +110,9 @@ def manager_not_closed_ticket(request, structure_slug, structure):
     :return: JsonResponse
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(pk__in=tickets,
+    ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_closed=False)
-    dtd = DTD( request, ticket_list, _columns )
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -130,10 +130,10 @@ def manager_unassigned_ticket(request, structure_slug, structure):
     :return: JsonResponse
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(pk__in=tickets,
+    ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_taken=False,
                                         is_closed=False)
-    dtd = DTD( request, ticket_list, _columns )
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -151,10 +151,10 @@ def manager_opened_ticket(request, structure_slug, structure):
     :return: JsonResponse
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(pk__in=tickets,
+    ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_taken=True,
                                         is_closed=False)
-    dtd = DTD( request, ticket_list, _columns )
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -172,8 +172,8 @@ def manager_closed_ticket(request, structure_slug, structure):
     :return: JsonResponse
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(pk__in=tickets, is_closed=True)
-    dtd = DTD( request, ticket_list, _columns )
+    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=True)
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -194,9 +194,9 @@ def operator_not_closed_ticket(request, structure_slug,
     :return: JsonResponse
     """
     tickets = visible_tickets_to_user(request.user, structure, office_employee)
-    ticket_list = Ticket.objects.filter(pk__in=tickets,
+    ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_closed=False)
-    dtd = DTD( request, ticket_list, _columns )
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -217,10 +217,10 @@ def operator_unassigned_ticket(request, structure_slug,
     :return: JsonResponse
     """
     tickets = visible_tickets_to_user(request.user, structure, office_employee)
-    ticket_list = Ticket.objects.filter(pk__in=tickets,
+    ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_taken=False,
                                         is_closed=False)
-    dtd = DTD( request, ticket_list, _columns )
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -240,11 +240,13 @@ def operator_opened_ticket(request, structure_slug,
 
     :return: JsonResponse
     """
-    tickets = visible_tickets_to_user(request.user, structure, office_employee)
-    ticket_list = Ticket.objects.filter(pk__in=tickets,
+    tickets = visible_tickets_to_user(request.user,
+                                      structure,
+                                      office_employee)
+    ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_taken=True,
                                         is_closed=False)
-    dtd = DTD( request, ticket_list, _columns )
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -265,6 +267,6 @@ def operator_closed_ticket(request, structure_slug,
     :return: JsonResponse
     """
     tickets = visible_tickets_to_user(request.user, structure, office_employee)
-    ticket_list = Ticket.objects.filter(pk__in=tickets, is_closed=True)
-    dtd = DTD( request, ticket_list, _columns )
+    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=True)
+    dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())

@@ -65,94 +65,96 @@
 
 {% block page_content %}
 {% if module.ticketcategoryinputlist_set.all %}
-<table class="table table-hover">
-    <tbody>
-        <tr>
-            <th scope="row">{% trans 'Nome' %}</th>
-            <th scope="row">{% trans 'Tipo' %}</th>
-            <th scope="row">{% trans 'Valore' %}</th>
-            <th scope="row">{% trans 'Required' %}</th>
-            <th scope="row">{% trans 'Aiuto' %}</th>
-            <th scope="row">{% trans 'Ord.' %}</th>
-            {% if module.can_be_deleted %}
-            <th scope="row"></th>
-            {% endif %}
-        </tr>
-        {% for field in module.ticketcategoryinputlist_set.all %}
-        <tr>
-            <td>{{ field.name }}</td>
-            <td>{{ field.field_type|get_dyn_field_name }}</td>
-            <td>
-                {% if field.valore %}
-                {{ field.valore }}
-                {% else %}
-                -
+<div class="table-responsive">
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th scope="row">{% trans 'Nome' %}</th>
+                <th scope="row">{% trans 'Tipo' %}</th>
+                <th scope="row">{% trans 'Valore' %}</th>
+                <th scope="row">{% trans 'Required' %}</th>
+                <th scope="row">{% trans 'Aiuto' %}</th>
+                <th scope="row">{% trans 'Ord.' %}</th>
+                {% if module.can_be_deleted %}
+                <th scope="row"></th>
                 {% endif %}
-            </td>
-            <td>{{ field.is_required }}</td>
-            <td>
-                {% if field.aiuto %}
-                {{ field.aiuto }}
-                {% else %}
-                -
-                {% endif %}
-            </td>
-            <td>{{ field.ordinamento }}</td>
-            {% if module.can_be_deleted %}
-            <td class="text-right">
-                <a role="button"
-                   class="btn btn-outline-secondary btn-sm"
-                   href="{% url 'uni_ticket:manager_category_input_field_edit' structure_slug=structure.slug category_slug=category.slug module_id=module.pk field_id=field.pk %}">
-                    {% trans "Modifica" %}
-                </a>
+            </tr>
+            {% for field in module.ticketcategoryinputlist_set.all %}
+            <tr>
+                <td>{{ field.name }}</td>
+                <td>{{ field.field_type|get_dyn_field_name }}</td>
+                <td>
+                    {% if field.valore %}
+                    {{ field.valore }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>{{ field.is_required }}</td>
+                <td>
+                    {% if field.aiuto %}
+                    {{ field.aiuto }}
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+                <td>{{ field.ordinamento }}</td>
+                {% if module.can_be_deleted %}
+                <td class="text-right">
+                    <a role="button"
+                       class="btn btn-outline-secondary btn-sm"
+                       href="{% url 'uni_ticket:manager_category_input_field_edit' structure_slug=structure.slug category_slug=category.slug module_id=module.pk field_id=field.pk %}">
+                        {% trans "Modifica" %}
+                    </a>
 
-                <button type="button"
-                        class="btn btn-outline-danger btn-sm"
-                        data-toggle="modal"
-                        data-target="#removeField{{ forloop.counter0 }}">
-                        {% trans "Rimuovi" %}
-                </button>
-            </td>
-            {% endif %}
-        </tr>
-        <div class="modal fade"
-             tabindex="-1"
-             role="dialog"
-             id="removeField{{ forloop.counter0 }}">
-            <div class="modal-dialog modal-dialog-centered"
-                 role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            {% trans "Eliminazione campo di input" %}
-                        </h5>
-                        <button class="close"
-                                type="button"
-                                data-dismiss="modal"
-                                -label="Close">
-                           <svg class="icon">
-                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                           </svg>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{% trans "Vuoi davvero eliminare il campo" %}
-                            <b>{{ field.name }}</b> ?
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <a class="btn btn-danger"
-                            role="button"
-                            href="{% url 'uni_ticket:manager_category_input_field_delete' structure_slug=structure.slug category_slug=category.slug module_id=module.pk field_id=field.pk %}">
-                            {% trans 'Si, procedi' %}
-                        </a>
+                    <button type="button"
+                            class="btn btn-outline-danger btn-sm"
+                            data-toggle="modal"
+                            data-target="#removeField{{ forloop.counter0 }}">
+                            {% trans "Rimuovi" %}
+                    </button>
+                </td>
+                {% endif %}
+            </tr>
+            <div class="modal fade"
+                 tabindex="-1"
+                 role="dialog"
+                 id="removeField{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Eliminazione campo di input" %}
+                            </h5>
+                            <button class="close"
+                                    type="button"
+                                    data-dismiss="modal"
+                                    -label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero eliminare il campo" %}
+                                <b>{{ field.name }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-danger"
+                                role="button"
+                                href="{% url 'uni_ticket:manager_category_input_field_delete' structure_slug=structure.slug category_slug=category.slug module_id=module.pk field_id=field.pk %}">
+                                {% trans 'Si, procedi' %}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
-    </tbody>
-</table>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% else %}
     <div class="alert alert-info" role="alert">
          {% trans "Nessun campo di input personalizzato presente" %}

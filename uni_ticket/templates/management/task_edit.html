@@ -29,44 +29,46 @@
     {% if allegati %}
     <div class="pt-4">
         <h5>Allegati:</h5>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>{% trans "Nome campo" %}</th>
-                    <th>{% trans "Nome file" %}</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for k,v in allegati.items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
                     <tr>
-                        <td class="collapsing">
-                            <b>{{k}}</b>
-                        </td>
-                        <td>{{v}}</td>
-                        <!--
-                        Se la domanda è modificabile,
-                        il pulsante Rimuovi allegato viene mostrato
-                        -->
-                        <td class="collapsing">
-                            <button type="button"
-                                    class="mx-1 btn btn-outline-danger btn-xs float-right"
-                                    data-toggle="modal"
-                                    data-target="#delete_allegato_{{ k }}">
-                                {% trans 'Elimina allegato' %}
-                            </button>
-                            <a download
-                               href="{% url 'uni_ticket:download_task_attachment' ticket_id=task.ticket.code task_id=task.code %}"
-                               role="button"
-                               class="mx-1 btn btn-outline-secondary btn-xs float-right">
-                                <i class="icon download"></i>
-                                Vedi allegato
-                            </a>
-                        </td>
+                        <th>{% trans "Nome campo" %}</th>
+                        <th>{% trans "Nome file" %}</th>
+                        <th></th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for k,v in allegati.items %}
+                        <tr>
+                            <td class="collapsing">
+                                <b>{{k}}</b>
+                            </td>
+                            <td>{{v}}</td>
+                            <!--
+                            Se la domanda è modificabile,
+                            il pulsante Rimuovi allegato viene mostrato
+                            -->
+                            <td class="collapsing">
+                                <button type="button"
+                                        class="mx-1 btn btn-outline-danger btn-xs float-right"
+                                        data-toggle="modal"
+                                        data-target="#delete_allegato_{{ k }}">
+                                    {% trans 'Elimina allegato' %}
+                                </button>
+                                <a download
+                                   href="{% url 'uni_ticket:download_task_attachment' ticket_id=task.ticket.code task_id=task.code %}"
+                                   role="button"
+                                   class="mx-1 btn btn-outline-secondary btn-xs float-right">
+                                    <i class="icon download"></i>
+                                    Vedi allegato
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         {% for k,v in allegati.items %}
         <div class="modal fade" tabindex="-1" role="dialog" id="delete_allegato_{{ k }}">

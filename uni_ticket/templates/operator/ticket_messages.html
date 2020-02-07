@@ -18,30 +18,62 @@
 
 {% block clean_content %}
 {% if tickets_with_messages %}
-<table class="table table-striped table-hover">
-    <thead>
-        <tr role="row">
-            <th>Codice</th>
-            <th>Oggetto</th>
-            <th>Categoria</th>
-            <th>Stato</th>
-            <th>Priorità</th>
-            <th>Messaggi</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for tm in tickets_with_messages %}
-            <tr>
-                <td><a href="{% url 'uni_ticket:operator_ticket_message' ticket_id=tm.ticket.code structure_slug=structure.slug %}">{{ tm.ticket.code }}</a></td>
-                <td>{{ tm.ticket.subject }}</td>
-                <td>{{ tm.ticket.get_category }}</td>
-                <td>{{ tm.ticket.get_status }}</td>
-                <td>{{ tm.ticket.get_priority }}</td>
-                <td>{{ tm.messages }}</td>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr role="row">
+                <th>Ticket</th>
+                <th>Oggetto</th>
+    <!--
+                <th>Categoria</th>
+    -->
+    <!--
+                <th>Stato</th>
+    -->
+    <!--
+                <th>Priorità</th>
+    -->
+                <th>Inizio chat</th>
+                <th>Messaggi</th>
+                <th></th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for tm in tickets_with_messages %}
+                <tr>
+                    <td>
+                        <a href="{% url 'uni_ticket:manage_ticket_url_detail' ticket_id=tm.0.code structure_slug=structure.slug %}">
+                            {{ tm.0.code }}
+                        </a>
+                    </td>
+                    <td>{{ tm.0.subject }}</td>
+    <!--
+                    <td>{{ tm.0.get_category }}</td>
+    -->
+    <!--
+                    <td>{{ tm.0.get_status }}</td>
+    -->
+    <!--
+                    <td>{{ tm.0.get_priority }}</td>
+    -->
+                    <td>{{ tm.3 }}</td>
+                    <td>
+                        {{ tm.1 }}
+                        {% if tm.2 %}
+                            ( {% trans "da leggere" %} <span class="badge badge-primary">{{ tm.2 }}</span> )
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a role="button" class="mx-1 btn btn-outline-primary btn-xs float-right" href="{% url 'uni_ticket:operator_ticket_message' ticket_id=tm.0.code structure_slug=structure.slug %}">
+                            Leggi
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include 'tickets_messages_pagination.html' %}
 {% else %}
 <div class="alert alert-warning" role="alert">
   {% trans "Non ci sono messaggi da leggere" %}

@@ -18,6 +18,7 @@ class Test_UserFunctions(BaseTicketEnvironment):
         # Dashboard
         response = self.client.get(reverse('uni_ticket:user_dashboard'),
                                    follow=True)
+        assert response.status_code == 200
         assert self.ticket in response.context['ticket_non_gestiti']
 
     def test_edit_ticket(self):
@@ -30,7 +31,8 @@ class Test_UserFunctions(BaseTicketEnvironment):
                                     params,
                                     follow=True)
         self.ticket.refresh_from_db()
-        assert self.ticket.subject == subject
+        assert response.status_code == 200
+        self.assertEqual(self.ticket.subject, subject)
 
     def test_delete_attachment(self):
         # Delete attachment
@@ -40,7 +42,8 @@ class Test_UserFunctions(BaseTicketEnvironment):
                                                     'attachment': 'file_field_1'}),
                                    follow=True)
         self.ticket.refresh_from_db()
-        assert not self.ticket.get_allegati_dict()
+        assert response.status_code == 200
+        self.assertFalse(self.ticket.get_allegati_dict())
 
     def test_close_ticket(self):
         # Close ticket
@@ -50,6 +53,7 @@ class Test_UserFunctions(BaseTicketEnvironment):
                                     params,
                                     follow=True)
         self.ticket.refresh_from_db()
+        assert response.status_code == 200
         assert self.ticket.is_closed
 
         # Delete ticket (fails because ticket is closed!)
@@ -57,6 +61,7 @@ class Test_UserFunctions(BaseTicketEnvironment):
                                            kwargs={'ticket_id': self.ticket.code}),
                                    follow=True)
         self.ticket.refresh_from_db()
+        assert response.status_code == 200
         assert self.ticket
 
     def test_ticket_deletion(self):
@@ -65,7 +70,8 @@ class Test_UserFunctions(BaseTicketEnvironment):
         response = self.client.get(reverse('uni_ticket:ticket_delete',
                                            kwargs={'ticket_id': code}),
                                    follow=True)
-        assert not Ticket.objects.filter(code=code)
+        assert response.status_code == 200
+        self.assertFalse(Ticket.objects.filter(code=code))
 
     def test_ticket_message(self):
         # Submit message (fails until ticket is not taken)
@@ -76,8 +82,9 @@ class Test_UserFunctions(BaseTicketEnvironment):
                                             kwargs={'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
-        assert not TicketReply.objects.filter(ticket=self.ticket,
-                                              owner=self.staff_1)
+        assert response.status_code == 200
+        self.assertFalse(TicketReply.objects.filter(ticket=self.ticket,
+                                                    owner=self.staff_1))
 
     def test_message_untaken_ticket(self):
         # Submit message (only if the ticket is open)
@@ -88,4 +95,13 @@ class Test_UserFunctions(BaseTicketEnvironment):
                                             kwargs={'ticket_id': self.ticket.code}),
                                     params,
                                     follow=True)
-        assert not TicketReply.objects.filter(ticket=self.ticket, owner=self.staff_1)
+        assert response.status_code == 200
+        self.assertFalse(TicketReply.objects.filter(ticket=self.ticket,
+                                                    owner=self.staff_1))
+
+    def test_download_attachment(self):
+        response = self.client.get(reverse('uni_ticket:download_attachment',
+                                            kwargs={'ticket_id': self.ticket.code,
+                                                    'attachment': 'file_field_1'}),
+                                   follow=True)
+        assert response.status_code == 200

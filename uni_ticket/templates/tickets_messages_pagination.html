@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<div class="pagination" style="float: right">
+    <span class="step-links">
+        {% if tickets_with_messages.has_previous %}
+            <a href="?page=1">&laquo; {% trans "Prima" %}</a>
+            <a href="?page={{ tickets_with_messages.previous_page_number }}">{% trans "Precedente" %}</a>
+        {% endif %}
+
+        <span class="current">
+            {% trans "Pagina" %} <b>{{ tickets_with_messages.number }}</b> {% trans "di" %} {{ tickets_with_messages.paginator.num_pages }}
+        </span>
+
+        {% if tickets_with_messages.has_next %}
+            <a href="?page={{ tickets_with_messages.next_page_number }}">{% trans "Successiva" %}</a>
+            <a href="?page={{ tickets_with_messages.paginator.num_pages }}">{% trans "Ultima" %} &raquo;</a>
+        {% endif %}
+    </span>
+</div>

@@ -9,9 +9,10 @@ from organizational_area.models import (OrganizationalStructure,
 
 from .models import Ticket, TicketAssignment
 from .utils import (custom_message,
+                    user_is_in_default_office,
                     user_is_manager,
                     user_is_operator,
-                    user_is_office_operator,
+                    user_manage_office,
                     user_offices_list)
 
 
@@ -87,43 +88,33 @@ def has_admin_privileges(func_to_decorate):
         original_kwargs['structure'] = structure
         ticket_id = original_kwargs['ticket_id']
         ticket = get_object_or_404(Ticket, code=ticket_id)
-        is_manager = user_is_manager(request.user, structure)
+        # is_manager = user_is_manager(request.user, structure)
 
-        can_manage = False
-        message_string = _("Permesso di accesso al ticket <b>{}</b> negato".format(ticket))
+        can_manage = {}
+        message_string = _("Permesso di accesso al ticket "
+                           "<b>{}</b> negato".format(ticket))
 
-        if is_manager:
+        # if is_manager:
+        if user_is_in_default_office(request.user, structure):
             can_manage = ticket.is_followed_in_structure(structure=structure)
             if not can_manage:
-                messages.add_message(request, messages.ERROR,
-                                     message_string)
+                messages.add_message(request, messages.ERROR, message_string)
                 return redirect('uni_ticket:manage',
                                 structure_slug=structure_slug)
             original_kwargs['can_manage'] = can_manage
             return func_to_decorate(*original_args, **original_kwargs)
 
-        office_employee = user_is_operator(request.user, structure)
-        offices = user_offices_list(office_employee)
+        office_employee_list = user_is_operator(request.user, structure)
+        offices = user_offices_list(office_employee_list)
         can_manage = ticket.is_followed_by_one_of_offices(offices=offices)
 
         if not can_manage:
-            messages.add_message(request, messages.ERROR,
-                                     message_string)
+            messages.add_message(request, messages.ERROR, message_string)
             return redirect('uni_ticket:manage',
                             structure_slug=structure_slug)
 
         original_kwargs['can_manage'] = can_manage
-        # Check if user is operator of the ticket office
-        is_operator = False
-        for office in offices:
-            if user_is_office_operator(request.user, office):
-                is_operator = True
-                break
-        if is_operator: return func_to_decorate(*original_args, **original_kwargs)
-        messages.add_message(request, messages.ERROR,
-                             message_string)
-        return redirect('uni_ticket:manage',
-                        structure_slug=structure_slug)
+        return func_to_decorate(*original_args, **original_kwargs)
     return new_func
 
 def has_access_to_ticket(func_to_decorate):
@@ -140,16 +131,18 @@ def has_access_to_ticket(func_to_decorate):
         if ticket.check_if_owner(user):
             return func_to_decorate(*original_args, **original_kwargs)
 
-        structures = ticket.get_assigned_to_structures()
-        # Check if user is manager of the ticket structure
-        for struct in structures:
-            if user_is_manager(user, struct):
-                return func_to_decorate(*original_args, **original_kwargs)
+        # structures = ticket.get_assigned_to_structures(ignore_follow=False)
+        #Check if user is manager of the ticket structure
+        # for struct in structures:
+            #if user_is_manager(user, struct):
+            # if user_is_in_default_office(user, struct):
+                # return func_to_decorate(*original_args, **original_kwargs)
 
-        offices = ticket.get_assigned_to_offices()
+        # Select all offices that follow the ticket (readonly too)
+        offices = ticket.get_assigned_to_offices(ignore_follow=False)
         # Check if user is operator of the ticket office
         for office in offices:
-            if user_is_office_operator(user, office):
+            if user_manage_office(user, office):
                 return func_to_decorate(*original_args, **original_kwargs)
         return custom_message(request, _("Accesso al ticket negato."))
     return new_func

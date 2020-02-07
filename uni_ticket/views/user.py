@@ -163,7 +163,9 @@ def ticket_add_new(request, structure_slug, category_slug):
                     value = request.FILES.get(key)._name
                     json_stored[ATTACHMENTS_DICT_PREFIX][key] = value
                 set_as_dict(ticket, json_stored)
-            office = categoria.organizational_office or struttura.get_default_office()
+            # Old version. Now a category MUST have an office!
+            # office = categoria.organizational_office or struttura.get_default_office()
+            office = categoria.organizational_office
             if not office:
                 messages.add_message(request, messages.ERROR,
                                      _("Nessun ufficio di default impostato"))
@@ -218,7 +220,7 @@ def dashboard(request):
 
     messages = 0
     for ticket in tickets:
-        messages += ticket.get_unread_replies(want_structure=True)
+        messages += ticket.get_messages_count(want_structure=True)[1]
 
     d = {'ticket_messages': messages,
          'priority_levels': PRIORITY_LEVELS,
@@ -336,8 +338,7 @@ def delete_my_attachment(request, ticket_id, attachment):
     path_allegato = get_path_allegato(ticket)
 
     # Rimuove l'allegato dal disco
-    delete_file(file_name=nome_file,
-                 path=path_allegato)
+    delete_file(file_name=nome_file, path=path_allegato)
     set_as_dict(ticket, ticket_details)
     allegati = ticket.get_allegati_dict(ticket_dict=ticket_details)
     ticket.update_log(user=request.user,

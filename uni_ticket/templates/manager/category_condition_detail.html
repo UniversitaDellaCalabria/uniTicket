@@ -52,52 +52,54 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
-<table class="table table-striped table-hover">
-    <tbody>
-        <tr>
-            <th scope="row">{% trans 'Titolo' %}</th>
-            <td>{{ condition.title }}</td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Stato' %}</th>
-            <td>
-                {% if condition.is_active %}
-                <span class="text-success">
-                    <b>{% trans "Attiva" %}</b>
-                </span>
-                {% else %}
-                <span class="text-danger">
-                    <b>{% trans "Non attiva" %}</b>
-                </span>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">
-                {% trans 'Visibile nella versione di stampa' %}
-            </th>
-            <td>
-                {% if condition.is_printable %}
-                <span class="text-success">
-                    <b>{% trans "Visibile" %}</b>
-                </span>
-                {% else %}
-                <span class="text-danger">
-                    <b>{% trans "Non visibile" %}</b>
-                </span>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Testo' %}</th>
-            <td>
-                {% if condition.text %}
-                    {{ condition.text }}
-                {% else %}-{% endif %}
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <tbody>
+            <tr>
+                <th scope="row">{% trans 'Titolo' %}</th>
+                <td>{{ condition.title }}</td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Stato' %}</th>
+                <td>
+                    {% if condition.is_active %}
+                    <span class="text-success">
+                        <b>{% trans "Attiva" %}</b>
+                    </span>
+                    {% else %}
+                    <span class="text-danger">
+                        <b>{% trans "Non attiva" %}</b>
+                    </span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    {% trans 'Visibile nella versione di stampa' %}
+                </th>
+                <td>
+                    {% if condition.is_printable %}
+                    <span class="text-success">
+                        <b>{% trans "Visibile" %}</b>
+                    </span>
+                    {% else %}
+                    <span class="text-danger">
+                        <b>{% trans "Non visibile" %}</b>
+                    </span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Testo' %}</th>
+                <td>
+                    {% if condition.text %}
+                        {{ condition.text }}
+                    {% else %}-{% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 {% if condition.is_active %}
 <div class="modal fade" tabindex="-1" role="dialog" id="disableCondition">

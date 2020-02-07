@@ -38,6 +38,7 @@ class CategoryAddOfficeForm(forms.Form):
                                                                is_default=False)
         super().__init__(*args, **kwargs)
         self.fields['office'].queryset = offices
+        self.fields['office'].to_field_name = 'slug'
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -145,15 +146,16 @@ class TicketCompetenceForm(forms.Form):
     def __init__(self, *args, **kwargs):
         structure_slug = kwargs.pop('structure_slug', None)
         current_ticket_id = kwargs.pop('ticket_id', None)
-        ticket_dependences_id_list = kwargs.pop('ticket_dependences', None)
+        ticket_dependences_code_list = kwargs.pop('ticket_dependences', None)
         structure = OrganizationalStructure.objects.get(slug=structure_slug)
         ticket_id_list = TicketAssignment.get_ticket_per_structure(structure)
         ticket_id_list.remove(current_ticket_id)
-        ticket_list = Ticket.objects.filter(pk__in=ticket_id_list,
+        ticket_list = Ticket.objects.filter(code__in=ticket_id_list,
                                             is_taken=True,
-                                            is_closed=False).exclude(pk__in=ticket_dependences_id_list)
+                                            is_closed=False).exclude(code__in=ticket_dependences_code_list)
         super().__init__(*args, **kwargs)
         self.fields['ticket'].queryset = ticket_list
+        self.fields['ticket'].to_field_name='code'
 
 
 class TicketDependenceForm(forms.Form):
@@ -168,14 +170,15 @@ class TicketDependenceForm(forms.Form):
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
         current_ticket_id = kwargs.pop('ticket_id', None)
-        ticket_dependences_id_list = kwargs.pop('ticket_dependences', None)
+        ticket_dependences_code_list = kwargs.pop('ticket_dependences', None)
         ticket_id_list = TicketAssignment.get_ticket_per_structure(structure)
         ticket_id_list.remove(current_ticket_id)
-        ticket_list = Ticket.objects.filter(pk__in=ticket_id_list,
+        ticket_list = Ticket.objects.filter(code__in=ticket_id_list,
                                             is_taken=True,
-                                            is_closed=False).exclude(pk__in=ticket_dependences_id_list)
+                                            is_closed=False).exclude(code__in=ticket_dependences_code_list)
         super().__init__(*args, **kwargs)
         self.fields['ticket'].queryset = ticket_list
+        self.fields['ticket'].to_field_name='code'
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -217,8 +220,8 @@ class OfficeAddCategoryForm(forms.Form):
                                       # widget=UnicalSelectWidget())
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
-        categories = TicketCategory.objects.filter(organizational_structure=structure,
-                                                   organizational_office=None,
-                                                   is_active=True)
+        office = kwargs.pop('office', None)
+        categories = TicketCategory.objects.filter(organizational_structure=structure).exclude(organizational_office=office)
         super().__init__(*args, **kwargs)
         self.fields['category'].queryset = categories
+        self.fields['category'].to_field_name='slug'
