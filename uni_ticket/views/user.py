@@ -220,7 +220,7 @@ def dashboard(request):
 
     messages = 0
     for ticket in tickets:
-        messages += ticket.get_messages_count(want_structure=True)[1]
+        messages += ticket.get_messages_count(by_operator=True)[1]
 
     d = {'ticket_messages': messages,
          'priority_levels': PRIORITY_LEVELS,

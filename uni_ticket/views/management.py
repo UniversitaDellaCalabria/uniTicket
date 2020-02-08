@@ -862,10 +862,11 @@ def ticket_message(request, structure_slug, ticket_id,
         user_replies = ticket_replies.filter(owner=ticket.created_by,
                                              structure=None,
                                              read_by=None)
-        for reply in user_replies:
-            reply.read_by = request.user
-            reply.read_date = timezone.now()
-            reply.save(update_fields = ['read_by', 'read_date'])
+        if not can_manage['readonly']:
+            for reply in user_replies:
+                reply.read_by = request.user
+                reply.read_date = timezone.now()
+                reply.save(update_fields = ['read_by', 'read_date'])
 
     if request.method == 'POST':
         if can_manage['readonly']:

@@ -290,12 +290,12 @@ def ticket_messages(request, structure_slug=None,
     :return: response
     """
     user_type = get_user_type(request.user, structure)
-    want_structure = False
+    by_operator = False
     if user_type=='user':
         tickets = Ticket.objects.filter(created_by=request.user)
         # if user_type is 'user', retrieve messages leaved by a manager/operator
         # (linked to a structure)
-        want_structure = True
+        by_operator = True
     elif user_type=='operator':
         # if user is an operator, retrieve his tickets
         user_tickets = visible_tickets_to_user(user=request.user,
@@ -309,7 +309,7 @@ def ticket_messages(request, structure_slug=None,
         tickets = Ticket.objects.filter(code__in=structure_tickets)
     tickets_with_messages = []
     for ticket in tickets:
-        messages = ticket.get_messages_count(want_structure=want_structure)
+        messages = ticket.get_messages_count(by_operator=by_operator)
         # fill the messages list (of tuples)
         if messages[0] > 0:
             # Tuple with messages infos

@@ -471,13 +471,13 @@ class Ticket(SavedFormContent):
         """
         return dict(PRIORITY_LEVELS).get(str(self.priority))
 
-    def get_messages_count(self, want_structure=False):
+    def get_messages_count(self, by_operator=False):
         all_messages = TicketReply.objects.filter(ticket=self)
         first_created = all_messages.first()
         # If I'm a manager/operator
         unread_messages = all_messages.filter(read_date=None)
         # if I'm a simple user, I want my agents replies
-        if want_structure:
+        if by_operator:
             unread_messages = unread_messages.exclude(structure=None)
         else:
             unread_messages = unread_messages.filter(structure=None)
