@@ -42,7 +42,7 @@ def ticket_new_preload(request, structure_slug=None):
     if Ticket.number_limit_reached_by_user(request.user):
         messages.add_message(request, messages.ERROR,
                              _("Hai raggiunto il limite massimo giornaliero"
-                               " di ticket: {}".format(MAX_DAILY_TICKET_PER_USER)))
+                               " di ticket: <b>{}</b>".format(MAX_DAILY_TICKET_PER_USER)))
         return redirect(reverse('uni_ticket:user_dashboard'))
 
     strutture = OrganizationalStructure.objects.filter(is_active=True)
@@ -97,7 +97,7 @@ def ticket_add_new(request, structure_slug, category_slug):
     if Ticket.number_limit_reached_by_user(request.user):
         messages.add_message(request, messages.ERROR,
                              _("Hai raggiunto il limite massimo giornaliero"
-                               " di ticket: {}".format(MAX_DAILY_TICKET_PER_USER)))
+                               " di ticket: <b>{}</b>".format(MAX_DAILY_TICKET_PER_USER)))
         return redirect(reverse('uni_ticket:user_dashboard'))
 
     struttura = get_object_or_404(OrganizationalStructure,

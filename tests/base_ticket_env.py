@@ -46,7 +46,6 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
                                     follow=True)
         assert response.status_code == 200
         ticket = Ticket.objects.filter(subject=subject).first()
-        assert ticket
         return ticket
 
     def setUp(self):
@@ -57,10 +56,11 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
                                          attachment=self.create_fake_file(),
                                          structure_slug=self.structure_1.slug,
                                          category=self.category_1_str_1)
-
+        assert self.ticket
         # Add ticket 2(base form)
         # Create new ticket
         self.ticket_2 = self.create_ticket(subject='Ticket 2',
                                            attachment=None,
                                            structure_slug=self.structure_1.slug,
                                            category=self.category_1_str_1)
+        assert self.ticket_2

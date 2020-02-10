@@ -211,21 +211,20 @@ class Ticket(SavedFormContent):
         return self.input_module.ticket_category
 
     @staticmethod
-    def get_user_ticket_per_day(user, data=None):
+    def get_user_ticket_per_day(user, date=None):
         """
         """
-        if not data:
-            ndata = timezone.datetime(timezone.localdate().year,
-                                      timezone.localdate().month,
-                                      timezone.localdate().day,
-                                      tzinfo=timezone.get_default_timezone())
+        if date:
+            d = timezone.datetime(date.year, date.month, date.day,
+                                  tzinfo=timezone.get_default_timezone())
         else:
-            ndata = timezone.datetime(data.year, data.month, data.day,
-                                      tzinfo=timezone.get_default_timezone())
-        tickets = Ticket.objects.filter(created__gt=ndata-timezone.timedelta(days=1),
-                                        created__lt=ndata+timezone.timedelta(days=1))
+            d = timezone.datetime(timezone.now().year,
+                                  timezone.now().month,
+                                  timezone.now().day,
+                                  tzinfo=timezone.get_default_timezone())
+        tickets = Ticket.objects.filter(created__gt=d-timezone.timedelta(days=1),
+                                        created__lt=d+timezone.timedelta(days=1))
         return tickets
-
 
     def get_url(self, structure=None):
         """
@@ -242,10 +241,9 @@ class Ticket(SavedFormContent):
     def number_limit_reached_by_user(user):
         """
         """
-        system_limit = MAX_DAILY_TICKET_PER_USER
-        if system_limit == 0: return False
+        if MAX_DAILY_TICKET_PER_USER == 0: return False
         today_tickets = Ticket.get_user_ticket_per_day(user=user).count()
-        if today_tickets < system_limit: return False
+        if today_tickets < MAX_DAILY_TICKET_PER_USER: return False
         return True
 
 

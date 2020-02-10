@@ -23,7 +23,7 @@ PRIORITY_LEVELS = (
                     ('2',_('Molto bassa')),
                   )
 
-# 0 = unlimited
+# If 0 = Unlimited
 MAX_DAILY_TICKET_PER_USER = 10
 
 CONTEXT_SIMPLE_USER = _('Utente semplice')

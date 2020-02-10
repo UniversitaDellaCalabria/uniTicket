@@ -230,31 +230,29 @@ def uuid_code():
     """
     return shortuuid.uuid()
 
-def ticket_summary_dict():
-    """
-    send_mail to operators with a summary of open ticket
-    """
-    model = apps.get_model('uni_ticket', 'Ticket')
-    tickets = model.objects.exclude(is_closed=True)
-    assign_model = apps.get_model('uni_ticket', 'TicketAssignment')
+# Not used!
+# def ticket_summary_dict():
+    # """
+    # returns a dictionary with {office_obj: [list of assigned tickets {subject, url}],}
+    # for every office
+    # """
+    # model = apps.get_model('uni_ticket', 'Ticket')
+    # tickets = model.objects.exclude(is_closed=True)
+    # assign_model = apps.get_model('uni_ticket', 'TicketAssignment')
 
-    # per ogni struttura
-    # ticket_not_handled = tickets.filter(is_taken=[False, None])
+    # summary_dict = dict()
+    # offices = OrganizationalStructureOffice.objects.filter(is_active=True)
+    # for office in offices:
+        # assignments = assign_model.objects.filter(office=office,
+                                                  # follow=True,
+                                                  # ticket__is_closed=False)
+        # if not summary_dict.get(office):
+            # summary_dict[office] = []
 
-    summary_dict = dict()
-    offices = OrganizationalStructureOffice.objects.filter(is_active=True)
-    for office in offices:
-        # employees = office.organizationalstructureofficeemployee_set.filter(is_active=True)
-        assignments = assign_model.objects.filter(office=office,
-                                                  follow=True,
-                                                  ticket__is_closed=False)
-        if not summary_dict.get(office):
-            summary_dict[office] = []
-
-        for ticket in assignments:
-            summary_dict[office].append({'subject': ticket.ticket.subject,
-                                         'url': ticket.ticket.get_url(structure=office.organizational_structure)})
-    return summary_dict
+        # for ticket in assignments:
+            # summary_dict[office].append({'subject': ticket.ticket.subject,
+                                         # 'url': ticket.ticket.get_url(structure=office.organizational_structure)})
+    # return summary_dict
 
 def ticket_user_summary_dict(user):
     assign_model = apps.get_model('uni_ticket', 'TicketAssignment')
@@ -279,7 +277,7 @@ def ticket_user_summary_dict(user):
 
             for ticket in assignments:
                 d[structure][office].append({'subject': ticket.ticket.subject,
-                                  'url': ticket.ticket.get_url(structure=structure)})
+                                             'url': ticket.ticket.get_url(structure=structure)})
     return d
 
 def send_summary_email(users=[]):

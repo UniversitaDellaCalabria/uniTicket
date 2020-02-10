@@ -105,11 +105,11 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
 
     def test_disable_input_module(self):
         # Disable input module and category
-        self.client.get(reverse('uni_ticket:manager_category_input_module_disable',
-                                kwargs={'structure_slug': self.structure_1.slug,
-                                        'category_slug': self.category_1_str_1.slug,
-                                        'module_id': self.module_2.pk}),
-                        follow=True)
+        response = self.client.get(reverse('uni_ticket:manager_category_input_module_disable',
+                                           kwargs={'structure_slug': self.structure_1.slug,
+                                                   'category_slug': self.category_1_str_1.slug,
+                                                   'module_id': self.module_2.pk}),
+                                   follow=True)
         assert response.status_code == 200
         self.module_2.refresh_from_db()
         self.assertFalse(self.module_2.is_active)
@@ -120,12 +120,12 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         # Edit
         new_name = 'new module name'
         new_params = {'name': new_name,}
-        self.client.post(reverse('uni_ticket:manager_category_input_module_edit',
-                                kwargs={'structure_slug': self.structure_1.slug,
-                                        'category_slug': self.category_1_str_1.slug,
-                                        'module_id': self.module_2.pk}),
-                        new_params,
-                        follow=True)
+        response = self.client.post(reverse('uni_ticket:manager_category_input_module_edit',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'module_id': self.module_2.pk}),
+                                    new_params,
+                                    follow=True)
         assert response.status_code == 200
         self.module_2.refresh_from_db()
         assert self.module_2.name == new_name
