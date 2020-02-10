@@ -163,6 +163,17 @@ def ticket_add_new(request, structure_slug, category_slug):
                     value = request.FILES.get(key)._name
                     json_stored[ATTACHMENTS_DICT_PREFIX][key] = value
                 set_as_dict(ticket, json_stored)
+
+            # data di modifica
+            ticket.update_log(user=request.user,
+                              note=_('Inserimento nuovo ticket - '
+                                     '"ticket_subject": {}, '
+                                     '"ticket_description": {}, '
+                                     'data: {} / files: {}'.format(subject,
+                                                                   description,
+                                                                   json_data,
+                                                                   request.FILES)))
+
             # Old version. Now a category MUST have an office!
             # office = categoria.organizational_office or struttura.get_default_office()
             office = categoria.organizational_office
