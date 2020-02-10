@@ -300,7 +300,8 @@ def ticket_edit(request, ticket_id):
                              json_response)
             # data di modifica
             ticket.update_log(user=request.user,
-                              note=_("Modifica ticket"))
+                              note=_("Modifica ticket - data: "
+                                     "{} / files: {}".format(json_post, request.FILES)))
             # Allega il messaggio al redirect
             messages.add_message(request, messages.SUCCESS,
                                  _("Modifica effettuata con successo"))
