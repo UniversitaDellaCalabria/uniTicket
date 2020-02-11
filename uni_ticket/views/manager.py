@@ -292,6 +292,16 @@ def office_add_category(request, structure_slug, office_slug, structure):
             category = get_object_or_404(TicketCategory,
                                          slug=category_slug,
                                          organizational_structure=structure)
+            if category.organizational_office:
+                messages.add_message(request, messages.ERROR,
+                                     _("La categoria <b>{}</b> risulta "
+                                       "già assegnata all'ufficio <b>{}</b>. "
+                                       "Rimuovere la competenza per "
+                                       "procedere").format(category,
+                                                           category.organizational_office))
+                return redirect('uni_ticket:manager_office_detail',
+                                structure_slug=structure_slug,
+                                office_slug=office_slug)
             category.organizational_office = office
             category.save(update_fields = ['organizational_office'])
             messages.add_message(request, messages.SUCCESS,
@@ -606,7 +616,7 @@ def category_remove_office(request, structure_slug,
         category.organizational_office = None
         category.save(update_fields = ['organizational_office'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Competenza ufficio {} rimosso correttamente".format(office)))
+                             _("Competenza ufficio {} rimossa correttamente".format(office)))
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)

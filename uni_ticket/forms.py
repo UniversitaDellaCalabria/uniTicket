@@ -221,7 +221,7 @@ class OfficeAddCategoryForm(forms.Form):
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
         office = kwargs.pop('office', None)
-        categories = TicketCategory.objects.filter(organizational_structure=structure).exclude(organizational_office=office)
+        categories = TicketCategory.objects.filter(organizational_structure=structure).exclude(organizational_office__isnull=False)
         super().__init__(*args, **kwargs)
         self.fields['category'].queryset = categories
         self.fields['category'].to_field_name='slug'
