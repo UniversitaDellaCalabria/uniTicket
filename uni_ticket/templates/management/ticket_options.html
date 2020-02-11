@@ -115,7 +115,9 @@
             </button>
             {% else %}
             <button type="button"
-                class="mx-1 btn btn-secondary disabled btn-xs float-right">
+                class="mx-1 btn btn-secondary btn-xs float-right"
+                title="{% trans 'Questa attività non può essere eliminata' %}"
+                disabled>
                 {% trans "Elimina attività" %}
             </button>
             {% endif %}

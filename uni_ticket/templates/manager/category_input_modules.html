@@ -28,7 +28,9 @@
             </button>
             {% else %}
             <button type="button"
-                class="mx-1 btn btn-secondary disabled btn-xs float-right">
+                class="mx-1 btn btn-secondary btn-xs float-right"
+                title="{% trans 'Questo modulo non può essere eliminato' %}"
+                disabled>
                 {% trans "Elimina modulo" %}
             </button>
             {% endif %}
