@@ -100,8 +100,8 @@ offices = '{}/offices'.format(base)
 office = '{}/office'.format(offices)
 office_id = '{}/<str:office_slug>'.format(office)
 categories = '{}/categories'.format(base)
-category = '{}/category'.format(categories)
-category_id = '{}/<str:category_slug>'.format(category)
+# category = '{}/category'.format(categories)
+category_id = '{}/<str:category_slug>'.format(categories)
 cat_input = '{}/input'.format(category_id)
 cat_input_id = '{}/<int:module_id>'.format(cat_input)
 condition = '{}/conditions/condition'.format(category_id)
@@ -142,7 +142,7 @@ urlpatterns += [
 
     # Categories
     path('{}/'.format(categories), manager.categories, name='manager_categories'),
-    path('{}/new/'.format(category), manager.category_add_new, name='manager_category_add_new'),
+    path('{}/new/'.format(categories), manager.category_add_new, name='manager_category_add_new'),
     path('{}/'.format(category_id), manager.category_detail, name='manager_category_detail'),
     path('{}/remove-office/<str:office_slug>/'.format(category_id), manager.category_remove_office, name='manager_remove_category_office'),
     path('{}/edit/'.format(category_id), manager.category_edit, name='manager_category_edit'),
