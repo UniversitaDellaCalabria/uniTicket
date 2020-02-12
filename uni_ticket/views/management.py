@@ -827,7 +827,7 @@ def ticket_message_url(request, structure_slug, ticket_id):
 @login_required
 @has_admin_privileges
 @ticket_assigned_to_structure
-@ticket_is_taken_and_not_closed
+# @ticket_is_taken_and_not_closed
 def ticket_message(request, structure_slug, ticket_id,
                    structure, can_manage, ticket, office_employee=None):
     """

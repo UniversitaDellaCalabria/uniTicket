@@ -43,7 +43,7 @@
 </a>
 {% endif %}
 
-{% if ticket.is_open %}
+{% if ticket.is_taken %}
 <a role="button"
    href="{% url 'uni_ticket:manage_ticket_message_url' structure_slug=structure.slug ticket_id=ticket.code %}"
    class="btn btn-outline-secondary">
