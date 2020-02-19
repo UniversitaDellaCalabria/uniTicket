@@ -94,6 +94,10 @@
         </div>
     </div>
     {% endfor %}
+{% else %}
+    <div class="alert alert-warning" role="alert">
+      {% trans "Non ci sono messaggi" %}
+    </div>
 {% endif %}
 
 {% if ticket.is_taken and not ticket.is_closed %}

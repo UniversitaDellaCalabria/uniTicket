@@ -380,7 +380,6 @@ def ticket_delete(request, ticket_id):
     ticket_details = get_as_dict(compiled_module_json=json_dict)
     if ATTACHMENTS_DICT_PREFIX in ticket_details:
         delete_directory(ticket_id)
-
     ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
     ticket_assignment.delete()
 

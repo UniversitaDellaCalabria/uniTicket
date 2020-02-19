@@ -428,12 +428,17 @@ def office_disable(request, structure_slug, office_slug, structure):
                                organizational_structure=structure,
                                slug=office_slug)
     one_tickets_for_this_office = False
-    tickets_per_office = TicketAssignment.objects.filter(office=office,
-                                                             follow=True).annotate(num_tickets=Count('ticket'))
-    for tpo in tickets_per_office:
-        if tpo == 1:
+    office_tickets = TicketAssignment.objects.filter(office=office,
+                                                     # ticket__is_closed=False,
+                                                     follow=True)
+    one_tickets_for_this_office = False
+    for ot in office_tickets:
+        other_offices_for_ticket = TicketAssignment.objects.filter(office__is_active=True,
+                                                                   ticket=ot.ticket).exclude(office=office)
+        if not other_offices_for_ticket:
             one_tickets_for_this_office = True
             break
+
     if office.is_default:
         messages.add_message(request, messages.ERROR,
                              _("Impossibile disattivare questo ufficio"))
