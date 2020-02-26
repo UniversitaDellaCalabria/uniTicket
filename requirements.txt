@@ -19,8 +19,9 @@ git+https://github.com/peppelinux/django-datatables-ajax.git
 # development
 ipython
 
-# django-form-builder
-git+https://github.com/UniversitaDellaCalabria/django-form-builder
+#Django form builder
+#git+https://github.com/UniversitaDellaCalabria/django-form-builder.git
+django-form-builder>=0.8.0
 
 # Javascript Django Formset
 # django-formset-js-improved
@@ -42,9 +43,14 @@ git+https://github.com/jrief/django-sass-processor.git
 # settings dependencies
 mysqlclient
 
-# unical template
-git+https://github.com/italia/design-django-theme
-git+https://github.com/UniversitaDellaCalabria/django-unical-agid-template.git
+#Bootstrap Italia + Unical template
+#libsass
+#django-sass-processor
+#django_compressor
+#git+https://github.com/italia/design-django-theme.git
+#git+https://github.com/UniversitaDellaCalabria/django-unical-agid-template.git
+design-django-theme
+django-unical-bootstrap-italia
 
 # Django REST
 djangorestframework

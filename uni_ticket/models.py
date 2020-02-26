@@ -137,7 +137,8 @@ class TicketCategoryModule(models.Model):
                  files=None,
                  remove_filefields=False,
                  remove_datafields=False,
-                 show_conditions=False):
+                 show_conditions=False,
+                 **kwargs):
         ticket_input_list = self.ticketcategoryinputlist_set.all().order_by('ordinamento')
         # Static method of DynamicFieldMap
         constructor_dict = DynamicFieldMap.build_constructor_dict(ticket_input_list)
