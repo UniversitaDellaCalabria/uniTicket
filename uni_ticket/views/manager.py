@@ -234,7 +234,7 @@ def office_detail(request, structure_slug, office_slug, structure):
                                      structure=structure)
 
         if form.is_valid():
-            employee_id = form.cleaned_data['operatore']
+            employee_id = form.cleaned_data['operatore'].pk
             description = form.cleaned_data['description']
             user_model = apps.get_model(settings.AUTH_USER_MODEL)
             employee = user_model.objects.get(pk=employee_id)
@@ -288,7 +288,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
                                      structure=structure,
                                      office=office)
         if form.is_valid():
-            category_slug = form.cleaned_data['category']
+            category_slug = form.cleaned_data['category'].slug
             category = get_object_or_404(TicketCategory,
                                          slug=category_slug,
                                          organizational_structure=structure)
@@ -566,7 +566,7 @@ def category_detail(request, structure_slug, category_slug, structure):
         form = CategoryAddOfficeForm(request.POST,
                                      structure=structure)
         if form.is_valid():
-            office_slug = form.cleaned_data['office']
+            office_slug = form.cleaned_data['office'].slug
             m = OrganizationalStructureOffice
             office = m.objects.get(organizational_structure=structure,
                                    slug=office_slug)

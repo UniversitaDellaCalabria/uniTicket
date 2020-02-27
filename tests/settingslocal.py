@@ -18,6 +18,7 @@ INTERNAL_IPS = ['127.0.0.1']
 # Application definition
 INSTALLED_APPS = [
     'unical_accounts',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -25,11 +26,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+
     'ckeditor',
     'datatables_ajax',
+
     'sass_processor',
     'bootstrap_italia_template',
-    'unical_agid_template',
+    'django_unical_bootstrap_italia',
+
     'bootstrapform',
     'uni_ticket',
     'django_form_builder',

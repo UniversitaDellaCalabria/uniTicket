@@ -14,7 +14,8 @@ app_name="uni_ticket"
 _dashboard_name = 'dashboard'
 
 # System/Generic URLs
-ticket = 'ticket/<str:ticket_id>'
+# ticket = 'ticket/<str:ticket_id>'
+ticket = 'tickets/<str:ticket_id>'
 urlpatterns = [
     path('', RedirectView.as_view(url='/{}/'.format(_dashboard_name))),
 
@@ -23,8 +24,8 @@ urlpatterns = [
 
     # Attachments download
     path('{}/download/attachment/<str:attachment>/'.format(ticket), generic.download_attachment, name='download_attachment'),
-    path('{}/reply/<str:reply_id>/download/attachment/'.format(ticket), generic.download_message_attachment, name='download_message_attachment'),
-    path('{}/task/<str:task_id>/download/attachment/'.format(ticket), generic.download_task_attachment, name='download_task_attachment'),
+    path('{}/messages/<str:reply_id>/download/attachment/'.format(ticket), generic.download_message_attachment, name='download_message_attachment'),
+    path('{}/tasks/<str:task_id>/download/attachment/'.format(ticket), generic.download_task_attachment, name='download_task_attachment'),
 
     # Delete ticket message
     path('messages/delete/<str:ticket_message_id>/', generic.ticket_message_delete, name='message_delete'),
@@ -58,9 +59,9 @@ urlpatterns += [
 # Management URLs (manager and operator)
 base = 'manage/<str:structure_slug>'
 tickets = '{}/tickets'.format(base)
-ticket = '{}/ticket'.format(tickets)
-ticket_id = '{}/<str:ticket_id>'.format(ticket)
-task = '{}/task'.format(ticket_id)
+# ticket = '{}'.format(tickets)
+ticket_id = '{}/<str:ticket_id>'.format(tickets)
+task = '{}/tasks'.format(ticket_id)
 task_id = '{}/<str:task_id>'.format(task)
 
 urlpatterns += [
@@ -69,7 +70,7 @@ urlpatterns += [
     path('{}/unassigned/'.format(tickets), management.manage_unassigned_ticket_url, name='manage_unassigned_ticket_url'),
     path('{}/closed/'.format(tickets), management.manage_closed_ticket_url, name='manage_closed_ticket_url'),
     path('{}/'.format(tickets), management.manage_not_closed_ticket_url, name='manage_not_closed_ticket_url'),
-    path('{}/'.format(ticket), management.manage_ticket_url, name='manage_ticket_url'),
+    path('{}/'.format(tickets), management.manage_ticket_url, name='manage_ticket_url'),
     path('{}/'.format(ticket_id), management.manage_ticket_url_detail, name='manage_ticket_url_detail'),
     path('{}/messages/'.format(ticket_id), management.ticket_message_url, name='manage_ticket_message_url'),
     path('{}/competence/add/'.format(ticket_id), management.ticket_competence_add_url, name='add_ticket_competence_url'),
@@ -93,8 +94,8 @@ urlpatterns += [
 # Manager URLs
 base = '{}/<str:structure_slug>'.format(slugify(MANAGEMENT_URL_PREFIX['manager']))
 tickets = '{}/tickets'.format(base)
-ticket_id = '{}/ticket/<str:ticket_id>'.format(tickets)
-task = '{}/activities'.format(ticket_id)
+ticket_id = '{}/<str:ticket_id>'.format(tickets)
+task = '{}/tasks'.format(ticket_id)
 task_id = '{}/<str:task_id>'.format(task)
 offices = '{}/offices'.format(base)
 office = '{}/office'.format(offices)
@@ -176,8 +177,8 @@ urlpatterns += [
 # Operator URLs
 base = '{}/<str:structure_slug>'.format(slugify(MANAGEMENT_URL_PREFIX['operator']))
 tickets = '{}/tickets'.format(base)
-ticket_id = '{}/ticket/<str:ticket_id>'.format(tickets)
-task = '{}/activities'.format(ticket_id)
+ticket_id = '{}/<str:ticket_id>'.format(tickets)
+task = '{}/tasks'.format(ticket_id)
 task_id = '{}/<str:task_id>'.format(task)
 
 urlpatterns += [
@@ -207,24 +208,24 @@ urlpatterns += [
 
 # User URLs
 tickets = 'tickets'
-ticket = '{}/ticket'.format(tickets)
-ticket_id = '{}/<str:ticket_id>'.format(ticket)
+# ticket = '{}'.format(tickets)
+ticket_id = '{}/<str:ticket_id>'.format(tickets)
 
 urlpatterns += [
     path('{}/'.format(_dashboard_name), user.dashboard, name='user_dashboard'),
     path('{}/opened/'.format(tickets), generic.opened_ticket, name='user_opened_ticket'),
     path('{}/unassigned/'.format(tickets), generic.unassigned_ticket, name='user_unassigned_ticket'),
     path('{}/closed/'.format(tickets), generic.closed_ticket, name='user_closed_ticket'),
-    path('{}/'.format(ticket), user.ticket_url, name='user_ticket_url'),
-    path('{}/new/'.format(ticket), user.ticket_new_preload, name='new_ticket_preload'),
-    path('{}/new/<str:structure_slug>/'.format(ticket), user.ticket_new_preload, name='new_ticket_preload'),
-    path('{}/new/<str:structure_slug>/<str:category_slug>/'.format(ticket), user.ticket_add_new, name='add_new_ticket'),
+    path('{}/'.format(tickets), user.ticket_url, name='user_ticket_url'),
+    path('{}/new/'.format(tickets), user.ticket_new_preload, name='new_ticket_preload'),
+    path('{}/new/<str:structure_slug>/'.format(tickets), user.ticket_new_preload, name='new_ticket_preload'),
+    path('{}/new/<str:structure_slug>/<str:category_slug>/'.format(tickets), user.ticket_add_new, name='add_new_ticket'),
     path('{}/messages/'.format(ticket_id), user.ticket_message, name='ticket_message'),
     path('{}/edit/'.format(ticket_id), user.ticket_edit, name='ticket_edit'),
     path('{}/edit/remove-attachment/<str:attachment>/'.format(ticket_id), user.delete_my_attachment, name='delete_my_attachment'),
     path('{}/delete/'.format(ticket_id), user.ticket_delete, name='ticket_delete'),
     path('{}/close/'.format(ticket_id), user.ticket_close, name='user_close_ticket'),
-    path('{}/activity/<str:task_id>/'.format(ticket_id), user.task_detail, name='task_detail'),
+    path('{}/tasks/<str:task_id>/'.format(ticket_id), user.task_detail, name='task_detail'),
     path('{}/'.format(ticket_id), is_the_owner(user.ticket_detail), name='ticket_detail'),
     path('settings/', generic.user_settings, name='user_settings'),
     path('messages/', generic.ticket_messages, name='messages'),

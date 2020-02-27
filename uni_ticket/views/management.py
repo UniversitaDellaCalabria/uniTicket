@@ -382,7 +382,7 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                                     ticket_id=ticket.code,
                                     ticket_dependences=ticket_dependences_code_list)
         if form.is_valid():
-            ticket_master_code = form.cleaned_data['ticket']
+            ticket_master_code = form.cleaned_data['ticket'].code
             note = form.cleaned_data['note']
             master_ticket = get_object_or_404(Ticket, code=ticket_master_code)
             # Se il ticket scelto come master dipende da altri ticket
@@ -545,7 +545,9 @@ def ticket_close(request, structure_slug, ticket_id,
                               note=_("Chiusura ticket: {}".format(motivazione)))
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket {} chiuso correttamente".format(ticket)))
-            return redirect('uni_ticket:manage', structure_slug)
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                            structure_slug=structure_slug,
+                            ticket_id=ticket_id)
         else:
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,

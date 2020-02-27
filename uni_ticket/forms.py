@@ -165,7 +165,7 @@ class TicketCompetenceSchemeForm(forms.Form):
     even if this is not passed to template
     (rendered manually to have js behaviour)
     """
-    structure_slug = forms.CharField(label=_('Struttura'), required=True)
+    # structure_slug = forms.CharField(label=_('Struttura'), required=True)
     category_slug = forms.CharField(label=_('Categoria'), required=True)
     follow = forms.BooleanField(label=_('Continua a seguire'), required=False)
     readonly = forms.BooleanField(label=_('Sola lettura'), required=False)
