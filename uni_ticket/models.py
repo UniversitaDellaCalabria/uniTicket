@@ -35,7 +35,7 @@ def _reply_attachment_upload(instance, filename):
     """
     ticket_folder = get_folder_allegato(instance.ticket)
     return os.path.join('{}/{}/{}'.format(ticket_folder,
-                                          TICKET_REPLY_ATTACHMENT_SUBFOLDER,
+                                          TICKET_MESSAGES_ATTACHMENT_SUBFOLDER,
                                           filename))
 
 def _task_attachment_upload(instance, filename):
@@ -311,21 +311,24 @@ class Ticket(SavedFormContent):
         if not self.is_taken: return _("In attesa di essere preso in carico")
         return _("Aperto")
 
-    def update_log(self, user, note=None):
+    def update_log(self, user, note=None, send_mail=True):
         if not user: return False
 
-        # Send mail to ticket owner
-        d = {'hostname': settings.HOSTNAME,
-             'user': user,
-             'message': note,
-             'ticket': self
-            }
-        m_subject = _('{} - ticket {} updated'.format(settings.HOSTNAME,
-                                                      self))
-        send_custom_mail(subject=m_subject,
-                         body=TICKET_UPDATED.format(**d),
-                         recipient=user)
-        # End send mail to ticket owner
+        if send_mail:
+            # Send mail to ticket owner
+            d = {'hostname': settings.HOSTNAME,
+                 'user': user,
+                 'message': note,
+                 'ticket': self
+                }
+            m_subject = _('{} - ticket {} aggiornato'.format(settings.HOSTNAME,
+                                                          self))
+            # Start send mail to ticket owner
+            send_custom_mail(subject=m_subject,
+                             recipient=self.created_by,
+                             body=TICKET_UPDATED,
+                             params=d)
+            # End send mail to ticket owner
 
         LogEntry.objects.log_action(user_id         = user.pk,
                                     content_type_id = ContentType.objects.get_for_model(self).pk,

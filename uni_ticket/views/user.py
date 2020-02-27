@@ -140,8 +140,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                                          fields_to_pop=fields_to_pop)
             # make a UUID based on the host ID and current time
             code = uuid_code()
-            subject = request.POST.get(TICKET_SUBJECT_ID)
-            description = request.POST.get(TICKET_DESCRIPTION_ID)
+            subject = form.cleaned_data[TICKET_SUBJECT_ID]
+            description = form.cleaned_data[TICKET_DESCRIPTION_ID]
             ticket = Ticket(code=code,
                             subject=subject,
                             description=description,
@@ -157,22 +157,26 @@ def ticket_add_new(request, structure_slug, category_slug):
                 json_stored[ATTACHMENTS_DICT_PREFIX] = {}
                 path_allegati = get_path_allegato(ticket)
                 for key, value in request.FILES.items():
-                    save_file(request.FILES.get(key),
+                    save_file(form.cleaned_data[key],
                               path_allegati,
-                              request.FILES.get(key)._name)
-                    value = request.FILES.get(key)._name
+                              form.cleaned_data[key]._name)
+                    value = form.cleaned_data[key]._name
                     json_stored[ATTACHMENTS_DICT_PREFIX][key] = value
                 set_as_dict(ticket, json_stored)
 
             # data di modifica
+            note = _("""Inserimento nuovo ticket
+
+                     "ticket_subject": {},
+                     "ticket_description": {},
+                     data: {}
+                     files: {}""").format(subject,
+                                          description,
+                                          json_data,
+                                          request.FILES)
             ticket.update_log(user=request.user,
-                              note=_('Inserimento nuovo ticket - '
-                                     '"ticket_subject": {}, '
-                                     '"ticket_description": {}, '
-                                     'data: {} / files: {}'.format(subject,
-                                                                   description,
-                                                                   json_data,
-                                                                   request.FILES)))
+                              note=note,
+                              send_mail=False)
 
             # Old version. Now a category MUST have an office!
             # office = categoria.organizational_office or struttura.get_default_office()
@@ -191,14 +195,16 @@ def ticket_add_new(request, structure_slug, category_slug):
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
                            'user': request.user,
-                           'status': _('submitted'),
-                           'ticket': ticket
+                           'ticket': ticket,
+                           'data': json_data,
+                           'files': request.FILES
                           }
-            m_subject = _('{} - ticket {} submitted'.format(settings.HOSTNAME,
-                                                            ticket))
-            send_custom_mail(subject = m_subject,
-                             body=NEW_TICKET_UPDATE.format(**mail_params),
-                             recipient=request.user)
+            m_subject = _('{} - ticket "{}" creato correttamente'.format(settings.HOSTNAME,
+                                                                         ticket))
+            send_custom_mail(subject=m_subject,
+                             recipient=request.user,
+                             body=NEW_TICKET_CREATED,
+                             params=mail_params)
             # END Send mail to ticket owner
 
             messages.add_message(request, messages.SUCCESS,
@@ -296,18 +302,18 @@ def ticket_edit(request, ticket_id):
                 path_allegati = get_path_allegato(ticket)
                 for key, value in request.FILES.items():
                     # form.validate_attachment(request.FILES.get(key))
-                    save_file(request.FILES.get(key),
+                    save_file(form.cleaned_data[key],
                               path_allegati,
-                              request.FILES.get(key)._name)
-                    nome_allegato = request.FILES.get(key)._name
+                              form.cleaned_data[key]._name)
+                    nome_allegato = form.cleaned_data[key]._name
                     json_response[ATTACHMENTS_DICT_PREFIX]["{}".format(key)] = "{}".format(nome_allegato)
             elif allegati:
                 # Se non ho aggiornato i miei allegati lasciandoli invariati rispetto
                 # all'inserimento precedente
                 json_response[ATTACHMENTS_DICT_PREFIX] = allegati
             # salva il modulo
-            ticket.save_data(request.POST.get(TICKET_SUBJECT_ID),
-                             request.POST.get(TICKET_DESCRIPTION_ID),
+            ticket.save_data(form.cleaned_data[TICKET_SUBJECT_ID],
+                             form.cleaned_data[TICKET_DESCRIPTION_ID],
                              json_response)
             # data di modifica
             ticket.update_log(user=request.user,
@@ -386,14 +392,16 @@ def ticket_delete(request, ticket_id):
     # Send mail to ticket owner
     mail_params = {'hostname': settings.HOSTNAME,
                    'user': request.user,
-                   'status': _('deleted'),
+                   'status': _("eliminato"),
                    'ticket': ticket
                   }
-    m_subject = _('{} - ticket {} deleted'.format(settings.HOSTNAME,
-                                                  ticket))
+    m_subject = _('{} - ticket {} eliminato'.format(settings.HOSTNAME,
+                                                    ticket))
+
     send_custom_mail(subject=m_subject,
-                     body=NEW_TICKET_UPDATE.format(**mail_params),
-                     recipient=request.user)
+                     recipient=request.user,
+                     body=TICKET_DELETED,
+                     params=mail_params)
     # END Send mail to ticket owner
 
     ticket.delete()
@@ -489,24 +497,25 @@ def ticket_message(request, ticket_id):
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
             ticket_reply = TicketReply()
-            ticket_reply.subject = request.POST.get('subject')
-            ticket_reply.text = request.POST.get('text')
-            ticket_reply.attachment = request.FILES.get('attachment')
+            ticket_reply.subject = form.cleaned_data['subject']
+            ticket_reply.text = form.cleaned_data['text']
+            ticket_reply.attachment = form.cleaned_data['attachment']
             ticket_reply.ticket = ticket
             ticket_reply.owner = request.user
             ticket_reply.save()
 
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
-                           'status': _('submitted'),
+                           'status': _("inviato"),
                            'ticket': ticket,
                            'user': request.user
                           }
-            m_subject = _('{} - ticket {} message submitted'.format(settings.HOSTNAME,
+            m_subject = _('{} - ticket {} messaggio inviato'.format(settings.HOSTNAME,
                                                                     ticket))
             send_custom_mail(subject=m_subject,
-                             body=USER_TICKET_MESSAGE.format(**mail_params),
-                             recipient=request.user)
+                             recipient=request.user,
+                             body=USER_TICKET_MESSAGE,
+                             params=mail_params)
             # END Send mail to ticket owner
 
             messages.add_message(request, messages.SUCCESS,
@@ -570,7 +579,7 @@ def ticket_close(request, ticket_id):
     if request.method=='POST':
         form = ChiusuraForm(request.POST)
         if form.is_valid():
-            motivazione = request.POST.get('note')
+            motivazione = form.cleaned_data['note']
             ticket.is_closed = True
             ticket.motivazione_chiusura = motivazione
             ticket.data_chiusura = timezone.now()

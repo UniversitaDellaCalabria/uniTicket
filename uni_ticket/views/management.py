@@ -195,7 +195,7 @@ def ticket_detail(request, structure_slug, ticket_id,
 
         form = PriorityForm(request.POST)
         if form.is_valid():
-            priority = request.POST.get('priorita')
+            priority = form.cleaned_data['priorita']
             priority_text = dict(PRIORITY_LEVELS).get(priority)
 
             if not ticket.is_taken:
@@ -382,8 +382,8 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                                     ticket_id=ticket.code,
                                     ticket_dependences=ticket_dependences_code_list)
         if form.is_valid():
-            ticket_master_code = request.POST.get('ticket')
-            note = request.POST.get('note')
+            ticket_master_code = form.cleaned_data['ticket']
+            note = form.cleaned_data['note']
             master_ticket = get_object_or_404(Ticket, code=ticket_master_code)
             # Se il ticket scelto come master dipende da altri ticket
             if Ticket2Ticket.master_is_already_used(master_ticket) or ticket.blocks_some_ticket():
@@ -534,7 +534,7 @@ def ticket_close(request, structure_slug, ticket_id,
     if request.method=='POST':
         form = ChiusuraForm(request.POST)
         if form.is_valid():
-            motivazione = request.POST.get('note')
+            motivazione = form.cleaned_data['note']
             ticket.is_closed = True
             ticket.motivazione_chiusura = motivazione
             ticket.data_chiusura = timezone.now()
@@ -710,87 +710,93 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     categorie = TicketCategory.objects.filter(organizational_structure=new_structure.pk,
                                               is_active=True)
     if request.method == 'POST':
-        category_slug = request.POST.get('category_slug')
-        follow = request.POST.get('follow')
-        readonly = request.POST.get('readonly')
+        form = TicketCompetenceSchemeForm(data=request.POST)
+        if form.is_valid():
+            category_slug = form.cleaned_data['category_slug']
+            follow = form.cleaned_data['follow']
+            readonly = form.cleaned_data['readonly']
 
-        # Refactor
-        # follow_value = request.POST.get('follow')
-        # readonly_value = request.POST.get('readonly')
-        # follow = True if follow_value == 'on' else False
-        # readonly = True if readonly_value == 'on' else False
+            # Refactor
+            # follow_value = form.cleaned_data['follow']
+            # readonly_value = form.cleaned_data['readonly']
+            # follow = True if follow_value == 'on' else False
+            # readonly = True if readonly_value == 'on' else False
 
-        # La categoria passata in POST esiste?
-        categoria = get_object_or_404(TicketCategory,
-                                      slug=category_slug,
-                                      organizational_structure=new_structure,
-                                      is_active=True)
+            # La categoria passata in POST esiste?
+            categoria = get_object_or_404(TicketCategory,
+                                          slug=category_slug,
+                                          organizational_structure=new_structure,
+                                          is_active=True)
 
-        # Se alla categoria non è associato alcun ufficio,
-        # all'utente viene mostrato il messaggio di errore
-        # Perchè l'ufficio speciale Help-Desk è già competente sul ticket
-        if not categoria.organizational_office:
-            messages.add_message(request, messages.ERROR,
-                                 _("Il ticket è già di competenza"
-                                   " dell'ufficio speciale <b>{}</b>,"
-                                   " che ha la competenza della categoria "
-                                   "<b>{}</b>".format(DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
-                                               categoria)))
+            # Se alla categoria non è associato alcun ufficio,
+            # all'utente viene mostrato il messaggio di errore
+            # Perchè l'ufficio speciale Help-Desk è già competente sul ticket
+            if not categoria.organizational_office:
+                messages.add_message(request, messages.ERROR,
+                                     _("Il ticket è già di competenza"
+                                       " dell'ufficio speciale <b>{}</b>,"
+                                       " che ha la competenza della categoria "
+                                       "<b>{}</b>".format(DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+                                                   categoria)))
+                return redirect('uni_ticket:manage_ticket_url_detail',
+                                structure_slug=structure_slug,
+                                ticket_id=ticket_id)
+
+            # new_office = new_structure.get_default_office()
+            # if categoria.organizational_office:
+                # new_office = categoria.organizational_office
+            new_office = categoria.organizational_office
+
+
+            if new_office in ticket_offices:
+                messages.add_message(request, messages.ERROR,
+                                     _("Il ticket è già di competenza"
+                                       " dell'ufficio <b>{}</b>, responsabile"
+                                       " della categoria <b>{}</b>".format(new_office,
+                                                                           categoria)))
+                return redirect('uni_ticket:manage_ticket_url_detail',
+                                structure_slug=structure_slug,
+                                ticket_id=ticket_id)
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Competenza <b>{}</b> aggiunta"
+                                   " correttamente".format(new_office)))
+
+            # If not follow anymore
+            if not follow:
+                abandoned_offices = ticket.block_competence(user=request.user,
+                                                            structure=structure,
+                                                            allow_readonly=False)
+                for off in abandoned_offices:
+                    ticket.update_log(user=request.user,
+                                      note= _("Competenza abbandonata da"
+                                              " Ufficio: {}".format(off)))
+
+            # If follow but readonly
+            elif readonly:
+                abandoned_offices = ticket.block_competence(user=request.user,
+                                                            structure=structure)
+                for off in abandoned_offices:
+                    ticket.update_log(user=request.user,
+                                      note= _("Competenza trasferita da"
+                                              " Ufficio: {}."
+                                              " (L'ufficio ha mangenuto"
+                                              " accesso in sola lettura)".format(off)))
+            # If follow and want to manage
+            ticket.add_competence(office=new_office, user=request.user)
+            ticket.update_log(user=request.user,
+                              note= _("Nuova competenza: {} - {}"
+                                      " - Categoria: {}".format(new_structure,
+                                                                new_office,
+                                                                categoria)))
+
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
-
-        # new_office = new_structure.get_default_office()
-        # if categoria.organizational_office:
-            # new_office = categoria.organizational_office
-        new_office = categoria.organizational_office
-
-
-        if new_office in ticket_offices:
-            messages.add_message(request, messages.ERROR,
-                                 _("Il ticket è già di competenza"
-                                   " dell'ufficio <b>{}</b>, responsabile"
-                                   " della categoria <b>{}</b>".format(new_office,
-                                                                       categoria)))
-            return redirect('uni_ticket:manage_ticket_url_detail',
-                            structure_slug=structure_slug,
-                            ticket_id=ticket_id)
-
-        messages.add_message(request, messages.SUCCESS,
-                             _("Competenza <b>{}</b> aggiunta"
-                               " correttamente".format(new_office)))
-
-        # If not follow anymore
-        if not follow:
-            abandoned_offices = ticket.block_competence(user=request.user,
-                                                        structure=structure,
-                                                        allow_readonly=False)
-            for off in abandoned_offices:
-                ticket.update_log(user=request.user,
-                                  note= _("Competenza abbandonata da"
-                                          " Ufficio: {}".format(off)))
-
-        # If follow but readonly
-        if readonly:
-            abandoned_offices = ticket.block_competence(user=request.user,
-                                                        structure=structure)
-            for off in abandoned_offices:
-                ticket.update_log(user=request.user,
-                                  note= _("Competenza trasferita da"
-                                          " (accesso in sola lettura)"
-                                          " Ufficio: {}".format(off)))
-        # If follow and want to manage
-        ticket.add_competence(office=new_office, user=request.user)
-        ticket.update_log(user=request.user,
-                          note= _("Nuova competenza: {} - {}"
-                                  " - Categoria: {}".format(new_structure,
-                                                            new_office,
-                                                            categoria)))
-
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
-
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_competence.html".format(user_type)
     title = _('Trasferisci competenza ticket')
@@ -881,9 +887,9 @@ def ticket_message(request, structure_slug, ticket_id,
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
             ticket_reply = TicketReply()
-            ticket_reply.subject = request.POST.get('subject')
-            ticket_reply.text = request.POST.get('text')
-            ticket_reply.attachment = request.FILES.get('attachment')
+            ticket_reply.subject = form.cleaned_data['subject']
+            ticket_reply.text = form.cleaned_data['text']
+            ticket_reply.attachment = form.cleaned_data['attachment']
             ticket_reply.ticket = ticket
             ticket_reply.structure = structure
             ticket_reply.owner = request.user
@@ -891,15 +897,16 @@ def ticket_message(request, structure_slug, ticket_id,
 
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
-                           'status': _('received'),
+                           'status': _("ricevuto"),
                            'ticket': ticket,
                            'user': ticket.created_by
                           }
-            m_subject = _('{} - ticket {} message received'.format(settings.HOSTNAME,
+            m_subject = _('{} - ticket {} nuovo messaggio'.format(settings.HOSTNAME,
                                                                    ticket))
             send_custom_mail(subject=m_subject,
-                             body=USER_TICKET_MESSAGE.format(**mail_params),
-                             recipient=ticket.created_by)
+                             recipient=ticket.created_by,
+                             body=USER_TICKET_MESSAGE,
+                             params=mail_params)
             # END Send mail to ticket owner
 
             messages.add_message(request, messages.SUCCESS,
@@ -978,11 +985,11 @@ def task_add_new(request, structure_slug, ticket_id,
         form = TaskForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             new_task = Task()
-            new_task.subject = request.POST.get('subject')
-            new_task.description = request.POST.get('description')
-            new_task.attachment = request.FILES.get('attachment')
+            new_task.subject = form.cleaned_data['subject']
+            new_task.description = form.cleaned_data['description']
+            new_task.attachment = form.cleaned_data['attachment']
             new_task.ticket = ticket
-            new_task.priority = request.POST.get('priority')
+            new_task.priority = form.cleaned_data['priority']
             new_task.created_by = request.user
             new_task.code = uuid_code()
             new_task.save()
@@ -1120,7 +1127,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
 
         form = PriorityForm(request.POST)
         if form.is_valid():
-            priority = request.POST.get('priorita')
+            priority = form.cleaned_data['priorita']
             priority_text = dict(PRIORITY_LEVELS).get(priority)
             msg = _("Task {} - Priorità assegnata: {}".format(task,
                                                               priority_text))
@@ -1220,7 +1227,7 @@ def task_close(request, structure_slug, ticket_id, task_id,
     if request.method=='POST':
         form = ChiusuraForm(request.POST)
         if form.is_valid():
-            motivazione = request.POST.get('note')
+            motivazione = form.cleaned_data['note']
             task.is_closed = True
             task.motivazione_chiusura = motivazione
             task.data_chiusura = timezone.now()
@@ -1374,14 +1381,14 @@ def task_edit(request, structure_slug, ticket_id, task_id,
                         files=request.FILES)
         if form.is_valid():
             msg = _("Modifica attività {}".format(task))
-            task.subject = request.POST.get('subject')
-            task.description = request.POST.get('description')
-            if task.priority != request.POST.get('priority'):
+            task.subject = form.cleaned_data['subject']
+            task.description = form.cleaned_data['description']
+            if task.priority != form.cleaned_data['priority']:
                 msg = msg + _(" e Priorità assegnata: {}"
-                              "".format(dict(PRIORITY_LEVELS).get(request.POST.get('priority'))))
-            task.priority = request.POST.get('priority')
-            if request.FILES.get('attachment'):
-                task.attachment = request.FILES.get('attachment')
+                              "".format(dict(PRIORITY_LEVELS).get(form.cleaned_data['priority'])))
+            task.priority = form.cleaned_data['priority']
+            if form.cleaned_data['attachment']:
+                task.attachment = form.cleaned_data['attachment']
             task.save(update_fields = ['subject',
                                        'description',
                                        'priority',

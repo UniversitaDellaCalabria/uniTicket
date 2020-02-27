@@ -76,8 +76,8 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile:
 
 .. code-block:: python
 
-    TICKET_FOLDER = 'ticket'
-    TICKET_REPLY_ATTACHMENT_SUBFOLDER = 'updates'
+    TICKET_ATTACHMENT_FOLDER = 'ticket'
+    TICKET_MESSAGES_ATTACHMENT_SUBFOLDER = 'updates'
     TICKET_TASK_ATTACHMENT_SUBFOLDER = 'task'
 
 - Modificare ID e Label del checkbox di accettazione delle clausole obbligatorie

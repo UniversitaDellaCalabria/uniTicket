@@ -115,7 +115,7 @@ def office_add_new(request, structure_slug, structure):
     if request.method == 'POST':
         form = OfficeForm(request.POST)
         if form.is_valid():
-            name = request.POST.get('name')
+            name = form.cleaned_data['name']
             slug = slugify(name)
             os = OrganizationalStructureOffice
             slug_name_exist = os.objects.filter(Q(name=name) | Q(slug=slug),
@@ -172,7 +172,7 @@ def office_edit(request, structure_slug, office_slug, structure):
     if request.method == 'POST':
         form = OfficeForm(instance=office, data=request.POST)
         if form.is_valid():
-            name = request.POST.get('name')
+            name = form.cleaned_data['name']
             slug = slugify(name)
             oso = OrganizationalStructureOffice
             slug_name_exist = oso.objects.filter(Q(name=name) | Q(slug=slug),
@@ -234,8 +234,8 @@ def office_detail(request, structure_slug, office_slug, structure):
                                      structure=structure)
 
         if form.is_valid():
-            employee_id = request.POST.get('operatore')
-            description = request.POST['description']
+            employee_id = form.cleaned_data['operatore']
+            description = form.cleaned_data['description']
             user_model = apps.get_model(settings.AUTH_USER_MODEL)
             employee = user_model.objects.get(pk=employee_id)
             oso = OrganizationalStructureOfficeEmployee
@@ -288,7 +288,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
                                      structure=structure,
                                      office=office)
         if form.is_valid():
-            category_slug = request.POST.get('category')
+            category_slug = form.cleaned_data['category']
             category = get_object_or_404(TicketCategory,
                                          slug=category_slug,
                                          organizational_structure=structure)
@@ -566,7 +566,7 @@ def category_detail(request, structure_slug, category_slug, structure):
         form = CategoryAddOfficeForm(request.POST,
                                      structure=structure)
         if form.is_valid():
-            office_slug = request.POST.get('office')
+            office_slug = form.cleaned_data['office']
             m = OrganizationalStructureOffice
             office = m.objects.get(organizational_structure=structure,
                                    slug=office_slug)
@@ -646,7 +646,7 @@ def category_add_new(request, structure_slug, structure):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
-            name = request.POST.get('name')
+            name = form.cleaned_data['name']
             slug = slugify(name)
             m = TicketCategory
             slug_name_exist = m.objects.filter(Q(name=name) | Q(slug=slug),
@@ -699,7 +699,7 @@ def category_edit(request, structure_slug, category_slug, structure):
     if request.method == 'POST':
         form = CategoryForm(instance=category, data=request.POST)
         if form.is_valid():
-            name = request.POST.get('name')
+            name = form.cleaned_data['name']
             slug = slugify(name)
             slug_name_exist = TicketCategory.objects.filter(Q(name=name) | Q(slug=slug),
                                                             organizational_structure=structure).exclude(pk=category.pk)
@@ -1104,13 +1104,13 @@ def category_input_module_details(request, structure_slug,
                             module_id=module.pk)
         form = CategoryInputListForm(request.POST)
         if form.is_valid():
-            name = request.POST.get('name')
+            name = form.cleaned_data['name']
             if TicketCategoryInputList.field_exist(module, name):
                 messages.add_message(request, messages.ERROR,
                                      _("Esiste già un campo con questo"
                                        " nome: <b>{}</b>".format(name)))
             else:
-                # is_required_value = request.POST.get('is_required')
+                # is_required_value = form.cleaned_data['is_required']
                 # is_required = False
                 # if is_required_value == 'on': is_required=True
                 input_list = form.save(commit=False)
