@@ -99,7 +99,7 @@ def download_message_attachment(request, ticket_id, reply_id, ticket):
         path_allegato = get_path_allegato(ticket)
         # get file
         result = download_file("{}/{}".format(path_allegato,
-                                              TICKET_REPLY_ATTACHMENT_SUBFOLDER),
+                                              TICKET_MESSAGES_ATTACHMENT_SUBFOLDER),
                                os.path.basename(message.attachment.name))
         return result
     raise Http404
@@ -378,15 +378,16 @@ def ticket_message_delete(request, ticket_message_id):
 
         # Send mail to ticket owner
         mail_params = {'hostname': settings.HOSTNAME,
-                       'status': _('deleted'),
+                       'status': _("eliminato"),
                        'ticket': ticket,
                        'user': request.user
                       }
-        m_subject = _('{} - ticket {} message deleted'.format(settings.HOSTNAME,
-                                                              ticket))
+        m_subject = _("{} - ticket {} messaggio eliminato".format(settings.HOSTNAME,
+                                                                  ticket))
         send_custom_mail(subject=m_subject,
-                         body=USER_TICKET_MESSAGE.format(**mail_params),
-                         recipient=request.user)
+                         recipient=request.user,
+                         body=USER_TICKET_MESSAGE,
+                         params=mail_params)
         # END Send mail to ticket owner
 
         return redirect('uni_ticket:ticket_message',

@@ -1,7 +1,7 @@
 from django.utils.translation import gettext as _
 
-TICKET_FOLDER = 'ticket'
-TICKET_REPLY_ATTACHMENT_SUBFOLDER = 'updates'
+TICKET_ATTACHMENT_FOLDER = 'ticket'
+TICKET_MESSAGES_ATTACHMENT_SUBFOLDER = 'messages'
 TICKET_TASK_ATTACHMENT_SUBFOLDER = 'task'
 
 TICKET_CONDITIONS_FIELD_ID = 'condizioni_field_id'
@@ -44,7 +44,48 @@ NO_MORE_COMPETENCE_OVER_TICKET = _("Nessuna competenza sul ticket")
 READONLY_COMPETENCE_OVER_TICKET = _("Hai accesso al ticket in sola lettura")
 
 # E-mail messages
-NEW_TICKET_UPDATE = _("Dear {user},"
+MSG_HEADER = _("""Gentile {user},
+questo messaggio è stato inviato da {hostname}.
+Per favore non rispondere a questa email.
+
+-------------------
+
+""")
+
+MSG_FOOTER = _("""
+
+-------------------
+
+Per problemi tecnici contatta il nostro staff.
+Cordiali saluti.
+""")
+
+NEW_TICKET_CREATED = _("""Il ticket "{ticket}" è stato creato correttamente.
+
+Dati inseriti:
+{data}
+
+Files:
+{files}""")
+
+TICKET_UPDATED = _("""Il ticket "{ticket}" è stato aggiornato con il seguente messaggio:
+
+{message}""")
+
+USER_TICKET_MESSAGE = _("""Hai {status} un messaggio per il ticket \"{ticket}\"""")
+
+TICKET_DELETED = _("""Il ticket "{ticket}" è stato eliminato correttamente.""")
+
+SUMMARY_USER_EMAIL = _("""Il seguente ticket {event msg}:
+
+{ticket}""")
+
+SUMMARY_EMPLOYEE_EMAIL = _("""Hai {open_ticket_number} tickets da gestire.
+
+{tickets_per_office}""")
+
+# Old english version
+NEW_TICKET_UPDATE_OLD_EN = _("Dear {user},"
                       "you have successfully {status} the ticket:"
                       ""
                       "{ticket}"
@@ -52,7 +93,7 @@ NEW_TICKET_UPDATE = _("Dear {user},"
                       "This message was sent to you by {hostname}."
                       "Please do not reply to this email.")
 
-USER_TICKET_MESSAGE = _("Dear {user},"
+USER_TICKET_MESSAGE_OLD_EN = _("Dear {user},"
                        "you have successfully {status} a message for ticket:"
                        ""
                        "{ticket}"
@@ -60,7 +101,7 @@ USER_TICKET_MESSAGE = _("Dear {user},"
                        "This message was sent to you by {hostname}."
                        "Please do not reply to this email.")
 
-TICKET_UPDATED = _("Dear {user},"
+TICKET_UPDATED_OLD_EN = _("Dear {user},"
                    "the ticket:"
                    ""
                    "{ticket}"
@@ -72,7 +113,7 @@ TICKET_UPDATED = _("Dear {user},"
                    "This message was sent to you by {hostname}."
                    "Please do not reply to this email.")
 
-SUMMARY_USER_EMAIL = _("Dear {user},"
+SUMMARY_USER_EMAIL_OLD_EN = _("Dear {user},"
                        "the following ticket {event_msg}:"
                        ""
                        "{ticket}"
@@ -80,7 +121,7 @@ SUMMARY_USER_EMAIL = _("Dear {user},"
                        "This message was sent to you by {hostname}."
                        "Please do not reply to this email.")
 
-SUMMARY_EMPLOYEE_EMAIL = _("Dear {user},"
+SUMMARY_EMPLOYEE_EMAIL_OLD_EN = _("Dear {user},"
                            "You have {open_ticket_number} tickets to manage."
                            ""
                            "{tickets_per_office}"

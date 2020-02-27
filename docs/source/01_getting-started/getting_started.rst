@@ -76,8 +76,8 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile:
 
 .. code-block:: python
 
-    TICKET_FOLDER = 'ticket'
-    TICKET_REPLY_ATTACHMENT_SUBFOLDER = 'updates'
+    TICKET_ATTACHMENT_FOLDER = 'ticket'
+    TICKET_MESSAGES_ATTACHMENT_SUBFOLDER = 'updates'
     TICKET_TASK_ATTACHMENT_SUBFOLDER = 'task'
 
 - Modificare ID e Label del checkbox di accettazione delle clausole obbligatorie
@@ -143,52 +143,47 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile:
     NO_MORE_COMPETENCE_OVER_TICKET = _("Nessuna competenza sul ticket")
     # Accesso sul ticket in sola lettura
     READONLY_COMPETENCE_OVER_TICKET = _("Hai accesso al ticket in sola lettura")
-
+    
     # E-mail messages
-    NEW_TICKET_UPDATE = _("Dear {user},"
-                          "you have successfully {status} the ticket:"
-                          ""
-                          "{ticket}"
-                          ""
-                          "This message was sent to you by {hostname}."
-                          "Please do not reply to this email.")
-
-    USER_TICKET_MESSAGE = _("Dear {user},"
-                            "you have successfully {status} a message for ticket:"
-                            ""
-                            "{ticket}"
-                            ""
-                            "This message was sent to you by {hostname}."
-                            "Please do not reply to this email.")
-
-    TICKET_UPDATED = _("Dear {user},"
-                       "the ticket:"
-                       ""
-                       "{ticket}"
-                       ""
-                       "has been updated with the message:"
-                       ""
-                       "{message}."
-                       ""
-                       "This message was sent to you by {hostname}."
-                       "Please do not reply to this email.")
-
-    SUMMARY_USER_EMAIL = _("Dear {user},"
-                           "the following ticket {event_msg}:"
-                           ""
-                           "{ticket}"
-                           ""
-                           "This message was sent to you by {hostname}."
-                           "Please do not reply to this email.")
-
-    SUMMARY_EMPLOYEE_EMAIL = _("Dear {user},"
-                               "You have {open_ticket_number} tickets to manage."
-                               ""
-                               "{tickets_per_office}"
-                               ""
-                               "This message was sent to you by {hostname}."
-                               "Please do not reply to this email.")
-
+    MSG_HEADER = _("""Gentile {user},
+    questo messaggio è stato inviato da {hostname}.
+    Per favore non rispondere a questa email.
+    
+    -------------------
+    
+    """)
+    
+    MSG_FOOTER = _("""
+    
+    -------------------
+    
+    Per problemi tecnici contatta il nostro staff.
+    Cordiali saluti.
+    """)
+    
+    NEW_TICKET_CREATED = _("""Il ticket "{ticket}" è stato creato correttamente.
+    
+    Dati inseriti:
+    {data}
+    
+    Files:
+    {files}""")
+    
+    TICKET_UPDATED = _("""Il ticket "{ticket}" è stato aggiornato con il seguente messaggio:
+    
+    {message}""")
+    
+    USER_TICKET_MESSAGE = _("""Hai {status} un messaggio per il ticket \"{ticket}\"""")
+    
+    TICKET_DELETED = _("""Il ticket "{ticket}" è stato eliminato correttamente.""")
+    
+    SUMMARY_USER_EMAIL = _("""Il seguente ticket {event msg}:
+    
+    {ticket}""")
+    
+    SUMMARY_EMPLOYEE_EMAIL = _("""Hai {open_ticket_number} tickets da gestire.
+    
+    {tickets_per_office}""")
 
 Creazione Database
 ==================

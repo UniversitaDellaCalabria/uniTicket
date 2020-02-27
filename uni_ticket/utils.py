@@ -105,7 +105,7 @@ def get_folder_allegato(ticket):
     """
     Returns ticket attachments folder path
     """
-    folder = '{}/{}/{}'.format(TICKET_FOLDER,
+    folder = '{}/{}/{}'.format(TICKET_ATTACHMENT_FOLDER,
                                ticket.get_year(),
                                ticket.code)
     return folder
@@ -134,7 +134,7 @@ def get_path_ticket_reply(ticket_reply):
     """
     ticket_folder = get_path_allegato(ticket=ticket_reply.ticket)
     path = '{}/{}'.format(ticket_folder,
-                          TICKET_REPLY_ATTACHMENT_SUBFOLDER)
+                          TICKET_MESSAGES_ATTACHMENT_SUBFOLDER)
     return path
 
 def delete_file(file_name, path=settings.MEDIA_ROOT):
@@ -153,7 +153,7 @@ def delete_directory(ticket_id):
     Deletes a ticket attachments directory from disk
     """
     path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
-                             TICKET_FOLDER,
+                             TICKET_ATTACHMENT_FOLDER,
                              ticket_id)
     try:
         shutil.rmtree(path)
@@ -309,9 +309,11 @@ def send_summary_email(users=[]):
              'hostname': settings.HOSTNAME,
              'user': user}
         m_subject = _('{} - ticket summary'.format(settings.HOSTNAME))
+
         sent = send_custom_mail(subject=m_subject,
-                                body=SUMMARY_EMPLOYEE_EMAIL.format(**d),
-                                recipient=user)
+                                recipient=user,
+                                body=SUMMARY_EMPLOYEE_EMAIL,
+                                params=d)
         if not sent:
             failed.append(user)
         else:
@@ -329,13 +331,17 @@ def user_offices_list(office_employee_queryset):
     return offices
 
 # Custom email sender
-def send_custom_mail(subject, body, recipient):
+def send_custom_mail(subject, recipient, body, params={}):
     if not recipient: return False
     if not recipient.email_notify: return False
-    result = send_mail(subject,
-                       body,
-                       settings.EMAIL_SENDER,
-                       [recipient.email,],
+
+    msg_body_list = [MSG_HEADER, body, MSG_FOOTER]
+    msg_body = ''.join(msg_body_list).format(**params)
+
+    result = send_mail(subject=subject,
+                       message=msg_body,
+                       from_email=settings.EMAIL_SENDER,
+                       recipient_list=[recipient.email,],
                        fail_silently=True,
                        auth_user=None,
                        auth_password=None,
