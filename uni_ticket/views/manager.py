@@ -234,10 +234,8 @@ def office_detail(request, structure_slug, office_slug, structure):
                                      structure=structure)
 
         if form.is_valid():
-            employee_id = form.cleaned_data['operatore'].pk
+            employee = form.cleaned_data['operatore']
             description = form.cleaned_data['description']
-            user_model = apps.get_model(settings.AUTH_USER_MODEL)
-            employee = user_model.objects.get(pk=employee_id)
             oso = OrganizationalStructureOfficeEmployee
             new_officeemployee = oso(employee=employee,
                                      office=office,
@@ -288,10 +286,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
                                      structure=structure,
                                      office=office)
         if form.is_valid():
-            category_slug = form.cleaned_data['category'].slug
-            category = get_object_or_404(TicketCategory,
-                                         slug=category_slug,
-                                         organizational_structure=structure)
+            category = form.cleaned_data['category']
             if category.organizational_office:
                 messages.add_message(request, messages.ERROR,
                                      _("La categoria <b>{}</b> risulta "
@@ -566,10 +561,7 @@ def category_detail(request, structure_slug, category_slug, structure):
         form = CategoryAddOfficeForm(request.POST,
                                      structure=structure)
         if form.is_valid():
-            office_slug = form.cleaned_data['office'].slug
-            m = OrganizationalStructureOffice
-            office = m.objects.get(organizational_structure=structure,
-                                   slug=office_slug)
+            office = form.cleaned_data['office']
             category.organizational_office = office
             category.save(update_fields = ['organizational_office'])
             messages.add_message(request, messages.SUCCESS,

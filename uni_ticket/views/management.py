@@ -382,10 +382,8 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                                     ticket_id=ticket.code,
                                     ticket_dependences=ticket_dependences_code_list)
         if form.is_valid():
-            ticket_master_code = form.cleaned_data['ticket'].code
+            master_ticket = form.cleaned_data['ticket']
             note = form.cleaned_data['note']
-            master_ticket = get_object_or_404(Ticket, code=ticket_master_code)
-            # Se il ticket scelto come master dipende da altri ticket
             if Ticket2Ticket.master_is_already_used(master_ticket) or ticket.blocks_some_ticket():
                 messages.add_message(request, messages.ERROR,
                                      "Il ticket <b>{}</b> non può essere"
