@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 from django.conf import settings
@@ -25,6 +26,9 @@ from uni_ticket.settings import (NO_MORE_COMPETENCE_OVER_TICKET,
                                  PRIORITY_LEVELS,
                                  READONLY_COMPETENCE_OVER_TICKET)
 from uni_ticket.utils import *
+
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -271,48 +275,6 @@ def tickets(request, structure_slug, structure, office_employee=None):
          'title': title,}
     return render(request, template, d)
 
-# Not used
-# @login_required
-# @has_admin_privileges
-# @ticket_assigned_to_structure
-# @ticket_is_not_taken_and_not_closed
-# def ticket_take(request, structure_slug, ticket_id,
-                # structure, can_manage, ticket,
-                # office_employee=None):
-    # """
-    # Take ticket
-
-    # :type structure_slug: String
-    # :type ticket_id: String
-    # :type structure: OrganizationalStructure (from @has_admin_privileges)
-    # :type can_manage: Dictionary (from @has_admin_privileges)
-    # :type ticket: Ticket (from @ticket_assigned_to_structure)
-    # :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
-
-    # :param structure_slug: the slug of structure to manage
-    # :param ticket_id: ticket code
-    # :param structure: structure object (from @has_admin_privileges)
-    # :param can_manage: if user can manage or can read only (from @has_admin_privileges)
-    # :param ticket: ticket object (from @ticket_assigned_to_structure)
-    # :param office_employee: operator offices queryset (from @is_operator)
-
-    # :return: render
-    # """
-    # if can_manage['readonly']:
-        # messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
-        # return redirect('uni_ticket:manage_ticket_url_detail',
-                        # structure_slug=structure_slug,
-                        # ticket_id=ticket_id)
-    # user = request.user
-    # ticket.is_taken = True
-    # ticket.save(update_fields=['is_taken'])
-    # ticket.update_log(user=request.user,
-                          # note= _("Preso in carico"))
-    # messages.add_message(request, messages.SUCCESS,
-                         # _("Ticket <b>{}</b> preso in carico"
-                           # " correttamente".format(ticket.code)))
-    # return redirect('uni_ticket:manage', structure_slug)
-
 @login_required
 def ticket_dependence_add_url(request, structure_slug, ticket_id):
     """
@@ -358,6 +320,13 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
     :return: render
     """
     if can_manage['readonly']:
+
+        # log action
+        logger.info('[{}] {} tried to add new dependence to'
+                    ' close readonly ticket {}'.format(timezone.now(),
+                                                        request.user,
+                                                        ticket))
+
         messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
@@ -396,6 +365,14 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                                 master_ticket=master_ticket,
                                 note=note)
             t2t.save()
+
+            # log action
+            logger.info('[{}] {} added new dependence to'
+                        ' ticket {} from ticket {}'.format(timezone.now(),
+                                                            request.user,
+                                                            ticket,
+                                                            master_ticket))
+
             ticket.update_log(user=request.user,
                               note=_("Aggiunta dipendenza dal ticket:"
                                      " {}".format(master_ticket)))
@@ -443,6 +420,12 @@ def ticket_dependence_remove(request, structure_slug,
     :return: redirect
     """
     if can_manage['readonly']:
+        # log action
+        logger.info('[{}] {} tried to add new dependence to'
+                    ' close readonly ticket {}'.format(timezone.now(),
+                                                        request.user,
+                                                        ticket))
+
         messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
@@ -461,6 +444,12 @@ def ticket_dependence_remove(request, structure_slug,
                                 " non puoi gestirlo".format(master_ticket)),
                               structure_slug=structure.slug)
     else:
+        # log action
+        logger.info('[{}] {} removed dependence to'
+                    ' ticket {} from ticket {}'.format(timezone.now(),
+                                                        request.user,
+                                                        ticket,
+                                                        master_ticket))
         to_remove.delete()
         ticket.update_log(user=request.user,
                           note=_("Rimossa dipendenza dal ticket:"
@@ -516,12 +505,23 @@ def ticket_close(request, structure_slug, ticket_id,
     :return: render
     """
     if can_manage['readonly']:
+        # log action
+        logger.info('[{}] {} tried to'
+                    ' close readonly ticket {}'.format(timezone.now(),
+                                                        request.user,
+                                                        ticket))
+
         messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
     # Se il ticket non è chiudibile (per dipendenze attive)
     if not ticket.is_closable():
+        # log action
+        logger.info('[{}] {} tried to'
+                    ' close not closable ticket {}'.format(timezone.now(),
+                                                            request.user,
+                                                            ticket))
         return custom_message(request,
                               _("Non è possibile chiudere il ticket,"
                                 " ci sono dipendenze attive!"),
@@ -539,6 +539,12 @@ def ticket_close(request, structure_slug, ticket_id,
             ticket.save(update_fields = ['is_closed',
                                          'motivazione_chiusura',
                                          'data_chiusura'])
+
+            # log action
+            logger.info('[{}] {} closed ticket {}'.format(timezone.now(),
+                                                          request.user,
+                                                          ticket))
+
             ticket.update_log(user=request.user,
                               note=_("Chiusura ticket: {}".format(motivazione)))
             messages.add_message(request, messages.SUCCESS,
@@ -583,14 +589,30 @@ def ticket_reopen(request, structure_slug, ticket_id,
     :return: redirect
     """
     if can_manage['readonly']:
+        # log action
+        logger.info('[{}] {} tried to reopen'
+                    ' readonly ticket {}'.format(timezone.now(),
+                                                 request.user,
+                                                 ticket))
+
         messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
     if not ticket.is_closed:
+        # log action
+        logger.info('[{}] {} tried to reopen'
+                    ' not closed ticket {}'.format(timezone.now(),
+                                                   request.user,
+                                                   ticket))
         return custom_message(request, _("Il ticket {} è già aperto"),
                               structure_slug=structure.slug)
     if not ticket.is_taken:
+        # log action
+        logger.info('[{}] {} tried to reopen'
+                    ' not taken ticket {}'.format(timezone.now(),
+                                                   request.user,
+                                                   ticket))
         return custom_message(request, _("Il ticket {} è stato chiuso dall'utente, "
                                          " pertanto non può essere riaperto"),
                               structure_slug=structure.slug)
@@ -598,6 +620,12 @@ def ticket_reopen(request, structure_slug, ticket_id,
     ticket.save(update_fields = ['is_closed'])
     ticket.update_log(user=request.user,
                           note= _("Riapertura ticket"))
+
+    # log action
+    logger.info('[{}] {} reopened ticket {}'.format(timezone.now(),
+                                                    request.user,
+                                                    ticket))
+
     messages.add_message(request, messages.SUCCESS,
                          _("Ticket {} riaperto correttamente".format(ticket)))
     return redirect('uni_ticket:manage_ticket_url_detail',
@@ -696,6 +724,12 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     :return: render
     """
     if can_manage['readonly']:
+        # log action
+        logger.info('[{}] {} tried to add new competence to'
+                    ' close readonly ticket {}'.format(timezone.now(),
+                                                        request.user,
+                                                        ticket))
+
         messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
@@ -789,6 +823,15 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                       " - Categoria: {}".format(new_structure,
                                                                 new_office,
                                                                 categoria)))
+
+            # log action
+            logger.info('[{}] {} added new competence to'
+                        ' ticket {}'
+                        ' (follow: {}) (readonly: {})'.format(timezone.now(),
+                                                             request.user,
+                                                             ticket,
+                                                             follow,
+                                                             readonly))
 
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
@@ -895,6 +938,12 @@ def ticket_message(request, structure_slug, ticket_id,
             ticket_reply.owner = request.user
             ticket_reply.save()
 
+            # log action
+            logger.info('[{}] {} added new message in'
+                        ' ticket {}'.format(timezone.now(),
+                                            request.user,
+                                            ticket))
+
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
                            'status': _("ricevuto"),
@@ -993,6 +1042,12 @@ def task_add_new(request, structure_slug, ticket_id,
             new_task.created_by = request.user
             new_task.code = uuid_code()
             new_task.save()
+
+            # log action
+            logger.info('[{}] {} created new task {}'.format(timezone.now(),
+                                                             request.user,
+                                                             new_task))
+
             ticket.update_log(user=request.user,
                               note = _("Aggiunto task: {}".format(new_task)))
             messages.add_message(request, messages.SUCCESS,
@@ -1038,6 +1093,15 @@ def task_remove(request, structure_slug,
     :return: render
     """
     if can_manage['readonly']:
+
+        # log action
+        logger.info('[{}] {} tried to'
+                    ' remove task {}'
+                    ' in readonly ticket {}'.format(timezone.now(),
+                                                    request.user,
+                                                    task,
+                                                    ticket))
+
         messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
@@ -1046,6 +1110,15 @@ def task_remove(request, structure_slug,
     user_type = get_user_type(request.user, structure)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     delete_file(file_name=task.attachment)
+
+    # log action
+    logger.info('[{}] {} tried to'
+                ' removed task {}'
+                ' in ticket {}'.format(timezone.now(),
+                                        request.user,
+                                        task,
+                                        ticket))
+
     task.delete()
     ticket.update_log(user=request.user,
                       note=_("Rimosso task: {}".format(task)))
@@ -1113,11 +1186,27 @@ def task_detail(request, structure_slug, ticket_id, task_id,
     form = PriorityForm(data={'priorita': task.priority})
     if request.method == 'POST':
         if can_manage['readonly']:
+
+            # log action
+            logger.info('[{}] {} tried to'
+                        ' edit task {}'
+                        ' in readonly ticket {}'.format(timezone.now(),
+                                                        request.user,
+                                                        task,
+                                                        ticket))
+
             messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
         if task.is_closed:
+
+            # log action
+            logger.info('[{}] {} tried to'
+                        ' edit closed task {}'.format(timezone.now(),
+                                                      request.user,
+                                                      task))
+
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare un'attività chiusa"))
             return redirect('uni_ticket:manage_task_detail_url',
@@ -1135,6 +1224,15 @@ def task_detail(request, structure_slug, ticket_id, task_id,
             task.save(update_fields = ['priority'])
             task.update_log(user=request.user, note=msg)
             ticket.update_log(user=request.user, note=msg)
+
+            # log action
+            logger.info('[{}] {} tried to'
+                        ' edited task {}'
+                        ' priority to {}'.format(timezone.now(),
+                                                 request.user,
+                                                 task,
+                                                 priority_text))
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Attività aggiornata con successo"))
             return redirect('uni_ticket:manage_task_detail_url',
@@ -1234,6 +1332,12 @@ def task_close(request, structure_slug, ticket_id, task_id,
             task.save(update_fields = ['is_closed',
                                        'motivazione_chiusura',
                                        'data_chiusura'])
+
+            # log action
+            logger.info('[{}] {} closed task {}'.format(timezone.now(),
+                                                        request.user,
+                                                        task))
+
             msg = _("Chiusura task: {} - {}".format(task, motivazione))
             task.update_log(user=request.user,note=msg)
             ticket.update_log(user=request.user,note=msg)
@@ -1281,6 +1385,14 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
     :return: redirect
     """
     if can_manage['readonly']:
+        # log action
+        logger.info('[{}] {} tried to'
+                    ' remove task {}'
+                    ' in readonly ticket {}'.format(timezone.now(),
+                                                    request.user,
+                                                    task,
+                                                    ticket))
+
         messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
@@ -1292,6 +1404,13 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
         return custom_message(request, _("Il task è già aperto"),
                               structure_slug=structure.slug)
     if ticket.is_closed:
+        # log action
+        logger.info('[{}] {} tried to'
+                    ' remove task {}'
+                    ' in closed ticket {}'.format(timezone.now(),
+                                                  request.user,
+                                                  task,
+                                                  ticket))
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
                               structure_slug=structure.slug)
 
@@ -1299,6 +1418,15 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
     task.save(update_fields = ['is_closed'])
     msg = _("Riapertura task {}".format(task))
     task.update_log(user=request.user,note=msg)
+
+    # log action
+    logger.info('[{}] {} tried to'
+                ' reopened task {}'
+                ' in closed ticket {}'.format(timezone.now(),
+                                              request.user,
+                                              task,
+                                              ticket))
+
     ticket.update_log(user=request.user,note=msg)
     messages.add_message(request, messages.SUCCESS,
                          _("Task {} riaperto correttamente".format(task)))
@@ -1357,6 +1485,14 @@ def task_edit(request, structure_slug, ticket_id, task_id,
     :return: render
     """
     if can_manage['readonly']:
+        # log action
+        logger.info('[{}] {} tried to'
+                    ' edit task {}'
+                    ' in readonly ticket {}'.format(timezone.now(),
+                                                    request.user,
+                                                    task,
+                                                    ticket))
+
         messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
@@ -1370,6 +1506,12 @@ def task_edit(request, structure_slug, ticket_id, task_id,
     form = TaskForm(initial=data)
     if request.method == 'POST':
         if task.is_closed:
+            # log action
+            logger.info('[{}] {} tried to'
+                        ' edit closed task {}'.format(timezone.now(),
+                                                      request.user,
+                                                      task))
+
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare un task chiuso"))
             return redirect('uni_ticket:manage_task_detail_url',
@@ -1393,6 +1535,11 @@ def task_edit(request, structure_slug, ticket_id, task_id,
                                        'description',
                                        'priority',
                                        'attachment'])
+
+            # log action
+            logger.info('[{}] {} edited task {}'.format(timezone.now(),
+                                                        request.user,
+                                                        task))
 
             task.update_log(user=request.user,note=msg)
             ticket.update_log(user=request.user,note=msg)
@@ -1474,6 +1621,13 @@ def task_attachment_delete(request, structure_slug,
     msg = _("Allegato task {} eliminato".format(task.code))
     task.update_log(user=request.user, note=_("Allegato eliminato"))
     ticket.update_log(user=request.user, note=msg)
+
+    # log action
+    logger.info('[{}] {} deleted attachment'
+                ' from task {}'.format(timezone.now(),
+                                       request.user,
+                                       task))
+
     messages.add_message(request, messages.SUCCESS, msg)
     return redirect('uni_ticket:edit_task',
                     structure_slug=structure.slug,

@@ -10,10 +10,10 @@
      <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">
         <div class="it-access-top-wrapper">
             <button class="btn btn-primary btn-sm" href="#" type="button">
-                {% trans "Stai operando come: " %}
+                {% trans "Ruolo: " %}
                 {% if structure %}
                     {% get_usertype request.user structure as usertype %}
-                    {{ structure }} ({{ usertype|capfirst }})
+                    {{ usertype|capfirst }} ({{ structure }})
                 {% else %}
                     {{ simple_user_context_name }}
                 {% endif %}

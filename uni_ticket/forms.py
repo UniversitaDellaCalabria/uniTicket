@@ -218,7 +218,7 @@ class CategoryConditionForm(ModelForm):
         fields = ['title', 'text', 'ordinamento',
                   'is_printable','is_active']
         labels = {'title': _('Titolo'),
-                  'text': _('Descrizione'),
+                  'text': _('Testo'),
                   'ordinamento': _('Ordinamento'),
                   'is_printable': _('Visibile nel documento di stampa'),
                   'is_active': _('Attiva'),}
