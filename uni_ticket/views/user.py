@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.conf import settings
 from django.contrib import messages
@@ -26,6 +27,9 @@ from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.settings import *
 from uni_ticket.utils import *
+
+
+logger = logging.getLogger(__name__)
 
 
 @login_required
@@ -119,13 +123,14 @@ def ticket_add_new(request, structure_slug, category_slug):
                                is_active=True)
     form = modulo.get_form(show_conditions=True)
     clausole_categoria = categoria.get_conditions()
+
     d={'categoria': categoria,
        'conditions': clausole_categoria,
        'form': form,
        'struttura': struttura,
        'sub_title': sub_title,
        'title': title}
-    # import pdb; pdb.set_trace()
+
     if request.POST:
         form = modulo.get_form(data=request.POST,
                                files=request.FILES,
@@ -150,6 +155,13 @@ def ticket_add_new(request, structure_slug, category_slug):
                             input_module=modulo)
             ticket.save()
 
+            # log action
+            logger.info('[{}] user {} created new ticket {}'
+                        ' in category {}'.format(timezone.now(),
+                                                 request.user.username,
+                                                 ticket,
+                                                 categoria))
+
             # salvataggio degli allegati nella cartella relativa
             json_dict = json.loads(ticket.modulo_compilato)
             json_stored = get_as_dict(compiled_module_json=json_dict)
@@ -162,6 +174,12 @@ def ticket_add_new(request, structure_slug, category_slug):
                               form.cleaned_data[key]._name)
                     value = form.cleaned_data[key]._name
                     json_stored[ATTACHMENTS_DICT_PREFIX][key] = value
+
+                    # log action
+                    logger.info('[{}] attachment {} saved in {}'.format(timezone.now(),
+                                                                        form.cleaned_data[key],
+                                                                        path_allegati))
+
                 set_as_dict(ticket, json_stored)
 
             # data di modifica
@@ -181,15 +199,17 @@ def ticket_add_new(request, structure_slug, category_slug):
             # Old version. Now a category MUST have an office!
             # office = categoria.organizational_office or struttura.get_default_office()
             office = categoria.organizational_office
-            if not office:
-                messages.add_message(request, messages.ERROR,
-                                     _("Nessun ufficio di default impostato"))
-                return redirect(reverse('uni_ticket:user_dashboard'))
-
             ticket_assignment = TicketAssignment(ticket=ticket,
                                                  office=office,
                                                  assigned_by=request.user)
             ticket_assignment.save()
+
+            # log action
+            logger.info('[{}] ticket {} assigned to '
+                        '{} office'.format(timezone.now(),
+                                           ticket,
+                                           office))
+
             ticket_detail_url = reverse('uni_ticket:ticket_detail', args=[code])
 
             # Send mail to ticket owner
@@ -246,6 +266,7 @@ def dashboard(request):
          'ticket_chiusi': chiusi,
          'ticket_non_gestiti': non_gestiti,
          'title': title,}
+
     return render(request, template, d)
 
 @login_required
@@ -319,6 +340,12 @@ def ticket_edit(request, ticket_id):
             ticket.update_log(user=request.user,
                               note=_("Modifica ticket - data: "
                                      "{} / files: {}".format(json_post, request.FILES)))
+
+            # log action
+            logger.info('[{}] user {} edited ticket {}'.format(timezone.now(),
+                                                               request.user,
+                                                               ticket))
+
             # Allega il messaggio al redirect
             messages.add_message(request, messages.SUCCESS,
                                  _("Modifica effettuata con successo"))
@@ -357,10 +384,23 @@ def delete_my_attachment(request, ticket_id, attachment):
 
     # Rimuove l'allegato dal disco
     delete_file(file_name=nome_file, path=path_allegato)
+
+    # log action
+    logger.info('[{}] user {} deleted file {}'.format(timezone.now(),
+                                                      request.user.username,
+                                                      path_allegato))
+
     set_as_dict(ticket, ticket_details)
     allegati = ticket.get_allegati_dict(ticket_dict=ticket_details)
     ticket.update_log(user=request.user,
                       note=_("Elimina allegato"))
+
+    # log action
+    logger.info('[{}] user {} deleted attachment '
+                '{} for ticket {}'.format(timezone.now(),
+                                          request.user.username,
+                                          nome_file,
+                                          ticket))
 
     messages.add_message(request, messages.SUCCESS,
                          _("Allegato eliminato correttamente"))
@@ -387,6 +427,16 @@ def ticket_delete(request, ticket_id):
     if ATTACHMENTS_DICT_PREFIX in ticket_details:
         delete_directory(ticket_id)
     ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
+
+    # log action
+    logger.info('[{}] ticket {} assignment'
+                ' to office {}'
+                ' has been deleted'
+                ' by user {}'.format(timezone.now(),
+                                     ticket,
+                                     ticket_assignment.office,
+                                     request.user))
+
     ticket_assignment.delete()
 
     # Send mail to ticket owner
@@ -405,6 +455,12 @@ def ticket_delete(request, ticket_id):
     # END Send mail to ticket owner
 
     ticket.delete()
+
+    # log action
+    logger.info('[{}] user {} deleted ticket {}'.format(timezone.now(),
+                                                        request.user,
+                                                        ticket))
+
     messages.add_message(request, messages.SUCCESS,
                          _("Ticket {} eliminato correttamente".format(code)))
     return redirect('uni_ticket:user_unassigned_ticket')
@@ -493,6 +549,11 @@ def ticket_message(request, ticket_id):
 
     if request.method == 'POST':
         if not ticket.is_open():
+            # log action
+            logger.info('[{}] user {} tried to submit'
+                        ' a message for the not opened ticket {}'.format(timezone.now(),
+                                                                        request.user,
+                                                                        ticket))
             return custom_message(request, _("Il ticket non è modificabile"))
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
@@ -503,6 +564,12 @@ def ticket_message(request, ticket_id):
             ticket_reply.ticket = ticket
             ticket_reply.owner = request.user
             ticket_reply.save()
+
+            # log action
+            logger.info('[{}] user {} submitted a message'
+                        ' for ticket {}'.format(timezone.now(),
+                                                request.user,
+                                                ticket))
 
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
@@ -572,6 +639,12 @@ def ticket_close(request, ticket_id):
     ticket = get_object_or_404(Ticket, code=ticket_id)
     # Se il ticket non è chiudibile (per dipendenze attive)
     if ticket.is_closed:
+        # log action
+        logger.info('[{}] user {} tried to close '
+                    ' the already closed ticket {}'.format(timezone.now(),
+                                                           request.user,
+                                                           ticket))
+
         return custom_message(request, _("Il ticket è già chiuso!"))
     title = _('Chiusura del ticket')
     sub_title = ticket
@@ -590,6 +663,12 @@ def ticket_close(request, ticket_id):
                               note=_("Chiusura ticket: {}".format(motivazione)))
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket {} chiuso correttamente".format(ticket)))
+
+            # log action
+            logger.info('[{}] user {} closed ticket {}'.format(timezone.now(),
+                                                               request.user,
+                                                               ticket))
+
             return redirect('uni_ticket:ticket_detail', ticket.code)
         else:
             for k,v in get_labeled_errors(form).items():

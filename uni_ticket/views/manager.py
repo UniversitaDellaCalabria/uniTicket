@@ -1,3 +1,5 @@
+import logging
+
 from django.apps import apps
 from django.conf import settings
 from django.contrib import messages
@@ -21,6 +23,10 @@ from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.settings import MANAGER_PREFIX
 from uni_ticket.utils import custom_message, office_can_be_deleted
+
+
+logger = logging.getLogger(__name__)
+
 
 @login_required
 @is_manager
@@ -129,6 +135,14 @@ def office_add_new(request, structure_slug, structure):
                 new_office.slug = slug
                 new_office.organizational_structure = structure
                 new_office.save()
+
+                # log action
+                logger.info('[{}] manager of structure {}'
+                            ' {} created new office {}'.format(timezone.now(),
+                                                               structure,
+                                                               request.user,
+                                                               new_office))
+
                 messages.add_message(request, messages.SUCCESS,
                                      _("Ufficio creato con successo"))
                 return redirect('uni_ticket:manager_office_detail',
@@ -187,6 +201,14 @@ def office_edit(request, structure_slug, office_slug, structure):
                 edited_office.save()
                 messages.add_message(request, messages.SUCCESS,
                                      _("Ufficio modificato con successo"))
+
+                # log action
+                logger.info('[{}] manager of structure {}'
+                            ' {} edited office {}'.format(timezone.now(),
+                                                          structure,
+                                                          request.user,
+                                                          edited_office))
+
                 return redirect('uni_ticket:manager_office_detail',
                                 structure_slug=structure_slug,
                                 office_slug=edited_office.slug)
@@ -243,6 +265,16 @@ def office_detail(request, structure_slug, office_slug, structure):
             new_officeemployee.save()
             messages.add_message(request, messages.SUCCESS,
                                  _("Operatore assegnato con successo"))
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} added employe {}'
+                        ' to office {}'.format(timezone.now(),
+                                               structure,
+                                               request.user,
+                                               employee,
+                                               office))
+
             return redirect('uni_ticket:manager_office_detail',
                             structure_slug=structure_slug,
                             office_slug=office_slug)
@@ -301,6 +333,16 @@ def office_add_category(request, structure_slug, office_slug, structure):
             category.save(update_fields = ['organizational_office'])
             messages.add_message(request, messages.SUCCESS,
                                  _("Competenza ufficio impostata con successo"))
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} added category {}'
+                        ' to office {}'.format(timezone.now(),
+                                                 structure,
+                                                 request.user,
+                                                 category,
+                                                 office))
+
         else:
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
@@ -350,6 +392,16 @@ def office_remove_category(request, structure_slug,
                              _("La categoria <b>{}</b> non è più di competenza "
                                " dell'ufficio <b>{}</b> ed è stata disattivata".format(category,
                                                                                        office)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} removed category {}'
+                    ' from office {}'.format(timezone.now(),
+                                             structure,
+                                             request.user,
+                                             category,
+                                             office))
+
     return redirect('uni_ticket:manager_office_detail',
                     structure_slug=structure_slug,
                     office_slug=office_slug)
@@ -396,6 +448,14 @@ def office_remove_operator(request, structure_slug,
         messages.add_message(request, messages.ERROR,
                              _("L'operatore non è assegnato a questo ufficio"))
     else:
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} removed employee {}'
+                    ' from office {}'.format(timezone.now(),
+                                             structure,
+                                             request.user,
+                                             employee,
+                                             office))
         office_employee.delete()
         messages.add_message(request, messages.SUCCESS,
                              _("Operatore {} rimosso correttamente".format(employee)))
@@ -452,6 +512,14 @@ def office_disable(request, structure_slug, office_slug, structure):
         office.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
                              _("Ufficio {} disattivato con successo".format(office)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} disabled office {}'.format(timezone.now(),
+                                                    structure,
+                                                    request.user,
+                                                    office))
+
     else:
         messages.add_message(request, messages.ERROR,
                              _("Ufficio {} già disattivato".format(office)))
@@ -486,6 +554,14 @@ def office_enable(request, structure_slug, office_slug, structure):
         office.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
                              _("Ufficio {} attivato con successo".format(office)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} enabled office {}'.format(timezone.now(),
+                                                  structure,
+                                                  request.user,
+                                                  office))
+
     return redirect('uni_ticket:manager_office_detail',
                     structure_slug=structure_slug,
                     office_slug=office_slug)
@@ -518,6 +594,14 @@ def office_delete(request, structure_slug, office_slug, structure):
                                  _("Categoria {} disattivata correttamente".format(cat)))
         messages.add_message(request, messages.SUCCESS,
                              _("Ufficio {} eliminato correttamente".format(office)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} deleted office {}'.format(timezone.now(),
+                                                   structure,
+                                                   request.user,
+                                                   office))
+
         office.delete()
         return redirect('uni_ticket:manager_dashboard', structure_slug=structure_slug)
     messages.add_message(request, messages.ERROR,
@@ -611,9 +695,24 @@ def category_remove_office(request, structure_slug,
                                " questo ufficio"))
     else:
         category.organizational_office = None
-        category.save(update_fields = ['organizational_office'])
+        category.is_active = False
+        category.save(update_fields = ['is_active', 'organizational_office'])
         messages.add_message(request, messages.SUCCESS,
                              _("Competenza ufficio {} rimossa correttamente".format(office)))
+        messages.add_message(request, messages.ERROR,
+                             _("Categoria {} disattivata poichè"
+                               " priva di ufficio competente".format(category)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} removed office {}'
+                    ' from category {}'
+                    ' (now disabled)'.format(timezone.now(),
+                                             structure,
+                                             request.user,
+                                             office,
+                                             category))
+
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
@@ -644,6 +743,14 @@ def category_add_new(request, structure_slug, structure):
             slug_name_exist = m.objects.filter(Q(name=name) | Q(slug=slug),
                                                organizational_structure=structure)
             if slug_name_exist:
+                # log action
+                logger.info('[{}] manager of structure {}'
+                            ' {} tried to add a new category'
+                            ' with existent name {} or slug {}'.format(timezone.now(),
+                                                                       structure,
+                                                                       request.user,
+                                                                       name,
+                                                                       slug))
                 messages.add_message(request, messages.ERROR,
                                  _("Esiste già una categoria con"
                                    " nome {} o slug {}".format(name, slug)))
@@ -654,6 +761,16 @@ def category_add_new(request, structure_slug, structure):
                 new_category.save()
                 messages.add_message(request, messages.SUCCESS,
                                      _("Categoria creata con successo"))
+
+                # log action
+                logger.info('[{}] manager of structure {}'
+                            ' {} added a new category'
+                            ' with name {} and slug {}'.format(timezone.now(),
+                                                               structure,
+                                                               request.user,
+                                                               name,
+                                                               slug))
+
                 return redirect('uni_ticket:manager_category_detail',
                                 structure_slug=structure_slug,
                                 category_slug=new_category.slug)
@@ -708,6 +825,13 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                       'allow_user',
                                                       'allow_employee',
                                                       'modified'])
+                # log action
+                logger.info('[{}] manager of structure {}'
+                            ' {} edited the category {}'.format(timezone.now(),
+                                                                structure,
+                                                                request.user,
+                                                                category))
+
                 messages.add_message(request, messages.SUCCESS,
                                      _("Categoria modificata con successo"))
                 return redirect('uni_ticket:manager_category_detail',
@@ -751,6 +875,14 @@ def category_disable(request, structure_slug, category_slug, structure):
         category.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
                              _("Categoria {} disattivata con successo".format(category)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} disabled the category {}'.format(timezone.now(),
+                                                          structure,
+                                                          request.user,
+                                                          category))
+
     else:
         messages.add_message(request, messages.ERROR,
                              _("Categoria {} già disattivata".format(category)))
@@ -800,6 +932,14 @@ def category_enable(request, structure_slug, category_slug, structure):
         category.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
                              _("Categoria {} attivata con successo".format(category)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} enabled the category {}'.format(timezone.now(),
+                                                         structure,
+                                                         request.user,
+                                                         category))
+
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
@@ -824,6 +964,14 @@ def category_delete(request, structure_slug, category_slug, structure):
                                  organizational_structure=structure,
                                  slug=category_slug)
     if category.can_be_deleted():
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} deleted the category {}'.format(timezone.now(),
+                                                         structure,
+                                                         request.user,
+                                                         category))
+
         messages.add_message(request, messages.SUCCESS,
                              _("Categoria {} eliminata correttamente".format(category)))
         category.delete()
@@ -865,6 +1013,16 @@ def category_input_module_new(request, structure_slug,
             new_module = form.save(commit=False)
             new_module.ticket_category = category
             new_module.save()
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} created the module {}'
+                        ' in the category {}'.format(timezone.now(),
+                                                     structure,
+                                                     request.user,
+                                                     new_module,
+                                                     category))
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Modulo di inserimento <b>{}</b>"
                                    " creato con successo".format(new_module.name)))
@@ -916,6 +1074,16 @@ def category_input_module_edit(request, structure_slug,
         if form.is_valid():
             module_edited = form.save(commit=False)
             module_edited.save(update_fields = ['name'])
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} edited the module {}'
+                        ' of the category {}'.format(timezone.now(),
+                                                     structure,
+                                                     request.user,
+                                                     module,
+                                                     category))
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Modulo di inserimento modificato con successo"))
             return redirect('uni_ticket:manager_category_input_module',
@@ -974,6 +1142,16 @@ def category_input_module_enable(request, structure_slug,
             altro.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
                              _("Modulo {} attivato con successo".format(module)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} enabled the module {}'
+                    ' of the category {}'.format(timezone.now(),
+                                                 structure,
+                                                 request.user,
+                                                 module,
+                                                 category))
+
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
@@ -1013,6 +1191,16 @@ def category_input_module_disable(request, structure_slug,
         module.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
                              _("Modulo {} disattivato con successo".format(module)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} disabled the module {}'
+                    ' and the category {}'.format(timezone.now(),
+                                                  structure,
+                                                  request.user,
+                                                  module,
+                                                  category))
+
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
@@ -1043,6 +1231,16 @@ def category_input_module_delete(request, structure_slug,
                                pk=module_id,
                                ticket_category=category)
     if not module.can_be_deleted():
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} tried to delete'
+                    ' the module {} of category {}'.format(timezone.now(),
+                                                           structure,
+                                                           request.user,
+                                                           module,
+                                                           category))
+
         messages.add_message(request, messages.ERROR,
                              _("Impossibile eliminare il modulo {}."
                                " Ci sono dei ticket collegati".format(module)))
@@ -1057,6 +1255,16 @@ def category_input_module_delete(request, structure_slug,
                                                                     category)))
         else: messages.add_message(request, messages.SUCCESS,
                                    _("Modulo {} eliminato con successo".format(module)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} deleted'
+                    ' the module {} of category {}'.format(timezone.now(),
+                                                           structure,
+                                                           request.user,
+                                                           module,
+                                                           category))
+
         module.delete()
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
@@ -1110,6 +1318,17 @@ def category_input_module_details(request, structure_slug,
                 input_list.save()
                 messages.add_message(request, messages.SUCCESS,
                                      _("Campo di input creato con successo"))
+
+                # log action
+                logger.info('[{}] manager of structure {}'
+                            ' {} inserted the field {}'
+                            ' in the module {} of category {}'.format(timezone.now(),
+                                                                   structure,
+                                                                   request.user,
+                                                                   name,
+                                                                   module,
+                                                                   category))
+
             return redirect('uni_ticket:manager_category_input_module',
                             structure_slug=structure_slug,
                             category_slug=category_slug,
@@ -1158,6 +1377,16 @@ def category_input_field_delete(request, structure_slug,
                                pk=module_id,
                                ticket_category=category)
     if not module.can_be_deleted():
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} tried to delete a field'
+                    ' from module {} of category {}'.format(timezone.now(),
+                                                            structure,
+                                                            request.user,
+                                                            module,
+                                                            category))
+
         messages.add_message(request, messages.ERROR,
                              _("Impossibile eliminare il modulo {}."
                                " Ci sono dei ticket collegati".format(module)))
@@ -1165,6 +1394,15 @@ def category_input_field_delete(request, structure_slug,
         field = get_object_or_404(TicketCategoryInputList,
                                   pk=field_id,
                                   category_module=module)
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} deleted the field {}'
+                    ' from module {} of category {}'.format(timezone.now(),
+                                                            structure,
+                                                            request.user,
+                                                            field,
+                                                            module,
+                                                            category))
         field.delete()
         messages.add_message(request, messages.SUCCESS,
                              _("Campo {} eliminato con successo".format(field.name)))
@@ -1245,6 +1483,16 @@ def category_input_field_edit(request, structure_slug,
     form = CategoryInputListForm(instance=field)
     if request.method ==  'POST':
         if not module.can_be_deleted():
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} tried to edit a field'
+                        ' from module {} of category {}'.format(timezone.now(),
+                                                                structure,
+                                                                request.user,
+                                                                module,
+                                                                category))
+
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare il campo"))
             return redirect('uni_ticket:manager_category_input_module',
@@ -1254,6 +1502,17 @@ def category_input_field_edit(request, structure_slug,
         form = CategoryInputListForm(data=request.POST, instance=field)
         if form.is_valid():
             form.save()
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} edited the field {}'
+                        ' from module {} of category {}'.format(timezone.now(),
+                                                                structure,
+                                                                request.user,
+                                                                field,
+                                                                module,
+                                                                category))
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Campo di input modificato con successo"))
             return redirect('uni_ticket:manager_category_input_module',
@@ -1305,6 +1564,16 @@ def category_condition_new(request, structure_slug,
             condition = form.save(commit=False)
             condition.category = category
             condition.save()
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} created the new condition {}'
+                        ' for category {}'.format(timezone.now(),
+                                                  structure,
+                                                  request.user,
+                                                  condition,
+                                                  category))
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Clausola creata con successo"))
             return redirect('uni_ticket:manager_category_detail',
@@ -1353,6 +1622,15 @@ def category_condition_edit(request, structure_slug, category_slug,
         form = CategoryConditionForm(instance=condition, data=request.POST)
         if form.is_valid():
             edited_category = form.save()
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} edited a condition'
+                        ' for category {}'.format(timezone.now(),
+                                                  structure,
+                                                  request.user,
+                                                  category))
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Clausola modificata con successo"))
             return redirect('uni_ticket:manager_category_condition_detail',
@@ -1400,6 +1678,15 @@ def category_condition_delete(request, structure_slug, category_slug,
                                   category=category)
     messages.add_message(request, messages.SUCCESS,
                          _("Clausola {} eliminata correttamente".format(condition)))
+
+    # log action
+    logger.info('[{}] manager of structure {}'
+                ' {} deleted a condition'
+                ' for category {}'.format(timezone.now(),
+                                          structure,
+                                          request.user,
+                                          category))
+
     condition.delete()
     return redirect('uni_ticket:manager_category_detail',
                             structure_slug=structure_slug,
@@ -1435,6 +1722,13 @@ def category_condition_disable(request, structure_slug, category_slug,
         condition.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
                              _("Clausola {} disattivata con successo".format(condition)))
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} disabled a condition'
+                    ' for category {}'.format(timezone.now(),
+                                              structure,
+                                              request.user,
+                                              category))
     else:
         messages.add_message(request, messages.ERROR,
                              _("Clausola {} già disattivata".format(condition)))
@@ -1475,6 +1769,14 @@ def category_condition_enable(request, structure_slug, category_slug,
         condition.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
                              _("Clausola {} attivata con successo".format(condition)))
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} enabled a condition'
+                    ' for category {}'.format(timezone.now(),
+                                              structure,
+                                              request.user,
+                                              category))
+
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
