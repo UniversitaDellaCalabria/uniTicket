@@ -60,170 +60,226 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
-<table class="table table-striped table-hover">
-    <tbody>
-        <tr>
-            <th scope="row">{% trans 'Denominazione' %}</th>
-            <td>
-                {{ office.name }}
-                {% if office.is_default %}
-                <span class="badge badge-warning">
-                    {% trans "Ufficio speciale" %}
-                </span>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Stato' %}</th>
-            <td>
-                {% if office.is_active %}
-                <span class="text-success">
-                    <b>{% trans "Attivo" %}</b>
-                </span>
-                {% else %}
-                <span class="text-danger">
-                    <b>{% trans "Non attivo" %}</b>
-                </span>
-                {% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Descrizione' %}</th>
-            <td>
-                {% if office.description %}
-                    {{ office.description }}
-                {% else %}-{% endif %}
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Categorie di competenza' %}</th>
-            <td>
-                {% if office.ticketcategory_set.all %}
-                    <ul class="list-unstyled">
-                    {% for office_cat in office.ticketcategory_set.all %}
-                        <li class="clearfix pb-2">
-                            {{ office_cat }}
-                            <svg class="icon icon-sm icon-secondary">
-                            {% if office_cat.is_active %}
-                                <title>{% trans 'Attiva' %}</title>
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
-                            {% else %}
-                                <title>{% trans 'Non attiva' %}</title>
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                            {% endif %}
-                            </svg>
-                            <button type="button"
-                                class="btn btn-outline-danger btn-xs float-right"
-                                data-toggle="modal"
-                                data-target="#removeCategory{{ forloop.counter0 }}">
-                                {% trans "Rimuovi" %}
-                            </button>
-                            <a role="button" class="mx-1 btn btn-outline-secondary btn-xs float-right"
-                               href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=office_cat.slug %}">
-                                {% trans "Dettagli" %}
-                            </a>
-                            <div class="modal fade" tabindex="-1" role="dialog" id="removeCategory{{ forloop.counter0 }}">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">
-                                                {% trans "Rimozione categoria" %}
-                                            </h5>
-                                            <button class="close" type="button"
-                                                    data-dismiss="modal" aria-label="Close">
-                                               <svg class="icon">
-                                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                               </svg>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>{% trans "Vuoi davvero rimuovere la categoria " %}
-                                               <b>{{ office_cat }}</b> dalla competenza
-                                               dell'ufficio <b>{{ office }}</b> ?
-                                            </p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a role="button" class="btn btn-danger"
-                                               href="{% url 'uni_ticket:manager_remove_office_category' structure_slug=structure.slug office_slug=office.slug category_slug=office_cat.slug %}">
-                                                {% trans "Si, rimuovi" %}
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                    </ul>
-                    <hr />
-                {% endif %}
-                <form method="post"
-                      enctype="multipart/form-data"
-                      action="{% url 'uni_ticket:manager_add_office_category' structure_slug=structure.slug office_slug=office.slug %}">
-                {% for field in category_form %}
-                    {% if field.field.widget.input_type != 'hidden' %}
-                    <div style="padding: 0 0 1rem">
-                        <b>{{ field.label_tag }}</b>
-                        {% if field.field.required %}*{% endif %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <tbody>
+            <tr>
+                <th scope="row">{% trans 'Denominazione' %}</th>
+                <td>
+                    {{ office.name }}
+                    {% if office.is_default %}
+                    <span class="badge badge-warning">
+                        {% trans "Ufficio speciale" %}
+                    </span>
                     {% endif %}
-                    {{ field }}
-                    {% if field.help_text %}
-                        <small class="form-text text-muted">
-                            {{ field.help_text|safe }}
-                        </small>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Stato' %}</th>
+                <td>
+                    {% if office.is_active %}
+                    <span class="text-success">
+                        <b>{% trans "Attivo" %}</b>
+                    </span>
+                    {% else %}
+                    <span class="text-danger">
+                        <b>{% trans "Non attivo" %}</b>
+                    </span>
                     {% endif %}
-                    {% if field.errors %}
-                        <small class="text-danger">
-                            {{ field.errors }}
-                        </small>
-                    {% endif %}
-
-                    {% if field.field.widget.input_type != 'hidden' %}
-                    </div>
-                    {% endif %}
-                {% endfor %}
-                {% csrf_token %}
-                <button type="submit"
-                        class="btn btn-xs btn-outline-success">
-                        <svg class="icon icon-xs icon-success">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                        </svg> {% trans "Assegna la categoria all'ufficio" %}
-                </button>
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">{% trans 'Operatori' %}</th>
-            <td>
-                {% if employees %}
-                <ul class="list-unstyled">
-                    {% for employee in employees %}
-                        <li class="clearfix pb-2">
-                            {% get_usertype user=employee.employee structure=structure label_value_tuple=True as usertype_tuple %}
-                            {% if usertype_tuple.0 == 'manager' %}
-                                <svg class="icon-xs icon icon-warning">
-                                    <title>{{usertype_tuple.1}}</title>
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-star-full"></use>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Descrizione' %}</th>
+                <td>
+                    {% if office.description %}
+                        {{ office.description }}
+                    {% else %}-{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Categorie di competenza' %}</th>
+                <td>
+                    {% if office.ticketcategory_set.all %}
+                        <ul class="list-unstyled">
+                        {% for office_cat in office.ticketcategory_set.all %}
+                            <li class="clearfix pb-2">
+                                {{ office_cat }}
+                                <svg class="icon icon-sm icon-secondary">
+                                {% if office_cat.is_active %}
+                                    <title>{% trans 'Attiva' %}</title>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                                {% else %}
+                                    <title>{% trans 'Non attiva' %}</title>
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                {% endif %}
                                 </svg>
-                            {% endif %}
-                            <i>{{ employee.employee }}</i>
-                            <br>
-                            {% trans 'Assegnato in data' %}: {{ employee.create_date }}
-                            {% if employee.description %}
+                                <button type="button"
+                                    class="btn btn-outline-danger btn-xs float-right"
+                                    data-toggle="modal"
+                                    data-target="#removeCategory{{ forloop.counter0 }}">
+                                    {% trans "Rimuovi" %}
+                                </button>
+                                <a role="button" class="mx-1 btn btn-outline-secondary btn-xs float-right"
+                                   href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=office_cat.slug %}">
+                                    {% trans "Dettagli" %}
+                                </a>
+                                <div class="modal fade" tabindex="-1" role="dialog" id="removeCategory{{ forloop.counter0 }}">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    {% trans "Rimozione categoria" %}
+                                                </h5>
+                                                <button class="close" type="button"
+                                                        data-dismiss="modal" aria-label="Close">
+                                                   <svg class="icon">
+                                                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                   </svg>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>{% trans "Vuoi davvero rimuovere la categoria " %}
+                                                   <b>{{ office_cat }}</b> dalla competenza
+                                                   dell'ufficio <b>{{ office }}</b> ?
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a role="button" class="btn btn-danger"
+                                                   href="{% url 'uni_ticket:manager_remove_office_category' structure_slug=structure.slug office_slug=office.slug category_slug=office_cat.slug %}">
+                                                    {% trans "Si, rimuovi" %}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                        <hr />
+                    {% endif %}
+                    <form method="post"
+                          enctype="multipart/form-data"
+                          action="{% url 'uni_ticket:manager_add_office_category' structure_slug=structure.slug office_slug=office.slug %}">
+                    {% for field in category_form %}
+                        {% if field.field.widget.input_type != 'hidden' %}
+                        <div style="padding: 0 0 1rem">
+                            <b>{{ field.label_tag }}</b>
+                            {% if field.field.required %}*{% endif %}
+                        {% endif %}
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">
+                                {{ field.help_text|safe }}
+                            </small>
+                        {% endif %}
+                        {% if field.errors %}
+                            <small class="text-danger">
+                                {{ field.errors }}
+                            </small>
+                        {% endif %}
+
+                        {% if field.field.widget.input_type != 'hidden' %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="btn btn-xs btn-outline-success">
+                            <svg class="icon icon-xs icon-success">
+                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                            </svg> {% trans "Assegna la categoria all'ufficio" %}
+                    </button>
+                    </form>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Operatori' %}</th>
+                <td>
+                    {% if employees %}
+                    <ul class="list-unstyled">
+                        {% for employee in employees %}
+                            <li class="clearfix pb-2">
+                                {% get_usertype user=employee.employee structure=structure label_value_tuple=True as usertype_tuple %}
+                                {% if usertype_tuple.0 == 'manager' %}
+                                    <svg class="icon-xs icon icon-warning">
+                                        <title>{{usertype_tuple.1}}</title>
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-star-full"></use>
+                                    </svg>
+                                {% endif %}
+                                <i>{{ employee.employee }}</i>
                                 <br>
-                                {% trans 'Note' %}: {{ employee.description }}
-                            {% endif %}
+                                {% trans 'Assegnato in data' %}: {{ employee.create_date }}
+                                {% if employee.description %}
+                                    <br>
+                                    {% trans 'Note' %}: {{ employee.description }}
+                                {% endif %}
+                                <button type="button"
+                                    class="btn btn-outline-danger btn-xs float-right"
+                                    data-toggle="modal"
+                                    data-target="#removeOperator{{ forloop.counter0 }}">
+                                    {% trans "Rimuovi operatore" %}
+                                </button>
+                                <div class="modal fade" tabindex="-1" role="dialog" id="removeOperator{{ forloop.counter0 }}">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">
+                                                    {% trans "Rimozione operatore" %}
+                                                </h5>
+                                                <button class="close" type="button"
+                                                        data-dismiss="modal" aria-label="Close">
+                                                   <svg class="icon">
+                                                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                   </svg>
+                                                </button>
+                                            </div>
+                                            {% if usertype_tuple.0 == 'manager' and office.is_default %}
+                                            <div class="modal-body">
+                                                <p>{% trans "Eliminando l'afferenza dell'utente a questo ufficio, egli perderà i privilegi di Amministratore. " %}</p>
+                                                <p>{% trans "Questa operazione, pertanto, non può essere eseguita in autonomia. " %}</p>
+                                                <p>{% trans "Contattare l'assistenza tecnica." %}</p>
+                                            </div>
+                                            <div class="modal-footer"></div>
+                                            {% else %}
+                                            <div class="modal-body">
+                                                <p>{% trans "Vuoi davvero rimuovere l'operatore " %}
+                                                   <b>{{ employee.employee }}</b> dalla gestione
+                                                   dell'ufficio <b>{{ office }}</b> ?
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a role="button" class="btn btn-danger"
+                                                   href="{% url 'uni_ticket:manager_remove_office_operator' structure_slug=structure.slug office_slug=office.slug employee_id=employee.employee.pk %}">
+                                                    {% trans "Si, rimuovi" %}
+                                                </a>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                        <hr />
+                    {% endif %}
+                    <form method="post" enctype="multipart/form-data">
+                        {% include 'form_template.html' %}
+                        {% block form_buttons %}
+                        <div>
                             <button type="button"
-                                class="btn btn-outline-danger btn-xs float-right"
-                                data-toggle="modal"
-                                data-target="#removeOperator{{ forloop.counter0 }}">
-                                {% trans "Rimuovi operatore" %}
+                                    class="btn btn-outline-success btn-xs"
+                                    data-toggle="modal"
+                                    data-target="#action">
+                                    <svg class="icon icon-xs icon-success">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+                                    </svg> {% trans "Assegna l'operatore all'ufficio" %}
                             </button>
-                            <div class="modal fade" tabindex="-1" role="dialog" id="removeOperator{{ forloop.counter0 }}">
+                            <div class="modal fade" tabindex="-1" role="dialog" id="action">
                                 <div class="modal-dialog modal-dialog-centered" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title">
-                                                {% trans "Rimozione operatore" %}
+                                                {% trans "Aggiunta operatore" %}
                                             </h5>
                                             <button class="close" type="button"
                                                     data-dismiss="modal" aria-label="Close">
@@ -232,80 +288,27 @@
                                                </svg>
                                             </button>
                                         </div>
-                                        {% if usertype_tuple.0 == 'manager' and office.is_default %}
                                         <div class="modal-body">
-                                            <p>{% trans "Eliminando l'afferenza dell'utente a questo ufficio, egli perderà i privilegi di Amministratore. " %}</p>
-                                            <p>{% trans "Questa operazione, pertanto, non può essere eseguita in autonomia. " %}</p>
-                                            <p>{% trans "Contattare l'assistenza tecnica." %}</p>
-                                        </div>
-                                        <div class="modal-footer"></div>
-                                        {% else %}
-                                        <div class="modal-body">
-                                            <p>{% trans "Vuoi davvero rimuovere l'operatore " %}
-                                               <b>{{ employee.employee }}</b> dalla gestione
-                                               dell'ufficio <b>{{ office }}</b> ?
+                                            <p>{% trans "Vuoi davvero aggiungere l'operatore selezionato?" %}
                                             </p>
                                         </div>
                                         <div class="modal-footer">
-                                            <a role="button" class="btn btn-danger"
-                                               href="{% url 'uni_ticket:manager_remove_office_operator' structure_slug=structure.slug office_slug=office.slug employee_id=employee.employee.pk %}">
-                                                {% trans "Si, rimuovi" %}
-                                            </a>
+                                            <input class="btn btn-success"
+                                                   type="submit"
+                                                   value="{% trans 'Si, procedi' %}">
                                         </div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                    </ul>
-                    <hr />
-                {% endif %}
-                <form method="post" enctype="multipart/form-data">
-                    {% include 'form_template.html' %}
-                    {% block form_buttons %}
-                    <div>
-                        <button type="button"
-                                class="btn btn-outline-success btn-xs"
-                                data-toggle="modal"
-                                data-target="#action">
-                                <svg class="icon icon-xs icon-success">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
-                                </svg> {% trans "Assegna l'operatore all'ufficio" %}
-                        </button>
-                        <div class="modal fade" tabindex="-1" role="dialog" id="action">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">
-                                            {% trans "Aggiunta operatore" %}
-                                        </h5>
-                                        <button class="close" type="button"
-                                                data-dismiss="modal" aria-label="Close">
-                                           <svg class="icon">
-                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                           </svg>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>{% trans "Vuoi davvero aggiungere l'operatore selezionato?" %}
-                                        </p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <input class="btn btn-success"
-                                               type="submit"
-                                               value="{% trans 'Si, procedi' %}">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {% endblock form_buttons %}
-                </form>
-            </td>
-        </tr>
-    </tbody>
-</table>
+                        {% endblock form_buttons %}
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+<div>
+
 
 {% if not office.is_default %}
 <div class="modal fade" tabindex="-1" role="dialog" id="disableOffice">

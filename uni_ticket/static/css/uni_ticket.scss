@@ -191,6 +191,18 @@ a.read-more .icon{ fill: #9d9d9d; }
   }
 }
 
+/*
+ * custom float only on desktop
+ */
+@media (max-width: 768px) {
+    .table-responsive .table:not(.dataTable) th,
+    .table-responsive .table:not(.dataTable) td {
+        float: left;
+        width: 100%;
+        border-bottom: 0;
+    }
+}
+
 .errorlist {
     color: #a31f33;
     list-style: none;
