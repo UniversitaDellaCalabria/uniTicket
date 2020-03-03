@@ -62,6 +62,12 @@ Cordiali saluti.
 
 NEW_TICKET_CREATED = _("""Il ticket "{ticket}" è stato creato correttamente.
 
+Oggetto:
+{ticket_subject}
+
+Descrizione:
+{ticket_description}
+
 Dati inseriti:
 {data}
 

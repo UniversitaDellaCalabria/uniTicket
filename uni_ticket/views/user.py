@@ -216,6 +216,8 @@ def ticket_add_new(request, structure_slug, category_slug):
             mail_params = {'hostname': settings.HOSTNAME,
                            'user': request.user,
                            'ticket': ticket,
+                           'ticket_subject': subject,
+                           'ticket_description': description,
                            'data': json_data,
                            'files': request.FILES
                           }

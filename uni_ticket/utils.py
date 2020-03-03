@@ -105,9 +105,10 @@ def get_folder_allegato(ticket):
     """
     Returns ticket attachments folder path
     """
-    folder = '{}/{}/{}'.format(TICKET_ATTACHMENT_FOLDER,
-                               ticket.get_year(),
-                               ticket.code)
+    folder = '{}/{}/{}/{}'.format(settings.HOSTNAME,
+                                  ticket.get_year(),
+                                  TICKET_ATTACHMENT_FOLDER,
+                                  ticket.code)
     return folder
 
 def get_path_allegato(ticket):
