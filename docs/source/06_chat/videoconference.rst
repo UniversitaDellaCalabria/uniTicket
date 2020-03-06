@@ -3,7 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. _videoconference:
+
 Videoconferenza
 ===============
 
-work in progress...
+*[In corso di sviluppo]*
+
+Ogni operatore può concordare con uno o più utenti, mediante :ref:`chat<Chat>` o appuntamento concordato in risposta ad un Ticket aperto, una
+sessione di video conferenza.
