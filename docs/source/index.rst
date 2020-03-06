@@ -6,7 +6,7 @@
 uniTicket - Documentazione
 ==========================
 
-Django **Unified Ticket System (uniTicket)** è un sistema software di ticketing 
+Django **Unified Ticket System (uniTicket)** è un sistema software di ticketing
 ed helpdesk per il tracciamento e la digitalizzazione dei flussi di richieste e documentali.
 
 Principali caratteristiche:
@@ -63,36 +63,43 @@ Principali caratteristiche:
 
 .. toctree::
    :maxdepth: 2
+   :caption: Chat e Videoconferenza
+
+   Chat <06_chat/chat.rst>
+   Videoconferenza <06_chat/videoconference.rst>
+
+.. toctree::
+   :maxdepth: 2
    :caption: Manager
 
-   Dashboard <06_manager/dashboard.rst>
-   Categorie <06_manager/categories.rst>
-   Uffici <06_manager/offices.rst>
+   Dashboard <07_manager/dashboard.rst>
+   Categorie <07_manager/categories.rst>
+   Uffici <07_manager/offices.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Operatore
 
-   Dashboard <07_operator/dashboard.rst>
+   Dashboard <08_operator/dashboard.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Utente utilizzatore
 
-   Dashboard <08_user/dashboard.rst>
-   Ticket <08_user/ticket.rst>
+   Dashboard <09_user/dashboard.rst>
+   Ticket <09_user/ticket.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Operazioni comuni a tutti gli utenti
 
-   Messaggi <09_common-operations/common_operations.rst>
+   Messaggi <10_common-operations/common_operations.rst>
 
 .. toctree::
    :maxdepth: 2
    :caption: Caratteristiche del sistema
 
-   Template Bootstrap Italia <10_features/features.rst>
+   Template Bootstrap Italia <11_features/features.rst>
 
 
 
