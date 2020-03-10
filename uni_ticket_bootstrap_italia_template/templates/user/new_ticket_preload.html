@@ -54,12 +54,17 @@
                 name="category_slug"
                 title="{% trans 'A chi è indirizzata la richiesta?' %}"
                 data-live-search="true" data-live-search-placeholder="Cerca...">
-            <option value="">{% trans "Scegli un'opzione" %}</option>
+            <option value="">{% trans "Scegli un'opzione per aprire subito un ticket" %}</option>
             {% for categoria in categorie %}
             <option value="{{ categoria.slug }}">{{ categoria }}</option>
             {% endfor %}
         </select>
     </div>
+    <a role="button" class="btn btn-success mt-5" href="{% url 'chat:room' room_name=structure_slug %}">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+        </svg> {% trans "Entra in chat con un operatore" %}
+    </a>
     {% endif %}
 </div>
 
