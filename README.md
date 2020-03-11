@@ -141,3 +141,38 @@ docker network inspect uniticket_default
 # update a service with a new image (HA failed, 5 seconds od downtime registered here... still need to implement an health check)
 docker service update --image uniticket:v1.2 --health-cmd "curl --fail http://localhost:8000/ || exit 1" --health-interval=5s --health-timeout=3s --health-retries=2 uniticket
 ````
+
+
+Production Setup
+----------------
+
+````
+apt install python3-dev python3-pip
+pip3 install virtualenv
+virtualenv -ppython3 uniticket.env
+source uniticket.env/bin/activate
+git clone https://github.com/UniversitaDellaCalabria/uniTicket.git uniticket
+cd uniticket
+pip3 install -r requirements.txt
+pip3 install uwsgi
+
+sudo apt install mariadb-server libmariadbclient-dev
+sudo apt install poppler-utils xmlsec1
+
+# create your MysqlDB
+export USER='thatuser'
+export PASS='thatpassword'
+export HOST='%'
+export DB='uniticket'
+
+# tested on Debian 10
+sudo mysql -u root -e "\
+CREATE USER IF NOT EXISTS '${USER}'@'${HOST}' IDENTIFIED BY '${PASS}';\
+CREATE DATABASE IF NOT EXISTS ${DB} CHARACTER SET = 'utf8' COLLATE = 'utf8_general_ci';\
+GRANT ALL PRIVILEGES ON ${DB}.* TO '${USER}'@'${HOST}';"
+
+./manage.py migrate
+./manage.py collectstatic
+./manage.py createsuperuser
+./manage.py runserver
+````

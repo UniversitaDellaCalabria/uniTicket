@@ -8,12 +8,7 @@ from saml2.sigver import get_xmlsec_binary
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-BASE_URL = 'https://ticket.unical.it/saml2'
-
-LOGIN_URL = '/saml2/login/'
-LOGOUT_URL = '/logout/'
-LOGIN_REDIRECT_URL = '/'
-
+BASE_URL = 'https://ticket.unical.it/saml2/'
 
 SAML_CONFIG = {
     'debug' : True,
@@ -127,8 +122,8 @@ SAML_CONFIG = {
         #
         # ondemand
         "remote": [{
-            "url": "https://proxy.auth.unical.it/Saml2IDP/metadata",
-            #"disable_ssl_certificate_validation": True,
+            "url": "https://idp1.testunical.it/idp/metadata/",
+            "disable_ssl_certificate_validation": True,
             # if self-signed must be globally defined also 'disable_ssl_certificate_validation': True,
             #"cert": BASE_DIR + "/certificates/shibidp/idp.testunical.it-cert.pem",
              }]
@@ -163,40 +158,37 @@ SAML_CONFIG = {
     'valid_for': 365 * 24,
 }
 
-# OR NAME_ID or MAIN_ATTRIBUTE (not together!)
+# NAME_ID or MAIN_ATTRIBUTE (not together!)
 SAML_USE_NAME_ID_AS_USERNAME = False
-SAML_DJANGO_USER_MAIN_ATTRIBUTE = 'taxpayer_id'
+SAML_DJANGO_USER_MAIN_ATTRIBUTE = 'username'
 SAML_DJANGO_USER_MAIN_ATTRIBUTE_LOOKUP = '__iexact'
+
 SAML_CREATE_UNKNOWN_USER = True
 
-# logout
-SAML_LOGOUT_REQUEST_PREFERRED_BINDING = saml2.BINDING_HTTP_POST
-
 SAML_ATTRIBUTE_MAPPING = {
+
     # django related
-    # 'uid': ('username', ),
+    'eduPersonPrincipalName': ('username', ),
 
     # pure oid standard
     'email': ('email', ),
     'mail': ('email',),
 
     # oid pure
-    'givenName': ('first_name', ),
+    'cn': ('first_name', ),
     'sn': ('last_name', ),
-    # 'schacPersonalUniqueID': ('schacPersonalUniqueID',),
+    'schacPersonalUniqueID': ('schacPersonalUniqueID',),
     # 'eduPersonPrincipalName': ('eduPersonPrincipalName',),
-    # 'eduPersonEntitlement': ('eduPersonEntitlement',),
-    # 'schacPersonalUniqueCode': ('schacPersonalUniqueCode',),
+    'eduPersonEntitlement': ('eduPersonEntitlement',),
+    'schacPersonalUniqueCode': ('schacPersonalUniqueCode',),
 
     # spid related
-    # 'name': ('first_name', ),
-    # 'familyName': ('last_name', ),
-    # 'fiscalNumber': ('codice_fiscale',),
-    # 'placeOfBirth': ('place_of_birth',),
-    # 'dateOfBirth': ('birth_date',),
+    'name': ('first_name', ),
+    'familyName': ('last_name', ),
+    'fiscalNumber': ('codice_fiscale',),
+    'placeOfBirth': ('place_of_birth',),
+    'dateOfBirth': ('birth_date',),
 
     # unical legacy fallback
-    'codice_fiscale': ('taxpayer_id', 'username'),
-    'matricola_studente': ('matricola_studente',),
-    'matricola_dipendente': ('matricola_dipendente',),
+    'codice_fiscale': ('codice_fiscale',),
 }

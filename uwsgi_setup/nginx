@@ -28,9 +28,6 @@ server {
     access_log /var/log/nginx/uniticket.log;
     error_log  /var/log/nginx/uniticket.log error;
 
-    # max upload size
-    client_max_body_size 25M;
-
     # gestione timeout in tutte le salse
     # more time for 502 gateway timeout
     #keepalive_timeout 60;
@@ -73,6 +70,14 @@ server {
         autoindex off;
     }
 
+    # this is the endpoint of the channels routing
+    location /ws/ {
+        proxy_pass http://localhost:8089; # daphne (ASGI) listening on port 8089
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
     # Finally, send all non-media requests to the Django server.
     location / {
         uwsgi_pass  uniticket;
@@ -81,7 +86,10 @@ server {
         # deny iFrame
         add_header X-Frame-Options "DENY";
 
+        uwsgi_connect_timeout 75s;
+        #uwsgi_read_timeout 300s;
         uwsgi_read_timeout 33;
+        client_max_body_size 10m;
         include     /opt/uniticket/uwsgi_setup/uwsgi_params; # the uwsgi_params file you installed
     }
 

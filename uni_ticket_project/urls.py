@@ -74,7 +74,7 @@ if 'saml2_sp' in settings.INSTALLED_APPS:
 
 if 'djangosaml2' in settings.INSTALLED_APPS:
     import djangosaml2.urls
-    urlpatterns += path('', include(djangosaml2.urls, 'djangosaml2',)),
+    urlpatterns += path('', include(djangosaml2.urls, 'djangosaml2')),
 
 if 'rest_framework' in settings.INSTALLED_APPS:
     import api_rest.urls

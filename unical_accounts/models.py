@@ -30,8 +30,8 @@ class User(AbstractUser):
                                   blank=True, null=True)
     last_name = models.CharField(_('Cognome'), max_length=30,
                                  blank=True, null=True)
-    codice_fiscale = models.CharField(_('Codice Fiscale'),
-                                      max_length=16,
+    taxpayer_id = models.CharField(_('TaxPayer ID - codice fiscale'),
+                                      max_length=50,
                                       blank=True, null=True)
     gender    = models.CharField(_('Genere'), choices=GENDER,
                                  max_length=12, blank=True, null=True)

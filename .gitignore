@@ -13,3 +13,10 @@ data/media/*
 !data/media/README.md
 docs/build/*
 uni_ticket_project_cache/*
+
+saml2_sp/saml2_config/certificates/*pem
+saml2_sp/saml2_config/certificates/*key
+saml2_sp/saml2_config/certificates/*src
+saml2_sp/saml2_config/certificates/*crt
+saml2_sp/saml2_config/certificates/*cert
+saml2_sp/saml2_config/settings.py
