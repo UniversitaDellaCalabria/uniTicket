@@ -1,5 +1,6 @@
 {% extends "base_page_schema.html" %}
 
+{% load chat_tags %}
 {% load i18n %}
 {% load static %}
 
@@ -60,11 +61,14 @@
             {% endfor %}
         </select>
     </div>
-    <a role="button" class="btn btn-success mt-5" href="{% url 'chat:room' room_name=structure_slug %}">
-        <svg class="icon icon-xs icon-white">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
-        </svg> {% trans "Entra in chat con un operatore" %}
-    </a>
+        {% structure_operator_online request.user structure_slug as operator_online %}
+        {% if operator_online %}
+        <a role="button" class="btn btn-success mt-5" href="{% url 'chat:room' room_name=structure_slug %}">
+            <svg class="icon icon-xs icon-white">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+            </svg> {% trans "Entra in chat con un operatore" %}
+        </a>
+        {% endif %}
     {% endif %}
 </div>
 

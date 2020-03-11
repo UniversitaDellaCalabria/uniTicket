@@ -1,6 +1,6 @@
 from django import forms
-from django.apps import apps
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.forms import ModelForm
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext as _
@@ -110,7 +110,7 @@ class OfficeAddOperatorForm(forms.Form):
             if get_user_type(o.employee, structure)=='manager':
                 clean_list = clean_list.exclude(pk=o.pk)
         unique_ids = tuple(set((i[0] for i in clean_list.values_list('employee'))))
-        user_model = apps.get_model(settings.AUTH_USER_MODEL)
+        user_model = get_user_model()
         operators = user_model.objects.filter(pk__in=unique_ids)
         super().__init__(*args, **kwargs)
         self.fields['operatore'].queryset = operators

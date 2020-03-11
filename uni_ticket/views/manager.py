@@ -1,9 +1,9 @@
 import logging
 
-from django.apps import apps
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
@@ -425,7 +425,7 @@ def office_remove_operator(request, structure_slug,
 
     :return: render
     """
-    user_model = apps.get_model(settings.AUTH_USER_MODEL)
+    user_model = get_user_model()
     employee = user_model.objects.get(pk=employee_id)
     usertype = get_user_type(employee, structure)
     office = get_object_or_404(OrganizationalStructureOffice,

@@ -1,49 +1,71 @@
-{% extends 'base_chat.html' %}
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
 {% load static %}
 
-{% block main %}
+{% block extra_head %}
+{{ block.super }}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+{% endblock extra_head %}
+
+{% block menu_links %}
+{% include 'user/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:user_dashboard' %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Lascia la chat" %}
+</a>
+{% endblock top_buttons %}
+
+{% block page_content %}
 
     <div class="container">
+<!--
         <div class="page-header">
             <h1>Welcome to ChatApp
                 <small>Pick a user and start chatting!</small>
             </h1>
         </div>
+-->
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div id="user-list" class="list-group">
-                    <a href="" class="list-group-item disabled">
-                        <h4 class="list-group-item-heading">Users</h4>
-                        {# Users go here #}
-                    </a>
+                    <h5 class="list-group-item-heading mb-3">{% trans "Utenti" %}</h5>
+                    {# Users go here #}
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <div class="panel panel-info">
                     <div class="panel-heading">
-                        <h4 class="panel-title">Chat</h4>
+                        <h5 class="panel-title mb-4">Chat</h5>
                     </div>
                     <div>
                         <ul id="messages" class="messages">
                             {# Messages go here #}
                         </ul>
                     </div>
-                    <div class="panel-footer">
+                    <div class="panel-footer my-3">
                         <div class="input-group">
                             <input id="chat-input" type="text"
                                    class="form-control input"
-                                   placeholder="Type your message here ..."
+                                   placeholder="{% trans 'Scrivi qui il tuo messaggio...' %}"
                                    maxlength="500">
-                            <span class="input-group-btn">
-                            <button class="btn btn-info btn"
-                                    id="btn-send">
-                                Send</button>
-                            <button class="btn btn-success btn"
-                                    id="btn-videochat">
-                                Crea videoconferenza</button>
-                        </span>
+
                         </div>
                     </div>
+                    <span class="input-group-btn">
+                        <button class="btn btn-secondary"
+                                id="btn-send">
+                            {% trans "Invia" %}</button>
+                        <button class="btn btn-primary"
+                                id="btn-videochat">
+                            {% trans "Apri videoconferenza" %}</button>
+                    </span>
                 </div>
 
 

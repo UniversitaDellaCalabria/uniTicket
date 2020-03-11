@@ -35,12 +35,15 @@ function uuid4(){
 function addUserDiv(user, user_fullname, bold=false) {
     // build HTML user element in list
     let userItem = `<div class="item">
-                        <a user="${user}" class="list-group-item user"`;
+                        <a user="${user}" class="user"`;
     if (bold) userItem += ` style="font-weight: bold;"`;
-    if (user == currentUser) userItem += `><b>Room Broadcast Channel</b></a>`;
-    else userItem += `>${user_fullname}</a>`;
+    if (user == currentUser) userItem += `>Canale di Broadcast</a>`;
+    else userItem += `>${user_fullname}</a> &nbsp;&nbsp;`;
     if (currentUser != user)
-        userItem += `<span class="item_delete">[close]</span>`;
+        //userItem += `<span class="item_delete">[close]</span>`;
+        userItem += `<svg class="icon icon-danger icon-xs item_delete">
+                        <use xlink:href="/static/svg/sprite.svg#it-close-circle"></use>
+                    </svg>`;
     userItem += `</div>`;
 
     $(userItem).appendTo(userList);
@@ -48,7 +51,7 @@ function addUserDiv(user, user_fullname, bold=false) {
     // add click event
     $(userList).children('.item').last().children('.user').first().on("click",
         function () {
-            let target = $(event.target)
+            let target = $(event.target);
             userList.children('.item').children('.active').removeClass('active');
             target.addClass('active');
             setCurrentRecipient(username=target.attr('user'),
@@ -103,7 +106,8 @@ function getConversation(recipient, room_name) {
             console.log("getConversation " + data['results'][i]);
             drawMessage(message=data['results'][i]);
         }
-        $( "a.user[user='" + currentRecipient + "']" ).css( "font-weight", "normal" );
+        $( "a.user" ).css( "font-weight", "normal" ).css("color", "#000");
+        $( "a.user[user='" + currentRecipient + "']" ).css( "font-weight", "bold" );
         messageList.animate({scrollTop: messageList.prop('scrollHeight')});
     });
 }
@@ -136,7 +140,7 @@ function addUserInList(user, user_fullname, bold=false, block_bot=false) {
             $( "a.user[user='"+ user +"']" ).addClass( "active" );
         }
     } else if (user != currentRecipient) {
-        $( "a.user[user='"+ user +"']" ).css( "font-weight", "bold" );
+        $( "a.user[user='"+ user +"']" ).css( "font-weight", "bold" ).css("color", "#b71918");
     }
 }
 
@@ -262,7 +266,7 @@ $(document).ready(function () {
     });
 
     videoChatButton.click(function () {
-        videochat_url="https://meet.jit.si/"+room_name+"-"+uuid4();
+        videochat_url="https://meet.jit.si/" + uuid4();
         window.open(videochat_url, '_blank');
         sendMessage(recipient=currentRecipient,
                     room_name=room_name,
