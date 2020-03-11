@@ -1,10 +1,16 @@
-from django.contrib.auth import get_user_model
-from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer
 import json
 import logging
 
+from django.contrib.auth import get_user_model
+from django.utils.timezone import now
+
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
+from channels.layers import get_channel_layer
+from datetime import timedelta
+
 from . models import UserChannel
+from . settings import SECONDS_TO_KEEP_ALIVE
 from . utils import chat_operator
 
 
@@ -21,30 +27,17 @@ class ChatConsumer(WebsocketConsumer):
                                    channel=self.channel_name,
                                    room=room)
 
-    def connect(self):
-        user_id = self.scope["session"]["_auth_user_id"]
+    def _purge_inactive_channels(self):
+        stored_channels = UserChannel.objects.filter(room=self.room_name).exclude(user=self.user)
+        for sc in stored_channels:
+            if sc.last_seen < now() - timedelta(seconds=SECONDS_TO_KEEP_ALIVE):
+                UserChannel.objects.get(channel=sc.channel).delete()
 
-        # only for logged users
-        if not user_id: self.close()
+    def _check_user_is_active(self, user):
+        return UserChannel.objects.filter(user=user,
+                                          room=self.room_name).first()
 
-        self.user = get_user_model().objects.get(pk=user_id)
-
-        # self.group_name = "{}".format(user_id)
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.group_name = 'chat_{}'.format(self.room_name)
-
-        # Join room group
-        async_to_sync(self.channel_layer.group_add)(
-            self.group_name,
-            self.channel_name
-        )
-
-        self._create_user_channel(user=self.user,
-                                  channel_name=self.channel_name,
-                                  room=self.room_name)
-        logger.info("{} connected to websocket".format(self.user))
-        self.accept()
-
+    def _notify_other_users(self):
         # Send message to room group
         notification = {
             'type': 'join_room',
@@ -59,6 +52,7 @@ class ChatConsumer(WebsocketConsumer):
             notification
         )
 
+    def _add_new_user_in_frontend(self):
         active_users = UserChannel.objects.filter(room=self.room_name).exclude(user=self.user)
         for au in active_users:
             if(chat_operator(self.user, self.room_name)) or (chat_operator(au.user, self.room_name)):
@@ -73,6 +67,34 @@ class ChatConsumer(WebsocketConsumer):
                     self.channel_name,
                     notification
                 )
+
+    def connect(self):
+        user_id = self.scope["session"]["_auth_user_id"]
+
+        # only for logged users
+        if not user_id: self.close()
+
+        self.user = get_user_model().objects.get(pk=user_id)
+
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.group_name = self.room_name
+
+        # Join room group
+        async_to_sync(self.channel_layer.group_add)(
+            self.group_name,
+            self.channel_name
+        )
+
+        # Create a new UserChannel and purge older
+        self._create_user_channel(user=self.user,
+                                  channel_name=self.channel_name,
+                                  room=self.room_name)
+        logger.info("{} connected to websocket".format(self.user))
+        self.accept()
+
+        self._purge_inactive_channels()
+        self._notify_other_users()
+        self._add_new_user_in_frontend()
 
     def disconnect(self, close_code):
         logger.info("disconnected from websocket")

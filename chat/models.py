@@ -118,6 +118,7 @@ class UserChannel(Model):
     created = DateTimeField(auto_now_add=True,
                             editable=False,
                             db_index=True)
+    last_seen = DateTimeField(auto_now=True)
 
     # Meta
     class Meta:
