@@ -66,7 +66,11 @@ INSTALLED_APPS = [
     'organizational_area',
 
     # Django Rest
-    # 'rest_framework',
+    'rest_framework',
+
+    # Django channels and chat
+    'channels',
+    'chat',
 
     ##SAML2 SP
     # 'djangosaml2',
@@ -121,7 +125,33 @@ INTERNAL_IPS = (
     '127.0.0.1',
 )
 
-# for logging
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
+
+MESSAGES_TO_LOAD = 1500
+# CHANNEL_LAYERS = {
+    # "default": {
+        # "BACKEND": "asgiref.inmemory.ChannelLayer",
+        # "ROUTING": "uni_ticket_project.routing.channel_routing",
+    # },
+# }
+ASGI_APPLICATION = 'uni_ticket_project.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -150,6 +180,21 @@ LOGGING = {
         'djangosaml2': {
             'handlers': ['console'],
             'level': 'DEBUG',
+        },
+        'uni_ticket': {
+            'handlers': ['console',],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'organizational_area': {
+            'handlers': ['console',],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'chat': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO',
         },
     }
 }

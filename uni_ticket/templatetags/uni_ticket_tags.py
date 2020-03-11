@@ -21,6 +21,7 @@ from uni_ticket.utils import (download_file,
                               get_path_allegato,
                               get_user_type,
                               office_can_be_deleted,
+                              user_is_in_default_office,
                               user_manage_something)
 
 register = template.Library()
@@ -107,3 +108,7 @@ def user_from_pk(user_id):
     user = user_model.objects.get(pk=user_id)
     if not user: return False
     return user
+
+@register.simple_tag
+def user_operator_chat(user, structure):
+    return user_is_in_default_office(user, structure)
