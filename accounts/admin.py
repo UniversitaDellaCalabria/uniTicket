@@ -22,8 +22,8 @@ class CustomUserAdmin(UserAdmin):
                                           'matricola_studente'),
                                          ('email', 'email_notify'),
                                          ('taxpayer_id',),
-                                         ('gender',
-                                          'place_of_birth', 'birth_date',),
+                                         # ('gender',
+                                          # 'place_of_birth', 'birth_date',),
                                         )
                           }),
 
