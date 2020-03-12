@@ -16,15 +16,24 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView
 from django.urls import path, include
 
 from djangosaml2 import views
 
 
+@login_required
+def test500(request):
+    from django.http import HttpResponse
+    # this avoid conflicts with unit tests
+    if not hasattr(request, 'META'):
+        return HttpResponse(status=500)
+    raise Exception()
+
 urlpatterns = [
     path('{}/'.format(getattr(settings, 'ADMIN_PATH', 'admin')), admin.site.urls),
-
+    path('500/', test500, name='test500'),
     # Login/Logou URLs
     # for local auth
     # disable these for SAML2 auth or others
