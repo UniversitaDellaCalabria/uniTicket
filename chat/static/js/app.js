@@ -245,7 +245,7 @@ $(document).ready(function () {
     disableInput();
     var socket = new WebSocket(
         'wss://' + window.location.host +
-        '/ws/chat/' + room_name + '/?session_key=${sessionKey}')
+        '/ws/chat/' + room_name + '/?session_key=' + sessionKey)
 
     chatInput.keypress(function (e) {
         if (e.keyCode == 13)
