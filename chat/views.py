@@ -6,6 +6,7 @@ from django.utils.translation import gettext as _
 from organizational_area.models import OrganizationalStructure
 from uni_ticket.models import TicketCategory
 from uni_ticket.utils import (custom_message,
+                              get_user_type,
                               user_is_employee,
                               user_is_in_organization,
                               user_is_in_default_office)
@@ -14,10 +15,6 @@ from . models import UserChannel
 from . utils import chat_operator_online
 from . views import *
 
-
-# @login_required
-# def index(request):
-    # return render(request, 'chat/index.html', {})
 
 @login_required
 def room(request, room_name):
@@ -50,9 +47,10 @@ def room(request, room_name):
         categorie = categorie.filter(allow_guest=True)
 
     if categorie:
-        return render(request, 'chat/room.html', {
+        user_type = get_user_type(request.user, structure)
+        return render(request, 'room_{}.html'.format(user_type), {
             'structure': structure,
-            'title': '{} chat-room'.format(structure),
+            'title': '{} [chat-room]'.format(structure),
         })
     return custom_message(request, _("Questa struttura non offre "
                                      "categorie disponibili per la tua "

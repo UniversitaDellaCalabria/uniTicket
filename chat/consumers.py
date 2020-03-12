@@ -161,7 +161,6 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, event):
         message = event['message']
         user_fullname = event['user_fullname']
-        logger.info(message)
         self.send(
             text_data=json.dumps({
                 'message': message,
