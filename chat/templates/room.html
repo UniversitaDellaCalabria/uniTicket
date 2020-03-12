@@ -44,8 +44,8 @@
                         <ul id="messages" class="messages">
                             {# Messages go here #}
                             <div class="alert alert-info alert-dismissible fade show float-left" role="alert">
-                                {% if not user_operator_chat %}
-                                    {% trans "Seleziona un operatore tra quelli disponibili" %}
+                                {% if user_operator_chat %}
+                                    {% trans "Seleziona un utente tra quelli disponibili" %}
                                 {% else %}
                                     {% trans "Seleziona un operatore tra quelli disponibili" %}
                                 {% endif %}
@@ -56,7 +56,6 @@
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            {% endif  %}
                         </ul>
                     </div>
                     <div class="panel-footer my-3">
