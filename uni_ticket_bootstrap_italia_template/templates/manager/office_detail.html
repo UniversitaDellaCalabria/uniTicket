@@ -99,7 +99,9 @@
             <tr>
                 <th scope="row">{% trans 'Categorie di competenza' %}</th>
                 <td>
-                    {% if office.ticketcategory_set.all %}
+                    {% if office.is_default %}
+                        {% trans "Tutte le categorie" %}
+                    {% elif office.ticketcategory_set.all %}
                         <ul class="list-unstyled">
                         {% for office_cat in office.ticketcategory_set.all %}
                             <li class="clearfix pb-2">
@@ -157,6 +159,8 @@
                         </ul>
                         <hr />
                     {% endif %}
+
+                    {% if not office.is_default %}
                     <form method="post"
                           enctype="multipart/form-data"
                           action="{% url 'uni_ticket:manager_add_office_category' structure_slug=structure.slug office_slug=office.slug %}">
@@ -190,6 +194,7 @@
                             </svg> {% trans "Assegna la categoria all'ufficio" %}
                     </button>
                     </form>
+                    {% endif %}
                 </td>
             </tr>
             <tr>
