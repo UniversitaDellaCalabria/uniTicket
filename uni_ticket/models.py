@@ -4,6 +4,7 @@ import re
 
 from collections import OrderedDict
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -82,6 +83,21 @@ class TicketCategory(models.Model):
                 return False
         return True
 
+    def something_stops_activation(self):
+        category_module = TicketCategoryModule.objects.filter(ticket_category=self,
+                                                              is_active=True)
+        if not self.organizational_office:
+            return _("Per attivare la categoria <b>{}</b> è necessario"
+                    " assegnare un ufficio di competenza".format(self))
+        elif not self.organizational_office.is_active:
+            return _("Per attivare la categoria <b>{}</b> è necessario"
+                     " attivare l'ufficio <b>{}</b>".format(self,
+                                                            self.organizational_office))
+        elif not category_module:
+            return _("Per attivare la categoria <b>{}</b> è necessario"
+                     " attivare un modulo di input".format(self))
+        return False
+
     def get_conditions(self):
         """
         """
@@ -131,6 +147,12 @@ class TicketCategoryModule(models.Model):
         ticket_collegati = Ticket.objects.filter(input_module=self).first()
         if ticket_collegati: return False
         return True
+
+    def disable_other_modules(self):
+        others = TicketCategoryModule.objects.filter(ticket_category=self.ticket_category).exclude(pk=self.pk)
+        for other in others:
+            other.is_active = False
+            other.save(update_fields = ['is_active'])
 
     def get_form(self,
                  data=None,

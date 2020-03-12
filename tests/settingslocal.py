@@ -17,7 +17,7 @@ INTERNAL_IPS = ['127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
-    'unical_accounts',
+    'accounts',
 
     'django.contrib.admin',
     'django.contrib.auth',

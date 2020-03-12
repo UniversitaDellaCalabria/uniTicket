@@ -1,0 +1,62 @@
+{% extends "base_page_schema.html" %}
+
+{% load chat_tags %}
+{% load i18n %}
+{% load static %}
+
+{% block menu_links %}
+{% include 'user/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block page_content %}
+<b><label for="structure_slug">{% trans "Struttura" %}</label></b>
+<div>
+    {% if structure_slug %}
+    <select onchange="window.location = replace_last_param(window.location.href, $(this).val());"
+    {% else %}
+    <select onchange="window.location = window.location.href + $(this).val();"
+    {% endif %}
+            id="structure_slug"
+            name="structure_slug"
+            title="{% trans 'A chi è indirizzata la richiesta?' %}"
+            data-live-search="true" data-live-search-placeholder="Cerca...">
+        <option value="">{% trans "Scegli un'opzione" %}</option>
+        {% for struttura in strutture %}
+        <option value="{{ struttura.slug }}"
+        {% if struttura.slug == structure_slug %} selected {% endif %}>
+            {{ struttura }}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="mt-4">
+    {% if not structure_slug %}
+        <div class="alert alert-warning" role="alert">
+          {% trans "Seleziona la struttura a cui inoltrare il ticket" %}
+        </div>
+    {% else %}
+        {% structure_operator_online request.user structure_slug as operator_online %}
+        {% if operator_online %}
+            <a role="button" class="btn btn-success" href="{% url 'chat:room' room_name=structure_slug %}">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+                </svg> {% trans "Entra in chat" %}
+            </a>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+              {% trans "Nessun operatore al momento disponibile in chat" %}
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+{% endblock page_content %}
+
+{% block extra_scripts %}
+<script type="text/javascript">
+function replace_last_param(url, new_param){
+    return url.split('/').slice(0,-2).join('/')+'/'+new_param
+}
+</script>
+{% endblock extra_scripts %}

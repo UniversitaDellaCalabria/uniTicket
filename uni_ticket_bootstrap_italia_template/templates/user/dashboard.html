@@ -31,7 +31,15 @@
     </a>
 
     <a role="button"
-       class="btn btn-success float-right"
+       class="btn btn-outline-secondary"
+       href="{% url 'uni_ticket:new_chat_preload' %}">
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+            </svg> {% trans "Avvia chat con operatore" %}
+    </a>
+
+    <a role="button"
+       class="btn btn-success"
        href="{% url 'uni_ticket:new_ticket_preload' %}">
             <svg class="icon icon-xs icon-white">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>

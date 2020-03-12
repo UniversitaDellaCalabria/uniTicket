@@ -33,12 +33,12 @@ class User(AbstractUser):
     taxpayer_id = models.CharField(_('TaxPayer ID - codice fiscale'),
                                       max_length=50,
                                       blank=True, null=True)
-    gender    = models.CharField(_('Genere'), choices=GENDER,
-                                 max_length=12, blank=True, null=True)
-    place_of_birth = CountryField('Luogo di nascita', max_length=30,
-                            blank=True, null=True)
-    birth_date = models.DateField('Data di nascita',
-                                  null=True, blank=True)
+    # gender    = models.CharField(_('Genere'), choices=GENDER,
+                                 # max_length=12, blank=True, null=True)
+    # place_of_birth = CountryField('Luogo di nascita', max_length=30,
+                            # blank=True, null=True)
+    # birth_date = models.DateField('Data di nascita',
+                                  # null=True, blank=True)
     email_notify = models.BooleanField(_('Notifiche mail'), default=True)
 
     # fields to map roles
@@ -52,7 +52,7 @@ class User(AbstractUser):
 
     class Meta:
         ordering = ['username']
-        verbose_name_plural = _("Utenti UNICAL")
+        verbose_name_plural = _("Utenti")
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)

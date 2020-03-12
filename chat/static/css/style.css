@@ -18,53 +18,57 @@
 }
 
 .messages .message.left .avatar {
-    background-color: #f55946;
+    background-color: #b71918;
     float: left;
 }
 
 .messages .message.left .text_wrapper {
-    background-color: #ffe6cb;
+    background-color: #dbdbdb;
     margin-left: 20px;
 }
 
 .messages .message.left .text_wrapper::after, .messages .message.left .text_wrapper::before {
     right: 100%;
-    border-right-color: #ffe6cb;
+    border-right-color: #dbdbdb;
 }
 
 .messages .message.left .text {
-    color: #c48843;
+    color: #383838;
 }
 
 .messages .message.right .avatar {
-    background-color: #6877fd;
+    background-color: #383838;
     float: right;
 }
 
 .messages .message.right .text_wrapper {
-    background-color: #c7eafc;
+    background-color: #f3f3f3;
     margin-right: 20px;
     float: right;
 }
 
 .messages .message.right .text_wrapper::after, .messages .message.right .text_wrapper::before {
     left: 100%;
-    border-left-color: #c7eafc;
+    border-left-color: #f3f3f3;
 }
 
 .messages .message.right .text {
-    color: #45829b;
+    color: #383838;
 }
 
 .messages .message .avatar {
     width: 60px;
-    height: 52px;
+    height: 60px;
     border-radius: 50%;
-    display: inline-block;
+    display: table;
     text-align: center;
     color: white;
     font-size: 13px;
-    padding-top: 8px;
+}
+
+.messages .message .avatar span {
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .messages .message .text_wrapper {
@@ -106,3 +110,7 @@ body {
     font-size: 15px;
 }
 */
+
+.item svg.icon {
+    cursor: pointer;
+}

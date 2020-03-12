@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 {% block extra_head %}
 {{ block.super }}
@@ -59,12 +60,15 @@
                         </div>
                     </div>
                     <span class="input-group-btn">
-                        <button class="btn btn-secondary"
+                        <button class="btn btn-success"
                                 id="btn-send">
                             {% trans "Invia" %}</button>
-                        <button class="btn btn-primary"
+                        {% user_operator_chat request.user structure as user_operator_chat %}
+                        {% if user_operator_chat %}
+                        <button class="btn btn-outline-secondary"
                                 id="btn-videochat">
                             {% trans "Apri videoconferenza" %}</button>
+                        {% endif %}
                     </span>
                 </div>
 
@@ -74,7 +78,7 @@
     </div>
 
     <script>
-        let room_name = '{{ room_name }}'
+        let room_name = '{{ structure.slug }}'
         let sessionKey = '{{ request.session.session_key }}';
         let currentUser = '{{ request.user.username }}';
         let currentUser_name = '{{ request.user.first_name }} {{ request.user.last_name }}';

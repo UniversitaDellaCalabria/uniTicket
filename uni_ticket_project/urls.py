@@ -28,8 +28,8 @@ urlpatterns = [
     # Login/Logou URLs
     # for local auth
     # disable these for SAML2 auth or others
-    path('{}/'.format(settings.LOGIN_URL), auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    path('{}/'.format(settings.LOGOUT_URL), auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'), name='logout'),
+    # path('{}/'.format(settings.LOGIN_URL), auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+    # path('{}/'.format(settings.LOGOUT_URL), auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'), name='logout'),
 ]
 
 import uni_ticket.urls
@@ -55,11 +55,11 @@ if 'saml2_sp' in settings.INSTALLED_APPS:
 
     urlpatterns += path('', include((saml2_sp.urls, 'sp',))),
     urlpatterns += path('{}/login/'.format(saml2_url_prefix),
-                        views.login, name='saml2_login'),
+                        views.login, name='login'),
     urlpatterns += path('{}/acs/'.format(saml2_url_prefix),
                         views.assertion_consumer_service, name='saml2_acs'),
     urlpatterns += path('{}/logout/'.format(saml2_url_prefix),
-                        views.logout, name='saml2_logout'),
+                        views.logout, name='logout'),
     urlpatterns += path('{}/ls/'.format(saml2_url_prefix),
                         views.logout_service, name='saml2_ls'),
     urlpatterns += path('{}/ls/post/'.format(saml2_url_prefix),
@@ -74,7 +74,7 @@ if 'saml2_sp' in settings.INSTALLED_APPS:
 
 if 'djangosaml2' in settings.INSTALLED_APPS:
     import djangosaml2.urls
-    urlpatterns += path('', include(djangosaml2.urls, 'djangosaml2')),
+    urlpatterns += path('', include(djangosaml2.urls)),
 
 if 'rest_framework' in settings.INSTALLED_APPS:
     import api_rest.urls

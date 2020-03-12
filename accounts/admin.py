@@ -21,7 +21,7 @@ class CustomUserAdmin(UserAdmin):
                                          ('matricola_dipendente',
                                           'matricola_studente'),
                                          ('email', 'email_notify'),
-                                         ('codice_fiscale',),
+                                         ('taxpayer_id',),
                                          ('gender',
                                           'place_of_birth', 'birth_date',),
                                         )

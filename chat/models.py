@@ -75,7 +75,7 @@ class ChatMessageModel(Model):
                                             self.user.last_name)
         }
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)("chat_{}".format(self.room),
+        async_to_sync(channel_layer.group_send)(self.room,
                                                 notification)
 
     def save(self, *args, **kwargs):

@@ -42,8 +42,8 @@ def dashboard(request, structure_slug, structure):
 
     :return: render
     """
-    title = _("Dashboard")
-    sub_title = MANAGER_PREFIX
+    title = _("Pannello di Controllo")
+    sub_title = _("Gestisci ticket la struttura {}").format(structure)
     template = "manager/dashboard.html"
 
     ta = TicketAssignment
@@ -116,7 +116,7 @@ def office_add_new(request, structure_slug, structure):
     :return: render
     """
     title = _('Nuovo ufficio')
-    sub_title = _("gestione ufficio livello manager")
+    sub_title = _("Crea un nuovo ufficio nella struttura {}").format(structure)
     form = OfficeForm()
     if request.method == 'POST':
         form = OfficeForm(request.POST)
@@ -732,7 +732,7 @@ def category_add_new(request, structure_slug, structure):
     :return: render
     """
     title = _('Nuova categoria')
-    sub_title = structure
+    sub_title = _("Crea una nuova categoria nella struttura {}").format(structure)
     form = CategoryForm()
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -909,24 +909,13 @@ def category_enable(request, structure_slug, category_slug, structure):
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    category_module = TicketCategoryModule.objects.filter(ticket_category=category,
-                                                          is_active=True)
+    problem = category.something_stops_activation()
     if category.is_active:
-        messages.add_message(request, messages.ERROR,
+        messages.add_message(request,
+                             messages.ERROR,
                              _("Categoria {} già attivata".format(category)))
-    elif not category.organizational_office:
-        messages.add_message(request, messages.ERROR,
-                             _("Per attivare la categoria <b>{}</b> è necessario"
-                               " assegnare un ufficio di competenza".format(category)))
-    elif not category.organizational_office.is_active:
-        messages.add_message(request, messages.ERROR,
-                             _("Per attivare la categoria <b>{}</b> è necessario"
-                               " attivare l'ufficio <b>{}</b>".format(category,
-                                                                      category.organizational_office)))
-    elif not category_module:
-        messages.add_message(request, messages.ERROR,
-                             _("Per attivare la categoria <b>{}</b> è necessario"
-                               " attivare un modulo di input".format(category)))
+    elif problem:
+        messages.add_message(request, messages.ERROR, problem)
     else:
         category.is_active = True
         category.save(update_fields = ['is_active'])
@@ -1005,7 +994,7 @@ def category_input_module_new(request, structure_slug,
                                  organizational_structure=structure,
                                  slug=category_slug)
     title = _('Nuovo modulo di inserimento')
-    sub_title = category.name
+    sub_title = _("Crea un nuovo modulo per la categoria {}").format(category.name)
     form = CategoryInputModuleForm()
     if request.method == 'POST':
         form = CategoryInputModuleForm(request.POST)
@@ -1094,8 +1083,8 @@ def category_input_module_edit(request, structure_slug,
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
-    title = _('Modifica di inserimento')
-    sub_title = module
+    title = _('Modifica modulo di inserimento')
+    sub_title = "{} in {}".format(module, category)
     template = 'manager/category_input_module_edit.html'
     d = {'category': category,
          'form': form,
@@ -1136,10 +1125,7 @@ def category_input_module_enable(request, structure_slug,
     else:
         module.is_active = True
         module.save(update_fields = ['is_active'])
-        altri_moduli = TicketCategoryModule.objects.filter(ticket_category=category).exclude(pk=module_id)
-        for altro in altri_moduli:
-            altro.is_active = False
-            altro.save(update_fields = ['is_active'])
+        module.disable_other_modules()
         messages.add_message(request, messages.SUCCESS,
                              _("Modulo {} attivato con successo".format(module)))
 
@@ -1438,7 +1424,7 @@ def category_input_module_preview(request, structure_slug,
                                ticket_category=category)
     form = module.get_form(show_conditions=True)
     title = _('Anteprima modulo di inserimento')
-    sub_title = module
+    sub_title = "{} in {}".format(module, category)
     template = 'manager/category_input_module_preview.html'
     clausole_categoria = category.get_conditions()
     d = {'category': category,

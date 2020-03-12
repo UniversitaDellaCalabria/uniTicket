@@ -248,8 +248,8 @@ def dashboard(request):
     :return: render
     """
     # Ci pensa datatables a popolare la tabella
-    title =_("Dashboard")
-    sub_title = _("Livello utente semplice")
+    title =_("Pannello di controllo")
+    sub_title = _("Gestisci i tuoi ticket o aprine di nuovi")
     template = "user/dashboard.html"
     tickets = Ticket.objects.filter(created_by=request.user)
     non_gestiti = tickets.filter(is_taken=False,
@@ -681,5 +681,31 @@ def ticket_close(request, ticket_id):
     d = {'form': form,
          'sub_title': sub_title,
          'ticket': ticket,
+         'title': title,}
+    return render(request, template, d)
+
+@login_required
+def chat_new_preload(request, structure_slug=None):
+    """
+    Choose the OrganizationalStructure and the category of the ticket
+
+    :type structure_slug: String
+
+    :param structure_slug: slug of structure
+
+    :return: render
+    """
+    strutture = OrganizationalStructure.objects.filter(is_active=True)
+    template = "user/new_chat_preload.html"
+    title = _("Avvia chat con un operatore")
+    sub_title = _("Seleziona la struttura")
+    if structure_slug:
+        struttura = get_object_or_404(OrganizationalStructure,
+                                      slug=structure_slug,
+                                      is_active=True)
+        sub_title = struttura
+    d = {'structure_slug': structure_slug,
+         'strutture': strutture,
+         'sub_title': sub_title,
          'title': title,}
     return render(request, template, d)

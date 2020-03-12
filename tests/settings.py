@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'uni_ticket_project.wsgi.application'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
-AUTH_USER_MODEL = "unical_accounts.User"
+AUTH_USER_MODEL = "accounts.User"
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 

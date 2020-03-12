@@ -113,6 +113,7 @@ function getConversation(recipient, room_name) {
 }
 
 function addUserInList(user, user_fullname, bold=false, block_bot=false) {
+    console.log("bold: "+bold);
     console.log("addUserInList: " + user);
     console.log("currentrecipient: "+ currentRecipient);
     let founded = false
@@ -125,6 +126,9 @@ function addUserInList(user, user_fullname, bold=false, block_bot=false) {
         }
     });
 
+    console.log("founded: "+founded);
+    console.log("addUserInList: " + user);
+    console.log("currentrecipient: "+ currentRecipient);
     if (!founded) {
         addUserDiv(user=user,
                    user_fullname=user_fullname,
@@ -137,7 +141,9 @@ function addUserInList(user, user_fullname, bold=false, block_bot=false) {
                             from_bot=true);
             messageList.animate({scrollTop: messageList.prop('scrollHeight')});
             enableInput();
-            $( "a.user[user='"+ user +"']" ).addClass( "active" );
+            $( "a.user[user='"+ user +"']" ).addClass( "active" ).css( "font-weight", "bold" );
+        } else if (currentRecipient && block_bot) {
+                $( "a.user[user='"+ user +"']" ).addClass( "active" ).css( "font-weight", "bold" ).css("color", "#b71918");
         }
     } else if (user != currentRecipient) {
         $( "a.user[user='"+ user +"']" ).css( "font-weight", "bold" ).css("color", "#b71918");

@@ -51,7 +51,7 @@ def room(request, room_name):
 
     if categorie:
         return render(request, 'chat/room.html', {
-            'room_name': room_name,
+            'structure': structure,
             'title': '{} chat-room'.format(structure),
         })
     return custom_message(request, _("Questa struttura non offre "

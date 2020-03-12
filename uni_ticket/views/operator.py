@@ -28,8 +28,8 @@ def dashboard(request, structure_slug, structure, office_employee):
 
     :return: render
     """
-    title = _("Dashboard")
-    sub_title = OPERATOR_PREFIX
+    title = _("Pannello di Controllo")
+    sub_title = _("Gestisci i ticket in modalità {}").format(OPERATOR_PREFIX)
     template = "operator/dashboard.html"
     offices = user_offices_list(office_employee)
     user_tickets = visible_tickets_to_user(user=request.user,
