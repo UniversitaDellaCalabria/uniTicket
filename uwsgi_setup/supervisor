@@ -1,0 +1,18 @@
+[program:django-daphne]
+environment=PATH="/opt/uniticket.env/bin:%(ENV_PATH)s"
+directory=/opt/uniticket
+command = /opt/uniticket.env/bin/daphne -b 127.0.0.1 -p 8089 uni_ticket_project.asgi:channel_layer
+user = wert
+group = webops
+stopasgroup = true
+autostart=true
+
+# logging
+stdout_logfile=/var/log/uwsgi/daphne.log
+stdout_logfile_maxbytes=1000MB
+stdout_logfile_backups=10
+stdout_capture_maxbytes=1000MB
+stdout_events_enabled=false
+stderr_logfile=/var/log/uwsgi/daphne.err
+stderr_logfile_maxbytes=1000MB
+stderr_logfile_backups=10

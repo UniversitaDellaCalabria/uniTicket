@@ -60,4 +60,4 @@ django-filter
 # Django channels
 channels
 channels_redis
-
+daphne

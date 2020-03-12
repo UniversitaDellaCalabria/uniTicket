@@ -158,6 +158,7 @@ pip3 install uwsgi
 
 sudo apt install mariadb-server libmariadbclient-dev
 sudo apt install poppler-utils xmlsec1
+sudo apt install supervisor
 
 # create your MysqlDB
 export USER='thatuser'
