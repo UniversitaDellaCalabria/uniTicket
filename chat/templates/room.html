@@ -43,9 +43,12 @@
                     <div>
                         <ul id="messages" class="messages">
                             {# Messages go here #}
-                            {% if not user_operator_chat %}
                             <div class="alert alert-info alert-dismissible fade show float-left" role="alert">
-                                {% trans "Seleziona un operatore tra quelli disponibili" %}
+                                {% if not user_operator_chat %}
+                                    {% trans "Seleziona un operatore tra quelli disponibili" %}
+                                {% else %}
+                                    {% trans "Seleziona un operatore tra quelli disponibili" %}
+                                {% endif %}
                                 <button type="button"
                                         class="close"
                                         data-dismiss="alert"
