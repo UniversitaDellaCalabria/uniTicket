@@ -146,6 +146,8 @@ docker service update --image uniticket:v1.2 --health-cmd "curl --fail http://lo
 Production Setup
 ----------------
 
+After the following actions being made, copy and adapt the production configuration that you found in `uwsgi_setup/` folder.
+
 ````
 apt install python3-dev python3-pip
 pip3 install virtualenv
