@@ -8,6 +8,15 @@
 {% include 'user/main_menu.html' %}
 {% endblock menu_links %}
 
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:user_dashboard' %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna alla Dashboard" %}
+</a>
+{% endblock top_buttons %}
+
 {% block page_content %}
 <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
 <div>

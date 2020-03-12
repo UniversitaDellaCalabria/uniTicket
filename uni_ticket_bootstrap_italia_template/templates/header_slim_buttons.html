@@ -48,13 +48,11 @@
         </div>
     </div>
     {% else %}
-    <div class="it-access-top-wrapper">
-        <a href="{% url 'logout' %}">
-            <button class="btn btn-primary btn-sm" type="button">
-                {% trans "Esci" %}
-            </button>
-        </a>
-    </div>
+    <a href="{% url 'logout' %}">
+        <button class="btn btn-primary btn-sm" type="button">
+            {% trans "Esci" %}
+        </button>
+    </a>
     {% endif %}
 </div>
 {% endif %}
