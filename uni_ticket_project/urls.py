@@ -34,11 +34,6 @@ def test500(request):
 urlpatterns = [
     path('{}/'.format(getattr(settings, 'ADMIN_PATH', 'admin')), admin.site.urls),
     path('500/', test500, name='test500'),
-    # Login/Logou URLs
-    # for local auth
-    # disable these for SAML2 auth or others
-    # path('{}/'.format(settings.LOGIN_URL), auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    # path('{}/'.format(settings.LOGOUT_URL), auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'), name='logout'),
 ]
 
 import uni_ticket.urls
@@ -75,11 +70,14 @@ if 'saml2_sp' in settings.INSTALLED_APPS:
                         views.logout_service_post, name='saml2_ls_post'),
     urlpatterns += path('{}/metadata/'.format(saml2_url_prefix),
                         views.metadata, name='saml2_metadata'),
-
-    # system local
-    urlpatterns += path('logout/', LogoutView.as_view(),
-                        {'next_page': settings.LOGOUT_REDIRECT_URL},
+else:
+    urlpatterns += path('local/{}/'.format(settings.LOGIN_URL),
+                        auth_views.LoginView.as_view(template_name='login.html'),
+                        name='login'),
+    urlpatterns += path('local/{}/'.format(settings.LOGOUT_URL),
+                        auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'),
                         name='logout'),
+
 
 if 'djangosaml2' in settings.INSTALLED_APPS:
     import djangosaml2.urls
