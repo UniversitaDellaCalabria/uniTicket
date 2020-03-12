@@ -34,8 +34,7 @@ class CategoryAddOfficeForm(forms.Form):
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
         offices = OrganizationalStructureOffice.objects.filter(organizational_structure=structure,
-                                                               is_active=True,
-                                                               is_default=False)
+                                                               is_active=True)
         super().__init__(*args, **kwargs)
         self.fields['office'].queryset = offices
         self.fields['office'].to_field_name = 'slug'
