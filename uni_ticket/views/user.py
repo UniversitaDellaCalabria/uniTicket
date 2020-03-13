@@ -183,15 +183,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                 set_as_dict(ticket, json_stored)
 
             # data di modifica
-            note = _("""Inserimento nuovo ticket
-
-                     "ticket_subject": {},
-                     "ticket_description": {},
-                     data: {}
-                     files: {}""").format(subject,
-                                          description,
-                                          json_data,
-                                          request.FILES)
+            note = _("Ticket creato")
             ticket.update_log(user=request.user,
                               note=note,
                               send_mail=False)
@@ -340,8 +332,7 @@ def ticket_edit(request, ticket_id):
                              json_response)
             # data di modifica
             ticket.update_log(user=request.user,
-                              note=_("Modifica ticket - data: "
-                                     "{} / files: {}".format(json_post, request.FILES)))
+                              note=_("Ticket modificato")
 
             # log action
             logger.info('[{}] user {} edited ticket {}'.format(timezone.now(),
