@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 <form method="post" id="ticket_mass_update">
     <div class="table-responsive">
@@ -12,7 +13,11 @@
                     <th>{% trans "Oggetto" %}</th>
                     <th>{% trans "Categoria" %}</th>
                     <th>{% trans "Creato il" %}</th>
-                    <th>{% trans "Priorità" %}</th>
+                    <!-- stupid var passed to template only to
+                         check if current user is manager/operator -->
+                    {% if not user_hide_priority %}
+                        <th>{% trans "Priorità" %}</th>
+                    {% endif %}
                     <th>{% trans "Stato" %}</th>
                 </tr>
             </thead>

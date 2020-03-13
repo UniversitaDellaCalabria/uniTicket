@@ -13,7 +13,8 @@ from organizational_area.models import (OrganizationalStructure,
 
 from . models import *
 from . settings import PRIORITY_LEVELS
-# from . widgets import UnicalSelectWidget
+# from . widgets import UniTicketSelectSearchWidget
+from bootstrap_italia_template.widgets import BootstrapItaliaSelectWidget
 
 
 class CategoryForm(ModelForm):
@@ -29,8 +30,8 @@ class CategoryForm(ModelForm):
 
 class CategoryAddOfficeForm(forms.Form):
     office = forms.ModelChoiceField(label=_('Assegna competenza ufficio'),
-                                    queryset=None, required=True,)
-                                    # widget=UnicalSelectWidget())
+                                    queryset=None, required=True,
+                                    widget=BootstrapItaliaSelectWidget())
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
         offices = OrganizationalStructureOffice.objects.filter(organizational_structure=structure,
@@ -58,7 +59,7 @@ class CategoryInputListForm(ModelForm):
         labels = {'name': _('Nome'),
                   'is_required': _('Obbligatorio'),
                   'field_type': _('Tipologia di campo'),}
-        # widgets = {'input_type': UnicalSelectWidget(),}
+        widgets = {'input_type': BootstrapItaliaSelectWidget()}
 
 
 class ChiusuraForm(forms.Form):
@@ -85,8 +86,8 @@ class OfficeForm(ModelForm):
 
 class OfficeAddOperatorForm(forms.Form):
     operatore = forms.ModelChoiceField(label=_('Assegna operatore'),
-                                       queryset=None, required=True,)
-                                       # widget=UnicalSelectWidget())
+                                       queryset=None, required=True,
+                                       widget=BootstrapItaliaSelectWidget())
     description = forms.CharField(label=_('Note'),
                                   widget=forms.Textarea(),
                                   required=False)
@@ -122,8 +123,8 @@ class PriorityForm(forms.Form):
     priorita = forms.ChoiceField(choices=PRIORITY_LEVELS,
                                  required=True,
                                  initial=0,
-                                 label=_('Priorità'),)
-                                 # widget=UnicalSelectWidget())
+                                 label=_('Priorità'),
+                                 widget=BootstrapItaliaSelectWidget())
 
 
 class ReplyForm(forms.Form):
@@ -138,10 +139,10 @@ class ReplyForm(forms.Form):
 
 
 class TicketCompetenceForm(forms.Form):
-    structures = forms.ModelChoiceField(queryset=None, required=True,)
-                                        # widget=UnicalSelectWidget())
-    offices = forms.ModelChoiceField(queryset=None, required=True,)
-                                     # widget=UnicalSelectWidget())
+    structures = forms.ModelChoiceField(queryset=None, required=True,
+                                        widget=BootstrapItaliaSelectWidget())
+    offices = forms.ModelChoiceField(queryset=None, required=True,
+                                     widget=BootstrapItaliaSelectWidget())
     def __init__(self, *args, **kwargs):
         structure_slug = kwargs.pop('structure_slug', None)
         current_ticket_id = kwargs.pop('ticket_id', None)
@@ -173,8 +174,8 @@ class TicketCompetenceSchemeForm(forms.Form):
 class TicketDependenceForm(forms.Form):
     """
     """
-    ticket = forms.ModelChoiceField(queryset=None, required=True,)
-                                    # widget=UnicalSelectWidget())
+    ticket = forms.ModelChoiceField(queryset=None, required=True,
+                                    widget=BootstrapItaliaSelectWidget())
     note = forms.CharField(label=_('Note'),
                            widget=forms.Textarea,
                            required=True)
@@ -228,8 +229,8 @@ class CategoryConditionForm(ModelForm):
 
 class OfficeAddCategoryForm(forms.Form):
     category = forms.ModelChoiceField(label=_('Assegna categoria'),
-                                      queryset=None, required=True,)
-                                      # widget=UnicalSelectWidget())
+                                      queryset=None, required=True,
+                                      widget=BootstrapItaliaSelectWidget())
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
         office = kwargs.pop('office', None)

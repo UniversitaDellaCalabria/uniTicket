@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
@@ -16,6 +17,8 @@ from uni_ticket.utils import visible_tickets_to_user
 
 _ticket_columns = ['pk','code','subject','get_category',
                    'created','get_priority','get_status']
+_no_priority = ['pk','code','subject','get_category',
+                'created','get_status']
 
 
 class TicketDTD(DjangoDatatablesServerProc):
@@ -50,8 +53,11 @@ def user_all_tickets(request):
 
     :return: JsonResponse
     """
+    columns = _ticket_columns
+    if settings.SIMPLE_USER_HIDE_PRIORITY:
+        columns = _no_priority
     ticket_list = Ticket.objects.filter(created_by=request.user)
-    dtd = TicketDTD( request, ticket_list, _ticket_columns )
+    dtd = TicketDTD( request, ticket_list, columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -62,10 +68,13 @@ def user_unassigned_ticket(request):
 
     :return: JsonResponse
     """
+    columns = _ticket_columns
+    if settings.SIMPLE_USER_HIDE_PRIORITY:
+        columns = _no_priority
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_taken=False,
                                         is_closed=False)
-    dtd = TicketDTD( request, ticket_list, _ticket_columns )
+    dtd = TicketDTD( request, ticket_list, columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -76,10 +85,13 @@ def user_opened_ticket(request):
 
     :return: JsonResponse
     """
+    columns = _ticket_columns
+    if settings.SIMPLE_USER_HIDE_PRIORITY:
+        columns = _no_priority
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_taken=True,
                                         is_closed=False)
-    dtd = TicketDTD( request, ticket_list, _ticket_columns )
+    dtd = TicketDTD( request, ticket_list, columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -90,9 +102,12 @@ def user_closed_ticket(request):
 
     :return: JsonResponse
     """
+    columns = _ticket_columns
+    if settings.SIMPLE_USER_HIDE_PRIORITY:
+        columns = _no_priority
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_closed=True)
-    dtd = TicketDTD( request, ticket_list, _ticket_columns )
+    dtd = TicketDTD( request, ticket_list, columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt

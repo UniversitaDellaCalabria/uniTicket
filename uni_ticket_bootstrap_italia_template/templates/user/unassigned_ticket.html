@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 {% block menu_links %}
 {% include 'user/main_menu.html' %}
@@ -17,11 +18,12 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
-{% include 'datatables/table.html' %}
+    {% settings_value "SIMPLE_USER_HIDE_PRIORITY" as user_hide_priority %}
+    {% include 'datatables/table.html' with user_hide_priority=user_hide_priority %}
 {% endblock page_content %}
 
 {% block extra_scripts %}
 {% url 'uni_ticket:user_ticket_url' as var_url %}
 {% url 'uni_ticket:user_unassigned_ticket_json' as ajax_url %}
-{% include 'datatables/datatable_script.html' with var_url=var_url ajax_url=ajax_url %}
+{% include 'datatables/datatable_script.html' with var_url=var_url ajax_url=ajax_url user_hide_priority=user_hide_priority %}
 {% endblock extra_scripts %}

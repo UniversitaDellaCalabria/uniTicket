@@ -195,8 +195,8 @@ a.read-more .icon{ fill: #9d9d9d; }
  * custom float only on desktop
  */
 @media (max-width: 768px) {
-    .table-responsive .table:not(.dataTable) th,
-    .table-responsive .table:not(.dataTable) td {
+    .table-responsive:not(.not-collapsable) .table:not(.dataTable) th,
+    .table-responsive:not(.not-collapsable) .table:not(.dataTable) td {
         float: left;
         width: 100%;
         border-bottom: 0;

@@ -5,6 +5,7 @@ import os
 import pytz
 
 from django import template
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -112,3 +113,7 @@ def user_from_pk(user_id):
 @register.simple_tag
 def user_operator_chat(user, structure):
     return user_is_in_default_office(user, structure)
+
+@register.simple_tag
+def settings_value(name):
+    return getattr(settings, name, "")

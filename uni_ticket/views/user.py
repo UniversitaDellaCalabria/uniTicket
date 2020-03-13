@@ -115,9 +115,9 @@ def ticket_add_new(request, structure_slug, category_slug):
         return custom_message(request, _("Permesso negato a questa tipologia di utente."),
                               struttura.slug)
 
-    title = _("Apri un nuovo ticket")
+    title = _("Nuovo ticket in {}").format(categoria)
     template = 'user/ticket_add_new.html'
-    sub_title = _("Compila i campi richiesti")
+    sub_title = categoria.description if categoria.description else _("Compila i campi richiesti")
     modulo = get_object_or_404(TicketCategoryModule,
                                ticket_category=categoria,
                                is_active=True)

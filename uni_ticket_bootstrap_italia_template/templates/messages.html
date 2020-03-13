@@ -15,25 +15,3 @@
     </div>
     {% endfor %}
 {% endif %}
-
-{% comment %}
-<!--
-Inutile, ci sono già i messaggi di default per ogni form
--->
-{% if form.is_bound %}
-    {% if not form.is_valid %}
-        <div class="alert alert-danger">
-            <div class="header">
-                ATTENZIONE, Sono stati riscontrati i seguenti errori di compilazione:
-            </div>
-            <ul class="list">
-                {% if form.get_labeled_errors %}
-                    {% for k,v in form.get_labeled_errors.items %}
-                            <li>{{ k }}</li>
-                    {% endfor %}
-                {% endif %}
-            </ul>
-        </div>
-    {% endif %}
-{% endif %}
-{% endcomment %}

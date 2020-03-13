@@ -25,13 +25,32 @@
                 <td>{{ ticket.motivazione_chiusura }}</td>
             </tr>
             {% endif %}
+            <!-- stupid var passed to template only to
+                 check if current user is manager/operator -->
+            {% settings_value "SIMPLE_USER_HIDE_PRIORITY" as user_hide_priority %}
+            {% if not is_simple_user  or not user_hide_priority %}
             <tr>
                 <th scope="row">{% trans 'Priorità' %}</th>
                 <td>{{ priority }}</td>
             </tr>
+            {% endif %}
             <tr>
                 <th scope="row">{% trans 'Creato da' %}</th>
-                <td>{{ ticket.created_by }} - {{ ticket.created }}</td>
+                <td>
+                    <b>{{ ticket.created_by.first_name }} {{ ticket.created_by.last_name }}</b> - {{ ticket.created }}
+                    {% if ticket.created_by.email %}
+                        <br><b>E-mail</b>: {{ticket.created_by.email}}
+                    {% endif %}
+                    {% if ticket.created_by.taxpayer_id %}
+                        <br><b>{% trans "Codice fiscale" %}</b>: {{ticket.created_by.taxpayer_id}}
+                    {% endif %}
+                    {% if ticket.created_by.matricola_dipendente %}
+                        <br><b>{% trans "Matricola dipendente" %}</b>: {{ticket.created_by.matricola_dipendente}}
+                    {% endif %}
+                    {% if ticket.created_by.matricola_studente %}
+                        <br><b>{% trans "Matricola studente" %}</b>: {{ticket.created_by.matricola_studente}}
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th scope="row">{% trans 'Competenza' %}</th>

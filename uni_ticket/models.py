@@ -344,7 +344,7 @@ class Ticket(SavedFormContent):
                  'ticket': self
                 }
             m_subject = _('{} - ticket {} aggiornato'.format(settings.HOSTNAME,
-                                                          self))
+                                                             self))
             # Start send mail to ticket owner
             send_custom_mail(subject=m_subject,
                              recipient=self.created_by,

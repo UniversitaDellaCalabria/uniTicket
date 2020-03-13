@@ -118,6 +118,6 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
-{% include 'ticket_detail.html' %}
+{% include 'ticket_detail.html' with is_simple_user=request.user %}
 {% include 'ticket_options.html' %}
 {% endblock page_content %}
