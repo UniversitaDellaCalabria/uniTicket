@@ -55,7 +55,7 @@ class TicketCategory(models.Model):
     Definisce un particolare ambito
     """
     name = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=40,
+    slug = models.SlugField(max_length=255,
                             blank=False, null=False)
     description = models.TextField(max_length=500, null=True, blank=True)
     created = models.DateTimeField(auto_now=True)

@@ -26,7 +26,7 @@ class OrganizationalStructure(models.Model):
     dipartimento, struttura
     """
     name = models.CharField(max_length=255, blank=True, unique=True)
-    slug = models.SlugField(max_length=40,
+    slug = models.SlugField(max_length=255,
                             blank=False, null=False, unique=True)
     unique_code = models.CharField(max_length=255, blank=True, unique=True)
     structure_type = models.ForeignKey(OrganizationalStructureType,
@@ -132,7 +132,7 @@ class OrganizationalStructureLocation(AbstractLocation):
 
 class OrganizationalStructureOffice(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False)
-    slug = models.SlugField(max_length=40,
+    slug = models.SlugField(max_length=255,
                             blank=False, null=False)
     organizational_structure = models.ForeignKey(OrganizationalStructure,
                                                  on_delete=models.CASCADE)
