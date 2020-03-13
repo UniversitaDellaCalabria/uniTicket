@@ -8,7 +8,7 @@
 //	return results[1] || 0;
 //}
 var url = "{{ var_url }}";
-var user_hide_priority = "{{ user_hide_priority }}";
+var user_show_priority = "{{ user_show_priority }}";
 
 $(document).ready(function() {
     var dom = 'lrtip';
@@ -78,7 +78,7 @@ $(document).ready(function() {
             },
 
         ];
-    if (user_hide_priority == 'False')
+    if (user_show_priority == 'True')
         columnDefs.push(
             {
                 targets: [ 6 ],

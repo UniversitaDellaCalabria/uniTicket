@@ -333,14 +333,13 @@ class Ticket(SavedFormContent):
         if not self.is_taken: return _("In attesa di essere preso in carico")
         return _("Aperto")
 
-    def update_log(self, user, note=None, send_mail=True):
+    def update_log(self, user, note='', send_mail=True, mail_msg=''):
         if not user: return False
-
         if send_mail:
             # Send mail to ticket owner
             d = {'hostname': settings.HOSTNAME,
                  'user': user,
-                 'message': note,
+                 'message': mail_msg or note,
                  'ticket': self
                 }
             m_subject = _('{} - ticket {} aggiornato'.format(settings.HOSTNAME,

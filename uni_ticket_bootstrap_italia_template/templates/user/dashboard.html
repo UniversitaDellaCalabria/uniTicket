@@ -52,13 +52,13 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
-    {% settings_value "SIMPLE_USER_HIDE_PRIORITY" as user_hide_priority %}
-    {% include 'datatables/table.html' with user_hide_priority=user_hide_priority %}
+    {% settings_value "SIMPLE_USER_SHOW_PRIORITY" as user_show_priority %}
+    {% include 'datatables/table.html' with user_show_priority=user_show_priority %}
 {% endblock page_content %}
 
 
 {% block extra_scripts %}
     {% url 'uni_ticket:user_ticket_url' as var_url %}
     {% url 'uni_ticket:user_all_tickets_json' as ajax_url %}
-    {% include 'datatables/datatable_script.html' with var_url=var_url ajax_url=ajax_url user_hide_priority=user_hide_priority %}
+    {% include 'datatables/datatable_script.html' with var_url=var_url ajax_url=ajax_url user_show_priority=user_show_priority %}
 {% endblock extra_scripts %}

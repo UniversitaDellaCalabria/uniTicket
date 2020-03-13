@@ -249,7 +249,7 @@ def dashboard(request):
     """
     # Ci pensa datatables a popolare la tabella
     title =_("Pannello di controllo")
-    sub_title = _("Gestisci i tuoi ticket o aprine di nuovi")
+    sub_title = _("Gestisci i tuoi ticket o creane di nuovi")
     template = "user/dashboard.html"
     tickets = Ticket.objects.filter(created_by=request.user)
     non_gestiti = tickets.filter(is_taken=False,

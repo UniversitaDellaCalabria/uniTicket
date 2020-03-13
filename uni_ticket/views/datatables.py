@@ -53,9 +53,9 @@ def user_all_tickets(request):
 
     :return: JsonResponse
     """
-    columns = _ticket_columns
-    if settings.SIMPLE_USER_HIDE_PRIORITY:
-        columns = _no_priority
+    columns = _no_priority
+    if settings.SIMPLE_USER_SHOW_PRIORITY:
+        columns = _ticket_columns
     ticket_list = Ticket.objects.filter(created_by=request.user)
     dtd = TicketDTD( request, ticket_list, columns )
     return JsonResponse(dtd.get_dict())
@@ -68,9 +68,9 @@ def user_unassigned_ticket(request):
 
     :return: JsonResponse
     """
-    columns = _ticket_columns
-    if settings.SIMPLE_USER_HIDE_PRIORITY:
-        columns = _no_priority
+    columns = _no_priority
+    if settings.SIMPLE_USER_SHOW_PRIORITY:
+        columns = _ticket_columns
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_taken=False,
                                         is_closed=False)
@@ -85,9 +85,9 @@ def user_opened_ticket(request):
 
     :return: JsonResponse
     """
-    columns = _ticket_columns
-    if settings.SIMPLE_USER_HIDE_PRIORITY:
-        columns = _no_priority
+    columns = _no_priority
+    if settings.SIMPLE_USER_SHOW_PRIORITY:
+        columns = _ticket_columns
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_taken=True,
                                         is_closed=False)
@@ -102,9 +102,9 @@ def user_closed_ticket(request):
 
     :return: JsonResponse
     """
-    columns = _ticket_columns
-    if settings.SIMPLE_USER_HIDE_PRIORITY:
-        columns = _no_priority
+    columns = _no_priority
+    if settings.SIMPLE_USER_SHOW_PRIORITY:
+        columns = _ticket_columns
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_closed=True)
     dtd = TicketDTD( request, ticket_list, columns )

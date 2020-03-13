@@ -201,16 +201,24 @@ def ticket_detail(request, structure_slug, ticket_id,
         if form.is_valid():
             priority = form.cleaned_data['priorita']
             priority_text = dict(PRIORITY_LEVELS).get(priority)
-
+            send_mail = True
+            mail_msg = ''
             if not ticket.is_taken:
                 ticket.is_taken = True
                 ticket.save(update_fields = ['is_taken'])
                 msg = _("Preso in carico. Priorità assegnata: {}".format(priority_text))
+                if not settings.SIMPLE_USER_SHOW_PRIORITY:
+                    mail_msg = _("Preso in carico.".format(priority_text))
             else:
                 msg = _("Priorità assegnata: {}".format(priority_text))
+                if not settings.SIMPLE_USER_SHOW_PRIORITY:
+                    send_mail = False
             ticket.priority = priority
             ticket.save(update_fields = ['priority'])
-            ticket.update_log(user=request.user, note=msg)
+            ticket.update_log(user=request.user,
+                              note=msg,
+                              send_mail=send_mail,
+                              mail_msg=mail_msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket <b>{}</b> aggiornato"
                                    " con successo".format(ticket.code)))
