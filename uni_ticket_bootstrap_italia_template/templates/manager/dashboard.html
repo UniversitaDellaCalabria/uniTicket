@@ -22,6 +22,13 @@
         {% trans 'Messaggi' %}
     </a>
     <div class="pull-right">
+       <a role="button"
+          class="btn btn-outline-secondary"
+          href="{% url 'chat:room' room_name=structure.slug %}">
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+            </svg> {% trans "Entra in Chat" %}
+        </a>
         <a role="button" class="btn btn-outline-secondary"
            href="#categorie"
            data-attribute="forward" class="forward" aria-hidden="true">
