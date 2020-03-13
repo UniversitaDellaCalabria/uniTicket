@@ -332,7 +332,7 @@ def ticket_edit(request, ticket_id):
                              json_response)
             # data di modifica
             ticket.update_log(user=request.user,
-                              note=_("Ticket modificato")
+                              note=_("Ticket modificato"))
 
             # log action
             logger.info('[{}] user {} edited ticket {}'.format(timezone.now(),
