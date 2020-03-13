@@ -20,3 +20,7 @@ saml2_sp/saml2_config/certificates/*src
 saml2_sp/saml2_config/certificates/*crt
 saml2_sp/saml2_config/certificates/*cert
 saml2_sp/saml2_config/settings.py
+saml2_sp/settings.py
+saml2_sp/saml2_config/metadata/
+
+
