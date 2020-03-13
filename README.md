@@ -13,6 +13,7 @@ Principali caratteristiche:
 - Possibilità di trasferire e condividere ticket tra differenti uffici/aree;
 - Possibilità di aggiungere clausole di consenso da accettare prima di aprire un ticket;
 - Interdipendenza tra ticket;
+- WebChat (websocket) con possibilità di accedere in videoconferenza con gli operatori della piattaforma (jitsi);
 - Lista di attività atomiche per ogni ticket, per guidare l'utente nel processo di lavorazione ed evasione;
 - Form builder, possibilità di creare i moduli di inserimento per ogni categoria di ticket;
 - Campi di input personalzzati, campi complessi e Django Formsets configurabili tramite widget;
@@ -146,7 +147,7 @@ docker service update --image uniticket:v1.2 --health-cmd "curl --fail http://lo
 Production Setup
 ----------------
 
-After the following actions being made, copy and adapt the production configuration that you found in `uwsgi_setup/` folder.
+After the following actions being made, copy and adapt the production configurations that you found in `uwsgi_setup/` folder.
 
 ````
 apt install python3-dev python3-pip
@@ -178,4 +179,6 @@ GRANT ALL PRIVILEGES ON ${DB}.* TO '${USER}'@'${HOST}';"
 ./manage.py collectstatic
 ./manage.py createsuperuser
 ./manage.py runserver
+
+# if everything works, the big part is done!
 ````
