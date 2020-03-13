@@ -34,10 +34,11 @@ function uuid4(){
 
 function addUserDiv(user, user_fullname, bold=false) {
     // build HTML user element in list
-    let userItem = `<div class="item">
-                        <a user="${user}" class="user"`;
+
+    let userItem = `<div class="item mb-2">
+                        <a role="button" user="${user}" class="user btn btn-outline-secondary w-75 p-3"`;
     if (bold) userItem += ` style="font-weight: bold;"`;
-    if (user == currentUser) userItem += `>Canale di Broadcast</a>`;
+    if (user == currentUser) userItem += `>Scrivi a tutti</a>`;
     else userItem += `>${user_fullname}</a> &nbsp;&nbsp;`;
     if (currentUser != user)
         //userItem += `<span class="item_delete">[close]</span>`;
