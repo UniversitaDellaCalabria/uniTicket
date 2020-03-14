@@ -1,6 +1,9 @@
+import base64
 import json
 import magic
 import os
+import random
+import re
 import shutil
 import shortuuid
 
@@ -372,3 +375,21 @@ def user_is_in_organization(user):
         else: return attr
     return False
 # END Roles 'get' methods
+
+def get_text_with_hrefs(text):
+    """Transforms a text with url in text with <a href=></a> tags
+       text = ("Allora considerando quanto scritto quì "
+               "https://ingoalla.it/sdfsd/.well-known/ini.php?sdf=3244&df23=FDS3_ "
+               "dovresti piuttosto - se vuoi - andare qui "
+               "http://rt4t.ty/546-546-56546 oppure "
+               "https://mdq.auth.unical.it:8000/entities/https%3A%2F%2Fidp.unical.it%2Fidp%2Fshibboleth")
+    get_text_with_hrefs(text)
+    """
+    new_text = ''.join([ch for ch in text])
+    href_tmpl = '<a target="{}" href="{}">{}</a>'
+    regexp = re.compile('https?://[\.A-Za-z0-9\-\_\:\/\?\&\=\+\%]*', re.I)
+    for ele in re.findall(regexp, text):
+        target = str(random.random())[2:]
+        a_value = href_tmpl.format(target, ele, ele)
+        new_text = new_text.replace(ele, a_value)
+    return new_text
