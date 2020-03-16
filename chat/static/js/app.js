@@ -272,13 +272,12 @@ $(document).ready(function () {
     });
 
     videoChatButton.click(function () {
-        videochat_text="Clicca qui per entrare in videoconferenza<br>";
+        videochat_text="Clicca qui per entrare in videoconferenza ";
         videochat_url="https://meet.jit.si/"+ uuid4();
-        videochat_link="<a href='"+videochat_url+"' target='_new'>"+videochat_url+"</a>";
         window.open(videochat_url, '_blank');
         sendMessage(recipient=currentRecipient,
                     room_name=room_name,
-                    body=videochat_text + " " + videochat_link);
+                    body=videochat_text + " " + videochat_url);
     });
 
     socket.onmessage = function (e) {

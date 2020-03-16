@@ -42,7 +42,7 @@ class ChatConsumer(WebsocketConsumer):
         notification = {
             'type': 'join_room',
             'room': self.room_name,
-            'user': self.user.username,
+            'user': self.user.pk,
             'user_fullname': '{} {}'.format(self.user.first_name,
                                             self.user.last_name)
         }
@@ -59,7 +59,7 @@ class ChatConsumer(WebsocketConsumer):
                 notification = {
                     'type': 'add_user',
                     'room': self.room_name,
-                    'user': au.user.username,
+                    'user': au.user.pk,
                     'user_fullname': '{} {}'.format(au.user.first_name,
                                                     au.user.last_name)
                 }
@@ -107,7 +107,7 @@ class ChatConsumer(WebsocketConsumer):
         notification = {
             'type': 'leave_room',
             'room': self.room_name,
-            'user': self.user.username,
+            'user': self.user.pk,
             'user_fullname': '{} {}'.format(self.user.first_name,
                                             self.user.last_name)
         }
@@ -124,8 +124,8 @@ class ChatConsumer(WebsocketConsumer):
 
     # Join a room
     def join_room(self, event):
-        user = get_user_model().objects.filter(username=event['user']).first()
-        if chat_operator(self.user, event['room']) or (user and event['user'] != self.user.username and chat_operator(user, event['room'])):
+        user = get_user_model().objects.filter(pk=event['user']).first()
+        if chat_operator(self.user, event['room']) or (user and event['user'] != self.user.pk and chat_operator(user, event['room'])):
             self.send(
                 text_data=json.dumps({
                     'command': 'join_room',

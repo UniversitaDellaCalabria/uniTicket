@@ -8,10 +8,12 @@ from django.db.models import (Model,
                               DateTimeField,
                               ForeignKey,
                               CASCADE)
+from django.utils.html import escape
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from . utils import chat_operator
+
+from . utils import chat_operator, get_text_with_hrefs
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +61,7 @@ class ChatMessageModel(Model):
                                             self.user.last_name)
         }
         channel_layer = get_channel_layer()
-        uc = UserChannel.objects.filter(user__username=recipient.username,
+        uc = UserChannel.objects.filter(user__pk=recipient.pk,
                                         room=self.room).first()
         if uc and uc.channel:
             async_to_sync(channel_layer.send)(uc.channel, notification)
@@ -88,6 +90,8 @@ class ChatMessageModel(Model):
             return False
         new = self.id
         self.body = self.body.strip()  # Trimming whitespaces from the body
+        # Escape text to avoi XSS attack and render hrefs
+        self.body = get_text_with_hrefs(escape(self.body))
         super(ChatMessageModel, self).save(*args, **kwargs)
         if not new:
             if self.broadcast: self.notify_ws_clients()

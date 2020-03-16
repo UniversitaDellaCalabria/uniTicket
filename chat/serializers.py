@@ -6,8 +6,8 @@ from rest_framework.serializers import ModelSerializer, CharField
 
 
 class ChatMessageModelSerializer(ModelSerializer):
-    user = CharField(source='user.username', read_only=True)
-    recipient = CharField(source='recipient.username')
+    user = CharField(source='user.pk', read_only=True)
+    recipient = CharField(source='recipient.pk')
 
     def create(self, validated_data):
         user = self.context['request'].user
@@ -15,7 +15,7 @@ class ChatMessageModelSerializer(ModelSerializer):
         broadcast = self.validated_data['broadcast']
 
         recipient = get_object_or_404(get_user_model(),
-                                      username=validated_data['recipient']['username'])
+                                      pk=validated_data['recipient']['pk'])
 
         msg = ChatMessageModel(recipient=recipient,
                                room=room,
@@ -33,4 +33,4 @@ class ChatMessageModelSerializer(ModelSerializer):
 class UserModelSerializer(ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ('username',)
+        fields = ('pk',)
