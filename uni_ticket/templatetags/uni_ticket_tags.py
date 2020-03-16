@@ -2,7 +2,6 @@ import datetime
 import inspect
 import locale
 import os
-import pytz
 
 from django import template
 from django.conf import settings
@@ -57,9 +56,8 @@ def year_list():
 
 @register.simple_tag
 def current_date():
-    locale.setlocale(locale.LC_ALL, 'it_IT.UTF-8')
-    tz_IT = pytz.timezone('Europe/Rome')
-    now = datetime.datetime.now(tz_IT)
+    tz = timezone.get_current_timezone()
+    now = datetime.datetime.now(tz)
     return now.strftime('%A, %d %B %Y')
 
 @register.simple_tag
