@@ -270,7 +270,7 @@ function disableInput() {
 $(document).ready(function () {
     disableInput();
     var socket = new WebSocket(
-        'ws://' + window.location.host +
+        'wss://' + window.location.host +
         '/ws/chat/' + room_name + '/?session_key=' + sessionKey);
     chatInput.keypress(function (e) {
         if (e.keyCode == 13)
