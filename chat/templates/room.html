@@ -25,6 +25,11 @@
 
 {% block page_content %}
     {% user_operator_chat request.user structure as user_operator_chat %}
+
+    <audio id="beep_sound">
+       <source src="{% static 'sounds/chat.mp3' %}" type="audio/mpeg">
+    </audio>
+
     <div class="container">
         <div class="row">
             <div class="col-md-3 chat-user-list">

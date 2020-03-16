@@ -1,12 +1,16 @@
-let currentRecipient = '';
-let currentRecipient_fullname = '';
-let chatInput = $('#chat-input');
-let chatButton = $('#btn-send');
-let videoChatButton = $('#btn-videochat');
-let userList = $('#user-list');
-let messageList = $('#messages');
-let users = [];
+var currentRecipient = '';
+var currentRecipient_fullname = '';
+var chatInput = $('#chat-input');
+var chatButton = $('#btn-send');
+var videoChatButton = $('#btn-videochat');
+var userList = $('#user-list');
+var messageList = $('#messages');
+var users = [];
 
+
+function beep(){
+    document.getElementById("beep_sound").play();
+}
 
 function uuid4(){
     var uuid = '', ii;
@@ -35,7 +39,7 @@ function uuid4(){
 function addUserDiv(user, user_fullname, bold=false) {
     // build HTML user element in list
 
-    let userItem = `<div class="item mb-2">
+    var userItem = `<div class="item mb-2">
                         <a role="button" user="${user}" class="user btn btn-outline-secondary w-75 p-3"`;
     if (bold) userItem += ` style="font-weight: bold;"`;
     if (user == currentUser) userItem += `>Scrivi a tutti</a>`;
@@ -52,7 +56,7 @@ function addUserDiv(user, user_fullname, bold=false) {
     // add click event
     $(userList).children('.item').last().children('.user').first().on("click",
         function () {
-            let target = $(event.target);
+            var target = $(event.target);
             userList.children('.item').children('.active').removeClass('active');
             target.addClass('active');
             setCurrentRecipient(username=target.attr('user'),
@@ -64,7 +68,7 @@ function addUserDiv(user, user_fullname, bold=false) {
     // add delete click event
     $(userList).children('.item').last().children('.item_delete').first().on("click",
         function () {
-            let user_to_remove = $(event.target).parent().children('.user').first().attr('user');
+            var user_to_remove = $(event.target).parent().children('.user').first().attr('user');
             removeUserFromList(user=user_to_remove,
                                manual_remove=true);
         }
@@ -75,14 +79,14 @@ function drawMessage(message, user_fullname, from_bot=false) {
     console.log("drawMessage " + message);
     var avatar = currentRecipient_fullname;
     if (user_fullname) avatar = user_fullname;
-    if (message.user === currentUser) avatar = 'io';
+    if (message.user == currentUser) avatar = 'io';
     var position = 'left';
     if (from_bot) {
         var date = new Date();
         var msg_body = message;
     } else {
         var date = new Date(message.created);
-        if (message.user === currentUser) position = 'right';
+        if (message.user == currentUser) position = 'right';
         var msg_body = message.body;
     }
     const messageItem = `
@@ -103,7 +107,7 @@ function getConversation(recipient, room_name) {
     console.log("getConversation " + recipient);
     $.getJSON(`/api/v1/message/?target=${recipient}&room=${room_name}`, function (data) {
         messageList.children('.message').remove();
-        for (let i = data['results'].length - 1; i >= 0; i--) {
+        for (var i = data['results'].length - 1; i >= 0; i--) {
             console.log("getConversation " + data['results'][i]);
             drawMessage(message=data['results'][i]);
         }
@@ -117,9 +121,9 @@ function addUserInList(user, user_fullname, bold=false, block_bot=false) {
     console.log("bold: "+bold);
     console.log("addUserInList: " + user);
     console.log("currentrecipient: "+ currentRecipient);
-    let founded = false
+    var founded = false
     userList.children('.item').each(function( index ) {
-        let visible_name = $(this).children().first().attr('user');
+        var visible_name = $(this).children().first().attr('user');
         console.log(visible_name);
         if (visible_name == user) {
             founded = true;
@@ -155,7 +159,9 @@ function removeUserFromList(user, manual_remove=false) {
     console.log("removeUserFromList:" + user);
     $("a.user[user='"+ user +"']").parent().remove();
     console.log(users);
-    users.splice(user, 1);
+    var user_index = users.indexOf(user)
+    users.splice(user_index, 1);
+    console.log("Users list after remove: " + user);
     // if currentRecipient leaves the room, you can't write anymore
     if (user == currentRecipient){
         if (!manual_remove) {
@@ -173,14 +179,20 @@ function removeUserFromList(user, manual_remove=false) {
 function getMessageById(message, room_name) {
     id = JSON.parse(message).message;
     user_fullname = JSON.parse(message).user_fullname;
-    let by_user = null;
+    var by_user = null;
     console.log("getMessageById: " + currentRecipient);
 
-    // if message is for this user (avoid 404 error on api get)
+    // if there is a chat opened
     if (currentRecipient) {
         $.getJSON(`/api/v1/message/${id}/?room=${room_name}`, function (data) {
-            if (data.user === currentRecipient ||
-                (data.recipient === currentRecipient && data.user == currentUser)) {
+
+            // beep if current user hasn't the focus on user that has sent message
+            if ((data.user!=currentUser && data.user!=currentRecipient) ||
+                (data.user!=currentUser && users.indexOf(parseInt(currentRecipient))<0)) {
+                beep();
+            }
+            if (data.user == currentRecipient ||
+                (data.recipient == currentRecipient && data.user == currentUser)) {
                     enableInput();
                     $("a.user[user='"+ currentRecipient +"']").addClass('active');
                     drawMessage(message=data,
@@ -190,17 +202,19 @@ function getMessageById(message, room_name) {
             else {
                 $( "a.user[user='"+ data.user +"']" ).css( "font-weight", "bold" );
             }
-            let bold = false;
+            var bold = false;
             if (data.user != currentRecipient) bold = true;
-            if (data.user != currentUser)
+            if (data.user != currentUser) {
                 addUserInList(user=data.user,
                               user_fullname=user_fullname,
                               bold=bold,
                               block_bot=true);
+            }
         });
     }
-    // a message from a user that isn't present in list
+    // not active chat
     else {
+        beep();
         $.getJSON(`/api/v1/message/${id}/?room=${room_name}`, function (data) {
             if(data.user != currentUser)
                 addUserInList(user=data.user,
@@ -256,7 +270,7 @@ $(document).ready(function () {
         if (chatInput.val().length > 0) {
             // broadcast message to all users of room
             if (currentRecipient==currentUser) {
-                for (let i=0; i<users.length; i++) {
+                for (var i=0; i<users.length; i++) {
                     sendMessage(recipient=users[i],
                                 room_name=room_name,
                                 body=chatInput.val(),
