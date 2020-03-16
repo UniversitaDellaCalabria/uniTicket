@@ -114,3 +114,7 @@ body {
 .item svg.icon {
     cursor: pointer;
 }
+
+.chat-date-info {
+    font-size: 0.65rem;
+}

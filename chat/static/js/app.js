@@ -92,7 +92,7 @@ function drawMessage(message, user_fullname, from_bot=false) {
                 </div>
                 <div class="text_wrapper">
                     <div class="text">${msg_body}<br>
-                        <span class="small">${date}</span>
+                        <span class="text-muted chat-date-info">${date}</span>
                     </div>
                 </div>
             </li>`;

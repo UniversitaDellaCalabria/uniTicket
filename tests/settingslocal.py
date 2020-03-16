@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'sass_processor',
     'bootstrap_italia_template',
     'django_unical_bootstrap_italia',
+    'uni_ticket_bootstrap_italia_template',
 
     'bootstrapform',
     'uni_ticket',
@@ -42,6 +43,10 @@ INSTALLED_APPS = [
 
     # Django Rest
     'rest_framework',
+
+    # Django channels and chat
+    'channels',
+    'chat',
 
     ##SAML2 SP
     # 'djangosaml2',
@@ -67,6 +72,34 @@ EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
 # If True, an internal user (not guest) is a user that has this filled (in user model)
 # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
 USER_ATTRIBUTE_NAME = 'matricola_studente'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
+
+MESSAGES_TO_LOAD = 1500
+# CHANNEL_LAYERS = {
+    # "default": {
+        # "BACKEND": "asgiref.inmemory.ChannelLayer",
+        # "ROUTING": "uni_ticket_project.routing.channel_routing",
+    # },
+# }
+ASGI_APPLICATION = 'uni_ticket_project.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
 
 LOGGING = {
     'version': 1,

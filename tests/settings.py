@@ -124,3 +124,5 @@ EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
 # If True, an internal user (not guest) is a user that has this filled (in user model)
 # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
 USER_ATTRIBUTE_NAME = 'matricola_studente'
+
+SIMPLE_USER_SHOW_PRIORITY = False
