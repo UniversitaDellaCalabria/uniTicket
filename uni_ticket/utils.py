@@ -1,3 +1,4 @@
+import base64
 import json
 import magic
 import os
@@ -372,3 +373,5 @@ def user_is_in_organization(user):
         else: return attr
     return False
 # END Roles 'get' methods
+
+
