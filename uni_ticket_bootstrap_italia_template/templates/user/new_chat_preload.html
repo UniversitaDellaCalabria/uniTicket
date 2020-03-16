@@ -50,11 +50,11 @@
             <a role="button" class="btn btn-success" href="{% url 'chat:room' room_name=structure_slug %}">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
-                </svg> {% trans "Entra in chat" %}
+                </svg> {% trans "Entra in Chat" %}
             </a>
-            {% else %}
+        {% else %}
             <div class="alert alert-danger" role="alert">
-              {% trans "Nessun operatore al momento disponibile in chat" %}
+              {% trans "Nessun operatore al momento disponibile in Chat" %}
             </div>
         {% endif %}
     {% endif %}
