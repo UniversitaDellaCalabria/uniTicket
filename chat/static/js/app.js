@@ -36,23 +36,46 @@ function uuid4(){
     return uuid;
 }
 
-function addUserDiv(user, user_fullname, bold=false) {
-    // build HTML user element in list
+function user_is_in_list(user) {
+    return users.indexOf(parseInt(user))>=0;
+}
 
-    var userItem = `<div class="item mb-2">
-                        <a role="button" user="${user}" class="user btn btn-outline-secondary w-75 p-3"`;
-    if (bold) userItem += ` style="font-weight: bold;"`;
-    if (user == currentUser) userItem += `>Scrivi a tutti</a>`;
-    else userItem += `>${user_fullname}</a> &nbsp;&nbsp;`;
-    if (currentUser != user)
-        //userItem += `<span class="item_delete">[close]</span>`;
-        userItem += `<svg class="icon icon-danger icon-xs item_delete">
-                        <use xlink:href="/static/svg/sprite.svg#it-close-circle"></use>
-                    </svg>`;
-    userItem += `</div>`;
+function no_chat_broadcast(){
+    if(!currentRecipient) return true;
+    if(currentRecipient==currentUser) return true;
+    return false;
+}
 
-    $(userItem).appendTo(userList);
+function active_chat_with(user){
+    return user_is_in_list(user) && user==currentRecipient;
+}
 
+function inactive_chat_with(user){
+    if(user==currentUser)return false;
+    return user==currentRecipient &! user_is_in_list(user);
+}
+
+function make_inactive_others() {
+    $( "a.user" ).removeClass("active");
+}
+
+function make_active(user) {
+    $( "a.user[user='" + user + "']" ).addClass("active");
+    $( "a.user[user='" + user + "']" ).removeClass("text-secondary");
+}
+
+function make_unread(user) {
+    $( "a.user[user='" + user + "']" ).addClass("text-secondary");
+    beep();
+}
+
+function message_is_for_active_chat(sender, recipient) {
+    if(sender == currentRecipient) return true;
+    if(recipient == currentRecipient && sender == currentUser) return true;
+    return false;
+}
+
+function addClickEvent(){
     // add click event
     $(userList).children('.item').last().children('.user').first().on("click",
         function () {
@@ -64,7 +87,9 @@ function addUserDiv(user, user_fullname, bold=false) {
                                 room_name=room_name);
         }
     );
+}
 
+function addRemoveEvent(){
     // add delete click event
     $(userList).children('.item').last().children('.item_delete').first().on("click",
         function () {
@@ -73,6 +98,23 @@ function addUserDiv(user, user_fullname, bold=false) {
                                manual_remove=true);
         }
     );
+}
+
+function addUserDiv(user, user_fullname) {
+    // build HTML user element in list
+    var userItem = `<div class="item mb-2">
+                        <a role="button" user="${user}" class="user btn btn-outline-secondary w-75 p-3"`;
+    if (user == currentUser) userItem += `>Scrivi a tutti</a>`;
+    else userItem += `>${user_fullname}</a> &nbsp;&nbsp;`;
+    if (currentUser != user)
+        userItem += `<svg class="icon icon-danger icon-xs item_delete">
+                        <use xlink:href="/static/svg/sprite.svg#it-close-circle"></use>
+                    </svg>`;
+    userItem += `</div>`;
+
+    $(userItem).appendTo(userList);
+    addClickEvent();
+    addRemoveEvent();
 }
 
 function drawMessage(message, user_fullname, from_bot=false) {
@@ -111,34 +153,18 @@ function getConversation(recipient, room_name) {
             console.log("getConversation " + data['results'][i]);
             drawMessage(message=data['results'][i]);
         }
-        $( "a.user" ).css( "font-weight", "normal" ).css("color", "#000");
-        $( "a.user[user='" + currentRecipient + "']" ).css( "font-weight", "bold" );
+        make_inactive_others();
+        make_active(currentRecipient);
         messageList.animate({scrollTop: messageList.prop('scrollHeight')});
     });
 }
 
-function addUserInList(user, user_fullname, bold=false, block_bot=false) {
-    console.log("bold: "+bold);
+function addUserInList(user, user_fullname, block_bot=false) {
     console.log("addUserInList: " + user);
     console.log("currentrecipient: "+ currentRecipient);
-    var founded = false
-    userList.children('.item').each(function( index ) {
-        var visible_name = $(this).children().first().attr('user');
-        console.log(visible_name);
-        if (visible_name == user) {
-            founded = true;
-            return false;
-        }
-    });
-
-    console.log("founded: "+founded);
-    console.log("addUserInList: " + user);
-    console.log("currentrecipient: "+ currentRecipient);
-    if (!founded) {
-        addUserDiv(user=user,
-                   user_fullname=user_fullname,
-                   bold=bold);
-        if (user != currentUser) users.push(user);
+    if (!user_is_in_list(user)) {
+        addUserDiv(user=user, user_fullname=user_fullname);
+        if (user != currentUser) users.push(parseInt(user));
         if (user == currentRecipient) {
             if(!block_bot)
                 drawMessage(message="L'utente è rientrato nella chat",
@@ -146,12 +172,13 @@ function addUserInList(user, user_fullname, bold=false, block_bot=false) {
                             from_bot=true);
             messageList.animate({scrollTop: messageList.prop('scrollHeight')});
             enableInput();
-            $( "a.user[user='"+ user +"']" ).addClass( "active" ).css( "font-weight", "bold" );
+            make_active(user);
         } else if (currentRecipient && block_bot) {
-                $( "a.user[user='"+ user +"']" ).addClass( "active" ).css( "font-weight", "bold" ).css("color", "#b71918");
+            make_active(user);
+            make_unread(user);
         }
     } else if (user != currentRecipient) {
-        $( "a.user[user='"+ user +"']" ).css( "font-weight", "bold" ).css("color", "#b71918");
+        make_unread(user);
     }
 }
 
@@ -159,7 +186,7 @@ function removeUserFromList(user, manual_remove=false) {
     console.log("removeUserFromList:" + user);
     $("a.user[user='"+ user +"']").parent().remove();
     console.log(users);
-    var user_index = users.indexOf(user)
+    var user_index = users.indexOf(parseInt(user))
     users.splice(user_index, 1);
     console.log("Users list after remove: " + user);
     // if currentRecipient leaves the room, you can't write anymore
@@ -179,49 +206,33 @@ function removeUserFromList(user, manual_remove=false) {
 function getMessageById(message, room_name) {
     id = JSON.parse(message).message;
     user_fullname = JSON.parse(message).user_fullname;
-    var by_user = null;
     console.log("getMessageById: " + currentRecipient);
 
-    // if there is a chat opened
-    if (currentRecipient) {
-        $.getJSON(`/api/v1/message/${id}/?room=${room_name}`, function (data) {
-
-            // beep if current user hasn't the focus on user that has sent message
-            if ((data.user!=currentUser && data.user!=currentRecipient) ||
-                (data.user!=currentUser && users.indexOf(parseInt(currentRecipient))<0)) {
+    $.getJSON(`/api/v1/message/${id}/?room=${room_name}`, function (data) {
+        if(message_is_for_active_chat(sender=data.user,
+                                      recipient=data.recipient)){
+            if(inactive_chat_with(data.user)){
+                addUserInList(user=data.user,
+                              user_fullname=user_fullname,
+                              block_bot=true);
+                make_active(data.user);
                 beep();
             }
-            if (data.user == currentRecipient ||
-                (data.recipient == currentRecipient && data.user == currentUser)) {
-                    enableInput();
-                    $("a.user[user='"+ currentRecipient +"']").addClass('active');
-                    drawMessage(message=data,
-                                user_fullname=user_fullname);
-                    messageList.animate({scrollTop: messageList.prop('scrollHeight')});
-            }
-            else {
-                $( "a.user[user='"+ data.user +"']" ).css( "font-weight", "bold" );
-            }
-            var bold = false;
-            if (data.user != currentRecipient) bold = true;
-            if (data.user != currentUser) {
-                addUserInList(user=data.user,
-                              user_fullname=user_fullname,
-                              bold=bold,
-                              block_bot=true);
-            }
-        });
-    }
-    // not active chat
-    else {
-        beep();
-        $.getJSON(`/api/v1/message/${id}/?room=${room_name}`, function (data) {
-            if(data.user != currentUser)
-                addUserInList(user=data.user,
-                              user_fullname=user_fullname,
-                              bold=true);
-        });
-    }
+            enableInput();
+            drawMessage(message=data,
+                        user_fullname=user_fullname);
+            messageList.animate({scrollTop: messageList.prop('scrollHeight')});
+        }
+        else if(!user_is_in_list(data.user)) {
+            addUserInList(user=data.user,
+                          user_fullname=user_fullname,
+                          block_bot=true);
+            make_unread(data.user);
+        }
+        else {
+            make_unread(data.user);
+        }
+    });
 }
 
 function sendMessage(recipient, room_name, body, broadcast=0) {
@@ -259,7 +270,7 @@ function disableInput() {
 $(document).ready(function () {
     disableInput();
     var socket = new WebSocket(
-        'wss://' + window.location.host +
+        'ws://' + window.location.host +
         '/ws/chat/' + room_name + '/?session_key=' + sessionKey);
     chatInput.keypress(function (e) {
         if (e.keyCode == 13)

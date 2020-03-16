@@ -26,7 +26,7 @@
 {% block page_content %}
     {% user_operator_chat request.user structure as user_operator_chat %}
 
-    <audio id="beep_sound">
+    <audio id="beep_sound" preload="none">
        <source src="{% static 'sounds/chat.mp3' %}" type="audio/mpeg">
     </audio>
 

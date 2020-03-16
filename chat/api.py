@@ -46,13 +46,13 @@ class ChatMessageModelViewSet(ModelViewSet):
 
         if room_name:
             self.queryset = self.queryset.filter(room=room_name)
-        if target and target==request.user.pk:
+        if target and int(target)==request.user.pk:
             self.queryset = self.queryset.filter(user=request.user,
                                                  broadcast=True)
         elif target:
             self.queryset = self.queryset.filter(
-                Q(recipient=request.user, user__pk=target) |
-                Q(recipient__pk=target, user=request.user))
+                Q(recipient=request.user, user__pk=int(target)) |
+                Q(recipient__pk=int(target), user=request.user))
 
         return super(ChatMessageModelViewSet, self).list(request, *args, **kwargs)
 
