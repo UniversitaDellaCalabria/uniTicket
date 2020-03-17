@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 {% block header_wrapper %}{% endblock %}
 {% block footer %}{% endblock %}
@@ -17,7 +18,7 @@
                         <div class="card-body">
                             {% for condition in conditions %}
                             <h5 class="card-title text-left">{{ condition.title }}</h5>
-                            <p class="card-text">{{ condition.text }}</p>
+                            <p class="card-text">{{ condition.text | markdown | safe }}</p>
                             {% endfor %}
                         </div>
                     </div>
