@@ -1,6 +1,7 @@
 import datetime
 import inspect
 import locale
+import markdown as md
 import os
 
 from django import template
@@ -8,6 +9,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from django.template.defaultfilters import stringfilter
 
 from django_form_builder import dynamic_fields
 from uni_ticket.models import (Ticket,
@@ -115,3 +117,8 @@ def user_operator_chat(user, structure):
 @register.simple_tag
 def settings_value(name):
     return getattr(settings, name, "")
+
+@register.filter()
+@stringfilter
+def markdown(value):
+    return md.markdown(value, extensions=['markdown.extensions.fenced_code'])
