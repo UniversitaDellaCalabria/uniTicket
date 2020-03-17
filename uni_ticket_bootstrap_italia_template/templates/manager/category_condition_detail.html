@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 {% block menu_links %}
 {% include 'manager/main_menu.html' %}
@@ -93,7 +94,7 @@
                 <th scope="row">{% trans 'Testo' %}</th>
                 <td>
                     {% if condition.text %}
-                        {{ condition.text }}
+                        {{ condition.text | markdown | safe }}
                     {% else %}-{% endif %}
                 </td>
             </tr>
