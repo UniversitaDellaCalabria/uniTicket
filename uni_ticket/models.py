@@ -176,6 +176,8 @@ class TicketCategoryModule(models.Model):
         custom_params = {}
         custom_params['show_conditions'] = show_conditions
         custom_params['category_owner'] = self.ticket_category
+        custom_params['subject_initial'] = self.ticket_category.name
+        custom_params['description_initial'] = self.ticket_category.description
         form = DynamicFieldMap.get_form(DynamicForm,
                                         constructor_dict=constructor_dict,
                                         custom_params=custom_params,

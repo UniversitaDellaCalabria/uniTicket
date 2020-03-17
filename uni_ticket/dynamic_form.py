@@ -16,6 +16,8 @@ class DynamicForm(BaseDynamicForm):
         self.fields = {}
         category_owner = custom_params.get('category_owner')
         show_conditions = custom_params.get('show_conditions')
+        subject_initial = custom_params.get('subject_initial')
+        description_initial = custom_params.get('description_initial')
         conditions = category_owner.get_conditions()
         # Inserimento manuale del checkbox per accettazione condizioni
         if conditions and show_conditions:
@@ -30,7 +32,8 @@ class DynamicForm(BaseDynamicForm):
         subject_id = dynamic_fields.format_field_name(TICKET_SUBJECT_ID)
         subject_data = {'required' : True,
                         'label': TICKET_SUBJECT_LABEL,
-                        'help_text': TICKET_SUBJECT_HELP_TEXT}
+                        'help_text': TICKET_SUBJECT_HELP_TEXT,
+                        'initial': subject_initial}
         subject_field = getattr(dynamic_fields,
                                 'CustomCharField')(**subject_data)
         self.fields[subject_id] = subject_field
@@ -39,7 +42,8 @@ class DynamicForm(BaseDynamicForm):
         description_id = dynamic_fields.format_field_name(TICKET_DESCRIPTION_ID)
         description_data = {'required' : True,
                             'label': TICKET_DESCRIPTION_LABEL,
-                            'help_text': TICKET_DESCRIPTION_HELP_TEXT}
+                            'help_text': TICKET_DESCRIPTION_HELP_TEXT,
+                            'initial': description_initial}
         description_field = getattr(dynamic_fields,
                                     'TextAreaField')(**description_data)
         self.fields[description_id] = description_field
