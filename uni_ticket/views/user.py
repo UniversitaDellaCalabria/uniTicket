@@ -121,7 +121,7 @@ def ticket_add_new(request, structure_slug, category_slug):
     modulo = get_object_or_404(TicketCategoryModule,
                                ticket_category=categoria,
                                is_active=True)
-    form = modulo.get_form(show_conditions=True, current_user=request.user)
+    form = modulo.get_form(show_conditions=True)
     clausole_categoria = categoria.get_conditions()
 
     d={'categoria': categoria,

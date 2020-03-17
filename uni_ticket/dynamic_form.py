@@ -18,13 +18,12 @@ class DynamicForm(BaseDynamicForm):
         show_conditions = custom_params.get('show_conditions')
         subject_initial = custom_params.get('subject_initial')
         description_initial = custom_params.get('description_initial')
-        current_user = custom_params.get('current_user')
         conditions = category_owner.get_conditions()
         # Inserimento manuale del checkbox per accettazione condizioni
         if conditions and show_conditions:
             conditions_id = dynamic_fields.format_field_name(TICKET_CONDITIONS_FIELD_ID)
             conditions_data = {'required' : True,
-                               'label': TICKET_CONDITIONS_TEXT.format(current_user)}
+                               'label': TICKET_CONDITIONS_TEXT}
             conditions_field = getattr(dynamic_fields,
                                        'CheckBoxField')(**conditions_data)
             self.fields[conditions_id] = conditions_field

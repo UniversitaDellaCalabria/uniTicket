@@ -6,15 +6,15 @@ TICKET_TASK_ATTACHMENT_SUBFOLDER = 'task'
 CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER = 'conditions'
 
 TICKET_CONDITIONS_FIELD_ID = 'condizioni_field_id'
-TICKET_CONDITIONS_TEXT = _('Il sottoscritto {} dichiara di aver letto e compreso quanto scritto sopra')
+TICKET_CONDITIONS_TEXT = _('Dichiara altresì di aver letto e compreso quanto scritto sopra e di assumere ogni responsabilità su quanto di seguito dichiarato')
 
 TICKET_SUBJECT_ID = 'ticket_subject'
-TICKET_SUBJECT_LABEL = _('Oggetto')
-TICKET_SUBJECT_HELP_TEXT = _('Oggetto del Ticket')
+TICKET_SUBJECT_LABEL = _('Oggetto della Richiesta')
+TICKET_SUBJECT_HELP_TEXT = _("Ulteriore specificazione o personalizzazione dell'Oggetto della Richiesta")
 
 TICKET_DESCRIPTION_ID = 'ticket_description'
 TICKET_DESCRIPTION_LABEL = _('Descrizione')
-TICKET_DESCRIPTION_HELP_TEXT = ('Descrizione del Ticket')
+TICKET_DESCRIPTION_HELP_TEXT = ('Ulteriore Descrizione della Richiesta, eventuali note del Richiedente')
 
 PRIORITY_LEVELS = (
                     ('-2',_('Molto alta')),
