@@ -13,7 +13,7 @@
        href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=category.slug%}">
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Torna alla categoria" %}
+        </svg> {% trans "Torna al tipo" %}
     </a>
 </div>
 {% endblock top_buttons %}
@@ -23,7 +23,7 @@
     <button class="btn btn-success btn-block" type="submit">
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
-        </svg> {% trans 'Modifica categoria' %}
+        </svg> {% trans 'Modifica tipo di richiesta' %}
     </button>
 </div>
 {% endblock form_buttons %}

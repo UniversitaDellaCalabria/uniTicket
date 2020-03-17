@@ -49,6 +49,15 @@ def _task_attachment_upload(instance, filename):
                                              instance.code,
                                              filename))
 
+def _condition_attachment_upload(instance, filename):
+    """
+    this function has to return the location to upload the file
+    """
+    return os.path.join('{}/{}/{}/{}'.format(settings.HOSTNAME,
+                                             CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
+                                             instance.category.slug,
+                                             filename))
+
 class TicketCategory(models.Model):
     """
     Categoria di appartenenza dei Ticket
@@ -87,14 +96,14 @@ class TicketCategory(models.Model):
         category_module = TicketCategoryModule.objects.filter(ticket_category=self,
                                                               is_active=True)
         if not self.organizational_office:
-            return _("Per attivare la categoria <b>{}</b> è necessario"
+            return _("Per attivare il tipo di richiesta <b>{}</b> è necessario"
                     " assegnare un ufficio di competenza".format(self))
         elif not self.organizational_office.is_active:
-            return _("Per attivare la categoria <b>{}</b> è necessario"
+            return _("Per attivare il tipo di richiesta <b>{}</b> è necessario"
                      " attivare l'ufficio <b>{}</b>".format(self,
                                                             self.organizational_office))
         elif not category_module:
-            return _("Per attivare la categoria <b>{}</b> è necessario"
+            return _("Per attivare il tipo di richiesta <b>{}</b> è necessario"
                      " attivare un modulo di input".format(self))
         return False
 
@@ -710,14 +719,6 @@ class Task(models.Model):
         """
         return dict(PRIORITY_LEVELS).get(str(self.priority))
 
-    def update_log(self, user, note=None):
-        LogEntry.objects.log_action(user_id         = user.pk,
-                                    content_type_id = ContentType.objects.get_for_model(self).pk,
-                                    object_id       = self.pk,
-                                    object_repr     = self.__str__(),
-                                    action_flag     = CHANGE,
-                                    change_message  = note)
-
     def __str__(self):
         return '{} - ticket: {}'.format(self.subject, self.ticket)
 
@@ -750,16 +751,16 @@ class TicketCategoryCondition(models.Model):
     title = models.CharField(max_length=255, blank=False, null=False)
     text = models.TextField(blank=False, null=False)
     ordinamento = models.PositiveIntegerField(blank=True, default=0)
-    # allegato = models.FileField(upload_to='allegati_clausola_partecipazione/%m-%Y/',
-                                # null=True,blank=True)
+    attachment = models.FileField(upload_to=_condition_attachment_upload,
+                                  null=True, blank=True)
     is_printable = models.BooleanField(_('Visibile nella versione stampabile'),
                                        default=False)
     is_active = models.BooleanField(_('Visibile agli utenti'), default=True)
 
     class Meta:
         ordering = ('ordinamento', )
-        verbose_name = _('Clausola categoria ticket')
-        verbose_name_plural = _('Clausole categoria ticket')
+        verbose_name = _('Clausola tipo di richiesta ticket')
+        verbose_name_plural = _('Clausole tipo di richiesta ticket')
 
     def corpo_as_html(self):
         return text_as_html(self.text)

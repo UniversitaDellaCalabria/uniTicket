@@ -321,8 +321,8 @@ def office_add_category(request, structure_slug, office_slug, structure):
             category = form.cleaned_data['category']
             if category.organizational_office:
                 messages.add_message(request, messages.ERROR,
-                                     _("La categoria <b>{}</b> risulta "
-                                       "già assegnata all'ufficio <b>{}</b>. "
+                                     _("Il tipo di richiesta <b>{}</b> risulta "
+                                       "già assegnato all'ufficio <b>{}</b>. "
                                        "Rimuovere la competenza per "
                                        "procedere").format(category,
                                                            category.organizational_office))
@@ -382,15 +382,15 @@ def office_remove_category(request, structure_slug,
 
     if category.organizational_office != office:
         messages.add_message(request, messages.ERROR,
-                             _("La categoria non è di competenza di"
+                             _("Il tipo di richiesta non è di competenza di"
                                " questo ufficio"))
     else:
         category.organizational_office = None
         category.is_active = False
         category.save(update_fields = ['organizational_office', 'is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("La categoria <b>{}</b> non è più di competenza "
-                               " dell'ufficio <b>{}</b> ed è stata disattivata".format(category,
+                             _("Il tipo di richiesta <b>{}</b> non è più di competenza "
+                               " dell'ufficio <b>{}</b> ed è stato disattivato".format(category,
                                                                                        office)))
 
         # log action
@@ -631,7 +631,7 @@ def category_detail(request, structure_slug, category_slug, structure):
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    title = _('Gestione categoria')
+    title = _('Gestione tipo di richiesta')
     template = 'manager/category_detail.html'
     sub_title = category
     form = CategoryAddOfficeForm(structure=structure)
@@ -691,7 +691,7 @@ def category_remove_office(request, structure_slug,
                                slug=office_slug)
     if category.organizational_office != office:
         messages.add_message(request, messages.ERROR,
-                             _("La categoria non è di competenza di"
+                             _("Il tipo di richiesta non è di competenza di"
                                " questo ufficio"))
     else:
         category.organizational_office = None
@@ -700,7 +700,7 @@ def category_remove_office(request, structure_slug,
         messages.add_message(request, messages.SUCCESS,
                              _("Competenza ufficio {} rimossa correttamente".format(office)))
         messages.add_message(request, messages.ERROR,
-                             _("Categoria {} disattivata poichè"
+                             _("Tipo di richieste {} disattivato poichè"
                                " priva di ufficio competente".format(category)))
 
         # log action
@@ -731,8 +731,8 @@ def category_add_new(request, structure_slug, structure):
 
     :return: render
     """
-    title = _('Nuova categoria')
-    sub_title = _("Crea una nuova categoria nella struttura {}").format(structure)
+    title = _('Nuovo tipo di richiesta')
+    sub_title = _("Crea un nuovo tipo di richiesta nella struttura {}").format(structure)
     form = CategoryForm()
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -752,7 +752,7 @@ def category_add_new(request, structure_slug, structure):
                                                                        name,
                                                                        slug))
                 messages.add_message(request, messages.ERROR,
-                                 _("Esiste già una categoria con"
+                                 _("Esiste già un tipo di richiesta con"
                                    " nome {} o slug {}".format(name, slug)))
             else:
                 new_category = form.save(commit=False)
@@ -814,7 +814,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                             organizational_structure=structure).exclude(pk=category.pk)
             if slug_name_exist:
                 messages.add_message(request, messages.ERROR,
-                                 _("Esiste già una categoria con questo"
+                                 _("Esiste già un tipo di richiesta con questo"
                                    " nome o slug"))
             else:
                 edited_category = form.save(commit=False)
@@ -842,7 +842,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
     template = 'manager/category_edit.html'
-    title = _('Modifica categoria')
+    title = _('Modifica tipo di richiesta')
     sub_title = category
     d = {'category': category,
          'form': form,
@@ -874,7 +874,7 @@ def category_disable(request, structure_slug, category_slug, structure):
         category.is_active = False
         category.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Categoria {} disattivata con successo".format(category)))
+                             _("Tipo di richieste {} disattivato con successo".format(category)))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -885,7 +885,7 @@ def category_disable(request, structure_slug, category_slug, structure):
 
     else:
         messages.add_message(request, messages.ERROR,
-                             _("Categoria {} già disattivata".format(category)))
+                             _("Tipo di richieste {} già disattivato".format(category)))
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
@@ -913,14 +913,14 @@ def category_enable(request, structure_slug, category_slug, structure):
     if category.is_active:
         messages.add_message(request,
                              messages.ERROR,
-                             _("Categoria {} già attivata".format(category)))
+                             _("Tipo di richieste {} già attivato".format(category)))
     elif problem:
         messages.add_message(request, messages.ERROR, problem)
     else:
         category.is_active = True
         category.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Categoria {} attivata con successo".format(category)))
+                             _("Tipo di richieste {} attivato con successo".format(category)))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -967,7 +967,7 @@ def category_delete(request, structure_slug, category_slug, structure):
         return redirect('uni_ticket:manager_dashboard',
                         structure_slug=structure_slug)
     messages.add_message(request, messages.ERROR,
-                         _("Impossibile eliminare la categoria {}."
+                         _("Impossibile eliminare il tipo di richiesta {}."
                            " Ci sono ticket assegnati.".format(category)))
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
@@ -994,7 +994,7 @@ def category_input_module_new(request, structure_slug,
                                  organizational_structure=structure,
                                  slug=category_slug)
     title = _('Nuovo modulo di inserimento')
-    sub_title = _("Crea un nuovo modulo per la categoria {}").format(category.name)
+    sub_title = _("Crea un nuovo modulo per il tipo di richiesta {}").format(category.name)
     form = CategoryInputModuleForm()
     if request.method == 'POST':
         form = CategoryInputModuleForm(request.POST)
@@ -1236,7 +1236,7 @@ def category_input_module_delete(request, structure_slug,
             category.save(update_fields = ['is_active'])
             messages.add_message(request, messages.SUCCESS,
                                  _("Modulo <b>{}</b> eliminato con successo"
-                                   " e categoria <b>{}</b> disattivata"
+                                   " e tipo di richiesta <b>{}</b> disattivato"
                                    " (nessun modulo attivo)".format(module,
                                                                     category)))
         else: messages.add_message(request, messages.SUCCESS,
@@ -1545,7 +1545,7 @@ def category_condition_new(request, structure_slug,
                                  slug=category_slug)
     form = CategoryConditionForm()
     if request.method == 'POST':
-        form = CategoryConditionForm(request.POST)
+        form = CategoryConditionForm(request.POST, request.FILES)
         if form.is_valid():
             condition = form.save(commit=False)
             condition.category = category
@@ -1605,7 +1605,9 @@ def category_condition_edit(request, structure_slug, category_slug,
                                   category=category)
     form = CategoryConditionForm(instance=condition)
     if request.method == 'POST':
-        form = CategoryConditionForm(instance=condition, data=request.POST)
+        form = CategoryConditionForm(instance=condition,
+                                     data=request.POST,
+                                     files=request.FILES)
         if form.is_valid():
             edited_category = form.save()
 
@@ -1794,7 +1796,8 @@ def category_condition_detail(request, structure_slug, category_slug,
     condition = get_object_or_404(TicketCategoryCondition,
                                   pk=condition_id,
                                   category=category)
-    d = {'condition': condition,
+    d = {'category': category,
+         'condition': condition,
          'structure': structure,
          'sub_title': condition,
          'title': title,}
@@ -1814,7 +1817,7 @@ def categories(request, structure_slug, structure):
 
     :return: render
     """
-    title = _('Gestione categorie')
+    title = _('Gestione tipi di richiesta')
     template = 'manager/categories.html'
     # sub_title = _("gestione ufficio livello manager")
     categories = TicketCategory.objects.filter(organizational_structure=structure)

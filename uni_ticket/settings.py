@@ -3,6 +3,7 @@ from django.utils.translation import gettext as _
 TICKET_ATTACHMENT_FOLDER = 'ticket'
 TICKET_MESSAGES_ATTACHMENT_SUBFOLDER = 'messages'
 TICKET_TASK_ATTACHMENT_SUBFOLDER = 'task'
+CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER = 'conditions'
 
 TICKET_CONDITIONS_FIELD_ID = 'condizioni_field_id'
 TICKET_CONDITIONS_TEXT = _('Ho letto e compreso quanto scritto sopra')

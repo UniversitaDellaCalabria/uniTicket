@@ -216,22 +216,13 @@ def ticket_detail(request, structure_slug, ticket_id,
                                                                                priority_text))
                 if not settings.SIMPLE_USER_SHOW_PRIORITY:
                     msg = _("Preso in carico da {}.".format(request.user))
-                send_custom_mail(subject=m_subject,
-                                 recipient=ticket.created_by,
-                                 body=msg,
-                                 params=mail_params)
-            elif settings.SIMPLE_USER_SHOW_PRIORITY:
-                msg = _("Priorità assegnata: {}".format(priority_text))
-                send_custom_mail(subject=m_subject,
-                                 recipient=ticket.created_by,
-                                 body=msg,
-                                 params=mail_params)
+            else:
+                msg = _("Priorità aggiornata")
+                if settings.SIMPLE_USER_SHOW_PRIORITY:
+                    msg = _("Priorità assegnata: {}".format(priority_text))
+            ticket.update_log(user=request.user, note=msg)
             ticket.priority = priority
             ticket.save(update_fields = ['priority'])
-            # ticket.update_log(user=request.user,
-                              # note=msg,
-                              # send_mail=send_mail,
-                              # mail_msg=mail_msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket <b>{}</b> aggiornato"
                                    " con successo".format(ticket.code)))
@@ -792,7 +783,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                 messages.add_message(request, messages.ERROR,
                                      _("Il ticket è già di competenza"
                                        " dell'ufficio speciale <b>{}</b>,"
-                                       " che ha la competenza della categoria "
+                                       " che ha la competenza del tipo di richiesta "
                                        "<b>{}</b>".format(DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
                                                    categoria)))
                 return redirect('uni_ticket:manage_ticket_url_detail',
@@ -809,7 +800,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                 messages.add_message(request, messages.ERROR,
                                      _("Il ticket è già di competenza"
                                        " dell'ufficio <b>{}</b>, responsabile"
-                                       " della categoria <b>{}</b>".format(new_office,
+                                       " del tipo di richiesta <b>{}</b>".format(new_office,
                                                                            categoria)))
                 return redirect('uni_ticket:manage_ticket_url_detail',
                                 structure_slug=structure_slug,

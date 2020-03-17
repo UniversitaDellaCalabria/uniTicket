@@ -215,11 +215,12 @@ class TaskForm(forms.Form):
 class CategoryConditionForm(ModelForm):
     class Meta:
         model = TicketCategoryCondition
-        fields = ['title', 'text', 'ordinamento',
+        fields = ['title', 'text', 'ordinamento', 'attachment',
                   'is_printable','is_active']
         labels = {'title': _('Titolo'),
                   'text': _('Testo'),
                   'ordinamento': _('Ordinamento'),
+                  'attachment': _('Allegato'),
                   'is_printable': _('Visibile nel documento di stampa'),
                   'is_active': _('Attiva'),}
 
@@ -228,7 +229,7 @@ class CategoryConditionForm(ModelForm):
 
 
 class OfficeAddCategoryForm(forms.Form):
-    category = forms.ModelChoiceField(label=_('Assegna categoria'),
+    category = forms.ModelChoiceField(label=_('Assegna tipo di richiesta'),
                                       queryset=None, required=True,
                                       widget=BootstrapItaliaSelectWidget())
     def __init__(self, *args, **kwargs):

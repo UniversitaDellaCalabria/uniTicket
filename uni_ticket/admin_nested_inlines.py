@@ -22,6 +22,21 @@ class TicketCategoryInputListNestedInline(nested_admin.NestedTabularInline):
     extra = 0
     classes = ['collapse',]
 
+# Ticket Category Condition
+class TicketCategoryConditionModelForm(forms.ModelForm):
+
+    class Meta:
+        model = TicketCategoryCondition
+        fields = ('__all__')
+
+
+class TicketCategoryConditionNestedInline(nested_admin.NestedTabularInline):
+    model = TicketCategoryCondition
+    form = TicketCategoryConditionModelForm
+    sortable_field_name = "ordinamento"
+    extra = 0
+    classes = ['collapse',]
+
 
 # Ticket Category Module Form
 class TicketCategoryModuleModelForm(forms.ModelForm):

@@ -392,3 +392,33 @@ def ticket_message_delete(request, ticket_message_id):
     return redirect('uni_ticket:manage_ticket_message_url',
                     structure_slug=structure.slug,
                     ticket_id=ticket.code)
+
+@login_required
+def download_condition_attachment(request, category_slug, condition_id):
+    """
+    Downloads ticket attachment
+
+    :type ticket_id:String
+    :type attachment: String
+    :type ticket: Ticket (from @has_access_to_ticket)
+
+    :param ticket_id: ticket code
+    :param attachment: attachment name
+    :param ticket: ticket object (from @has_access_to_ticket)
+
+    :return: file
+    """
+    category = get_object_or_404(TicketCategory, slug=category_slug)
+    condition = get_object_or_404(TicketCategoryCondition,
+                                  category=category,
+                                  pk=condition_id)
+    attachment = condition.attachment
+    if attachment:
+        path = '{}/{}/{}/{}'.format(settings.MEDIA_ROOT,
+                                    settings.HOSTNAME,
+                                    CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
+                                    category.slug)
+        # get file
+        result = download_file(path, os.path.basename(condition.attachment.name))
+        return result
+    raise Http404

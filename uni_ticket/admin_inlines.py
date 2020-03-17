@@ -18,6 +18,19 @@ class TicketCategoryModuleInline(admin.TabularInline):
     form = TicketCategoryModuleModelForm
     extra = 0
 
+# Ticket Category Condition
+class TicketCategoryConditionModelForm(forms.ModelForm):
+
+    class Meta:
+        model = TicketCategoryCondition
+        fields = ('__all__')
+
+
+class TicketCategoryConditionInline(admin.TabularInline):
+    model = TicketCategoryCondition
+    form = TicketCategoryConditionModelForm
+    extra = 0
+
 
 # Ticket Category Module Input List
 class TicketCategoryInputListModelForm(forms.ModelForm):

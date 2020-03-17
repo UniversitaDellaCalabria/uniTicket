@@ -26,6 +26,7 @@ urlpatterns = [
     path('{}/download/attachment/<str:attachment>/'.format(ticket), generic.download_attachment, name='download_attachment'),
     path('{}/messages/<str:reply_id>/download/attachment/'.format(ticket), generic.download_message_attachment, name='download_message_attachment'),
     path('{}/tasks/<str:task_id>/download/attachment/'.format(ticket), generic.download_task_attachment, name='download_task_attachment'),
+    path('categories/<str:category_slug>/conditions/<int:condition_id>/download/attachment', generic.download_condition_attachment, name='download_condition_attachment'),
 
     # Delete ticket message
     path('messages/delete/<str:ticket_message_id>/', generic.ticket_message_delete, name='message_delete'),

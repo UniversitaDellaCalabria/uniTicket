@@ -13,7 +13,7 @@
    href="{% url 'uni_ticket:new_ticket_preload' structure_slug=struttura.slug %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Torna alla selezione categoria" %}
+    </svg> {% trans "Torna alla selezione tipo di richiesta" %}
 </a>
 {% endblock top_buttons %}
 
@@ -41,6 +41,13 @@
                         {% for condition in conditions %}
                         <h5 class="card-title text-left">{{ condition.title }}</h5>
                         <p class="card-text">{{ condition.text | markdown | safe }}</p>
+                        {% if condition.attachment %}
+                        <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=condition.category.slug condition_id=condition.pk %}">
+                                <svg class="icon">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                                </svg>{{ condition.attachment|filename }}
+                            </a>
+                        {% endif %}
                         {% endfor %}
                     </div>
                 </div>

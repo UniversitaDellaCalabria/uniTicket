@@ -13,7 +13,7 @@
    href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=condition.category.slug %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Torna alla categoria" %}
+    </svg> {% trans "Torna al tipo" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_condition_edit' structure_slug=structure.slug category_slug=condition.category.slug condition_id=condition.pk %}"
@@ -98,6 +98,18 @@
                     {% else %}-{% endif %}
                 </td>
             </tr>
+            {% if condition.attachment %}
+            <tr>
+                <th scope="row">{% trans 'Allegato' %}</th>
+                <td>
+                    <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=category.slug condition_id=condition.pk %}">
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                        </svg> {{ condition.attachment|filename }}
+                    </a>
+                </td>
+            </tr>
+            {% endif %}
         </tbody>
     </table>
 </div>

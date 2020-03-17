@@ -97,10 +97,10 @@
                 </td>
             </tr>
             <tr>
-                <th scope="row">{% trans 'Categorie di competenza' %}</th>
+                <th scope="row">{% trans 'Tipi di richiesta di competenza' %}</th>
                 <td>
                     {% if office.is_default %}
-                        {% trans "Tutte le categorie" %}
+                        {% trans "Tutti i tipi" %}
                     {% elif office.ticketcategory_set.all %}
                         <ul class="list-unstyled">
                         {% for office_cat in office.ticketcategory_set.all %}
@@ -130,7 +130,7 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">
-                                                    {% trans "Rimozione categoria" %}
+                                                    {% trans "Rimozione tipo di richiesta" %}
                                                 </h5>
                                                 <button class="close" type="button"
                                                         data-dismiss="modal" aria-label="Close">
@@ -140,7 +140,7 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <p>{% trans "Vuoi davvero rimuovere la categoria " %}
+                                                <p>{% trans "Vuoi davvero rimuovere il tipo di richiesta " %}
                                                    <b>{{ office_cat }}</b> dalla competenza
                                                    dell'ufficio <b>{{ office }}</b> ?
                                                 </p>
@@ -191,7 +191,7 @@
                             class="btn btn-xs btn-outline-success">
                             <svg class="icon icon-xs icon-success">
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                            </svg> {% trans "Assegna la categoria all'ufficio" %}
+                            </svg> {% trans "Assegna il tipo di richiesta all'ufficio" %}
                     </button>
                     </form>
                     {% endif %}
@@ -333,8 +333,8 @@
             <div class="modal-body">
                 <p>{% trans "Vuoi davvero disattivare l'ufficio " %}
                    <b>{{ office }}</b>?
-                   Disattivando questo ufficio verranno disattivate anche
-                   le categorie di sua competenza.
+                   {% trans "Disattivando questo ufficio verranno disattivati anche
+                   i tipi di richiesta di sua competenza." %}
                 </p>
             </div>
             <div class="modal-footer">
@@ -393,8 +393,8 @@
             <div class="modal-body">
                 <p>{% trans "Vuoi davvero eliminare l'ufficio " %}
                    <b>{{ office }}</b>?
-                   Disattivando questo ufficio verranno disattivate anche
-                   le categorie di sua competenza.
+                   {% trans "Disattivando questo ufficio verranno disattivati anche
+                   i tipi di richiesta di sua competenza." %}
                 </p>
             </div>
             <div class="modal-footer">

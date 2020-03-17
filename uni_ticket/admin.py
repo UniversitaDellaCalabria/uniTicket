@@ -10,7 +10,8 @@ from .models import *
 class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
-    inlines = [TicketCategoryModuleNestedInline,]
+    inlines = [TicketCategoryModuleNestedInline,
+               TicketCategoryConditionNestedInline]
                # TicketCategoryOfficeNestedInline,]
 
     list_display = ('name', 'created',
