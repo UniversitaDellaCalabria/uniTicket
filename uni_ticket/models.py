@@ -757,18 +757,3 @@ class TicketCategoryCondition(models.Model):
 
     def __str__(self):
         return '({}) {}'.format(self.category, self.title)
-
-
-class TicketAssignmentTaker(models.Model):
-    """
-    """
-    assignment = models.ForeignKey(TicketAssignment, on_delete=models.CASCADE)
-    operator = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 on_delete=models.PROTECT)
-    created = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = ("assignment", "operator")
-        ordering = ["created"]
-        verbose_name = _("Presa in carico degli operatori")
-        verbose_name_plural = _("Prese in carico degli operatori")

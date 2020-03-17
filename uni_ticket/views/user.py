@@ -12,7 +12,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.html import strip_tags
+from django.utils.html import escape, strip_tags
 from django.utils.translation import gettext as _
 
 from django_form_builder.settings import ATTACHMENTS_DICT_PREFIX
@@ -145,8 +145,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                                          fields_to_pop=fields_to_pop)
             # make a UUID based on the host ID and current time
             code = uuid_code()
-            subject = form.cleaned_data[TICKET_SUBJECT_ID]
-            description = form.cleaned_data[TICKET_DESCRIPTION_ID]
+            subject = escape(form.cleaned_data[TICKET_SUBJECT_ID])
+            description = escape(form.cleaned_data[TICKET_DESCRIPTION_ID])
             ticket = Ticket(code=code,
                             subject=subject,
                             description=description,
@@ -183,10 +183,10 @@ def ticket_add_new(request, structure_slug, category_slug):
                 set_as_dict(ticket, json_stored)
 
             # data di modifica
-            note = _("Ticket creato")
-            ticket.update_log(user=request.user,
-                              note=note,
-                              send_mail=False)
+            # note = _("Ticket creato")
+            # ticket.update_log(user=request.user,
+                              # note=note,
+                              # send_mail=False)
 
             # Old version. Now a category MUST have an office!
             # office = categoria.organizational_office or struttura.get_default_office()
