@@ -533,8 +533,7 @@ def ticket_message(request, ticket_id):
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
     form = ReplyForm()
     if ticket.is_open():
-        agent_replies = ticket_replies.exclude(owner=ticket.created_by,
-                                               structure=None).filter(read_by=None)
+        agent_replies = ticket_replies.filter(read_by=None).exclude(structure=None)
         for reply in agent_replies:
             reply.read_by = request.user
             reply.read_date = timezone.now()

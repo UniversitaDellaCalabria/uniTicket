@@ -31,7 +31,7 @@
        href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Torna ai ticket presi in carico" %}
+        </svg> {% trans "Torna ai ticket assegnati" %}
     </a>
 {% else %}
 <a role="button"
@@ -39,7 +39,7 @@
    href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Torna ai ticket da prendere in carico" %}
+    </svg> {% trans "Torna ai ticket aperti" %}
 </a>
 {% endif %}
 

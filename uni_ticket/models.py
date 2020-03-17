@@ -350,8 +350,8 @@ class Ticket(SavedFormContent):
 
     def get_status(self):
         if self.is_closed: return _("Chiuso (da {})").format(self.closed_by)
-        if not self.is_taken: return _("In attesa di essere preso in carico")
-        return _("Preso in carico (da {})").format(self.taken_by)
+        if not self.is_taken: return _("Aperto")
+        return _("Assegnato ({})").format(self.taken_by)
 
     def update_log(self, user, note='', send_mail=True, mail_msg=''):
         if not user: return False

@@ -11,10 +11,10 @@
 {% block top_buttons %}
 <div class="pb-4 clearfix">
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_unassigned_ticket' %}">
-        <span class="badge badge-light">{{ ticket_non_gestiti|length }}</span> {% trans 'Ticket in attesa' %}
+        <span class="badge badge-light">{{ ticket_non_gestiti|length }}</span> {% trans 'Ticket aperti' %}
     </a>
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_opened_ticket' %}">
-        <span class="badge badge-light">{{ ticket_aperti|length }}</span> {% trans 'Ticket presi in carico' %}
+        <span class="badge badge-light">{{ ticket_aperti|length }}</span> {% trans 'Ticket assegnati' %}
     </a>
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_closed_ticket' %}">
         <span class="badge badge-light">{{ ticket_chiusi|length }}</span> {% trans 'Ticket chiusi' %}

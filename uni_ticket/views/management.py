@@ -268,7 +268,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
     user_type = get_user_type(request.user, structure)
     template = "{}/tickets.html".format(user_type)
     title = _('Gestione ticket')
-    sub_title = _("Presi in carico o in arrivo")
+    sub_title = _("Assegnati o aperti")
     structure_ticket = TicketAssignment.get_ticket_per_structure(structure)
     non_gestiti = Ticket.objects.filter(code__in=structure_ticket,
                                         is_taken=False,
