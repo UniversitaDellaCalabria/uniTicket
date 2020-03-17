@@ -43,6 +43,10 @@ class TicketDTD(DjangoDatatablesServerProc):
                     Q(subject__icontains=text) | \
                     Q(created_by__first_name__icontains=text) | \
                     Q(created_by__last_name__icontains=text) | \
+                    Q(taken_by__first_name__icontains=text) | \
+                    Q(taken_by__last_name__icontains=text) | \
+                    Q(closed_by__first_name__icontains=text) | \
+                    Q(closed_by__last_name__icontains=text) | \
                     Q(input_module__ticket_category__name__icontains=text) | \
                     Q(created__icontains=text))
         else: self.aqs = self.queryset

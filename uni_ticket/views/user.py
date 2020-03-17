@@ -647,11 +647,11 @@ def ticket_close(request, ticket_id):
         if form.is_valid():
             motivazione = form.cleaned_data['note']
             ticket.is_closed = True
-            ticket.motivazione_chiusura = motivazione
-            ticket.data_chiusura = timezone.now()
+            ticket.closing_reason = motivazione
+            ticket.closed_date = timezone.now()
             ticket.save(update_fields = ['is_closed',
-                                         'motivazione_chiusura',
-                                         'data_chiusura'])
+                                         'closing_reason',
+                                         'closed_date'])
             ticket.update_log(user=request.user,
                               note=_("Chiusura ticket: {}".format(motivazione)))
             messages.add_message(request, messages.SUCCESS,

@@ -539,8 +539,8 @@
     "input_module": 6,
     "is_taken": true,
     "is_closed": true,
-    "data_chiusura": "2019-04-24T10:26:17.002Z",
-    "motivazione_chiusura": "chiusura del ticket",
+    "closed_date": "2019-04-24T10:26:17.002Z",
+    "closing_reason": "chiusura del ticket",
     "priority": -2
   }
 },
@@ -557,8 +557,8 @@
     "input_module": 3,
     "is_taken": true,
     "is_closed": false,
-    "data_chiusura": null,
-    "motivazione_chiusura": null,
+    "closed_date": null,
+    "closing_reason": null,
     "priority": 0
   }
 },
@@ -575,8 +575,8 @@
     "input_module": 3,
     "is_taken": false,
     "is_closed": false,
-    "data_chiusura": null,
-    "motivazione_chiusura": null,
+    "closed_date": null,
+    "closing_reason": null,
     "priority": 0
   }
 },
@@ -593,8 +593,8 @@
     "input_module": 8,
     "is_taken": true,
     "is_closed": false,
-    "data_chiusura": "2019-04-24T11:54:40.586Z",
-    "motivazione_chiusura": "asd asd ad",
+    "closed_date": "2019-04-24T11:54:40.586Z",
+    "closing_reason": "asd asd ad",
     "priority": -1
   }
 },
@@ -611,8 +611,8 @@
     "input_module": 10,
     "is_taken": true,
     "is_closed": false,
-    "data_chiusura": null,
-    "motivazione_chiusura": null,
+    "closed_date": null,
+    "closing_reason": null,
     "priority": -2
   }
 },
@@ -629,8 +629,8 @@
     "input_module": 10,
     "is_taken": true,
     "is_closed": false,
-    "data_chiusura": null,
-    "motivazione_chiusura": null,
+    "closed_date": null,
+    "closing_reason": null,
     "priority": -2
   }
 },
@@ -647,8 +647,8 @@
     "input_module": 7,
     "is_taken": false,
     "is_closed": false,
-    "data_chiusura": null,
-    "motivazione_chiusura": null,
+    "closed_date": null,
+    "closing_reason": null,
     "priority": 0
   }
 },
@@ -665,8 +665,8 @@
     "input_module": 12,
     "is_taken": false,
     "is_closed": false,
-    "data_chiusura": null,
-    "motivazione_chiusura": null,
+    "closed_date": null,
+    "closing_reason": null,
     "priority": 0
   }
 },
@@ -683,8 +683,8 @@
     "input_module": 14,
     "is_taken": true,
     "is_closed": true,
-    "data_chiusura": "2019-05-02T14:38:58.631Z",
-    "motivazione_chiusura": "asd",
+    "closed_date": "2019-05-02T14:38:58.631Z",
+    "closing_reason": "asd",
     "priority": -1
   }
 },
@@ -701,8 +701,8 @@
     "input_module": 14,
     "is_taken": false,
     "is_closed": false,
-    "data_chiusura": null,
-    "motivazione_chiusura": null,
+    "closed_date": null,
+    "closing_reason": null,
     "priority": 0
   }
 },
@@ -2250,8 +2250,8 @@
     "created_by": null,
     "ticket": 11,
     "is_closed": true,
-    "data_chiusura": "2019-04-24T10:25:46.560Z",
-    "motivazione_chiusura": "chiusura task",
+    "closed_date": "2019-04-24T10:25:46.560Z",
+    "closing_reason": "chiusura task",
     "priority": -2
   }
 },
@@ -2266,8 +2266,8 @@
     "created_by": 3,
     "ticket": 16,
     "is_closed": false,
-    "data_chiusura": "2019-04-24T11:54:24.406Z",
-    "motivazione_chiusura": "asdasd",
+    "closed_date": "2019-04-24T11:54:24.406Z",
+    "closing_reason": "asdasd",
     "priority": 2
   }
 },
@@ -2282,8 +2282,8 @@
     "created_by": 3,
     "ticket": 19,
     "is_closed": true,
-    "data_chiusura": "2019-05-02T07:28:11.510Z",
-    "motivazione_chiusura": "motivazione",
+    "closed_date": "2019-05-02T07:28:11.510Z",
+    "closing_reason": "motivazione",
     "priority": 0
   }
 },
@@ -2298,8 +2298,8 @@
     "created_by": 3,
     "ticket": 24,
     "is_closed": true,
-    "data_chiusura": "2019-05-02T08:26:42.318Z",
-    "motivazione_chiusura": "task completato",
+    "closed_date": "2019-05-02T08:26:42.318Z",
+    "closing_reason": "task completato",
     "priority": 0
   }
 },
