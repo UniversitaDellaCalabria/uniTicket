@@ -721,6 +721,14 @@ class Task(models.Model):
         """
         return dict(PRIORITY_LEVELS).get(str(self.priority))
 
+    def update_log(self, user, note=None):
+        LogEntry.objects.log_action(user_id         = user.pk,
+                                    content_type_id = ContentType.objects.get_for_model(self).pk,
+                                    object_id       = self.pk,
+                                    object_repr     = self.__str__(),
+                                    action_flag     = CHANGE,
+                                    change_message  = note)
+
     def __str__(self):
         return '{} - ticket: {}'.format(self.subject, self.ticket)
 
