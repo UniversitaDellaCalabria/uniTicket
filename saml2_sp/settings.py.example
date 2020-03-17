@@ -41,14 +41,13 @@ SAML_CONFIG = {
                 }, # end endpoints
 
             # attributes that this project need to identify a user
-            'required_attributes': ['eduPersonPrincipalName',
-                                    'schacPersonalUniqueCode',
-                                    #'uid',
-                                    'mail',
-                                    'sn',
-                                    'cn',
-                                    'givenName',
-                                    'schacPersonalUniqueID'],
+            # 'required_attributes': ['eduPersonPrincipalName',
+            #                         'schacPersonalUniqueCode',
+            #                         'mail',
+            #                         'sn',
+            #                         'cn',
+            #                         'givenName',
+            #                         'schacPersonalUniqueID'],
 
             'allow_unknown_attributes' : False,
 
@@ -61,9 +60,23 @@ SAML_CONFIG = {
             "force_authn": True,
 
             # attributes that may be useful to have but not required
-            'optional_attributes': ['eduPersonAffiliation',
-                                    'matricola_dipendente',
-                                    'codice_fiscale'],
+            'optional_attributes': [ # Spid related
+                                     'spidCode',
+                                     'email',
+                                     'name',
+                                     'familyName',
+                                     'fiscalNumber',
+                                     # R&S related
+                                     'eduPersonPrincipalName',
+                                     'mail',
+                                     'sn',
+                                     'cn',
+                                     'givenName',
+                                     'schacPersonalUniqueID',
+                                     'schacPersonalUniqueCode',
+                                     'eduPersonAffiliation',
+                                     'matricola_dipendente',
+                                     'codice_fiscale'],
 
             # Indicates if the Authentication Requests sent by this SP should be signed by default.
             # default value is True (POST METHOD will be used, if false GET method will be used)
