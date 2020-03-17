@@ -921,7 +921,8 @@ def ticket_message(request, structure_slug, ticket_id,
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
     form = ReplyForm()
 
-    if ticket.is_open() and can_manage:
+    # if ticket.is_open() and can_manage:
+    if can_manage:
         user_replies = ticket_replies.filter(owner=ticket.created_by,
                                              structure=None,
                                              read_by=None)
