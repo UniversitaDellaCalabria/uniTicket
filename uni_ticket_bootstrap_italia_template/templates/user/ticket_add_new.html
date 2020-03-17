@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 {% block menu_links %}
 {% include 'user/main_menu.html' %}
@@ -25,7 +26,7 @@
     </div>
     <div class="chip chip-lg">
         <label class="chip-label" for="chip-02">
-            {% trans "Categoria" %}: <b>{{ categoria }}</b>
+            {% trans "Tipo di richiesta" %}: <b>{{ categoria }}</b>
         </label>
     </div>
 </div>
@@ -39,7 +40,7 @@
                     <div class="card-body">
                         {% for condition in conditions %}
                         <h5 class="card-title text-left">{{ condition.title }}</h5>
-                        <p class="card-text">{{ condition.text }}</p>
+                        <p class="card-text">{{ condition.text | markdown | safe }}</p>
                         {% endfor %}
                     </div>
                 </div>
