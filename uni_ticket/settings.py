@@ -6,7 +6,7 @@ TICKET_TASK_ATTACHMENT_SUBFOLDER = 'task'
 CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER = 'conditions'
 
 TICKET_CONDITIONS_FIELD_ID = 'condizioni_field_id'
-TICKET_CONDITIONS_TEXT = _('Ho letto e compreso quanto scritto sopra')
+TICKET_CONDITIONS_TEXT = _('Il sottoscritto {} dichiara di aver letto e compreso quanto scritto sopra')
 
 TICKET_SUBJECT_ID = 'ticket_subject'
 TICKET_SUBJECT_LABEL = _('Oggetto')
