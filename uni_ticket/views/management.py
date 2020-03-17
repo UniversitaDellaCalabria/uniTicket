@@ -210,10 +210,12 @@ def ticket_detail(request, structure_slug, ticket_id,
                                                                    ticket))
             if not ticket.is_taken:
                 ticket.is_taken = True
-                ticket.save(update_fields = ['is_taken'])
-                msg = _("Preso in carico. Priorità assegnata: {}".format(priority_text))
+                ticket.taken_by = request.user
+                ticket.save(update_fields = ['is_taken','taken_by'])
+                msg = _("Preso in carico da {}. Priorità assegnata: {}".format(request.user,
+                                                                               priority_text))
                 if not settings.SIMPLE_USER_SHOW_PRIORITY:
-                    msg = _("Preso in carico.".format(priority_text))
+                    msg = _("Preso in carico da {}.".format(request.user))
                 send_custom_mail(subject=m_subject,
                                  recipient=ticket.created_by,
                                  body=msg,
@@ -553,11 +555,13 @@ def ticket_close(request, structure_slug, ticket_id,
         if form.is_valid():
             motivazione = form.cleaned_data['note']
             ticket.is_closed = True
-            ticket.motivazione_chiusura = motivazione
-            ticket.data_chiusura = timezone.now()
+            ticket.closed_by = request.user
+            ticket.closing_reason = motivazione
+            ticket.closed_date = timezone.now()
             ticket.save(update_fields = ['is_closed',
-                                         'motivazione_chiusura',
-                                         'data_chiusura'])
+                                         'closed_by',
+                                         'closing_reason',
+                                         'closed_date'])
 
             # log action
             logger.info('[{}] {} closed ticket {}'.format(timezone.now(),
@@ -1346,11 +1350,11 @@ def task_close(request, structure_slug, ticket_id, task_id,
         if form.is_valid():
             motivazione = form.cleaned_data['note']
             task.is_closed = True
-            task.motivazione_chiusura = motivazione
-            task.data_chiusura = timezone.now()
+            task.closing_reason = motivazione
+            task.closed_date = timezone.now()
             task.save(update_fields = ['is_closed',
-                                       'motivazione_chiusura',
-                                       'data_chiusura'])
+                                       'closing_reason',
+                                       'closed_date'])
 
             # log action
             logger.info('[{}] {} closed task {}'.format(timezone.now(),

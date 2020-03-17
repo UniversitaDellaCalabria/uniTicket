@@ -212,13 +212,22 @@ class Ticket(SavedFormContent):
     created = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                    on_delete=models.SET_NULL,
-                                   null=True)
+                                   null=True,
+                                   related_name='created_by_user')
     input_module = models.ForeignKey(TicketCategoryModule,
                                      on_delete=models.PROTECT)
     is_taken = models.BooleanField(default=False)
+    taken_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 on_delete=models.SET_NULL,
+                                 null=True,
+                                 related_name='taken_by_user')
     is_closed = models.BooleanField(default=False)
-    data_chiusura = models.DateTimeField(blank=True, null=True)
-    motivazione_chiusura = models.TextField(blank=True, null=True)
+    closed_date = models.DateTimeField(blank=True, null=True)
+    closed_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                  on_delete=models.SET_NULL,
+                                  null=True,
+                                  related_name='closed_by_user')
+    closing_reason = models.TextField(blank=True, null=True)
     priority = models.IntegerField(default=0)
 
     class Meta:
@@ -329,9 +338,9 @@ class Ticket(SavedFormContent):
                                    TICKET_DESCRIPTION_ID])
 
     def get_status(self):
-        if self.is_closed: return _("Chiuso")
+        if self.is_closed: return _("Chiuso (da {})").format(self.closed_by)
         if not self.is_taken: return _("In attesa di essere preso in carico")
-        return _("Preso in carico")
+        return _("Preso in carico (da {})").format(self.taken_by)
 
     def update_log(self, user, note='', send_mail=True, mail_msg=''):
         if not user: return False
@@ -685,8 +694,8 @@ class Task(models.Model):
                                    null=True)
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     is_closed = models.BooleanField(default=False)
-    data_chiusura = models.DateTimeField(blank=True, null=True)
-    motivazione_chiusura = models.TextField(blank=True, null=True)
+    closed_date = models.DateTimeField(blank=True, null=True)
+    closing_reason = models.TextField(blank=True, null=True)
     priority = models.IntegerField(default=0)
     attachment = models.FileField(upload_to=_task_attachment_upload,
                                   null=True, blank=True)
