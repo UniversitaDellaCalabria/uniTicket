@@ -1236,7 +1236,6 @@ def task_detail(request, structure_slug, ticket_id, task_id,
                                                               priority_text))
             task.priority = priority
             task.save(update_fields = ['priority'])
-            task.update_log(user=request.user, note=msg)
             ticket.update_log(user=request.user, note=msg)
 
             # log action
@@ -1353,7 +1352,6 @@ def task_close(request, structure_slug, ticket_id, task_id,
                                                         task))
 
             msg = _("Chiusura task: {} - {}".format(task, motivazione))
-            task.update_log(user=request.user,note=msg)
             ticket.update_log(user=request.user,note=msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Task {} chiuso correttamente".format(task)))
@@ -1431,7 +1429,6 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
     task.is_closed = False
     task.save(update_fields = ['is_closed'])
     msg = _("Riapertura task {}".format(task))
-    task.update_log(user=request.user,note=msg)
 
     # log action
     logger.info('[{}] {} tried to'
@@ -1555,7 +1552,6 @@ def task_edit(request, structure_slug, ticket_id, task_id,
                                                         request.user,
                                                         task))
 
-            task.update_log(user=request.user,note=msg)
             ticket.update_log(user=request.user,note=msg)
             messages.add_message(request, messages.SUCCESS,
                                  _("Attività aggiornata con successo"))
@@ -1633,7 +1629,6 @@ def task_attachment_delete(request, structure_slug,
     task.save(update_fields = ['attachment'])
 
     msg = _("Allegato task {} eliminato".format(task.code))
-    task.update_log(user=request.user, note=_("Allegato eliminato"))
     ticket.update_log(user=request.user, note=msg)
 
     # log action
