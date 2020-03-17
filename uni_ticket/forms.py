@@ -96,20 +96,20 @@ class OfficeAddOperatorForm(forms.Form):
         office_slug = kwargs.pop('office_slug', None)
         current_user = kwargs.pop('current_user', None)
         osoe = OrganizationalStructureOfficeEmployee
-        actual_employees = osoe.objects.filter(office__slug=office_slug)
-        actual = []
-        for ae in actual_employees:
-            if ae.employee.pk not in actual:
-                actual.append(ae.employee.pk)
+        # actual_employees = osoe.objects.filter(office__slug=office_slug)
+        # actual = []
+        # for ae in actual_employees:
+            # if ae.employee.pk not in actual:
+                # actual.append(ae.employee.pk)
         # all employees in a structure
         all_employees = osoe.objects.filter(office__organizational_structure=structure)
         # exclude employees already assigned to office
-        clean_list = all_employees.exclude(employee__pk__in=actual)
+        # clean_list = all_employees.exclude(employee__pk__in=actual)
         # exclude all managers from list
-        for o in clean_list:
+        for o in all_employees:
             if get_user_type(o.employee, structure)=='manager':
-                clean_list = clean_list.exclude(pk=o.pk)
-        unique_ids = tuple(set((i[0] for i in clean_list.values_list('employee'))))
+                all_employees = all_employees.exclude(pk=o.pk)
+        unique_ids = tuple(set((i[0] for i in all_employees.values_list('employee'))))
         user_model = get_user_model()
         operators = user_model.objects.filter(pk__in=unique_ids)
         super().__init__(*args, **kwargs)
