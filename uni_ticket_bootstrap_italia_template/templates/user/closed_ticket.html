@@ -23,6 +23,7 @@
 {% endblock page_content %}
 
 {% block extra_scripts %}
+{% settings_value "SIMPLE_USER_SHOW_PRIORITY" as user_show_priority %}
 {% url 'uni_ticket:user_ticket_url' as var_url %}
 {% url 'uni_ticket:user_closed_ticket_json' as ajax_url %}
 {% include 'datatables/datatable_script.html' with var_url=var_url ajax_url=ajax_url is_simple_user=request.user user_show_priority=user_show_priority %}

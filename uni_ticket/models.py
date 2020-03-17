@@ -331,7 +331,7 @@ class Ticket(SavedFormContent):
     def get_status(self):
         if self.is_closed: return _("Chiuso")
         if not self.is_taken: return _("In attesa di essere preso in carico")
-        return _("Aperto")
+        return _("Preso in carico")
 
     def update_log(self, user, note='', send_mail=True, mail_msg=''):
         if not user: return False
@@ -757,3 +757,18 @@ class TicketCategoryCondition(models.Model):
 
     def __str__(self):
         return '({}) {}'.format(self.category, self.title)
+
+
+class TicketAssignmentTaker(models.Model):
+    """
+    """
+    assignment = models.ForeignKey(TicketAssignment, on_delete=models.CASCADE)
+    operator = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 on_delete=models.PROTECT)
+    created = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("assignment", "operator")
+        ordering = ["created"]
+        verbose_name = _("Presa in carico degli operatori")
+        verbose_name_plural = _("Prese in carico degli operatori")

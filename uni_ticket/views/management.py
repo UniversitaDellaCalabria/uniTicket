@@ -275,7 +275,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
     user_type = get_user_type(request.user, structure)
     template = "{}/tickets.html".format(user_type)
     title = _('Gestione ticket')
-    sub_title = _("Aperti o non ancora presi in carico")
+    sub_title = _("Presi in carico o in arrivo")
     structure_ticket = TicketAssignment.get_ticket_per_structure(structure)
     non_gestiti = Ticket.objects.filter(code__in=structure_ticket,
                                         is_taken=False,
@@ -624,7 +624,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                     ' not closed ticket {}'.format(timezone.now(),
                                                    request.user,
                                                    ticket))
-        return custom_message(request, _("Il ticket {} è già aperto"),
+        return custom_message(request, _("Il ticket {} non è stato chiuso"),
                               structure_slug=structure.slug)
     if not ticket.is_taken:
         # log action
@@ -1420,7 +1420,7 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     # Se il ticket non è chiuso blocca
     if not task.is_closed:
-        return custom_message(request, _("Il task è già aperto"),
+        return custom_message(request, _("Il task non è stato chiuso"),
                               structure_slug=structure.slug)
     if ticket.is_closed:
         # log action

@@ -150,7 +150,7 @@ def opened_ticket(request, structure_slug=None,
 
     :return: render
     """
-    title = _("Ticket aperti")
+    title = _("Ticket presi in carico")
     user_type = get_user_type(request.user, structure)
     template = "{}/opened_ticket.html".format(user_type)
     d = {'structure': structure,
