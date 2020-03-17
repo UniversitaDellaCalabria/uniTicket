@@ -7,11 +7,12 @@ var userList = $('#user-list');
 var messageList = $('#messages');
 var users = [];
 
-
+// play sound
 function beep(){
     document.getElementById("beep_sound").play();
 }
 
+// generate uuid4 code
 function uuid4(){
     var uuid = '', ii;
     for (ii = 0; ii < 32; ii += 1) {
@@ -36,45 +37,47 @@ function uuid4(){
     return uuid;
 }
 
+// return true if user is in current users[] list
 function user_is_in_list(user) {
     return users.indexOf(parseInt(user))>=0;
 }
 
-function no_chat_broadcast(){
-    if(!currentRecipient) return true;
-    if(currentRecipient==currentUser) return true;
-    return false;
-}
-
+// return true if current user is in chat with a user
 function active_chat_with(user){
     return user_is_in_list(user) && user==currentRecipient;
 }
 
+// return true if current user is in chat with a user not in list
 function inactive_chat_with(user){
     if(user==currentUser)return false;
     return user==currentRecipient &! user_is_in_list(user);
 }
 
-function make_inactive_others() {
+// make css inactive all users
+function make_inactive_all() {
     $( "a.user" ).removeClass("active");
 }
 
+// make css active a user
 function make_active(user) {
     $( "a.user[user='" + user + "']" ).addClass("active");
     $( "a.user[user='" + user + "']" ).removeClass("text-secondary");
 }
 
+// make css unread a user
 function make_unread(user) {
     $( "a.user[user='" + user + "']" ).addClass("text-secondary");
     beep();
 }
 
+// return true if a message is for active chat
 function message_is_for_active_chat(sender, recipient) {
     if(sender == currentRecipient) return true;
     if(recipient == currentRecipient && sender == currentUser) return true;
     return false;
 }
 
+// add onClick event to user button
 function addClickEvent(){
     // add click event
     $(userList).children('.item').last().children('.user').first().on("click",
@@ -89,6 +92,7 @@ function addClickEvent(){
     );
 }
 
+// add remove onClick event to user cross button
 function addRemoveEvent(){
     // add delete click event
     $(userList).children('.item').last().children('.item_delete').first().on("click",
@@ -100,6 +104,7 @@ function addRemoveEvent(){
     );
 }
 
+// add a user div in list
 function addUserDiv(user, user_fullname) {
     // build HTML user element in list
     var userItem = `<div class="item mb-2">
@@ -117,6 +122,7 @@ function addUserDiv(user, user_fullname) {
     addRemoveEvent();
 }
 
+// draw a message in chat
 function drawMessage(message, user_fullname, from_bot=false) {
     console.log("drawMessage " + message);
     var avatar = currentRecipient_fullname;
@@ -145,6 +151,7 @@ function drawMessage(message, user_fullname, from_bot=false) {
     $(messageItem).appendTo('#messages');
 }
 
+// show messages of a conversation
 function getConversation(recipient, room_name) {
     console.log("getConversation " + recipient);
     $.getJSON(`/api/v1/message/?target=${recipient}&room=${room_name}`, function (data) {
@@ -153,12 +160,13 @@ function getConversation(recipient, room_name) {
             console.log("getConversation " + data['results'][i]);
             drawMessage(message=data['results'][i]);
         }
-        make_inactive_others();
+        make_inactive_all();
         make_active(currentRecipient);
         messageList.animate({scrollTop: messageList.prop('scrollHeight')});
     });
 }
 
+// add user in users list
 function addUserInList(user, user_fullname, block_bot=false) {
     console.log("addUserInList: " + user);
     console.log("currentrecipient: "+ currentRecipient);
@@ -182,6 +190,7 @@ function addUserInList(user, user_fullname, block_bot=false) {
     }
 }
 
+// remove a user from list
 function removeUserFromList(user, manual_remove=false) {
     console.log("removeUserFromList:" + user);
     $("a.user[user='"+ user +"']").parent().remove();
@@ -203,6 +212,7 @@ function removeUserFromList(user, manual_remove=false) {
     console.log(users);
 }
 
+// get a message from API
 function getMessageById(message, room_name) {
     id = JSON.parse(message).message;
     user_fullname = JSON.parse(message).user_fullname;
@@ -223,18 +233,18 @@ function getMessageById(message, room_name) {
                         user_fullname=user_fullname);
             messageList.animate({scrollTop: messageList.prop('scrollHeight')});
         }
-        else if(!user_is_in_list(data.user)) {
-            addUserInList(user=data.user,
-                          user_fullname=user_fullname,
-                          block_bot=true);
-            make_unread(data.user);
-        }
         else {
+            if(!user_is_in_list(data.user)) {
+                addUserInList(user=data.user,
+                              user_fullname=user_fullname,
+                              block_bot=true);
+            }
             make_unread(data.user);
         }
     });
 }
 
+// create a message via API post
 function sendMessage(recipient, room_name, body, broadcast=0) {
     console.log("sendMessage / broadcast " + broadcast);
     $.post('/api/v1/message/', {
@@ -247,6 +257,7 @@ function sendMessage(recipient, room_name, body, broadcast=0) {
     });
 }
 
+// set a user as currentRecipient
 function setCurrentRecipient(username, full_name, room_name) {
     currentRecipient = username;
     currentRecipient_fullname = full_name;
@@ -254,6 +265,7 @@ function setCurrentRecipient(username, full_name, room_name) {
     enableInput();
 }
 
+// enable input field
 function enableInput() {
     chatInput.prop('disabled', false);
     chatButton.prop('disabled', false);
@@ -261,6 +273,7 @@ function enableInput() {
     chatInput.focus();
 }
 
+// disable input field
 function disableInput() {
     chatInput.prop('disabled', true);
     chatButton.prop('disabled', true);
@@ -268,15 +281,21 @@ function disableInput() {
 }
 
 $(document).ready(function () {
+    // disable input field
     disableInput();
+
+    // set socket
     var socket = new WebSocket(
         'wss://' + window.location.host +
         '/ws/chat/' + room_name + '/?session_key=' + sessionKey);
+
+    // on ENTER click
     chatInput.keypress(function (e) {
         if (e.keyCode == 13)
             chatButton.click();
     });
 
+    // onclick to send button
     chatButton.click(function () {
         if (chatInput.val().length > 0) {
             // broadcast message to all users of room
@@ -296,6 +315,7 @@ $(document).ready(function () {
         }
     });
 
+    // onclick to videochat button
     videoChatButton.click(function () {
         videochat_text="Clicca qui per entrare in videoconferenza ";
         videochat_url="https://meet.jit.si/"+ uuid4();
@@ -305,6 +325,7 @@ $(document).ready(function () {
                     body=videochat_text + " " + videochat_url);
     });
 
+    // on socket message
     socket.onmessage = function (e) {
         json_data = JSON.parse(e.data)
         console.log("socket.onmessage: " + json_data);
