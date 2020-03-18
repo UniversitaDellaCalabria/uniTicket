@@ -6,13 +6,11 @@ from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext as _
 
 from django_form_builder.dynamic_fields import CustomFileField
-from django_form_builder.settings import *
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,)
 
 from . models import *
-from . settings import PRIORITY_LEVELS
 # from . widgets import UniTicketSelectSearchWidget
 from bootstrap_italia_template.widgets import BootstrapItaliaSelectWidget
 
@@ -120,7 +118,7 @@ class OfficeAddOperatorForm(forms.Form):
 
 
 class PriorityForm(forms.Form):
-    priorita = forms.ChoiceField(choices=PRIORITY_LEVELS,
+    priorita = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
                                  required=True,
                                  initial=0,
                                  label=_('Priorità'),
@@ -202,7 +200,7 @@ class TaskForm(forms.Form):
     description = forms.CharField(label=_('Testo'),
                                   required=True,
                                   widget=forms.Textarea())
-    priority = forms.ChoiceField(choices=PRIORITY_LEVELS,
+    priority = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
                                  required=True,
                                  initial=0,
                                  label=_('Priorità'),)

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
@@ -5,7 +6,6 @@ from django.utils.text import slugify
 from django.views.generic import RedirectView
 
 from . decorators import is_manager, is_operator, is_the_owner
-from . settings import MANAGEMENT_URL_PREFIX
 from . views import (datatables, generic, management,
                      manager, operator, user)
 
@@ -93,7 +93,7 @@ urlpatterns += [
 ]
 
 # Manager URLs
-base = '{}/<str:structure_slug>'.format(slugify(MANAGEMENT_URL_PREFIX['manager']))
+base = '{}/<str:structure_slug>'.format(slugify(settings.MANAGEMENT_URL_PREFIX['manager']))
 tickets = '{}/tickets'.format(base)
 ticket_id = '{}/<str:ticket_id>'.format(tickets)
 task = '{}/tasks'.format(ticket_id)
@@ -176,7 +176,7 @@ urlpatterns += [
 ]
 
 # Operator URLs
-base = '{}/<str:structure_slug>'.format(slugify(MANAGEMENT_URL_PREFIX['operator']))
+base = '{}/<str:structure_slug>'.format(slugify(settings.MANAGEMENT_URL_PREFIX['operator']))
 tickets = '{}/tickets'.format(base)
 ticket_id = '{}/<str:ticket_id>'.format(tickets)
 task = '{}/tasks'.format(ticket_id)

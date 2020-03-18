@@ -13,16 +13,14 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from django_form_builder.dynamic_fields import format_field_name, get_fields_types
+from django.conf import settings
 from django_form_builder.models import DynamicFieldMap, SavedFormContent
-from django_form_builder.settings import (ATTACHMENTS_DICT_PREFIX,
-                                          MANAGEMENT_FORMSET_STRINGS)
 from django_form_builder.utils import get_as_dict, set_as_dict
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,)
 
 from . dynamic_form import DynamicForm
-from . settings import *
 from . utils import (get_folder_allegato,
                      get_user_type,
                      send_custom_mail,
@@ -36,7 +34,7 @@ def _reply_attachment_upload(instance, filename):
     """
     ticket_folder = get_folder_allegato(instance.ticket)
     return os.path.join('{}/{}/{}'.format(ticket_folder,
-                                          TICKET_MESSAGES_ATTACHMENT_SUBFOLDER,
+                                          settings.TICKET_MESSAGES_ATTACHMENT_SUBFOLDER,
                                           filename))
 
 def _task_attachment_upload(instance, filename):
@@ -45,7 +43,7 @@ def _task_attachment_upload(instance, filename):
     """
     ticket_folder = get_folder_allegato(instance.ticket)
     return os.path.join('{}/{}/{}/{}'.format(ticket_folder,
-                                             TICKET_TASK_ATTACHMENT_SUBFOLDER,
+                                             settings.TICKET_TASK_ATTACHMENT_SUBFOLDER,
                                              instance.code,
                                              filename))
 
@@ -54,7 +52,7 @@ def _condition_attachment_upload(instance, filename):
     this function has to return the location to upload the file
     """
     return os.path.join('{}/{}/{}/{}'.format(settings.HOSTNAME,
-                                             CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
+                                             settings.CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
                                              instance.category.slug,
                                              filename))
 
@@ -80,7 +78,7 @@ class TicketCategory(models.Model):
     show_heading_text = models.BooleanField(_("Mostra agli utenti un testo "
                                               "di accettazione in fase di "
                                               "apertura nuovo ticket"),
-                                            default=SHOW_HEADING_TEXT)
+                                            default=settings.SHOW_HEADING_TEXT)
     # fields to map roles
     allow_guest = models.BooleanField(_("Accessibile agli ospiti"), default=True)
     allow_user = models.BooleanField(_("Accessibile agli utenti dell'organizzazione"), default=True)
@@ -290,9 +288,9 @@ class Ticket(SavedFormContent):
     def number_limit_reached_by_user(user):
         """
         """
-        if MAX_DAILY_TICKET_PER_USER == 0: return False
+        if settings.MAX_DAILY_TICKET_PER_USER == 0: return False
         today_tickets = Ticket.get_user_ticket_per_day(user=user).count()
-        if today_tickets < MAX_DAILY_TICKET_PER_USER: return False
+        if today_tickets < settings.MAX_DAILY_TICKET_PER_USER: return False
         return True
 
 
@@ -316,10 +314,10 @@ class Ticket(SavedFormContent):
     def get_allegati_dict(self, ticket_dict={}):
         allegati_dict = {}
         if ticket_dict:
-            allegati_dict = ticket_dict.get(ATTACHMENTS_DICT_PREFIX)
+            allegati_dict = ticket_dict.get(settings.ATTACHMENTS_DICT_PREFIX)
         else:
             json_dict = json.loads(self.modulo_compilato)
-            allegati_dict = get_as_dict(compiled_module_json=json_dict).get(ATTACHMENTS_DICT_PREFIX)
+            allegati_dict = get_as_dict(compiled_module_json=json_dict).get(settings.ATTACHMENTS_DICT_PREFIX)
         return allegati_dict
 
     def get_form_module(self):
@@ -337,8 +335,8 @@ class Ticket(SavedFormContent):
         modulo = self.get_form_module()
         if not modulo: return None
         extra_datas = {}
-        extra_datas[TICKET_SUBJECT_ID] = self.subject
-        extra_datas[TICKET_DESCRIPTION_ID] = self.description
+        extra_datas[settings.TICKET_SUBJECT_ID] = self.subject
+        extra_datas[settings.TICKET_DESCRIPTION_ID] = self.description
         form = SavedFormContent.compiled_form(data_source=self.modulo_compilato,
                                               extra_datas=extra_datas,
                                               files=files,
@@ -351,8 +349,8 @@ class Ticket(SavedFormContent):
         self.subject = subject
         self.description = description
         set_as_dict(self, ticket_dict,
-                    fields_to_pop=[TICKET_SUBJECT_ID,
-                                   TICKET_DESCRIPTION_ID])
+                    fields_to_pop=[settings.TICKET_SUBJECT_ID,
+                                   settings.TICKET_DESCRIPTION_ID])
 
     def get_status(self):
         if self.is_closed: return _("Chiuso ({})").format(self.closed_by)
@@ -373,7 +371,7 @@ class Ticket(SavedFormContent):
             # Start send mail to ticket owner
             send_custom_mail(subject=m_subject,
                              recipient=self.created_by,
-                             body=TICKET_UPDATED,
+                             body=settings.TICKET_UPDATED,
                              params=d)
             # End send mail to ticket owner
 
@@ -505,8 +503,8 @@ class Ticket(SavedFormContent):
         """
         json_dict = json.loads(self.modulo_compilato)
         ticket_dict = get_as_dict(json_dict)
-        if not ATTACHMENTS_DICT_PREFIX in ticket_dict: return True
-        allegati = ticket_dict.get(ATTACHMENTS_DICT_PREFIX)
+        if not settings.ATTACHMENTS_DICT_PREFIX in ticket_dict: return True
+        allegati = ticket_dict.get(settings.ATTACHMENTS_DICT_PREFIX)
         # valido solo i campi File vuoti del form
         # evito di validare tutti gli altri campi, sicuramente corretti
         form = self.compiled_form(files=None,
@@ -518,7 +516,7 @@ class Ticket(SavedFormContent):
     def get_priority(self):
         """
         """
-        return dict(PRIORITY_LEVELS).get(str(self.priority))
+        return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
 
     def get_messages_count(self, by_operator=False):
         all_messages = TicketReply.objects.filter(ticket=self)
@@ -725,7 +723,7 @@ class Task(models.Model):
     def get_priority(self):
         """
         """
-        return dict(PRIORITY_LEVELS).get(str(self.priority))
+        return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
 
     def update_log(self, user, note=None):
         LogEntry.objects.log_action(user_id         = user.pk,

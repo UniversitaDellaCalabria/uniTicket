@@ -14,13 +14,11 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
-from django_form_builder.settings import ATTACHMENTS_DICT_PREFIX
 from django_form_builder.utils import get_as_dict
 from organizational_area.models import OrganizationalStructure
 
 from uni_ticket.decorators import *
 from uni_ticket.models import *
-from uni_ticket.settings import *
 from uni_ticket.utils import *
 from uni_ticket.views import user
 
@@ -65,7 +63,7 @@ def download_attachment(request, ticket_id, attachment, ticket):
     ticket_details = get_as_dict(compiled_module_json=json_dict)
     if attachment:
         # get ticket attachments
-        attachments = ticket_details[ATTACHMENTS_DICT_PREFIX]
+        attachments = ticket_details[settings.ATTACHMENTS_DICT_PREFIX]
         # get the attachment
         documento = attachments[attachment]
         # get ticket folder path
@@ -99,7 +97,7 @@ def download_message_attachment(request, ticket_id, reply_id, ticket):
         path_allegato = get_path_allegato(ticket)
         # get file
         result = download_file("{}/{}".format(path_allegato,
-                                              TICKET_MESSAGES_ATTACHMENT_SUBFOLDER),
+                                              settings.TICKET_MESSAGES_ATTACHMENT_SUBFOLDER),
                                os.path.basename(message.attachment.name))
         return result
     raise Http404
@@ -128,7 +126,7 @@ def download_task_attachment(request, ticket_id, task_id, ticket):
         path_allegato = get_path_allegato(ticket)
         # get file
         result = download_file("{}/{}/{}".format(path_allegato,
-                                                 TICKET_TASK_ATTACHMENT_SUBFOLDER,
+                                                 settings.TICKET_TASK_ATTACHMENT_SUBFOLDER,
                                                  task_id),
                                os.path.basename(task.attachment.name))
         return result
@@ -385,7 +383,7 @@ def ticket_message_delete(request, ticket_message_id):
                                                                   ticket))
         send_custom_mail(subject=m_subject,
                          recipient=request.user,
-                         body=USER_TICKET_MESSAGE,
+                         body=settings.USER_TICKET_MESSAGE,
                          params=mail_params)
         # END Send mail to ticket owner
 

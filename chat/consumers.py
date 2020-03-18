@@ -1,6 +1,7 @@
 import json
 import logging
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 
@@ -10,7 +11,6 @@ from channels.layers import get_channel_layer
 from datetime import timedelta
 
 from . models import UserChannel
-from . settings import SECONDS_TO_KEEP_ALIVE
 from . utils import chat_operator
 
 
@@ -30,7 +30,7 @@ class ChatConsumer(WebsocketConsumer):
     def _purge_inactive_channels(self):
         stored_channels = UserChannel.objects.filter(room=self.room_name).exclude(user=self.user)
         for sc in stored_channels:
-            if sc.last_seen < now() - timedelta(seconds=SECONDS_TO_KEEP_ALIVE):
+            if sc.last_seen < now() - timedelta(seconds=settings.SECONDS_TO_KEEP_ALIVE):
                 UserChannel.objects.get(channel=sc.channel).delete()
 
     def _check_user_is_active(self, user):
@@ -125,7 +125,9 @@ class ChatConsumer(WebsocketConsumer):
     # Join a room
     def join_room(self, event):
         user = get_user_model().objects.filter(pk=event['user']).first()
-        if chat_operator(self.user, event['room']) or (user and event['user'] != self.user.pk and chat_operator(user, event['room'])):
+        if chat_operator(self.user, event['room']) or \
+           (user and event['user'] != self.user.pk and \
+           chat_operator(user, event['room'])):
             self.send(
                 text_data=json.dumps({
                     'command': 'join_room',

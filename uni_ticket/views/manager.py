@@ -21,7 +21,6 @@ from uni_ticket.decorators import (has_access_to_ticket,
                                    ticket_is_not_taken_and_not_closed)
 from uni_ticket.forms import *
 from uni_ticket.models import *
-from uni_ticket.settings import MANAGER_PREFIX
 from uni_ticket.utils import custom_message, office_can_be_deleted
 
 

@@ -15,16 +15,12 @@ from django.utils.translation import gettext as _
 
 from django_form_builder.utils import get_as_dict, get_labeled_errors
 from organizational_area.models import *
-from organizational_area.settings import DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE
 from uni_ticket.decorators import (has_admin_privileges,
                                    ticket_assigned_to_structure,
                                    ticket_is_taken_and_not_closed,
                                    ticket_is_not_taken_and_not_closed)
 from uni_ticket.forms import *
 from uni_ticket.models import *
-from uni_ticket.settings import (NO_MORE_COMPETENCE_OVER_TICKET,
-                                 PRIORITY_LEVELS,
-                                 READONLY_COMPETENCE_OVER_TICKET)
 from uni_ticket.utils import *
 
 
@@ -186,7 +182,7 @@ def ticket_detail(request, structure_slug, ticket_id,
     form = PriorityForm(data={'priorita':ticket.priority})
     if request.method == 'POST':
         if can_manage['readonly']:
-            messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+            messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
@@ -200,7 +196,7 @@ def ticket_detail(request, structure_slug, ticket_id,
         form = PriorityForm(request.POST)
         if form.is_valid():
             priority = form.cleaned_data['priorita']
-            priority_text = dict(PRIORITY_LEVELS).get(priority)
+            priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
             mail_params = {'hostname': settings.HOSTNAME,
                            'status': _("aggiornato"),
                            'ticket': ticket,
@@ -339,7 +335,7 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                                                         request.user,
                                                         ticket))
 
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -438,7 +434,7 @@ def ticket_dependence_remove(request, structure_slug,
                                                         request.user,
                                                         ticket))
 
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -523,7 +519,7 @@ def ticket_close(request, structure_slug, ticket_id,
                                                         request.user,
                                                         ticket))
 
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -609,7 +605,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                                                  request.user,
                                                  ticket))
 
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -692,7 +688,7 @@ def ticket_competence_add_new(request, structure_slug, ticket_id,
     :return: render
     """
     if can_manage['readonly']:
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -744,7 +740,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                                         request.user,
                                                         ticket))
 
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -934,7 +930,7 @@ def ticket_message(request, structure_slug, ticket_id,
 
     if request.method == 'POST':
         if can_manage['readonly']:
-            messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+            messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
@@ -971,7 +967,7 @@ def ticket_message(request, structure_slug, ticket_id,
                                                                    ticket))
             send_custom_mail(subject=m_subject,
                              recipient=ticket.created_by,
-                             body=USER_TICKET_MESSAGE,
+                             body=settings.USER_TICKET_MESSAGE,
                              params=mail_params)
             # END Send mail to ticket owner
 
@@ -1038,7 +1034,7 @@ def task_add_new(request, structure_slug, ticket_id,
     :return: render
     """
     if can_manage['readonly']:
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -1119,7 +1115,7 @@ def task_remove(request, structure_slug,
                                                     task,
                                                     ticket))
 
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -1212,7 +1208,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
                                                         task,
                                                         ticket))
 
-            messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+            messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
@@ -1234,7 +1230,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
         form = PriorityForm(request.POST)
         if form.is_valid():
             priority = form.cleaned_data['priorita']
-            priority_text = dict(PRIORITY_LEVELS).get(priority)
+            priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
             msg = _("Task {} - Priorità assegnata: {}".format(task,
                                                               priority_text))
             task.priority = priority
@@ -1322,7 +1318,7 @@ def task_close(request, structure_slug, ticket_id, task_id,
     :return: render
     """
     if can_manage['readonly']:
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -1410,7 +1406,7 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
                                                     task,
                                                     ticket))
 
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -1510,7 +1506,7 @@ def task_edit(request, structure_slug, ticket_id, task_id,
                                                     task,
                                                     ticket))
 
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)
@@ -1544,7 +1540,7 @@ def task_edit(request, structure_slug, ticket_id, task_id,
             task.description = form.cleaned_data['description']
             if task.priority != form.cleaned_data['priority']:
                 msg = msg + _(" e Priorità assegnata: {}"
-                              "".format(dict(PRIORITY_LEVELS).get(form.cleaned_data['priority'])))
+                              "".format(dict(settings.PRIORITY_LEVELS).get(form.cleaned_data['priority'])))
             task.priority = form.cleaned_data['priority']
             if form.cleaned_data['attachment']:
                 task.attachment = form.cleaned_data['attachment']
@@ -1615,7 +1611,8 @@ def task_attachment_delete(request, structure_slug,
     :return: redirect
     """
     if can_manage['readonly']:
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR,
+                             settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)

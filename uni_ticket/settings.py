@@ -1,4 +1,4 @@
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 TICKET_ATTACHMENT_FOLDER = 'ticket'
 TICKET_MESSAGES_ATTACHMENT_SUBFOLDER = 'messages'

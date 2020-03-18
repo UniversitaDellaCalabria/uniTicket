@@ -1,3 +1,5 @@
+import json
+
 from cryptojwt.jwk.rsa import import_private_rsa_key_from_file, RSAKey
 from cryptojwt.jwe.jwe import factory
 from cryptojwt.jwe.jwe_rsa import JWE_RSA
@@ -9,13 +11,14 @@ def encrypt_to_jwe(content):
     a serialized encryption from cryptojwt.jwe.jwe_rsa.JWE_RSA
     """
     if isinstance(content, dict):
-        content = json.dumps(dict)
-    if isinstance(content, str):
+        content = json.dumps(content).encode()
+    elif isinstance(content, str):
         content = content.encode()
+
     if not isinstance(content, bytes):
         raise Exception('encrypt_to_jwe content must be a bytes object')
 
-    RSA_KEY = settings.UNITICKET_JWT_RSA_KEY_PATH
+    RSA_KEY = settings.UNITICKET_JWE_RSA_KEY_PATH
     JWE_ALG = settings.UNITICKET_JWE_ALG
     JWE_ENC = settings.UNITICKET_JWE_ENC
 

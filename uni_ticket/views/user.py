@@ -15,7 +15,6 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext as _
 
-from django_form_builder.settings import ATTACHMENTS_DICT_PREFIX
 from django_form_builder.utils import (get_as_dict,
                                        get_labeled_errors,
                                        get_POST_as_json,
@@ -25,7 +24,6 @@ from organizational_area.models import (OrganizationalStructure,
 from uni_ticket.decorators import *
 from uni_ticket.forms import *
 from uni_ticket.models import *
-from uni_ticket.settings import *
 from uni_ticket.utils import *
 
 logger = logging.getLogger(__name__)
@@ -45,7 +43,7 @@ def ticket_new_preload(request, structure_slug=None):
     if Ticket.number_limit_reached_by_user(request.user):
         messages.add_message(request, messages.ERROR,
                              _("Hai raggiunto il limite massimo giornaliero"
-                               " di ticket: <b>{}</b>".format(MAX_DAILY_TICKET_PER_USER)))
+                               " di ticket: <b>{}</b>".format(settings.MAX_DAILY_TICKET_PER_USER)))
         return redirect(reverse('uni_ticket:user_dashboard'))
 
     strutture = OrganizationalStructure.objects.filter(is_active=True)
@@ -100,7 +98,7 @@ def ticket_add_new(request, structure_slug, category_slug):
     if Ticket.number_limit_reached_by_user(request.user):
         messages.add_message(request, messages.ERROR,
                              _("Hai raggiunto il limite massimo giornaliero"
-                               " di ticket: <b>{}</b>".format(MAX_DAILY_TICKET_PER_USER)))
+                               " di ticket: <b>{}</b>".format(settings.MAX_DAILY_TICKET_PER_USER)))
         return redirect(reverse('uni_ticket:user_dashboard'))
 
     struttura = get_object_or_404(OrganizationalStructure,
@@ -137,15 +135,15 @@ def ticket_add_new(request, structure_slug, category_slug):
         d['form'] = form
 
         if form.is_valid():
-            fields_to_pop = [TICKET_CONDITIONS_FIELD_ID,
-                             TICKET_SUBJECT_ID,
-                             TICKET_DESCRIPTION_ID]
+            fields_to_pop = [settings.TICKET_CONDITIONS_FIELD_ID,
+                             settings.TICKET_SUBJECT_ID,
+                             settings.TICKET_DESCRIPTION_ID]
             json_data = get_POST_as_json(request=request,
                                          fields_to_pop=fields_to_pop)
             # make a UUID based on the host ID and current time
             code = uuid_code()
-            subject = form.cleaned_data[TICKET_SUBJECT_ID]
-            description = form.cleaned_data[TICKET_DESCRIPTION_ID]
+            subject = form.cleaned_data[settings.TICKET_SUBJECT_ID]
+            description = form.cleaned_data[settings.TICKET_DESCRIPTION_ID]
             ticket = Ticket(code=code,
                             subject=subject,
                             description=description,
@@ -165,14 +163,14 @@ def ticket_add_new(request, structure_slug, category_slug):
             json_dict = json.loads(ticket.modulo_compilato)
             json_stored = get_as_dict(compiled_module_json=json_dict)
             if request.FILES:
-                json_stored[ATTACHMENTS_DICT_PREFIX] = {}
+                json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
                 path_allegati = get_path_allegato(ticket)
                 for key, value in request.FILES.items():
                     save_file(form.cleaned_data[key],
                               path_allegati,
                               form.cleaned_data[key]._name)
                     value = form.cleaned_data[key]._name
-                    json_stored[ATTACHMENTS_DICT_PREFIX][key] = value
+                    json_stored[settings.ATTACHMENTS_DICT_PREFIX][key] = value
 
                     # log action
                     logger.info('[{}] attachment {} saved in {}'.format(timezone.now(),
@@ -216,7 +214,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                                          ticket))
             send_custom_mail(subject=m_subject,
                              recipient=request.user,
-                             body=NEW_TICKET_CREATED,
+                             body=settings.NEW_TICKET_CREATED,
                              params=mail_params)
             # END Send mail to ticket owner
 
@@ -253,7 +251,7 @@ def dashboard(request):
         messages += ticket.get_messages_count(by_operator=True)[1]
 
     d = {'ticket_messages': messages,
-         'priority_levels': PRIORITY_LEVELS,
+         'priority_levels': settings.PRIORITY_LEVELS,
          'sub_title': sub_title,
          'ticket_aperti': aperti,
          'ticket_chiusi': chiusi,
@@ -296,12 +294,12 @@ def ticket_edit(request, ticket_id):
          'ticket': ticket,
          'title': title,}
     if request.method == 'POST':
-        fields_to_pop = [TICKET_CONDITIONS_FIELD_ID]
+        fields_to_pop = [settings.TICKET_CONDITIONS_FIELD_ID]
         json_post = get_POST_as_json(request=request,
                                      fields_to_pop=fields_to_pop)
         json_response=json.loads(json_post)
         # Costruisco il form con il json dei dati inviati e tutti gli allegati
-        # json_response[ATTACHMENTS_DICT_PREFIX]=allegati
+        # json_response[settings.ATTACHMENTS_DICT_PREFIX]=allegati
         # rimuovo solo gli allegati che sono stati già inseriti
         modulo = ticket.get_form_module()
         form = modulo.get_form(data=json_response,
@@ -312,7 +310,7 @@ def ticket_edit(request, ticket_id):
 
         if form.is_valid():
             if request.FILES:
-                json_response[ATTACHMENTS_DICT_PREFIX] = allegati
+                json_response[settings.ATTACHMENTS_DICT_PREFIX] = allegati
                 path_allegati = get_path_allegato(ticket)
                 for key, value in request.FILES.items():
                     # form.validate_attachment(request.FILES.get(key))
@@ -320,14 +318,14 @@ def ticket_edit(request, ticket_id):
                               path_allegati,
                               form.cleaned_data[key]._name)
                     nome_allegato = form.cleaned_data[key]._name
-                    json_response[ATTACHMENTS_DICT_PREFIX]["{}".format(key)] = "{}".format(nome_allegato)
+                    json_response[settings.ATTACHMENTS_DICT_PREFIX]["{}".format(key)] = "{}".format(nome_allegato)
             elif allegati:
                 # Se non ho aggiornato i miei allegati lasciandoli invariati rispetto
                 # all'inserimento precedente
-                json_response[ATTACHMENTS_DICT_PREFIX] = allegati
+                json_response[settings.ATTACHMENTS_DICT_PREFIX] = allegati
             # salva il modulo
-            ticket.save_data(form.cleaned_data[TICKET_SUBJECT_ID],
-                             form.cleaned_data[TICKET_DESCRIPTION_ID],
+            ticket.save_data(form.cleaned_data[settings.TICKET_SUBJECT_ID],
+                             form.cleaned_data[settings.TICKET_DESCRIPTION_ID],
                              json_response)
             # data di modifica
             ticket.update_log(user=request.user,
@@ -368,10 +366,10 @@ def delete_my_attachment(request, ticket_id, attachment):
     ticket = get_object_or_404(Ticket, code=ticket_id)
     json_dict = json.loads(ticket.modulo_compilato)
     ticket_details = get_as_dict(compiled_module_json=json_dict)
-    nome_file = ticket_details[ATTACHMENTS_DICT_PREFIX][attachment]
+    nome_file = ticket_details[settings.ATTACHMENTS_DICT_PREFIX][attachment]
 
     # Rimuove il riferimento all'allegato dalla base dati
-    del ticket_details[ATTACHMENTS_DICT_PREFIX][attachment]
+    del ticket_details[settings.ATTACHMENTS_DICT_PREFIX][attachment]
     path_allegato = get_path_allegato(ticket)
 
     # Rimuove l'allegato dal disco
@@ -416,7 +414,7 @@ def ticket_delete(request, ticket_id):
     code = ticket.code
     json_dict = json.loads(ticket.modulo_compilato)
     ticket_details = get_as_dict(compiled_module_json=json_dict)
-    if ATTACHMENTS_DICT_PREFIX in ticket_details:
+    if settings.ATTACHMENTS_DICT_PREFIX in ticket_details:
         delete_directory(ticket_id)
     ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
 
@@ -442,7 +440,7 @@ def ticket_delete(request, ticket_id):
 
     send_custom_mail(subject=m_subject,
                      recipient=request.user,
-                     body=TICKET_DELETED,
+                     body=settings.TICKET_DELETED,
                      params=mail_params)
     # END Send mail to ticket owner
 
@@ -577,7 +575,7 @@ def ticket_message(request, ticket_id):
                                                                     ticket))
             send_custom_mail(subject=m_subject,
                              recipient=request.user,
-                             body=USER_TICKET_MESSAGE,
+                             body=settings.USER_TICKET_MESSAGE,
                              params=mail_params)
             # END Send mail to ticket owner
 
@@ -733,15 +731,15 @@ def ticket_clone(request, ticket_id):
         d['form'] = form
 
         if form.is_valid():
-            fields_to_pop = [TICKET_CONDITIONS_FIELD_ID,
-                             TICKET_SUBJECT_ID,
-                             TICKET_DESCRIPTION_ID]
+            fields_to_pop = [settings.TICKET_CONDITIONS_FIELD_ID,
+                             settings.TICKET_SUBJECT_ID,
+                             settings.TICKET_DESCRIPTION_ID]
             json_data = get_POST_as_json(request=request,
                                          fields_to_pop=fields_to_pop)
             # make a UUID based on the host ID and current time
             code = uuid_code()
-            subject = form.cleaned_data[TICKET_SUBJECT_ID]
-            description = form.cleaned_data[TICKET_DESCRIPTION_ID]
+            subject = form.cleaned_data[settings.TICKET_SUBJECT_ID]
+            description = form.cleaned_data[settings.TICKET_DESCRIPTION_ID]
             ticket = Ticket(code=code,
                             subject=subject,
                             description=description,
@@ -761,14 +759,14 @@ def ticket_clone(request, ticket_id):
             json_dict = json.loads(ticket.modulo_compilato)
             json_stored = get_as_dict(compiled_module_json=json_dict)
             if request.FILES:
-                json_stored[ATTACHMENTS_DICT_PREFIX] = {}
+                json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
                 path_allegati = get_path_allegato(ticket)
                 for key, value in request.FILES.items():
                     save_file(form.cleaned_data[key],
                               path_allegati,
                               form.cleaned_data[key]._name)
                     value = form.cleaned_data[key]._name
-                    json_stored[ATTACHMENTS_DICT_PREFIX][key] = value
+                    json_stored[settings.ATTACHMENTS_DICT_PREFIX][key] = value
 
                     # log action
                     logger.info('[{}] attachment {} saved in {}'.format(timezone.now(),
@@ -812,7 +810,7 @@ def ticket_clone(request, ticket_id):
                                                                          ticket))
             send_custom_mail(subject=m_subject,
                              recipient=request.user,
-                             body=NEW_TICKET_CREATED,
+                             body=settings.NEW_TICKET_CREATED,
                              params=mail_params)
             # END Send mail to ticket owner
 

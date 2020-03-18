@@ -7,7 +7,6 @@ from organizational_area.models import *
 
 from uni_ticket.decorators import is_operator
 from uni_ticket.models import *
-from uni_ticket.settings import OPERATOR_PREFIX
 from uni_ticket.utils import (user_is_operator,
                               user_offices_list,
                               visible_tickets_to_user)
@@ -29,7 +28,7 @@ def dashboard(request, structure_slug, structure, office_employee):
     :return: render
     """
     title = _("Pannello di Controllo")
-    sub_title = _("Gestisci i ticket in modalità {}").format(OPERATOR_PREFIX)
+    sub_title = _("Gestisci i ticket in modalità {}").format(settings.OPERATOR_PREFIX)
     template = "operator/dashboard.html"
     offices = user_offices_list(office_employee)
     user_tickets = visible_tickets_to_user(user=request.user,

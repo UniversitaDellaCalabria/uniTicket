@@ -1,7 +1,6 @@
+from django.conf import settings
 from django_form_builder.forms import BaseDynamicForm
 from django_form_builder import dynamic_fields
-
-from . settings import *
 
 
 class DynamicForm(BaseDynamicForm):
@@ -21,28 +20,28 @@ class DynamicForm(BaseDynamicForm):
         conditions = category_owner.get_conditions()
         # Inserimento manuale del checkbox per accettazione condizioni
         if conditions and show_conditions:
-            conditions_id = dynamic_fields.format_field_name(TICKET_CONDITIONS_FIELD_ID)
+            conditions_id = dynamic_fields.format_field_name(settings.TICKET_CONDITIONS_FIELD_ID)
             conditions_data = {'required' : True,
-                               'label': TICKET_CONDITIONS_TEXT}
+                               'label': settings.TICKET_CONDITIONS_TEXT}
             conditions_field = getattr(dynamic_fields,
                                        'CheckBoxField')(**conditions_data)
             self.fields[conditions_id] = conditions_field
 
         # Inserimento manuale dei fields SUBJECT TICKET
-        subject_id = dynamic_fields.format_field_name(TICKET_SUBJECT_ID)
+        subject_id = dynamic_fields.format_field_name(settings.TICKET_SUBJECT_ID)
         subject_data = {'required' : True,
-                        'label': TICKET_SUBJECT_LABEL,
-                        'help_text': TICKET_SUBJECT_HELP_TEXT,
+                        'label': settings.TICKET_SUBJECT_LABEL,
+                        'help_text': settings.TICKET_SUBJECT_HELP_TEXT,
                         'initial': subject_initial}
         subject_field = getattr(dynamic_fields,
                                 'CustomCharField')(**subject_data)
         self.fields[subject_id] = subject_field
 
         # Inserimento manuale dei fields DESCRIZIONE TICKET
-        description_id = dynamic_fields.format_field_name(TICKET_DESCRIPTION_ID)
+        description_id = dynamic_fields.format_field_name(settings.TICKET_DESCRIPTION_ID)
         description_data = {'required' : True,
-                            'label': TICKET_DESCRIPTION_LABEL,
-                            'help_text': TICKET_DESCRIPTION_HELP_TEXT,
+                            'label': settings.TICKET_DESCRIPTION_LABEL,
+                            'help_text': settings.TICKET_DESCRIPTION_HELP_TEXT,
                             'initial': description_initial}
         description_field = getattr(dynamic_fields,
                                     'TextAreaField')(**description_data)
