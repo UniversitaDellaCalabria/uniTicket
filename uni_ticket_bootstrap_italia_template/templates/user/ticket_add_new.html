@@ -32,17 +32,20 @@
 </div>
 
 {% block user_ticket_head %}
+{% settings_value name="SHOW_HEADING_TEXT" as show_heading %}
+{% if show_heading or category_conditions %}
 <div class="pb-4">
     <div class="row">
         <div class="col">
             <div class="card-space card-wrapper">
                 <div class="card card-bg no-after">
                     <div class="card-body">
+                        {% if show_heading %}
                         <p class="card-title text-left">
-                            {% trans "Il Sottoscritto" %}
-                            <b>{{ request.user }}</b> <span class="x-small">[{{request.user.taxpayer_id}}]</span>
-                            {% trans "in qualità di soggetto richiedente di" %} <b>{{ categoria }}</b>
+                            {% settings_value name="TICKET_HEADING_TEXT" user=request.user taxpayer=request.user.taxpayer_id category=categoria as heading %}
+                            {{ heading|safe  }}
                         </p>
+                        {% endif %}
                         {% if conditions %}
                             {% for condition in conditions %}
 
@@ -63,6 +66,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% endblock over_content %}

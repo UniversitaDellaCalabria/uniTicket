@@ -8,6 +8,9 @@ CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER = 'conditions'
 TICKET_CONDITIONS_FIELD_ID = 'condizioni_field_id'
 TICKET_CONDITIONS_TEXT = _('Dichiara altresì di aver letto e compreso quanto scritto sopra e di assumere ogni responsabilità su quanto di seguito dichiarato')
 
+SHOW_HEADING_TEXT = True
+TICKET_HEADING_TEXT = _('Il Sottoscritto <b>{user}</b> <span class="x-small">[{taxpayer}]</span> in qualità di soggetto richiedente di <b>{category}</b>')
+
 TICKET_SUBJECT_ID = 'ticket_subject'
 TICKET_SUBJECT_LABEL = _('Oggetto della Richiesta')
 TICKET_SUBJECT_HELP_TEXT = _("Ulteriore specificazione o personalizzazione dell'Oggetto della Richiesta")

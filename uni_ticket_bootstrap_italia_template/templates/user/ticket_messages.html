@@ -26,10 +26,10 @@
         <thead>
             <tr role="row">
                 <th>Ticket</th>
+<!--
                 <th>Oggetto</th>
-    <!--
-                <th>Categoria</th>
-    -->
+-->
+                <th>Tipo</th>
     <!--
                 <th>Stato</th>
     -->
@@ -46,13 +46,13 @@
                 <tr>
                     <td>
                         <a href="{% url 'uni_ticket:ticket_detail' ticket_id=tm.0.code %}">
-                            {{ tm.0.code }}
+                            {{ tm.0.subject }}
                         </a>
                     </td>
+<!--
                     <td>{{ tm.0.subject }}</td>
-    <!--
+-->
                     <td>{{ tm.0.get_category }}</td>
-    -->
     <!--
                     <td>{{ tm.0.get_status }}</td>
     -->

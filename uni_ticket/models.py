@@ -107,11 +107,13 @@ class TicketCategory(models.Model):
                      " attivare un modulo di input".format(self))
         return False
 
-    def get_conditions(self):
+    def get_conditions(self, is_printable=False):
         """
         """
         conditions = TicketCategoryCondition.objects.filter(category=self,
                                                             is_active=True)
+        if is_printable:
+            conditions = conditions.filter(is_printable=True)
         return conditions
 
     def allowed_to_user(self, user):
@@ -349,7 +351,7 @@ class Ticket(SavedFormContent):
                                    TICKET_DESCRIPTION_ID])
 
     def get_status(self):
-        if self.is_closed: return _("Chiuso (da {})").format(self.closed_by)
+        if self.is_closed: return _("Chiuso ({})").format(self.closed_by)
         if not self.is_taken: return _("Aperto")
         return _("Assegnato ({})").format(self.taken_by)
 

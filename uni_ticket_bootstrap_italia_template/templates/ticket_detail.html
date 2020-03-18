@@ -27,7 +27,7 @@
             {% endif %}
             <!-- stupid var passed to template only to
                  check if current user is manager/operator -->
-            {% settings_value "SIMPLE_USER_SHOW_PRIORITY" as user_show_priority %}
+            {% settings_value name="SIMPLE_USER_SHOW_PRIORITY" as user_show_priority %}
             {% if not is_simple_user  or user_show_priority %}
             <tr>
                 <th scope="row">{% trans 'Priorità' %}</th>

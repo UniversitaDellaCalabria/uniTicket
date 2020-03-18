@@ -35,7 +35,7 @@ class TicketCategoryConditionNestedInline(nested_admin.NestedTabularInline):
     form = TicketCategoryConditionModelForm
     sortable_field_name = "ordinamento"
     extra = 0
-    classes = ['collapse',]
+    # classes = ['collapse',]
 
 
 # Ticket Category Module Form

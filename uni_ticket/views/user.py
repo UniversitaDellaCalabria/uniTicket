@@ -492,7 +492,10 @@ def ticket_detail(request, ticket_id, template='user/ticket_detail.html'):
     assigned_to = []
     ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
 
+    category_conditions = ticket.input_module.ticket_category.get_conditions(is_printable=True)
+
     d={'allegati': allegati,
+       'category_conditions': category_conditions,
        'dependences': ticket_dependences,
        'details': ticket_details,
        'path_allegati': path_allegati,

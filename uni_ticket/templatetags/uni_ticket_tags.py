@@ -16,8 +16,9 @@ from uni_ticket.models import (Ticket,
                                TicketAssignment,
                                TicketCategoryCondition,
                                TicketCategoryModule)
-from uni_ticket.settings import (CONTEXT_SIMPLE_USER,
-                                 MANAGEMENT_URL_PREFIX)
+from uni_ticket import settings as uni_ticket_settings
+ # import (CONTEXT_SIMPLE_USER,
+                                 # MANAGEMENT_URL_PREFIX)
 from uni_ticket.utils import (download_file,
                               format_slugged_name,
                               get_path_allegato,
@@ -77,12 +78,12 @@ def conditions_in_category(category):
 
 @register.simple_tag
 def simple_user_context_name():
-    return CONTEXT_SIMPLE_USER
+    return uni_ticket_settings.CONTEXT_SIMPLE_USER
 
 @register.simple_tag
 def get_usertype(user, structure, label_value_tuple=False):
     label = get_user_type(user, structure)
-    value = MANAGEMENT_URL_PREFIX[label]
+    value = uni_ticket_settings.MANAGEMENT_URL_PREFIX[label]
     if label_value_tuple: return (label, value)
     return value
 
@@ -115,8 +116,10 @@ def user_operator_chat(user, structure):
     return user_is_in_default_office(user, structure)
 
 @register.simple_tag
-def settings_value(name):
-    return getattr(settings, name, "")
+def settings_value(name, **kwargs):
+    value = getattr(settings, name, None) or getattr(uni_ticket_settings, name, None)
+    if value and kwargs: return value.format(**kwargs)
+    return value
 
 @register.filter()
 @stringfilter
