@@ -47,7 +47,6 @@
                         {% endif %}
                         {% if conditions %}
                             {% for condition in conditions %}
-
                             <h6>{{ condition.title }}</h6>
                             <p class="card-text">{{ condition.text | markdown | safe }}</p>
                             {% if condition.attachment %}
