@@ -13,6 +13,7 @@ data/media/*
 !data/media/README.md
 docs/build/*
 uni_ticket_project_cache/*
+db.sqlite3
 
 saml2_sp/saml2_config/certificates/*pem
 saml2_sp/saml2_config/certificates/*key

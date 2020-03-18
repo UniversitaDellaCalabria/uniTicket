@@ -1,36 +1,23 @@
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 import os
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'rz82a_#y1#s=l+loeqgn_4xslwchu%yxtpdf)h7b$6kn+p+sca'
+SECRET_KEY = 'rz82a_!%$&&56£$56565645645!"SDFXbg"£$5£"$5a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-HOSTNAME = ''
-ALLOWED_HOSTS = ['*']
+DEBUG = False
+if not DEBUG:
+    SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+    SESSION_COOKIE_AGE=(60*60)*9
+
+HOSTNAME = 'ticket.unical.it'
+ALLOWED_HOSTS = [HOSTNAME]
 
 ADMIN_PATH = 'gestione'
 
-EMAIL_SENDER = 'no-reply@{}'.format(HOSTNAME)
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.mysql'),
-#         'NAME': os.environ.get('SQL_DATABASE', 'uniauth'),
-#         'HOST': os.environ.get('SQL_HOST','localhost'),
-#         'USER': os.environ.get('SQL_USER','root'),
-#         'PASSWORD': os.environ.get('SQL_PASSWORD','mypass'),
-#         'PORT': os.environ.get('SQL_PORT','3306'),
-#         'OPTIONS': {
-#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-#         },
-#     }
-# }
+EMAIL_SENDER = 'ticket.no-reply@{}'.format(HOSTNAME)
 
 DATABASES = {
     'default': {
@@ -73,10 +60,11 @@ INSTALLED_APPS = [
     'chat',
 
     ##SAML2 SP
-    # 'djangosaml2',
-    # 'saml2_sp',
+    'djangosaml2',
+    'saml2_sp',
 ]
 
+AUTH_USER_MODEL = "accounts.User"
 
 CUSTOM_WIDGETS = {
     'BaseDateField': 'bootstrap_italia_template.widgets.BootstrapItaliaDateWidget',
@@ -89,20 +77,22 @@ CUSTOM_WIDGETS = {
     # 'CustomRadioBoxField': 'django.forms.widgets.RadioSelect',
 }
 
-if 'saml2_sp' in INSTALLED_APPS:
-    from saml2_sp.settings import *
-
 # DjangoSAML2 conf
 if 'djangosaml2'  in INSTALLED_APPS:
-    # from . import sp_pysaml2
+    from saml2_sp.settings import *
     # pySAML2 SP mandatory
-    # SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+    SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+
+    LOGIN_URL = '/saml2/login'
+    LOGOUT_URL = '/saml2/logout'
 
     AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
         'djangosaml2.backends.Saml2Backend',
     )
-
+else:
+    LOGIN_URL = '/login'
+    LOGOUT_URL = 'logout'
 
 # This parameters define the roles of users to open ticket
 # If True, an employee is a user that has this parameter filled (in user model)
@@ -112,13 +102,13 @@ EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
 # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
 USER_ATTRIBUTE_NAME = 'matricola_studente'
 
-EMAIL_HOST = smtp_server
-EMAIL_HOST_USER = host@testmail.ext
-EMAIL_HOST_PASSWORD = password
+DEFAULT_FROM_EMAIL = 'uniticket-noreply@server.it'
+SERVER_EMAIL = 'uniticket-error@server.it'
+EMAIL_HOST = 'smtp.server.it'
+# EMAIL_HOST_USER = 'myemail@hotmail.com'
+# EMAIL_HOST_PASSWORD = 'mypassword'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = from_email_address@testmail.ext
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # needed to have debug var in template context
 INTERNAL_IPS = (
@@ -151,50 +141,61 @@ CHANNEL_LAYERS = {
     },
 }
 
+ADMINS = [('Giuseppe De Marco', 'giuseppe.demarco@server.it'),
+          ('Francesco Filicetti', 'francesco.filicetti@server.it'),]
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+        'verbose': {
+            'format': '%(levelname)s [%(asctime)s] %(module)s %(message)s'
+            },
+        },
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse'
+            }
+        },
+        'handlers': {
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler'
+            },
+            'console': {
+                'level': 'INFO',
+                'class': 'logging.StreamHandler',
+            },
+            # 'file': {
+                # 'class': 'logging.handlers.RotatingFileHandler',
+                # 'formatter': 'verbose',
+                # 'filename': '/tmp/peo.unical.it-error-handler.log',
+                # 'maxBytes': 1024000,
+                # 'backupCount': 3,
+                # },
+        },
+        'loggers': {
+            # disables Invalid HTTP_HOST header emails
+            'django.security.DisallowedHost': {
+                    'handlers': ['mail_admins'],
+                    'level': 'CRITICAL',
+                    'propagate': False,
+            },
+            # 'django.request': {
+                # 'handlers': ['mail_admins'],
+                # 'level': 'ERROR',
+                # 'propagate': True,
+            # },
+            # 'djangosaml2': {
+                # 'handlers': ['console'],
+                # 'level': 'DEBUG',
+            # },
+            'django': {
+                'handlers': ['console','mail_admins'],
+                'propagate': True,
+                'level': 'ERROR',
+            },
         }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        'djangosaml2': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-        },
-        'uni_ticket': {
-            'handlers': ['console',],
-            'propagate': True,
-            'level': 'INFO',
-        },
-        'organizational_area': {
-            'handlers': ['console',],
-            'propagate': True,
-            'level': 'INFO',
-        },
-        'chat': {
-            'handlers': ['console'],
-            'propagate': True,
-            'level': 'INFO',
-        },
     }
-}
+
