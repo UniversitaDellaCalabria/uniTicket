@@ -9,9 +9,10 @@ def encrypt_to_jwe(content):
     a serialized encryption from cryptojwt.jwe.jwe_rsa.JWE_RSA
     """
     if isinstance(content, dict):
-        content = json.dumps(dict)
-    if isinstance(content, str):
+        content = json.dumps(content).encode()
+    elif isinstance(content, str):
         content = content.encode()
+
     if not isinstance(content, bytes):
         raise Exception('encrypt_to_jwe content must be a bytes object')
 
