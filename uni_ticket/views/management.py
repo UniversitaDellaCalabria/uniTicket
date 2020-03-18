@@ -963,7 +963,9 @@ def ticket_message(request, structure_slug, ticket_id,
             mail_params = {'hostname': settings.HOSTNAME,
                            'status': _("ricevuto"),
                            'ticket': ticket,
-                           'user': ticket.created_by
+                           'user': ticket.created_by,
+                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
+                                                             kwargs={'ticket_id': ticket.code}))
                           }
             m_subject = _('{} - ticket {} nuovo messaggio'.format(settings.HOSTNAME,
                                                                    ticket))

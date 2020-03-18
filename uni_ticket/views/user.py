@@ -28,7 +28,6 @@ from uni_ticket.models import *
 from uni_ticket.settings import *
 from uni_ticket.utils import *
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -570,7 +569,9 @@ def ticket_message(request, ticket_id):
             mail_params = {'hostname': settings.HOSTNAME,
                            'status': _("inviato"),
                            'ticket': ticket,
-                           'user': request.user
+                           'user': request.user,
+                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
+                                                             kwargs={'ticket_id': ticket.code}))
                           }
             m_subject = _('{} - ticket {} messaggio inviato'.format(settings.HOSTNAME,
                                                                     ticket))

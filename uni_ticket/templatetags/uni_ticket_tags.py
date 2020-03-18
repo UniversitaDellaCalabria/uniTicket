@@ -17,8 +17,6 @@ from uni_ticket.models import (Ticket,
                                TicketCategoryCondition,
                                TicketCategoryModule)
 from uni_ticket import settings as uni_ticket_settings
- # import (CONTEXT_SIMPLE_USER,
-                                 # MANAGEMENT_URL_PREFIX)
 from uni_ticket.utils import (download_file,
                               format_slugged_name,
                               get_path_allegato,
@@ -38,16 +36,6 @@ def filename(value):
     if os.path.exists(value.path):
         return os.path.basename(value.file.name)
     return _("Risorsa non più disponibile")
-
-# @register.filter
-# def status(ticket):
-    # if ticket.is_closed:
-        # v = '<span class="text-danger"><b>{}</b>'.format(_('Chiuso'))
-    # elif ticket.is_taken:
-        # v = '<span class="text-success"><b>{}</b>'.format(_('Aperto'))
-    # else:
-        # v = '<span class="text-warning"><b>{}</b>'.format(_('Da prendere in carico'))
-    # return v
 
 @register.filter
 def no_slugged(value):

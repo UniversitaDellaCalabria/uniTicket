@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load static %}
 
+<script charset="utf8" src="{% static 'js/escape_html.js' %}"></script>
 <script charset="utf8" src="{% static 'js/datatables/datatables.min.js' %}"></script>
 <script>
 //$.urlParam = function(name){
@@ -68,8 +69,9 @@ $(document).ready(function() {
             },
             {
                 targets: [ 2 ],
+                //render: $.fn.dataTable.render.text(),
                 render: function ( data, type, row ) {
-                    return "<a href='"+url+row[1]+"'>"+data+"</a>";
+                    return "<a href='"+url+row[1]+"'>"+escapeHtml(data)+"</a>";
                 }
             },
             {

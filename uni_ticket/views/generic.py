@@ -377,7 +377,9 @@ def ticket_message_delete(request, ticket_message_id):
         mail_params = {'hostname': settings.HOSTNAME,
                        'status': _("eliminato"),
                        'ticket': ticket,
-                       'user': request.user
+                       'user': request.user,
+                       'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
+                                                                 kwargs={'ticket_id': ticket.code}))
                       }
         m_subject = _("{} - ticket {} messaggio eliminato".format(settings.HOSTNAME,
                                                                   ticket))

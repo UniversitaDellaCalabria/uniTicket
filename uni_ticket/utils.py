@@ -339,7 +339,6 @@ def send_custom_mail(subject, recipient, body, params={}):
 
     msg_body_list = [MSG_HEADER, body, MSG_FOOTER]
     msg_body = ''.join(msg_body_list).format(**params)
-
     result = send_mail(subject=subject,
                        message=msg_body,
                        from_email=settings.EMAIL_SENDER,
