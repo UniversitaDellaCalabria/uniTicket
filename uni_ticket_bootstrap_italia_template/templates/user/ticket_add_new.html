@@ -32,15 +32,14 @@
 </div>
 
 {% block user_ticket_head %}
-{% settings_value name="SHOW_HEADING_TEXT" as show_heading %}
-{% if show_heading or category_conditions %}
+{% if categoria.show_heading_text or category_conditions %}
 <div class="pb-4">
     <div class="row">
         <div class="col">
             <div class="card-space card-wrapper">
                 <div class="card card-bg no-after">
                     <div class="card-body">
-                        {% if show_heading %}
+                        {% if categoria.show_heading_text %}
                         <p class="card-title text-left">
                             {% settings_value name="TICKET_HEADING_TEXT" user=request.user taxpayer=request.user.taxpayer_id category=categoria as heading %}
                             {{ heading|safe  }}

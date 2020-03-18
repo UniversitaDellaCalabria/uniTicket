@@ -702,3 +702,9 @@ def chat_new_preload(request, structure_slug=None):
          'sub_title': sub_title,
          'title': title,}
     return render(request, template, d)
+
+# @login_required
+# def ticket_clone(request, ticket_id):
+    # ticket = get_object_or_404(Ticket,
+                               # code=ticket_id,
+                               # created_by=request.user)

@@ -77,6 +77,10 @@ class TicketCategory(models.Model):
     is_active = models.BooleanField(default=False,
                                     help_text=_("Se disabilitato, non sarà "
                                                 "visibile in Aggiungi Ticket"))
+    show_heading_text = models.BooleanField(_("Mostra agli utenti un testo "
+                                              "di accettazione in fase di "
+                                              "apertura nuovo ticket"),
+                                            default=SHOW_HEADING_TEXT)
     # fields to map roles
     allow_guest = models.BooleanField(_("Accessibile agli ospiti"), default=True)
     allow_user = models.BooleanField(_("Accessibile agli utenti dell'organizzazione"), default=True)
