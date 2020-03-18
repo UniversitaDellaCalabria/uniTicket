@@ -1,5 +1,6 @@
 import base64
 import json
+import zlib
 import magic
 import os
 import shutil
@@ -19,6 +20,18 @@ from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOfficeEmployee)
 
 from . settings import *
+
+
+def compress_text_to_b64(text):
+    """Returns a compressed and b64 encoded string
+    """
+    return zlib.compress(text.encode())
+
+
+def decompress_text(b64text):
+    """Returns a decompressed string
+    """
+    return zlib.decompress(base64.b64decode((base64.b64encode(b64text))))
 
 
 def custom_message(request, message='', structure_slug=''):
@@ -372,5 +385,3 @@ def user_is_in_organization(user):
         else: return attr
     return False
 # END Roles 'get' methods
-
-

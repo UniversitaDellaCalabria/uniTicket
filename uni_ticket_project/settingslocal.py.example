@@ -105,6 +105,12 @@ EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
 # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
 USER_ATTRIBUTE_NAME = 'matricola_studente'
 
+# UNITICKET JWE support
+UNITICKET_JWE_RSA_KEY_PATH = 'saml2_sp/saml2_config/certificates/key.pem'
+UNITICKET_JWE_ALG = "RSA1_5"
+UNITICKET_JWE_ENC = "A128CBC-HS256"
+# end JWE support
+
 DEFAULT_FROM_EMAIL = 'uniticket-noreply@server.it'
 SERVER_EMAIL = 'uniticket-error@server.it'
 EMAIL_HOST = 'smtp.server.it'
@@ -201,4 +207,3 @@ LOGGING = {
             },
         }
     }
-
