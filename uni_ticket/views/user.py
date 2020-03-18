@@ -703,8 +703,125 @@ def chat_new_preload(request, structure_slug=None):
          'title': title,}
     return render(request, template, d)
 
-# @login_required
-# def ticket_clone(request, ticket_id):
-    # ticket = get_object_or_404(Ticket,
-                               # code=ticket_id,
-                               # created_by=request.user)
+@login_required
+def ticket_clone(request, ticket_id):
+    master_ticket = get_object_or_404(Ticket,
+                                      code=ticket_id,
+                                      created_by=request.user)
+    category = master_ticket.input_module.ticket_category
+    data = json.loads(master_ticket.modulo_compilato)
+    data['ticket_subject'] = master_ticket.subject
+    data['ticket_description'] = master_ticket.description
+    form = master_ticket.input_module.get_form(data=data, show_conditions=True)
+    title = _("Clona ticket: {}").format(master_ticket)
+    template = 'user/ticket_add_new.html'
+    sub_title = category.description if category.description else _("Compila i campi richiesti")
+    clausole_categoria = category.get_conditions()
+
+    d={'categoria': category,
+       'conditions': clausole_categoria,
+       'form': form,
+       'struttura': category.organizational_structure,
+       'sub_title': sub_title,
+       'title': title}
+
+    if request.POST:
+        form = master_ticket.input_module.get_form(data=request.POST,
+                                                   files=request.FILES,
+                                                   show_conditions=True)
+        d['form'] = form
+
+        if form.is_valid():
+            fields_to_pop = [TICKET_CONDITIONS_FIELD_ID,
+                             TICKET_SUBJECT_ID,
+                             TICKET_DESCRIPTION_ID]
+            json_data = get_POST_as_json(request=request,
+                                         fields_to_pop=fields_to_pop)
+            # make a UUID based on the host ID and current time
+            code = uuid_code()
+            subject = form.cleaned_data[TICKET_SUBJECT_ID]
+            description = form.cleaned_data[TICKET_DESCRIPTION_ID]
+            ticket = Ticket(code=code,
+                            subject=subject,
+                            description=description,
+                            modulo_compilato=json_data,
+                            created_by=request.user,
+                            input_module=master_ticket.input_module)
+            ticket.save()
+
+            # log action
+            logger.info('[{}] user {} created new ticket {}'
+                        ' in category {}'.format(timezone.now(),
+                                                 request.user.username,
+                                                 ticket,
+                                                 category))
+
+            # salvataggio degli allegati nella cartella relativa
+            json_dict = json.loads(ticket.modulo_compilato)
+            json_stored = get_as_dict(compiled_module_json=json_dict)
+            if request.FILES:
+                json_stored[ATTACHMENTS_DICT_PREFIX] = {}
+                path_allegati = get_path_allegato(ticket)
+                for key, value in request.FILES.items():
+                    save_file(form.cleaned_data[key],
+                              path_allegati,
+                              form.cleaned_data[key]._name)
+                    value = form.cleaned_data[key]._name
+                    json_stored[ATTACHMENTS_DICT_PREFIX][key] = value
+
+                    # log action
+                    logger.info('[{}] attachment {} saved in {}'.format(timezone.now(),
+                                                                        form.cleaned_data[key],
+                                                                        path_allegati))
+
+                set_as_dict(ticket, json_stored)
+
+            # data di modifica
+            # note = _("Ticket creato")
+            # ticket.update_log(user=request.user,
+                              # note=note,
+                              # send_mail=False)
+
+            # Old version. Now a category MUST have an office!
+            # office = categoria.organizational_office or struttura.get_default_office()
+            office = category.organizational_office
+            ticket_assignment = TicketAssignment(ticket=ticket,
+                                                 office=office,
+                                                 assigned_by=request.user)
+            ticket_assignment.save()
+
+            # log action
+            logger.info('[{}] ticket {} assigned to '
+                        '{} office'.format(timezone.now(),
+                                           ticket,
+                                           office))
+
+            ticket_detail_url = reverse('uni_ticket:ticket_detail', args=[code])
+
+            # Send mail to ticket owner
+            mail_params = {'hostname': settings.HOSTNAME,
+                           'user': request.user,
+                           'ticket': ticket,
+                           'ticket_subject': subject,
+                           'ticket_description': description,
+                           'data': json_data,
+                           'files': request.FILES
+                          }
+            m_subject = _('{} - ticket "{}" creato correttamente'.format(settings.HOSTNAME,
+                                                                         ticket))
+            send_custom_mail(subject=m_subject,
+                             recipient=request.user,
+                             body=NEW_TICKET_CREATED,
+                             params=mail_params)
+            # END Send mail to ticket owner
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Ticket creato con successo "
+                                   "con il codice <b>{}</b>").format(code))
+            return redirect('uni_ticket:ticket_detail',
+                            ticket_id=ticket.code)
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+    return render(request, template, d)

@@ -71,6 +71,14 @@
 </a>
 {% endif %}
 
+<a role="button"
+   href="{% url 'uni_ticket:user_clone_ticket' ticket_id=ticket.code %}"
+   class="btn btn-outline-secondary">
+   <svg class="icon icon-xs">
+    <use xlink:href="{% static 'svg/sprite.svg' %}#it-copy"></use>
+   </svg> {% trans "Clona" %}
+</a>
+
 {% if not ticket.is_closed %}
 <a role="button"
    href="{% url 'uni_ticket:user_close_ticket' ticket_id=ticket.code %}"
