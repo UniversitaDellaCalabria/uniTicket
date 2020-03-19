@@ -142,6 +142,7 @@ def ticket_add_new(request, structure_slug, category_slug):
             code = uuid_code()
             subject = form.cleaned_data[settings.TICKET_SUBJECT_ID]
             description = form.cleaned_data[settings.TICKET_DESCRIPTION_ID]
+
             ticket = Ticket(code=code,
                             subject=subject,
                             description=description,
@@ -158,7 +159,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                  categoria))
 
             # salvataggio degli allegati nella cartella relativa
-            json_dict = json.loads(ticket.modulo_compilato)
+            json_dict = json.loads(json_data)
             json_stored = get_as_dict(compiled_module_json=json_dict)
             if request.FILES:
                 json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
@@ -361,7 +362,7 @@ def delete_my_attachment(request, ticket_id, attachment):
     :return: redirect
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
-    json_dict = json.loads(ticket.modulo_compilato)
+    json_dict = ticket.get_modulo_compilato()
     ticket_details = get_as_dict(compiled_module_json=json_dict)
     nome_file = ticket_details[settings.ATTACHMENTS_DICT_PREFIX][attachment]
 
@@ -466,8 +467,8 @@ def ticket_detail(request, ticket_id, template='user/ticket_detail.html'):
     :return: render
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
-    json_dict = json.loads(ticket.modulo_compilato)
-    ticket_details = get_as_dict(compiled_module_json=json_dict,
+    modulo_compilato = ticket.get_modulo_compilato()
+    ticket_details = get_as_dict(compiled_module_json=modulo_compilato,
                                  allegati=False,
                                  formset_management=False)
     allegati = ticket.get_allegati_dict()

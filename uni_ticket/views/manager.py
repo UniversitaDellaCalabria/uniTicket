@@ -1925,6 +1925,17 @@ def category_input_module_clone(request, structure_slug,
         input_dict['category_module_id'] = new_module.pk
         TicketCategoryInputList.objects.create(**input_dict)
 
+    # log action
+    logger.info('[{}] manager of structure {}'
+                ' {} cloned the module {} of category {}'
+                ' in the category {} ({})'.format(timezone.now(),
+                                             structure,
+                                             request.user,
+                                             module,
+                                             category,
+                                             selected_category,
+                                             selected_structure))
+
     messages.add_message(request, messages.SUCCESS,
                          _("Modulo di input <b>{}</b> clonato con successo"
                          " nel tipo di richieste <b>{}</b>".format(module.name,

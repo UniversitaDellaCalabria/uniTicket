@@ -59,7 +59,7 @@ def download_attachment(request, ticket_id, attachment, ticket):
     :return: file
     """
     # get ticket json dictionary
-    json_dict = json.loads(ticket.modulo_compilato)
+    json_dict = ticket.get_modulo_compilato()
     ticket_details = get_as_dict(compiled_module_json=json_dict)
     if attachment:
         # get ticket attachments

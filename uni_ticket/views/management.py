@@ -164,7 +164,7 @@ def ticket_detail(request, structure_slug, ticket_id,
     sub_title = ticket
     user = request.user
     user_type = get_user_type(request.user, structure)
-    json_dict = json.loads(ticket.modulo_compilato)
+    json_dict = ticket.get_modulo_compilato()
     ticket_details = get_as_dict(compiled_module_json=json_dict,
                                  allegati=False,
                                  formset_management=False)

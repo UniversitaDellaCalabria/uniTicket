@@ -21,7 +21,9 @@ from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOfficeEmployee,)
 
 from . dynamic_form import DynamicForm
-from . utils import (get_folder_allegato,
+from . utils import (compress_text_to_b64,
+                     decompress_text,
+                     get_folder_allegato,
                      get_user_type,
                      send_custom_mail,
                      user_is_employee,
@@ -254,8 +256,21 @@ class Ticket(SavedFormContent):
         verbose_name = _("Ticket")
         verbose_name_plural = _("Ticket")
 
+    def save(self, *args, **kwargs):
+        if len(self.modulo_compilato) > settings.TICKET_MIN_DIGITS_TO_COMPRESS:
+            self.modulo_compilato = compress_text_to_b64(self.modulo_compilato).decode()
+        super().save(*args, **kwargs)
+
     def get_category(self):
         return self.input_module.ticket_category
+
+    def get_modulo_compilato(self):
+        try:
+            json_dict = json.loads(decompress_text(self.modulo_compilato))
+        # except json.JSONDecodeError:
+        except:
+            json_dict = json.loads(self.modulo_compilato)
+        return json_dict
 
     @staticmethod
     def get_user_ticket_per_day(user, date=None):
@@ -316,7 +331,8 @@ class Ticket(SavedFormContent):
         if ticket_dict:
             allegati_dict = ticket_dict.get(settings.ATTACHMENTS_DICT_PREFIX)
         else:
-            json_dict = json.loads(self.modulo_compilato)
+            # json_dict = json.loads(self.get_modulo_compilato())
+            json_dict = self.get_modulo_compilato()
             allegati_dict = get_as_dict(compiled_module_json=json_dict).get(settings.ATTACHMENTS_DICT_PREFIX)
         return allegati_dict
 
@@ -337,7 +353,7 @@ class Ticket(SavedFormContent):
         extra_datas = {}
         extra_datas[settings.TICKET_SUBJECT_ID] = self.subject
         extra_datas[settings.TICKET_DESCRIPTION_ID] = self.description
-        form = SavedFormContent.compiled_form(data_source=self.modulo_compilato,
+        form = SavedFormContent.compiled_form(data_source=json.dumps(self.get_modulo_compilato()),
                                               extra_datas=extra_datas,
                                               files=files,
                                               remove_filefields=remove_filefields,
