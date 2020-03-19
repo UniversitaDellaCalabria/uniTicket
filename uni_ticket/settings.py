@@ -130,3 +130,7 @@ SUMMARY_EMPLOYEE_EMAIL_OLD_EN = _("Dear {user},"
                            ""
                            "This message was sent to you by {hostname}."
                            "Please do not reply to this email.")
+
+
+# copression
+TICKET_MIN_DIGITS_TO_COMPRESS = 90

@@ -67,6 +67,11 @@ INSTALLED_APPS = [
     'saml2_sp',
 ]
 
+# Import chat app settings
+if 'chat' in INSTALLED_APPS:
+    from chat.settings import *
+
+
 AUTH_USER_MODEL = "accounts.User"
 
 CUSTOM_WIDGETS = {

@@ -13,20 +13,17 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import pathlib
 
-from . settingslocal import *
-from api_rest.settings import *
-
-
-HOME_PAGE = '/'
-
 # load applications settings file, overload what needed if needed
 from django_form_builder.settings import *
 from organizational_area.settings import *
 from uni_ticket.settings import *
-if 'chat' in INSTALLED_APPS:
-    from chat.settings import *
-#
 
+from . settingslocal import *
+from api_rest.settings import *
+
+HOME_PAGE = '/'
+
+#
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 DATA_DIR = os.path.join(BASE_DIR, "data")

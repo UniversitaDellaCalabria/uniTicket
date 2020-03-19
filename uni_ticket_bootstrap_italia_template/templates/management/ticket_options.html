@@ -19,9 +19,12 @@
                     {% trans "Aperto" %}
                 </span>
             {% endif %}
+            <br>
+            {{ dependence.master_ticket.input_module.ticket_category }}
+            [{{ dependence.master_ticket.input_module.ticket_category.organizational_structure }}]
             {% if dependence.note %}
             <br>
-            {{ dependence.note }}
+            <i>{{ dependence.note }}</i>
             {% endif %}
 
             {% if not ticket.is_closed %}
