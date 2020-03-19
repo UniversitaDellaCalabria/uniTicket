@@ -9,10 +9,10 @@
 
 {% block top_buttons %}
 <a role="button" class="btn btn-outline-secondary"
-   href="{% url 'uni_ticket:manager_category_input_module' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
+   href="javascript:history.back()">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Torna al Modulo" %}
+    </svg> {% trans "Torna indietro" %}
 </a>
 {% endblock top_buttons %}
 

@@ -52,6 +52,11 @@
             {% endif %}
             <a role="button"
                class="mx-1 btn btn-outline-secondary btn-xs float-right"
+               href="{% url 'uni_ticket:manager_category_input_module_clone_preload' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
+                {% trans "Clona" %}
+            </a>
+            <a role="button"
+               class="mx-1 btn btn-outline-secondary btn-xs float-right"
                href="{% url 'uni_ticket:manager_category_input_module' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
                 {% trans "Dettagli" %}
             </a>

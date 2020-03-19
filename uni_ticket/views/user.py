@@ -202,11 +202,10 @@ def ticket_add_new(request, structure_slug, category_slug):
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
                            'user': request.user,
-                           'ticket': ticket,
+                           'ticket': ticket.code,
                            'ticket_subject': subject,
-                           'ticket_description': description,
-                           'data': json_data,
-                           'files': request.FILES
+                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
+                                                             kwargs={'ticket_id': ticket.code}))
                           }
             m_subject = _('{} - ticket "{}" creato correttamente'.format(settings.HOSTNAME,
                                                                          ticket))
@@ -809,11 +808,10 @@ def ticket_clone(request, ticket_id):
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
                            'user': request.user,
-                           'ticket': ticket,
+                           'ticket': ticket.code,
                            'ticket_subject': subject,
-                           'ticket_description': description,
-                           'data': json_data,
-                           'files': request.FILES
+                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
+                                                             kwargs={'ticket_id': ticket.code}))
                           }
             m_subject = _('{} - ticket "{}" creato correttamente'.format(settings.HOSTNAME,
                                                                          ticket))
