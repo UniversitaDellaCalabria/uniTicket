@@ -17,6 +17,9 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
+<p class="mb-4">{% trans "Questa procedura consente di <b>duplicare</b> il modulo di input in qualsiasi struttura gestita dall'utente." %}
+<br>
+{% trans "Il nuovo modulo appena creato sarà <b>disabilitato</b> e dovrà essere attivato manualmente." %}</p>
 <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
 <div>
     {% if selected_structure_slug %}

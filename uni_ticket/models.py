@@ -267,7 +267,6 @@ class Ticket(SavedFormContent):
     def get_modulo_compilato(self):
         try:
             json_dict = json.loads(decompress_text(self.modulo_compilato))
-        # except json.JSONDecodeError:
         except:
             json_dict = json.loads(self.modulo_compilato)
         return json_dict
