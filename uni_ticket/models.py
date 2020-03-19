@@ -517,7 +517,7 @@ class Ticket(SavedFormContent):
     def is_valid(self):
         """
         """
-        json_dict = json.loads(self.modulo_compilato)
+        json_dict = self.get_modulo_compilato()
         ticket_dict = get_as_dict(json_dict)
         if not settings.ATTACHMENTS_DICT_PREFIX in ticket_dict: return True
         allegati = ticket_dict.get(settings.ATTACHMENTS_DICT_PREFIX)
