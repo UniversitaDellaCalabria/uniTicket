@@ -125,7 +125,7 @@ def ticket_add_new(request, structure_slug, category_slug):
        'conditions': clausole_categoria,
        'form': form,
        'struttura': struttura,
-       'sub_title': sub_title,
+       'sub_title': '{} - {}'.format(struttura, sub_title),
        'title': title}
 
     if request.POST:

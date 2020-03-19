@@ -18,19 +18,6 @@
 {% endblock top_buttons %}
 
 {% block over_content %}
-<div class="pb-4">
-    <div class="chip chip-lg">
-        <label class="chip-label" for="chip-02">
-            {% trans "Struttura" %}: <b>{{ struttura }}</b>
-        </label>
-    </div>
-    <div class="chip chip-lg">
-        <label class="chip-label" for="chip-02">
-            {% trans "Tipo di richiesta" %}: <b>{{ categoria }}</b>
-        </label>
-    </div>
-</div>
-
 {% block user_ticket_head %}
 {% if categoria.show_heading_text or category_conditions %}
 <div class="pb-4">
