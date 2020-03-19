@@ -12,8 +12,9 @@ from django.utils.html import escape
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from uni_ticket.utils import get_text_with_hrefs
 
-from . utils import chat_operator, get_text_with_hrefs
+from . utils import chat_operator
 
 logger = logging.getLogger(__name__)
 

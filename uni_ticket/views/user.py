@@ -12,7 +12,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.html import strip_tags
+from django.utils.html import escape, strip_tags
 from django.utils.translation import gettext as _
 
 from django_form_builder.utils import (get_as_dict,
@@ -120,7 +120,6 @@ def ticket_add_new(request, structure_slug, category_slug):
                                is_active=True)
     form = modulo.get_form(show_conditions=True)
     clausole_categoria = categoria.get_conditions()
-
     d={'categoria': categoria,
        'conditions': clausole_categoria,
        'form': form,
@@ -551,7 +550,7 @@ def ticket_message(request, ticket_id):
         if form.is_valid():
             ticket_reply = TicketReply()
             ticket_reply.subject = form.cleaned_data['subject']
-            ticket_reply.text = form.cleaned_data['text']
+            ticket_reply.text = get_text_with_hrefs(escape(form.cleaned_data['text']))
             ticket_reply.attachment = form.cleaned_data['attachment']
             ticket_reply.ticket = ticket
             ticket_reply.owner = request.user

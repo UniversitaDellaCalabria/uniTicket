@@ -234,13 +234,13 @@ class Ticket(SavedFormContent):
     is_taken = models.BooleanField(default=False)
     taken_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                  on_delete=models.SET_NULL,
-                                 null=True,
+                                 null=True, blank=True,
                                  related_name='taken_by_user')
     is_closed = models.BooleanField(default=False)
     closed_date = models.DateTimeField(blank=True, null=True)
     closed_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   on_delete=models.SET_NULL,
-                                  null=True,
+                                  null=True, blank=True,
                                   related_name='closed_by_user')
     closing_reason = models.TextField(blank=True, null=True)
     priority = models.IntegerField(default=0)

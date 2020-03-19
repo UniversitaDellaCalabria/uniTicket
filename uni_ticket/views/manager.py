@@ -9,7 +9,7 @@ from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
-from django.utils.html import strip_tags
+from django.utils.html import escape, strip_tags
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
@@ -1548,6 +1548,7 @@ def category_condition_new(request, structure_slug,
         form = CategoryConditionForm(request.POST, request.FILES)
         if form.is_valid():
             condition = form.save(commit=False)
+            condition.text = escape(form.cleaned_data['text'])
             condition.category = category
             condition.save()
 
@@ -1609,7 +1610,9 @@ def category_condition_edit(request, structure_slug, category_slug,
                                      data=request.POST,
                                      files=request.FILES)
         if form.is_valid():
-            edited_category = form.save()
+            edited_category = form.save(commit=False)
+            edited_category.text = escape(form.cleaned_data['text'])
+            edited_category.save()
 
             # log action
             logger.info('[{}] manager of structure {}'
