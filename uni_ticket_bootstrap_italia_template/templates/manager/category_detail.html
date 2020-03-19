@@ -159,6 +159,18 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">{% trans 'Mostra intestazione ticket' %}</th>
+                <td>
+                    <svg class="icon icon-sm icon-secondary">
+                    {% if category.show_heading_text %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans 'Accessibile agli ospiti' %}</th>
                 <td>
                     <svg class="icon icon-sm icon-secondary">

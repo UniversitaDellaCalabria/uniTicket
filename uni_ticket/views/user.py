@@ -12,7 +12,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.html import strip_tags
+from django.utils.html import escape, strip_tags
 from django.utils.translation import gettext as _
 
 from django_form_builder.utils import (get_as_dict,
@@ -55,7 +55,7 @@ def ticket_new_preload(request, structure_slug=None):
         struttura = get_object_or_404(OrganizationalStructure,
                                       slug=structure_slug,
                                       is_active=True)
-        categorie = TicketCategory.objects.filter(organizational_structure=struttura.pk,
+        categorie = TicketCategory.objects.filter(organizational_structure=struttura,
                                                   is_active=True)
         # User roles
         is_employee = user_is_employee(request.user)
@@ -109,8 +109,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                                   is_active=True)
 
     if not categoria.allowed_to_user(request.user):
-        return custom_message(request, _("Permesso negato a questa tipologia di utente."),
-                              struttura.slug)
+        return custom_message(request, _("Permesso negato a questa tipologia di utente."))
 
     title = _("Nuovo ticket in {}").format(categoria)
     template = 'user/ticket_add_new.html'
@@ -120,12 +119,11 @@ def ticket_add_new(request, structure_slug, category_slug):
                                is_active=True)
     form = modulo.get_form(show_conditions=True)
     clausole_categoria = categoria.get_conditions()
-
     d={'categoria': categoria,
-       'conditions': clausole_categoria,
+       'category_conditions': clausole_categoria,
        'form': form,
        'struttura': struttura,
-       'sub_title': sub_title,
+       'sub_title': '{} - {}'.format(struttura, sub_title),
        'title': title}
 
     if request.POST:
@@ -204,11 +202,10 @@ def ticket_add_new(request, structure_slug, category_slug):
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
                            'user': request.user,
-                           'ticket': ticket,
+                           'ticket': ticket.code,
                            'ticket_subject': subject,
-                           'ticket_description': description,
-                           'data': json_data,
-                           'files': request.FILES
+                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
+                                                             kwargs={'ticket_id': ticket.code}))
                           }
             m_subject = _('{} - ticket "{}" creato correttamente'.format(settings.HOSTNAME,
                                                                          ticket))
@@ -551,7 +548,7 @@ def ticket_message(request, ticket_id):
         if form.is_valid():
             ticket_reply = TicketReply()
             ticket_reply.subject = form.cleaned_data['subject']
-            ticket_reply.text = form.cleaned_data['text']
+            ticket_reply.text = get_text_with_hrefs(escape(form.cleaned_data['text']))
             ticket_reply.attachment = form.cleaned_data['attachment']
             ticket_reply.ticket = ticket
             ticket_reply.owner = request.user
@@ -707,6 +704,16 @@ def ticket_clone(request, ticket_id):
     master_ticket = get_object_or_404(Ticket,
                                       code=ticket_id,
                                       created_by=request.user)
+    # if ticket is not closed and owner has closed it
+    if not master_ticket.is_closed:
+       return custom_message(request, _("Operazione non permessa. "
+                                        "Il ticket è ancora attivo"))
+
+    # if ticket module is out of date
+    if not master_ticket.input_module.is_active:
+           return custom_message(request, _("Il modulo che stai cercando "
+                                            "di usare non è più attivo."))
+
     category = master_ticket.input_module.ticket_category
     data = json.loads(master_ticket.modulo_compilato)
     data['ticket_subject'] = master_ticket.subject
@@ -721,7 +728,8 @@ def ticket_clone(request, ticket_id):
        'conditions': clausole_categoria,
        'form': form,
        'struttura': category.organizational_structure,
-       'sub_title': sub_title,
+       'sub_title': '{} - {}'.format(category.organizational_structure,
+                                     sub_title),
        'title': title}
 
     if request.POST:
@@ -800,11 +808,10 @@ def ticket_clone(request, ticket_id):
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
                            'user': request.user,
-                           'ticket': ticket,
+                           'ticket': ticket.code,
                            'ticket_subject': subject,
-                           'ticket_description': description,
-                           'data': json_data,
-                           'files': request.FILES
+                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
+                                                             kwargs={'ticket_id': ticket.code}))
                           }
             m_subject = _('{} - ticket "{}" creato correttamente'.format(settings.HOSTNAME,
                                                                          ticket))

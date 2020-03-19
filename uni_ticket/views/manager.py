@@ -9,7 +9,7 @@ from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
-from django.utils.html import strip_tags
+from django.utils.html import escape, strip_tags
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
@@ -21,7 +21,9 @@ from uni_ticket.decorators import (has_access_to_ticket,
                                    ticket_is_not_taken_and_not_closed)
 from uni_ticket.forms import *
 from uni_ticket.models import *
-from uni_ticket.utils import custom_message, office_can_be_deleted
+from uni_ticket.utils import (custom_message,
+                              office_can_be_deleted,
+                              user_is_manager)
 
 
 logger = logging.getLogger(__name__)
@@ -820,6 +822,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                 edited_category.slug = slug
                 edited_category.save(update_fields = ['name', 'slug',
                                                       'description',
+                                                      'show_heading_text',
                                                       'allow_guest',
                                                       'allow_user',
                                                       'allow_employee',
@@ -1082,8 +1085,8 @@ def category_input_module_edit(request, structure_slug,
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
-    title = _('Modifica modulo di inserimento')
-    sub_title = "{} in {}".format(module, category)
+    title = _('Rinomina modulo [{}]').format(module)
+    sub_title =  '{} - {}'.format(category, structure)
     template = 'manager/category_input_module_edit.html'
     d = {'category': category,
          'form': form,
@@ -1322,9 +1325,9 @@ def category_input_module_details(request, structure_slug,
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
-    title = _('Gestione modulo di inserimento')
+    title = _('Gestione modulo [{}]').format(module)
     template = 'manager/category_input_module_detail.html'
-    sub_title = module
+    sub_title =  '{} - {}'.format(category, structure)
     d = {'category': category,
          'form': form,
          'module': module,
@@ -1509,8 +1512,8 @@ def category_input_field_edit(request, structure_slug,
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
 
-    title = _('Modifica campo di input')
-    sub_title = "{} - {}".format(field.name, module)
+    title = _('Modifica campo di input [{}]').format(field.name)
+    sub_title = "{} - {} - {}".format(module, module.ticket_category, structure)
     template = 'manager/category_input_field_edit.html'
     d = {'category': category,
          'field': field,
@@ -1547,6 +1550,7 @@ def category_condition_new(request, structure_slug,
         form = CategoryConditionForm(request.POST, request.FILES)
         if form.is_valid():
             condition = form.save(commit=False)
+            condition.text = escape(form.cleaned_data['text'])
             condition.category = category
             condition.save()
 
@@ -1608,7 +1612,9 @@ def category_condition_edit(request, structure_slug, category_slug,
                                      data=request.POST,
                                      files=request.FILES)
         if form.is_valid():
-            edited_category = form.save()
+            edited_category = form.save(commit=False)
+            edited_category.text = escape(form.cleaned_data['text'])
+            edited_category.save()
 
             # log action
             logger.info('[{}] manager of structure {}'
@@ -1826,3 +1832,104 @@ def categories(request, structure_slug, structure):
          # 'sub_title': sub_title,
          'title': title,}
     return render(request, template, d)
+
+@login_required
+@is_manager
+def category_input_module_clone_preload(request, structure_slug,
+                                        category_slug, module_id,
+                                        selected_structure_slug=None,
+                                        selected_category_slug=None,
+                                        structure=None):
+    """
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    module = get_object_or_404(TicketCategoryModule,
+                               pk=module_id,
+                               ticket_category=category)
+    structures = OrganizationalStructure.objects.filter(is_active=True)
+    my_structures = []
+    categories = []
+    for struct in structures:
+        if user_is_manager(request.user, struct):
+            my_structures.append(struct)
+    title = _('Clona modulo [{}] ({} - {})').format(module, category, structure)
+    template = 'manager/category_input_module_clone.html'
+    sub_title = _("Seleziona la struttura")
+    if selected_structure_slug:
+        selected_structure = get_object_or_404(OrganizationalStructure,
+                                               slug=selected_structure_slug,
+                                               is_active=True)
+
+        # another check if user is a manager of selected structure
+        if not user_is_manager(request.user, selected_structure):
+            return custom_message(request, _("Non sei un manager della struttura selezionata"),
+                                  structure_slug=structure.slug)
+
+        categories = TicketCategory.objects.filter(organizational_structure=selected_structure)
+        sub_title = _("Seleziona la Categoria")
+    if selected_category_slug:
+        selected_category = get_object_or_404(TicketCategory,
+                                              organizational_structure=selected_structure,
+                                              slug=selected_category_slug)
+
+    d = {'categories': categories,
+         'category': category,
+         'module': module,
+         'my_structures': my_structures,
+         'selected_category_slug': selected_category_slug,
+         'selected_structure_slug': selected_structure_slug,
+         'structure': structure,
+         'sub_title': sub_title,
+         'title': title,}
+    return render(request, template, d)
+
+@login_required
+@is_manager
+def category_input_module_clone(request, structure_slug,
+                                category_slug, module_id,
+                                selected_structure_slug,
+                                selected_category_slug,
+                                structure):
+    """
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    module = get_object_or_404(TicketCategoryModule,
+                               pk=module_id,
+                               ticket_category=category)
+    selected_structure = get_object_or_404(OrganizationalStructure,
+                                               slug=selected_structure_slug,
+                                               is_active=True)
+
+    # check if user is manager of selected structure
+    if not user_is_manager(request.user, selected_structure):
+            return custom_message(request, _("Non sei un manager della struttura selezionata"),
+                                  structure_slug=structure.slug)
+
+    selected_category = get_object_or_404(TicketCategory,
+                                          organizational_structure=selected_structure,
+                                          slug=selected_category_slug)
+    # create new module in selected category with master module name
+    new_module = TicketCategoryModule.objects.create(name=module.name,
+                                                     ticket_category=selected_category)
+
+    # get all input fields of master module and clone these in new module
+    master_module_inputlist = TicketCategoryInputList.objects.filter(category_module=module)
+    for module_input in master_module_inputlist:
+        input_dict = module_input.__dict__
+        del input_dict['_state']
+        del input_dict['id']
+        input_dict['category_module_id'] = new_module.pk
+        TicketCategoryInputList.objects.create(**input_dict)
+
+    messages.add_message(request, messages.SUCCESS,
+                         _("Modulo di input <b>{}</b> clonato con successo"
+                         " nel tipo di richieste <b>{}</b>".format(module.name,
+                                                                   selected_category)))
+    return redirect('uni_ticket:manager_category_input_module',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug,
+                    module_id=module_id)

@@ -49,6 +49,13 @@
     </svg> {% trans "Attiva" %}
 </button>
 {% endif %}
+<a role="button"
+   class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_category_input_module_clone_preload' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-copy"></use>
+    </svg> {% trans "Clona" %}
+</a>
 {% if module.can_be_deleted %}
 <button type="button"
     class="btn btn-outline-danger"

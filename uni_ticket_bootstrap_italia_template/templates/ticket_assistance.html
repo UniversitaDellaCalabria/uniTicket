@@ -40,7 +40,7 @@
                         {% endif %}
                     </div>
                     <h5 class="card-title">{{ reply.subject }}</h5>
-                    <p class="card-text">{{ reply.text }}</p>
+                    <p class="card-text">{{ reply.text | markdown | safe }}</p>
                     {% if reply.attachment %}
                     <p class="card-text">
                         <a href="{% url 'uni_ticket:download_message_attachment' ticket_id=reply.ticket.code reply_id=reply.id %}">

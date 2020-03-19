@@ -64,19 +64,9 @@ Per problemi tecnici contatta il nostro staff.
 Cordiali saluti.
 """)
 
-NEW_TICKET_CREATED = _("""Il ticket "{ticket}" è stato creato correttamente.
+NEW_TICKET_CREATED = _("""Il ticket "{ticket}" con oggetto "{ticket_subject}" è stato creato correttamente.
 
-Oggetto:
-{ticket_subject}
-
-Descrizione:
-{ticket_description}
-
-Dati inseriti:
-{data}
-
-Files:
-{files}""")
+Clicca qui {url} per prenderne visione.""")
 
 TICKET_UPDATED = _("""Il ticket "{ticket}" è stato aggiornato con il seguente messaggio:
 
