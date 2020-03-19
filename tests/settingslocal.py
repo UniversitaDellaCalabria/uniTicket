@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     # 'saml2_sp',
 ]
 
+# chat app settings
+if 'chat' in INSTALLED_APPS:
+    from chat.settings import *
 
 CUSTOM_WIDGETS = {
     'BaseDateField': 'bootstrap_italia_template.widgets.BootstrapItaliaDateWidget',

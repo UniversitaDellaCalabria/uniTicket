@@ -155,7 +155,7 @@ function drawMessage(message, user_fullname, from_bot=false) {
 function getConversation(recipient, room_name) {
     console.log("getConversation " + recipient);
     $.getJSON(`/api/v1/message/?target=${recipient}&room=${room_name}`, function (data) {
-        messageList.children('.message').remove();
+        messageList.children().remove();
         for (var i = data['results'].length - 1; i >= 0; i--) {
             console.log("getConversation " + data['results'][i]);
             drawMessage(message=data['results'][i]);

@@ -3,13 +3,24 @@ CHANGELOG
 
 v0.8.4
 ------
-- webchat (django channels)
-- production example files (with daphne and uwsgi behaind a nginx reverse proxy)
-- markdown templatetag for ticket agreement messages
-- renewed datatables ticket columns
-- renewed labels
-- better user redirect and buttons on newly created ticket page
 
+- better user redirect and buttons on newly created ticket page;
+- datatables responsive improved;
+- email notification improved;
+- managers can clone input models;
+- markdown templatetag for ticket agreement messages and ticket messages;
+- more settings parameters to customize behaviour and user experience;
+- operator can be assigned to multiple offices;
+- production example files (with daphne and uwsgi behaind a nginx reverse proxy);
+- renewed datatables ticket columns;
+- renewed labels;
+- security fixes to avoid XSS attacks;
+- selectbox with search (Bootstrap Italia theme updated);
+- static data refactor;
+- ticket subject and description auto-fill on create;
+- users can duplicate a closed ticket to edit and reopen it;
+- webchat (django channels) with acoustic alerts;
+- bugfix.
 
 
 v0.8.3
