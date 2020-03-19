@@ -726,7 +726,7 @@ def ticket_clone(request, ticket_id):
     clausole_categoria = category.get_conditions()
 
     d={'categoria': category,
-       'conditions': clausole_categoria,
+       'category_conditions': clausole_categoria,
        'form': form,
        'struttura': category.organizational_structure,
        'sub_title': '{} - {}'.format(category.organizational_structure,
