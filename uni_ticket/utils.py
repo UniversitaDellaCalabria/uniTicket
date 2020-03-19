@@ -23,13 +23,17 @@ from organizational_area.models import (OrganizationalStructure,
 def compress_text_to_b64(text):
     """Returns a compressed and b64 encoded string
     """
-    return zlib.compress(text.encode())
+    if isinstance(text, str):
+        text = text.encode()
+    return base64.b64encode(zlib.compress(text))
 
 
 def decompress_text(b64text):
     """Returns a decompressed string
     """
-    return zlib.decompress(base64.b64decode((base64.b64encode(b64text))))
+    if isinstance(b64text, str):
+        b64text = b64text.encode()
+    return zlib.decompress(base64.b64decode(b64text))
 
 
 def custom_message(request, message='', structure_slug=''):
