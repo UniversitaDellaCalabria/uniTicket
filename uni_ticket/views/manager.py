@@ -1941,6 +1941,6 @@ def category_input_module_clone(request, structure_slug,
                          " nel tipo di richieste <b>{}</b>".format(module.name,
                                                                    selected_category)))
     return redirect('uni_ticket:manager_category_input_module',
-                    structure_slug=structure_slug,
-                    category_slug=category_slug,
-                    module_id=module_id)
+                    structure_slug=selected_structure.slug,
+                    category_slug=selected_category.slug,
+                    module_id=new_module.pk)
