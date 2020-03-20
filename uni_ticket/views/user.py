@@ -311,8 +311,8 @@ def ticket_edit(request, ticket_id):
                 json_response[settings.ATTACHMENTS_DICT_PREFIX] = allegati
                 path_allegati = get_path_allegato(ticket)
                 for key, value in request.FILES.items():
+                    nome_allegato = form.cleaned_data[key]._name
                     # form.validate_attachment(request.FILES.get(key))
-                    nome_allegato = form.cleaned_data[key]
                     save_file(form.cleaned_data[key],
                               path_allegati,
                               nome_allegato)
