@@ -1680,6 +1680,9 @@ def category_condition_delete(request, structure_slug, category_slug,
                                           request.user,
                                           category))
 
+    # delete condition attachment
+    delete_file(file_name=condition.attachment)
+
     condition.delete()
     return redirect('uni_ticket:manager_category_detail',
                             structure_slug=structure_slug,

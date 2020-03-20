@@ -21,42 +21,17 @@ from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOfficeEmployee,)
 
 from . dynamic_form import DynamicForm
-from . utils import (compress_text_to_b64,
-                     decompress_text,
-                     get_folder_allegato,
-                     get_user_type,
-                     send_custom_mail,
-                     user_is_employee,
-                     user_is_in_organization)
+from . utils import *
 from . validators import *
 
-def _reply_attachment_upload(instance, filename):
-    """
-    this function has to return the location to upload the file
-    """
-    ticket_folder = get_folder_allegato(instance.ticket)
-    return os.path.join('{}/{}/{}'.format(ticket_folder,
-                                          settings.TICKET_MESSAGES_ATTACHMENT_SUBFOLDER,
-                                          filename))
 
-def _task_attachment_upload(instance, filename):
+def _attachment_upload(instance, filename):
     """
     this function has to return the location to upload the file
     """
-    ticket_folder = get_folder_allegato(instance.ticket)
-    return os.path.join('{}/{}/{}/{}'.format(ticket_folder,
-                                             settings.TICKET_TASK_ATTACHMENT_SUBFOLDER,
-                                             instance.code,
-                                             filename))
+    folder = instance.get_folder()
+    return os.path.join('{}/{}'.format(folder, filename))
 
-def _condition_attachment_upload(instance, filename):
-    """
-    this function has to return the location to upload the file
-    """
-    return os.path.join('{}/{}/{}/{}'.format(settings.HOSTNAME,
-                                             settings.CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
-                                             instance.category.slug,
-                                             filename))
 
 class TicketCategory(models.Model):
     """
@@ -263,6 +238,16 @@ class Ticket(SavedFormContent):
 
     def get_category(self):
         return self.input_module.ticket_category
+
+    def get_folder(self):
+        """
+        Returns ticket attachments folder path
+        """
+        folder = '{}/{}/{}/{}'.format(settings.HOSTNAME,
+                                      settings.TICKET_ATTACHMENT_FOLDER,
+                                      self.get_year(),
+                                      self.code)
+        return folder
 
     def get_modulo_compilato(self):
         try:
@@ -660,7 +645,7 @@ class TicketReply(models.Model):
                                   null=True, blank=True)
     subject = models.CharField(max_length=255)
     text = models.TextField()
-    attachment = models.FileField(upload_to=_reply_attachment_upload,
+    attachment = models.FileField(upload_to=_attachment_upload,
                                   null=True, blank=True,
                                   validators=[validate_file_extension,
                                               validate_file_size,
@@ -676,6 +661,15 @@ class TicketReply(models.Model):
         ordering = ["ticket", "created"]
         verbose_name = _("Domande/Risposte Ticket")
         verbose_name_plural = _("Domande/Risposte Ticket")
+
+    def get_folder(self):
+        """
+        Returns ticket attachments folder path
+        """
+        ticket_folder = self.ticket.get_folder()
+        folder = '{}/{}'.format(ticket_folder,
+                                settings.TICKET_MESSAGES_ATTACHMENT_SUBFOLDER)
+        return folder
 
     def __str__(self):
         return '{} - {}'.format(self.subject, self.ticket)
@@ -730,7 +724,7 @@ class Task(models.Model):
     closed_date = models.DateTimeField(blank=True, null=True)
     closing_reason = models.TextField(blank=True, null=True)
     priority = models.IntegerField(default=0)
-    attachment = models.FileField(upload_to=_task_attachment_upload,
+    attachment = models.FileField(upload_to=_attachment_upload,
                                   null=True, blank=True,
                                   validators=[validate_file_extension,
                                               validate_file_size,
@@ -753,6 +747,16 @@ class Task(models.Model):
                                     object_repr     = self.__str__(),
                                     action_flag     = CHANGE,
                                     change_message  = note)
+
+    def get_folder(self):
+        """
+        Returns ticket attachments folder path
+        """
+        ticket_folder = self.ticket.get_folder()
+        folder = '{}/{}/{}'.format(ticket_folder,
+                                   settings.TICKET_TASK_ATTACHMENT_SUBFOLDER,
+                                   self.code)
+        return folder
 
     def __str__(self):
         return '{} - ticket: {}'.format(self.subject, self.ticket)
@@ -786,7 +790,7 @@ class TicketCategoryCondition(models.Model):
     title = models.CharField(max_length=255, blank=False, null=False)
     text = models.TextField(blank=False, null=False)
     ordinamento = models.PositiveIntegerField(blank=True, default=0)
-    attachment = models.FileField(upload_to=_condition_attachment_upload,
+    attachment = models.FileField(upload_to=_attachment_upload,
                                   null=True, blank=True,
                                   validators=[validate_file_extension,
                                               validate_file_size,
@@ -799,6 +803,16 @@ class TicketCategoryCondition(models.Model):
         ordering = ('ordinamento', )
         verbose_name = _('Clausola tipo di richiesta ticket')
         verbose_name_plural = _('Clausole tipo di richiesta ticket')
+
+    def get_folder(self):
+        """
+        Returns ticket attachments folder path
+        """
+        folder = '{}/{}/{}/{}'.format(settings.HOSTNAME,
+                                      settings.CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
+                                      self.category.organizational_structure.slug,
+                                      self.category.slug)
+        return folder
 
     def corpo_as_html(self):
         return text_as_html(self.text)

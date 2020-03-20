@@ -119,63 +119,29 @@ def get_user_type(user, structure=None):
     if user_is_operator(user, structure): return 'operator'
     return 'user'
 
-def get_folder_allegato(ticket):
+def get_path(folder):
     """
-    Returns ticket attachments folder path
+    Builds a MEDIA_ROOT path
     """
-    folder = '{}/{}/{}/{}'.format(settings.HOSTNAME,
-                                  ticket.get_year(),
-                                  settings.TICKET_ATTACHMENT_FOLDER,
-                                  ticket.code)
-    return folder
-
-def get_path_allegato(ticket):
-    """
-    Builds ticket attachments path
-    """
-    folder = get_folder_allegato(ticket=ticket)
-    path = '{}/{}'.format(settings.MEDIA_ROOT, folder)
-    return path
-
-def get_path_allegato_task(task):
-    """
-    Builds task attachments path
-    """
-    ticket_folder = get_path_allegato(ticket=task.ticket)
-    path = '{}/{}/{}'.format(ticket_folder,
-                             settings.TICKET_TASK_ATTACHMENT_SUBFOLDER,
-                             task.code)
-    return path
-
-def get_path_ticket_reply(ticket_reply):
-    """
-    Builds ticket messages attachments path
-    """
-    ticket_folder = get_path_allegato(ticket=ticket_reply.ticket)
-    path = '{}/{}'.format(ticket_folder,
-                          settings.TICKET_MESSAGES_ATTACHMENT_SUBFOLDER)
+    return '{}/{}'.format(settings.MEDIA_ROOT, folder)
     return path
 
 def delete_file(file_name, path=settings.MEDIA_ROOT):
     """
     Deletes a file from disk
     """
-    file_path = '{}/{}'.format(path,file_name)
+    file_path = '{}/{}'.format(path, file_name)
     try:
         os.remove(file_path)
         return path
     except:
         return False
 
-def delete_directory(ticket):
+def delete_directory(path):
     """
     Deletes a ticket attachments directory from disk
     """
-    path = '{}/{}/{}/{}/{}'.format(settings.MEDIA_ROOT,
-                                   settings.HOSTNAME,
-                                   ticket.get_year(),
-                                   settings.TICKET_ATTACHMENT_FOLDER,
-                                   ticket.code)
+    path = '{}/{}'.format(settings.MEDIA_ROOT, path)
     try:
         shutil.rmtree(path)
         return path

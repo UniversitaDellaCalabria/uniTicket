@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ticketcategorycondition',
             name='attachment',
-            field=models.FileField(blank=True, null=True, upload_to=uni_ticket.models._condition_attachment_upload),
+            field=models.FileField(blank=True, null=True, upload_to=uni_ticket.models._attachment_upload),
         ),
     ]

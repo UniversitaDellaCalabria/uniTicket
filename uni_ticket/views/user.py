@@ -163,7 +163,7 @@ def ticket_add_new(request, structure_slug, category_slug):
             json_stored = get_as_dict(compiled_module_json=json_dict)
             if request.FILES:
                 json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
-                path_allegati = get_path_allegato(ticket)
+                path_allegati = get_path(ticket.get_folder())
                 for key, value in request.FILES.items():
                     save_file(form.cleaned_data[key],
                               path_allegati,
@@ -277,7 +277,7 @@ def ticket_edit(request, ticket_id):
     title = _("Modifica ticket")
     sub_title = ticket
     allegati = ticket.get_allegati_dict()
-    path_allegati = get_path_allegato(ticket)
+    path_allegati = get_path(ticket.get_folder())
     form = ticket.compiled_form(files=None, remove_filefields=allegati)
     form_allegati = ticket.compiled_form(files=None,
                                          remove_filefields=False,
@@ -309,7 +309,7 @@ def ticket_edit(request, ticket_id):
         if form.is_valid():
             if request.FILES:
                 json_response[settings.ATTACHMENTS_DICT_PREFIX] = allegati
-                path_allegati = get_path_allegato(ticket)
+                path_allegati = get_path(ticket.get_folder())
                 for key, value in request.FILES.items():
                     nome_allegato = form.cleaned_data[key]._name
                     # form.validate_attachment(request.FILES.get(key))
@@ -368,7 +368,7 @@ def delete_my_attachment(request, ticket_id, attachment):
 
     # Rimuove il riferimento all'allegato dalla base dati
     del ticket_details[settings.ATTACHMENTS_DICT_PREFIX][attachment]
-    path_allegato = get_path_allegato(ticket)
+    path_allegato = get_path(ticket.get_folder())
 
     # Rimuove l'allegato dal disco
     delete_file(file_name=nome_file, path=path_allegato)
@@ -413,7 +413,7 @@ def ticket_delete(request, ticket_id):
     json_dict = ticket.get_modulo_compilato()
     ticket_details = get_as_dict(compiled_module_json=json_dict)
     if settings.ATTACHMENTS_DICT_PREFIX in ticket_details:
-        delete_directory(ticket)
+        delete_directory(ticket.get_folder())
     ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
 
     # log action
@@ -472,7 +472,7 @@ def ticket_detail(request, ticket_id, template='user/ticket_detail.html'):
                                  allegati=False,
                                  formset_management=False)
     allegati = ticket.get_allegati_dict()
-    path_allegati = get_path_allegato(ticket)
+    path_allegati = get_path(ticket.get_folder())
     ticket_form = ticket.input_module.get_form(files=allegati,
                                                remove_filefields=False)
     priority = ticket.get_priority()
@@ -769,7 +769,7 @@ def ticket_clone(request, ticket_id):
             json_stored = get_as_dict(compiled_module_json=json_dict)
             if request.FILES:
                 json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
-                path_allegati = get_path_allegato(ticket)
+                path_allegati = get_path(ticket.get_folder())
                 for key, value in request.FILES.items():
                     save_file(form.cleaned_data[key],
                               path_allegati,

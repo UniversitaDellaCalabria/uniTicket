@@ -170,7 +170,7 @@ def ticket_detail(request, structure_slug, ticket_id,
                                  formset_management=False)
     priority = ticket.get_priority()
     allegati = ticket.get_allegati_dict()
-    path_allegati = get_path_allegato(ticket)
+    path_allegati = get_path(ticket.get_folder())
     ticket_form = ticket.input_module.get_form(files=allegati,
                                                remove_filefields=False)
     ticket_logs = LogEntry.objects.filter(content_type_id=ContentType.objects.get_for_model(ticket).pk,
@@ -1122,7 +1122,7 @@ def task_remove(request, structure_slug,
 
     user_type = get_user_type(request.user, structure)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
-    delete_file(file_name=task.attachment)
+    delete_directory(task.get_folder())
 
     # log action
     logger.info('[{}] {} tried to'
@@ -1622,12 +1622,8 @@ def task_attachment_delete(request, structure_slug,
         return custom_message(request, _("Permessi di modifica del task mancanti"),
                               structure_slug=structure.slug)
 
-    # Rimuove il riferimento all'allegato dalla base dati
-    path_allegato = get_path_allegato_task(task)
-
     # Rimuove l'allegato dal disco
-    delete_file(file_name=os.path.basename(task.attachment.name),
-                path=path_allegato)
+    delete_directory(task.get_folder())
 
     task.attachment=None
     task.save(update_fields = ['attachment'])

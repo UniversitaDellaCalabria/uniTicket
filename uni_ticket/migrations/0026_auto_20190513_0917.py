@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='task',
             name='attachment',
-            field=models.FileField(blank=True, null=True, upload_to=uni_ticket.models._task_attachment_upload),
+            field=models.FileField(blank=True, null=True, upload_to=uni_ticket.models._attachment_upload),
         ),
         migrations.AlterField(
             model_name='ticketreply',
             name='attachment',
-            field=models.FileField(blank=True, null=True, upload_to=uni_ticket.models._reply_attachment_upload),
+            field=models.FileField(blank=True, null=True, upload_to=uni_ticket.models._attachment_upload),
         ),
     ]

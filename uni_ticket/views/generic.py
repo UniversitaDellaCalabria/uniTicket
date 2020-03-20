@@ -67,7 +67,7 @@ def download_attachment(request, ticket_id, attachment, ticket):
         # get the attachment
         documento = attachments[attachment]
         # get ticket folder path
-        path_allegato = get_path_allegato(ticket)
+        path_allegato = get_path(ticket.get_folder())
         # get file
         result = download_file(path_allegato, documento)
         return result
@@ -94,10 +94,9 @@ def download_message_attachment(request, ticket_id, reply_id, ticket):
     # if message has attachment
     if message.attachment:
         # get ticket folder path
-        path_allegato = get_path_allegato(ticket)
+        path_allegato = get_path(message.get_folder())
         # get file
-        result = download_file("{}/{}".format(path_allegato,
-                                              settings.TICKET_MESSAGES_ATTACHMENT_SUBFOLDER),
+        result = download_file(path_allegato,
                                os.path.basename(message.attachment.name))
         return result
     raise Http404
@@ -123,11 +122,9 @@ def download_task_attachment(request, ticket_id, task_id, ticket):
     # if task has attachment
     if task.attachment:
         # get ticket folder path
-        path_allegato = get_path_allegato(ticket)
+        path_allegato = get_path(task.get_folder())
         # get file
-        result = download_file("{}/{}/{}".format(path_allegato,
-                                                 settings.TICKET_TASK_ATTACHMENT_SUBFOLDER,
-                                                 task_id),
+        result = download_file(path_allegato,
                                os.path.basename(task.attachment.name))
         return result
     raise Http404
@@ -352,11 +349,11 @@ def ticket_message_delete(request, ticket_message_id):
                               structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     # if message is not the last in chat
-    if ticket_message != last_message:
-        return custom_message(request, _("Impossibile eliminare il"
-                                         " messaggio dopo che è stato letto"
-                                         " da altri operatori"),
-                              structure_slug=structure.slug)
+    # if ticket_message != last_message:
+        # return custom_message(request, _("Impossibile eliminare il"
+                                         # " messaggio dopo che è stato letto"
+                                         # " da altri operatori"),
+                              # structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     # if message is from a manager/operator and user_type is 'user'
     if structure and user_type=='user':
@@ -367,6 +364,7 @@ def ticket_message_delete(request, ticket_message_id):
                          _("Messaggio <b>{}</b> eliminato con successo.".format(ticket_message)))
     # delete message attachment
     delete_file(file_name=ticket_message.attachment)
+
     # delete message
     ticket_message.delete()
     if user_type=='user':
@@ -412,13 +410,11 @@ def download_condition_attachment(request, category_slug, condition_id):
     condition = get_object_or_404(TicketCategoryCondition,
                                   category=category,
                                   pk=condition_id)
-    attachment = condition.attachment
-    if attachment:
-        path = '{}/{}/{}/{}'.format(settings.MEDIA_ROOT,
-                                    settings.HOSTNAME,
-                                    settings.CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
-                                    category.slug)
+    if condition.attachment:
+        # get ticket folder path
+        path_allegato = get_path(condition.get_folder())
         # get file
-        result = download_file(path, os.path.basename(condition.attachment.name))
+        result = download_file(path_allegato,
+                               os.path.basename(condition.attachment.name))
         return result
     raise Http404
