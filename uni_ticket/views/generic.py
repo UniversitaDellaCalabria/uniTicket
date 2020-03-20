@@ -416,7 +416,7 @@ def download_condition_attachment(request, category_slug, condition_id):
     if attachment:
         path = '{}/{}/{}/{}'.format(settings.MEDIA_ROOT,
                                     settings.HOSTNAME,
-                                    CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
+                                    settings.CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
                                     category.slug)
         # get file
         result = download_file(path, os.path.basename(condition.attachment.name))
