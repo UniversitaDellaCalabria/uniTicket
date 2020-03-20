@@ -167,13 +167,15 @@ def delete_file(file_name, path=settings.MEDIA_ROOT):
     except:
         return False
 
-def delete_directory(ticket_id):
+def delete_directory(ticket):
     """
     Deletes a ticket attachments directory from disk
     """
-    path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
-                             settings.TICKET_ATTACHMENT_FOLDER,
-                             ticket_id)
+    path = '{}/{}/{}/{}/{}'.format(settings.MEDIA_ROOT,
+                                   settings.HOSTNAME,
+                                   ticket.get_year(),
+                                   settings.TICKET_ATTACHMENT_FOLDER,
+                                   ticket.code)
     try:
         shutil.rmtree(path)
         return path

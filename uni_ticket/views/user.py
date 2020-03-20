@@ -413,7 +413,7 @@ def ticket_delete(request, ticket_id):
     json_dict = ticket.get_modulo_compilato()
     ticket_details = get_as_dict(compiled_module_json=json_dict)
     if settings.ATTACHMENTS_DICT_PREFIX in ticket_details:
-        delete_directory(ticket_id)
+        delete_directory(ticket)
     ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
 
     # log action
