@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 {% block menu_links %}
 {% include 'manager/main_menu.html' %}
@@ -171,7 +172,7 @@
                 </td>
             </tr>
             <tr>
-                <th scope="row">{% trans 'Accessibile agli ospiti' %}</th>
+                <th scope="row">{% trans 'Accessibile a Ospiti' %}</th>
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.allow_guest %}
@@ -183,7 +184,8 @@
                 </td>
             </tr>
             <tr>
-                <th scope="row">{% trans "Accessibile agli utenti dell'organizzazione" %}</th>
+                {% settings_value name="ORGANIZATION_USER_LABEL" as organization_user_label %}
+                <th scope="row">{% trans "Accessibile a" %} {{ organization_user_label }}</th>
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.allow_user %}
@@ -195,7 +197,8 @@
                 </td>
             </tr>
             <tr>
-                <th scope="row">{% trans 'Accessibile agli operatori' %}</th>
+                {% settings_value name="ORGANIZATION_EMPLOYEE_LABEL" as organization_employee_label %}
+                <th scope="row">{% trans "Accessibile a" %} {{ organization_employee_label }}</th>
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.allow_employee %}

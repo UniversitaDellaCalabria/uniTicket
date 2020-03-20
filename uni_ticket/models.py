@@ -82,9 +82,9 @@ class TicketCategory(models.Model):
                                               "apertura nuovo ticket"),
                                             default=settings.SHOW_HEADING_TEXT)
     # fields to map roles
-    allow_guest = models.BooleanField(_("Accessibile agli ospiti"), default=True)
-    allow_user = models.BooleanField(_("Accessibile agli utenti dell'organizzazione"), default=True)
-    allow_employee = models.BooleanField(_("Accessibile ai dipendenti dell'organizzazione"), default=True)
+    allow_guest = models.BooleanField(_("Accessibile a Ospiti"), default=True)
+    allow_user = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_USER_LABEL), default=True)
+    allow_employee = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_EMPLOYEE_LABEL), default=True)
 
     def can_be_deleted(self):
         """

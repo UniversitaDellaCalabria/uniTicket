@@ -375,10 +375,11 @@ def user_is_employee(user):
         attr = getattr(user, settings.EMPLOYEE_ATTRIBUTE_NAME)
         if callable(attr): return attr()
         else: return attr
+    return False
     # If operator in the same Structure
     # is_operator = user_is_operator(request.user, struttura)
     # If manage something. For alla structures
-    return user_manage_something(user)
+    # return user_manage_something(user)
 
 def user_is_in_organization(user):
     """
