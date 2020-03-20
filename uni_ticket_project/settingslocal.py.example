@@ -226,3 +226,16 @@ TEXT_FILETYPE = ('text/plain', 'text/csv',
 IMG_FILETYPE = ('image/jpeg', 'image/png', 'image/gif', 'image/x-ms-bmp')
 SIGNED_FILETYPE = PDF_FILETYPE + ('application/pkcs7-mime',)
 PERMITTED_UPLOAD_FILETYPE = TEXT_FILETYPE + IMG_FILETYPE + SIGNED_FILETYPE
+
+# maximum permitted filename lengh in attachments, uploads
+ATTACH_NAME_MAX_LEN = 50
+
+# 2.5MB - 2621440
+# 5MB - 5242880
+# 10MB - 10485760
+# 20MB - 20971520
+# 50MB - 5242880
+# 100MB 104857600
+# 250MB - 214958080
+# 500MB - 429916160
+MAX_UPLOAD_SIZE = 10485760

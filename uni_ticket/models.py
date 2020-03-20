@@ -662,7 +662,9 @@ class TicketReply(models.Model):
     text = models.TextField()
     attachment = models.FileField(upload_to=_reply_attachment_upload,
                                   null=True, blank=True,
-                                  validators=[validate_file_extension])
+                                  validators=[validate_file_extension,
+                                              validate_file_size,
+                                              validate_file_length])
     created = models.DateTimeField(auto_now=True)
     read_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.SET_NULL,
@@ -730,7 +732,9 @@ class Task(models.Model):
     priority = models.IntegerField(default=0)
     attachment = models.FileField(upload_to=_task_attachment_upload,
                                   null=True, blank=True,
-                                  validators=[validate_file_extension])
+                                  validators=[validate_file_extension,
+                                              validate_file_size,
+                                              validate_file_length])
 
     class Meta:
         ordering = ["created"]
@@ -784,7 +788,9 @@ class TicketCategoryCondition(models.Model):
     ordinamento = models.PositiveIntegerField(blank=True, default=0)
     attachment = models.FileField(upload_to=_condition_attachment_upload,
                                   null=True, blank=True,
-                                  validators=[validate_file_extension])
+                                  validators=[validate_file_extension,
+                                              validate_file_size,
+                                              validate_file_length])
     is_printable = models.BooleanField(_('Visibile nella versione stampabile'),
                                        default=False)
     is_active = models.BooleanField(_('Visibile agli utenti'), default=True)
