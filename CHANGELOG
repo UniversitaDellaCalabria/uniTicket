@@ -1,12 +1,22 @@
 CHANGELOG
 ---------
 
+v1.0.0-rc
+---------
+
+- Managers can assign a ticket to another operator in the office linked to the ticket category
+- Ticket Assignements required when a ticket is routed to another structure/office
+- A banner can be customized for each available structures
+- Multiple videoconference providers and randomic selection of these via ajax
+- Updated django-form-builder with new global settings
+- Validation of Form Attachments
+- minor code refactor
+
+
 v0.9.0
 ------
 
 - JSON Storage Compression (zlib) with Base64 encoding
-- Managers can assign a ticket to another operator in the office linked to the ticket category
-- A banner can be customized for each available structures
 
 
 v0.8.4

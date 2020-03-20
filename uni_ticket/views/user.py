@@ -312,10 +312,10 @@ def ticket_edit(request, ticket_id):
                 path_allegati = get_path_allegato(ticket)
                 for key, value in request.FILES.items():
                     # form.validate_attachment(request.FILES.get(key))
+                    nome_allegato = form.cleaned_data[key]
                     save_file(form.cleaned_data[key],
                               path_allegati,
-                              form.cleaned_data[key]._name)
-                    nome_allegato = form.cleaned_data[key]._name
+                              nome_allegato)
                     json_response[settings.ATTACHMENTS_DICT_PREFIX]["{}".format(key)] = "{}".format(nome_allegato)
             elif allegati:
                 # Se non ho aggiornato i miei allegati lasciandoli invariati rispetto
