@@ -1,5 +1,9 @@
+import random
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import gettext as _
 
@@ -51,8 +55,13 @@ def room(request, room_name):
         return render(request, 'room_{}.html'.format(user_type), {
             'structure': structure,
             'title': '{} [chat-room]'.format(structure),
+            'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
         })
     return custom_message(request, _("Questa struttura non offre "
                                      "categorie disponibili per la tua "
                                      "tipologia di utenza"),
                           structure_slug=structure.slug)
+
+# no login is required
+def random_vc_provider(request):
+    return HttpResponse(random.choice(settings.VIDEOCONF_PROVIDERS))

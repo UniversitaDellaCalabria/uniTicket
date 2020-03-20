@@ -286,7 +286,7 @@ $(document).ready(function () {
 
     // set socket
     var socket = new WebSocket(
-        'wss://' + window.location.host +
+        ws_protocol + window.location.host +
         '/ws/chat/' + room_name + '/?session_key=' + sessionKey);
 
     // on ENTER click
@@ -318,7 +318,10 @@ $(document).ready(function () {
     // onclick to videochat button
     videoChatButton.click(function () {
         videochat_text="Clicca qui per entrare in videoconferenza ";
-        videochat_url="https://meet.jit.si/"+ uuid4();
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.open( "GET", '/chat/random-vc-provider', false );
+        xmlHttp.send();
+        videochat_url = xmlHttp.responseText + uuid4();
         window.open(videochat_url, '_blank');
         sendMessage(recipient=currentRecipient,
                     room_name=room_name,

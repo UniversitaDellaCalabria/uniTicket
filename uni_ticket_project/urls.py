@@ -71,10 +71,10 @@ if 'saml2_sp' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/metadata/'.format(saml2_url_prefix),
                         views.metadata, name='saml2_metadata'),
 else:
-    urlpatterns += path('local/{}/'.format(settings.LOGIN_URL),
+    urlpatterns += path('local{}/'.format(settings.LOGIN_URL),
                         auth_views.LoginView.as_view(template_name='login.html'),
                         name='login'),
-    urlpatterns += path('local/{}/'.format(settings.LOGOUT_URL),
+    urlpatterns += path('local{}/'.format(settings.LOGOUT_URL),
                         auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'),
                         name='logout'),
 
