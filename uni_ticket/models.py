@@ -28,7 +28,7 @@ from . utils import (compress_text_to_b64,
                      send_custom_mail,
                      user_is_employee,
                      user_is_in_organization)
-
+from . validators import *
 
 def _reply_attachment_upload(instance, filename):
     """
@@ -661,7 +661,8 @@ class TicketReply(models.Model):
     subject = models.CharField(max_length=255)
     text = models.TextField()
     attachment = models.FileField(upload_to=_reply_attachment_upload,
-                                  null=True, blank=True)
+                                  null=True, blank=True,
+                                  validators=[validate_file_extension])
     created = models.DateTimeField(auto_now=True)
     read_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.SET_NULL,
@@ -728,7 +729,8 @@ class Task(models.Model):
     closing_reason = models.TextField(blank=True, null=True)
     priority = models.IntegerField(default=0)
     attachment = models.FileField(upload_to=_task_attachment_upload,
-                                  null=True, blank=True)
+                                  null=True, blank=True,
+                                  validators=[validate_file_extension])
 
     class Meta:
         ordering = ["created"]
@@ -781,7 +783,8 @@ class TicketCategoryCondition(models.Model):
     text = models.TextField(blank=False, null=False)
     ordinamento = models.PositiveIntegerField(blank=True, default=0)
     attachment = models.FileField(upload_to=_condition_attachment_upload,
-                                  null=True, blank=True)
+                                  null=True, blank=True,
+                                  validators=[validate_file_extension])
     is_printable = models.BooleanField(_('Visibile nella versione stampabile'),
                                        default=False)
     is_active = models.BooleanField(_('Visibile agli utenti'), default=True)

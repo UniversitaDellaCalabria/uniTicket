@@ -212,3 +212,17 @@ LOGGING = {
             },
         }
     }
+
+# file validation
+PDF_FILETYPE = ('application/pdf',)
+TEXT_FILETYPE = ('text/plain', 'text/csv',
+                 'application/vnd.oasis.opendocument.spreadsheet',
+                 'application/vnd.oasis.opendocument.text',
+                 'application/msword,'
+                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                 'application/vnd.ms-excel',
+                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                )
+IMG_FILETYPE = ('image/jpeg', 'image/png', 'image/gif', 'image/x-ms-bmp')
+SIGNED_FILETYPE = PDF_FILETYPE + ('application/pkcs7-mime',)
+PERMITTED_UPLOAD_FILETYPE = TEXT_FILETYPE + IMG_FILETYPE + SIGNED_FILETYPE
