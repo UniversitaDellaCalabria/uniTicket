@@ -83,6 +83,7 @@
     </div>
 
     <script>
+        let ws_protocol = '{{ ws_protocol }}'
         let room_name = '{{ structure.slug }}'
         let sessionKey = '{{ request.session.session_key }}';
         let currentUser = '{{ request.user.pk }}';
