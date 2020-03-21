@@ -67,10 +67,6 @@ class TicketCategory(models.Model):
         verbose_name = _("Categoria dei Ticket")
         verbose_name_plural = _("Categorie dei Ticket")
 
-    def delete(self, *args, **kwargs):
-        delete_directory(self.get_folder())
-        super().delete(*args, **kwargs)
-
     def can_be_deleted(self):
         """
         Ritorna True se è possibile eliminare la categoria
@@ -250,10 +246,6 @@ class Ticket(SavedFormContent):
         if len(self.modulo_compilato) > settings.TICKET_MIN_DIGITS_TO_COMPRESS:
             self.modulo_compilato = compress_text_to_b64(self.modulo_compilato).decode()
         super().save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        delete_directory(self.get_folder())
-        super().delete(*args, **kwargs)
 
     def get_category(self):
         return self.input_module.ticket_category
@@ -681,10 +673,6 @@ class TicketReply(models.Model):
         verbose_name = _("Domande/Risposte Ticket")
         verbose_name_plural = _("Domande/Risposte Ticket")
 
-    def delete(self, *args, **kwargs):
-        delete_file(file_name=self.attachment)
-        super().delete(*args, **kwargs)
-
     def get_folder(self):
         """
         Returns ticket attachments folder path
@@ -758,10 +746,6 @@ class Task(models.Model):
         verbose_name = _("Task")
         verbose_name_plural = _("Task")
 
-    def delete(self, *args, **kwargs):
-        delete_directory(self.get_folder())
-        super().delete(*args, **kwargs)
-
     def get_priority(self):
         """
         """
@@ -830,10 +814,6 @@ class TicketCategoryCondition(models.Model):
         ordering = ('ordinamento', )
         verbose_name = _('Clausola tipo di richiesta ticket')
         verbose_name_plural = _('Clausole tipo di richiesta ticket')
-
-    def delete(self, *args, **kwargs):
-        delete_file(file_name=self.attachment)
-        super().delete(*args, **kwargs)
 
     def get_folder(self):
         """
