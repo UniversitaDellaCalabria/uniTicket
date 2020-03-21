@@ -1122,7 +1122,6 @@ def task_remove(request, structure_slug,
 
     user_type = get_user_type(request.user, structure)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
-    delete_directory(task.get_folder())
 
     # log action
     logger.info('[{}] {} tried to'

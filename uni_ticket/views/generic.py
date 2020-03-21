@@ -362,8 +362,6 @@ def ticket_message_delete(request, ticket_message_id):
     ticket = ticket_message.ticket
     messages.add_message(request, messages.SUCCESS,
                          _("Messaggio <b>{}</b> eliminato con successo.".format(ticket_message)))
-    # delete message attachment
-    delete_file(file_name=ticket_message.attachment)
 
     # delete message
     ticket_message.delete()

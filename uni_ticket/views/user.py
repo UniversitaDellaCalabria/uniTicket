@@ -409,11 +409,6 @@ def ticket_delete(request, ticket_id):
     :return: redirect
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
-    code = ticket.code
-    json_dict = ticket.get_modulo_compilato()
-    ticket_details = get_as_dict(compiled_module_json=json_dict)
-    if settings.ATTACHMENTS_DICT_PREFIX in ticket_details:
-        delete_directory(ticket.get_folder())
     ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
 
     # log action
@@ -450,7 +445,7 @@ def ticket_delete(request, ticket_id):
                                                         ticket))
 
     messages.add_message(request, messages.SUCCESS,
-                         _("Ticket {} eliminato correttamente".format(code)))
+                         _("Ticket {} eliminato correttamente".format(ticket.code)))
     return redirect('uni_ticket:user_unassigned_ticket')
 
 @login_required
