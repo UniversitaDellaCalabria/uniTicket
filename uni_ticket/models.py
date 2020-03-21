@@ -86,6 +86,16 @@ class TicketCategory(models.Model):
                      " attivare un modulo di input".format(self))
         return False
 
+    def get_folder(self):
+        """
+        Returns ticket attachments folder path
+        """
+        folder = '{}/{}/{}/{}'.format(settings.HOSTNAME,
+                                      settings.CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
+                                      self.organizational_structure.slug,
+                                      self.slug)
+        return folder
+
     def get_conditions(self, is_printable=False):
         """
         """
@@ -808,11 +818,7 @@ class TicketCategoryCondition(models.Model):
         """
         Returns ticket attachments folder path
         """
-        folder = '{}/{}/{}/{}'.format(settings.HOSTNAME,
-                                      settings.CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
-                                      self.category.organizational_structure.slug,
-                                      self.category.slug)
-        return folder
+        return self.category.get_folder()
 
     def corpo_as_html(self):
         return text_as_html(self.text)

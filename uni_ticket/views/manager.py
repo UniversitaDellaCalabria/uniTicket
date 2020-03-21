@@ -965,6 +965,9 @@ def category_delete(request, structure_slug, category_slug, structure):
 
         messages.add_message(request, messages.SUCCESS,
                              _("Categoria {} eliminata correttamente".format(category)))
+
+        delete_directory(category.get_folder())
+
         category.delete()
         return redirect('uni_ticket:manager_dashboard',
                         structure_slug=structure_slug)
