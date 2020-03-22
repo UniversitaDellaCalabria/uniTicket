@@ -271,16 +271,9 @@ class Ticket(SavedFormContent):
     def get_user_ticket_per_day(user, date=None):
         """
         """
-        if date:
-            d = timezone.datetime(date.year, date.month, date.day,
-                                  tzinfo=timezone.get_default_timezone())
-        else:
-            d = timezone.datetime(timezone.now().year,
-                                  timezone.now().month,
-                                  timezone.now().day,
-                                  tzinfo=timezone.get_default_timezone())
-        tickets = Ticket.objects.filter(created__gt=d-timezone.timedelta(days=1),
-                                        created__lt=d+timezone.timedelta(days=1))
+        dt = date if date else timezone.now().date()
+        tickets = Ticket.objects.filter(created_by=user,
+                                        created__contains=dt)
         return tickets
 
     def get_url(self, structure=None):

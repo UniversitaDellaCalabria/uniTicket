@@ -37,7 +37,6 @@ def is_manager(func_to_decorate):
 def is_operator(func_to_decorate):
     """
     Check if user is employee in some Office
-    Not staff in Django + employee in structure default office
     """
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
