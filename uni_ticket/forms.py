@@ -149,10 +149,14 @@ class TicketCompetenceForm(forms.Form):
         ticket_id_list = TicketAssignment.get_ticket_per_structure(structure)
         ticket_id_list.remove(current_ticket_id)
         ticket_list = Ticket.objects.filter(code__in=ticket_id_list,
-                                            is_taken=True,
+                                            # is_taken=True,
                                             is_closed=False).exclude(code__in=ticket_dependences_code_list)
+        result_list = ticket_list
+        for ticket in ticket_list:
+            if not ticket.has_been_taken():
+                result_list = result_list.exclude(pk=ticket.pk)
         super().__init__(*args, **kwargs)
-        self.fields['ticket'].queryset = ticket_list
+        self.fields['ticket'].queryset = result_list
         self.fields['ticket'].to_field_name='code'
 
 
@@ -185,10 +189,14 @@ class TicketDependenceForm(forms.Form):
         ticket_id_list = TicketAssignment.get_ticket_per_structure(structure)
         ticket_id_list.remove(current_ticket_id)
         ticket_list = Ticket.objects.filter(code__in=ticket_id_list,
-                                            is_taken=True,
+                                            # is_taken=True,
                                             is_closed=False).exclude(code__in=ticket_dependences_code_list)
+        result_list = ticket_list
+        for ticket in ticket_list:
+            if not ticket.has_been_taken():
+                result_list = result_list.exclude(pk=ticket.pk)
         super().__init__(*args, **kwargs)
-        self.fields['ticket'].queryset = ticket_list
+        self.fields['ticket'].queryset = result_list
         self.fields['ticket'].to_field_name='code'
 
     class Media:

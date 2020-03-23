@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 from django.urls import include, path, re_path
 from django.utils.text import slugify
 from django.views.generic import RedirectView
@@ -113,22 +114,22 @@ urlpatterns += [
     path('{}/{}/'.format(base, _dashboard_name), manager.dashboard, name='manager_dashboard'),
 
     # Ticket
-    path('{}/opened/'.format(tickets), is_manager(generic.opened_ticket), name='manager_opened_ticket'),
-    path('{}/unassigned/'.format(tickets), is_manager(generic.unassigned_ticket), name='manager_unassigned_ticket'),
-    path('{}/closed/'.format(tickets), is_manager(generic.closed_ticket), name='manager_closed_ticket'),
-    path('{}/'.format(tickets), is_manager(management.tickets), name='manager_tickets'),
-    path('{}/'.format(ticket_id), is_manager(management.ticket_detail), name='manager_manage_ticket'),
-    path('{}/messages/'.format(ticket_id), is_manager(management.ticket_message), name='manager_ticket_message'),
-    path('{}/competence/add/'.format(ticket_id), is_manager(management.ticket_competence_add_new), name='manager_add_ticket_competence'),
-    path('{}/competence/add/<str:new_structure_slug>/'.format(ticket_id), is_manager(management.ticket_competence_add_final), name='manager_add_ticket_competence'),
-    path('{}/dependence/add/'.format(ticket_id), is_manager(management.ticket_dependence_add_new), name='manager_add_ticket_dependence'),
-    path('{}/close/'.format(ticket_id), is_manager(management.ticket_close), name='manager_close_ticket'),
+    path('{}/opened/'.format(tickets), login_required(is_manager(generic.opened_ticket)), name='manager_opened_ticket'),
+    path('{}/unassigned/'.format(tickets), login_required(is_manager(generic.unassigned_ticket)), name='manager_unassigned_ticket'),
+    path('{}/closed/'.format(tickets), login_required(is_manager(generic.closed_ticket)), name='manager_closed_ticket'),
+    path('{}/'.format(tickets), login_required(is_manager(management.tickets)), name='manager_tickets'),
+    path('{}/'.format(ticket_id), login_required(is_manager(management.ticket_detail)), name='manager_manage_ticket'),
+    path('{}/messages/'.format(ticket_id), login_required(is_manager(management.ticket_message)), name='manager_ticket_message'),
+    path('{}/competence/add/'.format(ticket_id), login_required(is_manager(management.ticket_competence_add_new)), name='manager_add_ticket_competence'),
+    path('{}/competence/add/<str:new_structure_slug>/'.format(ticket_id), login_required(is_manager(management.ticket_competence_add_final)), name='manager_add_ticket_competence'),
+    path('{}/dependence/add/'.format(ticket_id), login_required(is_manager(management.ticket_dependence_add_new)), name='manager_add_ticket_dependence'),
+    path('{}/close/'.format(ticket_id), login_required(is_manager(management.ticket_close)), name='manager_close_ticket'),
 
     # Task
-    path('{}/add/'.format(task), is_manager(management.task_add_new), name='manager_add_ticket_task'),
-    path('{}/'.format(task_id), is_manager(management.task_detail), name='manager_task_detail'),
-    path('{}/close/'.format(task_id), is_manager(management.task_close), name='manager_close_task'),
-    path('{}/edit/'.format(task_id), is_manager(management.task_edit), name='manager_edit_task'),
+    path('{}/add/'.format(task), login_required(is_manager(management.task_add_new)), name='manager_add_ticket_task'),
+    path('{}/'.format(task_id), login_required(is_manager(management.task_detail)), name='manager_task_detail'),
+    path('{}/close/'.format(task_id), login_required(is_manager(management.task_close)), name='manager_close_task'),
+    path('{}/edit/'.format(task_id), login_required(is_manager(management.task_edit)), name='manager_edit_task'),
 
     # Offices
     path('{}/new/'.format(office), manager.office_add_new, name='manager_office_add_new'),
@@ -175,8 +176,8 @@ urlpatterns += [
     path('{}/enable/'.format(condition_id), manager.category_condition_enable, name='manager_category_condition_enable'),
     path('{}/'.format(condition_id), manager.category_condition_detail, name='manager_category_condition_detail'),
 
-    path('{}/settings/'.format(base), is_manager(generic.user_settings), name='manager_user_settings'),
-    path('{}/messages/'.format(base), is_manager(generic.ticket_messages), name='manager_messages'),
+    path('{}/settings/'.format(base), login_required(is_manager(generic.user_settings)), name='manager_user_settings'),
+    path('{}/messages/'.format(base), login_required(is_manager(generic.ticket_messages)), name='manager_messages'),
 ]
 
 # Operator URLs
@@ -190,25 +191,25 @@ urlpatterns += [
     path('{}/{}/'.format(base, _dashboard_name), operator.dashboard, name='operator_dashboard'),
 
     # Ticket
-    path('{}/opened/'.format(tickets), is_operator(generic.opened_ticket), name='operator_opened_ticket'),
-    path('{}/unassigned/'.format(tickets), is_operator(generic.unassigned_ticket), name='operator_unassigned_ticket'),
-    path('{}/closed/'.format(tickets), is_operator(generic.closed_ticket), name='operator_closed_ticket'),
-    path('{}/'.format(tickets), is_operator(management.tickets), name='operator_tickets'),
-    path('{}/'.format(ticket_id), is_operator(management.ticket_detail), name='operator_manage_ticket'),
-    path('{}/messages/'.format(ticket_id), is_operator(management.ticket_message), name='operator_ticket_message'),
-    path('{}/competence/add/'.format(ticket_id), is_operator(management.ticket_competence_add_new), name='operator_add_ticket_competence'),
-    path('{}/competence/add/<str:new_structure_slug>/'.format(ticket_id), is_operator(management.ticket_competence_add_final), name='operator_add_ticket_competence'),
-    path('{}/dependence/add/'.format(ticket_id), is_operator(management.ticket_dependence_add_new), name='operator_add_ticket_dependence'),
-    path('{}/close/'.format(ticket_id), is_operator(management.ticket_close), name='operator_close_ticket'),
+    path('{}/opened/'.format(tickets), login_required(is_operator(generic.opened_ticket)), name='operator_opened_ticket'),
+    path('{}/unassigned/'.format(tickets), login_required(is_operator(generic.unassigned_ticket)), name='operator_unassigned_ticket'),
+    path('{}/closed/'.format(tickets), login_required(is_operator(generic.closed_ticket)), name='operator_closed_ticket'),
+    path('{}/'.format(tickets), login_required(is_operator(management.tickets)), name='operator_tickets'),
+    path('{}/'.format(ticket_id), login_required(is_operator(management.ticket_detail)), name='operator_manage_ticket'),
+    path('{}/messages/'.format(ticket_id), login_required(is_operator(management.ticket_message)), name='operator_ticket_message'),
+    path('{}/competence/add/'.format(ticket_id), login_required(is_operator(management.ticket_competence_add_new)), name='operator_add_ticket_competence'),
+    path('{}/competence/add/<str:new_structure_slug>/'.format(ticket_id), login_required(is_operator(management.ticket_competence_add_final)), name='operator_add_ticket_competence'),
+    path('{}/dependence/add/'.format(ticket_id), login_required(is_operator(management.ticket_dependence_add_new)), name='operator_add_ticket_dependence'),
+    path('{}/close/'.format(ticket_id), login_required(is_operator(management.ticket_close)), name='operator_close_ticket'),
 
     # Task
-    path('{}/add/'.format(task), is_operator(management.task_add_new), name='operator_add_ticket_task'),
-    path('{}/'.format(task_id), is_operator(management.task_detail), name='operator_task_detail'),
-    path('{}/close/'.format(task_id), is_operator(management.task_close), name='operator_close_task'),
-    path('{}/edit/'.format(task_id), is_operator(management.task_edit), name='operator_edit_task'),
+    path('{}/add/'.format(task), login_required(is_operator(management.task_add_new)), name='operator_add_ticket_task'),
+    path('{}/'.format(task_id), login_required(is_operator(management.task_detail)), name='operator_task_detail'),
+    path('{}/close/'.format(task_id), login_required(is_operator(management.task_close)), name='operator_close_task'),
+    path('{}/edit/'.format(task_id), login_required(is_operator(management.task_edit)), name='operator_edit_task'),
 
-    path('{}/settings/'.format(base), is_operator(generic.user_settings), name='operator_user_settings'),
-    path('{}/messages/'.format(base), is_operator(generic.ticket_messages), name='operator_messages'),
+    path('{}/settings/'.format(base), login_required(is_operator(generic.user_settings)), name='operator_user_settings'),
+    path('{}/messages/'.format(base), login_required(is_operator(generic.ticket_messages)), name='operator_messages'),
 ]
 
 # User URLs

@@ -580,18 +580,19 @@ class Ticket(SavedFormContent):
     def has_been_taken(self, user=None):
         assignments = TicketAssignment.objects.filter(ticket=self)
         if not assignments.first(): return False
-        if assignments.first().taken_date: return True
-        if user:
-            for assignment in assignments:
-                if assignment.taken_date and user_manage_office(user, assignment.office):
-                    return True
+        if not assignments.first().taken_date: return False
+        if not user: return True
+        for assignment in assignments:
+            if assignment.taken_date and user_manage_office(user, assignment.office):
+                return True
         return False
 
     def taken_by_list(self):
         office_operators = {}
         assignments = TicketAssignment.objects.filter(ticket=self)
         for assignment in assignments:
-            office_operators[assignment.office.__str__()] = assignment.taken_by.__str__()
+            assigned = assignment.taken_by or _("Da assegnare")
+            office_operators[assignment.office.__str__()] = assigned.__str__()
         return office_operators
 
     def take(self, user):
