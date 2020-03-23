@@ -154,7 +154,7 @@ def ticket_is_not_taken_and_not_closed(func_to_decorate):
         request = original_args[0]
         ticket_id = original_kwargs['ticket_id']
         ticket = get_object_or_404(Ticket, code=ticket_id)
-        if ticket.is_taken:
+        if ticket.has_been_taken():
             return custom_message(request, _("Il ticket è stato assegnato"))
         if ticket.is_closed:
             return custom_message(request, _("Il ticket è chiuso"))
@@ -169,7 +169,7 @@ def ticket_is_taken_and_not_closed(func_to_decorate):
         request = original_args[0]
         ticket_id = original_kwargs['ticket_id']
         ticket = get_object_or_404(Ticket, code=ticket_id)
-        if not ticket.is_taken:
+        if not ticket.has_been_taken():
             return custom_message(request, _("Il ticket non è assegnato"))
         if ticket.is_closed:
             return custom_message(request, _("Il ticket è chiuso"))

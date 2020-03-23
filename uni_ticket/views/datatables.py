@@ -43,8 +43,8 @@ class TicketDTD(DjangoDatatablesServerProc):
                     Q(subject__icontains=text) | \
                     Q(created_by__first_name__icontains=text) | \
                     Q(created_by__last_name__icontains=text) | \
-                    Q(taken_by__first_name__icontains=text) | \
-                    Q(taken_by__last_name__icontains=text) | \
+                    # Q(taken_by__first_name__icontains=text) | \
+                    # Q(taken_by__last_name__icontains=text) | \
                     Q(closed_by__first_name__icontains=text) | \
                     Q(closed_by__last_name__icontains=text) | \
                     Q(input_module__ticket_category__name__icontains=text) | \
@@ -78,9 +78,8 @@ def user_unassigned_ticket(request):
     if settings.SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(created_by=request.user,
-                                        is_taken=False,
+                                        # is_taken=False,
                                         is_closed=False)
-    dtd = TicketDTD( request, ticket_list, columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -95,9 +94,13 @@ def user_opened_ticket(request):
     if settings.SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(created_by=request.user,
-                                        is_taken=True,
+                                        # is_taken=True,
                                         is_closed=False)
-    dtd = TicketDTD( request, ticket_list, columns )
+    result_list = ticket_list
+    for ticket in ticket_list:
+        if not ticket.has_been_taken():
+            result_list.exclude(ticket)
+    dtd = TicketDTD( request, result_list, columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -152,9 +155,13 @@ def manager_unassigned_ticket(request, structure_slug, structure):
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
     ticket_list = Ticket.objects.filter(code__in=tickets,
-                                        is_taken=False,
+                                        # is_taken=False,
                                         is_closed=False)
-    dtd = TicketDTD( request, ticket_list, _ticket_columns )
+    result_list = ticket_list
+    for ticket in ticket_list:
+        if ticket.has_been_taken(user=request.user):
+            result_list.exclude(ticket)
+    dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -173,9 +180,13 @@ def manager_opened_ticket(request, structure_slug, structure):
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
     ticket_list = Ticket.objects.filter(code__in=tickets,
-                                        is_taken=True,
+                                        # is_taken=True,
                                         is_closed=False)
-    dtd = TicketDTD( request, ticket_list, _ticket_columns )
+    result_list = ticket_list
+    for ticket in ticket_list:
+        if not ticket.has_been_taken(user=request.user):
+            result_list.exclude(ticket)
+    dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -239,9 +250,13 @@ def operator_unassigned_ticket(request, structure_slug,
     """
     tickets = visible_tickets_to_user(request.user, structure, office_employee)
     ticket_list = Ticket.objects.filter(code__in=tickets,
-                                        is_taken=False,
+                                        # is_taken=False,
                                         is_closed=False)
-    dtd = TicketDTD( request, ticket_list, _ticket_columns )
+    result_list = ticket_list
+    for ticket in ticket_list:
+        if ticket.has_been_taken(user=request.user):
+            result_list.exclude(ticket)
+    dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
@@ -265,9 +280,13 @@ def operator_opened_ticket(request, structure_slug,
                                       structure,
                                       office_employee)
     ticket_list = Ticket.objects.filter(code__in=tickets,
-                                        is_taken=True,
+                                        # is_taken=True,
                                         is_closed=False)
-    dtd = TicketDTD( request, ticket_list, _ticket_columns )
+    result_list = ticket_list
+    for ticket in ticket_list:
+        if not ticket.has_been_taken(user=request.user):
+            result_list.exclude(ticket)
+    dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
