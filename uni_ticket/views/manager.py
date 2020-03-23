@@ -50,11 +50,13 @@ def dashboard(request, structure_slug, structure):
     ta = TicketAssignment
     structure_tickets = ta.get_ticket_per_structure(structure=structure)
     tickets = Ticket.objects.filter(code__in=structure_tickets)
-    non_gestiti = tickets.filter(is_taken=False,
-                                 is_closed=False)
-    aperti = tickets.filter(is_taken=True, is_closed=False)
+    not_closed = tickets.filter(is_closed=False)
+    unassigned = []
+    opened = []
+    for nc in not_closed:
+        if nc.has_been_taken(request.user): opened.append(nc)
+        else: unassigned.append(nc)
     chiusi = tickets.filter(is_closed=True)
-
     om = OrganizationalStructureOffice
     offices = om.objects.filter(organizational_structure=structure)
 
@@ -72,9 +74,9 @@ def dashboard(request, structure_slug, structure):
          'offices': offices,
          'structure': structure,
          'sub_title': sub_title,
-         'ticket_aperti': aperti,
+         'ticket_aperti': opened,
          'ticket_chiusi': chiusi,
-         'ticket_non_gestiti': non_gestiti,
+         'ticket_non_gestiti': unassigned,
          'title': title,}
     return render(request, template, d)
 

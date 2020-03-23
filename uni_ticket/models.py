@@ -584,7 +584,7 @@ class Ticket(SavedFormContent):
         office_operators = {}
         assignments = TicketAssignment.objects.filter(ticket=self)
         for assignment in assignments:
-            office_operators[assignment.office] = assignment.taken_by
+            office_operators[assignment.office.__str__()] = assignment.taken_by.__str__()
         return office_operators
 
     def take(self, user):

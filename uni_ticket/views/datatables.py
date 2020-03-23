@@ -99,7 +99,7 @@ def user_opened_ticket(request):
     result_list = ticket_list
     for ticket in ticket_list:
         if not ticket.has_been_taken():
-            result_list.exclude(ticket)
+            result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, columns )
     return JsonResponse(dtd.get_dict())
 
@@ -160,7 +160,7 @@ def manager_unassigned_ticket(request, structure_slug, structure):
     result_list = ticket_list
     for ticket in ticket_list:
         if ticket.has_been_taken(user=request.user):
-            result_list.exclude(ticket)
+            result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
@@ -185,7 +185,7 @@ def manager_opened_ticket(request, structure_slug, structure):
     result_list = ticket_list
     for ticket in ticket_list:
         if not ticket.has_been_taken(user=request.user):
-            result_list.exclude(ticket)
+            result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
@@ -255,7 +255,7 @@ def operator_unassigned_ticket(request, structure_slug,
     result_list = ticket_list
     for ticket in ticket_list:
         if ticket.has_been_taken(user=request.user):
-            result_list.exclude(ticket)
+            result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
@@ -285,7 +285,7 @@ def operator_opened_ticket(request, structure_slug,
     result_list = ticket_list
     for ticket in ticket_list:
         if not ticket.has_been_taken(user=request.user):
-            result_list.exclude(ticket)
+            result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
