@@ -1,6 +1,8 @@
 {% load i18n %}
 {% load static %}
 
+{% ticket_has_been_taken ticket=ticket as ticket_taken %}
+
 <div id="collapseDiv1-lft" class="collapse-div collapse-left-icon" role="tablist">
     <div class="collapse-header" id="heading2-lft">
         <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
@@ -12,7 +14,7 @@
             {% include "logs.html" %}
         </div>
     </div>
-    {% if ticket.is_taken or ticket.is_closed %}
+    {% if ticket.ticket_taken or ticket.is_closed %}
     <div class="collapse-header" id="heading3-lft">
         <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
             {% trans "Attività del ticket" %} ({{ ticket_task|length }})

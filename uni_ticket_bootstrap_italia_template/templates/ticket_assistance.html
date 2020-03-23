@@ -2,6 +2,8 @@
 {% load static %}
 {% load uni_ticket_tags %}
 
+{% ticket_has_been_taken ticket=ticket as ticket_taken %}
+
 {% if ticket_replies %}
     {% for reply in ticket_replies %}
     <div class="row" class="ticket_replies">
@@ -100,7 +102,7 @@
     </div>
 {% endif %}
 
-{% if ticket.is_taken and not ticket.is_closed %}
+{% if ticket.ticket_taken and not ticket.is_closed %}
 <div class="row">
     <div class="col">
         <div class="card-wrapper card-space">

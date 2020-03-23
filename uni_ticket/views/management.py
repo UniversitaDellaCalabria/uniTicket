@@ -618,7 +618,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                                                    ticket))
         return custom_message(request, _("Il ticket {} non è stato chiuso"),
                               structure_slug=structure.slug)
-    if not ticket.is_taken:
+    if not ticket.has_been_taken(request.user):
         # log action
         logger.info('[{}] {} tried to reopen'
                     ' not taken ticket {}'.format(timezone.now(),
@@ -828,7 +828,8 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                               " (L'ufficio ha mangenuto"
                                               " accesso in sola lettura)".format(off)))
             # If follow and want to manage
-            ticket.add_competence(office=new_office, user=request.user)
+            ticket.add_competence(office=new_office,
+                                  user=request.user)
             ticket.update_log(user=request.user,
                               note= _("Nuova competenza: {} - {}"
                                       " - Categoria: {}".format(new_structure,

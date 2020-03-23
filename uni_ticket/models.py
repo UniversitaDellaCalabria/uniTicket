@@ -430,6 +430,13 @@ class Ticket(SavedFormContent):
                                           office=office,
                                           note=note,
                                           assigned_by=user)
+
+        # if user that transfer competence is a destination office operator
+        # he takes competence in destination office
+        if OrganizationalStructureOfficeEmployee.objects.filter(employee=user, office=office):
+            new_competence.taken_by = user
+            new_competence.taken_date = timezone.now()
+
         new_competence.save()
         return new_competence
 

@@ -96,7 +96,7 @@ def has_admin_privileges(func_to_decorate):
         # if is_manager:
         if user_is_in_default_office(request.user, structure):
             can_manage = ticket.is_followed_in_structure(structure=structure)
-            if not can_manage:
+            if not can_manage or not ticket.has_been_taken(request.user):
                 messages.add_message(request, messages.ERROR, message_string)
                 return redirect('uni_ticket:manage',
                                 structure_slug=structure_slug)
@@ -107,7 +107,7 @@ def has_admin_privileges(func_to_decorate):
         offices = user_offices_list(office_employee_list)
         can_manage = ticket.is_followed_by_one_of_offices(offices=offices)
 
-        if not can_manage:
+        if not can_manage or not ticket.has_been_taken(request.user):
             messages.add_message(request, messages.ERROR, message_string)
             return redirect('uni_ticket:manage',
                             structure_slug=structure_slug)

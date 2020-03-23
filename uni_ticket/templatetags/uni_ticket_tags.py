@@ -114,5 +114,5 @@ def markdown(value):
     return md.markdown(value, extensions=['markdown.extensions.fenced_code'])
 
 @register.simple_tag
-def ticket_has_been_taken(ticket, user):
+def ticket_has_been_taken(ticket, user=None):
     return ticket.has_been_taken(user)

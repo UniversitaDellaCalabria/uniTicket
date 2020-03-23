@@ -9,6 +9,7 @@
 {% endblock menu_links %}
 
 {% block right_button %}
+{% ticket_has_been_taken ticket=ticket as ticket_taken %}
 <a role="button" class="btn btn-outline-secondary float-right"
    href="{% url 'uni_ticket:ticket_detail_print' ticket_id=ticket.code %}"
    target="_blank"
@@ -41,7 +42,7 @@
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-copy"></use>
        </svg> {% trans "Apri ticket simile" %}
     </a>
-{% elif ticket.is_taken %}
+{% elif ticket.ticket_taken %}
     <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:user_opened_ticket' %}">
         <svg class="icon icon-xs">
@@ -57,7 +58,7 @@
     </a>
 {% endif %}
 
-{% if ticket.is_taken %}
+{% if ticket.ticket_taken %}
 <a role="button" href="{% url 'uni_ticket:ticket_message' ticket_id=ticket.code %}"
    class="btn btn-outline-secondary">
     {% get_unread_messages ticket=ticket as unread_messages %}
@@ -87,7 +88,7 @@
 </a>
 {% endif %}
 
-{% if not ticket.is_taken and not ticket.is_closed %}
+{% if not ticket.ticket_taken and not ticket.is_closed %}
 <button type="button" class="btn btn-outline-danger"
         data-toggle="modal"  data-target="#modalCenter">
     <svg class="icon icon-xs icon-danger">

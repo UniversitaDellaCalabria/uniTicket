@@ -18,6 +18,7 @@
 
 
 {% block top_buttons %}
+{% ticket_has_been_taken ticket=ticket user=request.user as ticket_taken %}
 {% if ticket.is_closed %}
 <a role="button"
        class="btn btn-outline-secondary"
@@ -26,7 +27,7 @@
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
         </svg> {% trans "Torna ai ticket chiusi" %}
     </a>
-{% elif ticket.is_taken %}
+{% elif ticket.ticket_taken %}
 <a role="button"
        class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
@@ -44,7 +45,7 @@
 </a>
 {% endif %}
 
-{% if ticket.is_taken %}
+{% if ticket.ticket_taken %}
 <a role="button"
    href="{% url 'uni_ticket:manage_ticket_message_url' structure_slug=structure.slug ticket_id=ticket.code %}"
    class="btn btn-outline-secondary">
@@ -59,7 +60,7 @@
 </a>
 {% endif %}
 
-{% if ticket.is_taken and ticket.is_closed %}
+{% if ticket.ticket_taken and ticket.is_closed %}
     <button type="button"
         class="btn btn-outline-warning"
         data-toggle="modal"
