@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 {% block right_button %}
 <a role="button" class="btn btn-outline-secondary float-right"
@@ -153,7 +154,8 @@
                             <svg class="icon icon-xs icon-white">
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
                             </svg>
-                            {% if not ticket.is_taken %}
+                            {% ticket_has_been_taken ticket=ticket user=request.user as ticket_taken %}
+                            {% if not ticket_taken %}
                                 {% trans "Prendi il ticket in carico" %}
                             {% else %}
                                 {% trans "Modifica la priorità" %}

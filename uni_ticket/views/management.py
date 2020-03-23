@@ -204,10 +204,11 @@ def ticket_detail(request, structure_slug, ticket_id,
                           }
             m_subject = _('{} - ticket {} nuovo messaggio'.format(settings.HOSTNAME,
                                                                    ticket))
-            if not ticket.is_taken:
-                ticket.is_taken = True
-                ticket.taken_by = request.user
-                ticket.save(update_fields = ['is_taken','taken_by'])
+            if not ticket.has_been_taken():
+                # ticket.is_taken = True
+                # ticket.taken_by = request.user
+                # ticket.save(update_fields = ['is_taken','taken_by'])
+                ticket.take(request.user)
                 msg = _("Preso in carico da {}. Priorità assegnata: {}".format(request.user,
                                                                                priority_text))
                 if not settings.SIMPLE_USER_SHOW_PRIORITY:

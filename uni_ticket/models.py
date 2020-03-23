@@ -219,11 +219,11 @@ class Ticket(SavedFormContent):
                                    related_name='created_by_user')
     input_module = models.ForeignKey(TicketCategoryModule,
                                      on_delete=models.PROTECT)
-    is_taken = models.BooleanField(default=False)
-    taken_by = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 on_delete=models.SET_NULL,
-                                 null=True, blank=True,
-                                 related_name='taken_by_user')
+    # is_taken = models.BooleanField(default=False)
+    # taken_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 # on_delete=models.SET_NULL,
+                                 # null=True, blank=True,
+                                 # related_name='taken_by_user')
     is_closed = models.BooleanField(default=False)
     closed_date = models.DateTimeField(blank=True, null=True)
     closed_by = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -236,7 +236,7 @@ class Ticket(SavedFormContent):
     class Meta:
         ordering = ["is_closed",
                     "priority",
-                    "is_taken",
+                    # "is_taken",
                     "-created",
                     "code"]
         verbose_name = _("Ticket")
@@ -304,7 +304,7 @@ class Ticket(SavedFormContent):
 
     def is_open(self):
         if self.is_closed: return False
-        if not self.is_taken: return False
+        if not self.has_been_taken(): return False
         return True
 
     def check_if_owner(self, user):
@@ -358,8 +358,8 @@ class Ticket(SavedFormContent):
 
     def get_status(self):
         if self.is_closed: return _("Chiuso ({})").format(self.closed_by)
-        if not self.is_taken: return _("Aperto")
-        return _("Assegnato ({})").format(self.taken_by)
+        if not self.has_been_taken(): return _("Aperto")
+        return _("Assegnato ({})").format(self.taken_by_list())
 
     def update_log(self, user, note='', send_mail=True, mail_msg=''):
         if not user: return False
@@ -491,7 +491,7 @@ class Ticket(SavedFormContent):
     def is_closable(self):
         """
         """
-        if not self.is_taken: return False
+        if not self.has_been_taken(): return False
         if self.is_closed: return False
         dependences = self.get_dependences()
         task_list = self.get_task()
@@ -570,6 +570,31 @@ class Ticket(SavedFormContent):
                                                      follow=True)
         return self._check_assignment_privileges(assignment)
 
+    def has_been_taken(self, user=None):
+        assignments = TicketAssignment.objects.filter(ticket=self)
+        if not assignments.first(): return False
+        if assignments.first().taken_date: return True
+        if user:
+            for assignment in assignments:
+                if assignment.taken_date and user_manage_office(user, assignment.office):
+                    return True
+        return False
+
+    def taken_by_list(self):
+        office_operators = {}
+        assignments = TicketAssignments.objects.filter(ticket=self)
+        for assignment in assignments:
+            office_operators[assignment.office] = assignment.taken_by
+        return office_operators
+
+    def take(self, user):
+        assignments = TicketAssignment.objects.filter(ticket=self)
+        for assignment in assignments:
+            if user_manage_office(user, assignment.office) and not assignment.taken_date:
+                assignment.taken_date = timezone.now()
+                assignment.taken_by = user
+                assignment.save()
+
     def __str__(self):
         return '{} ({})'.format(self.subject, self.code)
 
@@ -587,6 +612,11 @@ class TicketAssignment(models.Model):
     assigned_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                     on_delete=models.PROTECT,
                                     null=True)
+    taken_date = models.DateTimeField(null=True, blank=True)
+    taken_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 on_delete=models.SET_NULL,
+                                 null=True, blank=True,
+                                 related_name='taken_by_operator')
     follow = models.BooleanField(default=True)
     readonly = models.BooleanField(default=False)
 
