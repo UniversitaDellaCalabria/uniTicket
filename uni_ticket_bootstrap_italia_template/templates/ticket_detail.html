@@ -66,6 +66,10 @@
                             <span class="badge badge-warning">
                                 {% trans "Accesso in sola lettura" %}
                             </span>
+                            {% else %}
+                            <span class="badge badge-success">
+                                {% trans "Competenza attiva" %}
+                            </span>
                             {% endif %}
                             {% if not assignment.office.is_active %}
                             <b style="color: #5f5f5f">{{ assignment.office }}</b>
