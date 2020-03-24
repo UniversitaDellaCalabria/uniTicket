@@ -15,7 +15,7 @@
             {% include "logs.html" %}
         </div>
     </div>
-    {% if ticket.ticket_taken or ticket.is_closed %}
+    {% if ticket_taken or ticket.is_closed %}
     <div class="collapse-header" id="heading3-lft">
         <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
             {% trans "Attività del ticket" %} ({{ ticket_task|length }})

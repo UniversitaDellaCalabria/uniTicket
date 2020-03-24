@@ -17,7 +17,7 @@
         <tbody>
             <tr>
                 <th scope="row">{% trans 'Stato' %}</th>
-                <td>{{ ticket.get_status }}</td>
+                <td>{{ ticket.get_status|safe }}</td>
             </tr>
             {% if ticket.is_closed %}
             <tr>
@@ -74,8 +74,17 @@
                             </span>
                             {% else %}
                             <b>{{ assignment.office }}</b>
-                            {% endif %} -
-                            <small>{{ assignment.created }} ({{ assignment.assigned_by }})</small>
+                            {% endif %}
+                            <br>
+                            {% if not forloop.first %}
+                                <small>- {% trans "Trasferimento" %}: {{ assignment.created }} ({{ assignment.assigned_by }})</small>
+                                <br>
+                            {% endif %}
+                            {% if assignment.taken_date %}
+                                <small>- {% trans "Assegnazione" %}: {{ assignment.taken_date }} ({{ assignment.taken_by }})</small>
+                            {% else %}
+                                <small>- {% trans "Non ancora preso in carico in questo ufficio" %}</small>
+                            {% endif %}
                             {% if assignment.note %}
                                 <br>
                                 <small>{{ assignment.note }}</small>

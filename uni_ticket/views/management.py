@@ -18,7 +18,8 @@ from organizational_area.models import *
 from uni_ticket.decorators import (has_admin_privileges,
                                    ticket_assigned_to_structure,
                                    ticket_is_taken_and_not_closed,
-                                   ticket_is_not_taken_and_not_closed)
+                                   ticket_is_not_taken_and_not_closed,
+                                   ticket_is_taken_for_employee)
 from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.utils import *
@@ -180,6 +181,7 @@ def ticket_detail(request, structure_slug, ticket_id,
     assigned_to = []
     ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
     form = PriorityForm(data={'priorita':ticket.priority})
+
     if request.method == 'POST':
         if can_manage['readonly']:
             messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
@@ -204,7 +206,7 @@ def ticket_detail(request, structure_slug, ticket_id,
                           }
             m_subject = _('{} - ticket {} nuovo messaggio'.format(settings.HOSTNAME,
                                                                    ticket))
-            if not ticket.has_been_taken():
+            if not ticket.has_been_taken(user=request.user):
                 # ticket.is_taken = True
                 # ticket.taken_by = request.user
                 # ticket.save(update_fields = ['is_taken','taken_by'])
@@ -230,6 +232,8 @@ def ticket_detail(request, structure_slug, ticket_id,
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
+
+
     d = {'allegati': allegati,
          'dependences': ticket_dependences,
          'details': ticket_details,
@@ -243,7 +247,9 @@ def ticket_detail(request, structure_slug, ticket_id,
          'ticket_form': ticket_form,
          'logs': ticket_logs,
          'ticket_task': ticket_task,
-         'title': title,}
+         'title': title,
+         'untaken_user_offices': ticket.is_untaken_by_user_offices(request.user)
+        }
     template = "{}/ticket_detail.html".format(user_type)
     return render(request, template, d)
 
@@ -266,19 +272,33 @@ def tickets(request, structure_slug, structure, office_employee=None):
     template = "{}/tickets.html".format(user_type)
     title = _('Gestione ticket')
     sub_title = _("Assegnati o aperti")
-    structure_ticket = TicketAssignment.get_ticket_per_structure(structure)
-    non_gestiti = Ticket.objects.filter(code__in=structure_ticket,
-                                        is_taken=False,
+
+    ticket_list = []
+    # if user is operator
+    if office_employee:
+        offices = user_offices_list(office_employee)
+        ticket_list = visible_tickets_to_user(user=request.user,
+                                              structure=structure,
+                                              office_employee=office_employee)
+    # if user is manager
+    else:
+        ticket_list = TicketAssignment.get_ticket_per_structure(structure)
+
+    not_closed = Ticket.objects.filter(code__in=ticket_list,
+                                        # is_taken=False,
                                         is_closed=False)
-    aperti = Ticket.objects.filter(code__in=structure_ticket,
-                                   is_taken=True,
-                                   is_closed=False)
-    chiusi = Ticket.objects.filter(code__in=structure_ticket,
+    unassigned = []
+    opened = []
+    for nc in not_closed:
+        if nc.has_been_taken(request.user): opened.append(nc)
+        else: unassigned.append(nc)
+    chiusi = Ticket.objects.filter(code__in=ticket_list,
                                    is_closed=True)
 
-    d = {'ticket_aperti': aperti,
+
+    d = {'ticket_aperti': opened,
          'ticket_chiusi': chiusi,
-         'ticket_non_gestiti': non_gestiti,
+         'ticket_non_gestiti': unassigned,
          'structure': structure,
          'sub_title': sub_title,
          'title': title,}
@@ -305,6 +325,7 @@ def ticket_dependence_add_url(request, structure_slug, ticket_id):
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def ticket_dependence_add_new(request, structure_slug, ticket_id,
@@ -404,6 +425,7 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def ticket_dependence_remove(request, structure_slug,
@@ -490,6 +512,7 @@ def ticket_close_url(request, structure_slug, ticket_id):
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def ticket_close(request, structure_slug, ticket_id,
@@ -579,6 +602,7 @@ def ticket_close(request, structure_slug, ticket_id,
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 def ticket_reopen(request, structure_slug, ticket_id,
                   structure, can_manage, ticket):
@@ -664,6 +688,7 @@ def ticket_competence_add_url(request, structure_slug, ticket_id):
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def ticket_competence_add_new(request, structure_slug, ticket_id,
@@ -708,6 +733,7 @@ def ticket_competence_add_new(request, structure_slug, ticket_id,
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def ticket_competence_add_final(request, structure_slug, ticket_id,
@@ -813,20 +839,30 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                                             structure=structure,
                                                             allow_readonly=False)
                 for off in abandoned_offices:
-                    ticket.update_log(user=request.user,
-                                      note= _("Competenza abbandonata da"
-                                              " Ufficio: {}".format(off)))
+                    if off.is_default:
+                        messages.add_message(request, messages.WARNING,
+                                 _("L'ufficio <b>{}</b> non può essere"
+                                   " rimosso dagli uffici competenti".format(off)))
+                    else:
+                        ticket.update_log(user=request.user,
+                                          note= _("Competenza abbandonata da"
+                                                  " Ufficio: {}".format(off)))
 
             # If follow but readonly
             elif readonly:
                 abandoned_offices = ticket.block_competence(user=request.user,
                                                             structure=structure)
                 for off in abandoned_offices:
-                    ticket.update_log(user=request.user,
-                                      note= _("Competenza trasferita da"
-                                              " Ufficio: {}."
-                                              " (L'ufficio ha mangenuto"
-                                              " accesso in sola lettura)".format(off)))
+                    if off.is_default:
+                        messages.add_message(request, messages.WARNING,
+                                 _("L'ufficio <b>{}</b> non può essere"
+                                   " posto in sola lettura".format(off)))
+                    else:
+                        ticket.update_log(user=request.user,
+                                          note= _("Competenza trasferita da"
+                                                  " Ufficio: {}."
+                                                  " (L'ufficio ha mangenuto"
+                                                  " accesso in sola lettura)".format(off)))
             # If follow and want to manage
             ticket.add_competence(office=new_office,
                                   user=request.user)
@@ -887,6 +923,7 @@ def ticket_message_url(request, structure_slug, ticket_id):
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 # @ticket_is_taken_and_not_closed
 def ticket_message(request, structure_slug, ticket_id,
@@ -937,7 +974,7 @@ def ticket_message(request, structure_slug, ticket_id,
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
         # Se il ticket non è aperto non è possibile scrivere
-        if not ticket.is_open():
+        if not ticket.is_open(request.user):
             return custom_message(request, _("Il ticket non è modificabile"),
                                   structure_slug=structure.slug)
         form = ReplyForm(request.POST, request.FILES)
@@ -1012,6 +1049,7 @@ def task_add_new_url(request, structure_slug, ticket_id):
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def task_add_new(request, structure_slug, ticket_id,
@@ -1083,6 +1121,7 @@ def task_add_new(request, structure_slug, ticket_id,
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def task_remove(request, structure_slug,
@@ -1293,6 +1332,7 @@ def task_close_url(request, structure_slug, ticket_id, task_id):
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def task_close(request, structure_slug, ticket_id, task_id,
@@ -1375,6 +1415,7 @@ def task_close(request, structure_slug, ticket_id, task_id,
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def task_reopen(request, structure_slug, ticket_id, task_id,
@@ -1473,6 +1514,7 @@ def task_edit_url(request, structure_slug, ticket_id, task_id):
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def task_edit(request, structure_slug, ticket_id, task_id,
@@ -1585,6 +1627,7 @@ def task_edit(request, structure_slug, ticket_id, task_id,
 
 @login_required
 @has_admin_privileges
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def task_attachment_delete(request, structure_slug,
@@ -1644,3 +1687,29 @@ def task_attachment_delete(request, structure_slug,
                     structure_slug=structure.slug,
                     ticket_id=ticket_id,
                     task_id=task_id)
+
+@login_required
+@has_admin_privileges
+@ticket_assigned_to_structure
+def ticket_taken_by_unassigned_offices(request, structure_slug, ticket_id,
+                                       structure, can_manage, ticket):
+    offices = ticket.is_untaken_by_user_offices(request.user)
+    for office in offices:
+        assignment = TicketAssignment.objects.filter(ticket=ticket,
+                                                     office=office,
+                                                     taken_date__isnull=True).first()
+        assignment.taken_by = request.user
+        assignment.taken_date = timezone.now()
+        assignment.save(update_fields=['modified',
+                                       'taken_date',
+                                       'taken_by'])
+
+        msg = _("Ticket {} correttamente "
+                "assegnato a Ufficio: {} [{}]</b>".format(ticket,
+                                                          office,
+                                                          request.user))
+        ticket.update_log(user=request.user, note=msg)
+        messages.add_message(request, messages.SUCCESS, msg)
+    return redirect('uni_ticket:manage_ticket_url_detail',
+                    structure_slug=structure_slug,
+                    ticket_id=ticket_id)

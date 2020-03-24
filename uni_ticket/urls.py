@@ -82,6 +82,7 @@ urlpatterns += [
     # path('{}/take/'.format(ticket_id), management.ticket_take, name='prendi_ticket_in_carico'),
     path('{}/close/'.format(ticket_id), management.ticket_close_url, name='close_ticket'),
     path('{}/reopen/'.format(ticket_id), management.ticket_reopen, name='reopen_ticket'),
+    path('{}/assign-offices/'.format(ticket_id), management.ticket_taken_by_unassigned_offices, name='ticket_taken_by_unassigned_offices'),
 
     # Task
     path('{}/add/'.format(task), management.task_add_new_url, name='add_ticket_task_url'),

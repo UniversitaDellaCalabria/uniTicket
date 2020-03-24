@@ -252,6 +252,7 @@ def operator_unassigned_ticket(request, structure_slug,
     ticket_list = Ticket.objects.filter(code__in=tickets,
                                         # is_taken=False,
                                         is_closed=False)
+
     result_list = ticket_list
     for ticket in ticket_list:
         if ticket.has_been_taken(user=request.user):

@@ -93,11 +93,6 @@ def has_admin_privileges(func_to_decorate):
         message_string = _("Permesso di accesso al ticket "
                            "<b>{}</b> negato".format(ticket))
 
-        # if not ticket.has_been_taken(request.user):
-            # messages.add_message(request, messages.ERROR, message_string)
-            # return redirect('uni_ticket:manage',
-                            # structure_slug=structure_slug)
-
         # if is_manager:
         if user_is_in_default_office(request.user, structure):
             can_manage = ticket.is_followed_in_structure(structure=structure)
@@ -199,5 +194,21 @@ def ticket_assigned_to_structure(func_to_decorate):
             return custom_message(request, _("Il ticket non è stato assegnato"
                                              " a questa struttura"),
                                   structure_slug=structure_slug)
+        return func_to_decorate(*original_args, **original_kwargs)
+    return new_func
+
+def ticket_is_taken_for_employee(func_to_decorate):
+    def new_func(*original_args, **original_kwargs):
+        request = original_args[0]
+        structure_slug = original_kwargs['structure_slug']
+        ticket_id = original_kwargs['ticket_id']
+        ticket = get_object_or_404(Ticket, code=ticket_id)
+        if not ticket.has_been_taken(request.user):
+            m = _("Il ticket deve essere prima preso in carico"
+                  " da questo ufficio per poter essere gestito")
+            messages.add_message(request, messages.ERROR, m)
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                            structure_slug=structure_slug,
+                            ticket_id=ticket_id)
         return func_to_decorate(*original_args, **original_kwargs)
     return new_func

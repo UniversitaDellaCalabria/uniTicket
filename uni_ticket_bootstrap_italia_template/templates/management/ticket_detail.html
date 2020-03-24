@@ -18,6 +18,30 @@
 
 
 {% block top_buttons %}
+{% ticket_is_open ticket request.user as is_open %}
+{% settings_value name="MANAGER_PREFIX" as manager_label %}
+{% settings_value name="OPERATOR_PREFIX" as operator_label %}
+{% settings_value name="DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE" as default_office %}
+
+{% if is_open and untaken_user_offices %}
+<div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">{% trans "Attenzione" %}</h4>
+    <p>{% trans "Il ticket non è stato ancora assegnato a nessun operatore negli uffici" %}</p>
+    <ul>
+        {% for office in untaken_user_offices %}<li><b>{{ office }}</b></li>{% endfor %}
+    </ul>
+    <p>{% trans "Vedi questo messaggio in quanto" %}
+        <b>{{ manager_label }}</b> {% trans "di" %} <b>{{ structure }}</b>,
+        <b>{{ operator_label }}</b> {% trans "dell'ufficio" %} <b>{{ default_office }}</b>
+        o {{ operator_label }} {% trans "degli uffici sopra elencati" %}.</p>
+    <hr>
+    <button type="button"
+            class="btn btn-secondary btn-xs"
+            data-toggle="modal"
+            data-target="#take-ticket">{% trans "Prendi tu in carico" %}</button>
+</div>
+{% endif %}
+
 {% ticket_has_been_taken ticket=ticket user=request.user as ticket_taken %}
 {% if ticket.is_closed %}
 <a role="button"
@@ -27,7 +51,7 @@
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
         </svg> {% trans "Torna ai ticket chiusi" %}
     </a>
-{% elif ticket.ticket_taken %}
+{% elif ticket_taken %}
 <a role="button"
        class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
@@ -45,7 +69,7 @@
 </a>
 {% endif %}
 
-{% if ticket.ticket_taken %}
+{% if ticket_taken %}
 <a role="button"
    href="{% url 'uni_ticket:manage_ticket_message_url' structure_slug=structure.slug ticket_id=ticket.code %}"
    class="btn btn-outline-secondary">
@@ -60,7 +84,7 @@
 </a>
 {% endif %}
 
-{% if ticket.ticket_taken and ticket.is_closed %}
+{% if ticket_taken and ticket.is_closed %}
     <button type="button"
         class="btn btn-outline-warning"
         data-toggle="modal"
@@ -100,7 +124,7 @@
             </div>
         </div>
     </div>
-{% elif ticket.is_open %}
+{% elif is_open %}
     <a role="button"
        href="{% url 'uni_ticket:add_ticket_task_url' structure_slug=structure.slug ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
@@ -162,6 +186,7 @@
                                 {% trans "Modifica la priorità" %}
                             {% endif %}
                     </button>
+                    <!-- priority ticket modal -->
                     <div class="modal fade"
                          tabindex="-1"
                          role="dialog"
@@ -196,10 +221,55 @@
                             </div>
                         </div>
                     </div>
+                    <!-- end priority ticket modal -->
                 </div>
                 {% endblock form_buttons %}
             </form>
         </div>
         {% endif %}
+        <!-- take ticket modal -->
+        <div class="modal fade"
+             tabindex="-1"
+             role="dialog"
+             id="take-ticket">
+            <div class="modal-dialog modal-dialog-centered"
+                 role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            {% trans "Assegnazione ticket" %}
+                        </h5>
+                        <button class="close"
+                                type="button"
+                                data-dismiss="modal"
+                                aria-label="Close">
+                           <svg class="icon">
+                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                           </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{% trans "Vuoi davvero prendere in carico il ticket" %}
+                           <br>
+                           <b>{{ ticket }}</b>
+                           <br>
+                           {% trans "per gli uffici" %}
+                           <ul>
+                                {% for office in untaken_user_offices %}
+                                <li><b>{{ office }}</b></li>
+                                {% endfor %}
+                            </ul>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-success"
+                           href="{% url 'uni_ticket:ticket_taken_by_unassigned_offices' structure_slug=structure.slug ticket_id=ticket.code %}">
+                            {% trans "Si, procedi" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end take ticket modal -->
     {% endblock ticket_management_buttons %}
 {% endblock page_content %}

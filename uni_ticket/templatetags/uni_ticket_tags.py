@@ -116,3 +116,7 @@ def markdown(value):
 @register.simple_tag
 def ticket_has_been_taken(ticket, user=None):
     return ticket.has_been_taken(user)
+
+@register.simple_tag
+def ticket_is_open(ticket, user=None):
+    return ticket.is_open(user)
