@@ -640,7 +640,8 @@ def ticket_reopen(request, structure_slug, ticket_id,
                     ' not closed ticket {}'.format(timezone.now(),
                                                    request.user,
                                                    ticket))
-        return custom_message(request, _("Il ticket {} non è stato chiuso"),
+        return custom_message(request,
+                              _("Il ticket {} non è stato chiuso").format(ticket),
                               structure_slug=structure.slug)
     if not ticket.has_been_taken(request.user):
         # log action
@@ -648,8 +649,21 @@ def ticket_reopen(request, structure_slug, ticket_id,
                     ' not taken ticket {}'.format(timezone.now(),
                                                    request.user,
                                                    ticket))
-        return custom_message(request, _("Il ticket {} è stato chiuso dall'utente, "
-                                         " pertanto non può essere riaperto"),
+        return custom_message(request,
+                              _("Il ticket {} è stato chiuso dall'utente, "
+                                " pertanto non può essere riaperto").format(ticket),
+                              structure_slug=structure.slug)
+
+    # at least one of ticket offices must be active and must follow
+    active_assignments = TicketAssignment.objects.filter(ticket=ticket,
+                                                         office__is_active=True,
+                                                         follow=True,
+                                                         readonly=False)
+    if not active_assignments:
+        return custom_message(request,
+                              _("Nessuno degli uffici assegnati in precedenza "
+                                "può prendere nuovamente in carico il ticket {} e "
+                                "pertanto questo non può essere riaperto").format(ticket),
                               structure_slug=structure.slug)
     ticket.is_closed = False
     ticket.save(update_fields = ['is_closed'])
