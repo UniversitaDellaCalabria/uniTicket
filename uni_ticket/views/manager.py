@@ -324,7 +324,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
             category = form.cleaned_data['category']
             if category.organizational_office:
                 messages.add_message(request, messages.ERROR,
-                                     _("Il tipo di richiesta <b>{}</b> risulta "
+                                     _("La tipologia di richiesta <b>{}</b> risulta "
                                        "già assegnato all'ufficio <b>{}</b>. "
                                        "Rimuovere la competenza per "
                                        "procedere").format(category,
@@ -385,14 +385,14 @@ def office_remove_category(request, structure_slug,
 
     if category.organizational_office != office:
         messages.add_message(request, messages.ERROR,
-                             _("Il tipo di richiesta non è di competenza di"
+                             _("La tipologia di richiesta non è di competenza di"
                                " questo ufficio"))
     else:
         category.organizational_office = None
         category.is_active = False
         category.save(update_fields = ['organizational_office', 'is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Il tipo di richiesta <b>{}</b> non è più di competenza "
+                             _("La tipologia di richiesta <b>{}</b> non è più di competenza "
                                " dell'ufficio <b>{}</b> ed è stato disattivato".format(category,
                                                                                        office)))
 
@@ -492,7 +492,9 @@ def office_disable(request, structure_slug, office_slug, structure):
     one_tickets_for_this_office = False
     for ot in office_tickets:
         other_offices_for_ticket = TicketAssignment.objects.filter(office__is_active=True,
-                                                                   ticket=ot.ticket).exclude(office=office)
+                                                                   ticket=ot.ticket,
+                                                                   follow=True,
+                                                                   readonly=False).exclude(office=office)
         if not other_offices_for_ticket:
             one_tickets_for_this_office = True
             break
@@ -634,7 +636,7 @@ def category_detail(request, structure_slug, category_slug, structure):
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    title = _('Gestione tipo di richiesta')
+    title = _('Gestione tipologia di richiesta')
     template = 'manager/category_detail.html'
     sub_title = category
     form = CategoryAddOfficeForm(structure=structure)
@@ -694,7 +696,7 @@ def category_remove_office(request, structure_slug,
                                slug=office_slug)
     if category.organizational_office != office:
         messages.add_message(request, messages.ERROR,
-                             _("Il tipo di richiesta non è di competenza di"
+                             _("La tipologia di richiesta non è di competenza di"
                                " questo ufficio"))
     else:
         category.organizational_office = None
@@ -734,8 +736,8 @@ def category_add_new(request, structure_slug, structure):
 
     :return: render
     """
-    title = _('Nuovo tipo di richiesta')
-    sub_title = _("Crea un nuovo tipo di richiesta nella struttura {}").format(structure)
+    title = _('Nuova tipologia di richiesta')
+    sub_title = _("Crea una nuova tipologia di richieste nella struttura {}").format(structure)
     form = CategoryForm()
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -755,7 +757,7 @@ def category_add_new(request, structure_slug, structure):
                                                                        name,
                                                                        slug))
                 messages.add_message(request, messages.ERROR,
-                                 _("Esiste già un tipo di richiesta con"
+                                 _("Esiste già una tipologia di richiesta con"
                                    " nome {} o slug {}".format(name, slug)))
             else:
                 new_category = form.save(commit=False)
@@ -817,7 +819,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                             organizational_structure=structure).exclude(pk=category.pk)
             if slug_name_exist:
                 messages.add_message(request, messages.ERROR,
-                                 _("Esiste già un tipo di richiesta con questo"
+                                 _("Esiste già una tipologia di richiesta con questo"
                                    " nome o slug"))
             else:
                 edited_category = form.save(commit=False)
@@ -846,7 +848,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
     template = 'manager/category_edit.html'
-    title = _('Modifica tipo di richiesta')
+    title = _('Modifica tipologia di richiesta')
     sub_title = category
     d = {'category': category,
          'form': form,
@@ -972,7 +974,7 @@ def category_delete(request, structure_slug, category_slug, structure):
         return redirect('uni_ticket:manager_dashboard',
                         structure_slug=structure_slug)
     messages.add_message(request, messages.ERROR,
-                         _("Impossibile eliminare il tipo di richiesta {}."
+                         _("Impossibile eliminare la tipologia di richiesta {}."
                            " Ci sono ticket assegnati.".format(category)))
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
@@ -999,7 +1001,7 @@ def category_input_module_new(request, structure_slug,
                                  organizational_structure=structure,
                                  slug=category_slug)
     title = _('Nuovo modulo di inserimento')
-    sub_title = _("Crea un nuovo modulo per il tipo di richiesta {}").format(category.name)
+    sub_title = _("Crea un nuovo modulo per la tipologia di richiesta {}").format(category.name)
     form = CategoryInputModuleForm()
     if request.method == 'POST':
         form = CategoryInputModuleForm(request.POST)
@@ -1241,7 +1243,7 @@ def category_input_module_delete(request, structure_slug,
             category.save(update_fields = ['is_active'])
             messages.add_message(request, messages.SUCCESS,
                                  _("Modulo <b>{}</b> eliminato con successo"
-                                   " e tipo di richiesta <b>{}</b> disattivato"
+                                   " e tipologia di richiesta <b>{}</b> disattivata"
                                    " (nessun modulo attivo)".format(module,
                                                                     category)))
         else: messages.add_message(request, messages.SUCCESS,
@@ -1825,7 +1827,7 @@ def categories(request, structure_slug, structure):
 
     :return: render
     """
-    title = _('Gestione tipi di richiesta')
+    title = _('Gestione tipologie di richieste')
     template = 'manager/categories.html'
     # sub_title = _("gestione ufficio livello manager")
     categories = TicketCategory.objects.filter(organizational_structure=structure)
@@ -1941,7 +1943,7 @@ def category_input_module_clone(request, structure_slug,
 
     messages.add_message(request, messages.SUCCESS,
                          _("Modulo di input <b>{}</b> clonato con successo"
-                         " nel tipo di richieste <b>{}</b>".format(module.name,
+                         " nella tipologia di richieste <b>{}</b>".format(module.name,
                                                                    selected_category)))
     return redirect('uni_ticket:manager_category_input_module',
                     structure_slug=selected_structure.slug,

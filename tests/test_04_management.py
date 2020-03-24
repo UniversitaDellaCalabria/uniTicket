@@ -161,7 +161,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         assert response.status_code == 200
         self.ticket.refresh_from_db()
         assert self.ticket.priority == 2
-        assert self.ticket.is_taken
+        assert self.ticket.has_been_taken()
 
         # Select categories of Structure 2
         response = self.client.get(reverse('uni_ticket:manager_add_ticket_competence',
@@ -234,7 +234,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         assert response.status_code == 200
         self.ticket.refresh_from_db()
         assert self.ticket.priority == 2
-        assert self.ticket.is_taken
+        assert self.ticket.has_been_taken()
 
         # Select categories of Structure 2
         response = self.client.get(reverse('uni_ticket:manager_add_ticket_competence',

@@ -235,7 +235,7 @@ class CategoryConditionForm(ModelForm):
 
 
 class OfficeAddCategoryForm(forms.Form):
-    category = forms.ModelChoiceField(label=_('Assegna tipo di richiesta'),
+    category = forms.ModelChoiceField(label=_('Assegna tipologia di richiesta'),
                                       queryset=None, required=True,
                                       widget=BootstrapItaliaSelectWidget())
     def __init__(self, *args, **kwargs):

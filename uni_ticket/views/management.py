@@ -806,7 +806,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                 messages.add_message(request, messages.ERROR,
                                      _("Il ticket è già di competenza"
                                        " dell'ufficio speciale <b>{}</b>,"
-                                       " che ha la competenza del tipo di richiesta "
+                                       " che ha la competenza della tipologia di richiesta "
                                        "<b>{}</b>".format(DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
                                                    categoria)))
                 return redirect('uni_ticket:manage_ticket_url_detail',
@@ -823,7 +823,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                 messages.add_message(request, messages.ERROR,
                                      _("Il ticket è già di competenza"
                                        " dell'ufficio <b>{}</b>, responsabile"
-                                       " del tipo di richiesta <b>{}</b>".format(new_office,
+                                       " della tipologia di richiesta <b>{}</b>".format(new_office,
                                                                            categoria)))
                 return redirect('uni_ticket:manage_ticket_url_detail',
                                 structure_slug=structure_slug,

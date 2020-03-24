@@ -19,7 +19,7 @@
    href="{% url 'uni_ticket:manager_categories' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-folder"></use>
-    </svg> {% trans "Torna ai tipi" %}
+    </svg> {% trans "Tipologie di richieste" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_edit' structure_slug=structure.slug category_slug=category.slug %}"
@@ -140,7 +140,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <p>{% trans "Vuoi davvero togliere la competenza del tipo di richiesta" %}
+                                        <p>{% trans "Vuoi davvero togliere la competenza della tipologia di richiesta" %}
                                            <b>{{ category }}</b> {% trans "all'ufficio" %}
                                            <b>{{ category.organizational_office }}</b> ?
                                         </p>
@@ -246,7 +246,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>{% trans "Vuoi davvero assegnare il tipo di richiesta all'ufficio selezionato?" %}
+                            <p>{% trans "Vuoi davvero assegnare la tipologia di richiesta all'ufficio selezionato?" %}
                             </p>
                         </div>
                         <div class="modal-footer">
@@ -269,7 +269,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    {% trans "Disattivazione tipo di richiesta" %}
+                    {% trans "Disattivazione tipologia di richiesta" %}
                 </h5>
                 <button class="close" type="button"
                         data-dismiss="modal" aria-label="Close">
@@ -279,7 +279,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>{% trans "Vuoi davvero disattivare il tipo di richiesta " %}
+                <p>{% trans "Vuoi davvero disattivare la tipologia di richiesta " %}
                    <b>{{ category }}</b> ?
                 </p>
             </div>
@@ -298,7 +298,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    {% trans "Attivazione tipo di richiesta" %}
+                    {% trans "Attivazione tipologia di richiesta" %}
                 </h5>
                 <button class="close" type="button"
                         data-dismiss="modal" aria-label="Close">
@@ -308,7 +308,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>{% trans "Vuoi davvero attivare il tipo di richiesta " %}
+                <p>{% trans "Vuoi davvero attivare la tipologia di richiesta " %}
                    <b>{{ category }}</b> ?
                 </p>
             </div>
@@ -327,7 +327,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    {% trans "Eliminazione tipo di richiesta" %}
+                    {% trans "Eliminazione tipologia di richiesta" %}
                 </h5>
                 <button class="close" type="button"
                         data-dismiss="modal" aria-label="Close">
@@ -337,7 +337,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>{% trans "Vuoi davvero eliminare il tipo di richiesta " %}
+                <p>{% trans "Vuoi davvero eliminare la tipologia di richiesta " %}
                    <b>{{ category }}</b> ?
                 </p>
             </div>

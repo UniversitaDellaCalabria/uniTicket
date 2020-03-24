@@ -81,14 +81,14 @@ class TicketCategory(models.Model):
         category_module = TicketCategoryModule.objects.filter(ticket_category=self,
                                                               is_active=True)
         if not self.organizational_office:
-            return _("Per attivare il tipo di richiesta <b>{}</b> è necessario"
+            return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
                     " assegnare un ufficio di competenza".format(self))
         elif not self.organizational_office.is_active:
-            return _("Per attivare il tipo di richiesta <b>{}</b> è necessario"
+            return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
                      " attivare l'ufficio <b>{}</b>".format(self,
                                                             self.organizational_office))
         elif not category_module:
-            return _("Per attivare il tipo di richiesta <b>{}</b> è necessario"
+            return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
                      " attivare un modulo di input".format(self))
         return False
 
@@ -860,8 +860,8 @@ class TicketCategoryCondition(models.Model):
 
     class Meta:
         ordering = ('ordinamento', )
-        verbose_name = _('Clausola tipo di richiesta ticket')
-        verbose_name_plural = _('Clausole tipo di richiesta ticket')
+        verbose_name = _('Clausola tipologia di richiesta ticket')
+        verbose_name_plural = _('Clausole tipologia di richiesta ticket')
 
     def get_folder(self):
         """
