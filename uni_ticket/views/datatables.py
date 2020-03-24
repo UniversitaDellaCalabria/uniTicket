@@ -80,6 +80,7 @@ def user_unassigned_ticket(request):
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         # is_taken=False,
                                         is_closed=False)
+    dtd = TicketDTD( request, ticket_list, columns )
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
