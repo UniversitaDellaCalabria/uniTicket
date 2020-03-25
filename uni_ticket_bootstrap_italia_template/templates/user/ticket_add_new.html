@@ -8,6 +8,13 @@
 {% include 'user/main_menu.html' %}
 {% endblock menu_links %}
 
+{% block content_title %}
+<div class="pt-5 d-none d-lg-block text-center">
+    <img src="{{ struttura.banner.url }}" />
+</div>
+{{ block.super }}
+{% endblock content_title %}
+
 {% block top_buttons %}
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:new_ticket_preload' structure_slug=struttura.slug %}">

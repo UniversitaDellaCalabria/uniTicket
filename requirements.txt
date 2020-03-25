@@ -7,6 +7,7 @@ django-countries
 django-markdown-deux
 email-reply-parser
 lxml
+pillow
 python-magic
 pytz
 shortuuid

@@ -51,11 +51,12 @@ def ticket_new_preload(request, structure_slug=None):
     template = "user/new_ticket_preload.html"
     title = _("Apri un nuovo ticket")
     sub_title = _("Seleziona la struttura")
+    structure = None
     if structure_slug:
-        struttura = get_object_or_404(OrganizationalStructure,
+        structure = get_object_or_404(OrganizationalStructure,
                                       slug=structure_slug,
                                       is_active=True)
-        categorie = TicketCategory.objects.filter(organizational_structure=struttura,
+        categorie = TicketCategory.objects.filter(organizational_structure=structure,
                                                   is_active=True)
         # User roles
         is_employee = user_is_employee(request.user)
@@ -77,6 +78,7 @@ def ticket_new_preload(request, structure_slug=None):
         sub_title = _("Seleziona la Categoria")
     d = {'categorie': categorie,
          'structure_slug': structure_slug,
+         'structure': structure,
          'strutture': strutture,
          'sub_title': sub_title,
          'title': title,}

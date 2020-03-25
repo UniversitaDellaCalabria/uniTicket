@@ -875,7 +875,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                         ticket.update_log(user=request.user,
                                           note= _("Competenza trasferita da"
                                                   " Ufficio: {}."
-                                                  " (L'ufficio ha mangenuto"
+                                                  " (L'ufficio ha mantenuto"
                                                   " accesso in sola lettura)".format(off)))
             # If follow and want to manage
             ticket.add_competence(office=new_office,

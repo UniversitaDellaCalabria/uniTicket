@@ -3,6 +3,16 @@ from django.db import models
 from django.utils.translation import gettext as _
 
 from ckeditor.fields import RichTextField
+from uni_ticket.validators import *
+
+
+def _attachment_upload(instance, filename):
+    """
+    this function has to return the location to upload the file
+    """
+    folder = instance.get_folder()
+    return os.path.join('{}/{}'.format(folder, filename))
+
 
 class OrganizationalStructureType(models.Model):
     """
@@ -35,6 +45,10 @@ class OrganizationalStructure(models.Model):
     #description = RichTextField(max_length=12000, null=True,blank=True)
     description = models.TextField(max_length=1024, null=True,blank=True)
     create_date = models.DateTimeField(auto_now=True)
+    banner = models.ImageField(upload_to=_attachment_upload,
+                               null=True, blank=True,
+                               validators=[validate_file_size,
+                                           validate_file_length])
     url = models.CharField(max_length=768, null=True, blank=True)
     #locati = models.CharField(max_length=255, null=True,blank=True)
     is_active = models.BooleanField(default=True)
@@ -52,6 +66,15 @@ class OrganizationalStructure(models.Model):
         office = OrganizationalStructureOffice.objects.filter(organizational_structure=self,
                                                               is_default=True).first()
         if office: return office
+
+    def get_folder(self):
+        """
+        Returns ticket attachments folder path
+        """
+        folder = '{}/{}/{}'.format(settings.HOSTNAME,
+                                   'structures',
+                                   self.slug)
+        return folder
 
     def __str__(self):
         if not self.structure_type:
