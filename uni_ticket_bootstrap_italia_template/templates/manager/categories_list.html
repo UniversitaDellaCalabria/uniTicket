@@ -43,12 +43,6 @@
                     {% trans "Nessuno" %}
                   {% endif %}
                   <br>
-<!--
-                  <b>{% trans 'Ticket di questo tipo' %}:</b>
-                  {% ticket_in_category category as ticket_in_category %}
-                  {{ ticket_in_category }}
-                  <br>
--->
                   <b>{% trans 'Clausole attive' %}:</b>
                   {% conditions_in_category category as conditions_in_category %}
                   {{ conditions_in_category }}
