@@ -357,9 +357,9 @@ class Ticket(SavedFormContent):
                                    settings.TICKET_DESCRIPTION_ID])
 
     def get_status(self):
-        if self.is_closed: return _('<b class="text-success">Chiuso</b> ({})').format(self.closed_by)
+        if self.is_closed: return _('<b class="text-success">Chiuso</b> <small>[{}]</small>').format(self.closed_by)
         if not self.has_been_taken(): return _('<b class="text-danger">Aperto</b>')
-        return _('<b class="text-warning">Assegnato</b> {}').format(self.taken_by_list())
+        return _('<b class="text-warning">Assegnato</b> <small>[{}]</small>').format(self.taken_by_list())
 
     def update_log(self, user, note='', send_mail=True, mail_msg=''):
         if not user: return False
