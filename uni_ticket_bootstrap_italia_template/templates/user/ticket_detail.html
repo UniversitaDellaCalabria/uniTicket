@@ -21,6 +21,18 @@
 </a>
 {% endblock %}
 
+{% block under_content_title %}
+{% ticket_has_been_taken ticket=ticket as ticket_taken %}
+{% if not ticket_taken %}
+<div class="alert alert-info alert-dismissible fade show mb-5" role="alert">
+  {% trans "E' possibile <b>modificare</b> o <b>eliminare</b> il ticket fino a quando questo non sia stato assegnato ad un operatore" %}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
+{% endblock under_content_title %}
+
 {% block top_buttons %}
 {% ticket_has_been_taken ticket=ticket as ticket_taken %}
 <a role="button" class="btn btn-outline-secondary"
