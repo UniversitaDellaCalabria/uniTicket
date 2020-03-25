@@ -30,7 +30,7 @@ PRIORITY_LEVELS = (
 # If 0 = Unlimited
 MAX_DAILY_TICKET_PER_USER = 10
 
-CONTEXT_SIMPLE_USER = _('Utente semplice')
+CONTEXT_SIMPLE_USER = _('Utente')
 # To change the URLs prefix for every user type
 MANAGER_PREFIX = 'Manager'
 OPERATOR_PREFIX = 'Operatore'
