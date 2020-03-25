@@ -23,9 +23,9 @@
 <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
 <div>
     {% if structure_slug %}
-    <select onchange="window.location = replace_last_param(window.location.href, $(this).val());"
+    <select onclick="window.location = replace_last_param(window.location.href, $(this).val());"
     {% else %}
-    <select onchange="window.location = window.location.href + $(this).val();"
+    <select onclick="window.location = window.location.href + $(this).val();"
     {% endif %}
             id="structure_slug"
             name="structure_slug"
@@ -53,7 +53,7 @@
     </div>
     {% else %}
     <div>
-        <select onchange="window.location = window.location.href + $(this).val();"
+        <select onclick="window.location = window.location.href + $(this).val();"
                 {% if not structure_slug %}disabled{% endif %}
                 name="category_slug"
                 title="{% trans 'A chi è indirizzata la richiesta?' %}"
