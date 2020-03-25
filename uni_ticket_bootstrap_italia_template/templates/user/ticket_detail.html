@@ -22,6 +22,7 @@
 {% endblock %}
 
 {% block top_buttons %}
+{% ticket_has_been_taken ticket=ticket as ticket_taken %}
 <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:user_dashboard' %}">
         <svg class="icon icon-xs">
@@ -43,6 +44,7 @@
        </svg> {% trans "Apri ticket simile" %}
     </a>
 {% elif ticket_taken %}
+
     <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:user_opened_ticket' %}">
         <svg class="icon icon-xs">
