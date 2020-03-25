@@ -50,12 +50,12 @@ def current_date():
     now = datetime.datetime.now(tz)
     return now.strftime('%A, %d %B %Y')
 
-@register.simple_tag
-def ticket_in_category(category):
-    result = 0
-    office = category.organizational_office
-    tickets = TicketAssignment.get_ticket_in_office_list(office_list=[office,])
-    return len(tickets)
+# @register.simple_tag
+# def ticket_in_category(category):
+    # result = 0
+    # office = category.organizational_office
+    # tickets = TicketAssignment.get_ticket_in_office_list(office_list=[office,])
+    # return len(tickets)
 
 @register.simple_tag
 def conditions_in_category(category):
