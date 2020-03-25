@@ -108,7 +108,7 @@
             </tr>
             <tr>
                 <th scope="row">{% trans 'Descrizione' %}</th>
-                <td>{{ ticket.description }}</td>
+                <td>{{ ticket.description | linebreaks }}</td>
             </tr>
             {% for k,v in details.items %}
             {% get_label_from_form ticket_form k as field_label %}
