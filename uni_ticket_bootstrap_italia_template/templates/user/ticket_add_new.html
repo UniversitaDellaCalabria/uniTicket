@@ -41,19 +41,39 @@
                             {{ heading|safe  }}
                         </p>
                         {% endif %}
-                        {% if category_conditions %}
-                            {% for condition in category_conditions %}
-                            <h6>{{ condition.title }}</h6>
-                            <p class="card-text">{{ condition.text | markdown | safe }}</p>
-                            {% if condition.attachment %}
-                            <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=condition.category.slug condition_id=condition.pk %}">
-                                    <svg class="icon">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
-                                    </svg>{{ condition.attachment|filename }}
-                                </a>
-                            {% endif %}
-                            {% endfor %}
+                        {% if categoria.show_heading_text and category_conditions%}
+                        <hr>
                         {% endif %}
+                        <div id="accordionDiv1" role="tablist">
+                            <div class="collapse-header" id="headingA1">
+                                <button data-toggle="collapse"
+                                        data-target="#accordion1"
+                                        aria-expanded="false"
+                                        aria-controls="accordion1"
+                                        class="px-0"
+                                        style="border: none;">
+                                    {% trans "Condizioni e clausole da leggere" %}
+                                </button>
+                            </div>
+                            <div id="accordion1" class="collapse" role="tabpanel" aria-labelledby="headingA1" data-parent="#accordionDiv1">
+                                <div class="collapse-body pb-0">
+                                    {% if category_conditions %}
+                                        {% for condition in category_conditions %}
+                                        <h6>{{ condition.title }}</h6>
+                                        <p class="card-text">{{ condition.text | markdown | safe }}</p>
+                                        {% if condition.attachment %}
+                                        <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=condition.category.slug condition_id=condition.pk %}">
+                                                <svg class="icon">
+                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                                                </svg>{{ condition.attachment|filename }}
+                                            </a>
+                                        {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
