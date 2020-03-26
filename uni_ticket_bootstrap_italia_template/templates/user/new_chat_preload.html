@@ -21,9 +21,9 @@
 <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
 <div>
     {% if structure_slug %}
-    <select onclick="window.location = replace_last_param(window.location.href, $(this).val());"
+    <select onselect="window.location = replace_last_param(window.location.href, $(this).val());"
     {% else %}
-    <select onclick="window.location = window.location.href + $(this).val();"
+    <select onselect="window.location = window.location.href + $(this).val();"
     {% endif %}
             id="structure_slug"
             name="structure_slug"
