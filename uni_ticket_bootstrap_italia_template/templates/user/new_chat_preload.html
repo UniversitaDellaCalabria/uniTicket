@@ -20,11 +20,7 @@
 {% block page_content %}
 <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
 <div>
-    {% if structure_slug %}
-    <select onselect="window.location = replace_last_param(window.location.href, $(this).val());"
-    {% else %}
-    <select onselect="window.location = window.location.href + $(this).val();"
-    {% endif %}
+    <select id="select_structure"
             id="structure_slug"
             name="structure_slug"
             title="{% trans 'A chi è indirizzata la richiesta?' %}"
@@ -67,5 +63,17 @@
 function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
 }
+
+var structure_val = $('#select_structure').val();
+$('#select_structure').on('click blur', function(event) {
+    if (structure_val === $(this).val()) {
+        return
+    }
+    {% if structure_slug %}
+    window.location.href = replace_last_param(window.location.href, $(this).val());
+    {% else %}
+    window.location.href = window.location.href + $(this).val();
+    {% endif %}
+});
 </script>
 {% endblock extra_scripts %}
