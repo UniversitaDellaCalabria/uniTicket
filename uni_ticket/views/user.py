@@ -78,7 +78,7 @@ def ticket_new_preload(request, structure_slug=None):
         sub_title = _("Seleziona la Categoria")
     d = {'categorie': categorie,
          'structure_slug': structure_slug,
-         'structure': structure,
+         # 'chosen_structure': structure,
          'strutture': strutture,
          'sub_title': sub_title,
          'title': title,}

@@ -17,8 +17,8 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
-{% if structure and structure.banner %}
-<div class="mb-3"><img src="{{ structure.banner.url }}" /></div>
+{% if chosen_structure and chosen_structure.banner %}
+<div class="mb-3"><img src="{{ chosen_structure.banner.url }}" /></div>
 {% endif %}
 <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
 <div>
