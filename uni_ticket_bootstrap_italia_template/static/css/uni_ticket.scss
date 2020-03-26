@@ -258,9 +258,7 @@ select {
 /**
  * Select wrapper
  */
-.card .bootstrap-select-wrapper .dropdown.bootstrap-select .dropdown-menu[x-placement=top-start] {
-    top: 0!important;
-}
-.card .bootstrap-select-wrapper .dropdown.bootstrap-select .dropdown-menu .inner.show {
-    max-height: 100px !important;
+.bootstrap-select-wrapper {
+    position: absolute;
+    z-index: 9999;
 }
