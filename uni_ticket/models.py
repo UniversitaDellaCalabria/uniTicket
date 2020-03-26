@@ -676,17 +676,9 @@ class TicketAssignment(models.Model):
         for assignment in ticket_assignments:
             if follow_check and not assignment.follow: continue
             ticket = assignment.ticket
-            if ticket.pk not in ticket_list:
+            if ticket.code not in ticket_list:
                 ticket_list.append(ticket.code)
         return ticket_list
-
-    def get_assegnazioni_office(self, office):
-        """
-        Torna la lista di ticket la cui competenza è anche
-        dell'ufficio passato come argomento
-        """
-        assegnazioni = self.objects.filter(office=office)
-        return assegnazioni
 
     def __str__(self):
         return '{} - {}'.format(self.ticket, self.office)

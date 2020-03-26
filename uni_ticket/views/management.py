@@ -372,22 +372,32 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
     for td in ticket_dependences:
         if td.master_ticket.code not in ticket_dependences_code_list:
             ticket_dependences_code_list.append(td.master_ticket.code)
-    form = TicketDependenceForm(structure=structure,
+    form = TicketDependenceForm(user=request.user,
+                                structure=structure,
                                 ticket_id=ticket.code,
                                 ticket_dependences=ticket_dependences_code_list)
     if request.method == 'POST':
         form = TicketDependenceForm(request.POST,
+                                    user=request.user,
                                     structure=structure,
                                     ticket_id=ticket.code,
                                     ticket_dependences=ticket_dependences_code_list)
         if form.is_valid():
             master_ticket = form.cleaned_data['ticket']
             note = form.cleaned_data['note']
-            if Ticket2Ticket.master_is_already_used(master_ticket) or ticket.blocks_some_ticket():
+            if Ticket2Ticket.master_is_already_used(master_ticket):
                 messages.add_message(request, messages.ERROR,
-                                     "Il ticket <b>{}</b> non può essere"
-                                     " selezionato poichè risulta già"
-                                     " utilizzato in altre dipendenze".format(master_ticket))
+                                     "La dipendenza non può essere aggiunta."
+                                     " Il ticket <b>{}</b> è dipendente da"
+                                     " altri ticket".format(master_ticket))
+                return redirect('uni_ticket:add_ticket_dependence_url',
+                                structure_slug=structure_slug,
+                                ticket_id=ticket_id)
+            if ticket.blocks_some_ticket():
+                messages.add_message(request, messages.ERROR,
+                                     "La dipendenza non può essere aggiunta."
+                                     " Ci sono ticket che dipendono da"
+                                     " quello corrente <b>{}</b>".format(ticket))
                 return redirect('uni_ticket:add_ticket_dependence_url',
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)

@@ -11,6 +11,7 @@ from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOfficeEmployee,)
 
 from . models import *
+from . utils import *
 # from . widgets import UniTicketSelectSearchWidget
 from bootstrap_italia_template.widgets import BootstrapItaliaSelectWidget
 
@@ -91,7 +92,7 @@ class OfficeAddOperatorForm(forms.Form):
                                   required=False)
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
-        office_slug = kwargs.pop('office_slug', None)
+        office_slug = kwargs.pop('office_slug', '')
         # current_user = kwargs.pop('current_user', None)
         osoe = OrganizationalStructureOfficeEmployee
         actual = []
@@ -145,7 +146,7 @@ class TicketCompetenceForm(forms.Form):
     def __init__(self, *args, **kwargs):
         structure_slug = kwargs.pop('structure_slug', None)
         current_ticket_id = kwargs.pop('ticket_id', None)
-        ticket_dependences_code_list = kwargs.pop('ticket_dependences', None)
+        ticket_dependences_code_list = kwargs.pop('ticket_dependences', [])
         structure = OrganizationalStructure.objects.get(slug=structure_slug)
         ticket_id_list = TicketAssignment.get_ticket_per_structure(structure)
         ticket_id_list.remove(current_ticket_id)
@@ -184,14 +185,25 @@ class TicketDependenceForm(forms.Form):
                            required=True)
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         structure = kwargs.pop('structure', None)
         current_ticket_id = kwargs.pop('ticket_id', None)
-        ticket_dependences_code_list = kwargs.pop('ticket_dependences', None)
-        ticket_id_list = TicketAssignment.get_ticket_per_structure(structure)
+        ticket_dependences_code_list = kwargs.pop('ticket_dependences', [])
+        ticket_id_list = []
+        # if user is manager/default_office operator:
+        # he views all tickets followed by structure offices
+        if user_is_manager(user, structure) or user_is_in_default_office(user, structure):
+            ticket_id_list = TicketAssignment.get_ticket_per_structure(structure)
+        # if user is operator:
+        # he views all tickets followed in his offices
+        else:
+            user_offices = user_is_operator(user, structure)
+            offices_list = user_offices_list(user_offices)
+            ticket_id_list = TicketAssignment.get_ticket_in_office_list(offices_list)
         ticket_id_list.remove(current_ticket_id)
-        ticket_list = Ticket.objects.filter(code__in=ticket_id_list,
-                                            # is_taken=True,
-                                            is_closed=False).exclude(code__in=ticket_dependences_code_list)
+        cleaned_list = [code for code in ticket_id_list if code not in ticket_dependences_code_list]
+        ticket_list = Ticket.objects.filter(code__in=cleaned_list,
+                                            is_closed=False)
         result_list = ticket_list
         for ticket in ticket_list:
             if not ticket.has_been_taken():
