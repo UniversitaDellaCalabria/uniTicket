@@ -13,7 +13,7 @@
    href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=condition.category.slug %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Torna al tipo" %}
+    </svg> {% trans "Torna alla tipologia di richiesta" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_condition_edit' structure_slug=structure.slug category_slug=condition.category.slug condition_id=condition.pk %}"
