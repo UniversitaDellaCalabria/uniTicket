@@ -92,24 +92,25 @@ class OfficeAddOperatorForm(forms.Form):
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
         office_slug = kwargs.pop('office_slug', None)
-        current_user = kwargs.pop('current_user', None)
+        # current_user = kwargs.pop('current_user', None)
         osoe = OrganizationalStructureOfficeEmployee
-        # actual_employees = osoe.objects.filter(office__slug=office_slug)
-        # actual = []
-        # for ae in actual_employees:
+        actual = []
+        actual_employees = osoe.objects.filter(office__slug=office_slug)
+        for ae in actual_employees:
             # if ae.employee.pk not in actual:
-                # actual.append(ae.employee.pk)
+            actual.append(ae.employee.pk)
         # all employees in a structure
+        # DISTINCT ON (.distinct(field_name) is not supported by all datablase backends)
+        # all_employees = osoe.objects.filter(office__organizational_structure=structure).distinct('employee')
         all_employees = osoe.objects.filter(office__organizational_structure=structure)
         # exclude employees already assigned to office
-        # clean_list = all_employees.exclude(employee__pk__in=actual)
-        # exclude all managers from list
-        for o in all_employees:
-            if get_user_type(o.employee, structure)=='manager':
-                all_employees = all_employees.exclude(pk=o.pk)
-        unique_ids = tuple(set((i[0] for i in all_employees.values_list('employee'))))
-        user_model = get_user_model()
-        operators = user_model.objects.filter(pk__in=unique_ids)
+        clean_list = all_employees.exclude(employee__pk__in=actual)
+        operators_ids = []
+        for operator_office in clean_list:
+            key = operator_office.employee.pk
+            if key not in operators_ids:
+                operators_ids.append(key)
+        operators = get_user_model().objects.filter(pk__in=operators_ids)
         super().__init__(*args, **kwargs)
         self.fields['operatore'].queryset = operators
 

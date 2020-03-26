@@ -250,8 +250,8 @@ def office_detail(request, structure_slug, office_slug, structure):
     template = 'manager/office_detail.html'
     sub_title = office.name
     form = OfficeAddOperatorForm(structure=structure,
-                                 office_slug=office_slug,
-                                 current_user=request.user)
+                                 office_slug=office_slug)
+                                 # current_user=request.user)
     category_form = OfficeAddCategoryForm(structure=structure,
                                           office=office)
     if request.method == 'POST':
