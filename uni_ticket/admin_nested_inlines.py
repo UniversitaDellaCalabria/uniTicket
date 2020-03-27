@@ -22,6 +22,7 @@ class TicketCategoryInputListNestedInline(nested_admin.NestedTabularInline):
     extra = 0
     classes = ['collapse',]
 
+
 # Ticket Category Condition
 class TicketCategoryConditionModelForm(forms.ModelForm):
 
@@ -35,7 +36,7 @@ class TicketCategoryConditionNestedInline(nested_admin.NestedTabularInline):
     form = TicketCategoryConditionModelForm
     sortable_field_name = "ordinamento"
     extra = 0
-    # classes = ['collapse',]
+    classes = ['collapse',]
 
 
 # Ticket Category Module Form
@@ -52,20 +53,22 @@ class TicketCategoryModuleNestedInline(nested_admin.NestedTabularInline):
     #sortable_field_name = "name"
     extra = 0
     inlines = [TicketCategoryInputListNestedInline,]
+    classes = ['collapse',]
 
 
-# Ticket Attachment
-# class TicketAttachmentModelForm(forms.ModelForm):
+# Ticket Category Task Form
+class TicketCategoryTaskModelForm(forms.ModelForm):
 
-    # class Meta:
-        # model = TicketAttachment
-        # fields = ('__all__')
+    class Meta:
+        model = TicketCategoryTask
+        fields = ('__all__')
 
 
-# class TicketAttachmentNestedInline(nested_admin.NestedTabularInline):
-    # model = TicketAttachment
-    # form = TicketAttachmentModelForm
-    # extra = 0
+class TicketCategoryTaskNestedInline(nested_admin.NestedTabularInline):
+    model = TicketCategoryTask
+    form = TicketCategoryTaskModelForm
+    extra = 0
+    classes = ['collapse',]
 
 
 # Ticket Assignment
@@ -80,20 +83,6 @@ class TicketAssignmentNestedInline(nested_admin.NestedTabularInline):
     model = TicketAssignment
     form = TicketAssignmentModelForm
     extra = 0
-
-
-# Ticket History
-# class TicketHistoryModelForm(forms.ModelForm):
-
-    # class Meta:
-        # model = TicketHistory
-        # fields = ('__all__')
-
-
-# class TicketHistoryNestedInline(nested_admin.NestedTabularInline):
-    # model = TicketHistory
-    # form = TicketHistoryModelForm
-    # extra = 0
 
 
 # Ticket Reply

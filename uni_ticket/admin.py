@@ -11,7 +11,8 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
     inlines = [TicketCategoryModuleNestedInline,
-               TicketCategoryConditionNestedInline]
+               TicketCategoryConditionNestedInline,
+               TicketCategoryTaskNestedInline,]
                # TicketCategoryOfficeNestedInline,]
 
     list_display = ('name', 'created',

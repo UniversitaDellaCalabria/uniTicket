@@ -18,6 +18,7 @@ class TicketCategoryModuleInline(admin.TabularInline):
     form = TicketCategoryModuleModelForm
     extra = 0
 
+
 # Ticket Category Condition
 class TicketCategoryConditionModelForm(forms.ModelForm):
 
@@ -46,18 +47,18 @@ class TicketCategoryInputListInline(admin.TabularInline):
     extra = 0
 
 
-# Ticket Attachment
-# class TicketAttachmentModelForm(forms.ModelForm):
+# Ticket Category Task Form
+class TicketCategoryTaskModelForm(forms.ModelForm):
 
-    # class Meta:
-        # model = TicketAttachment
-        # fields = ('__all__')
+    class Meta:
+        model = TicketCategoryTask
+        fields = ('__all__')
 
 
-# class TicketAttachmentInline(admin.TabularInline):
-    # model = TicketAttachment
-    # form = TicketAttachmentModelForm
-    # extra = 0
+class TicketCategoryTaskInline(admin.TabularInline):
+    model = TicketCategoryTask
+    form = TicketCategoryTaskModelForm
+    extra = 0
 
 
 # Ticket Assignment
@@ -72,20 +73,6 @@ class TicketAssignmentInline(admin.TabularInline):
     model = TicketAssignment
     form = TicketAssignmentModelForm
     extra = 0
-
-
-# Ticket History
-# class TicketHistoryModelForm(forms.ModelForm):
-
-    # class Meta:
-        # model = TicketHistory
-        # fields = ('__all__')
-
-
-# class TicketHistoryInline(admin.TabularInline):
-    # model = TicketHistory
-    # form = TicketHistoryModelForm
-    # extra = 0
 
 
 # Ticket Reply

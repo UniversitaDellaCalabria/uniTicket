@@ -868,3 +868,47 @@ class TicketCategoryCondition(models.Model):
 
     def __str__(self):
         return '({}) {}'.format(self.category, self.title)
+
+
+class TicketCategoryTask(models.Model):
+    """
+    ToDo interno alla Struttura che può essere vincolante se associato
+    a un Ticket (il Ticket non può essere chiuso se il task non è chiuso)
+    """
+    subject = models.CharField(max_length=255)
+    code = models.CharField(max_length=255, unique=True)
+    description = models.TextField()
+    created = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.SET_NULL,
+                                   null=True)
+    category = models.ForeignKey(TicketCategory, on_delete=models.CASCADE)
+    priority = models.IntegerField(default=0)
+    attachment = models.FileField(upload_to=_attachment_upload,
+                                  null=True, blank=True,
+                                  validators=[validate_file_extension,
+                                              validate_file_size,
+                                              validate_file_length])
+
+    class Meta:
+        ordering = ["created"]
+        verbose_name = _("Task predefinito")
+        verbose_name_plural = _("Task predefiniti")
+
+    def get_priority(self):
+        """
+        """
+        return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
+
+    def get_folder(self):
+        """
+        Returns ticket attachments folder path
+        """
+        category_folder = self.category.get_folder()
+        folder = '{}/{}/{}'.format(category_folder,
+                                   settings.TICKET_TASK_ATTACHMENT_SUBFOLDER,
+                                   self.code)
+        return folder
+
+    def __str__(self):
+        return '{} - ticket: {}'.format(self.subject, self.ticket)
