@@ -1,0 +1,193 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+{% block menu_links %}
+{% include 'manager/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=task.category.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna alla tipologia di richiesta" %}
+</a>
+<a role="button"
+   href="#"
+   class="btn btn-outline-secondary">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+    </svg> {% trans "Modifica" %}
+</a>
+
+{% if task.is_active %}
+<button type="button"
+        class="btn btn-outline-secondary"
+        data-toggle="modal"
+        data-target="#disableTask">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-invisible"></use>
+        </svg> {% trans "Disattiva" %}
+</button>
+{% else %}
+<button type="button"
+        class="btn btn-outline-secondary"
+        data-toggle="modal"
+        data-target="#enableTask">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-visible"></use>
+        </svg> {% trans "Attiva" %}
+</button>
+{% endif %}
+<button type="button"
+        class="btn btn-outline-danger"
+        data-toggle="modal"
+        data-target="#deleteTask">
+        <svg class="icon icon-xs icon-danger">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+        </svg> {% trans "Elimina" %}
+</button>
+{% endblock top_buttons %}
+
+{% block page_content %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <tbody>
+            <tr>
+                <th scope="row">{% trans 'Stato' %}</th>
+                <td>
+                    {% if task.is_active %}
+                    <span class="text-success">
+                        <b> {% trans "Attiva" %}</b>
+                    </span>
+                    {% else %}
+                    <span class="text-dangeer">
+                        <b> {% trans "Non attiva" %}</b>
+                    </span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Priorità' %}</th>
+                <td>{{ task.get_priority }}</td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Creato da' %}</th>
+                <td>{{ task.created_by }} - {{ task.created }}</td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Oggetto' %}</th>
+                <td>{{ task.subject }}</td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Descrizione' %}</th>
+                <td>{{ task.description }}</td>
+            </tr>
+
+            {% if task.attachment %}
+            <tr>
+                <th scope="row">{% trans 'Allegato' %}</th>
+                <td>
+                    <a href="{% url 'uni_ticket:category_task_download_attachment' structure_slug=structure.slug category_slug=category.slug task_id=task.code %}">
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                        </svg> {{ task.attachment|filename }}
+                    </a>
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% if task.is_active %}
+<div class="modal fade" tabindex="-1" role="dialog" id="disableTask">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Disattivazione attività" %}
+                </h5>
+                <button class="close" type="button"
+                        data-dismiss="modal" aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero disattivare l'attività " %}
+                   <b>{{ task }}</b> ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-danger"
+                   href="#">
+                    {% trans "Si, disattiva" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="modal fade" tabindex="-1" role="dialog" id="enableTask">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Attivazione attività" %}
+                </h5>
+                <button class="close" type="button"
+                        data-dismiss="modal" aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero attivare l'attività " %}
+                   <b>{{ task }}</b> ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-success"
+                   href="#">
+                    {% trans "Si, attiva" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="modal fade" tabindex="-1" role="dialog" id="deleteTask">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Eliminazione attività" %}
+                </h5>
+                <button class="close" type="button"
+                        data-dismiss="modal" aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero eliminare l'attività " %}
+                   <b>{{ task }}</b> ?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-danger"
+                   href="#">
+                    {% trans "Si, elimina" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock page_content %}

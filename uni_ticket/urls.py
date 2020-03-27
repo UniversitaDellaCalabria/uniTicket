@@ -110,8 +110,8 @@ cat_input = '{}/input'.format(category_id)
 cat_input_id = '{}/<int:module_id>'.format(cat_input)
 condition = '{}/conditions'.format(category_id)
 condition_id = '{}/<int:condition_id>'.format(condition)
-task = '{}/tasks'.format(category_id)
-task_id = '{}/<int:condition_id>'.format(task)
+category_task = '{}/default-tasks'.format(category_id)
+category_task_id = '{}/<str:task_id>'.format(category_task)
 
 urlpatterns += [
     path('{}/{}/'.format(base, _dashboard_name), manager.dashboard, name='manager_dashboard'),
@@ -180,12 +180,13 @@ urlpatterns += [
     path('{}/'.format(condition_id), manager.category_condition_detail, name='manager_category_condition_detail'),
 
     # Category default tasks
-    path('{}/new/'.format(task), manager.category_task_new, name='manager_category_task_new'),
+    path('{}/new/'.format(category_task), manager.category_task_new, name='manager_category_task_new'),
     # path('{}/edit/'.format(task_id), manager.category_condition_edit, name='manager_category_condition_edit'),
     # path('{}/delete/'.format(task_id), manager.category_condition_delete, name='manager_category_condition_delete'),
     # path('{}/disable/'.format(task_id), manager.category_condition_disable, name='manager_category_condition_disable'),
     # path('{}/enable/'.format(task_id), manager.category_condition_enable, name='manager_category_condition_enable'),
-    # path('{}/'.format(task_id), manager.category_condition_detail, name='manager_category_condition_detail'),
+    path('{}/'.format(category_task_id), manager.category_task_detail, name='manager_category_task_detail'),
+    path('{}/download/attachment/'.format(category_task_id), manager.category_task_download_attachment, name='category_task_download_attachment'),
 
     # Others generic
     path('{}/settings/'.format(base), login_required(is_manager(generic.user_settings)), name='manager_user_settings'),

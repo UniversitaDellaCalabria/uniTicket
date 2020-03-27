@@ -2012,3 +2012,73 @@ def category_task_new(request, structure_slug,
          'sub_title': category,
          'title': title,}
     return render(request, template, d)
+
+@login_required
+@is_manager
+def category_task_detail(request, structure_slug, category_slug,
+                         task_id, structure):
+    """
+    Shows task details
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type task_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param task_id: task id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    title = _('Gestione dettaglio attività')
+    template = 'manager/category_task_detail.html'
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    task = get_object_or_404(TicketCategoryTask,
+                             code=task_id,
+                             category=category)
+    d = {'category': category,
+         'structure': structure,
+         'sub_title': task,
+         'task': task,
+         'title': title,}
+    return render(request, template, d)
+
+@login_required
+@is_manager
+def category_task_download_attachment(request, structure_slug, category_slug,
+                                      task_id, structure):
+    """
+    Downloads category task attachment
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type task_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param task_id: task id
+    :param structure: structure object (from @is_manager)
+
+    :return: file
+    """
+    # get task
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    task = get_object_or_404(TicketCategoryTask,
+                             code=task_id,
+                             category=category)
+    # if task has attachment
+    if task.attachment:
+        # get ticket folder path
+        path_allegato = get_path(task.get_folder())
+        # get file
+        result = download_file(path_allegato,
+                               os.path.basename(task.attachment.name))
+        return result
+    raise Http404

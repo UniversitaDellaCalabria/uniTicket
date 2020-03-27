@@ -42,7 +42,7 @@
             {% endif %}
             <a role="button"
                class="mx-1 btn btn-outline-secondary btn-xs float-right"
-               href="#">
+               href="{% url 'uni_ticket:manager_category_task_detail' structure_slug=structure.slug category_slug=category.slug task_id=task.code %}">
                 {% trans "Modifica" %}
             </a>
 
