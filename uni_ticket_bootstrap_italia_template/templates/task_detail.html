@@ -37,7 +37,7 @@
             </tr>
             <tr>
                 <th scope="row">{% trans 'Descrizione' %}</th>
-                <td>{{ task.description }}</td>
+                <td>{{ task.description | linebreaks }}</td>
             </tr>
 
             {% if task.attachment %}
