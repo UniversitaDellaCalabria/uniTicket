@@ -1,0 +1,3 @@
+0 4 * * * username find /opt/dumps_uniticket -type f -mtime +30 -exec rm -f {} \;
+0 1 * * * username bash /opt/uniticket/uwsgi_setup/backup.sh
+0 50 * * * username rsync -avu --delete /opt/dumps_uniticket /media/gdrive/ICT_backups/ticket.unical.it/
