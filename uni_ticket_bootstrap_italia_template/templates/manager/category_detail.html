@@ -105,7 +105,7 @@
                 <th scope="row">{% trans 'Ufficio di competenza' %}</th>
                 <td>
                     {% if category.organizational_office %}
-                       {{ category.organizational_office }}
+                       <b>{{ category.organizational_office }}</b>
                        <svg class="icon icon-sm icon-secondary">
                             {% if category.organizational_office.is_active %}
                                 <title>{% trans 'Attivo' %}</title>
@@ -115,6 +115,10 @@
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                             {% endif %}
                             </svg>
+                        {% if category.organizational_office.description %}
+                            <br>
+                            <small>{{ category.organizational_office.description }}</small>
+                        {% endif %}
                        <button type="button"
                             class="btn btn-outline-danger btn-xs float-right"
                             data-toggle="modal"
