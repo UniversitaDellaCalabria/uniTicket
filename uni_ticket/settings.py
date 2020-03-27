@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
+LOGOS_FOLDER = 'logos'
 TICKET_ATTACHMENT_FOLDER = 'ticket'
 TICKET_MESSAGES_ATTACHMENT_SUBFOLDER = 'messages'
 TICKET_TASK_ATTACHMENT_SUBFOLDER = 'task'

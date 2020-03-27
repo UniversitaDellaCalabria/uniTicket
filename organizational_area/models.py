@@ -6,11 +6,11 @@ from ckeditor.fields import RichTextField
 from uni_ticket.validators import *
 
 
-def _attachment_upload(instance, filename):
+def _logo_upload(instance, filename):
     """
     this function has to return the location to upload the file
     """
-    folder = instance.get_folder()
+    folder = instance.get_logo_folder()
     return os.path.join('{}/{}'.format(folder, filename))
 
 
@@ -45,7 +45,7 @@ class OrganizationalStructure(models.Model):
     #description = RichTextField(max_length=12000, null=True,blank=True)
     description = models.TextField(max_length=1024, null=True,blank=True)
     create_date = models.DateTimeField(auto_now=True)
-    banner = models.ImageField(upload_to=_attachment_upload,
+    banner = models.ImageField(upload_to=_logo_upload,
                                null=True, blank=True,
                                validators=[validate_file_size,
                                            validate_file_length])
@@ -73,6 +73,15 @@ class OrganizationalStructure(models.Model):
         """
         folder = '{}/{}/{}'.format(settings.HOSTNAME,
                                    'structures',
+                                   self.slug)
+        return folder
+
+    def get_logo_folder(self):
+        """
+        Returns ticket attachments folder path
+        """
+        folder = '{}/{}/{}'.format(settings.HOSTNAME,
+                                   settings.LOGOS_FOLDER,
                                    self.slug)
         return folder
 

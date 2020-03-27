@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='organizationalstructure',
             name='banner',
-            field=models.ImageField(blank=True, null=True, upload_to=organizational_area.models._attachment_upload, validators=[uni_ticket.validators.validate_file_size, uni_ticket.validators.validate_file_length]),
+            field=models.ImageField(blank=True, null=True, upload_to=organizational_area.models._logo_upload, validators=[uni_ticket.validators.validate_file_size, uni_ticket.validators.validate_file_length]),
         ),
     ]

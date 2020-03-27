@@ -70,9 +70,9 @@ server {
         autoindex off;
     }
 
-    # Django media
-    location /media  {
-        alias /opt/uniticket/data/media;  # your Django project's media files - amend as required
+    # Django logos
+    location /logos  {
+        alias /opt/uniticket/data/media/ticket.unical.it/logos;  # your Django logos files - amend as required
         autoindex off;
     }
 
