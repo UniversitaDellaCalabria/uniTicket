@@ -764,10 +764,8 @@ class Ticket2Ticket(models.Model):
         return '{} - {}'.format(self.slave_ticket, self.master_ticket)
 
 
-class Task(models.Model):
+class AbstractTask(models.Model):
     """
-    ToDo interno alla Struttura che può essere vincolante se associato
-    a un Ticket (il Ticket non può essere chiuso se il task non è chiuso)
     """
     subject = models.CharField(max_length=255)
     code = models.CharField(max_length=255, unique=True)
@@ -776,10 +774,6 @@ class Task(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                    on_delete=models.SET_NULL,
                                    null=True)
-    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    is_closed = models.BooleanField(default=False)
-    closed_date = models.DateTimeField(blank=True, null=True)
-    closing_reason = models.TextField(blank=True, null=True)
     priority = models.IntegerField(default=0)
     attachment = models.FileField(upload_to=_attachment_upload,
                                   null=True, blank=True,
@@ -788,14 +782,28 @@ class Task(models.Model):
                                               validate_file_length])
 
     class Meta:
-        ordering = ["created"]
-        verbose_name = _("Task")
-        verbose_name_plural = _("Task")
+        abstract = True
 
     def get_priority(self):
         """
         """
         return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
+
+
+class Task(AbstractTask):
+    """
+    ToDo interno alla Struttura che può essere vincolante se associato
+    a un Ticket (il Ticket non può essere chiuso se il task non è chiuso)
+    """
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    is_closed = models.BooleanField(default=False)
+    closed_date = models.DateTimeField(blank=True, null=True)
+    closing_reason = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ["created"]
+        verbose_name = _("Task")
+        verbose_name_plural = _("Task")
 
     def update_log(self, user, note=None):
         LogEntry.objects.log_action(user_id         = user.pk,
@@ -876,25 +884,12 @@ class TicketCategoryCondition(models.Model):
         return '({}) {}'.format(self.category, self.title)
 
 
-class TicketCategoryTask(models.Model):
+class TicketCategoryTask(AbstractTask):
     """
     ToDo interno alla Struttura che può essere vincolante se associato
     a un Ticket (il Ticket non può essere chiuso se il task non è chiuso)
     """
-    subject = models.CharField(max_length=255)
-    code = models.CharField(max_length=255, unique=True)
-    description = models.TextField()
-    created = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                   on_delete=models.SET_NULL,
-                                   null=True)
     category = models.ForeignKey(TicketCategory, on_delete=models.CASCADE)
-    priority = models.IntegerField(default=0)
-    attachment = models.FileField(upload_to=_attachment_upload,
-                                  null=True, blank=True,
-                                  validators=[validate_file_extension,
-                                              validate_file_size,
-                                              validate_file_length])
     is_active = models.BooleanField(_('Visibile nei ticket'),
                                     default=False)
 
@@ -902,11 +897,6 @@ class TicketCategoryTask(models.Model):
         ordering = ["created"]
         verbose_name = _("Task predefinito")
         verbose_name_plural = _("Task predefiniti")
-
-    def get_priority(self):
-        """
-        """
-        return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
 
     def get_folder(self):
         """
