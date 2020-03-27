@@ -5,7 +5,7 @@
 
     <div class="collapse-header" id="heading1-lft">
         <button data-toggle="collapse" data-target="#collapse1-lft" aria-expanded="false" aria-controls="collapse1-lft">
-            {% trans "Moduli di inserimento" %} ({{ category.ticketcategorymodule_set.all|length }})
+            {% trans "Moduli di inserimento" %} ({{ category.ticketcategorymodule_set.all.count }})
         </button>
     </div>
     <div id="collapse1-lft" class="collapse" role="tabpanel" aria-labelledby="heading1-lft">
@@ -24,7 +24,7 @@
 
     <div class="collapse-header" id="heading2-lft">
         <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
-            {% trans "Clausole obbligatorie per i ticket" %} ({{ category.ticketcategorycondition_set.all|length }})
+            {% trans "Clausole obbligatorie per i ticket" %} ({{ category.ticketcategorycondition_set.all.count }})
         </button>
     </div>
     <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
@@ -36,6 +36,25 @@
                     <svg class="icon icon-xs icon-success">
                         <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
                     </svg> {% trans "Aggiungi nuova clausola" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="collapse-header" id="heading3-lft">
+        <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
+            {% trans "Attività predefinite per i ticket" %} ({{ category.ticketcategorytask_set.all.count }})
+        </button>
+    </div>
+    <div id="collapse3-lft" class="collapse" role="tabpanel" aria-labelledby="heading3-lft">
+        <div class="collapse-body">
+            {% include "manager/category_default_tasks.html" %}
+            <div>
+                <a class="btn btn-outline-success btn-block mt-4"
+                   href="{% url 'uni_ticket:manager_category_task_new' structure_slug=structure.slug category_slug=category.slug %}">
+                    <svg class="icon icon-xs icon-success">
+                        <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
+                    </svg> {% trans "Aggiungi nuova attività" %}
                 </a>
             </div>
         </div>

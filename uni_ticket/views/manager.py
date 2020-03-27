@@ -23,7 +23,8 @@ from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.utils import (custom_message,
                               office_can_be_deleted,
-                              user_is_manager)
+                              user_is_manager,
+                              uuid_code)
 
 
 logger = logging.getLogger(__name__)
@@ -1949,3 +1950,65 @@ def category_input_module_clone(request, structure_slug,
                     structure_slug=selected_structure.slug,
                     category_slug=selected_category.slug,
                     module_id=new_module.pk)
+
+@login_required
+@is_manager
+def category_task_new(request, structure_slug,
+                      category_slug, structure):
+    """
+    Creates a new task for category
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    title = _('Nuova attività per inserimento ticket')
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    form = CategoryTaskForm()
+    if request.method == 'POST':
+        form = CategoryTaskForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_task = TicketCategoryTask()
+            new_task.subject = form.cleaned_data['subject']
+            new_task.description = form.cleaned_data['description']
+            new_task.attachment = form.cleaned_data['attachment']
+            new_task.category = category
+            new_task.priority = form.cleaned_data['priority']
+            new_task.created_by = request.user
+            new_task.code = uuid_code()
+            new_task.save()
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} created the new task {}'
+                        ' for category {}'.format(timezone.now(),
+                                                  structure,
+                                                  request.user,
+                                                  new_task,
+                                                  category))
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Attività creata con successo"))
+            return redirect('uni_ticket:manager_category_detail',
+                            structure_slug=structure_slug,
+                            category_slug=category_slug)
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+
+    template = 'manager/category_task_add_new.html'
+    d = {'category': category,
+         'form': form,
+         'structure': structure,
+         'sub_title': category,
+         'title': title,}
+    return render(request, template, d)

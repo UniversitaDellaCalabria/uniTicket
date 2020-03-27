@@ -258,3 +258,7 @@ class OfficeAddCategoryForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['category'].queryset = categories
         self.fields['category'].to_field_name='slug'
+
+
+class CategoryTaskForm(TaskForm):
+    is_active = forms.BooleanField(label=_('Attiva'))

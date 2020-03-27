@@ -889,6 +889,7 @@ class TicketCategoryTask(models.Model):
                                   validators=[validate_file_extension,
                                               validate_file_size,
                                               validate_file_length])
+    is_active = models.BooleanField(_('Visibile nei ticket'), default=True)
 
     class Meta:
         ordering = ["created"]
@@ -911,4 +912,4 @@ class TicketCategoryTask(models.Model):
         return folder
 
     def __str__(self):
-        return '{} - ticket: {}'.format(self.subject, self.ticket)
+        return '{} - {}'.format(self.subject, self.category)
