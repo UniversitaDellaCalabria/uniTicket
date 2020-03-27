@@ -1982,6 +1982,7 @@ def category_task_new(request, structure_slug,
             new_task.attachment = form.cleaned_data['attachment']
             new_task.category = category
             new_task.priority = form.cleaned_data['priority']
+            new_task.is_active = form.cleaned_data['is_active']
             new_task.created_by = request.user
             new_task.code = uuid_code()
             new_task.save()
@@ -2206,3 +2207,136 @@ def category_task_attachment_delete(request, structure_slug, category_slug,
                     structure_slug=structure.slug,
                     category_slug=category.slug,
                     task_id=task.code)
+
+@login_required
+@is_manager
+def category_task_enable(request, structure_slug, category_slug,
+                         task_id, structure):
+    """
+    Enables a task from a category
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type task_id: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param task_id: task code
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    task = get_object_or_404(TicketCategoryTask,
+                             code=task_id,
+                             category=category)
+    if task.is_active:
+        messages.add_message(request, messages.ERROR,
+                             _("Attività {} già attivata".format(task)))
+    else:
+        task.is_active = True
+        task.save(update_fields = ['is_active'])
+        messages.add_message(request, messages.SUCCESS,
+                             _("Attività {} attivata con successo".format(task)))
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} enabled a task'
+                    ' for category {}'.format(timezone.now(),
+                                              structure,
+                                              request.user,
+                                              category))
+
+    return redirect('uni_ticket:manager_category_detail',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug)
+
+@login_required
+@is_manager
+def category_task_disable(request, structure_slug, category_slug,
+                          task_id, structure):
+    """
+    Disables a task from a category
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type task_id: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param task_id: tak code
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    task = get_object_or_404(TicketCategoryTask,
+                             code=task_id,
+                             category=category)
+    if task.is_active:
+        task.is_active = False
+        task.save(update_fields = ['is_active'])
+        messages.add_message(request, messages.SUCCESS,
+                             _("Attività {} disattivata con successo".format(task)))
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} disabled a task'
+                    ' for category {}'.format(timezone.now(),
+                                              structure,
+                                              request.user,
+                                              category))
+    else:
+        messages.add_message(request, messages.ERROR,
+                             _("Attività {} già disattivata".format(task)))
+
+    return redirect('uni_ticket:manager_category_detail',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug)
+
+@login_required
+@is_manager
+def category_task_delete(request, structure_slug, category_slug,
+                         task_id, structure):
+    """
+    Deletes task from a category
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type task_id: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param task_id: task code
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    task = get_object_or_404(TicketCategoryTask,
+                             code=task_id,
+                             category=category)
+    messages.add_message(request, messages.SUCCESS,
+                         _("Attività {} eliminata correttamente".format(task)))
+
+    # log action
+    logger.info('[{}] manager of structure {}'
+                ' {} deleted a task'
+                ' for category {}'.format(timezone.now(),
+                                          structure,
+                                          request.user,
+                                          category))
+
+    delete_directory(task.get_folder())
+    task.delete()
+
+    return redirect('uni_ticket:manager_category_detail',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug)

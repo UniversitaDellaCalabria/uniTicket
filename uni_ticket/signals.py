@@ -21,6 +21,7 @@ def check_if_can_be_activated(sender, instance, **kwargs):
 @receiver(pre_delete, sender=Task)
 @receiver(pre_delete, sender=Ticket)
 @receiver(pre_delete, sender=TicketCategory)
+@receiver(pre_delete, sender=TicketCategoryTask)
 def delete_attachments_folder(sender, instance, *args, **kwargs):
     """
     Delete recursively a folder

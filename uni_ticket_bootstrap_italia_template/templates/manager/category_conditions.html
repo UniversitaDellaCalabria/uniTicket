@@ -22,7 +22,7 @@
                 class="mx-1 btn btn-outline-danger btn-xs float-right"
                 data-toggle="modal"
                 data-target="#deleteCondition{{ forloop.counter0 }}">
-                {% trans "Elimina clausola" %}
+                {% trans "Elimina" %}
             </button>
 
             {% if condition.is_active %}
@@ -30,14 +30,14 @@
                 class="mx-1 btn btn-outline-secondary btn-xs float-right"
                 data-toggle="modal"
                 data-target="#disableCondition{{ forloop.counter0 }}">
-                {% trans "Disattiva clausola" %}
+                {% trans "Disattiva" %}
             </button>
             {% else %}
             <button type="button"
                 class="mx-1 btn btn-outline-success btn-xs float-right"
                 data-toggle="modal"
                 data-target="#enableCondition{{ forloop.counter0 }}">
-                {% trans "Attiva clausola" %}
+                {% trans "Attiva" %}
             </button>
             {% endif %}
             <a role="button"

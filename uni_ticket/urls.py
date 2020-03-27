@@ -183,9 +183,9 @@ urlpatterns += [
     path('{}/new/'.format(category_task), manager.category_task_new, name='manager_category_task_new'),
     path('{}/edit/'.format(category_task_id), manager.category_task_edit, name='manager_category_task_edit'),
     path('{}/edit/remove-attachment/'.format(category_task_id), manager.category_task_attachment_delete, name='category_task_attachment_delete'),
-    # path('{}/delete/'.format(category_task_id), manager.category_condition_delete, name='manager_category_condition_delete'),
-    # path('{}/disable/'.format(category_task_id), manager.category_condition_disable, name='manager_category_condition_disable'),
-    # path('{}/enable/'.format(category_task_id), manager.category_condition_enable, name='manager_category_condition_enable'),
+    path('{}/delete/'.format(category_task_id), manager.category_task_delete, name='manager_category_task_delete'),
+    path('{}/disable/'.format(category_task_id), manager.category_task_disable, name='manager_category_task_disable'),
+    path('{}/enable/'.format(category_task_id), manager.category_task_enable, name='manager_category_task_enable'),
     path('{}/'.format(category_task_id), manager.category_task_detail, name='manager_category_task_detail'),
     path('{}/download/attachment/'.format(category_task_id), manager.category_task_download_attachment, name='category_task_download_attachment'),
 

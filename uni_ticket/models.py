@@ -112,6 +112,12 @@ class TicketCategory(models.Model):
             conditions = conditions.filter(is_printable=True)
         return conditions
 
+    def get_tasks(self, is_active=True):
+        tasks = TicketCategoryTask.objects.filter(category=self)
+        if is_active:
+            tasks = tasks.filter(is_active=True)
+        return tasks
+
     def allowed_to_user(self, user):
         if not user: return False
         if self.allow_guest: return True

@@ -18,8 +18,8 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manager_categories' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-folder"></use>
-    </svg> {% trans "Tipologie di richieste" %}
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Tipologie" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_edit' structure_slug=structure.slug category_slug=category.slug %}"
@@ -32,15 +32,22 @@
    href="{% url 'uni_ticket:manager_category_new_input_module' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-file"></use>
-    </svg> {% trans "Aggiungi modulo" %}
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+    </svg> {% trans "Modulo" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_condition_new' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
-    </svg> {% trans "Aggiungi clausola" %}
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+    </svg> {% trans "Clausola" %}
+</a>
+<a role="button"
+   href="{% url 'uni_ticket:manager_category_task_new' structure_slug=structure.slug category_slug=category.slug %}"
+   class="btn btn-outline-secondary">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+    </svg> {% trans "Attività" %}
 </a>
 {% if category.is_active %}
 <button type="button"

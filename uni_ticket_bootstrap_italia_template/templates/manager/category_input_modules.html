@@ -24,14 +24,14 @@
                 class="mx-1 btn btn-outline-secondary btn-xs float-right"
                 data-toggle="modal"
                 data-target="#deleteModule{{ forloop.counter0 }}">
-                {% trans "Elimina modulo" %}
+                {% trans "Elimina" %}
             </button>
             {% else %}
             <button type="button"
                 class="mx-1 btn btn-secondary btn-xs float-right"
                 title="{% trans 'Questo modulo non può essere eliminato' %}"
                 disabled>
-                {% trans "Elimina modulo" %}
+                {% trans "Elimina" %}
             </button>
             {% endif %}
 
@@ -40,14 +40,14 @@
                 class="mx-1 btn btn-outline-danger btn-xs float-right"
                 data-toggle="modal"
                 data-target="#disableModule{{ forloop.counter0 }}">
-                {% trans "Disattiva modulo" %}
+                {% trans "Disattiva" %}
             </button>
             {% else %}
             <button type="button"
                 class="mx-1 btn btn-outline-success btn-xs float-right"
                 data-toggle="modal"
                 data-target="#enableModule{{ forloop.counter0 }}">
-                {% trans "Attiva modulo" %}
+                {% trans "Attiva" %}
             </button>
             {% endif %}
             <a role="button"
