@@ -889,7 +889,8 @@ class TicketCategoryTask(models.Model):
                                   validators=[validate_file_extension,
                                               validate_file_size,
                                               validate_file_length])
-    is_active = models.BooleanField(_('Visibile nei ticket'), default=True)
+    is_active = models.BooleanField(_('Visibile nei ticket'),
+                                    default=False)
 
     class Meta:
         ordering = ["created"]

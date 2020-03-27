@@ -2022,12 +2022,12 @@ def category_task_detail(request, structure_slug, category_slug,
 
     :type structure_slug: String
     :type category_slug: String
-    :type task_id: Integer
+    :type task_id: String
     :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param task_id: task id
+    :param task_id: task code
     :param structure: structure object (from @is_manager)
 
     :return: render
@@ -2056,12 +2056,12 @@ def category_task_download_attachment(request, structure_slug, category_slug,
 
     :type structure_slug: String
     :type category_slug: String
-    :type task_id: Integer
+    :type task_id: String
     :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param task_id: task id
+    :param task_id: task code
     :param structure: structure object (from @is_manager)
 
     :return: file
@@ -2082,3 +2082,127 @@ def category_task_download_attachment(request, structure_slug, category_slug,
                                os.path.basename(task.attachment.name))
         return result
     raise Http404
+
+@login_required
+@is_manager
+def category_task_edit(request, structure_slug, category_slug,
+                       task_id, structure):
+    """
+    Edits condition details
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type task_id: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param task_id: task code
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    task = get_object_or_404(TicketCategoryTask,
+                             code=task_id,
+                             category=category)
+    data = {'subject': task.subject,
+            'description': task.description,
+            'priority': task.priority,
+            'is_active': task.is_active}
+    form = CategoryTaskForm(initial=data)
+    if request.method == 'POST':
+        form = CategoryTaskForm(data=request.POST,
+                                files=request.FILES)
+        if form.is_valid():
+            task.subject = form.cleaned_data['subject']
+            task.description = form.cleaned_data['description']
+            task.priority = form.cleaned_data['priority']
+            task.is_active = form.cleaned_data['is_active']
+            if form.cleaned_data['attachment']:
+                task.attachment = form.cleaned_data['attachment']
+            task.save(update_fields = ['subject',
+                                       'description',
+                                       'priority',
+                                       'is_active',
+                                       'attachment'])
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} edited a task'
+                        ' for category {}'.format(timezone.now(),
+                                                  structure,
+                                                  request.user,
+                                                  category))
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Attività modificata con successo"))
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+    template = 'manager/category_task_edit.html'
+    title = _('Modifica attività')
+    sub_title = task
+
+    allegati = {}
+    if task.attachment:
+        allegati[form.fields['attachment'].label.lower()] = os.path.basename(task.attachment.name)
+        del form.fields['attachment']
+
+    d = {'allegati': allegati,
+         'category': category,
+         'form': form,
+         'structure': structure,
+         'sub_title': sub_title,
+         'task': task,
+         'title': title,}
+    return render(request, template, d)
+
+@login_required
+@is_manager
+def category_task_attachment_delete(request, structure_slug, category_slug,
+                                    task_id, structure):
+    """
+    Delete a task attachment (it must be called by a dialog to confirm action)
+
+   :type structure_slug: String
+    :type category_slug: String
+    :type task_id: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param task_id: task code
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    task = get_object_or_404(TicketCategoryTask,
+                             code=task_id,
+                             category=category)
+
+    # Rimuove l'allegato dal disco
+    delete_directory(task.get_folder())
+
+    task.attachment=None
+    task.save(update_fields = ['attachment'])
+
+    msg = _("Allegato task {} eliminato".format(task))
+
+    # log action
+    logger.info('[{}] {} deleted attachment'
+                ' from task {} of category {}'.format(timezone.now(),
+                                                      request.user,
+                                                      task,
+                                                      category))
+
+    messages.add_message(request, messages.SUCCESS, msg)
+    return redirect('uni_ticket:manager_category_task_edit',
+                    structure_slug=structure.slug,
+                    category_slug=category.slug,
+                    task_id=task.code)

@@ -261,4 +261,4 @@ class OfficeAddCategoryForm(forms.Form):
 
 
 class CategoryTaskForm(TaskForm):
-    is_active = forms.BooleanField(label=_('Attiva'))
+    is_active = forms.BooleanField(label=_('Attiva'), required=False)

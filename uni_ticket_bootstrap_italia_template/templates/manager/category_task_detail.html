@@ -16,7 +16,7 @@
     </svg> {% trans "Torna alla tipologia di richiesta" %}
 </a>
 <a role="button"
-   href="#"
+   href="{% url 'uni_ticket:manager_category_task_edit' structure_slug=structure.slug category_slug=task.category.slug task_id=task.code %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
