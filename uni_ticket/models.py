@@ -96,9 +96,9 @@ class TicketCategory(models.Model):
         """
         Returns ticket attachments folder path
         """
-        folder = '{}/{}/{}/{}'.format('structures',
+        folder = '{}/{}/{}/{}'.format(settings.STRUCTURES_FOLDER,
                                       self.organizational_structure.slug,
-                                      'categories',
+                                      settings.TICKET_CATEGORIES_FOLDER,
                                       self.slug)
         return folder
 

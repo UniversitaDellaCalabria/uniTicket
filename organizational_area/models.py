@@ -71,7 +71,7 @@ class OrganizationalStructure(models.Model):
         """
         Returns ticket attachments folder path
         """
-        folder = '{}/{}'.format('structures', self.slug)
+        folder = '{}/{}'.format(settings.STRUCTURES_FOLDER, self.slug)
         return folder
 
     def get_logo_folder(self):
