@@ -64,6 +64,11 @@ def conditions_in_category(category):
     return conditions
 
 @register.simple_tag
+def tasks_in_category(category):
+    tasks = category.get_tasks().count()
+    return tasks
+
+@register.simple_tag
 def simple_user_context_name():
     return uni_ticket_settings.CONTEXT_SIMPLE_USER
 
