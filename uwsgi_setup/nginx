@@ -71,7 +71,7 @@ server {
     }
 
     # Django logos
-    location /logos  {
+    location /media/logos  {
         alias /opt/uniticket/data/media/logos;  # your Django logos files - amend as required
         autoindex off;
     }
