@@ -72,7 +72,7 @@ server {
 
     # Django logos
     location /logos  {
-        alias /opt/uniticket/data/media/ticket.unical.it/logos;  # your Django logos files - amend as required
+        alias /opt/uniticket/data/media/logos;  # your Django logos files - amend as required
         autoindex off;
     }
 

@@ -71,18 +71,15 @@ class OrganizationalStructure(models.Model):
         """
         Returns ticket attachments folder path
         """
-        folder = '{}/{}/{}'.format(settings.HOSTNAME,
-                                   'structures',
-                                   self.slug)
+        folder = '{}/{}'.format('structures', self.slug)
         return folder
 
     def get_logo_folder(self):
         """
         Returns ticket attachments folder path
         """
-        folder = '{}/{}/{}'.format(settings.HOSTNAME,
-                                   settings.LOGOS_FOLDER,
-                                   self.slug)
+        folder = '{}/{}'.format(settings.LOGOS_FOLDER,
+                                self.slug)
         return folder
 
     def __str__(self):

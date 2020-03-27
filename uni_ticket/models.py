@@ -96,11 +96,10 @@ class TicketCategory(models.Model):
         """
         Returns ticket attachments folder path
         """
-        folder = '{}/{}/{}/{}/{}'.format(settings.HOSTNAME,
-                                         'structures',
-                                         self.organizational_structure.slug,
-                                         'categories',
-                                         self.slug)
+        folder = '{}/{}/{}/{}'.format('structures',
+                                      self.organizational_structure.slug,
+                                      'categories',
+                                      self.slug)
         return folder
 
     def get_conditions(self, is_printable=False):
@@ -260,10 +259,9 @@ class Ticket(SavedFormContent):
         """
         Returns ticket attachments folder path
         """
-        folder = '{}/{}/{}/{}'.format(settings.HOSTNAME,
-                                      settings.TICKET_ATTACHMENT_FOLDER,
-                                      self.get_year(),
-                                      self.code)
+        folder = '{}/{}/{}'.format(settings.TICKET_ATTACHMENT_FOLDER,
+                                   self.get_year(),
+                                   self.code)
         return folder
 
     def get_modulo_compilato(self):
