@@ -20,8 +20,7 @@
 {% block page_content %}
 <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
 <div>
-    <select id="select_structure"
-            id="structure_slug"
+    <select id="structure_slug"
             name="structure_slug"
             title="{% trans 'A chi è indirizzata la richiesta?' %}"
             data-live-search="true" data-live-search-placeholder="Cerca...">
@@ -64,11 +63,7 @@ function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
 }
 
-var structure_val = $('#select_structure').val();
-$('#select_structure').on('click blur', function(event) {
-    if (structure_val === $(this).val()) {
-        return
-    }
+$('#structure_slug').on('change', function(event) {
     {% if structure_slug %}
     window.location.href = replace_last_param(window.location.href, $(this).val());
     {% else %}

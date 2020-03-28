@@ -20,14 +20,9 @@
 <p class="mb-4">{% trans "Questa procedura consente di <b>duplicare</b> il modulo di input in qualsiasi struttura gestita dall'utente." %}
 <br>
 {% trans "Il nuovo modulo appena creato sarà <b>disabilitato</b> e dovrà essere attivato manualmente." %}</p>
-<b><label for="structure_slug">{% trans "Struttura" %}</label></b>
+<b><label for="selected_structure_slug">{% trans "Struttura" %}</label></b>
 <div>
-    {% if selected_structure_slug %}
-    <select onchange="window.location = replace_last_param(window.location.href, $(this).val());"
-    {% else %}
-    <select onchange="window.location = window.location.href + $(this).val();"
-    {% endif %}
-            id="selected_structure_slug"
+    <select id="selected_structure_slug"
             name="selected_structure_slug"
             title="{% trans 'In quale struttura sarà creato il modulo?' %}"
             data-live-search="true" data-live-search-placeholder="Cerca...">
@@ -42,7 +37,7 @@
 </div>
 
 <div style="padding: 1.5rem 0 1rem" >
-    <b><label for="category_slug">{% trans "Destinazione" %}</label></b>
+    <b><label for="selected_category_slug">{% trans "Destinazione" %}</label></b>
     {% if not selected_structure_slug %}
     <div class="alert alert-warning" role="alert">
       {% trans "Seleziona la struttura di destinazione" %}
@@ -53,11 +48,7 @@
     </div>
     {% else %}
     <div>
-        {% if selected_category_slug %}
-        <select onchange="window.location = replace_last_param(window.location.href, $(this).val());"
-        {% else %}
-        <select onchange="window.location = window.location.href + $(this).val();"
-        {% endif %}
+        <select id="selected_category_slug"
             {% if not selected_structure_slug %}disabled{% endif %}
                 name="selected_category_slug"
                 title="{% trans 'Dove sarà duplicato il modulo?' %}"
@@ -91,5 +82,21 @@
 function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
 }
+
+$('#selected_structure_slug').on('change', function(event) {
+    {% if selected_structure_slug %}
+    window.location.href = replace_last_param(window.location.href, $(this).val());
+    {% else %}
+    window.location.href = window.location.href + $(this).val();
+    {% endif %}
+});
+
+$('#selected_category_slug').on('change', function(event) {
+    {% if selected_category_slug %}
+    window.location.href = replace_last_param(window.location.href, $(this).val());
+    {% else %}
+    window.location.href = window.location.href + $(this).val();
+    {% endif %}
+});
 </script>
 {% endblock extra_scripts %}

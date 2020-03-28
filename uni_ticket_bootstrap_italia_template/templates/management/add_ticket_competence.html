@@ -23,12 +23,7 @@
     <div class="bootstrap-select-wrapper">
     {% endcomment %}
     <div>
-        {% if structure_slug %}
-        <select onchange="window.location = replace_last_param(window.location.href, $(this).val());"
-        {% else %}
-        <select onchange="window.location = window.location.href + $(this).val();"
-        {% endif %}
-                id="structure_slug"
+        <select id="structure_slug"
                 name="structure_slug"
                 title="{% trans 'A chi è indirizzata la richiesta?' %}"
                 data-live-search="true" data-live-search-placeholder="Cerca...">
@@ -119,9 +114,7 @@
 function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
 }
-</script>
 
-<script type="text/javascript">
 function hide_readonly() {
   var checkBox = document.getElementById("id_follow");
   var readonly_div = document.getElementById("readonly_div");
@@ -131,5 +124,13 @@ function hide_readonly() {
      readonly_div.style.display = "none";
   }
 }
+
+$('#structure_slug').on('change', function(event) {
+    {% if structure_slug %}
+    window.location.href = replace_last_param(window.location.href, $(this).val());
+    {% else %}
+    window.location.href = window.location.href + $(this).val();
+    {% endif %}
+});
 </script>
 {% endblock extra_scripts %}

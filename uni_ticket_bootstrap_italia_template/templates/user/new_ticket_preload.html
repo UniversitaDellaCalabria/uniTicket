@@ -20,10 +20,9 @@
 {% if chosen_structure and chosen_structure.banner %}
 <div class="mb-3"><img src="{{ chosen_structure.banner.url }}" /></div>
 {% endif %}
-<b><label for="structure_slug">{% trans "Struttura" %}</label></b>
+<b><label for="structure_slug">{% trans "Struttura" %} {{ structure_slug }}</label></b>
 <div>
-    <select id="select_structure"
-            id="structure_slug"
+    <select id="structure_slug"
             name="structure_slug"
             title="{% trans 'A chi è indirizzata la richiesta?' %}"
             data-live-search="true" data-live-search-placeholder="Cerca...">
@@ -49,7 +48,7 @@
     </div>
     {% else %}
     <div>
-        <select id="select_category"
+        <select id="category_slug"
                 {% if not structure_slug %}disabled{% endif %}
                 name="category_slug"
                 title="{% trans 'A chi è indirizzata la richiesta?' %}"
@@ -71,11 +70,7 @@ function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
 }
 
-var structure_val = $('#select_structure').val();
-$('#select_structure').on('click blur', function(event) {
-    if (structure_val === $(this).val()) {
-        return
-    }
+$('#structure_slug').on('change', function(event) {
     {% if structure_slug %}
     window.location.href = replace_last_param(window.location.href, $(this).val());
     {% else %}
@@ -83,11 +78,7 @@ $('#select_structure').on('click blur', function(event) {
     {% endif %}
 });
 
-var category_val = $('#select_category').val();
-$('#select_category').on('click blur', function(event) {
-    if (category_val === $(this).val()) {
-        return
-    }
+$('#category_slug').on('change', function(event) {
     window.location.href = window.location.href + $(this).val();
 });
 </script>
