@@ -255,7 +255,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                            'user': request.user,
                            'ticket': ticket.code,
                            'ticket_subject': subject,
-                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
+                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
                                                              kwargs={'ticket_id': ticket.code}))
                           }
 
@@ -890,7 +890,7 @@ def ticket_clone(request, ticket_id):
                            'user': request.user,
                            'ticket': ticket.code,
                            'ticket_subject': subject,
-                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
+                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
                                                              kwargs={'ticket_id': ticket.code}))
                           }
             ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
