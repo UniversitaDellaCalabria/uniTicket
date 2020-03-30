@@ -88,11 +88,46 @@
 {% block form_buttons %}
 <div>
     <button class="btn btn-success btn-block"
-            type="submit"
-            value="{% trans 'Crea ticket' %}">
+            type="button"
+            data-toggle="modal"
+            data-target="#action"
+            value="{% trans 'Conferma' %}">
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-        </svg> {% trans "Crea ticket" %}
+        </svg> {% trans "Conferma" %}
     </button>
+</div>
+
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="action">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Conferma" %}
+                </h5>
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero confermare l'operazione?" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-success"
+                       type="submit"
+                       value="{% trans 'Si, procedi' %}">
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock form_buttons %}

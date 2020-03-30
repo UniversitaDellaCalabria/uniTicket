@@ -194,6 +194,23 @@ def ticket_add_new(request, structure_slug, category_slug):
             ticket_assignment = TicketAssignment(ticket=ticket,
                                                  office=office,
                                                  assigned_by=request.user)
+            # if ticket is a notify, take the ticket
+            if categoria.is_notify:
+                # assign to an operator
+                ticket_assignment.taken_date = timezone.now()
+                oe_model = apps.get_model('organizational_area',
+                                          'OrganizationalStructureOfficeEmployee')
+                # get random operator from the office
+                office_employees = oe_model.objects.filter(office=office,
+                                                           employee__is_active=True).order_by('?')
+                # if not operator in the office, get a help-desk operator
+                if not office_employees:
+                    office_employees = oe_model.objects.filter(office__name=settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+                                                               office__organizational_structure=office.organizational_structure,
+                                                               employee__is_active=True).order_by('?')
+                random_office_operator = office_employees.first()
+                ticket_assignment.taken_by = random_office_operator.employee
+
             ticket_assignment.save()
 
             # log action
@@ -224,7 +241,14 @@ def ticket_add_new(request, structure_slug, category_slug):
                                             task.get_folder())
                     destination = '{}/{}'.format(settings.MEDIA_ROOT,
                                                  ticket_task.get_folder())
-                    shutil.copytree(source, destination)
+                    try:
+                        if os.path.exists(source):
+                            shutil.copytree(source, destination)
+                    except:
+                        logger.info('[{}] {} try to copy not existent folder {}'
+                                    ''.format(timezone.now(),
+                                              request.user,
+                                              source))
 
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
@@ -234,17 +258,23 @@ def ticket_add_new(request, structure_slug, category_slug):
                            'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
                                                              kwargs={'ticket_id': ticket.code}))
                           }
-            m_subject = _('{} - ticket "{}" creato correttamente'.format(settings.HOSTNAME,
-                                                                         ticket))
+
+            ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
+                             settings.NEW_TICKET_CREATED_ALERT
+            compiled_message = ticket_message.format(ticket.code)
+
+            m_subject = _('{} - {}'.format(settings.HOSTNAME,
+                                           compiled_message))
             send_custom_mail(subject=m_subject,
                              recipient=request.user,
                              body=settings.NEW_TICKET_CREATED,
                              params=mail_params)
             # END Send mail to ticket owner
 
-            messages.add_message(request, messages.SUCCESS,
-                                 _("Ticket creato con successo "
-                                   "con il codice <b>{}</b>").format(code))
+            messages.add_message(request,
+                                 messages.SUCCESS,
+                                 compiled_message
+                                )
             return redirect('uni_ticket:ticket_detail',
                             ticket_id=ticket.code)
         else:
@@ -653,7 +683,6 @@ def ticket_close(request, ticket_id):
     :return: render
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
-    # Se il ticket non è chiudibile (per dipendenze attive)
     if ticket.is_closed:
         # log action
         logger.info('[{}] user {} tried to close '
@@ -662,6 +691,16 @@ def ticket_close(request, ticket_id):
                                                            ticket))
 
         return custom_message(request, _("Il ticket è già chiuso!"))
+
+    if ticket.input_module.ticket_category.is_notify:
+        # log action
+        logger.info('[{}] user {} tried to close '
+                    ' a notify ticket {}'.format(timezone.now(),
+                                                 request.user,
+                                                 ticket))
+
+        return custom_message(request, _("Il ticket è già chiuso!"))
+
     title = _('Chiusura del ticket')
     sub_title = ticket
     form = ChiusuraForm()

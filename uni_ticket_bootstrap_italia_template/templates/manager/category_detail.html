@@ -171,6 +171,30 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">{% trans 'Messaggio di conferma' %}</th>
+                <td>
+                    {% if category.confirm_message_text %}
+                        {{ category.confirm_message_text }}
+                    {% else %}
+                        {% trans "Messaggio predefinito:" %}
+                        {% settings_value "NEW_TICKET_CREATED_ALERT" as default_message %}
+                        {{ default_message }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Ticket di tipo Notifica' %}</th>
+                <td>
+                    <svg class="icon icon-sm icon-secondary">
+                    {% if category.is_notify %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans 'Mostra intestazione ticket' %}</th>
                 <td>
                     <svg class="icon icon-sm icon-secondary">

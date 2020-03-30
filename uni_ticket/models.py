@@ -61,6 +61,23 @@ class TicketCategory(models.Model):
     allow_user = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_USER_LABEL), default=True)
     allow_employee = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_EMPLOYEE_LABEL), default=True)
 
+    # ticket notify
+    is_notify = models.BooleanField(_("Ticket di tipo Notifica"),
+                                    default=False,
+                                    help_text=_("Ticket che viene "
+                                                "automaticamente preso "
+                                                "in carico"))
+    confirm_message_text = models.CharField(_("Messaggio di conferma"),
+                                            max_length=255,
+                                            blank=True,
+                                            null=True,
+                                            help_text=_("Es: 'Hai correttamente "
+                                                        "confermato la tua partecipazione'. "
+                                                        "Apri e chiudi le parentesi graffe "
+                                                        "per inserire il codice del ticket. "
+                                                        "Lascia vuoto per usare il testo predefinito \"{}\""
+                                                        "").format(settings.NEW_TICKET_CREATED_ALERT))
+
     class Meta:
         unique_together = ("slug", "organizational_structure")
         ordering = ["name"]

@@ -199,8 +199,7 @@ class OrganizationalStructureOfficeLocation(AbstractLocation):
 
 class OrganizationalStructureOfficeEmployee(models.Model):
     employee = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 on_delete=models.CASCADE,
-                                 null=True, blank=True)
+                                 on_delete=models.CASCADE)
     office = models.ForeignKey(OrganizationalStructureOffice,
                                on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now=True)

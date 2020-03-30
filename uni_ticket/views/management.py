@@ -831,7 +831,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                      _("Il ticket è già di competenza"
                                        " dell'ufficio speciale <b>{}</b>,"
                                        " che ha la competenza della tipologia di richiesta "
-                                       "<b>{}</b>".format(DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+                                       "<b>{}</b>".format(settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
                                                    categoria)))
                 return redirect('uni_ticket:manage_ticket_url_detail',
                                 structure_slug=structure_slug,

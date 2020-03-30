@@ -828,6 +828,8 @@ def category_edit(request, structure_slug, category_slug, structure):
                 edited_category.save(update_fields = ['name', 'slug',
                                                       'description',
                                                       'show_heading_text',
+                                                      'is_notify',
+                                                      'confirm_message_text',
                                                       'allow_guest',
                                                       'allow_user',
                                                       'allow_employee',

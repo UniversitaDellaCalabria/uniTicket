@@ -17,6 +17,8 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
 
     list_display = ('name', 'created',
                     'allow_guest', 'allow_user', 'allow_employee',
+                    'confirm_message_text',
+                    'is_notify',
                     'is_active')
     list_filter = ('created', 'organizational_structure',
                    'allow_guest', 'allow_user', 'allow_employee', 'is_active')

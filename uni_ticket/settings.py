@@ -67,6 +67,8 @@ Per problemi tecnici contatta il nostro staff.
 Cordiali saluti.
 """)
 
+NEW_TICKET_CREATED_ALERT = _("""Ticket creato con successo con il codice {}""")
+
 NEW_TICKET_CREATED = _("""Il ticket "{ticket}" con oggetto "{ticket_subject}" è stato creato correttamente.
 
 Clicca qui {url} per prenderne visione.""")
@@ -88,6 +90,7 @@ SUMMARY_USER_EMAIL = _("""Il seguente ticket {event msg}:
 SUMMARY_EMPLOYEE_EMAIL = _("""Hai {open_ticket_number} tickets da gestire.
 
 {tickets_per_office}""")
+
 
 # Old english version
 NEW_TICKET_UPDATE_OLD_EN = _("Dear {user},"

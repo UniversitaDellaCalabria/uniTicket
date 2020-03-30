@@ -20,7 +20,10 @@ class CategoryForm(ModelForm):
     class Meta:
         model = TicketCategory
         fields = ['name', 'description',
-                  'show_heading_text', 'allow_guest', 'allow_user', 'allow_employee']
+                  'confirm_message_text',
+                  'is_notify',
+                  'show_heading_text',
+                  'allow_guest', 'allow_user', 'allow_employee']
         labels = {'name': _('Nome'),
                   'description': _('Descrizione'),}
     class Media:
