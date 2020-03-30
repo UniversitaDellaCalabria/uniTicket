@@ -654,7 +654,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                               _("Il ticket {} non è stato chiuso").format(ticket),
                               structure_slug=structure.slug)
 
-    if not ticket.input_module.ticket_category.is_notify:
+    if ticket.input_module.ticket_category.is_notify:
         # log action
         logger.info('[{}] {} tried to reopen'
                     ' a notification ticket {}'.format(timezone.now(),
