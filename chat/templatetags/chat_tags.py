@@ -4,7 +4,6 @@ from chat.models import UserChannel
 from chat.utils import chat_operator_online
 
 from organizational_area.models import OrganizationalStructure
-from uni_ticket.utils import user_is_in_default_office
 
 register = template.Library()
 
