@@ -67,9 +67,9 @@ Per problemi tecnici contatta il nostro staff.
 Cordiali saluti.
 """)
 
-NEW_TICKET_CREATED_ALERT = _("""Ticket creato con successo con il codice {}""")
+NEW_TICKET_CREATED_ALERT = _("""Ticket "{}" creato con successo""")
 
-NEW_TICKET_CREATED = _("""Il ticket "{ticket}" con oggetto "{ticket_subject}" è stato creato correttamente.
+NEW_TICKET_CREATED = _("""L'identificativo univoco di questa transazione è {ticket}.
 
 Clicca qui {url} per prenderne visione.""")
 

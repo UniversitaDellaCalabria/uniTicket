@@ -261,7 +261,7 @@ def ticket_add_new(request, structure_slug, category_slug):
 
             ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
                              settings.NEW_TICKET_CREATED_ALERT
-            compiled_message = ticket_message.format(ticket.code)
+            compiled_message = ticket_message.format(ticket.subject)
 
             m_subject = _('{} - {}'.format(settings.HOSTNAME,
                                            compiled_message))
@@ -859,6 +859,22 @@ def ticket_clone(request, ticket_id):
             ticket_assignment = TicketAssignment(ticket=ticket,
                                                  office=office,
                                                  assigned_by=request.user)
+            # if ticket is a notify, take the ticket
+            if category.is_notify:
+                # assign to an operator
+                ticket_assignment.taken_date = timezone.now()
+                oe_model = apps.get_model('organizational_area',
+                                          'OrganizationalStructureOfficeEmployee')
+                # get random operator from the office
+                office_employees = oe_model.objects.filter(office=office,
+                                                           employee__is_active=True).order_by('?')
+                # if not operator in the office, get a help-desk operator
+                if not office_employees:
+                    office_employees = oe_model.objects.filter(office__name=settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+                                                               office__organizational_structure=office.organizational_structure,
+                                                               employee__is_active=True).order_by('?')
+                random_office_operator = office_employees.first()
+                ticket_assignment.taken_by = random_office_operator.employee
             ticket_assignment.save()
 
             # log action
@@ -877,8 +893,12 @@ def ticket_clone(request, ticket_id):
                            'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
                                                              kwargs={'ticket_id': ticket.code}))
                           }
-            m_subject = _('{} - ticket "{}" creato correttamente'.format(settings.HOSTNAME,
-                                                                         ticket))
+            ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
+                             settings.NEW_TICKET_CREATED_ALERT
+            compiled_message = ticket_message.format(ticket.subject)
+
+            m_subject = _('{} - {}'.format(settings.HOSTNAME,
+                                           compiled_message))
             send_custom_mail(subject=m_subject,
                              recipient=request.user,
                              body=settings.NEW_TICKET_CREATED,
@@ -886,8 +906,7 @@ def ticket_clone(request, ticket_id):
             # END Send mail to ticket owner
 
             messages.add_message(request, messages.SUCCESS,
-                                 _("Ticket creato con successo "
-                                   "con il codice <b>{}</b>").format(code))
+                                 compiled_message)
             return redirect('uni_ticket:ticket_detail',
                             ticket_id=ticket.code)
         else:
