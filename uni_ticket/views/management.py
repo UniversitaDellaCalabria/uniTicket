@@ -653,6 +653,17 @@ def ticket_reopen(request, structure_slug, ticket_id,
         return custom_message(request,
                               _("Il ticket {} non è stato chiuso").format(ticket),
                               structure_slug=structure.slug)
+
+    if not ticket.input_module.ticket_category.is_notify:
+        # log action
+        logger.info('[{}] {} tried to reopen'
+                    ' a notification ticket {}'.format(timezone.now(),
+                                                       request.user,
+                                                       ticket))
+        return custom_message(request,
+                              _("Il ticket {} non può essere riaperto").format(ticket),
+                              structure_slug=structure.slug)
+
     if not ticket.has_been_taken(request.user):
         # log action
         logger.info('[{}] {} tried to reopen'

@@ -115,7 +115,7 @@ def ticket_add_new(request, structure_slug, category_slug):
     if not categoria.allowed_to_user(request.user):
         return custom_message(request, _("Permesso negato a questa tipologia di utente."))
 
-    title = _("Nuovo ticket in {}").format(categoria)
+    title = categoria
     template = 'user/ticket_add_new.html'
     sub_title = categoria.description if categoria.description else _("Compila i campi richiesti")
     modulo = get_object_or_404(TicketCategoryModule,
@@ -196,6 +196,13 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                  assigned_by=request.user)
             # if ticket is a notify, take the ticket
             if categoria.is_notify:
+
+                # close ticket
+                ticket.is_closed = True
+                ticket.closed_date = timezone.now()
+                ticket.closed_by = request.user
+                ticket.save()
+
                 # assign to an operator
                 ticket_assignment.taken_date = timezone.now()
                 oe_model = apps.get_model('organizational_area',
@@ -691,15 +698,6 @@ def ticket_close(request, ticket_id):
 
         return custom_message(request, _("Il ticket è già chiuso!"))
 
-    if ticket.input_module.ticket_category.is_notify:
-        # log action
-        logger.info('[{}] user {} tried to close '
-                    ' a notify ticket {}'.format(timezone.now(),
-                                                 request.user,
-                                                 ticket))
-
-        return custom_message(request, _("Il ticket è già chiuso!"))
-
     title = _('Chiusura del ticket')
     sub_title = ticket
     form = ChiusuraForm()
@@ -860,6 +858,13 @@ def ticket_clone(request, ticket_id):
                                                  assigned_by=request.user)
             # if ticket is a notify, take the ticket
             if category.is_notify:
+
+                # close ticket
+                ticket.is_closed = True
+                ticket.closed_date = timezone.now()
+                ticket.closed_by = request.user
+                ticket.save()
+
                 # assign to an operator
                 ticket_assignment.taken_date = timezone.now()
                 oe_model = apps.get_model('organizational_area',
