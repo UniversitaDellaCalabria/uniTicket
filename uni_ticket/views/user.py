@@ -221,7 +221,6 @@ def ticket_add_new(request, structure_slug, category_slug):
 
             ticket_detail_url = reverse('uni_ticket:ticket_detail', args=[code])
 
-
             # category default tasks
             tasks = categoria.get_tasks(is_active=True)
             for task in tasks:
@@ -884,6 +883,34 @@ def ticket_clone(request, ticket_id):
                                            office))
 
             ticket_detail_url = reverse('uni_ticket:ticket_detail', args=[code])
+
+            # category default tasks
+            tasks = category.get_tasks(is_active=True)
+            for task in tasks:
+                ticket_task = Task()
+                ticket_task.ticket = ticket
+                ticket_task.subject = task.subject
+                ticket_task.description = task.description
+                ticket_task.priority = task.priority
+                ticket_task.created_by = task.created_by
+                ticket_task.code = uuid_code()
+                ticket_task.attachment = task.attachment
+                ticket_task.save()
+
+                # copy category task attachments in ticket task folder
+                if task.attachment:
+                    source = '{}/{}'.format(settings.MEDIA_ROOT,
+                                            task.get_folder())
+                    destination = '{}/{}'.format(settings.MEDIA_ROOT,
+                                                 ticket_task.get_folder())
+                    try:
+                        if os.path.exists(source):
+                            shutil.copytree(source, destination)
+                    except:
+                        logger.info('[{}] {} try to copy not existent folder {}'
+                                    ''.format(timezone.now(),
+                                              request.user,
+                                              source))
 
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
