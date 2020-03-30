@@ -13,7 +13,7 @@ from uni_ticket.utils import (custom_message,
                               get_user_type,
                               user_is_employee,
                               user_is_in_organization,
-                              user_is_operator)
+                              user_is_in_default_office)
 
 from . models import UserChannel
 from . utils import chat_operator_online
@@ -25,7 +25,7 @@ def room(request, room_name):
     structure = get_object_or_404(OrganizationalStructure,
                                   slug=room_name,
                                   is_active=True)
-    user_is_operator = user_is_operator(request.user, structure)
+    user_is_operator = user_is_in_default_office(request.user, structure)
     if not user_is_operator and not chat_operator_online(request.user, structure.slug):
             return custom_message(request, _("Nessun operator online. "
                                              "Chat inaccessibile"),
