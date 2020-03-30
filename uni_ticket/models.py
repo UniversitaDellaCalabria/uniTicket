@@ -660,7 +660,7 @@ class TicketAssignment(models.Model):
                                     null=True)
     taken_date = models.DateTimeField(null=True, blank=True)
     taken_by = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 on_delete=models.SET_NULL,
+                                 on_delete=models.PROTECT,
                                  null=True, blank=True,
                                  related_name='taken_by_operator')
     follow = models.BooleanField(default=True)
