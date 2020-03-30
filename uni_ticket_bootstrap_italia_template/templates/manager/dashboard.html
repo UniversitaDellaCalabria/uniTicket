@@ -2,12 +2,17 @@
 
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 {% block menu_links %}
 {% include 'manager/main_menu.html' %}
 {% endblock menu_links %}
 
 {% block container_inner %}
+
+{% app_is_installed "chat" as chat_installed %}
+{% app_is_installed "channels" as channels_installed %}
+
 <div class="pb-4 clearfix">
     {% include 'management/ticket_cards.html' %}
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manager_messages' structure_slug=structure.slug %}">
@@ -22,13 +27,15 @@
         {% trans 'Messaggi' %}
     </a>
     <div class="pull-right">
-       <a role="button"
+        {% if chat_installed and channels_installed %}
+        <a role="button"
           class="btn btn-outline-success"
           href="{% url 'chat:room' room_name=structure.slug %}">
             <svg class="icon icon-xs">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
             </svg> {% trans "Entra in Chat" %}
         </a>
+        {% endif %}
         <a role="button" class="btn btn-outline-secondary"
            href="#categorie"
            data-attribute="forward" class="forward" aria-hidden="true">

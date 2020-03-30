@@ -125,3 +125,7 @@ def ticket_has_been_taken(ticket, user=None):
 @register.simple_tag
 def ticket_is_open(ticket, user=None):
     return ticket.is_open(user)
+
+@register.simple_tag
+def app_is_installed(name):
+    return name in settings.INSTALLED_APPS

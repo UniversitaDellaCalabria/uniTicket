@@ -9,6 +9,10 @@
 {% endblock menu_links %}
 
 {% block top_buttons %}
+
+{% app_is_installed "chat" as chat_installed %}
+{% app_is_installed "channels" as channels_installed %}
+
 <div class="pb-4 clearfix">
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_unassigned_ticket' %}">
         <span class="badge badge-light">{{ ticket_non_gestiti|length }}</span> {% trans 'Ticket aperti' %}
@@ -31,6 +35,7 @@
         {% trans 'Messaggi' %}
     </a>
     <div class="float-md-right">
+        {% if chat_installed and channels_installed %}
         <a role="button"
            class="btn btn-outline-success"
            href="{% url 'uni_ticket:new_chat_preload' %}">
@@ -38,7 +43,7 @@
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
                 </svg> {% trans "Avvia chat con operatore" %}
         </a>
-
+        {% endif %}
         <a role="button"
            class="btn btn-success"
            href="{% url 'uni_ticket:new_ticket_preload' %}">

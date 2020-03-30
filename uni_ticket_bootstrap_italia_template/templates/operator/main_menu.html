@@ -2,7 +2,6 @@
 
 {% load i18n %}
 {% load static %}
-{% load uni_ticket_tags %}
 
 {% block menu_pre_buttons %}
 <li class="nav-item">
@@ -20,14 +19,6 @@
         <span>{% trans "Messaggi" %}</span>
     </a>
 </li>
-{% user_operator_chat request.user structure as user_operator_chat %}
-{% if user_operator_chat %}
-<li class="nav-item">
-    <a class="nav-link" href="{% url 'chat:room' room_name=structure.slug %}">
-        <span>{% trans "Chat" %}</span>
-    </a>
-</li>
-{% endif %}
 <li class="nav-item">
     <a class="nav-link" href="{% url 'uni_ticket:operator_user_settings' structure_slug=structure.slug %}">
         <span>{% trans "Configurazione" %}</span>

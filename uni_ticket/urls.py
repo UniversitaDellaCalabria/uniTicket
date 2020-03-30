@@ -240,10 +240,6 @@ urlpatterns += [
     path('{}/new/'.format(tickets), user.ticket_new_preload, name='new_ticket_preload'),
     path('{}/new/<str:structure_slug>/'.format(tickets), user.ticket_new_preload, name='new_ticket_preload'),
     path('{}/new/<str:structure_slug>/<str:category_slug>/'.format(tickets), user.ticket_add_new, name='add_new_ticket'),
-
-    path('chat/new/', user.chat_new_preload, name='new_chat_preload'),
-    path('chat/new/<str:structure_slug>/', user.chat_new_preload, name='new_chat_preload'),
-
     path('{}/messages/'.format(ticket_id), user.ticket_message, name='ticket_message'),
     path('{}/edit/'.format(ticket_id), user.ticket_edit, name='ticket_edit'),
     path('{}/edit/remove-attachment/<str:attachment>/'.format(ticket_id), user.delete_my_attachment, name='delete_my_attachment'),
@@ -255,3 +251,7 @@ urlpatterns += [
     path('settings/', generic.user_settings, name='user_settings'),
     path('messages/', generic.ticket_messages, name='messages'),
 ]
+
+if 'chat' in settings.INSTALLED_APPS:
+        urlpatterns += [path('chat/new/', user.chat_new_preload, name='new_chat_preload'),
+                        path('chat/new/<str:structure_slug>/', user.chat_new_preload, name='new_chat_preload'),]

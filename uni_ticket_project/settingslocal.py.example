@@ -139,21 +139,17 @@ REST_FRAMEWORK = {
 }
 
 MESSAGES_TO_LOAD = 1500
-# CHANNEL_LAYERS = {
-    # "default": {
-        # "BACKEND": "asgiref.inmemory.ChannelLayer",
-        # "ROUTING": "uni_ticket_project.routing.channel_routing",
-    # },
-# }
-ASGI_APPLICATION = 'uni_ticket_project.routing.application'
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+
+if "channels" in INSTALLED_APPS:
+    ASGI_APPLICATION = 'uni_ticket_project.routing.application'
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                "hosts": [('127.0.0.1', 6379)],
+            },
         },
-    },
-}
+    }
 
 ADMINS = [('Giuseppe De Marco', 'giuseppe.demarco@server.it'),
           ('Francesco Filicetti', 'francesco.filicetti@server.it'),]
