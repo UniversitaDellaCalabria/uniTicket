@@ -1737,3 +1737,59 @@ def ticket_taken_by_unassigned_offices(request, structure_slug, ticket_id,
     return redirect('uni_ticket:manage_ticket_url_detail',
                     structure_slug=structure_slug,
                     ticket_id=ticket_id)
+
+@login_required
+@has_admin_privileges
+@ticket_assigned_to_structure
+def ticket_taken_by_unassigned_office(request, structure_slug,
+                                      destination_structure_slug,
+                                      office_slug,
+                                      ticket_id,
+                                      structure, can_manage, ticket):
+    dest_structure = get_object_or_404(OrganizationalStructure,
+                                       slug=destination_structure_slug,
+                                       is_active=True)
+    dest_office = get_object_or_404(OrganizationalStructureOffice,
+                                    slug=office_slug,
+                                    organizational_structure=dest_structure,
+                                    is_active=True)
+    # user not manage this office
+    if not user_manage_office(request.user, dest_office):
+        return custom_message(request,
+                              _("Non disponi delle autorizzazioni per"
+                                " gestire l'ufficio {}".format(dest_office)),
+                              structure_slug=structure.slug)
+
+    assignment = TicketAssignment.objects.filter(ticket=ticket,
+                                                 office=dest_office).first()
+    # ticket is not assigned to this office
+    if not assignment:
+        return custom_message(request,
+                              _("Il ticket non è assegnato a"
+                                " questo ufficio {}".format(dest_office)),
+                              structure_slug=structure.slug)
+
+    # ticket has been already taken
+    if assignment.taken_date:
+        return custom_message(request,
+                              _("Il ticket è già stato preso in carico"
+                                " in questo ufficio {} da {}"
+                                "".format(dest_office, assignment.taken_by)),
+                              structure_slug=structure.slug)
+
+    # take ticket
+    assignment.taken_by = request.user
+    assignment.taken_date = timezone.now()
+    assignment.save(update_fields=['modified',
+                                   'taken_date',
+                                   'taken_by'])
+
+    msg = _("Ticket {} correttamente "
+            "assegnato a Ufficio: {} [{}]</b>".format(ticket,
+                                                      dest_office,
+                                                      request.user))
+    ticket.update_log(user=request.user, note=msg)
+    messages.add_message(request, messages.SUCCESS, msg)
+    return redirect('uni_ticket:manage_ticket_url_detail',
+                    structure_slug=structure_slug,
+                    ticket_id=ticket_id)

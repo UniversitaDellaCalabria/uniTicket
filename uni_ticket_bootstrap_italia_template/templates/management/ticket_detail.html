@@ -28,7 +28,16 @@
     <h4 class="alert-heading">{% trans "Attenzione" %}</h4>
     <p>{% trans "Il ticket non è stato ancora assegnato a nessun operatore negli uffici" %}</p>
     <ul>
-        {% for office in untaken_user_offices %}<li><b>{{ office }}</b></li>{% endfor %}
+        {% for office in untaken_user_offices %}
+            <li>
+                <b>{{ office }}</b>
+                <button type="button"
+                        class="btn btn-outline-secondary btn-xs"
+                        data-toggle="modal"
+                        data-target="#take-ticket-{{ office.pk }}">{% trans "Prendi tu in carico" %}</button>
+            </li>
+            <hr>
+        {% endfor %}
     </ul>
     <p>{% trans "Vedi questo messaggio in quanto" %}
         <b>{{ manager_label }}</b> {% trans "di" %} <b>{{ structure }}</b>,
@@ -38,7 +47,9 @@
     <button type="button"
             class="btn btn-secondary btn-xs"
             data-toggle="modal"
-            data-target="#take-ticket">{% trans "Prendi tu in carico" %}</button>
+            data-target="#take-ticket-all-offices">
+        {% trans "Prendi tu in carico per tutti gli uffici" %}
+    </button>
 </div>
 {% endif %}
 
@@ -231,7 +242,7 @@
         <div class="modal fade"
              tabindex="-1"
              role="dialog"
-             id="take-ticket">
+             id="take-ticket-all-offices">
             <div class="modal-dialog modal-dialog-centered"
                  role="document">
                 <div class="modal-content">
@@ -270,6 +281,46 @@
                 </div>
             </div>
         </div>
+        {% for office in untaken_user_offices %}
+        <div class="modal fade"
+             tabindex="-1"
+             role="dialog"
+             id="take-ticket-{{ office.pk }}">
+            <div class="modal-dialog modal-dialog-centered"
+                 role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            {% trans "Assegnazione ticket" %}
+                        </h5>
+                        <button class="close"
+                                type="button"
+                                data-dismiss="modal"
+                                aria-label="Close">
+                           <svg class="icon">
+                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                           </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{% trans "Vuoi davvero prendere in carico il ticket" %}
+                           <br>
+                           <b>{{ ticket }}</b>
+                           <br>
+                           {% trans "per l'ufficio" %}
+                           <b>{{ office }}</b> ?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-success"
+                           href="{% url 'uni_ticket:ticket_taken_by_unassigned_office' structure_slug=structure.slug destination_structure_slug=office.organizational_structure.slug office_slug=office.slug ticket_id=ticket.code %}">
+                            {% trans "Si, procedi" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
         <!-- end take ticket modal -->
     {% endblock ticket_management_buttons %}
 {% endblock page_content %}
