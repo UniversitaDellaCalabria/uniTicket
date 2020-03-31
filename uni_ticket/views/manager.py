@@ -1311,6 +1311,7 @@ def category_input_module_details(request, structure_slug,
                 # if is_required_value == 'on': is_required=True
                 input_list = form.save(commit=False)
                 input_list.category_module = module
+                input_list.pre_text = escape(form.cleaned_data['pre_text'])
                 input_list.save()
                 messages.add_message(request, messages.SUCCESS,
                                      _("Campo di input creato con successo"))
@@ -1497,7 +1498,9 @@ def category_input_field_edit(request, structure_slug,
                             module_id=module_id)
         form = CategoryInputListForm(data=request.POST, instance=field)
         if form.is_valid():
-            form.save()
+            field = form.save(commit=False)
+            field.pre_text = escape(form.cleaned_data['pre_text'])
+            field.save()
 
             # log action
             logger.info('[{}] manager of structure {}'
