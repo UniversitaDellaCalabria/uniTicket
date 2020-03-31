@@ -104,7 +104,7 @@
                 <th scope="row">{% trans 'Descrizione' %}</th>
                 <td>
                     {% if category.description %}
-                        {{ category.description }}
+                        {{ category.description | linebreaks }}
                     {% else %}-{% endif %}
                 </td>
             </tr>
