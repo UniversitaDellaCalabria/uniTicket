@@ -257,20 +257,23 @@ def ticket_add_new(request, structure_slug, category_slug):
                                               source))
 
             # Send mail to ticket owner
+            ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
+                             settings.NEW_TICKET_CREATED_ALERT
+            compiled_message = ticket_message.format(ticket.subject)
+
             mail_params = {'hostname': settings.HOSTNAME,
                            'user': request.user,
                            'ticket': ticket.code,
                            'ticket_subject': subject,
                            'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
-                                                             kwargs={'ticket_id': ticket.code}))
+                                                             kwargs={'ticket_id': ticket.code})),
+                            'added_text': compiled_message
                           }
-
-            ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
-                             settings.NEW_TICKET_CREATED_ALERT
-            compiled_message = ticket_message.format(ticket.subject)
 
             m_subject = _('{} - {}'.format(settings.HOSTNAME,
                                            compiled_message))
+            m_subject = m_subject[:80] + (m_subject[80:] and '...')
+
             send_custom_mail(subject=m_subject,
                              recipient=request.user,
                              body=settings.NEW_TICKET_CREATED,
@@ -918,19 +921,23 @@ def ticket_clone(request, ticket_id):
                                               source))
 
             # Send mail to ticket owner
+            ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
+                             settings.NEW_TICKET_CREATED_ALERT
+            compiled_message = ticket_message.format(ticket.subject)
+
             mail_params = {'hostname': settings.HOSTNAME,
                            'user': request.user,
                            'ticket': ticket.code,
                            'ticket_subject': subject,
                            'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
-                                                             kwargs={'ticket_id': ticket.code}))
+                                                             kwargs={'ticket_id': ticket.code})),
+                            'added_text': compiled_message
                           }
-            ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
-                             settings.NEW_TICKET_CREATED_ALERT
-            compiled_message = ticket_message.format(ticket.subject)
 
             m_subject = _('{} - {}'.format(settings.HOSTNAME,
                                            compiled_message))
+            m_subject = m_subject[:80] + (m_subject[80:] and '...')
+
             send_custom_mail(subject=m_subject,
                              recipient=request.user,
                              body=settings.NEW_TICKET_CREATED,

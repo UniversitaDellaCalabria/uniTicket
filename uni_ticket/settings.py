@@ -69,7 +69,9 @@ Cordiali saluti.
 
 NEW_TICKET_CREATED_ALERT = _("""Ticket "{}" creato con successo""")
 
-NEW_TICKET_CREATED = _("""L'identificativo univoco di questa transazione è {ticket}.
+NEW_TICKET_CREATED = _("""{added_text}
+
+L'identificativo univoco di questa transazione è {ticket}.
 
 Clicca qui {url} per prenderne visione.""")
 
