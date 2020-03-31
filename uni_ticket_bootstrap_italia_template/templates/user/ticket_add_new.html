@@ -11,7 +11,7 @@
 {% block content_title %}
 {% if struttura and struttura.banner %}
 <div class="pt-5 d-none d-lg-block">
-    <img src="{{ struttura.banner.url }}" />
+    <img class="structure_banner" src="{{ struttura.banner.url }}" />
 </div>
 {% endif %}
 {{ block.super }}

@@ -18,7 +18,7 @@
 
 {% block page_content %}
 {% if chosen_structure and chosen_structure.banner %}
-<div class="mb-3"><img src="{{ chosen_structure.banner.url }}" /></div>
+<div class="mb-3"><img class="structure_banner" src="{{ chosen_structure.banner.url }}" /></div>
 {% endif %}
 <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
 <div>
