@@ -1,4 +1,7 @@
+{% load uni_ticket_tags %}
+
 {% for field in form %}
+    {{ field.field.pre_text | markdown | safe }}
     {% if field.field.widget.input_type != 'hidden' %}
     <div style="padding: 0 0 1rem">
         <b>{{ field.label_tag }}</b>

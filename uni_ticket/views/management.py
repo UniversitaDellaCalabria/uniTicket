@@ -161,8 +161,8 @@ def ticket_detail(request, structure_slug, ticket_id,
 
     :return: render
     """
-    title = _("Gestione ticket")
-    sub_title = ticket
+    title = ticket.subject
+    sub_title = ticket.code
     user = request.user
     user_type = get_user_type(request.user, structure)
     json_dict = ticket.get_modulo_compilato()
@@ -181,6 +181,16 @@ def ticket_detail(request, structure_slug, ticket_id,
     assigned_to = []
     ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
     form = PriorityForm(data={'priorita':ticket.priority})
+    operators_form = None
+    # if user is a structure manager and ticket has not ever been taken
+    # manager can assign it to one of office operators
+    # (show assignment form)
+    if user_is_manager(user, structure) and not ticket.has_been_taken():
+        ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
+        office = ticket_assignment.office
+        operators_form = AssignTicketToOperatorForm(structure=structure,
+                                                    office=office,
+                                                    current_user=user)
 
     if request.method == 'POST':
         if can_manage['readonly']:
@@ -195,8 +205,50 @@ def ticket_detail(request, structure_slug, ticket_id,
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
 
+        # two forms (take and assign ticket)
         form = PriorityForm(request.POST)
-        if form.is_valid():
+        operators_form = None
+        if user_is_manager(user, structure) and not ticket.has_been_taken():
+            ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
+            office = ticket_assignment.office
+            operators_form = AssignTicketToOperatorForm(request.POST,
+                                                        structure=structure,
+                                                        office=office,
+                                                        current_user=user)
+
+        # Manager has assigned ticket to another operator
+        if operators_form and operators_form.is_valid():
+            operator = operators_form.cleaned_data['assign_to']
+            priority = operators_form.cleaned_data['priorita']
+            priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
+            mail_params = {'hostname': settings.HOSTNAME,
+                           'status': _("aggiornato"),
+                           'ticket': ticket,
+                           'user': ticket.created_by
+                          }
+            m_subject = _('{} - ticket {} assegnato'.format(settings.HOSTNAME,
+                                                            ticket))
+            msg = _("Ticket assegnato a {} da {}. Priorità assegnata: {}".format(operator,
+                                                                                 request.user,
+                                                                                 priority_text))
+            if not settings.SIMPLE_USER_SHOW_PRIORITY:
+                msg = _("Ticket assegnato a {} da {}.".format(operator,
+                                                              request.user))
+
+            ticket.take(user=operator, assigned_by=user)
+            ticket.update_log(user=request.user, note=msg)
+            ticket.priority = priority
+            ticket.save(update_fields = ['priority'])
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Ticket <b>{}</b> assegnato"
+                                   " con successo a {}".format(ticket.code,
+                                                               operator)))
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                            structure_slug=structure_slug,
+                            ticket_id=ticket_id)
+
+        # operator/manager has taken the ticket
+        elif form.is_valid():
             priority = form.cleaned_data['priorita']
             priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
             mail_params = {'hostname': settings.HOSTNAME,
@@ -204,12 +256,9 @@ def ticket_detail(request, structure_slug, ticket_id,
                            'ticket': ticket,
                            'user': ticket.created_by
                           }
-            m_subject = _('{} - ticket {} nuovo messaggio'.format(settings.HOSTNAME,
-                                                                   ticket))
+            m_subject = _('{} - ticket {} assegnato'.format(settings.HOSTNAME,
+                                                            ticket))
             if not ticket.has_been_taken(user=request.user):
-                # ticket.is_taken = True
-                # ticket.taken_by = request.user
-                # ticket.save(update_fields = ['is_taken','taken_by'])
                 ticket.take(request.user)
                 msg = _("Preso in carico da {}. Priorità assegnata: {}".format(request.user,
                                                                                priority_text))
@@ -238,6 +287,7 @@ def ticket_detail(request, structure_slug, ticket_id,
          'dependences': ticket_dependences,
          'details': ticket_details,
          'form': form,
+         'operators_form': operators_form,
          'path_allegati': path_allegati,
          'priority': priority,
          'structure': structure,

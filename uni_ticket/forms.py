@@ -56,13 +56,15 @@ class CategoryInputModuleForm(ModelForm):
 class CategoryInputListForm(ModelForm):
     class Meta:
         model = TicketCategoryInputList
-        fields = ['name', 'field_type', 'valore',
-                  'is_required', 'aiuto', 'ordinamento']
+        fields = ['name', 'field_type', 'valore', 'pre_text',
+                  'aiuto', 'is_required', 'ordinamento']
         labels = {'name': _('Nome'),
                   'is_required': _('Obbligatorio'),
                   'field_type': _('Tipologia di campo'),}
-        widgets = {'input_type': BootstrapItaliaSelectWidget()}
+        widgets = {'field_type': BootstrapItaliaSelectWidget(),}
 
+    class Media:
+        js = ('js/textarea-autosize.js',)
 
 class ChiusuraForm(forms.Form):
     note = forms.CharField(label=_('Motivazione'),
@@ -265,3 +267,29 @@ class OfficeAddCategoryForm(forms.Form):
 
 class CategoryTaskForm(TaskForm):
     is_active = forms.BooleanField(label=_('Attiva'), required=False)
+
+
+class AssignTicketToOperatorForm(forms.Form):
+    priorita = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
+                                 required=True,
+                                 initial=0,
+                                 label=_('Priorità'),
+                                 widget=BootstrapItaliaSelectWidget())
+    assign_to = forms.ModelChoiceField(label=_('Seleziona operatore'),
+                                       queryset=None, required=True,
+                                       widget=BootstrapItaliaSelectWidget())
+
+    def __init__(self, *args, **kwargs):
+        structure = kwargs.pop('structure', None)
+        office = kwargs.pop('office', None)
+        current_user = kwargs.pop('current_user', None)
+        office_employees = OrganizationalStructureOfficeEmployee.objects.filter(office=office,
+                                                                                employee__is_active=True).exclude(employee=current_user)
+        operators_ids = []
+        for oe in office_employees:
+            key = oe.employee.pk
+            if key not in operators_ids:
+                operators_ids.append(key)
+        operators = get_user_model().objects.filter(pk__in=operators_ids)
+        super().__init__(*args, **kwargs)
+        self.fields['assign_to'].queryset = operators

@@ -238,89 +238,96 @@
             </form>
         </div>
         {% endif %}
-        <!-- take ticket modal -->
-        <div class="modal fade"
-             tabindex="-1"
-             role="dialog"
-             id="take-ticket-all-offices">
-            <div class="modal-dialog modal-dialog-centered"
-                 role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            {% trans "Assegnazione ticket" %}
-                        </h5>
-                        <button class="close"
-                                type="button"
-                                data-dismiss="modal"
-                                aria-label="Close">
-                           <svg class="icon">
-                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                           </svg>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{% trans "Vuoi davvero prendere in carico il ticket" %}
-                           <br>
-                           <b>{{ ticket }}</b>
-                           <br>
-                           {% trans "per gli uffici" %}
-                           <ul>
-                                {% for office in untaken_user_offices %}
-                                <li><b>{{ office }}</b></li>
-                                {% endfor %}
-                            </ul>
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <a class="btn btn-success"
-                           href="{% url 'uni_ticket:ticket_taken_by_unassigned_offices' structure_slug=structure.slug ticket_id=ticket.code %}">
-                            {% trans "Si, procedi" %}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% for office in untaken_user_offices %}
-        <div class="modal fade"
-             tabindex="-1"
-             role="dialog"
-             id="take-ticket-{{ office.pk }}">
-            <div class="modal-dialog modal-dialog-centered"
-                 role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            {% trans "Assegnazione ticket" %}
-                        </h5>
-                        <button class="close"
-                                type="button"
-                                data-dismiss="modal"
-                                aria-label="Close">
-                           <svg class="icon">
-                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                           </svg>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{% trans "Vuoi davvero prendere in carico il ticket" %}
-                           <br>
-                           <b>{{ ticket }}</b>
-                           <br>
-                           {% trans "per l'ufficio" %}
-                           <b>{{ office }}</b> ?
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <a class="btn btn-success"
-                           href="{% url 'uni_ticket:ticket_taken_by_unassigned_office' structure_slug=structure.slug destination_structure_slug=office.organizational_structure.slug office_slug=office.slug ticket_id=ticket.code %}">
-                            {% trans "Si, procedi" %}
-                        </a>
+
+        {% block other_management_buttons %}
+        {% endblock other_management_buttons %}
+
+        {% ticket_has_been_taken ticket=ticket as ticket_taken_first_time %}
+        {% if ticket_taken_first_time %}
+            <!-- take ticket modal -->
+            <div class="modal fade"
+                 tabindex="-1"
+                 role="dialog"
+                 id="take-ticket-all-offices">
+                <div class="modal-dialog modal-dialog-centered"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Assegnazione ticket" %}
+                            </h5>
+                            <button class="close"
+                                    type="button"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero prendere in carico il ticket" %}
+                               <br>
+                               <b>{{ ticket }}</b>
+                               <br>
+                               {% trans "per gli uffici" %}
+                               <ul>
+                                    {% for office in untaken_user_offices %}
+                                    <li><b>{{ office }}</b></li>
+                                    {% endfor %}
+                                </ul>
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-success"
+                               href="{% url 'uni_ticket:ticket_taken_by_unassigned_offices' structure_slug=structure.slug ticket_id=ticket.code %}">
+                                {% trans "Si, procedi" %}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
-        <!-- end take ticket modal -->
+            {% for office in untaken_user_offices %}
+            <div class="modal fade"
+                 tabindex="-1"
+                 role="dialog"
+                 id="take-ticket-{{ office.pk }}">
+                <div class="modal-dialog modal-dialog-centered"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Assegnazione ticket" %}
+                            </h5>
+                            <button class="close"
+                                    type="button"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero prendere in carico il ticket" %}
+                               <br>
+                               <b>{{ ticket }}</b>
+                               <br>
+                               {% trans "per l'ufficio" %}
+                               <b>{{ office }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-success"
+                               href="{% url 'uni_ticket:ticket_taken_by_unassigned_office' structure_slug=structure.slug destination_structure_slug=office.organizational_structure.slug office_slug=office.slug ticket_id=ticket.code %}">
+                                {% trans "Si, procedi" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- end take ticket modal -->
+        {% endif %}
     {% endblock ticket_management_buttons %}
 {% endblock page_content %}

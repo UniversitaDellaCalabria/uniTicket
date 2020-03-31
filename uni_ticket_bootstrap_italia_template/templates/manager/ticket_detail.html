@@ -1,5 +1,67 @@
 {% extends "management/ticket_detail.html" %}
 
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
 {% block menu_links %}
 {% include 'manager/main_menu.html' %}
 {% endblock menu_links %}
+
+{% block other_management_buttons %}
+{% ticket_has_been_taken ticket=ticket as ticket_taken %}
+{% if not ticket_taken %}
+<div class="mt-5">
+    <form method="post" enctype="multipart/form-data">
+        {% include 'form_template.html' with form=operators_form %}
+        <div>
+            <button type="button"
+                    class="btn btn-success btn-block"
+                    data-toggle="modal"
+                    data-target="#assign">
+                    <svg class="icon icon-xs icon-white">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+                    </svg>
+                    {% trans "Assegna ticket a un operatore dell'ufficio" %}
+            </button>
+            <!-- priority ticket modal -->
+            <div class="modal fade"
+                 tabindex="-1"
+                 role="dialog"
+                 id="assign">
+                <div class="modal-dialog modal-dialog-centered"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Modifica ticket" %}
+                            </h5>
+                            <button class="close"
+                                    type="button"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero procedere modificando il ticket" %}
+                               <br>
+                               <b>{{ ticket }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <input class="btn btn-success"
+                                   type="submit"
+                                   value="{% trans 'Si, procedi' %}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end priority ticket modal -->
+        </div>
+    </form>
+</div>
+{% endif %}
+{% endblock other_management_buttons %}

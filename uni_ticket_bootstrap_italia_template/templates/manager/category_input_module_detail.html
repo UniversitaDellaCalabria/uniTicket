@@ -80,6 +80,7 @@
                 <th scope="row">{% trans 'Tipo' %}</th>
                 <th scope="row">{% trans 'Valore' %}</th>
                 <th scope="row">{% trans 'Required' %}</th>
+                <th scope="row">{% trans 'Pre-text' %}</th>
                 <th scope="row">{% trans 'Aiuto' %}</th>
                 <th scope="row">{% trans 'Ord.' %}</th>
                 {% if module.can_be_deleted %}
@@ -98,6 +99,15 @@
                     {% endif %}
                 </td>
                 <td>{{ field.is_required }}</td>
+                <td>
+                    <svg class="icon icon-xs icon-success">
+                    {% if field.pre_text %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
                 <td>
                     {% if field.aiuto %}
                     {{ field.aiuto }}
@@ -295,3 +305,7 @@
 </div>
 {% endif %}
 {% endblock page_content %}
+
+{% block extra_scripts %}
+{{ form.media }}
+{% endblock extra_scripts %}

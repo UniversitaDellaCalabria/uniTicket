@@ -378,7 +378,10 @@ class Ticket(SavedFormContent):
                                    settings.TICKET_DESCRIPTION_ID])
 
     def get_status(self):
-        if self.is_closed: return _('<b class="text-success">Chiuso</b> <small>[{}]</small>').format(self.closed_by)
+        if self.is_closed:
+            if self.input_module.ticket_category.is_notify:
+                return _('<b class="text-success">Chiuso</b>')
+            return _('<b class="text-success">Chiuso</b> <small>[{}]</small>').format(self.closed_by)
         if not self.has_been_taken(): return _('<b class="text-danger">Aperto</b>')
         return _('<b class="text-warning">Assegnato</b> {}').format(self.taken_by_list())
 
@@ -625,12 +628,15 @@ class Ticket(SavedFormContent):
             # office_operators[assignment.office.__str__()] = assigned.__str__()
         return '{}</ul>'.format(result)
 
-    def take(self, user):
+    def take(self, user, assigned_by=None):
         assignments = TicketAssignment.objects.filter(ticket=self)
         for assignment in assignments:
             if user_manage_office(user, assignment.office) and not assignment.taken_date:
                 assignment.taken_date = timezone.now()
                 assignment.taken_by = user
+                if assigned_by:
+                    assignment.assigned_by = assigned_by
+                    assignment.created = timezone.now()
                 assignment.save()
 
     def is_untaken_by_user_offices(self, user):

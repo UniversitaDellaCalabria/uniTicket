@@ -192,8 +192,8 @@ def ticket_add_new(request, structure_slug, category_slug):
             # office = categoria.organizational_office or struttura.get_default_office()
             office = categoria.organizational_office
             ticket_assignment = TicketAssignment(ticket=ticket,
-                                                 office=office,
-                                                 assigned_by=request.user)
+                                                 office=office)
+                                                 # assigned_by=request.user)
             # if ticket is a notify, take the ticket
             if categoria.is_notify:
 
@@ -542,8 +542,8 @@ def ticket_detail(request, ticket_id, template='user/ticket_detail.html'):
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
     ticket_task = Task.objects.filter(ticket=ticket)
     ticket_dependences = ticket.get_dependences()
-    title = _("Dettaglio ticket")
-    sub_title = ticket
+    title = ticket.subject
+    sub_title = ticket.code
     assigned_to = []
     ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
 
@@ -780,7 +780,7 @@ def ticket_clone(request, ticket_id):
     data['ticket_subject'] = master_ticket.subject
     data['ticket_description'] = master_ticket.description
     form = master_ticket.input_module.get_form(data=data, show_conditions=True)
-    title = _("Clona ticket: {}").format(master_ticket)
+    title = category
     template = 'user/ticket_add_new.html'
     sub_title = category.description if category.description else _("Compila i campi richiesti")
     clausole_categoria = category.get_conditions()
@@ -854,8 +854,8 @@ def ticket_clone(request, ticket_id):
             # office = categoria.organizational_office or struttura.get_default_office()
             office = category.organizational_office
             ticket_assignment = TicketAssignment(ticket=ticket,
-                                                 office=office,
-                                                 assigned_by=request.user)
+                                                 office=office)
+                                                 # assigned_by=request.user)
             # if ticket is a notify, take the ticket
             if category.is_notify:
 

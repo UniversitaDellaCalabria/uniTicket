@@ -54,7 +54,6 @@ class ChatMessageModel(Model):
         """
         Inform client there is a new message.
         """
-        # import pdb; pdb.set_trace()
         notification = {
             'type': 'receive',
             'message': '{}'.format(self.id),
