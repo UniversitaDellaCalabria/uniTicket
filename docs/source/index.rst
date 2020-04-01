@@ -40,7 +40,7 @@ Principali caratteristiche:
    :caption: Ticket, Categorie e Attività
 
    Ticket <02_elements/ticket.rst>
-   Categorie <02_elements/categories.rst>
+   Tipologie di richieste <02_elements/categories.rst>
    Attività <02_elements/task.rst>
 
 .. toctree::
@@ -73,7 +73,7 @@ Principali caratteristiche:
    :caption: Manager
 
    Dashboard <07_manager/dashboard.rst>
-   Categorie <07_manager/categories.rst>
+   Tipologie di richieste <07_manager/categories.rst>
    Uffici <07_manager/offices.rst>
 
 .. toctree::
