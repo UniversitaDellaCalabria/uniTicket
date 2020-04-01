@@ -37,7 +37,7 @@ Principali caratteristiche:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Ticket, Categorie e Attività
+   :caption: Ticket, Tipologie e Attività
 
    Ticket <02_elements/ticket.rst>
    Tipologie di richieste <02_elements/categories.rst>
