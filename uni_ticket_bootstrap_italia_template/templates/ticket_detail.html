@@ -44,11 +44,17 @@
                     {% if ticket.created_by.taxpayer_id %}
                         <br><b>{% trans "Codice fiscale" %}</b>: {{ticket.created_by.taxpayer_id}}
                     {% endif %}
-                    {% if ticket.created_by.matricola_dipendente %}
-                        <br><b>{% trans "Matricola dipendente" %}</b>: {{ticket.created_by.matricola_dipendente}}
+                    {% settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                    {% settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
+                    {% obj_get_attr ticket.created_by employee_attribute_name as user_employee_attribute %}
+                    {% if user_employee_attribute %}
+                        <br><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}
                     {% endif %}
-                    {% if ticket.created_by.matricola_studente %}
-                        <br><b>{% trans "Matricola studente" %}</b>: {{ticket.created_by.matricola_studente}}
+                    {% settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
+                    {% settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
+                    {% obj_get_attr ticket.created_by user_attribute_name as user_user_attribute %}
+                    {% if user_user_attribute %}
+                        <br><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}
                     {% endif %}
                 </td>
             </tr>

@@ -33,10 +33,26 @@
                         <p class="card-title text-left">
                             {% settings_value name="TICKET_HEADING_TEXT" user=request.user taxpayer=request.user.taxpayer_id category=ticket.input_module.ticket_category as heading %}
                             {{ heading|safe  }}
+                            {% settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                            {% settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
+                            {% obj_get_attr request.user employee_attribute_name as user_employee_attribute %}
+                            {% if user_employee_attribute %}
+                                <br><span class="x-small"><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}</span>
+                            {% endif %}
+                            {% settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
+                            {% settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
+                            {% obj_get_attr request.user user_attribute_name as user_user_attribute %}
+                            {% if user_user_attribute %}
+                                <br><span class="x-small"><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}</span>
+                            {% endif %}
                         </p>
+                        {% endif %}
+                        {% if ticket.input_module.ticket_category.show_heading_text and category_conditions%}
+                        <hr>
                         {% endif %}
                         {% if category_conditions %}
                             {% for condition in category_conditions %}
+                            {% if not forloop.first %}<hr>{% endif %}
                             <h6>{{ condition.title }}</h6>
                             <p class="card-text">{{ condition.text | markdown | safe }}</p>
                             {% if condition.attachment %}

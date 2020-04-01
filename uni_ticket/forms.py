@@ -240,11 +240,12 @@ class CategoryConditionForm(ModelForm):
     class Meta:
         model = TicketCategoryCondition
         fields = ['title', 'text', 'ordinamento', 'attachment',
-                  'is_printable','is_active']
+                  'is_collapsable', 'is_printable','is_active',]
         labels = {'title': _('Titolo'),
                   'text': _('Testo'),
                   'ordinamento': _('Ordinamento'),
                   'attachment': _('Allegato'),
+                  'is_collapsable': _('Collassabile (in nuovo ticket)'),
                   'is_printable': _('Visibile nel documento di stampa'),
                   'is_active': _('Attiva'),}
 

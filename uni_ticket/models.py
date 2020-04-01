@@ -883,6 +883,7 @@ class TicketCategoryCondition(models.Model):
                                               validate_file_length])
     is_printable = models.BooleanField(_('Visibile nella versione stampabile'),
                                        default=False)
+    is_collapsable = models.BooleanField(_('Collassabile'), default=True)
     is_active = models.BooleanField(_('Visibile agli utenti'), default=True)
 
     class Meta:

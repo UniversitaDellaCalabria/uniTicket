@@ -12,7 +12,8 @@ TICKET_CONDITIONS_FIELD_ID = 'condizioni_field_id'
 TICKET_CONDITIONS_TEXT = _('Dichiara altresì di aver letto e compreso quanto scritto sopra e di assumere ogni responsabilità su quanto di seguito dichiarato')
 
 SHOW_HEADING_TEXT = True
-TICKET_HEADING_TEXT = _('Soggetto richiedente: <b>{user}</b> <span class="x-small">[{taxpayer}]</span>')
+TICKET_HEADING_TEXT = _('Soggetto richiedente: <b>{user}</b>'
+                        '<br><span class="x-small">[{taxpayer}]</span>')
 
 TICKET_SUBJECT_ID = 'ticket_subject'
 TICKET_SUBJECT_LABEL = _('Oggetto della Richiesta')
@@ -150,10 +151,12 @@ TICKET_MIN_DIGITS_TO_COMPRESS = 90
 # If True, an employee is a user that has this parameter filled (in user model)
 # If False, an employee is a user that is mapped as OrganizationalStructureOfficeEmployee
 EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
+EMPLOYEE_ATTRIBUTE_LABEL = 'Matricola dipendente'
 # Label
 ORGANIZATION_EMPLOYEE_LABEL = 'Dipendenti'
 # If True, an internal user (not guest) is a user that has this filled (in user model)
 # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
 USER_ATTRIBUTE_NAME = 'matricola_studente'
+USER_ATTRIBUTE_LABEL = 'Matricola studente'
 # Label
 ORGANIZATION_USER_LABEL = 'Studenti'

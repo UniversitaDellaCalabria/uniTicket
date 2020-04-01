@@ -113,6 +113,10 @@ def settings_value(name, **kwargs):
     if value and kwargs: return value.format(**kwargs)
     return value
 
+@register.simple_tag
+def obj_get_attr(obj, attr, **kwargs):
+    return getattr(obj, attr, None)
+
 @register.filter()
 @stringfilter
 def markdown(value):

@@ -110,6 +110,24 @@
                 </td>
             </tr>
             {% endif %}
+            <tr>
+                <th scope="row">{% trans 'Collassabile (in nuovo ticket)' %}</th>
+                <td>
+                    <svg class="icon icon-sm icon-secondary">
+                    {% if condition.is_collapsable %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Ordinamento' %}</th>
+                <td>
+                    {{ condition.ordinamento }}
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

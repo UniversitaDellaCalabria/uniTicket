@@ -39,39 +39,70 @@
                         <p class="card-title text-left">
                             {% settings_value name="TICKET_HEADING_TEXT" user=request.user taxpayer=request.user.taxpayer_id category=categoria as heading %}
                             {{ heading|safe  }}
+                            {% settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                            {% settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
+                            {% obj_get_attr request.user employee_attribute_name as user_employee_attribute %}
+                            {% if user_employee_attribute %}
+                                <br><span class="x-small"><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}</span>
+                            {% endif %}
+                            {% settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
+                            {% settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
+                            {% obj_get_attr request.user user_attribute_name as user_user_attribute %}
+                            {% if user_user_attribute %}
+                                <br><span class="x-small"><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}</span>
+                            {% endif %}
                         </p>
                         {% endif %}
                         {% if categoria.show_heading_text and category_conditions%}
                         <hr>
                         {% endif %}
                         {% if category_conditions %}
-                        <div id="accordionDiv1" role="tablist">
-                            <div class="collapse-header" id="headingA1">
-                                <button data-toggle="collapse"
-                                        data-target="#accordion1"
-                                        aria-expanded="false"
-                                        aria-controls="accordion1"
-                                        class="px-0"
-                                        style="border: none;">
-                                    {% trans "Condizioni e clausole da leggere" %}
-                                </button>
-                            </div>
-                            <div id="accordion1" class="collapse" role="tabpanel" aria-labelledby="headingA1" data-parent="#accordionDiv1">
-                                <div class="collapse-body pb-0">
-                                    {% for condition in category_conditions %}
+                            {% for condition in category_conditions %}
+                                {% if not forloop.first %}<hr>{% endif %}
+                                {% if condition.is_collapsable %}
+                                    <div id="accordionDiv{{ condition.pk }}"
+                                         class="collapse-div collapse-left-icon"
+                                         role="tablist"
+                                         style="border-bottom: none">
+                                        <div class="collapse-header" id="headingA{{ condition.pk }}">
+                                            <button data-toggle="collapse"
+                                                    data-target="#accordion{{ condition.pk }}"
+                                                    aria-expanded="false"
+                                                    aria-controls="accordion{{ condition.pk }}"
+                                                    class="px-0"
+                                                    style="border: none;">
+                                                {{ condition.title }}
+                                            </button>
+                                        </div>
+                                        <div id="accordion{{ condition.pk }}"
+                                             class="collapse"
+                                             role="tabpanel"
+                                             aria-labelledby="headingA{{ condition.pk }}"
+                                             data-parent="#accordionDiv{{ condition.pk }}">
+                                            <div class="collapse-body pb-0">
+                                                <p class="card-text">{{ condition.text | markdown | safe }}</p>
+                                                {% if condition.attachment %}
+                                                    <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=condition.category.slug condition_id=condition.pk %}">
+                                                        <svg class="icon">
+                                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                                                        </svg>{{ condition.attachment|filename }}
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
                                     <h6>{{ condition.title }}</h6>
                                     <p class="card-text">{{ condition.text | markdown | safe }}</p>
                                     {% if condition.attachment %}
-                                    <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=condition.category.slug condition_id=condition.pk %}">
+                                        <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=condition.category.slug condition_id=condition.pk %}">
                                             <svg class="icon">
                                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
                                             </svg>{{ condition.attachment|filename }}
                                         </a>
                                     {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
+                                {% endif %}
+                            {% endfor %}
                         {% endif %}
                     </div>
                 </div>
