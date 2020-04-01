@@ -1,5 +1,17 @@
 import os
 
+# user model for auth
+AUTH_USER_MODEL = "accounts.User"
+
+# localization
+LANGUAGE_CODE = 'it'
+TIME_ZONE = 'Europe/Rome'
+
+# date/datetime format
+DEFAULT_DATE_FORMAT = '%Y-%m-%d'
+DEFAULT_DATETIME_FORMAT = '{} %H:%M'.format(DEFAULT_DATE_FORMAT)
+DATE_INPUT_FORMATS = [DEFAULT_DATE_FORMAT, '%d/%m/%Y']
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -15,10 +27,10 @@ if not DEBUG:
     CSRF_COOKIE_SECURE=True
     SESSION_COOKIE_SECURE=True
 
-HOSTNAME = 'ticket.unical.it'
+HOSTNAME = 'uniticket.hostname.url'
 ALLOWED_HOSTS = [HOSTNAME]
 
-ADMIN_PATH = 'gestione'
+ADMIN_PATH = 'admin_path'
 
 EMAIL_SENDER = 'ticket.no-reply@{}'.format(HOSTNAME)
 
@@ -70,9 +82,6 @@ INSTALLED_APPS = [
 # Import chat app settings
 if 'chat' in INSTALLED_APPS:
     from chat.settings import *
-
-
-AUTH_USER_MODEL = "accounts.User"
 
 CUSTOM_WIDGETS = {
     'BaseDateField': 'bootstrap_italia_template.widgets.BootstrapItaliaDateWidget',
@@ -138,6 +147,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100
 }
 
+# chat: message to load in a conversation from history
 MESSAGES_TO_LOAD = 1500
 
 if "channels" in INSTALLED_APPS:

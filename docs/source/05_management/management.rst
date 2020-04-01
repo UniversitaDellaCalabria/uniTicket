@@ -6,7 +6,7 @@
 Ticket
 ======
 
-La gestione del workflow di un ticket prevede strumenti utilizzabili sia dagli utenti **Manager** che dagli **Operator**.
+La gestione del workflow di un ticket prevede strumenti utilizzabili sia dagli utenti **Manager** che dagli **Operatori**.
 
 Presa in carico e impostazione priorità
 ---------------------------------------
@@ -15,6 +15,8 @@ Presa in carico e impostazione priorità
 | All’atto di questo aggiornamento di stato, all’utente operatore viene chiesto di scegliere il livello di priorità da assegnare al ticket, in modo da posizionarlo correttamente nella lista dei ticket aperti.
 
 .. thumbnail:: images/priority.png
+
+| Un utente manager può, in questa fase, assegnare il ticket a un operatore dell'ufficio competente.
 
 Dettaglio ticket
 ----------------
@@ -41,7 +43,7 @@ E’ possibile condividere la competenza del ticket con altri uffici, per motivi
 Attività del ticket
 -------------------
 
-| L’aggiunta, la gestione e la cancellazione delle attività del ticket può essere effettuata con molta flessibilità finché esso si trova in stato “Aperto”.
+| L’aggiunta, la gestione e la cancellazione delle attività del ticket può essere effettuata con molta flessibilità finché esso si trova in stato "Assegnato".
 | Attività non chiuse impediscono la chiusura del ticket.
 
 .. thumbnail:: images/ticket_task.png

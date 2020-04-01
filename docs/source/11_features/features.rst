@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Template Bootstrap Italia (linee guida AGID)
-============================================
+Template Bootstrap Italia (Linee Guida di Design pe la P.A.)
+============================================================
 
 | La libreria Bootstrap Italia è il modo più semplice e sicuro per costruire interfacce web moderne, inclusive e semplici da mantenere.
 | Completamente open-source, costruita sulle fondamenta di **Bootstrap 4.3.1**, di cui eredita tutte le funzionalità, componenti, griglie e classi di utilità, personalizzandole secondo le Linee Guida di Design per i siti web della Pubblica Amministrazione, Bootstrap Italia usa i pattern e i componenti definiti nello UI Kit di Designers Italia e li trasforma in codice già pronto all'uso!

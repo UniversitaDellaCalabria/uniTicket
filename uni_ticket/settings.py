@@ -1,5 +1,6 @@
 from django.utils.translation import gettext_lazy as _
 
+# system attachments folders
 LOGOS_FOLDER = 'logos'
 STRUCTURES_FOLDER = 'structures'
 TICKET_ATTACHMENT_FOLDER = 'ticket'
@@ -8,21 +9,35 @@ TICKET_MESSAGES_ATTACHMENT_SUBFOLDER = 'messages'
 TICKET_TASK_ATTACHMENT_SUBFOLDER = 'task'
 CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER = 'conditions'
 
-TICKET_CONDITIONS_FIELD_ID = 'condizioni_field_id'
-TICKET_CONDITIONS_TEXT = _('Dichiara altresì di aver letto e compreso quanto scritto sopra e di assumere ogni responsabilità su quanto di seguito dichiarato')
+# show ticket priority to simple userse
+SIMPLE_USER_SHOW_PRIORITY = False
 
+# category conditions form field
+TICKET_CONDITIONS_FIELD_ID = 'condizioni_field_id'
+TICKET_CONDITIONS_TEXT = _('Dichiara altresì di aver letto '
+                           'e compreso quanto scritto sopra '
+                           'e di assumere ogni responsabilità '
+                           'su quanto di seguito dichiarato')
+
+# new ticket heading text (user informations)
 SHOW_HEADING_TEXT = True
 TICKET_HEADING_TEXT = _('Soggetto richiedente: <b>{user}</b>'
                         '<br><span class="x-small">[{taxpayer}]</span>')
 
+# new ticket static form fields
+# ticket subject
 TICKET_SUBJECT_ID = 'ticket_subject'
 TICKET_SUBJECT_LABEL = _('Oggetto della Richiesta')
-TICKET_SUBJECT_HELP_TEXT = _("Ulteriore specificazione o personalizzazione dell'Oggetto della Richiesta")
+TICKET_SUBJECT_HELP_TEXT = _("Ulteriore specificazione o "
+                             "personalizzazione dell'Oggetto della Richiesta")
 
+# ticket description
 TICKET_DESCRIPTION_ID = 'ticket_description'
 TICKET_DESCRIPTION_LABEL = _('Descrizione')
-TICKET_DESCRIPTION_HELP_TEXT = ('Ulteriore Descrizione della Richiesta, eventuali note del Richiedente')
+TICKET_DESCRIPTION_HELP_TEXT = ('Ulteriore Descrizione della Richiesta, '
+                                'eventuali note del Richiedente')
 
+# priority levels
 PRIORITY_LEVELS = (
                     ('-2',_('Molto alta')),
                     ('-1',_('Alta')),
@@ -34,7 +49,9 @@ PRIORITY_LEVELS = (
 # If 0 = Unlimited
 MAX_DAILY_TICKET_PER_USER = 10
 
+# user contexts
 CONTEXT_SIMPLE_USER = _('Utente')
+
 # To change the URLs prefix for every user type
 MANAGER_PREFIX = 'Manager'
 OPERATOR_PREFIX = 'Operatore'
@@ -46,10 +63,31 @@ MANAGEMENT_URL_PREFIX = {'manager': MANAGER_PREFIX,
                          'user': USER_PREFIX}
 # Do not edit! - END
 
-# Competenza sul ticket abbandonata
+# ticket competence abandoned
 NO_MORE_COMPETENCE_OVER_TICKET = _("Nessuna competenza sul ticket")
-# Accesso sul ticket in sola lettura
+# ticket readonly access
 READONLY_COMPETENCE_OVER_TICKET = _("Hai accesso al ticket in sola lettura")
+
+# min ticket content length (digits) to compress
+TICKET_MIN_DIGITS_TO_COMPRESS = 90
+
+# Access level to categories
+# Override for your own context
+
+# This parameters define the roles of users to open ticket
+# If True, an employee is a user that has this parameter filled (in user model)
+# If False, an employee is a user that is mapped as OrganizationalStructureOfficeEmployee
+EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
+EMPLOYEE_ATTRIBUTE_LABEL = 'Matricola dipendente'
+# Label
+ORGANIZATION_EMPLOYEE_LABEL = 'Dipendenti'
+# If True, an internal user (not guest) is a user that has this filled (in user model)
+# If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
+USER_ATTRIBUTE_NAME = 'matricola_studente'
+USER_ATTRIBUTE_LABEL = 'Matricola studente'
+# Label
+ORGANIZATION_USER_LABEL = 'Studenti'
+
 
 # E-mail messages
 MSG_HEADER = _("""Gentile {user},
@@ -139,24 +177,3 @@ SUMMARY_EMPLOYEE_EMAIL_OLD_EN = _("Dear {user},"
                            ""
                            "This message was sent to you by {hostname}."
                            "Please do not reply to this email.")
-
-
-# copression
-TICKET_MIN_DIGITS_TO_COMPRESS = 90
-
-# Access level to categories
-# Override for your own context
-
-# This parameters define the roles of users to open ticket
-# If True, an employee is a user that has this parameter filled (in user model)
-# If False, an employee is a user that is mapped as OrganizationalStructureOfficeEmployee
-EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
-EMPLOYEE_ATTRIBUTE_LABEL = 'Matricola dipendente'
-# Label
-ORGANIZATION_EMPLOYEE_LABEL = 'Dipendenti'
-# If True, an internal user (not guest) is a user that has this filled (in user model)
-# If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
-USER_ATTRIBUTE_NAME = 'matricola_studente'
-USER_ATTRIBUTE_LABEL = 'Matricola studente'
-# Label
-ORGANIZATION_USER_LABEL = 'Studenti'
