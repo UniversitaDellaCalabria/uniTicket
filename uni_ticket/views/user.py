@@ -517,6 +517,7 @@ def ticket_delete(request, ticket_id):
     return redirect('uni_ticket:user_unassigned_ticket')
 
 @login_required
+@is_the_owner
 def ticket_detail(request, ticket_id, template='user/ticket_detail.html'):
     """
     Shows ticket details
