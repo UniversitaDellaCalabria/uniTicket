@@ -34,6 +34,9 @@ class TicketCategoryConditionModelForm(forms.ModelForm):
 class TicketCategoryConditionNestedInline(nested_admin.NestedTabularInline):
     model = TicketCategoryCondition
     form = TicketCategoryConditionModelForm
+    readonly_fields = ('category', 'title', 'text',
+                       'attachment', 'is_printable', 'is_collapsable',
+                       'is_active')
     sortable_field_name = "ordinamento"
     extra = 0
     classes = ['collapse',]
@@ -54,6 +57,7 @@ class TicketCategoryModuleNestedInline(nested_admin.NestedTabularInline):
     extra = 0
     inlines = [TicketCategoryInputListNestedInline,]
     classes = ['collapse',]
+    readonly_fields = ('name', 'ticket_category', 'created', 'is_active')
 
 
 # Ticket Category Task Form
@@ -69,6 +73,9 @@ class TicketCategoryTaskNestedInline(nested_admin.NestedTabularInline):
     form = TicketCategoryTaskModelForm
     extra = 0
     classes = ['collapse',]
+    readonly_fields = ('subject', 'code', 'description',
+                       'created', 'created_by', 'priority',
+                       'attachment', 'category', 'is_active')
 
 
 # Ticket Assignment

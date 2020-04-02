@@ -1466,11 +1466,13 @@ def task_close(request, structure_slug, ticket_id, task_id,
         if form.is_valid():
             motivazione = form.cleaned_data['note']
             task.is_closed = True
+            task.closed_by = request.user
             task.closing_reason = motivazione
             task.closed_date = timezone.now()
             task.save(update_fields = ['is_closed',
                                        'closing_reason',
-                                       'closed_date'])
+                                       'closed_date',
+                                       'closed_by'])
 
             # log action
             logger.info('[{}] {} closed task {}'.format(timezone.now(),

@@ -818,6 +818,10 @@ class Task(AbstractTask):
     """
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     is_closed = models.BooleanField(default=False)
+    closed_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                  on_delete=models.SET_NULL,
+                                  null=True,
+                                  related_name='task_closed_by_user')
     closed_date = models.DateTimeField(blank=True, null=True)
     closing_reason = models.TextField(blank=True, null=True)
 

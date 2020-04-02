@@ -127,5 +127,5 @@ class UserChannel(Model):
     # Meta
     class Meta:
         verbose_name = 'Canale Utente'
-        verbose_name_plural = 'Canale Utenti'
+        verbose_name_plural = 'Canali Utenti'
         ordering = ('-created',)

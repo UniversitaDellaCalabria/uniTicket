@@ -108,43 +108,45 @@
                 </span>
             {% endif %}
 
+            <div>
+                {% if not ticket.is_closed %}
+                <button type="button"
+                    class="mx-1 btn btn-outline-danger btn-xs float-right"
+                    data-toggle="modal"
+                    data-target="#deleteTask{{ forloop.counter0 }}">
+                    {% trans "Elimina attività" %}
+                </button>
+                {% else %}
+                <button type="button"
+                    class="mx-1 btn btn-secondary btn-xs float-right"
+                    title="{% trans 'Questa attività non può essere eliminata' %}"
+                    disabled>
+                    {% trans "Elimina attività" %}
+                </button>
+                {% endif %}
 
-            {% if not ticket.is_closed %}
-            <button type="button"
-                class="mx-1 btn btn-outline-danger btn-xs float-right"
-                data-toggle="modal"
-                data-target="#deleteTask{{ forloop.counter0 }}">
-                {% trans "Elimina attività" %}
-            </button>
-            {% else %}
-            <button type="button"
-                class="mx-1 btn btn-secondary btn-xs float-right"
-                title="{% trans 'Questa attività non può essere eliminata' %}"
-                disabled>
-                {% trans "Elimina attività" %}
-            </button>
-            {% endif %}
+                {% if task.is_closed %}
+                <button type="button"
+                    class="mx-1 btn btn-outline-warning btn-xs float-right"
+                    data-toggle="modal"
+                    data-target="#reopenTask{{ forloop.counter0 }}">
+                    {% trans "Riapri attività" %}
+                </button>
+                {% else %}
+                <a role="button"
+                   class="mx-1 btn btn-outline-success btn-xs float-right"
+                   href="{% url 'uni_ticket:close_task' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code %}">
+                    {% trans "Chiudi attività" %}
+                </a>
+                {% endif %}
 
-            {% if task.is_closed %}
-            <button type="button"
-                class="mx-1 btn btn-outline-warning btn-xs float-right"
-                data-toggle="modal"
-                data-target="#reopenTask{{ forloop.counter0 }}">
-                {% trans "Riapri attività" %}
-            </button>
-            {% else %}
-            <a role="button"
-               class="mx-1 btn btn-outline-success btn-xs float-right"
-               href="{% url 'uni_ticket:close_task' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code %}">
-                {% trans "Chiudi attività" %}
-            </a>
-            {% endif %}
+                <a role="button"
+                   class="mx-1 btn btn-outline-secondary btn-xs float-right"
+                   href="{% url 'uni_ticket:manage_task_detail_url' structure_slug=structure.slug ticket_id=ticket.code task_id=task.code %}">
+                    {% trans "Dettagli" %}
+                </a>
+            </div>
 
-            <a role="button"
-               class="mx-1 btn btn-outline-secondary btn-xs float-right"
-               href="{% url 'uni_ticket:manage_task_detail_url' structure_slug=structure.slug ticket_id=ticket.code task_id=task.code %}">
-                {% trans "Dettagli" %}
-            </a>
             {% if not ticket.is_closed %}
             <div class="modal fade"
                  tabindex="-1"

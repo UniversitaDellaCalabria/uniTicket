@@ -1,9 +1,12 @@
-from django.contrib.admin import ModelAdmin, site
-from .models import ChatMessageModel
+from django.contrib import admin
+
+from .models import ChatMessageModel, UserChannel
 
 
-class ChatMessageModelAdmin(ModelAdmin):
-    readonly_fields = ('created',)
+@admin.register(ChatMessageModel)
+class ChatMessageModelAdmin(admin.ModelAdmin):
+    readonly_fields = ('user', 'recipient', 'read_date',
+                       'body', 'room', 'broadcast', 'created',)
     search_fields = ('id', 'body',
                      'user__username', 'recipient__username',
                      'room')
@@ -12,5 +15,21 @@ class ChatMessageModelAdmin(ModelAdmin):
     list_filter = ('user', 'recipient')
     date_hierarchy = 'created'
 
+    def has_add_permission(self, request):
+        return False
 
-site.register(ChatMessageModel, ChatMessageModelAdmin)
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+@admin.register(UserChannel)
+class UserChannel(admin.ModelAdmin):
+    readonly_fields = ('user', 'channel', 'room',
+                       'created', 'last_seen',)
+    search_fields = ('user', 'room', 'channel')
+    list_display = ('user', 'channel', 'room', 'created', 'last_seen')
+    list_filter = ('room', 'created', 'last_seen')
+    date_hierarchy = 'created'
+
+    def has_add_permission(self, request):
+        return False
