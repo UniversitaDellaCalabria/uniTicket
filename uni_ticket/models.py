@@ -67,8 +67,8 @@ class TicketCategory(models.Model):
                                     help_text=_("Ticket che viene "
                                                 "automaticamente preso "
                                                 "in carico"))
-    confirm_message_text = models.CharField(_("Messaggio di conferma"),
-                                            max_length=255,
+    confirm_message_text = models.TextField(_("Messaggio di conferma"),
+                                            max_length=500,
                                             blank=True,
                                             null=True,
                                             help_text=_("Es: 'Hai correttamente "

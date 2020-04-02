@@ -155,9 +155,20 @@
             <div class="modal-footer">
                 <input class="btn btn-success"
                        type="submit"
+                       id="submitForm"
                        value="{% trans 'Si, procedi' %}">
             </div>
         </div>
     </div>
 </div>
 {% endblock form_buttons %}
+
+{% block extra_scripts %}
+{{ block.super }}
+<script>
+$('#submitForm').on('click', function(e){
+    $('#action').removeClass().addClass('modal fade');
+    $('.modal-backdrop.fade').css('opacity', 0);
+});
+</script>
+{% endblock extra_scripts %}
