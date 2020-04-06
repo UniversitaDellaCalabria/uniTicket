@@ -491,7 +491,7 @@ class Ticket(SavedFormContent):
             competence = TicketAssignment.objects.get(ticket=self,
                                                       office=off,
                                                       taken_date__isnull=False)
-            if not competence.follow: continue
+            if not competence or not competence.follow: continue
             competence.follow = allow_readonly
             competence.readonly = allow_readonly
             competence.save(update_fields = ['follow',
@@ -610,7 +610,8 @@ class Ticket(SavedFormContent):
         return self._check_assignment_privileges(assignment)
 
     def has_been_taken(self, user=None):
-        assignments = TicketAssignment.objects.filter(ticket=self)
+        assignments = TicketAssignment.objects.filter(ticket=self,
+                                                      follow=True)
         if not assignments.first(): return False
         if not assignments.first().taken_date: return False
         if not user: return True
@@ -631,10 +632,12 @@ class Ticket(SavedFormContent):
             # office_operators[assignment.office.__str__()] = assigned.__str__()
         return '{}</ul>'.format(result)
 
-    def take(self, user, assigned_by=None):
+    def take(self, user, assigned_by=None, strictly_assigned=False):
         assignments = TicketAssignment.objects.filter(ticket=self)
         for assignment in assignments:
-            if user_manage_office(user, assignment.office) and not assignment.taken_date:
+            if user_manage_office(user=user,
+                                  office=assignment.office,
+                                  strictly_assigned=strictly_assigned) and not assignment.taken_date:
                 assignment.taken_date = timezone.now()
                 assignment.taken_by = user
                 if assigned_by:
