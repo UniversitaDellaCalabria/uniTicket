@@ -74,8 +74,8 @@ class TaskAdmin(nested_admin.NestedModelAdmin):
     def has_add_permission(self, request):
         return False
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+        # return False
 
     # def get_status(self, obj):
         # status_list = TaskHistory.objects.filter(task=obj)

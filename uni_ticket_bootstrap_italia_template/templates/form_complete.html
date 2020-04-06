@@ -21,5 +21,15 @@
 {% endblock page_content %}
 
 {% block extra_scripts %}
+{{ block.super }}
 {{ form.media }}
+<!-- prevent submit form by press "enter" on field -->
+<script>
+$(document).on('keyup keypress', 'form input', function(e) {
+    if(e.which == 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
 {% endblock extra_scripts %}

@@ -57,6 +57,8 @@ class TicketCategory(models.Model):
                                               "apertura nuovo ticket"),
                                             default=settings.SHOW_HEADING_TEXT)
     # fields to map roles
+    allow_anonymous = models.BooleanField(_("Accessibile a Utenti anonimi"),
+                                          default=False)
     allow_guest = models.BooleanField(_("Accessibile a Ospiti"), default=True)
     allow_user = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_USER_LABEL), default=True)
     allow_employee = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_EMPLOYEE_LABEL), default=True)
@@ -136,6 +138,7 @@ class TicketCategory(models.Model):
 
     def allowed_to_user(self, user):
         if not user: return False
+        if self.allow_anonymous: return True
         if self.allow_guest: return True
 
         is_employee = user_is_employee(user)

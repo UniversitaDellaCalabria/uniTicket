@@ -5,6 +5,7 @@ from django.forms import ModelForm
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext as _
 
+from bootstrap_italia_template.widgets import BootstrapItaliaSelectWidget
 from django_form_builder.dynamic_fields import CustomFileField
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
@@ -12,8 +13,6 @@ from organizational_area.models import (OrganizationalStructure,
 
 from . models import *
 from . utils import *
-# from . widgets import UniTicketSelectSearchWidget
-from bootstrap_italia_template.widgets import BootstrapItaliaSelectWidget
 
 
 class CategoryForm(ModelForm):
@@ -23,7 +22,8 @@ class CategoryForm(ModelForm):
                   'confirm_message_text',
                   'is_notify',
                   'show_heading_text',
-                  'allow_guest', 'allow_user', 'allow_employee']
+                  'allow_anonymous', 'allow_guest',
+                  'allow_user', 'allow_employee']
         labels = {'name': _('Nome'),
                   'description': _('Descrizione'),}
     class Media:
@@ -33,7 +33,7 @@ class CategoryForm(ModelForm):
 class CategoryAddOfficeForm(forms.Form):
     office = forms.ModelChoiceField(label=_('Assegna competenza ufficio'),
                                     queryset=None, required=True,
-                                    widget=BootstrapItaliaSelectWidget())
+                                    widget=BootstrapItaliaSelectWidget)
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
         offices = OrganizationalStructureOffice.objects.filter(organizational_structure=structure,
@@ -61,7 +61,7 @@ class CategoryInputListForm(ModelForm):
         labels = {'name': _('Nome'),
                   'is_required': _('Obbligatorio'),
                   'field_type': _('Tipologia di campo'),}
-        widgets = {'field_type': BootstrapItaliaSelectWidget(),}
+        widgets = {'field_type': BootstrapItaliaSelectWidget,}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -91,9 +91,9 @@ class OfficeForm(ModelForm):
 class OfficeAddOperatorForm(forms.Form):
     operatore = forms.ModelChoiceField(label=_('Assegna operatore'),
                                        queryset=None, required=True,
-                                       widget=BootstrapItaliaSelectWidget())
+                                       widget=BootstrapItaliaSelectWidget)
     description = forms.CharField(label=_('Note'),
-                                  widget=forms.Textarea(),
+                                  widget=forms.Textarea,
                                   required=False)
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
@@ -129,14 +129,14 @@ class PriorityForm(forms.Form):
                                  required=True,
                                  initial=0,
                                  label=_('Priorità'),
-                                 widget=BootstrapItaliaSelectWidget())
+                                 widget=BootstrapItaliaSelectWidget)
 
 
 class ReplyForm(forms.Form):
     subject = forms.CharField(label=_('Oggetto'), required=True)
     text = forms.CharField(label=_('Testo'),
                            required=True,
-                           widget=forms.Textarea())
+                           widget=forms.Textarea)
     attachment = CustomFileField(label=_('Allegato'), required=False)
 
     class Media:
@@ -145,9 +145,9 @@ class ReplyForm(forms.Form):
 
 class TicketCompetenceForm(forms.Form):
     structures = forms.ModelChoiceField(queryset=None, required=True,
-                                        widget=BootstrapItaliaSelectWidget())
+                                        widget=BootstrapItaliaSelectWidget)
     offices = forms.ModelChoiceField(queryset=None, required=True,
-                                     widget=BootstrapItaliaSelectWidget())
+                                     widget=BootstrapItaliaSelectWidget)
     def __init__(self, *args, **kwargs):
         structure_slug = kwargs.pop('structure_slug', None)
         current_ticket_id = kwargs.pop('ticket_id', None)
@@ -184,7 +184,7 @@ class TicketDependenceForm(forms.Form):
     """
     """
     ticket = forms.ModelChoiceField(queryset=None, required=True,
-                                    widget=BootstrapItaliaSelectWidget())
+                                    widget=BootstrapItaliaSelectWidget)
     note = forms.CharField(label=_('Note'),
                            widget=forms.Textarea,
                            required=True)
@@ -225,7 +225,7 @@ class TaskForm(forms.Form):
     subject = forms.CharField(label=_('Oggetto'), required=True)
     description = forms.CharField(label=_('Testo'),
                                   required=True,
-                                  widget=forms.Textarea())
+                                  widget=forms.Textarea)
     priority = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
                                  required=True,
                                  initial=0,
@@ -256,7 +256,7 @@ class CategoryConditionForm(ModelForm):
 class OfficeAddCategoryForm(forms.Form):
     category = forms.ModelChoiceField(label=_('Assegna tipologia di richiesta'),
                                       queryset=None, required=True,
-                                      widget=BootstrapItaliaSelectWidget())
+                                      widget=BootstrapItaliaSelectWidget)
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
         office = kwargs.pop('office', None)
@@ -275,10 +275,10 @@ class AssignTicketToOperatorForm(forms.Form):
                                  required=True,
                                  initial=0,
                                  label=_('Priorità'),
-                                 widget=BootstrapItaliaSelectWidget())
+                                 widget=BootstrapItaliaSelectWidget)
     assign_to = forms.ModelChoiceField(label=_('Seleziona operatore'),
                                        queryset=None, required=True,
-                                       widget=BootstrapItaliaSelectWidget())
+                                       widget=BootstrapItaliaSelectWidget)
 
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)

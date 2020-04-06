@@ -262,10 +262,10 @@ def office_detail(request, structure_slug, office_slug, structure):
         if form.is_valid():
             employee = form.cleaned_data['operatore']
             description = form.cleaned_data['description']
-            oso = OrganizationalStructureOfficeEmployee
-            new_officeemployee = oso(employee=employee,
-                                     office=office,
-                                     description=description)
+            osoe = OrganizationalStructureOfficeEmployee
+            new_officeemployee = osoe(employee=employee,
+                                      office=office,
+                                      description=description)
             new_officeemployee.save()
             messages.add_message(request, messages.SUCCESS,
                                  _("Operatore assegnato con successo"))
@@ -830,6 +830,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                       'show_heading_text',
                                                       'is_notify',
                                                       'confirm_message_text',
+                                                      'allow_anonymous',
                                                       'allow_guest',
                                                       'allow_user',
                                                       'allow_employee',

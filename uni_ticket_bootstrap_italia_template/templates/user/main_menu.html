@@ -5,6 +5,7 @@
 {% load uni_ticket_tags %}
 
 {% block menu_pre_buttons %}
+{% if request.user.is_authenticated %}
 
 {% app_is_installed "chat" as chat_installed %}
 {% app_is_installed "channels" as channels_installed %}
@@ -41,4 +42,5 @@
         <span>{% trans "Configurazione" %}</span>
     </a>
 </li>
+{% endif %}
 {% endblock menu_pre_buttons %}

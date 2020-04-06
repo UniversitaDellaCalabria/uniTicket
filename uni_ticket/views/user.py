@@ -22,7 +22,8 @@ from django_form_builder.utils import (get_as_dict,
                                        get_POST_as_json,
                                        set_as_dict)
 from organizational_area.models import (OrganizationalStructure,
-                                        OrganizationalStructureOffice,)
+                                        OrganizationalStructureOffice,
+                                        OrganizationalStructureOfficeEmployee,)
 from uni_ticket.decorators import *
 from uni_ticket.forms import *
 from uni_ticket.models import *
@@ -30,6 +31,71 @@ from uni_ticket.utils import *
 
 logger = logging.getLogger(__name__)
 
+
+# assign category default tasks to new ticket created by user
+def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
+    tasks = category.get_tasks(is_active=True)
+    for task in tasks:
+        ticket_task = Task()
+        ticket_task.ticket = ticket
+        ticket_task.subject = task.subject
+        ticket_task.description = task.description
+        ticket_task.priority = task.priority
+        ticket_task.created_by = task.created_by
+        ticket_task.code = uuid_code()
+        ticket_task.attachment = task.attachment
+        ticket_task.save()
+
+        # copy category task attachments in ticket task folder
+        if task.attachment:
+            source = '{}/{}'.format(settings.MEDIA_ROOT,
+                                    task.get_folder())
+            destination = '{}/{}'.format(settings.MEDIA_ROOT,
+                                         ticket_task.get_folder())
+            try:
+                if os.path.exists(source):
+                    shutil.copytree(source, destination)
+            except:
+                logger.info('[{}] {} try to copy not existent folder {}'
+                            ''.format(timezone.now(),
+                                      log_user,
+                                      source))
+
+# close ticket as soon as opened if it's a notification ticket
+def _close_notification_ticket(ticket, category, user, operator,
+                               ticket_assignment):
+    # close ticket
+    ticket.is_closed = True
+    ticket.closed_date = timezone.now()
+    ticket.closed_by = user
+    ticket.save()
+
+    # assign to an operator
+    ticket_assignment.taken_date = timezone.now()
+    ticket_assignment.taken_by = operator
+    return ticket_assignment
+
+# save attachments of new ticket
+def _save_new_ticket_attachments(ticket,
+                                 json_stored,
+                                 form,
+                                 request_files):
+    if request_files:
+        json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
+        path_allegati = get_path(ticket.get_folder())
+        for key, value in request_files.items():
+            save_file(form.cleaned_data[key],
+                      path_allegati,
+                      form.cleaned_data[key]._name)
+            value = form.cleaned_data[key]._name
+            json_stored[settings.ATTACHMENTS_DICT_PREFIX][key] = value
+
+            # log action
+            logger.info('[{}] attachment {} saved in {}'.format(timezone.now(),
+                                                                form.cleaned_data[key],
+                                                                path_allegati))
+
+        set_as_dict(ticket, json_stored)
 
 @login_required
 def ticket_new_preload(request, structure_slug=None):
@@ -86,7 +152,7 @@ def ticket_new_preload(request, structure_slug=None):
          'title': title,}
     return render(request, template, d)
 
-@login_required
+# @login_required
 def ticket_add_new(request, structure_slug, category_slug):
     """
     Create the ticket
@@ -99,37 +165,46 @@ def ticket_add_new(request, structure_slug, category_slug):
 
     :return: render
     """
-    if Ticket.number_limit_reached_by_user(request.user):
-        messages.add_message(request, messages.ERROR,
-                             _("Hai raggiunto il limite massimo giornaliero"
-                               " di ticket: <b>{}</b>".format(settings.MAX_DAILY_TICKET_PER_USER)))
-        return redirect(reverse('uni_ticket:user_dashboard'))
-
     struttura = get_object_or_404(OrganizationalStructure,
                                   slug=structure_slug,
                                   is_active=True)
-    categoria = get_object_or_404(TicketCategory,
-                                  slug=category_slug,
-                                  is_active=True)
+    category = get_object_or_404(TicketCategory,
+                                 slug=category_slug,
+                                 is_active=True)
 
-    if not categoria.allowed_to_user(request.user):
-        return custom_message(request, _("Permesso negato a questa tipologia di utente."))
+    # if anonymous user and category only for logged users
+    if not category.allow_anonymous and not request.user.is_authenticated:
+        return custom_message(request, _("Autenticazione necessaria"))
 
-    title = categoria
+    # is user is authenticated
+    if request.user.is_authenticated:
+        # check ticket number limit
+        if Ticket.number_limit_reached_by_user(request.user):
+            messages.add_message(request, messages.ERROR,
+                                 _("Hai raggiunto il limite massimo giornaliero"
+                                   " di ticket: <b>{}</b>"
+                                   "".format(settings.MAX_DAILY_TICKET_PER_USER)))
+            return redirect('uni_ticket:user_dashboard')
+        # check if user is allowed to access this category
+        if not category.allowed_to_user(request.user):
+            return custom_message(request, _("Permesso negato a questa tipologia di utente."))
+
+    title = category
     template = 'user/ticket_add_new.html'
-    sub_title = categoria.description if categoria.description else _("Compila i campi richiesti")
+    sub_title = category.description if category.description else _("Compila i campi richiesti")
     modulo = get_object_or_404(TicketCategoryModule,
-                               ticket_category=categoria,
+                               ticket_category=category,
                                is_active=True)
     form = modulo.get_form(show_conditions=True)
-    clausole_categoria = categoria.get_conditions()
-    d={'categoria': categoria,
+    clausole_categoria = category.get_conditions()
+    d={'categoria': category,
        'category_conditions': clausole_categoria,
        'form': form,
        'struttura': struttura,
        'sub_title': '{} - {}'.format(struttura, sub_title),
        'title': title}
 
+    # after form submit
     if request.POST:
         form = modulo.get_form(data=request.POST,
                                files=request.FILES,
@@ -147,77 +222,54 @@ def ticket_add_new(request, structure_slug, category_slug):
             subject = form.cleaned_data[settings.TICKET_SUBJECT_ID]
             description = form.cleaned_data[settings.TICKET_DESCRIPTION_ID]
 
+            # destination office
+            office = category.organizational_office
+
+            # take a random operator (or manager)
+            # only if category is_notify or user is anonymous
+            random_office_operator = None
+            if category.is_notify or not request.user.is_authenticated:
+                # get random operator from the office
+                random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(office)
+
+            # set users (for current operation and for log)
+            current_user = request.user if request.user.is_authenticated else random_office_operator
+            log_user = request.user.username if request.user.is_authenticated else 'anonymous'
+
+            # create ticket
             ticket = Ticket(code=code,
                             subject=subject,
                             description=description,
                             modulo_compilato=json_data,
-                            created_by=request.user,
+                            created_by=current_user,
                             input_module=modulo)
             ticket.save()
 
             # log action
             logger.info('[{}] user {} created new ticket {}'
                         ' in category {}'.format(timezone.now(),
-                                                 request.user.username,
+                                                 log_user,
                                                  ticket,
-                                                 categoria))
+                                                 category))
 
             # salvataggio degli allegati nella cartella relativa
             json_dict = json.loads(json_data)
             json_stored = get_as_dict(compiled_module_json=json_dict)
-            if request.FILES:
-                json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
-                path_allegati = get_path(ticket.get_folder())
-                for key, value in request.FILES.items():
-                    save_file(form.cleaned_data[key],
-                              path_allegati,
-                              form.cleaned_data[key]._name)
-                    value = form.cleaned_data[key]._name
-                    json_stored[settings.ATTACHMENTS_DICT_PREFIX][key] = value
+            _save_new_ticket_attachments(ticket=ticket,
+                                         json_stored=json_stored,
+                                         form=form,
+                                         request_files=request.FILES)
 
-                    # log action
-                    logger.info('[{}] attachment {} saved in {}'.format(timezone.now(),
-                                                                        form.cleaned_data[key],
-                                                                        path_allegati))
-
-                set_as_dict(ticket, json_stored)
-
-            # data di modifica
-            # note = _("Ticket creato")
-            # ticket.update_log(user=request.user,
-                              # note=note,
-                              # send_mail=False)
-
-            # Old version. Now a category MUST have an office!
-            # office = categoria.organizational_office or struttura.get_default_office()
-            office = categoria.organizational_office
             ticket_assignment = TicketAssignment(ticket=ticket,
                                                  office=office)
-                                                 # assigned_by=request.user)
-            # if ticket is a notify, take the ticket
-            if categoria.is_notify:
 
-                # close ticket
-                ticket.is_closed = True
-                ticket.closed_date = timezone.now()
-                ticket.closed_by = request.user
-                ticket.save()
-
-                # assign to an operator
-                ticket_assignment.taken_date = timezone.now()
-                oe_model = apps.get_model('organizational_area',
-                                          'OrganizationalStructureOfficeEmployee')
-                # get random operator from the office
-                office_employees = oe_model.objects.filter(office=office,
-                                                           employee__is_active=True).order_by('?')
-                # if not operator in the office, get a help-desk operator
-                if not office_employees:
-                    office_employees = oe_model.objects.filter(office__name=settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
-                                                               office__organizational_structure=office.organizational_structure,
-                                                               employee__is_active=True).order_by('?')
-                random_office_operator = office_employees.first()
-                ticket_assignment.taken_by = random_office_operator.employee
-
+            # if it's a notification ticket, take and close the ticket
+            if category.is_notify:
+                ticket_assignment = _close_notification_ticket(ticket=ticket,
+                                                               category=category,
+                                                               user=current_user,
+                                                               operator=random_office_operator,
+                                                               ticket_assignment=ticket_assignment)
             ticket_assignment.save()
 
             # log action
@@ -226,66 +278,45 @@ def ticket_add_new(request, structure_slug, category_slug):
                                            ticket,
                                            office))
 
-            ticket_detail_url = reverse('uni_ticket:ticket_detail', args=[code])
-
             # category default tasks
-            tasks = categoria.get_tasks(is_active=True)
-            for task in tasks:
-                ticket_task = Task()
-                ticket_task.ticket = ticket
-                ticket_task.subject = task.subject
-                ticket_task.description = task.description
-                ticket_task.priority = task.priority
-                ticket_task.created_by = task.created_by
-                ticket_task.code = uuid_code()
-                ticket_task.attachment = task.attachment
-                ticket_task.save()
+            _assign_default_tasks_to_new_ticket(ticket=ticket,
+                                                category=category,
+                                                log_user=log_user)
 
-                # copy category task attachments in ticket task folder
-                if task.attachment:
-                    source = '{}/{}'.format(settings.MEDIA_ROOT,
-                                            task.get_folder())
-                    destination = '{}/{}'.format(settings.MEDIA_ROOT,
-                                                 ticket_task.get_folder())
-                    try:
-                        if os.path.exists(source):
-                            shutil.copytree(source, destination)
-                    except:
-                        logger.info('[{}] {} try to copy not existent folder {}'
-                                    ''.format(timezone.now(),
-                                              request.user,
-                                              source))
-
-            # Send mail to ticket owner
             ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
                              settings.NEW_TICKET_CREATED_ALERT
             compiled_message = ticket_message.format(ticket.subject)
-
-            mail_params = {'hostname': settings.HOSTNAME,
-                           'user': request.user,
-                           'ticket': ticket.code,
-                           'ticket_subject': subject,
-                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
-                                                             kwargs={'ticket_id': ticket.code})),
-                            'added_text': compiled_message
-                          }
-
-            m_subject = _('{} - {}'.format(settings.HOSTNAME,
-                                           compiled_message))
-            m_subject = m_subject[:80] + (m_subject[80:] and '...')
-
-            send_custom_mail(subject=m_subject,
-                             recipient=request.user,
-                             body=settings.NEW_TICKET_CREATED,
-                             params=mail_params)
-            # END Send mail to ticket owner
-
             messages.add_message(request,
                                  messages.SUCCESS,
                                  compiled_message
                                 )
-            return redirect('uni_ticket:ticket_detail',
-                            ticket_id=ticket.code)
+            # if user is authenticated send mail and redirect to ticket page
+            if request.user.is_authenticated:
+                # Send mail to ticket owner
+                mail_params = {'hostname': settings.HOSTNAME,
+                               'user': request.user,
+                               'ticket': ticket.code,
+                               'ticket_subject': subject,
+                               'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
+                                                                 kwargs={'ticket_id': ticket.code})),
+                                'added_text': compiled_message
+                              }
+
+                m_subject = _('{} - {}'.format(settings.HOSTNAME,
+                                               compiled_message))
+                m_subject = m_subject[:80] + (m_subject[80:] and '...')
+
+                send_custom_mail(subject=m_subject,
+                                 recipient=request.user,
+                                 body=settings.NEW_TICKET_CREATED,
+                                 params=mail_params)
+                # END Send mail to ticket owner
+                return redirect('uni_ticket:ticket_detail',
+                                ticket_id=ticket.code)
+            else:
+                return redirect('uni_ticket:add_new_ticket',
+                                structure_slug=structure_slug,
+                                category_slug=category_slug)
         else:
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
@@ -831,28 +862,10 @@ def ticket_clone(request, ticket_id):
             # salvataggio degli allegati nella cartella relativa
             json_dict = ticket.get_modulo_compilato()
             json_stored = get_as_dict(compiled_module_json=json_dict)
-            if request.FILES:
-                json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
-                path_allegati = get_path(ticket.get_folder())
-                for key, value in request.FILES.items():
-                    save_file(form.cleaned_data[key],
-                              path_allegati,
-                              form.cleaned_data[key]._name)
-                    value = form.cleaned_data[key]._name
-                    json_stored[settings.ATTACHMENTS_DICT_PREFIX][key] = value
-
-                    # log action
-                    logger.info('[{}] attachment {} saved in {}'.format(timezone.now(),
-                                                                        form.cleaned_data[key],
-                                                                        path_allegati))
-
-                set_as_dict(ticket, json_stored)
-
-            # data di modifica
-            # note = _("Ticket creato")
-            # ticket.update_log(user=request.user,
-                              # note=note,
-                              # send_mail=False)
+            _save_new_ticket_attachments(ticket=ticket,
+                                         json_stored=json_stored,
+                                         form=form,
+                                         request_files=request.FILES)
 
             # Old version. Now a category MUST have an office!
             # office = categoria.organizational_office or struttura.get_default_office()
@@ -860,29 +873,16 @@ def ticket_clone(request, ticket_id):
             ticket_assignment = TicketAssignment(ticket=ticket,
                                                  office=office)
                                                  # assigned_by=request.user)
-            # if ticket is a notify, take the ticket
+
             if category.is_notify:
+                random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(office)
 
-                # close ticket
-                ticket.is_closed = True
-                ticket.closed_date = timezone.now()
-                ticket.closed_by = request.user
-                ticket.save()
-
-                # assign to an operator
-                ticket_assignment.taken_date = timezone.now()
-                oe_model = apps.get_model('organizational_area',
-                                          'OrganizationalStructureOfficeEmployee')
-                # get random operator from the office
-                office_employees = oe_model.objects.filter(office=office,
-                                                           employee__is_active=True).order_by('?')
-                # if not operator in the office, get a help-desk operator
-                if not office_employees:
-                    office_employees = oe_model.objects.filter(office__name=settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
-                                                               office__organizational_structure=office.organizational_structure,
-                                                               employee__is_active=True).order_by('?')
-                random_office_operator = office_employees.first()
-                ticket_assignment.taken_by = random_office_operator.employee
+                # if ticket is a notify, take the ticket
+                ticket_assignment = _close_notification_ticket(ticket=ticket,
+                                                               category=category,
+                                                               user=request.user,
+                                                               operator=random_office_operator,
+                                                               ticket_assignment=ticket_assignment)
             ticket_assignment.save()
 
             # log action
@@ -891,35 +891,10 @@ def ticket_clone(request, ticket_id):
                                            ticket,
                                            office))
 
-            ticket_detail_url = reverse('uni_ticket:ticket_detail', args=[code])
-
             # category default tasks
-            tasks = category.get_tasks(is_active=True)
-            for task in tasks:
-                ticket_task = Task()
-                ticket_task.ticket = ticket
-                ticket_task.subject = task.subject
-                ticket_task.description = task.description
-                ticket_task.priority = task.priority
-                ticket_task.created_by = task.created_by
-                ticket_task.code = uuid_code()
-                ticket_task.attachment = task.attachment
-                ticket_task.save()
-
-                # copy category task attachments in ticket task folder
-                if task.attachment:
-                    source = '{}/{}'.format(settings.MEDIA_ROOT,
-                                            task.get_folder())
-                    destination = '{}/{}'.format(settings.MEDIA_ROOT,
-                                                 ticket_task.get_folder())
-                    try:
-                        if os.path.exists(source):
-                            shutil.copytree(source, destination)
-                    except:
-                        logger.info('[{}] {} try to copy not existent folder {}'
-                                    ''.format(timezone.now(),
-                                              request.user,
-                                              source))
+            _assign_default_tasks_to_new_ticket(ticket=ticket,
+                                                category=category,
+                                                log_user=request.user)
 
             # Send mail to ticket owner
             ticket_message = ticket.input_module.ticket_category.confirm_message_text or \

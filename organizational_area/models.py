@@ -211,5 +211,16 @@ class OrganizationalStructureOfficeEmployee(models.Model):
         verbose_name = _("Organizational Structure Office Employee")
         verbose_name_plural = _("Organizational Structure Office Employees")
 
+    @classmethod
+    def get_default_operator_or_manager(cls, office):
+        office_employees = cls.objects.filter(office=office,
+                                              employee__is_active=True).order_by('?')
+        if not office_employees:
+            office_employees = cls.objects.filter(office__name=settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+                                                  office__organizational_structure=office.organizational_structure,
+                                                  employee__is_active=True).order_by('?')
+        random_office_operator = office_employees.first()
+        return random_office_operator.employee
+
     def __str__(self):
         return '{} - {}'.format(self.employee, self.office)
