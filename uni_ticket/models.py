@@ -728,6 +728,7 @@ class TicketReply(models.Model):
     text = models.TextField()
     attachment = models.FileField(upload_to=_attachment_upload,
                                   null=True, blank=True,
+                                  max_length=255,
                                   validators=[validate_file_extension,
                                               validate_file_size,
                                               validate_file_length])
@@ -801,6 +802,7 @@ class AbstractTask(models.Model):
     priority = models.IntegerField(default=0)
     attachment = models.FileField(upload_to=_attachment_upload,
                                   null=True, blank=True,
+                                  max_length=255,
                                   validators=[validate_file_extension,
                                               validate_file_size,
                                               validate_file_length])
@@ -885,6 +887,7 @@ class TicketCategoryCondition(models.Model):
     ordinamento = models.PositiveIntegerField(blank=True, default=0)
     attachment = models.FileField(upload_to=_attachment_upload,
                                   null=True, blank=True,
+                                  max_length=255,
                                   validators=[validate_file_extension,
                                               validate_file_size,
                                               validate_file_length])

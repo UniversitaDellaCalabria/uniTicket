@@ -47,6 +47,7 @@ class OrganizationalStructure(models.Model):
     create_date = models.DateTimeField(auto_now=True)
     banner = models.ImageField(upload_to=_logo_upload,
                                null=True, blank=True,
+                               max_length=255,
                                validators=[validate_file_size,
                                            validate_file_length])
     url = models.CharField(max_length=768, null=True, blank=True)
