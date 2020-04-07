@@ -615,14 +615,16 @@ class Ticket(SavedFormContent):
 
     def has_been_taken(self, user=None, exclude_readonly=False):
         assignments = TicketAssignment.objects.filter(ticket=self,
-                                                      follow=True)
+                                                      follow=True,
+                                                      taken_date__isnull=False)
         if exclude_readonly:
             assignments = assignments.filter(readonly=False)
-        if not assignments.first(): return False
-        if not assignments.first().taken_date: return False
+        if not assignments: return False
+        # if not assignments.first(): return False
+        # if not assignments.first().taken_date: return False
         if not user: return True
         for assignment in assignments:
-            if assignment.taken_date and user_manage_office(user, assignment.office):
+            if user_manage_office(user, assignment.office):
                 return True
         return False
 

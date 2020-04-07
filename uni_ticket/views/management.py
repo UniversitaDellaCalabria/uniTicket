@@ -752,7 +752,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                               _("Il ticket {} non può essere riaperto").format(ticket),
                               structure_slug=structure.slug)
 
-    if not ticket.has_been_taken(request.user):
+    if not ticket.has_been_taken(user=request.user):
         # log action
         logger.info('[{}] {} tried to reopen'
                     ' not taken ticket {}'.format(timezone.now(),
