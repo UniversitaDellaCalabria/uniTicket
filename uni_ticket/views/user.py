@@ -68,7 +68,9 @@ def _close_notification_ticket(ticket, category, user, operator,
     ticket.is_closed = True
     ticket.closed_date = timezone.now()
     ticket.closed_by = user
-    ticket.save()
+    ticket.save(update_fields=['is_closed',
+                               'closed_date',
+                               'closed_by'])
 
     # assign to an operator
     ticket_assignment.taken_date = timezone.now()
@@ -172,7 +174,6 @@ def ticket_add_new(request, structure_slug, category_slug):
                                  slug=category_slug,
                                  is_active=True)
 
-
     # if anonymous user and category only for logged users
     if not category.allow_anonymous and not request.user.is_authenticated:
         return redirect('{}?next={}'.format(settings.LOGIN_URL, request.path))
@@ -236,7 +237,6 @@ def ticket_add_new(request, structure_slug, category_slug):
             # set users (for current operation and for log)
             current_user = request.user if request.user.is_authenticated else random_office_operator
             log_user = request.user.username if request.user.is_authenticated else 'anonymous'
-
             # create ticket
             ticket = Ticket(code=code,
                             subject=subject,
