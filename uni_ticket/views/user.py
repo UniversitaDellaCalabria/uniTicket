@@ -62,8 +62,7 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
                                       source))
 
 # close ticket as soon as opened if it's a notification ticket
-def _close_notification_ticket(ticket, category, user, operator,
-                               ticket_assignment):
+def _close_notification_ticket(ticket, user, operator, ticket_assignment):
     # close ticket
     ticket.is_closed = True
     ticket.closed_date = timezone.now()
@@ -75,7 +74,7 @@ def _close_notification_ticket(ticket, category, user, operator,
     # assign to an operator
     ticket_assignment.taken_date = timezone.now()
     ticket_assignment.taken_by = operator
-    return ticket_assignment
+    ticket_assignment.save(update_fields=['taken_date', 'taken_by'])
 
 # save attachments of new ticket
 def _save_new_ticket_attachments(ticket,
@@ -263,15 +262,14 @@ def ticket_add_new(request, structure_slug, category_slug):
 
             ticket_assignment = TicketAssignment(ticket=ticket,
                                                  office=office)
+            ticket_assignment.save()
 
             # if it's a notification ticket, take and close the ticket
             if category.is_notify:
-                ticket_assignment = _close_notification_ticket(ticket=ticket,
-                                                               category=category,
-                                                               user=current_user,
-                                                               operator=random_office_operator,
-                                                               ticket_assignment=ticket_assignment)
-            ticket_assignment.save()
+                _close_notification_ticket(ticket=ticket,
+                                           user=current_user,
+                                           operator=random_office_operator,
+                                           ticket_assignment=ticket_assignment)
 
             # log action
             logger.info('[{}] ticket {} assigned to '
@@ -874,17 +872,16 @@ def ticket_clone(request, ticket_id):
             ticket_assignment = TicketAssignment(ticket=ticket,
                                                  office=office)
                                                  # assigned_by=request.user)
+            ticket_assignment.save()
 
             if category.is_notify:
                 random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(office)
 
                 # if ticket is a notify, take the ticket
-                ticket_assignment = _close_notification_ticket(ticket=ticket,
-                                                               category=category,
-                                                               user=request.user,
-                                                               operator=random_office_operator,
-                                                               ticket_assignment=ticket_assignment)
-            ticket_assignment.save()
+                _close_notification_ticket(ticket=ticket,
+                                           user=request.user,
+                                           operator=random_office_operator,
+                                           ticket_assignment=ticket_assignment)
 
             # log action
             logger.info('[{}] ticket {} assigned to '
