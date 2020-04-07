@@ -172,9 +172,10 @@ def ticket_add_new(request, structure_slug, category_slug):
                                  slug=category_slug,
                                  is_active=True)
 
+
     # if anonymous user and category only for logged users
     if not category.allow_anonymous and not request.user.is_authenticated:
-        return custom_message(request, _("Autenticazione necessaria"))
+        return redirect('{}?next={}'.format(settings.LOGIN_URL, request.path))
 
     # is user is authenticated
     if request.user.is_authenticated:
