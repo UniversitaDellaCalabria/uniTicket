@@ -488,10 +488,10 @@ class Ticket(SavedFormContent):
         for off in offices_to_disable:
             # default office can't be unassigned
             if off.is_default: continue
-            competence = TicketAssignment.objects.get(ticket=self,
-                                                      office=off,
-                                                      taken_date__isnull=False)
-            if not competence.follow: continue
+            competence = TicketAssignment.objects.filter(ticket=self,
+                                                         office=off,
+                                                         taken_date__isnull=False).first()
+            if not competence or not competence.follow: continue
             competence.follow = allow_readonly
             competence.readonly = allow_readonly
             competence.save(update_fields = ['follow',
@@ -586,20 +586,24 @@ class Ticket(SavedFormContent):
         return d
         # return json.loads(d)
 
-    def is_followed_in_structure(self, structure):
+    def is_followed_in_structure(self, structure, taken=False):
         if not structure: return False
         assignment = TicketAssignment.objects.filter(ticket=self,
                                                      office__organizational_structure=structure,
                                                      office__is_active=True,
                                                      follow=True)
+        if taken:
+            assignment = assignment.filter(taken_date__isnull=False)
         return self._check_assignment_privileges(assignment)
 
-    def is_followed_by_office(self, office):
+    def is_followed_by_office(self, office, taken=False):
         if not office: return False
         assignment = TicketAssignment.objects.filter(ticket=self,
                                                      office=office,
                                                      office__is_active=True,
                                                      follow=True)
+        if taken:
+            assignment = assignment.filter(taken_date__isnull=False)
         return self._check_assignment_privileges(assignment)
 
     def is_followed_by_one_of_offices(self, offices):
@@ -609,8 +613,11 @@ class Ticket(SavedFormContent):
                                                      follow=True)
         return self._check_assignment_privileges(assignment)
 
-    def has_been_taken(self, user=None):
-        assignments = TicketAssignment.objects.filter(ticket=self)
+    def has_been_taken(self, user=None, exclude_readonly=False):
+        assignments = TicketAssignment.objects.filter(ticket=self,
+                                                      follow=True)
+        if exclude_readonly:
+            assignments = assignments.filter(readonly=False)
         if not assignments.first(): return False
         if not assignments.first().taken_date: return False
         if not user: return True
@@ -631,10 +638,12 @@ class Ticket(SavedFormContent):
             # office_operators[assignment.office.__str__()] = assigned.__str__()
         return '{}</ul>'.format(result)
 
-    def take(self, user, assigned_by=None):
+    def take(self, user, assigned_by=None, strictly_assigned=False):
         assignments = TicketAssignment.objects.filter(ticket=self)
         for assignment in assignments:
-            if user_manage_office(user, assignment.office) and not assignment.taken_date:
+            if user_manage_office(user=user,
+                                  office=assignment.office,
+                                  strictly_assigned=strictly_assigned) and not assignment.taken_date:
                 assignment.taken_date = timezone.now()
                 assignment.taken_by = user
                 if assigned_by:

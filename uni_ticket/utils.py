@@ -94,7 +94,7 @@ def user_is_operator(user, structure):
                              office__is_active=True)
     if oe: return oe
 
-def user_manage_office(user, office):
+def user_manage_office(user, office, strictly_assigned=False):
     """
     Returns True if user is a operator of an office for the structure
     """
@@ -103,7 +103,7 @@ def user_manage_office(user, office):
     if not office.is_active: return False
     # If user is an operator of structure's default office,
     # than he can manage tickets of other offices too
-    if user_is_in_default_office(user, office.organizational_structure):
+    if not strictly_assigned and user_is_in_default_office(user, office.organizational_structure):
         return True
     osoe = OrganizationalStructureOfficeEmployee
     oe = osoe.objects.filter(employee=user, office=office).first()

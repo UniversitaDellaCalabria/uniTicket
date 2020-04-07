@@ -30,11 +30,91 @@
     <ul>
         {% for office in untaken_user_offices %}
             <li>
-                <b>{{ office }}</b>
+                <b class="mr-md-3">{{ office }}</b>
                 <button type="button"
-                        class="btn btn-outline-secondary btn-xs"
+                        class="btn btn-outline-success btn-xs"
                         data-toggle="modal"
                         data-target="#take-ticket-{{ office.pk }}">{% trans "Prendi tu in carico" %}</button>
+                {% get_usertype user=request.user structure=structure label_value_tuple=True as usertype_tuple %}
+                {% if usertype_tuple.0 == 'manager' %}
+                <div id="accordionDiv{{ office.pk }}"
+                     class="collapse-div collapse-left-icon" role="tablist"
+                     style="border-bottom: 0;">
+                    <div class="collapse-header" id="headingA{{ office.pk }}">
+                        <button data-toggle="collapse"
+                                data-target="#accordion{{ office.pk }}"
+                                aria-expanded="false"
+                                aria-controls="accordion{{ office.pk }}"
+                                style="padding-left: 0; padding-right: 0; border-top: 0;">
+                            <small>
+                                {% trans "o clicca qui per assegnare a un operatore di questo ufficio" %}
+                            </small>
+                        </button>
+                    </div>
+                    <div id="accordion{{ office.pk }}"
+                         class="collapse"
+                         role="tabpanel"
+                         aria-labelledby="headingA{{ office.pk }}"
+                         data-parent="#accordionDiv{{ office.pk }}">
+                        <div class="collapse-body small">
+                            <div>
+                                <form method="post" enctype="multipart/form-data">
+                                    {% for key, value in offices_forms.items %}
+                                        {% if key == office %}
+                                            {% include 'form_template.html' with form=value %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <button type="button"
+                                            class="btn btn-success btn-block"
+                                            data-toggle="modal"
+                                            data-target="#assign-{{ office.pk }}">
+                                            <svg class="icon icon-xs icon-white">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+                                            </svg>
+                                            {% trans "Assegna ticket a un operatore dell'ufficio" %}
+                                    </button>
+                                    <!-- priority ticket modal -->
+                                    <div class="modal fade"
+                                         tabindex="-1"
+                                         role="dialog"
+                                         id="assign-{{ office.pk }}">
+                                        <div class="modal-dialog modal-dialog-centered"
+                                             role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">
+                                                        {% trans "Modifica ticket" %}
+                                                    </h5>
+                                                    <button class="close"
+                                                            type="button"
+                                                            data-dismiss="modal"
+                                                            aria-label="Close">
+                                                       <svg class="icon">
+                                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                       </svg>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>{% trans "Vuoi davvero procedere modificando il ticket" %}
+                                                       <br>
+                                                       <b>{{ ticket }}</b> ?
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <input class="btn btn-success"
+                                                           type="submit"
+                                                           value="{% trans 'Si, procedi' %}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- end priority ticket modal -->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </li>
             <hr>
         {% endfor %}
