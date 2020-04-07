@@ -187,15 +187,17 @@ def ticket_detail(request, structure_slug, ticket_id,
     offices_forms = {}
     for u_office in untaken_user_offices:
         if user_is_manager(user, u_office.organizational_structure):
-            offices_forms[u_office] = operators_form = AssignTicketToOperatorForm(structure=structure,
-                                                                                  office=u_office,
-                                                                                  current_user=user)
+            offices_forms[u_office]  = AssignTicketToOperatorForm(structure=structure,
+                                                                  office=u_office,
+                                                                  current_user=user)
 
     # if user is a structure manager and ticket has not ever been taken
     # manager can assign it to one of office operators
     # (show assignment form)
     if user_is_manager(user, structure) and not ticket.has_been_taken():
-        ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
+        ticket_assignment = TicketAssignment.objects.filter(ticket=ticket,
+                                                            follow=True,
+                                                            taken_date__isnull=True).first()
         office = ticket_assignment.office
         operators_form = AssignTicketToOperatorForm(structure=structure,
                                                     office=office,
@@ -219,7 +221,9 @@ def ticket_detail(request, structure_slug, ticket_id,
         form = PriorityForm(request.POST)
         operators_form = None
         if user_is_manager(user, structure) and not ticket.has_been_taken():
-            ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
+            ticket_assignment = TicketAssignment.objects.filter(ticket=ticket,
+                                                                follow=True,
+                                                                taken_date__isnull=True).first()
             office = ticket_assignment.office
             operators_form = AssignTicketToOperatorForm(request.POST,
                                                         structure=structure,
@@ -231,17 +235,17 @@ def ticket_detail(request, structure_slug, ticket_id,
 
         # if manager wants to assign ticket to an office operator
         # by untaken offices list
-        for k,v in offices_forms.items():
+        for o in offices_forms:
             office_op_form = AssignTicketToOperatorForm(request.POST,
-                                                        structure=k.organizational_structure,
-                                                        office=k,
+                                                        structure=o.organizational_structure,
+                                                        office=o,
                                                         current_user=user)
             if office_op_form.is_valid():
                 compiled_assignment_form = office_op_form
                 break
         # if ticket hasn't never been taken and manager assign it to an operator
         if not compiled_assignment_form and operators_form and operators_form.is_valid():
-            compiled_assignment_form = office_op_form = operators_form
+            compiled_assignment_form = operators_form
 
         # Manager has assigned ticket to another operator
         if compiled_assignment_form:

@@ -155,7 +155,9 @@ def ticket_is_not_taken_and_not_closed(func_to_decorate):
         request = original_args[0]
         ticket_id = original_kwargs['ticket_id']
         ticket = get_object_or_404(Ticket, code=ticket_id)
-        if ticket.has_been_taken():
+        assignments_count = TicketAssignment.objects.filter(ticket=ticket).count()
+        print(assignments_count)
+        if ticket.has_been_taken() or assignments_count > 1:
             return custom_message(request, _("Il ticket è stato assegnato"))
         if ticket.is_closed:
             return custom_message(request, _("Il ticket è chiuso"))
@@ -203,9 +205,10 @@ def ticket_is_taken_for_employee(func_to_decorate):
         structure_slug = original_kwargs['structure_slug']
         ticket_id = original_kwargs['ticket_id']
         ticket = get_object_or_404(Ticket, code=ticket_id)
-        if not ticket.has_been_taken(request.user):
+        if not ticket.has_been_taken(user=request.user,
+                                     exclude_readonly=True):
             m = _("Il ticket deve essere prima preso in carico"
-                  " da questo ufficio per poter essere gestito")
+                  " per poter essere gestito")
             messages.add_message(request, messages.ERROR, m)
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
