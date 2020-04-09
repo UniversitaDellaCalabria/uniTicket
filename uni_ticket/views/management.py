@@ -374,25 +374,17 @@ def tickets(request, structure_slug, structure, office_employee=None):
 
     not_closed = Ticket.objects.filter(code__in=ticket_list,
                                        is_closed=False)
-    # unassigned = []
-    # opened = []
-    unassigned = 0
-    opened = 0
-    my_opened = 0
+    unassigned = []
+    opened = []
+    my_opened = []
     for nc in not_closed:
         if nc.has_been_taken(user=request.user):
-            # opened.append(nc)
-            opened += 1
+            opened.append(nc)
             if nc.has_been_taken_by_user(request.user):
-                # my_opened(append.nc)
-                my_opened += 1
+                my_opened.append(nc)
         else:
-            # unassigned.append(nc)
-            unassigned += 1
-    # chiusi = Ticket.objects.filter(code__in=ticket_list, is_closed=True)
-    chiusi = Ticket.objects.filter(code__in=ticket_list,
-                                   is_closed=True).count()
-
+            unassigned.append(nc)
+    chiusi = Ticket.objects.filter(code__in=ticket_list, is_closed=True)
 
     d = {'ticket_aperti': opened,
          'ticket_assegnati_a_me': my_opened,
