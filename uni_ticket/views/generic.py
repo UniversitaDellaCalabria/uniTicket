@@ -154,6 +154,30 @@ def opened_ticket(request, structure_slug=None,
     return render(request, template, d)
 
 @login_required
+def my_opened_ticket(request, structure_slug=None,
+                     structure=None, office_employee=None):
+    """
+    Gets opened tickets list (requires HTML datatable in template)
+
+    :type structure_slug: String
+    :type structure: OrganizationalStructure (from @is_manager/@is_operator)
+    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
+
+    :param structure_slug: structure slug
+    :param structure: structure object (from @is_manager/@is_operator)
+    :param office_employee: operator offices queryset (from @is_operator)
+
+    :return: render
+    """
+    title = _("Ticket assegnati a me")
+    user_type = get_user_type(request.user, structure)
+    template = "{}/my_opened_ticket.html".format(user_type)
+    d = {'structure': structure,
+         'sub_title': structure,
+         'title': title,}
+    return render(request, template, d)
+
+@login_required
 def unassigned_ticket(request, structure_slug=None,
                       structure=None, office_employee=None):
     """

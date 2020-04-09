@@ -386,7 +386,7 @@ class Ticket(SavedFormContent):
                 return _('<b class="text-success">Chiuso</b>')
             return _('<b class="text-success">Chiuso</b> <small>[{}]</small>').format(self.closed_by)
         if not self.has_been_taken(): return _('<b class="text-danger">Aperto</b>')
-        return _('<b class="text-warning">Assegnato</b> {}').format(self.taken_by_list())
+        return _('<b class="text-warning">Assegnato</b> {}').format(self.taken_by_html_list())
 
     def update_log(self, user, note='', send_mail=True, mail_msg=''):
         if not user: return False
@@ -613,22 +613,37 @@ class Ticket(SavedFormContent):
                                                      follow=True)
         return self._check_assignment_privileges(assignment)
 
-    def has_been_taken(self, user=None, exclude_readonly=False):
+    def has_been_taken(self,
+                       user=None,
+                       assigned_to_user=False,
+                       follow=True,
+                       exclude_readonly=False):
         assignments = TicketAssignment.objects.filter(ticket=self,
-                                                      follow=True,
+                                                      follow=follow,
                                                       taken_date__isnull=False)
-        if exclude_readonly:
+        if follow and exclude_readonly:
             assignments = assignments.filter(readonly=False)
+        if user and assigned_to_user:
+            assignments = assignments.filter(taken_by=user)
+            return True if assignments else False
         if not assignments: return False
-        # if not assignments.first(): return False
-        # if not assignments.first().taken_date: return False
         if not user: return True
         for assignment in assignments:
             if user_manage_office(user, assignment.office):
                 return True
         return False
 
-    def taken_by_list(self):
+    def has_been_taken_by_user(self, user, follow=True):
+        if not user: return False
+        assignments = TicketAssignment.objects.filter(ticket=self,
+                                                      taken_by=user,
+                                                      follow=follow,
+                                                      exclude_readonly=False)
+        if follow and exclude_readonly:
+            assignments = assignments.filter(readonly=False)
+        return True if assignments else False
+
+    def taken_by_html_list(self):
         office_operators = {}
         assignments = TicketAssignment.objects.filter(ticket=self)
         result = '<ul>'

@@ -78,7 +78,6 @@ def user_unassigned_ticket(request):
     if settings.SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(created_by=request.user,
-                                        # is_taken=False,
                                         is_closed=False)
     result_list = ticket_list
     for ticket in ticket_list:
@@ -99,7 +98,6 @@ def user_opened_ticket(request):
     if settings.SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(created_by=request.user,
-                                        # is_taken=True,
                                         is_closed=False)
     result_list = ticket_list
     for ticket in ticket_list:
@@ -160,7 +158,6 @@ def manager_unassigned_ticket(request, structure_slug, structure):
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
     ticket_list = Ticket.objects.filter(code__in=tickets,
-                                        # is_taken=False,
                                         is_closed=False)
     result_list = ticket_list
     for ticket in ticket_list:
@@ -185,11 +182,35 @@ def manager_opened_ticket(request, structure_slug, structure):
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
     ticket_list = Ticket.objects.filter(code__in=tickets,
-                                        # is_taken=True,
                                         is_closed=False)
     result_list = ticket_list
     for ticket in ticket_list:
         if not ticket.has_been_taken(user=request.user):
+            result_list = result_list.exclude(pk=ticket.pk)
+    dtd = TicketDTD( request, result_list, _ticket_columns )
+    return JsonResponse(dtd.get_dict())
+
+@csrf_exempt
+@is_manager
+def manager_my_opened_ticket(request, structure_slug, structure):
+    """
+    Returns all assigned and not closed tickets taken by manager
+
+    :type structure_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: manager structure slug
+    :param structure: manager structure (from @is_manager)
+
+    :return: JsonResponse
+    """
+    tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
+    ticket_list = Ticket.objects.filter(code__in=tickets,
+                                        is_closed=False)
+    result_list = ticket_list
+    for ticket in ticket_list:
+        if not ticket.has_been_taken(user=request.user,
+                                     assigned_to_user=True):
             result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
@@ -255,7 +276,6 @@ def operator_unassigned_ticket(request, structure_slug,
     """
     tickets = visible_tickets_to_user(request.user, structure, office_employee)
     ticket_list = Ticket.objects.filter(code__in=tickets,
-                                        # is_taken=False,
                                         is_closed=False)
 
     result_list = ticket_list
@@ -286,11 +306,40 @@ def operator_opened_ticket(request, structure_slug,
                                       structure,
                                       office_employee)
     ticket_list = Ticket.objects.filter(code__in=tickets,
-                                        # is_taken=True,
                                         is_closed=False)
     result_list = ticket_list
     for ticket in ticket_list:
         if not ticket.has_been_taken(user=request.user):
+            result_list = result_list.exclude(pk=ticket.pk)
+    dtd = TicketDTD( request, result_list, _ticket_columns )
+    return JsonResponse(dtd.get_dict())
+
+@csrf_exempt
+@is_operator
+def operator_my_opened_ticket(request, structure_slug,
+                              structure, office_employee):
+    """
+    Returns all assigned and not closed tickets taken by operator
+
+    :type structure_slug: String
+    :type structure: OrganizationalStructure (from @is_operator)
+    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
+
+    :param structure_slug: operator structure slug
+    :param structure: operator structure (from @is_operator)
+    :param office_employee: queryset with operator and his offices (from @is_operator)
+
+    :return: JsonResponse
+    """
+    tickets = visible_tickets_to_user(request.user,
+                                      structure,
+                                      office_employee)
+    ticket_list = Ticket.objects.filter(code__in=tickets,
+                                        is_closed=False)
+    result_list = ticket_list
+    for ticket in ticket_list:
+        if not ticket.has_been_taken(user=request.user,
+                                     assigned_to_user=True):
             result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())

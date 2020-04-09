@@ -36,13 +36,24 @@ def dashboard(request, structure_slug, structure, office_employee):
                                            office_employee=office_employee)
     tickets = Ticket.objects.filter(code__in=user_tickets)
     not_closed = tickets.filter(is_closed=False)
-    unassigned = []
-    opened = []
+    # unassigned = []
+    # opened = []
+    # my_opened = []
+    unassigned = 0
+    opened = 0
+    my_opened = 0
     for nc in not_closed:
-        if nc.has_been_taken(request.user): opened.append(nc)
-        else: unassigned.append(nc)
-    chiusi = tickets.filter(is_closed=True)
-
+        if nc.has_been_taken(user=request.user):
+            # opened.append(nc)
+            opened += 1
+            if nc.has_been_taken_by_user(request.user):
+                # my_opened(append.nc)
+                my_opened += 1
+        else:
+            # unassigned.append(nc)
+            unassigned += 1
+    # chiusi = tickets.filter(is_closed=True)
+    chiusi = tickets.filter(is_closed=True).count()
     messages = 0
     for ticket in tickets:
         if not ticket.is_followed_by_one_of_offices(offices):
@@ -55,6 +66,7 @@ def dashboard(request, structure_slug, structure, office_employee):
          'sub_title': sub_title,
          'title': title,
          'ticket_aperti': opened,
+         'ticket_assegnati_a_me': my_opened,
          'ticket_chiusi': chiusi,
          'ticket_non_gestiti': unassigned,}
     return render(request, template, d)

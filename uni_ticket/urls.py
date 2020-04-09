@@ -48,12 +48,14 @@ urlpatterns += [
     # Manager json
     path('{}/manager_unassigned_ticket.json'.format(structure), datatables.manager_unassigned_ticket, name='manager_unassigned_ticket_json'),
     path('{}/manager_opened_ticket.json'.format(structure), datatables.manager_opened_ticket, name='manager_opened_ticket_json'),
+    path('{}/my/manager_opened_ticket.json'.format(structure), datatables.manager_my_opened_ticket, name='manager_my_opened_ticket_json'),
     path('{}/manager_closed_ticket.json'.format(structure), datatables.manager_closed_ticket, name='manager_closed_ticket_json'),
     path('{}/manager_not_closed_ticket.json'.format(structure), datatables.manager_not_closed_ticket, name='manager_not_closed_ticket_json'),
 
     # Operator json
     path('{}/operator_unassigned_ticket.json'.format(structure), datatables.operator_unassigned_ticket, name='operator_unassigned_ticket_json'),
     path('{}/operator_opened_ticket.json'.format(structure), datatables.operator_opened_ticket, name='operator_opened_ticket_json'),
+    path('{}/my/operator_opened_ticket.json'.format(structure), datatables.operator_my_opened_ticket, name='operator_my_opened_ticket_json'),
     path('{}/operator_closed_ticket.json'.format(structure), datatables.operator_closed_ticket, name='operator_closed_ticket_json'),
     path('{}/operator_not_closed_ticket.json'.format(structure), datatables.operator_not_closed_ticket, name='operator_not_closed_ticket_json'),
 ]
@@ -119,6 +121,7 @@ urlpatterns += [
 
     # Ticket
     path('{}/opened/'.format(tickets), login_required(is_manager(generic.opened_ticket)), name='manager_opened_ticket'),
+    path('{}/opened/my/'.format(tickets), login_required(is_manager(generic.my_opened_ticket)), name='manager_my_opened_ticket'),
     path('{}/unassigned/'.format(tickets), login_required(is_manager(generic.unassigned_ticket)), name='manager_unassigned_ticket'),
     path('{}/closed/'.format(tickets), login_required(is_manager(generic.closed_ticket)), name='manager_closed_ticket'),
     path('{}/'.format(tickets), login_required(is_manager(management.tickets)), name='manager_tickets'),
@@ -207,6 +210,7 @@ urlpatterns += [
 
     # Ticket
     path('{}/opened/'.format(tickets), login_required(is_operator(generic.opened_ticket)), name='operator_opened_ticket'),
+    path('{}/opened/my/'.format(tickets), login_required(is_operator(generic.my_opened_ticket)), name='operator_my_opened_ticket'),
     path('{}/unassigned/'.format(tickets), login_required(is_operator(generic.unassigned_ticket)), name='operator_unassigned_ticket'),
     path('{}/closed/'.format(tickets), login_required(is_operator(generic.closed_ticket)), name='operator_closed_ticket'),
     path('{}/'.format(tickets), login_required(is_operator(management.tickets)), name='operator_tickets'),

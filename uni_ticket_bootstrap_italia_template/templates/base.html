@@ -41,6 +41,9 @@ uniTicket - Università della Calabria
 
 <!-- Name top left -->
 {% block header_slim_org_name %}
+{% if request.user.is_authenticated %}
+{{ request.user }} -
+{% endif %}
 {% current_date as current_date %}
 {{ current_date }}
 {% endblock header_slim_org_name %}
