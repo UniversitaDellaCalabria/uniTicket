@@ -10,12 +10,12 @@
                 <td>
                     {% if task.is_closed %}
                     <span class="text-danger">
-                        <b> {% trans "Chiuso" %}</b>
+                        <b> {% trans "Chiusa" %}</b>
                     </span>
                     <small>[{{ task.closed_by }}]</small>
                     {% else %}
                     <span class="text-success">
-                        <b> {% trans "Assegnato" %}</b>
+                        <b> {% trans "Aperta" %}</b>
                     </span>
                     {% endif %}
                 </td>

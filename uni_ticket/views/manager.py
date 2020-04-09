@@ -2205,7 +2205,7 @@ def category_task_attachment_delete(request, structure_slug, category_slug,
     task.attachment=None
     task.save(update_fields = ['attachment'])
 
-    msg = _("Allegato task {} eliminato".format(task))
+    msg = _("Allegato attività {} eliminato".format(task))
 
     # log action
     logger.info('[{}] {} deleted attachment'

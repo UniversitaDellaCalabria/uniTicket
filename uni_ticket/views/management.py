@@ -1228,9 +1228,9 @@ def task_add_new(request, structure_slug, ticket_id,
                                                              new_task))
 
             ticket.update_log(user=request.user,
-                              note = _("Aggiunto task: {}".format(new_task)))
+                              note = _("Aggiunta attività: {}".format(new_task)))
             messages.add_message(request, messages.SUCCESS,
-                                 _("Task {} creato con successo".format(new_task)))
+                                 _("Attività {} creata con successo".format(new_task)))
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket.code)
@@ -1300,9 +1300,9 @@ def task_remove(request, structure_slug,
 
     task.delete()
     ticket.update_log(user=request.user,
-                      note=_("Rimosso task: {}".format(task)))
+                      note=_("Rimossa attività: {}".format(task)))
     messages.add_message(request, messages.SUCCESS,
-                         _("Task {} rimosso correttamente".format(task)))
+                         _("Attività {} rimossa correttamente".format(task)))
     return redirect('uni_ticket:manage_ticket_url_detail',
                     structure_slug=structure_slug,
                     ticket_id = ticket_id)
@@ -1493,13 +1493,13 @@ def task_close(request, structure_slug, ticket_id, task_id,
     # Se il ticket non è chiudibile (per dipendenze attive)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     if task.is_closed:
-        return custom_message(request, _("Task già chiuso!"),
+        return custom_message(request, _("Attività già chiusa!"),
                               structure_slug=structure.slug)
     if ticket.is_closed:
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
                               structure_slug=structure.slug)
 
-    title = _('Chiusura del task')
+    title = _("Chiusura dell'attività")
     sub_title = task
     form = ChiusuraForm()
     if request.method=='POST':
@@ -1520,11 +1520,11 @@ def task_close(request, structure_slug, ticket_id, task_id,
                                                         request.user,
                                                         task))
 
-            msg = _("Chiusura task: {} - {}".format(task, motivazione))
+            msg = _("Chiusura attività: {} - {}".format(task, motivazione))
             task.update_log(user=request.user,note=msg)
             ticket.update_log(user=request.user,note=msg)
             messages.add_message(request, messages.SUCCESS,
-                                 _("Task {} chiuso correttamente".format(task)))
+                                 _("Attività {} chiusa correttamente".format(task)))
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
@@ -1584,7 +1584,7 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     # Se il ticket non è chiuso blocca
     if not task.is_closed:
-        return custom_message(request, _("Il task non è stato chiuso"),
+        return custom_message(request, _("L'attività non è stata chiusa"),
                               structure_slug=structure.slug)
     if ticket.is_closed:
         # log action
@@ -1599,7 +1599,7 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
 
     task.is_closed = False
     task.save(update_fields = ['is_closed'])
-    msg = _("Riapertura task {}".format(task))
+    msg = _("Riapertura attività {}".format(task))
     task.update_log(user=request.user,note=msg)
 
     # log action
@@ -1612,7 +1612,7 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
 
     ticket.update_log(user=request.user,note=msg)
     messages.add_message(request, messages.SUCCESS,
-                         _("Task {} riaperto correttamente".format(task)))
+                         _("Attività {} riaperta correttamente".format(task)))
     return redirect('uni_ticket:manage_ticket_url_detail',
                     structure_slug=structure_slug,
                     ticket_id=ticket_id)
@@ -1697,7 +1697,7 @@ def task_edit(request, structure_slug, ticket_id, task_id,
                                                       task))
 
             messages.add_message(request, messages.ERROR,
-                                 _("Impossibile modificare un task chiuso"))
+                                 _("Impossibile modificare un'attività chiusa"))
             return redirect('uni_ticket:manage_task_detail_url',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id,
@@ -1791,7 +1791,7 @@ def task_attachment_delete(request, structure_slug,
 
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     if task.created_by != request.user:
-        return custom_message(request, _("Permessi di modifica del task mancanti"),
+        return custom_message(request, _("Permessi di modifica dell'attività mancanti"),
                               structure_slug=structure.slug)
 
     # Rimuove l'allegato dal disco
@@ -1800,7 +1800,7 @@ def task_attachment_delete(request, structure_slug,
     task.attachment=None
     task.save(update_fields = ['attachment'])
 
-    msg = _("Allegato task {} eliminato".format(task.code))
+    msg = _("Allegato attività {} eliminato".format(task.code))
     task.update_log(user=request.user, note=_("Allegato eliminato"))
     ticket.update_log(user=request.user, note=msg)
 
