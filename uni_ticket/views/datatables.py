@@ -1,3 +1,4 @@
+import copy
 import json
 
 from django.conf import settings
@@ -79,7 +80,7 @@ def user_unassigned_ticket(request):
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_closed=False)
-    result_list = ticket_list
+    result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if ticket.has_been_taken():
             result_list = result_list.exclude(pk=ticket.pk)
@@ -99,7 +100,7 @@ def user_opened_ticket(request):
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(created_by=request.user,
                                         is_closed=False)
-    result_list = ticket_list
+    result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if not ticket.has_been_taken():
             result_list = result_list.exclude(pk=ticket.pk)
@@ -159,7 +160,7 @@ def manager_unassigned_ticket(request, structure_slug, structure):
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
     ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_closed=False)
-    result_list = ticket_list
+    result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if ticket.has_been_taken(user=request.user):
             result_list = result_list.exclude(pk=ticket.pk)
@@ -183,7 +184,7 @@ def manager_opened_ticket(request, structure_slug, structure):
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
     ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_closed=False)
-    result_list = ticket_list
+    result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if not ticket.has_been_taken(user=request.user):
             result_list = result_list.exclude(pk=ticket.pk)
@@ -207,7 +208,7 @@ def manager_my_opened_ticket(request, structure_slug, structure):
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
     ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_closed=False)
-    result_list = ticket_list
+    result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if not ticket.has_been_taken(user=request.user,
                                      assigned_to_user=True):
@@ -278,7 +279,7 @@ def operator_unassigned_ticket(request, structure_slug,
     ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_closed=False)
 
-    result_list = ticket_list
+    result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if ticket.has_been_taken(user=request.user):
             result_list = result_list.exclude(pk=ticket.pk)
@@ -307,7 +308,7 @@ def operator_opened_ticket(request, structure_slug,
                                       office_employee)
     ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_closed=False)
-    result_list = ticket_list
+    result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if not ticket.has_been_taken(user=request.user):
             result_list = result_list.exclude(pk=ticket.pk)
@@ -336,7 +337,7 @@ def operator_my_opened_ticket(request, structure_slug,
                                       office_employee)
     ticket_list = Ticket.objects.filter(code__in=tickets,
                                         is_closed=False)
-    result_list = ticket_list
+    result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if not ticket.has_been_taken(user=request.user,
                                      assigned_to_user=True):

@@ -633,12 +633,14 @@ class Ticket(SavedFormContent):
                 return True
         return False
 
-    def has_been_taken_by_user(self, user, follow=True):
+    def has_been_taken_by_user(self,
+                               user,
+                               follow=True,
+                               exclude_readonly=False):
         if not user: return False
         assignments = TicketAssignment.objects.filter(ticket=self,
                                                       taken_by=user,
-                                                      follow=follow,
-                                                      exclude_readonly=False)
+                                                      follow=follow)
         if follow and exclude_readonly:
             assignments = assignments.filter(readonly=False)
         return True if assignments else False
