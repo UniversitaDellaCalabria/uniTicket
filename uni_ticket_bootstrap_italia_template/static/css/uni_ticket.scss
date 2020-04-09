@@ -182,13 +182,16 @@ a.read-more .icon{ fill: #9d9d9d; }
     }
 }
 
-
 .table {
   th,
   td {
     border-bottom: 1px solid #d6dce3;
     border-top: 1px solid #d6dce3;
   }
+}
+
+.table:not(.dataTable) th {
+    min-width: 200px;
 }
 
 /*
