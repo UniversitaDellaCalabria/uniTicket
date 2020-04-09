@@ -19,7 +19,8 @@ class Test_UserFunctions(BaseTicketEnvironment):
         response = self.client.get(reverse('uni_ticket:user_dashboard'),
                                    follow=True)
         assert response.status_code == 200
-        assert self.ticket in response.context['ticket_non_gestiti']
+        assert response.context['ticket_non_gestiti'] > 0
+        # assert self.ticket in response.context['ticket_non_gestiti']
 
     def test_edit_ticket(self):
         # Edit ticket

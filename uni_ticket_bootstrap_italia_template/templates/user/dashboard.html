@@ -15,13 +15,13 @@
 
 <div class="pb-4 clearfix">
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_unassigned_ticket' %}">
-        <span class="badge badge-light">{{ ticket_non_gestiti|length }}</span> {% trans 'Ticket aperti' %}
+        <span class="badge badge-light">{{ ticket_non_gestiti }}</span> {% trans 'Ticket aperti' %}
     </a>
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_opened_ticket' %}">
-        <span class="badge badge-light">{{ ticket_aperti|length }}</span> {% trans 'Ticket assegnati' %}
+        <span class="badge badge-light">{{ ticket_aperti }}</span> {% trans 'Ticket assegnati' %}
     </a>
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_closed_ticket' %}">
-        <span class="badge badge-light">{{ ticket_chiusi|length }}</span> {% trans 'Ticket chiusi' %}
+        <span class="badge badge-light">{{ ticket_chiusi }}</span> {% trans 'Ticket chiusi' %}
     </a>
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:messages' %}">
         {% if ticket_messages > 0 %}

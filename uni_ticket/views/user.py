@@ -335,14 +335,19 @@ def dashboard(request):
     template = "user/dashboard.html"
     tickets = Ticket.objects.filter(created_by=request.user)
     not_closed = tickets.filter(is_closed=False)
-    unassigned = []
-    opened = []
+    # unassigned = []
+    # opened = []
+    unassigned = 0
+    opened = 0
     for nc in not_closed:
         if nc.has_been_taken():
-            opened.append(nc)
+            # opened.append(nc)
+            opened += 1
         else:
-            unassigned.append(nc)
-    chiusi = tickets.filter(is_closed=True)
+            # unassigned.append(nc)
+            unassigned += 1
+    # chiusi = tickets.filter(is_closed=True)
+    chiusi = tickets.filter(is_closed=True).count()
 
     messages = 0
     for ticket in tickets:
