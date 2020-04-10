@@ -45,7 +45,7 @@ class TicketAdmin(nested_admin.NestedModelAdmin):
     list_display = ('code', 'subject', 'priority', 'created_by', 'created',
                     'is_closed', 'closed_date', 'closed_by' )
     list_filter = ('created', 'is_closed', 'closed_date', 'priority')
-    search_fields = ('subject', 'description')
+    search_fields = ('code', 'subject', 'description')
 
     inlines = [# TicketAttachmentNestedInline,
                TicketAssignmentNestedInline,
