@@ -346,8 +346,8 @@ class Ticket(SavedFormContent):
         else:
             # json_dict = json.loads(self.get_modulo_compilato())
             json_dict = self.get_modulo_compilato()
-            allegati_dict = get_as_dict(compiled_module_json=json_dict).get(settings.ATTACHMENTS_DICT_PREFIX) or {}
-        return allegati_dict
+            allegati_dict = get_as_dict(compiled_module_json=json_dict).get(settings.ATTACHMENTS_DICT_PREFIX)
+        return allegati_dict or {}
 
     def get_form_module(self):
         """
