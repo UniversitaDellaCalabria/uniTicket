@@ -196,7 +196,8 @@ def ticket_add_new(request, structure_slug, category_slug):
     modulo = get_object_or_404(TicketCategoryModule,
                                ticket_category=category,
                                is_active=True)
-    form = modulo.get_form(show_conditions=True)
+    form = modulo.get_form(show_conditions=True,
+                           current_user=request.user)
     clausole_categoria = category.get_conditions()
     d={'categoria': category,
        'category_conditions': clausole_categoria,
@@ -209,13 +210,16 @@ def ticket_add_new(request, structure_slug, category_slug):
     if request.POST:
         form = modulo.get_form(data=request.POST,
                                files=request.FILES,
-                               show_conditions=True)
+                               show_conditions=True,
+                               current_user=request.user)
         d['form'] = form
 
         if form.is_valid():
             fields_to_pop = [settings.TICKET_CONDITIONS_FIELD_ID,
                              settings.TICKET_SUBJECT_ID,
-                             settings.TICKET_DESCRIPTION_ID]
+                             settings.TICKET_DESCRIPTION_ID,
+                             settings.TICKET_CAPTCHA_ID,
+                             settings.TICKET_CAPTCHA_HIDDEN_ID]
             json_data = get_POST_as_json(request=request,
                                          fields_to_pop=fields_to_pop)
             # make a UUID based on the host ID and current time

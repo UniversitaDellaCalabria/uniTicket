@@ -37,6 +37,11 @@ TICKET_DESCRIPTION_LABEL = _('Descrizione')
 TICKET_DESCRIPTION_HELP_TEXT = ('Ulteriore Descrizione della Richiesta, '
                                 'eventuali note del Richiedente')
 
+# captcha
+TICKET_CAPTCHA_ID = 'ticket_captcha'
+TICKET_CAPTCHA_HIDDEN_ID = 'ticket_captcha_hidden'
+TICKET_CAPTCHA_LABEL = _('Codice di verifica')
+
 # priority levels
 PRIORITY_LEVELS = (
                     ('-2',_('Molto alta')),
