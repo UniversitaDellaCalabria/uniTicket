@@ -557,8 +557,9 @@ def ticket_delete(request, ticket_id):
                          _("Ticket {} eliminato correttamente".format(ticket.code)))
     return redirect('uni_ticket:user_unassigned_ticket')
 
-@login_required
-@is_the_owner
+# @login_required
+# @is_the_owner
+# decorators in urls.py (print view call this view but with different decorators)
 def ticket_detail(request, ticket_id, template='user/ticket_detail.html'):
     """
     Shows ticket details

@@ -6,7 +6,7 @@ from django.urls import include, path, re_path
 from django.utils.text import slugify
 from django.views.generic import RedirectView
 
-from . decorators import is_manager, is_operator #, is_the_owner
+from . decorators import is_manager, is_operator, is_the_owner
 from . views import (datatables, generic, management,
                      manager, operator, user)
 
@@ -252,7 +252,7 @@ urlpatterns += [
     path('{}/close/'.format(ticket_id), user.ticket_close, name='user_close_ticket'),
     path('{}/clone/'.format(ticket_id), user.ticket_clone, name='user_clone_ticket'),
     path('{}/tasks/<str:task_id>/'.format(ticket_id), user.task_detail, name='task_detail'),
-    path('{}/'.format(ticket_id), user.ticket_detail, name='ticket_detail'),
+    path('{}/'.format(ticket_id), login_required(is_the_owner(user.ticket_detail)), name='ticket_detail'),
     path('settings/', generic.user_settings, name='user_settings'),
     path('messages/', generic.ticket_messages, name='messages'),
 ]
