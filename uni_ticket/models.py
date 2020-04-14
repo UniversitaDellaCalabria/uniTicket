@@ -394,7 +394,7 @@ class Ticket(SavedFormContent):
         if send_mail:
             # Send mail to ticket owner
             d = {'hostname': settings.HOSTNAME,
-                 'user': user,
+                 'user': self.created_by,
                  'message': mail_msg or note,
                  'ticket': self
                 }
