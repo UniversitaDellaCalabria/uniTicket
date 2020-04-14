@@ -31,7 +31,7 @@
                     <div class="card-body">
                         {% if ticket.input_module.ticket_category.show_heading_text %}
                         <p class="card-title text-left">
-                            {% settings_value name="TICKET_HEADING_TEXT" user=request.user taxpayer=request.user.taxpayer_id category=ticket.input_module.ticket_category as heading %}
+                            {% settings_value name="TICKET_HEADING_TEXT" user=ticket.created_by taxpayer=ticket.created_by.taxpayer_id category=ticket.input_module.ticket_category as heading %}
                             {{ heading|safe  }}
                             {% settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
                             {% settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
