@@ -26,7 +26,7 @@ class ChatMessageModelAdmin(admin.ModelAdmin):
 class UserChannel(admin.ModelAdmin):
     readonly_fields = ('user', 'channel', 'room',
                        'created', 'last_seen',)
-    search_fields = ('user', 'room', 'channel')
+    search_fields = ('user__username', 'room', 'channel')
     list_display = ('user', 'channel', 'room', 'created', 'last_seen')
     list_filter = ('room', 'created', 'last_seen')
     date_hierarchy = 'created'
