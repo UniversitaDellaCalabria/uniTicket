@@ -258,13 +258,16 @@ def ticket_user_summary_dict(user):
                 continue
             assignments = assign_model.objects.filter(office=office,
                                                       follow=True,
+                                                      readonly=False,
                                                       ticket__is_closed=False)
-            if not d.get(office):
+            if assignments:
                 d[structure][office] = []
-
-            for ticket in assignments:
-                d[structure][office].append({'subject': ticket.ticket.subject,
-                                             'url': ticket.ticket.get_url(structure=structure)})
+                for assignment in assignments:
+                    d[structure][office].append({'subject': assignment.ticket.subject,
+                                                 'code': assignment.ticket.code,
+                                                 'url': assignment.ticket.get_url(structure=structure)})
+        if not d[structure]:
+            del d[structure]
     return d
 
 def send_summary_email(users=[]):
@@ -276,22 +279,24 @@ def send_summary_email(users=[]):
             continue
         msg = []
         ticket_sum = 0
-        tick_sum = ticket_user_summary_dict(user)
-        for structure in tick_sum:
-            if not tick_sum[structure]: continue
+        assignments_dict = ticket_user_summary_dict(user)
+        ticket_code_list = []
+        for structure in assignments_dict:
+            if not assignments_dict[structure]: continue
             msg.append('{}:\n'.format(structure))
-            for office in tick_sum[structure]:
-                if not tick_sum[structure][office]: continue
-                msg.append('{} tickets in {}:\n'.format(len(tick_sum[structure][office]),
+            for office in assignments_dict[structure]:
+                msg.append('{} tickets in {}:\n'.format(len(assignments_dict[structure][office]),
                                                             office.name))
-                for ticket in tick_sum[structure][office]:
-                    ticket_sum += 1
+                for ticket in assignments_dict[structure][office]:
+                    if ticket['code'] not in ticket_code_list:
+                        ticket_sum += 1
+                        ticket_code_list.append(ticket['code'])
                     msg.append(' - {} (http://{}{})\n'.format(ticket['subject'],
                                                               settings.HOSTNAME,
                                                               ticket['url']))
             msg.append('\n')
 
-        d = {'open_ticket_number': ticket_sum,
+        d = {'opened_ticket_number': ticket_sum,
              'tickets_per_office': ''.join(msg),
              'hostname': settings.HOSTNAME,
              'user': user}

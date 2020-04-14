@@ -133,7 +133,7 @@ SUMMARY_USER_EMAIL = _("""Il seguente ticket {event msg}:
 
 {ticket}""")
 
-SUMMARY_EMPLOYEE_EMAIL = _("""Hai {open_ticket_number} tickets da gestire.
+SUMMARY_EMPLOYEE_EMAIL = _("""Ci sono {opened_ticket_number} tickets da gestire.
 
 {tickets_per_office}""")
 
