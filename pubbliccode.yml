@@ -1,0 +1,138 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+categories:
+  - customer-service-and-support
+  - help-desk
+dependsOn:
+  open:
+    - name: MariaDB
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+    - name: Python
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+    - name: Django
+      optional: false
+      version: ''
+      versionMax: ''
+      versionMin: ''
+description:
+  it:
+    documentation: 'https://uniticket.readthedocs.io/it/latest/index.html'
+    features:
+      - Integazione SAML2 SSO (pySAML2)
+      - Multi Tenant. Un unico sistema a supporto di diversi uffici e aree organizzative;
+      - Possibilità di trasferire e condividere ticket tra differenti uffici/aree
+      - Possibilità di aggiungere clausole di consenso da accettare prima di aprire un ticket
+      - Interdipendenza tra ticket
+      - Lista di attività atomiche per ogni ticket, per guidare l’utente nel processo di lavorazione ed evasione
+      - Form builder, possibilità di creare i moduli di inserimento per ogni categoria di ticket
+      - Campi di input personalzzati, campi complessi e Django Formsets configurabili tramite widget
+      - Gestione allegati firmati digitalmente (PDF e P7M), con controllo e validazione dell’integrità dei dati
+      - Report di riepilogo via email che include la lista dei ticket pendenti agli operatori
+      - JQuery Datatables integrato, per una gestione Ajax con processamento lato server dei dati, per ottime performance
+      - Template grafico reponsive per una esperienza di navigazione ottimale anche sui dispositivi mobili
+      - Integazione SAML2 SSO (pySAML2)
+      - Pienamente rispondente alle linee guida AGID per le interfacce grafiche
+    genericName: applicazione web
+    longDescription: >
+      Django **Unified Ticket System** è un sistema software di ticketing ed
+      helpdesk per il tracciamento e la digitalizzazione dei flussi di richieste
+      e documentali.
+
+
+      Principali caratteristiche:
+
+
+      - Multi Tenant. Un unico sistema a supporto di diversi uffici e aree
+      organizzative;
+
+      - Possibilità di trasferire e condividere ticket tra differenti
+      uffici/aree;
+
+      - Possibilità di aggiungere clausole di consenso da accettare prima di
+      aprire un ticket;
+
+      - Interdipendenza tra ticket;
+
+      - Lista di attività atomiche per ogni ticket, per guidare l’utente nel
+      processo di lavorazione ed evasione;
+
+      - Form builder, possibilità di creare i moduli di inserimento per ogni
+      categoria di ticket;
+
+      - Campi di input personalzzati, campi complessi e Django Formsets
+      configurabili tramite widget;
+
+      - Gestione allegati firmati digitalmente (PDF e P7M), con controllo e
+      validazione dell’integrità dei dati;
+
+      - Report di riepilogo via email che include la lista dei ticket pendenti
+      agli operatori;
+
+      - JQuery Datatables integrato, per una gestione Ajax con processamento
+      lato server dei dati, per ottime performance;
+
+      - Template grafico reponsive per una esperienza di navigazione ottimale
+      anche sui dispositivi mobili;
+
+      - Integazione SAML2 SSO (pySAML2);
+
+      - Pienamente rispondente alle linee guida AGID per le interfacce grafiche.
+    shortDescription: >-
+      Django Ticket System per il tracciamento e la digitalizzazione dei flussi
+      di richieste e documentali.
+developmentStatus: stable
+intendedAudience:
+  scope:
+    - employment
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: true
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: false
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: false
+  riuso:
+    codiceIPA: unical
+landingURL: 'https://github.com/UniversitaDellaCalabria/uniTicket'
+legal:
+  authorsFile: >-
+    https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/AUTHORS
+  license: Apache-2.0
+  mainCopyrightOwner: Università della Calabria
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: true
+maintenance:
+  contacts:
+    - affiliation: unical.it
+      email: francesco.filicetti@unical.it
+      name: Francesco Filicetti
+    - email: giuseppe.demarco@unical.it
+      name: Giuseppe De Marco
+  type: internal
+name: uniTicket
+platforms:
+  - linux
+  - web
+releaseDate: '2020-04-15'
+roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
+softwareType: standalone/web
+softwareVersion: v1.0.0
+url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
+usedBy:
+  - 'https://www.unical.it'
