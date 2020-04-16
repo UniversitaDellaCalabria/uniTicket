@@ -1,4 +1,4 @@
-# This repository adheres to the publiccode.yml standard by including this 
+# This repository adheres to the publiccode.yml standard by including this
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
@@ -132,7 +132,7 @@ platforms:
 releaseDate: '2020-04-15'
 roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
 softwareType: standalone/web
-softwareVersion: v1.0.0
+softwareVersion: v1.0.1
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
   - 'https://www.unical.it'
