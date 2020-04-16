@@ -132,7 +132,7 @@ platforms:
 releaseDate: '2020-04-15'
 roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
 softwareType: standalone/web
-softwareVersion: v1.0.1
+softwareVersion: v1.0.2
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
   - 'https://www.unical.it'
