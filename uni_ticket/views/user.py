@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.forms import formset_factory
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -170,8 +170,11 @@ def ticket_add_new(request, structure_slug, category_slug):
                                   slug=structure_slug,
                                   is_active=True)
     category = get_object_or_404(TicketCategory,
-                                 slug=category_slug,
-                                 is_active=True)
+                                 slug=category_slug)
+
+    if not category.is_active:
+        msg404 = category.not_available_message or _("Risorsa non disponibile")
+        raise Http404(msg404)
 
     # if anonymous user and category only for logged users
     if not category.allow_anonymous and not request.user.is_authenticated:

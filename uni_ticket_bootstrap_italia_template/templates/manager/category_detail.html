@@ -103,6 +103,12 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">{% trans 'Messaggio se non attiva' %}</th>
+                <td>
+                    {{ category.not_available_message| default_if_none:"" | linebreaks }}
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans 'Descrizione' %}</th>
                 <td>
                     {% if category.description %}

@@ -20,6 +20,7 @@ class CategoryForm(ModelForm):
         model = TicketCategory
         fields = ['name', 'description',
                   'confirm_message_text',
+                  'not_available_message',
                   'is_notify',
                   'show_heading_text',
                   'allow_anonymous', 'allow_guest',

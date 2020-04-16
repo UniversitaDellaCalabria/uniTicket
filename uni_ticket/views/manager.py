@@ -844,6 +844,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                       'show_heading_text',
                                                       'is_notify',
                                                       'confirm_message_text',
+                                                      'not_available_message',
                                                       'allow_anonymous',
                                                       'allow_guest',
                                                       'allow_user',

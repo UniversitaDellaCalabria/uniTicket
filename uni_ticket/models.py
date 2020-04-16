@@ -52,6 +52,11 @@ class TicketCategory(models.Model):
     is_active = models.BooleanField(default=False,
                                     help_text=_("Se disabilitato, non sarà "
                                                 "visibile in Aggiungi Ticket"))
+    not_available_message = models.CharField(_("Messaggio se non attiva"),
+                                             max_length=255,
+                                             null=True, blank=True,
+                                             help_text=_("Viene mostrato agli utenti "
+                                                         "se cercano di accedere al form"))
     show_heading_text = models.BooleanField(_("Mostra agli utenti un testo "
                                               "di accettazione in fase di "
                                               "apertura nuovo ticket"),
