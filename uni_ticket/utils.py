@@ -38,12 +38,13 @@ def decompress_text(b64text):
     return zlib.decompress(base64.b64decode(b64text))
 
 
-def custom_message(request, message='', structure_slug=''):
+def custom_message(request, message='', structure_slug='', status=None):
     """
     """
     return render(request, 'custom_message.html',
                   {'avviso': message,
-                   'structure_slug': structure_slug})
+                   'structure_slug': structure_slug},
+                  status=status)
 
 def user_manage_something(user):
     """

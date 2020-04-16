@@ -173,8 +173,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                                  slug=category_slug)
 
     if not category.is_active:
-        msg404 = category.not_available_message or _("Risorsa non disponibile")
-        raise Http404(msg404)
+        return custom_message(request, category.not_available_message,
+                              status=404)
 
     # if anonymous user and category only for logged users
     if not category.allow_anonymous and not request.user.is_authenticated:
