@@ -9,18 +9,20 @@
 {% endblock menu_links %}
 
 {% block top_buttons %}
-<a role="button" class="btn btn-outline-secondary"
-   href="{% url 'uni_ticket:manager_dashboard' structure_slug=structure.slug %}">
-    <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Dashboard" %}
-</a>
-<a role="button" class="btn btn-outline-secondary"
-   href="{% url 'uni_ticket:manager_categories' structure_slug=structure.slug %}">
-    <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Tipologie" %}
-</a>
+<div class="pb-md-4">
+    <a role="button" class="btn btn-outline-secondary"
+       href="{% url 'uni_ticket:manager_dashboard' structure_slug=structure.slug %}">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        </svg> {% trans "Dashboard" %}
+    </a>
+    <a role="button" class="btn btn-outline-secondary"
+       href="{% url 'uni_ticket:manager_categories' structure_slug=structure.slug %}">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        </svg> {% trans "Torna alle Tipologie" %}
+    </a>
+</div>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_edit' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
@@ -33,21 +35,21 @@
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-    </svg> {% trans "Modulo" %}
+    </svg> {% trans "Nuovo Modulo" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_condition_new' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-    </svg> {% trans "Clausola" %}
+    </svg> {% trans "Nuova Clausola" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_task_new' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-    </svg> {% trans "Attività" %}
+    </svg> {% trans "Nuova Attività" %}
 </a>
 {% if category.is_active %}
 <button type="button"

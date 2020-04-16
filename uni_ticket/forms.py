@@ -42,9 +42,6 @@ class CategoryAddOfficeForm(forms.Form):
         self.fields['office'].queryset = offices
         self.fields['office'].to_field_name = 'slug'
 
-    class Media:
-        js = ('js/textarea-autosize.js',)
-
 
 class CategoryInputModuleForm(ModelForm):
     class Meta:
@@ -178,6 +175,7 @@ class TicketCompetenceSchemeForm(forms.Form):
     category_slug = forms.CharField(label=_('Categoria'), required=True)
     follow = forms.BooleanField(label=_('Continua a seguire'), required=False)
     readonly = forms.BooleanField(label=_('Sola lettura'), required=False)
+    selected_office = forms.CharField(label=_('Ufficio selezionato'), required=False)
 
 
 class TicketDependenceForm(forms.Form):
@@ -294,3 +292,28 @@ class AssignTicketToOperatorForm(forms.Form):
         operators = get_user_model().objects.filter(pk__in=operators_ids)
         super().__init__(*args, **kwargs)
         self.fields['assign_to'].queryset = operators
+
+
+class TicketOperatorOfficesForm(forms.Form):
+    office = forms.ModelChoiceField(label=_('Seleziona l\'ufficio'),
+                                    queryset=None, required=True,
+                                    widget=BootstrapItaliaSelectWidget)
+    def __init__(self, *args, **kwargs):
+        structure = kwargs.pop('structure', None)
+        operator = kwargs.pop('operator', None)
+        ticket = kwargs.pop('ticket', None)
+        offices_list = []
+        assignments = TicketAssignment.objects.filter(ticket=ticket,
+                                                      office__organizational_structure=structure,
+                                                      office__is_active=True,
+                                                      follow=True,
+                                                      taken_date__isnull=False)
+        for assignment in assignments:
+            if user_manage_office(user=operator,
+                                  office=assignment.office):
+                offices_list.append(assignment.office.pk)
+
+        offices = OrganizationalStructureOffice.objects.filter(pk__in=offices_list)
+        super().__init__(*args, **kwargs)
+        self.fields['office'].queryset = offices
+        self.fields['office'].to_field_name = 'slug'

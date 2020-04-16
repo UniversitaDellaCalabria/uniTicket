@@ -468,36 +468,54 @@ class Ticket(SavedFormContent):
         new_competence.save()
         return new_competence
 
-    def block_competence(self, user, structure, allow_readonly=True):
+    def block_competence(self,
+                         user,
+                         structure,
+                         allow_readonly=True,
+                         selected_office=None):
         """
         """
         usertype = get_user_type(user, structure)
         if usertype == 'user': return False
-        # offices = []
-        offices = self.get_assigned_to_offices(office_active=False,
-                                               structure=structure)
+
         offices_to_disable = []
-        if usertype == 'operator':
-            for office in offices:
+
+        if selected_office and user_manage_office(user, selected_office):
+            if not selected_office.is_default:
+                competence = TicketAssignment.objects.filter(ticket=self,
+                                                             office=selected_office,
+                                                             taken_date__isnull=False).first()
+                competence.follow = allow_readonly
+                competence.readonly = allow_readonly
+                competence.save(update_fields = ['follow',
+                                                 'modified',
+                                                 'readonly'])
+            offices_to_disable.append(selected_office)
+        else:
+            offices = self.get_assigned_to_offices(office_active=False,
+                                                   structure=structure)
+
+            if usertype == 'operator':
+                for office in offices:
+                    # default office can't be unassigned
+                    if office.is_default: continue
+                    office_employee = OrganizationalStructureOfficeEmployee.objects.filter(employee=user,
+                                                                                           office=office)
+                    if office_employee:
+                        offices_to_disable.append(office)
+            elif usertype == 'manager': offices_to_disable = offices
+            for off in offices_to_disable:
                 # default office can't be unassigned
-                if office.is_default: continue
-                office_employee = OrganizationalStructureOfficeEmployee.objects.filter(employee=user,
-                                                                                       office=office)
-                if office_employee:
-                    offices_to_disable.append(office)
-        elif usertype == 'manager': offices_to_disable = offices
-        for off in offices_to_disable:
-            # default office can't be unassigned
-            if off.is_default: continue
-            competence = TicketAssignment.objects.filter(ticket=self,
-                                                         office=off,
-                                                         taken_date__isnull=False).first()
-            if not competence or not competence.follow: continue
-            competence.follow = allow_readonly
-            competence.readonly = allow_readonly
-            competence.save(update_fields = ['follow',
-                                             'modified',
-                                             'readonly'])
+                if off.is_default and allow_readonly: continue
+                competence = TicketAssignment.objects.filter(ticket=self,
+                                                             office=off,
+                                                             taken_date__isnull=False).first()
+                if not competence or not competence.follow: continue
+                competence.follow = allow_readonly
+                competence.readonly = allow_readonly
+                competence.save(update_fields = ['follow',
+                                                 'modified',
+                                                 'readonly'])
         return offices_to_disable
 
     def get_dependences(self):
@@ -616,50 +634,54 @@ class Ticket(SavedFormContent):
 
     def has_been_taken(self,
                        user=None,
-                       assigned_to_user=False,
                        follow=True,
-                       exclude_readonly=False):
+                       exclude_readonly=False,
+                       structure=None):
         assignments = TicketAssignment.objects.filter(ticket=self,
-                                                      follow=follow,
                                                       taken_date__isnull=False)
-        if follow and exclude_readonly:
-            assignments = assignments.filter(readonly=False)
-        if user and assigned_to_user:
+        if follow:
+            assignments = assignments.filter(follow=True)
+            if exclude_readonly:
+                assignments = assignments.filter(readonly=False)
+        if structure:
+            assignments = assignments.filter(office__organizational_structure=structure)
+        if user:
             assignments = assignments.filter(taken_by=user)
-            return True if assignments else False
-        if not assignments: return False
-        if not user: return True
-        for assignment in assignments:
-            if user_manage_office(user, assignment.office):
-                return True
-        return False
+        return True if assignments else False
 
     def has_been_taken_by_user(self,
                                user,
                                follow=True,
-                               exclude_readonly=False):
+                               exclude_readonly=False,
+                               structure=None):
         if not user: return False
         assignments = TicketAssignment.objects.filter(ticket=self,
-                                                      taken_by=user,
-                                                      follow=follow)
-        if follow and exclude_readonly:
-            assignments = assignments.filter(readonly=False)
+                                                      taken_by=user)
+        if structure:
+            assignments = assignments.filter(office__organizational_structure=structure)
+        if follow:
+            assignments = assignments.filter(follow=True)
+            if exclude_readonly:
+                assignments = assignments.filter(readonly=False)
         return True if assignments else False
 
     def taken_by_html_list(self):
         office_operators = {}
         assignments = TicketAssignment.objects.filter(ticket=self)
-        result = '<ul>'
+        elements = ""
         for assignment in assignments:
             assigned = assignment.taken_by or _("Da assegnare")
-            result = '{}<li><small><b>{}</b></small>: <small>{}</small></li>'.format(result,
-                                                   assignment.office,
-                                                   assigned)
-            # office_operators[assignment.office.__str__()] = assigned.__str__()
-        return '{}</ul>'.format(result)
+            element = "<li><small><b>{}</b></small>: ".format(assignment.office)
+            if assignment.taken_by:
+                element +=  "<small>{}</small></li>".format(assignment.taken_by)
+            else:
+                element +=  "<span class=\"badge badge-danger\">{}</span></li>".format(_("Da assegnare"))
+            elements += element
+        return '<ul>{}</ul>'.format(elements)
 
-    def take(self, user, assigned_by=None, strictly_assigned=False):
-        assignments = TicketAssignment.objects.filter(ticket=self)
+    def take(self, user, structure, assigned_by=None, strictly_assigned=False):
+        assignments = TicketAssignment.objects.filter(ticket=self,
+                                                      office__organizational_structure=structure)
         for assignment in assignments:
             if user_manage_office(user=user,
                                   office=assignment.office,
@@ -671,8 +693,9 @@ class Ticket(SavedFormContent):
                     assignment.created = timezone.now()
                 assignment.save()
 
-    def is_untaken_by_user_offices(self, user):
-        assignments = TicketAssignment.objects.filter(ticket=self)
+    def is_untaken_by_user_offices(self, user, structure):
+        assignments = TicketAssignment.objects.filter(ticket=self,
+                                                      office__organizational_structure=structure)
         offices = []
         for assignment in assignments:
             if user_manage_office(user, assignment.office) and not assignment.taken_date:

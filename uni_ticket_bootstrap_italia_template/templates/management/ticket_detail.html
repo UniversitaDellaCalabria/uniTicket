@@ -18,7 +18,7 @@
 
 
 {% block top_buttons %}
-{% ticket_is_open ticket request.user as is_open %}
+{% ticket_is_open ticket as is_open %}
 {% settings_value name="MANAGER_PREFIX" as manager_label %}
 {% settings_value name="OPERATOR_PREFIX" as operator_label %}
 {% settings_value name="DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE" as default_office %}
@@ -133,32 +133,34 @@
 </div>
 {% endif %}
 
-{% ticket_has_been_taken ticket=ticket user=request.user as ticket_taken %}
-{% if ticket.is_closed %}
-<a role="button"
+{% ticket_has_been_taken ticket=ticket as ticket_taken %}
+<div class="pb-md-4">
+    {% if ticket.is_closed %}
+    <a role="button"
+           class="btn btn-outline-secondary"
+           href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+            </svg> {% trans "Torna ai ticket chiusi" %}
+        </a>
+    {% elif ticket_taken %}
+    <a role="button"
+           class="btn btn-outline-secondary"
+           href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+            </svg> {% trans "Torna ai ticket assegnati" %}
+        </a>
+    {% else %}
+    <a role="button"
        class="btn btn-outline-secondary"
-       href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
+       href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Torna ai ticket chiusi" %}
+        </svg> {% trans "Torna ai ticket aperti" %}
     </a>
-{% elif ticket_taken %}
-<a role="button"
-       class="btn btn-outline-secondary"
-       href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
-        <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Torna ai ticket assegnati" %}
-    </a>
-{% else %}
-<a role="button"
-   class="btn btn-outline-secondary"
-   href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
-    <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Torna ai ticket aperti" %}
-</a>
-{% endif %}
+    {% endif %}
+</div>
 
 {% if ticket_taken %}
 <a role="button"
@@ -230,6 +232,13 @@
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-share"></use>
         </svg> {% trans "Trasferisci competenza" %}
     </a>
+        <a role="button"
+       href="{% url 'uni_ticket:leave_ticket_competence' structure_slug=structure.slug ticket_id=ticket.code %}"
+       class="btn btn-outline-secondary">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-ban"></use>
+        </svg> {% trans "Abbandona competenza" %}
+    </a>
     <a role="button"
        href="{% url 'uni_ticket:add_ticket_dependence_url' structure_slug=structure.slug ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
@@ -240,7 +249,7 @@
     {% if ticket.is_closable %}
         <a role="button"
            href="{% url 'uni_ticket:close_ticket' structure_slug=structure.slug ticket_id=ticket.code %}"
-           class="btn btn-outline-secondary">
+           class="btn btn-outline-success">
            <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
            </svg> {% trans "Chiudi" %}
@@ -257,7 +266,8 @@
     {% endblock ticket_options %}
 
     {% block ticket_management_buttons %}
-        {% if not ticket.is_closed %}
+        {% ticket_has_been_taken ticket=ticket as ticket_taken %}
+        {% if not ticket_taken or ticket_taken and not untaken_user_offices %}
         <div class="mt-5">
             <form method="post" enctype="multipart/form-data">
                 {% include 'form_template.html' %}
@@ -270,7 +280,7 @@
                             <svg class="icon icon-xs icon-white">
                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
                             </svg>
-                            {% ticket_has_been_taken ticket=ticket user=request.user as ticket_taken %}
+                            {% ticket_has_been_taken ticket=ticket as ticket_taken %}
                             {% if not ticket_taken %}
                                 {% trans "Prendi il ticket in carico" %}
                             {% else %}

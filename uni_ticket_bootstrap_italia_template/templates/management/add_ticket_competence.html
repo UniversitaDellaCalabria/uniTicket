@@ -22,7 +22,7 @@
     <!-- Bootstrap Italia select -->
     <div class="bootstrap-select-wrapper">
     {% endcomment %}
-    <div>
+    <div class="bootstrap-select-wrapper">
         <select id="structure_slug"
                 name="structure_slug"
                 title="{% trans 'A chi è indirizzata la richiesta?' %}"
@@ -52,7 +52,7 @@
         <!-- Bootstrap Italia select -->
         <div class="bootstrap-select-wrapper">
         {% endcomment %}
-        <div>
+        <div class="bootstrap-select-wrapper">
             <select required
                 {% if not structure_slug %}disabled{% endif %}
                 name="category_slug"
@@ -96,7 +96,30 @@
     </div>
 
     {% if categorie %}
-    {% csrf_token %}
+
+    <div style="padding: 0 0 1.5rem">
+        <b>
+            <label for="structure_slug">
+                {% trans "Ufficio di origine" %}
+            </label>
+        </b>
+        <div class="bootstrap-select-wrapper">
+            <select id="selected_office"
+                    name="selected_office"
+                    data-live-search="true" data-live-search-placeholder="Cerca...">
+                <option value="">{% trans "Tutti quelli a cui afferisco in questa struttura" %}</option>
+                {% for operator_office in operator_offices %}
+                <option value="{{ operator_office.slug }}">
+                    {{ operator_office }}
+                </option>
+                {% endfor %}
+            </select>
+            <small class="form-text text-muted">
+                {% trans "Ufficio a cui applicare i nuovi livelli di accesso (sola lettura, competenza abbandonata...)" %}
+        </small>
+        </div>
+    </div>
+
     <div>
         <button type="button"
                 class="btn btn-success btn-block"
@@ -135,6 +158,9 @@
             </div>
         </div>
     </div>
+
+    {% csrf_token %}
+
     </form>
     {% endif %}
 {% endblock page_content %}

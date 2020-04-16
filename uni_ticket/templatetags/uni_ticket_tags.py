@@ -123,8 +123,8 @@ def markdown(value):
     return md.markdown(value, extensions=['markdown.extensions.fenced_code'])
 
 @register.simple_tag
-def ticket_has_been_taken(ticket, user=None):
-    return ticket.has_been_taken(user=user)
+def ticket_has_been_taken(ticket, user=None, structure=None):
+    return ticket.has_been_taken(user=user, structure=structure)
 
 @register.simple_tag
 def ticket_is_open(ticket, user=None):

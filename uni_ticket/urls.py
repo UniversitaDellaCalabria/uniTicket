@@ -78,6 +78,7 @@ urlpatterns += [
     path('{}/'.format(ticket_id), management.manage_ticket_url_detail, name='manage_ticket_url_detail'),
     path('{}/messages/'.format(ticket_id), management.ticket_message_url, name='manage_ticket_message_url'),
     path('{}/competence/add/'.format(ticket_id), management.ticket_competence_add_url, name='add_ticket_competence_url'),
+    path('{}/competence/leave/'.format(ticket_id), management.ticket_competence_leave, name='leave_ticket_competence'),
     path('{}/dependence/add/'.format(ticket_id), management.ticket_dependence_add_url, name='add_ticket_dependence_url'),
     path('{}/dependence/remove/<str:master_ticket_id>/'.format(ticket_id), management.ticket_dependence_remove, name='remove_ticket_dependence'),
     # Non usato

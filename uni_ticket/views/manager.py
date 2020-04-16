@@ -59,10 +59,11 @@ def dashboard(request, structure_slug, structure):
     opened = 0
     my_opened = 0
     for nc in not_closed:
-        if nc.has_been_taken(user=request.user):
+        if nc.has_been_taken():
             # opened.append(nc)
             opened += 1
-            if nc.has_been_taken_by_user(request.user):
+            if nc.has_been_taken_by_user(structure=structure,
+                                         user=request.user):
                 # my_opened.append(nc)
                 my_opened += 1
         else:

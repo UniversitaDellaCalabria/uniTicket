@@ -204,8 +204,9 @@ def ticket_is_taken_for_employee(func_to_decorate):
         structure_slug = original_kwargs['structure_slug']
         ticket_id = original_kwargs['ticket_id']
         ticket = get_object_or_404(Ticket, code=ticket_id)
-        if not ticket.has_been_taken(user=request.user,
-                                     exclude_readonly=True):
+        if not ticket.has_been_taken(# user=request.user,
+                                     structure=original_kwargs['structure']):
+                                     # exclude_readonly=True):
             m = _("Il ticket deve essere prima preso in carico"
                   " per poter essere gestito")
             messages.add_message(request, messages.ERROR, m)

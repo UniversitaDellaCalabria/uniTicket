@@ -183,7 +183,8 @@ def ticket_detail(request, structure_slug, ticket_id,
     form = PriorityForm(data={'priorita':ticket.priority})
     operators_form = None
 
-    untaken_user_offices = ticket.is_untaken_by_user_offices(request.user)
+    untaken_user_offices = ticket.is_untaken_by_user_offices(user=request.user,
+                                                             structure=structure)
     offices_forms = {}
     for u_office in untaken_user_offices:
         if user_is_manager(user, u_office.organizational_structure):
@@ -257,8 +258,7 @@ def ticket_detail(request, structure_slug, ticket_id,
                            'ticket': ticket,
                            'user': ticket.created_by
                           }
-            m_subject = _('{} - ticket {} assegnato'.format(settings.HOSTNAME,
-                                                            ticket))
+
             msg = _("Ticket assegnato a {} da {}. Priorità assegnata: {}".format(operator,
                                                                                  request.user,
                                                                                  priority_text))
@@ -271,6 +271,7 @@ def ticket_detail(request, structure_slug, ticket_id,
             # (strictly = not because he's manager or helpdesk)
             # he takes ticket for these offices
             ticket.take(user=operator,
+                        structure=structure,
                         assigned_by=user,
                         strictly_assigned=True)
             ticket.update_log(user=request.user, note=msg)
@@ -286,34 +287,40 @@ def ticket_detail(request, structure_slug, ticket_id,
 
         # operator/manager has taken the ticket
         elif form.is_valid():
-            priority = form.cleaned_data['priorita']
-            priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
-            mail_params = {'hostname': settings.HOSTNAME,
-                           'status': _("aggiornato"),
-                           'ticket': ticket,
-                           'user': ticket.created_by
-                          }
-            m_subject = _('{} - ticket {} assegnato'.format(settings.HOSTNAME,
-                                                            ticket))
-            if not ticket.has_been_taken(user=request.user):
-                ticket.take(request.user)
-                msg = _("Preso in carico da {}. Priorità assegnata: {}".format(request.user,
-                                                                               priority_text))
-                if not settings.SIMPLE_USER_SHOW_PRIORITY:
-                    msg = _("Preso in carico da {}.".format(request.user))
+            # security check on form force
+            if not ticket.has_been_taken() or not untaken_user_offices:
+                priority = form.cleaned_data['priorita']
+                priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
+                mail_params = {'hostname': settings.HOSTNAME,
+                               'status': _("aggiornato"),
+                               'ticket': ticket,
+                               'user': ticket.created_by
+                              }
+
+                msg = ''
+                if not ticket.has_been_taken():
+                    ticket.take(user=request.user, structure=structure)
+                    msg = _("Preso in carico da {}. Priorità assegnata: {}".format(request.user,
+                                                                                   priority_text))
+                    if not settings.SIMPLE_USER_SHOW_PRIORITY:
+                        msg = _("Preso in carico da {}.".format(request.user))
+                elif not untaken_user_offices:
+                    msg = _("Priorità aggiornata")
+                    if settings.SIMPLE_USER_SHOW_PRIORITY:
+                        msg = _("Priorità assegnata: {}".format(priority_text))
+
+                ticket.update_log(user=request.user, note=msg)
+                ticket.priority = priority
+                ticket.save(update_fields = ['priority'])
+                messages.add_message(request, messages.SUCCESS,
+                                     _("Ticket <b>{}</b> aggiornato"
+                                       " con successo".format(ticket.code)))
+                return redirect('uni_ticket:manage_ticket_url_detail',
+                                structure_slug=structure_slug,
+                                ticket_id=ticket_id)
             else:
-                msg = _("Priorità aggiornata")
-                if settings.SIMPLE_USER_SHOW_PRIORITY:
-                    msg = _("Priorità assegnata: {}".format(priority_text))
-            ticket.update_log(user=request.user, note=msg)
-            ticket.priority = priority
-            ticket.save(update_fields = ['priority'])
-            messages.add_message(request, messages.SUCCESS,
-                                 _("Ticket <b>{}</b> aggiornato"
-                                   " con successo".format(ticket.code)))
-            return redirect('uni_ticket:manage_ticket_url_detail',
-                            structure_slug=structure_slug,
-                            ticket_id=ticket_id)
+                return custom_message(request,
+                                      _("Operazione non consentita"))
         else:
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
@@ -381,10 +388,11 @@ def tickets(request, structure_slug, structure, office_employee=None):
     opened = 0
     my_opened = 0
     for nc in not_closed:
-        if nc.has_been_taken(user=request.user):
+        if nc.has_been_taken():
             # opened.append(nc)
             opened += 1
-            if nc.has_been_taken_by_user(request.user):
+            if nc.has_been_taken_by_user(structure=structure,
+                                         user=request.user):
                 # my_opened.append(nc)
                 my_opened += 1
         else:
@@ -763,7 +771,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                               _("Il ticket {} non può essere riaperto").format(ticket),
                               structure_slug=structure.slug)
 
-    if not ticket.has_been_taken(user=request.user):
+    if not ticket.has_been_taken():
         # log action
         logger.info('[{}] {} tried to reopen'
                     ' not taken ticket {}'.format(timezone.now(),
@@ -897,9 +905,9 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     if can_manage['readonly']:
         # log action
         logger.info('[{}] {} tried to add new competence to'
-                    ' close readonly ticket {}'.format(timezone.now(),
-                                                        request.user,
-                                                        ticket))
+                    ' readonly ticket {}'.format(timezone.now(),
+                                                 request.user,
+                                                 ticket))
 
         messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
         return redirect('uni_ticket:manage_ticket_url_detail',
@@ -909,6 +917,18 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     strutture = OrganizationalStructure.objects.filter(is_active = True)
     # Lista uffici ai quali il ticket è assegnato
     ticket_offices = ticket.get_assigned_to_offices(office_active=False)
+
+    operator_offices_list = []
+    assignments = TicketAssignment.objects.filter(ticket=ticket,
+                                                  office__organizational_structure=structure,
+                                                  office__is_active=True,
+                                                  follow=True,
+                                                  taken_date__isnull=False)
+    for assignment in assignments:
+        if user_manage_office(user=request.user,
+                              office=assignment.office):
+            operator_offices_list.append(assignment.office)
+
     new_structure = get_object_or_404(OrganizationalStructure,
                                       slug=new_structure_slug,
                                       is_active=True)
@@ -920,7 +940,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
             category_slug = form.cleaned_data['category_slug']
             follow = form.cleaned_data['follow']
             readonly = form.cleaned_data['readonly']
-
+            selected_office_slug = form.cleaned_data['selected_office']
             # Refactor
             # follow_value = form.cleaned_data['follow']
             # readonly_value = form.cleaned_data['readonly']
@@ -932,6 +952,13 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                           slug=category_slug,
                                           organizational_structure=new_structure,
                                           is_active=True)
+
+            selected_office = None
+            if selected_office_slug:
+                selected_office = get_object_or_404(OrganizationalStructureOffice,
+                                                    slug=selected_office_slug,
+                                                    organizational_structure=structure,
+                                                    is_active=True)
 
             # Se alla categoria non è associato alcun ufficio,
             # all'utente viene mostrato il messaggio di errore
@@ -971,21 +998,23 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
             if not follow:
                 abandoned_offices = ticket.block_competence(user=request.user,
                                                             structure=structure,
-                                                            allow_readonly=False)
+                                                            allow_readonly=False,
+                                                            selected_office=selected_office)
                 for off in abandoned_offices:
-                    if off.is_default:
-                        messages.add_message(request, messages.WARNING,
-                                 _("L'ufficio <b>{}</b> non può essere"
-                                   " rimosso dagli uffici competenti".format(off)))
-                    else:
-                        ticket.update_log(user=request.user,
-                                          note= _("Competenza abbandonata da"
-                                                  " Ufficio: {}".format(off)))
+                    # if off.is_default:
+                        # messages.add_message(request, messages.WARNING,
+                                 # _("L'ufficio <b>{}</b> non può essere"
+                                   # " rimosso dagli uffici competenti".format(off)))
+                    # else:
+                    ticket.update_log(user=request.user,
+                                      note= _("Competenza abbandonata da"
+                                              " Ufficio: {}".format(off)))
 
             # If follow but readonly
             elif readonly:
                 abandoned_offices = ticket.block_competence(user=request.user,
-                                                            structure=structure)
+                                                            structure=structure,
+                                                            selected_office=selected_office)
                 for off in abandoned_offices:
                     if off.is_default:
                         messages.add_message(request, messages.WARNING,
@@ -1028,6 +1057,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     sub_title = '{} ({})'.format(ticket.subject, ticket_id)
     d = {'can_manage': can_manage,
          'categorie': categorie,
+         'operator_offices': operator_offices_list,
          'structure': structure,
          'structure_slug': new_structure_slug,
          'strutture': strutture,
@@ -1108,7 +1138,8 @@ def ticket_message(request, structure_slug, ticket_id,
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
         # Se il ticket non è aperto non è possibile scrivere
-        if not ticket.is_open(request.user):
+        # if not ticket.is_open(request.user):
+        if ticket.is_closed:
             return custom_message(request, _("Il ticket non è modificabile"),
                                   structure_slug=structure.slug)
         form = ReplyForm(request.POST, request.FILES)
@@ -1829,7 +1860,8 @@ def task_attachment_delete(request, structure_slug,
 @ticket_assigned_to_structure
 def ticket_taken_by_unassigned_offices(request, structure_slug, ticket_id,
                                        structure, can_manage, ticket):
-    offices = ticket.is_untaken_by_user_offices(request.user)
+    offices = ticket.is_untaken_by_user_offices(user=request.user,
+                                                structure=structure)
     for office in offices:
         assignment = TicketAssignment.objects.filter(ticket=ticket,
                                                      office=office,
@@ -1905,3 +1937,97 @@ def ticket_taken_by_unassigned_office(request, structure_slug,
     return redirect('uni_ticket:manage_ticket_url_detail',
                     structure_slug=structure_slug,
                     ticket_id=ticket_id)
+
+@login_required
+@has_admin_privileges
+@ticket_is_taken_for_employee
+@ticket_assigned_to_structure
+@ticket_is_taken_and_not_closed
+def ticket_competence_leave(request, structure_slug, ticket_id,
+                            structure, can_manage, ticket,
+                            office_employee=None):
+    """
+    Leaves single office ticket competence
+
+    :type structure_slug: String
+    :type ticket_id: String
+    :type structure: OrganizationalStructure (from @has_admin_privileges)
+    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type ticket: Ticket (from @ticket_assigned_to_structure)
+    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
+
+    :param structure_slug: structure slug
+    :param ticket_id: ticket code
+    :param structure: structure object (from @has_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param ticket: ticket object (from @ticket_assigned_to_structure)
+    :param office_employee: operator offices queryset (from @is_operator)
+
+    :return: render
+    """
+    form = TicketOperatorOfficesForm(structure=structure,
+                                     operator=request.user,
+                                     ticket=ticket)
+    user_type = get_user_type(request.user, structure)
+    template = "{}/leave_ticket_competence.html".format(user_type)
+    title = _('Abbandona competenza ticket')
+    sub_title = _('Seleziona l\'ufficio che deve abbandonare '
+                  'la competenza sul ticket "{}"').format(ticket.subject)
+
+    if request.method == 'POST':
+        form = TicketOperatorOfficesForm(data=request.POST,
+                                         structure=structure,
+                                         operator=request.user,
+                                         ticket=ticket)
+        if form.is_valid():
+            office = form.cleaned_data['office']
+            assignments = TicketAssignment.objects.filter(ticket=ticket,
+                                                          follow=True,
+                                                          readonly=False,
+                                                          office__is_active=True).exclude(office=office).count()
+            # there are other offices managing ticket
+            if assignments > 0:
+                assignment_to_disable = TicketAssignment.objects.get(ticket=ticket,
+                                                                     office=office)
+                assignment_to_disable.follow = False
+                assignment_to_disable.readonly = False
+                assignment_to_disable.save(update_fields=['follow',
+                                                          'readonly',
+                                                          'modified'])
+
+                logger.info('[{}] {} removed competence of office {}'
+                            ' for ticket {}'.format(timezone.now(),
+                                                    request.user,
+                                                    office,
+                                                    ticket))
+
+                ticket.update_log(user=request.user,
+                                  note= _("Competenza abbandonata da"
+                                          " Ufficio: {}".format(office)))
+
+                messages.add_message(request,
+                                     messages.SUCCESS,
+                                     _("Competenza ufficio <b>{}</b> "
+                                       "abbandonata con successo"
+                                       "".format(office)))
+            # this is the only office managing ticket
+            else:
+                messages.add_message(request,
+                                     messages.ERROR,
+                                     _("<b>Operazione non consentita</b>"
+                                       "<br>"
+                                       "Rimuovendo la competenza "
+                                       " di <b>{}</b>, "
+                                       "il ticket non sarà più gestito "
+                                       "da alcun ufficio. "
+                                       "".format(office)))
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                        structure_slug=structure_slug,
+                        ticket_id=ticket_id)
+
+    d = {'form': form,
+         'structure': structure,
+         'sub_title': sub_title,
+         'ticket': ticket,
+         'title': title,}
+    return render(request, template, d)

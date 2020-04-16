@@ -162,7 +162,7 @@ def manager_unassigned_ticket(request, structure_slug, structure):
                                         is_closed=False)
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
-        if ticket.has_been_taken(user=request.user):
+        if ticket.has_been_taken():
             result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
@@ -186,7 +186,7 @@ def manager_opened_ticket(request, structure_slug, structure):
                                         is_closed=False)
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
-        if not ticket.has_been_taken(user=request.user):
+        if not ticket.has_been_taken():
             result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
@@ -210,8 +210,8 @@ def manager_my_opened_ticket(request, structure_slug, structure):
                                         is_closed=False)
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
-        if not ticket.has_been_taken(user=request.user,
-                                     assigned_to_user=True):
+        if not ticket.has_been_taken(structure=structure,
+                                     user=request.user):
             result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
@@ -281,7 +281,7 @@ def operator_unassigned_ticket(request, structure_slug,
 
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
-        if ticket.has_been_taken(user=request.user):
+        if ticket.has_been_taken():
             result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
@@ -310,7 +310,7 @@ def operator_opened_ticket(request, structure_slug,
                                         is_closed=False)
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
-        if not ticket.has_been_taken(user=request.user):
+        if not ticket.has_been_taken():
             result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
@@ -339,8 +339,8 @@ def operator_my_opened_ticket(request, structure_slug,
                                         is_closed=False)
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
-        if not ticket.has_been_taken(user=request.user,
-                                     assigned_to_user=True):
+        if not ticket.has_been_taken(structure=structure,
+                                     user=request.user):
             result_list = result_list.exclude(pk=ticket.pk)
     dtd = TicketDTD( request, result_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
