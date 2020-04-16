@@ -213,6 +213,25 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         self.ticket.refresh_from_db()
         assert not self.ticket.priority == -1
 
+        # Change priority to ticket (fails, operator must take ticket first!)
+        params = {'priorita': -1}
+        response = self.client.post(reverse('uni_ticket:operator_manage_ticket',
+                                            kwargs={'structure_slug': self.structure_2.slug,
+                                                    'ticket_id': self.ticket.code}),
+                                    params,
+                                    follow=True)
+        assert response.status_code == 200
+        self.ticket.refresh_from_db()
+        assert not self.ticket.priority == -1
+
+        # take ticket
+        response = self.client.get(reverse('uni_ticket:ticket_taken_by_unassigned_offices',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'ticket_id': self.ticket.code}),
+                                   follow=True)
+        assert response.status_code == 200
+        self.ticket.refresh_from_db()
+
         # Change priority to ticket (success!)
         params = {'priorita': -1}
         response = self.client.post(reverse('uni_ticket:operator_manage_ticket',
@@ -222,7 +241,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                     follow=True)
         assert response.status_code == 200
         self.ticket.refresh_from_db()
-        assert self.ticket.priority == -1
+        assert not self.ticket.priority == -1
 
     def test_add_ticket_competence_and_readonly(self):
         # Take ticket
