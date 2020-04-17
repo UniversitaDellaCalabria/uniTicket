@@ -493,7 +493,6 @@ class Ticket(SavedFormContent):
                 competence.follow = allow_readonly
                 competence.readonly = allow_readonly
                 competence.save(update_fields = ['follow',
-                                                 'modified',
                                                  'readonly'])
             offices_to_disable.append(selected_office)
         else:
@@ -519,18 +518,13 @@ class Ticket(SavedFormContent):
                 competence.follow = allow_readonly
                 competence.readonly = allow_readonly
                 competence.save(update_fields = ['follow',
-                                                 'modified',
                                                  'readonly'])
         return offices_to_disable
 
     def get_dependences(self):
         """
         """
-        # dependences = []
         t2t_list = Ticket2Ticket.objects.filter(slave_ticket=self).all()
-        # for t2t in t2t_list:
-            # dependences.append(t2t.master_ticket)
-        # return dependences
         return t2t_list
 
     def get_task(self):

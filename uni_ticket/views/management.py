@@ -178,31 +178,28 @@ def ticket_detail(request, structure_slug, ticket_id,
                                           object_id=ticket.pk)
     ticket_task = Task.objects.filter(ticket=ticket)
     ticket_dependences = ticket.get_dependences()
-    assigned_to = []
     ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
-    form = PriorityForm(data={'priorita':ticket.priority})
-    operators_form = None
 
+    # priority form
+    form = PriorityForm(initial={'priorita':ticket.priority})
+
+    # offices that have to take ticket
     untaken_user_offices = ticket.is_untaken_by_user_offices(user=request.user,
                                                              structure=structure)
     offices_forms = {}
     for u_office in untaken_user_offices:
-        if user_is_manager(user, u_office.organizational_structure):
-            offices_forms[u_office]  = AssignTicketToOperatorForm(structure=structure,
-                                                                  office=u_office,
-                                                                  current_user=user)
-
-    # if user is a structure manager and ticket has not ever been taken
-    # manager can assign it to one of office operators
-    # (show assignment form)
-    if user_is_manager(user, structure) and not ticket.has_been_taken():
-        ticket_assignment = TicketAssignment.objects.filter(ticket=ticket,
-                                                            follow=True,
-                                                            taken_date__isnull=True).first()
-        office = ticket_assignment.office
-        operators_form = AssignTicketToOperatorForm(structure=structure,
-                                                    office=office,
-                                                    current_user=user)
+        if user_manage_office(user, u_office):
+            # take ticket form
+            office_priority_form = TakeTicketForm(initial={'priorita': ticket.priority},
+                                                  office_referred=u_office)
+            # assign ticket form
+            office_operators_form = AssignTicketToOperatorForm(initial={'priorita': ticket.priority},
+                                                               structure=structure,
+                                                               office=u_office,
+                                                               current_user=user)
+            # assign forms to every untaken office
+            offices_forms[u_office] = (office_priority_form,
+                                       office_operators_form)
 
     if request.method == 'POST':
         if can_manage['readonly']:
@@ -218,40 +215,10 @@ def ticket_detail(request, structure_slug, ticket_id,
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
 
-        # two forms (take and assign ticket)
+        # operator/manager has changed priority
         form = PriorityForm(request.POST)
-        operators_form = None
-        if user_is_manager(user, structure) and not ticket.has_been_taken():
-            ticket_assignment = TicketAssignment.objects.filter(ticket=ticket,
-                                                                follow=True,
-                                                                taken_date__isnull=True).first()
-            office = ticket_assignment.office
-            operators_form = AssignTicketToOperatorForm(request.POST,
-                                                        structure=structure,
-                                                        office=office,
-                                                        current_user=user)
-        # if manager has compiled an assignment form
-        # this object will be filled
-        compiled_assignment_form = None
-
-        # if manager wants to assign ticket to an office operator
-        # by untaken offices list
-        for o in offices_forms:
-            office_op_form = AssignTicketToOperatorForm(request.POST,
-                                                        structure=o.organizational_structure,
-                                                        office=o,
-                                                        current_user=user)
-            if office_op_form.is_valid():
-                compiled_assignment_form = office_op_form
-                break
-        # if ticket hasn't never been taken and manager assign it to an operator
-        if not compiled_assignment_form and operators_form and operators_form.is_valid():
-            compiled_assignment_form = operators_form
-
-        # Manager has assigned ticket to another operator
-        if compiled_assignment_form:
-            operator = compiled_assignment_form.cleaned_data['assign_to']
-            priority = compiled_assignment_form.cleaned_data['priorita']
+        if ticket.has_been_taken(structure=structure) and form.is_valid():
+            priority = form.cleaned_data['priorita']
             priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
             mail_params = {'hostname': settings.HOSTNAME,
                            'status': _("aggiornato"),
@@ -259,80 +226,96 @@ def ticket_detail(request, structure_slug, ticket_id,
                            'user': ticket.created_by
                           }
 
-            msg = _("Ticket assegnato a {} da {}. Priorità assegnata: {}".format(operator,
-                                                                                 request.user,
-                                                                                 priority_text))
-            if not settings.SIMPLE_USER_SHOW_PRIORITY:
-                msg = _("Ticket assegnato a {} da {}.".format(operator,
-                                                              request.user))
+            msg = _("Priorità aggiornata")
+            if settings.SIMPLE_USER_SHOW_PRIORITY:
+                msg = _("Priorità assegnata: {}".format(priority_text))
 
-            # ticket is taken by operator
-            # if operator is assigned to others untaken offices
-            # (strictly = not because he's manager or helpdesk)
-            # he takes ticket for these offices
-            ticket.take(user=operator,
-                        structure=structure,
-                        assigned_by=user,
-                        strictly_assigned=True)
             ticket.update_log(user=request.user, note=msg)
             ticket.priority = priority
             ticket.save(update_fields = ['priority'])
             messages.add_message(request, messages.SUCCESS,
-                                 _("Ticket <b>{}</b> assegnato"
-                                   " con successo a {}".format(ticket.code,
-                                                               operator)))
+                                 _("Ticket <b>{}</b> aggiornato"
+                                   " con successo".format(ticket.code)))
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
 
-        # operator/manager has taken the ticket
-        elif form.is_valid():
-            # security check on form force
-            if not ticket.has_been_taken() or not untaken_user_offices:
-                priority = form.cleaned_data['priorita']
-                priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
-                mail_params = {'hostname': settings.HOSTNAME,
-                               'status': _("aggiornato"),
-                               'ticket': ticket,
-                               'user': ticket.created_by
-                              }
-
-                msg = ''
-                if not ticket.has_been_taken():
-                    ticket.take(user=request.user, structure=structure)
-                    msg = _("Preso in carico da {}. Priorità assegnata: {}".format(request.user,
-                                                                                   priority_text))
-                    if not settings.SIMPLE_USER_SHOW_PRIORITY:
-                        msg = _("Preso in carico da {}.".format(request.user))
-                elif not untaken_user_offices:
-                    msg = _("Priorità aggiornata")
-                    if settings.SIMPLE_USER_SHOW_PRIORITY:
-                        msg = _("Priorità assegnata: {}".format(priority_text))
-
-                ticket.update_log(user=request.user, note=msg)
+        # check if user has taken or assigned competence
+        for o in offices_forms:
+            office_priority_form = TakeTicketForm(request.POST,
+                                                  office_referred=o)
+            office_op_form = AssignTicketToOperatorForm(request.POST,
+                                                        structure=o.organizational_structure,
+                                                        office=o,
+                                                        current_user=user)
+            assignment = TicketAssignment.objects.filter(ticket=ticket,
+                                                         office=o,
+                                                         follow=True,
+                                                         taken_date__isnull=True).first()
+            # if user has taken ticket
+            if office_priority_form.is_valid() and assignment:
+                assignment.taken_date = timezone.now()
+                assignment.taken_by = request.user
+                assignment.save(update_fields=['taken_date',
+                                               'taken_by'])
+                priority = office_priority_form.cleaned_data['priorita']
                 ticket.priority = priority
                 ticket.save(update_fields = ['priority'])
+                priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
+                msg = _("Ticket preso in carico da {}. "
+                        "Priorità assegnata: {}".format(request.user,
+                                                        priority_text))
+                if not settings.SIMPLE_USER_SHOW_PRIORITY:
+                    msg = _("Ticket preso in carico da {}.".format(request.user))
+                ticket.update_log(user=request.user, note=msg)
                 messages.add_message(request, messages.SUCCESS,
-                                     _("Ticket <b>{}</b> aggiornato"
-                                       " con successo".format(ticket.code)))
+                                 _("Ticket <b>{}</b> assegnato"
+                                   " con successo a {}".format(ticket.code,
+                                                               request.user)))
                 return redirect('uni_ticket:manage_ticket_url_detail',
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
-            else:
-                return custom_message(request,
-                                      _("Operazione non consentita"))
+            # if manager has assigned ticket to office operator
+            elif office_op_form.is_valid() and assignment:
+                operator = office_op_form.cleaned_data['assign_to']
+                priority = office_op_form.cleaned_data['priorita']
+                ticket.priority = priority
+                ticket.save(update_fields = ['priority'])
+                assignment.taken_date = timezone.now()
+                assignment.taken_by = operator
+                assignment.assigned_by = request.user
+                assignment.save(update_fields=['assigned_by',
+                                               'taken_date',
+                                               'taken_by',
+                                               'modified'])
+                priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
+                msg = _("Ticket assegnato a {} da {}. "
+                        "Priorità assegnata: {}".format(operator,
+                                                        request.user,
+                                                        priority_text))
+                if not settings.SIMPLE_USER_SHOW_PRIORITY:
+                    msg = _("Ticket assegnato a {} da {}.".format(operator,
+                                                                  request.user))
+                ticket.update_log(user=request.user, note=msg)
+                messages.add_message(request, messages.SUCCESS,
+                                 _("Ticket <b>{}</b> assegnato"
+                                   " con successo a {}".format(ticket.code,
+                                                               operator)))
+                return redirect('uni_ticket:manage_ticket_url_detail',
+                                structure_slug=structure_slug,
+                                ticket_id=ticket_id)
+
+
         else:
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
-
 
     d = {'allegati': allegati,
          'dependences': ticket_dependences,
          'details': ticket_details,
          'form': form,
          'offices_forms': offices_forms,
-         'operators_form': operators_form,
          'path_allegati': path_allegati,
          'priority': priority,
          'structure': structure,
@@ -974,11 +957,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
 
-            # new_office = new_structure.get_default_office()
-            # if categoria.organizational_office:
-                # new_office = categoria.organizational_office
             new_office = categoria.organizational_office
-
 
             if new_office in ticket_offices:
                 messages.add_message(request, messages.ERROR,
@@ -1884,62 +1863,6 @@ def ticket_taken_by_unassigned_offices(request, structure_slug, ticket_id,
 
 @login_required
 @has_admin_privileges
-@ticket_assigned_to_structure
-def ticket_taken_by_unassigned_office(request, structure_slug,
-                                      destination_structure_slug,
-                                      office_slug,
-                                      ticket_id,
-                                      structure, can_manage, ticket):
-    dest_structure = get_object_or_404(OrganizationalStructure,
-                                       slug=destination_structure_slug,
-                                       is_active=True)
-    dest_office = get_object_or_404(OrganizationalStructureOffice,
-                                    slug=office_slug,
-                                    organizational_structure=dest_structure,
-                                    is_active=True)
-    # user not manage this office
-    if not user_manage_office(request.user, dest_office):
-        return custom_message(request,
-                              _("Non disponi delle autorizzazioni per"
-                                " gestire l'ufficio {}".format(dest_office)),
-                              structure_slug=structure.slug)
-
-    assignment = TicketAssignment.objects.filter(ticket=ticket,
-                                                 office=dest_office).first()
-    # ticket is not assigned to this office
-    if not assignment:
-        return custom_message(request,
-                              _("Il ticket non è assegnato a"
-                                " questo ufficio {}".format(dest_office)),
-                              structure_slug=structure.slug)
-
-    # ticket has been already taken
-    if assignment.taken_date:
-        return custom_message(request,
-                              _("Il ticket è già stato preso in carico"
-                                " in questo ufficio {} da {}"
-                                "".format(dest_office, assignment.taken_by)),
-                              structure_slug=structure.slug)
-
-    # take ticket
-    assignment.taken_by = request.user
-    assignment.taken_date = timezone.now()
-    assignment.save(update_fields=['modified',
-                                   'taken_date',
-                                   'taken_by'])
-
-    msg = _("Ticket {} correttamente "
-            "assegnato a Ufficio: {} [{}]</b>".format(ticket,
-                                                      dest_office,
-                                                      request.user))
-    ticket.update_log(user=request.user, note=msg)
-    messages.add_message(request, messages.SUCCESS, msg)
-    return redirect('uni_ticket:manage_ticket_url_detail',
-                    structure_slug=structure_slug,
-                    ticket_id=ticket_id)
-
-@login_required
-@has_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -1992,8 +1915,7 @@ def ticket_competence_leave(request, structure_slug, ticket_id,
                 assignment_to_disable.follow = False
                 assignment_to_disable.readonly = False
                 assignment_to_disable.save(update_fields=['follow',
-                                                          'readonly',
-                                                          'modified'])
+                                                          'readonly'])
 
                 logger.info('[{}] {} removed competence of office {}'
                             ' for ticket {}'.format(timezone.now(),

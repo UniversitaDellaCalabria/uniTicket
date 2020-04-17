@@ -130,6 +130,20 @@ class PriorityForm(forms.Form):
                                  widget=BootstrapItaliaSelectWidget)
 
 
+class TakeTicketForm(forms.Form):
+    priorita = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
+                                 required=True,
+                                 initial=0,
+                                 label=_('Priorità'),
+                                 widget=BootstrapItaliaSelectWidget)
+    office = forms.CharField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        office_arg = kwargs.pop('office_referred', None)
+        super().__init__(*args, **kwargs)
+        self.fields['office'].widget=forms.HiddenInput(attrs={'value': office_arg})
+
+
 class ReplyForm(forms.Form):
     subject = forms.CharField(label=_('Oggetto'), required=True)
     text = forms.CharField(label=_('Testo'),

@@ -88,7 +88,16 @@
                             {% if not ticket.input_module.ticket_category.is_notify %}
                                 <br>
                                 {% if assignment.assigned_by %}
-                                    <small>- {% trans "Assegnato da" %}: {{ assignment.assigned_by }} - {{ assignment.created }}</small>
+                                    <small>- {% trans "Assegnato da" %}:
+                                             {{ assignment.assigned_by }} - {{ assignment.modified }}
+                                             {% if assignment.modified|date:"YmdHis" != assignment.created|date:"YmdHis" %}
+                                             <a href="#"
+                                                data-toggle="tooltip"
+                                                title="{% trans 'Assegnazione iniziale a questo ufficio:' %} {{ assignment.created }}">
+                                                 info
+                                             </a>
+                                             {% endif %}
+                                             </small>
                                     <br>
                                 {% endif %}
                                 {% if assignment.taken_date %}

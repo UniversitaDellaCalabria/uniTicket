@@ -13,8 +13,9 @@
             {{ field.help_text|safe }}
         </small>
     {% endif %}
-    {% if field.errors %}
+    {% if field.errors and field.field.widget.input_type != 'hidden' %}
         <small class="text-danger">
+            {{ field.name }}
             {{ field.errors }}
         </small>
     {% endif %}
