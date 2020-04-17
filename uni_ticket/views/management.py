@@ -1871,7 +1871,7 @@ def ticket_taken_by_unassigned_offices(request, structure_slug, ticket_id,
 
 @login_required
 @has_admin_privileges
-@ticket_is_taken_for_employee
+# @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def ticket_competence_leave(request, structure_slug, ticket_id,
