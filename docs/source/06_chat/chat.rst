@@ -18,4 +18,4 @@ Ogni utente esporrà il proprio nome e cognome.
 
 Questa funzionalità non vuole sostituirsi alla apertura dei Ticket ma piuttosto offrire
 l'opportunità agli utenti e agli operatori di confrontarsi direttamente ed eventualmente
-stabilire una :ref:`videoconferenza<Video Conferenza>`, dove chiarire e verificare in maniera più approfondita e diretta ogni aspetto oggetto di confronto.
+stabilire una :ref:`videoconferenza`, dove chiarire e verificare in maniera più approfondita e diretta ogni aspetto oggetto di confronto.

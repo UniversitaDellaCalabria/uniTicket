@@ -8,4 +8,4 @@
 Videoconferenza
 ===============
 
-Ogni operatore può concordare con uno o più utenti, mediante :ref:`chat<Chat>` o appuntamento concordato in risposta ad un Ticket, una sessione di video conferenza.
+Ogni operatore può concordare con uno o più utenti, mediante :ref:`chat` o appuntamento concordato in risposta ad un Ticket, una sessione di video conferenza.
