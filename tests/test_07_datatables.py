@@ -50,7 +50,7 @@ class Test_DatatablesFunctions(BaseTicketEnvironment):
         assignment = TicketAssignment.objects.filter(ticket=self.ticket,
                                                      taken_date__isnull=True,
                                                      office__organizational_structure=self.structure_1).first()
-        params = {'priorita': 0, 'office': assignment.office}
+        params = {'priority': 0, 'office': assignment.office}
         response = self.client.post(reverse('uni_ticket:manager_manage_ticket',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'ticket_id': self.ticket.code}),
