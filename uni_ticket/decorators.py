@@ -203,10 +203,19 @@ def ticket_is_taken_for_employee(func_to_decorate):
         request = original_args[0]
         structure_slug = original_kwargs['structure_slug']
         ticket_id = original_kwargs['ticket_id']
+
+        can_manage = original_kwargs['can_manage']
+        if can_manage['follow'] and can_manage['readonly']:
+            messages.add_message(request, messages.ERROR,
+                                 settings.READONLY_COMPETENCE_OVER_TICKET)
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                            structure_slug=structure_slug,
+                            ticket_id=ticket_id)
+
         ticket = get_object_or_404(Ticket, code=ticket_id)
         if not ticket.has_been_taken(# user=request.user,
-                                     structure=original_kwargs['structure']):
-                                     # exclude_readonly=True):
+                                     structure=original_kwargs['structure'],
+                                     exclude_readonly=True):
             m = _("Il ticket deve essere prima preso in carico"
                   " per poter essere gestito")
             messages.add_message(request, messages.ERROR, m)
