@@ -8,7 +8,7 @@ Ticket
 
 Un ticket è una richiesta aperta, da un utente , per una specifica tipologia. 
 
-.. thumbnail:: images/ticket_details.png
+.. thumbnail:: images/operator_takes_ticket.png
 
 Stati del ticket
 ----------------
@@ -33,7 +33,7 @@ Priorità
 
 - **Molto alta**
 - **Alta**
-- **Normale (priorità di default alla creazione del ticket)**
+- **Normale** (priorità di default alla creazione del ticket)
 - **Bassa**
 - **Molto bassa**
 

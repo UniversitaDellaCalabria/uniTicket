@@ -30,6 +30,6 @@ Stati
 Ufficio predefinito della struttura
 -----------------------------------
 
-| A ogni struttura è collegato un ufficio “speciale”, detto Help-Desk, che dà la facoltà agli operatori ad esso afferenti di poter gestire tutti i ticket aperti in qualsiasi ufficio della struttura stessa. 
+| A ogni struttura è collegato un ufficio “speciale”, di default “Help-Desk“, che dà la facoltà agli operatori ad esso afferenti di poter gestire tutti i ticket aperti in qualsiasi ufficio della struttura stessa. 
 | Questo ufficio non può essere eliminato o reso inattivo.
 

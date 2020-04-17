@@ -24,8 +24,19 @@ Ogni tiploogia prevede 3 livelli di visibilità che consentono l’apertura di t
 - personale dell’organizzazione
 - utenti dell’organizzazione
 - ospiti
+- utenti anonimi (la compilazione del form non richiede il login)
 
-Tipo di ticket "Notifica"
+Ticket accessibili a utenti anonimi
+-----------------------------------
+
+Questa opzione consente agli utenti non loggati di accedere direttamente 
+all'URL del form per l'apertura di un nuovo ticket. Il form, in questo caso, 
+sarà provviso di un codice CAPTCHA per evitare abusi. Una volta aperto, al ticket “anonimo“ 
+verrà assegnato, in modalità random e in qualità di proprietario (creatore), un operatore  
+dell'ufficio di destinazione (se presente, altrimenti un manager della struttura 
+o un operatore dell'ufficio speciale help-desk).
+
+Tipo di ticket “Notifica“
 -------------------------
 
 Se selezionata, questa opzione permetterà agli utenti di creare dei ticket che non seguono

@@ -14,7 +14,7 @@ Presa in carico e impostazione priorità
 | La prima operazione da effettuare per la gestione di un ticket è la presa in carico, ovvero l’assunzione della responsabilità di gestione.
 | All’atto di questo aggiornamento di stato, all’utente operatore viene chiesto di scegliere il livello di priorità da assegnare al ticket, in modo da posizionarlo correttamente nella lista dei ticket aperti.
 
-.. thumbnail:: images/priority.png
+.. thumbnail:: images/take_ticket.png
 
 | Un utente manager può, in questa fase, assegnare il ticket a un operatore dell'ufficio competente.
 
@@ -33,7 +33,8 @@ In qualsiasi momento della vita del ticket è possibile aggiornare la sua priori
 Gestione competenza uffici
 --------------------------
 
-E’ possibile condividere la competenza del ticket con altri uffici, per motivi organizzativi e gestionali, o scegliere di trasferirla scegliendo di:
+E’ possibile abbandonare o condividere la competenza del ticket con altri uffici, 
+per motivi organizzativi e gestionali, o scegliere di trasferirla scegliendo di:
 
 - abbandonare completamente i propri privilegi di gestione del ticket;
 - mantenere ancora l'accesso ma in sola lettura.

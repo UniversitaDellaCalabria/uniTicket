@@ -19,11 +19,11 @@ Principali caratteristiche:
 - Form builder, possibilità di creare i moduli di inserimento per ogni categoria di ticket;
 - Campi di input personalzzati, campi complessi e Django Formsets configurabili tramite widget;
 - Gestione allegati firmati digitalmente (PDF e P7M), con controllo e validazione dell'integrità dei dati;
+- Chat e videoconferenza per operatori e utenti;
 - Report di riepilogo via email che include la lista dei ticket pendenti agli operatori;
 - JQuery Datatables integrato, per una gestione Ajax con processamento lato server dei dati, per ottime performance;
-- Template grafico reponsive per una esperienza di navigazione ottimale anche sui dispositivi mobili;
+- Template grafico Bootstrap Italia (Linee Guida di Design pe la P.A.) reponsive per una esperienza di navigazione ottimale anche sui dispositivi mobili;
 - Integazione SAML2 SSO (pySAML2);
-- Pienamente rispondente alle linee guida AGID per le interfacce grafiche.
 
 **Github:** https://github.com/UniversitaDellaCalabria/uniTicket
 

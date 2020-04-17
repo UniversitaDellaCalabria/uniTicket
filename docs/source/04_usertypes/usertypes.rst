@@ -11,7 +11,7 @@ Manager
 | Può creare nuovi moduli di input associati alle categorie e definire clausole di accettazione.
 | Per ogni ticket, può definire nuove assegnazioni, creare attività e aggiornare lo stato.
 
-| Un utente ha i privilegi di manager se afferisce all:ref:`ufficio_predefinito` (Help Desk) e appartiene al gruppo *staff* di Django.
+| Un utente ha i privilegi di manager se afferisce all':ref:`ufficio_predefinito` (Help Desk) e appartiene al gruppo *staff* di Django.
 | **Solo gli amministratori della piattaforma web (che accedono al backend di Django) possono creare nuovi manager.**
 
 Operatore
@@ -19,7 +19,7 @@ Operatore
 
 | Gestisce il workflow dei ticket collegati agli uffici a cui afferisce.
 | Come il manager, può definire per questi nuove assegnazioni, creare attività e aggiornare lo stato.
-| Se assegnato all'ufficio:ref:`ufficio_predefinito` (Help Desk) può gestire tutti i ticket della struttura. 
+| Se assegnato all':ref:`ufficio_predefinito` (Help Desk) può gestire tutti i ticket della struttura. 
 | Non ha alcuna facoltà sull’organizzazione di categorie e uffici.
 
 
