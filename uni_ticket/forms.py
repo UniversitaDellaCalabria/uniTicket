@@ -131,7 +131,7 @@ class PriorityForm(forms.Form):
 
 
 class TakeTicketForm(forms.Form):
-    priorita = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
+    priority = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
                                  required=True,
                                  initial=0,
                                  label=_('Priorità'),

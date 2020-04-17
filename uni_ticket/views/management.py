@@ -190,7 +190,7 @@ def ticket_detail(request, structure_slug, ticket_id,
     for u_office in untaken_user_offices:
         if user_manage_office(user, u_office):
             # take ticket form
-            office_priority_form = TakeTicketForm(initial={'priorita': ticket.priority},
+            office_priority_form = TakeTicketForm(initial={'priority': ticket.priority},
                                                   office_referred=u_office)
             # assign ticket form
             office_operators_form = AssignTicketToOperatorForm(initial={'priorita': ticket.priority},
@@ -233,7 +233,7 @@ def ticket_detail(request, structure_slug, ticket_id,
                 assignment.taken_by = request.user
                 assignment.save(update_fields=['taken_date',
                                                'taken_by'])
-                priority = office_priority_form.cleaned_data['priorita']
+                priority = office_priority_form.cleaned_data['priority']
                 ticket.priority = priority
                 ticket.save(update_fields = ['priority'])
                 priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
