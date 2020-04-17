@@ -158,9 +158,6 @@ a.read-more .icon{ fill: #9d9d9d; }
     .header-slim-right-zone .nav-item.dropdown{
         margin: auto;
     }
-    .header-slim-right-zone .link-list-wrapper ul li:not(:last-child) a {
-        border-bottom: 1px solid #e7e7e7;
-    }
 
     .dataTables_info,
     .dataTables_paginate {
@@ -263,4 +260,8 @@ select {
 
 .structure_banner {
     max-width: 100%;
+}
+
+.header-slim-right-zone .link-list-wrapper ul li:not(:last-child) a {
+    border-bottom: 1px solid #e7e7e7;
 }
