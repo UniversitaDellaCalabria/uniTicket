@@ -16,6 +16,8 @@ Gli utenti che accederanno alla chat vedranno la lista degli operatori disponibi
 Gli operatori selezioneranno gli utenti con i quali stabilire la comunicazione.
 Ogni utente esporrà il proprio nome e cognome.
 
+.. thumbnail:: images/chat.png
+
 Questa funzionalità non vuole sostituirsi alla apertura dei Ticket ma piuttosto offrire
 l'opportunità agli utenti e agli operatori di confrontarsi direttamente ed eventualmente
 stabilire una :ref:`videoconferenza`, dove chiarire e verificare in maniera più approfondita e diretta ogni aspetto oggetto di confronto.
