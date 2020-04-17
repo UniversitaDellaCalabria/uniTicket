@@ -1066,7 +1066,7 @@ def ticket_message_url(request, structure_slug, ticket_id):
 
 @login_required
 @has_admin_privileges
-@ticket_is_taken_for_employee
+# @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 # @ticket_is_taken_and_not_closed
 def ticket_message(request, structure_slug, ticket_id,
@@ -1099,12 +1099,15 @@ def ticket_message(request, structure_slug, ticket_id,
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
     form = ReplyForm()
 
+    ticket_taken = ticket.has_been_taken(structure=structure,
+                                         exclude_readonly=True)
+
     # if ticket.is_open() and can_manage:
     if can_manage:
         user_replies = ticket_replies.filter(owner=ticket.created_by,
                                              structure=None,
                                              read_by=None)
-        if not can_manage['readonly']:
+        if not can_manage['readonly'] and ticket_taken:
             for reply in user_replies:
                 reply.read_by = request.user
                 reply.read_date = timezone.now()
@@ -1113,6 +1116,12 @@ def ticket_message(request, structure_slug, ticket_id,
     if request.method == 'POST':
         if can_manage['readonly']:
             messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                            structure_slug=structure_slug,
+                            ticket_id=ticket_id)
+        if not ticket_taken:
+            m = _("Il ticket deve essere prima preso in carico")
+            messages.add_message(request, messages.ERROR, m)
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
