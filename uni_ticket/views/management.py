@@ -215,31 +215,6 @@ def ticket_detail(request, structure_slug, ticket_id,
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
 
-        # operator/manager has changed priority
-        form = PriorityForm(request.POST)
-        if ticket.has_been_taken(structure=structure) and form.is_valid():
-            priority = form.cleaned_data['priorita']
-            priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
-            mail_params = {'hostname': settings.HOSTNAME,
-                           'status': _("aggiornato"),
-                           'ticket': ticket,
-                           'user': ticket.created_by
-                          }
-
-            msg = _("Priorità aggiornata")
-            if settings.SIMPLE_USER_SHOW_PRIORITY:
-                msg = _("Priorità assegnata: {}".format(priority_text))
-
-            ticket.update_log(user=request.user, note=msg)
-            ticket.priority = priority
-            ticket.save(update_fields = ['priority'])
-            messages.add_message(request, messages.SUCCESS,
-                                 _("Ticket <b>{}</b> aggiornato"
-                                   " con successo".format(ticket.code)))
-            return redirect('uni_ticket:manage_ticket_url_detail',
-                            structure_slug=structure_slug,
-                            ticket_id=ticket_id)
-
         # check if user has taken or assigned competence
         for o in offices_forms:
             office_priority_form = TakeTicketForm(request.POST,
@@ -305,7 +280,31 @@ def ticket_detail(request, structure_slug, ticket_id,
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
 
+        # operator/manager has changed priority
+        form = PriorityForm(request.POST)
+        if ticket.has_been_taken(structure=structure,
+                                 exclude_readonly=True) and form.is_valid():
+            priority = form.cleaned_data['priorita']
+            priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
+            mail_params = {'hostname': settings.HOSTNAME,
+                           'status': _("aggiornato"),
+                           'ticket': ticket,
+                           'user': ticket.created_by
+                          }
 
+            msg = _("Priorità aggiornata")
+            if settings.SIMPLE_USER_SHOW_PRIORITY:
+                msg = _("Priorità assegnata: {}".format(priority_text))
+
+            ticket.update_log(user=request.user, note=msg)
+            ticket.priority = priority
+            ticket.save(update_fields = ['priority'])
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Ticket <b>{}</b> aggiornato"
+                                   " con successo".format(ticket.code)))
+            return redirect('uni_ticket:manage_ticket_url_detail',
+                            structure_slug=structure_slug,
+                            ticket_id=ticket_id)
         else:
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,

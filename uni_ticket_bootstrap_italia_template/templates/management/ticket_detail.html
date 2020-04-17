@@ -334,7 +334,7 @@
     {% endblock ticket_options %}
 
     {% block ticket_management_buttons %}
-        {% ticket_has_been_taken ticket=ticket structure=structure as ticket_taken %}
+        {% ticket_has_been_taken ticket=ticket structure=structure exclude_readonly=True as ticket_taken %}
         {% if ticket_taken %}
         <div class="mt-5">
             <form method="post" enctype="multipart/form-data">
