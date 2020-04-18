@@ -41,6 +41,9 @@ description:
       - Template grafico reponsive per una esperienza di navigazione ottimale anche sui dispositivi mobili
       - Integazione SAML2 SSO (pySAML2)
       - Pienamente rispondente alle linee guida AGID per le interfacce grafiche
+    screenshots:
+      - >-
+        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/responsive.png
     genericName: applicazione web
     longDescription: >
       Django **Unified Ticket System** è un sistema software di ticketing ed
