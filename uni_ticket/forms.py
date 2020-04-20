@@ -24,7 +24,8 @@ class CategoryForm(ModelForm):
                   'is_notify',
                   'show_heading_text',
                   'allow_anonymous', 'allow_guest',
-                  'allow_user', 'allow_employee']
+                  'allow_user', 'allow_employee',
+                  'receive_email']
         labels = {'name': _('Nome'),
                   'description': _('Descrizione'),}
     class Media:

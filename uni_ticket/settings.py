@@ -137,6 +137,14 @@ SUMMARY_EMPLOYEE_EMAIL = _("""Ci sono {opened_ticket_number} tickets da gestire.
 
 {tickets_per_office}""")
 
+NEW_TICKET_CREATED_EMPLOYEE_BODY = _("""E' stata effettuata una nuova richiesta all'ufficio {destination_office}.
+
+Utente: {ticket_user}
+Oggetto: {ticket_subject}
+Descrizione: {ticket_description}
+
+URL: {ticket_url}""")
+
 
 # Old english version
 NEW_TICKET_UPDATE_OLD_EN = _("Dear {user},"

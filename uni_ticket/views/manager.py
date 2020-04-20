@@ -849,6 +849,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                       'allow_guest',
                                                       'allow_user',
                                                       'allow_employee',
+                                                      'receive_email',
                                                       'modified'])
                 # log action
                 logger.info('[{}] manager of structure {}'

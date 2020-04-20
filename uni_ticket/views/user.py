@@ -98,6 +98,36 @@ def _save_new_ticket_attachments(ticket,
 
         set_as_dict(ticket, json_stored)
 
+# send email to operators when new ticket is opened
+def _send_new_ticket_mail_to_operators(request, ticket, category):
+    office = category.organizational_office
+    structure = category.organizational_structure
+    mail_params = {'hostname': settings.HOSTNAME,
+                   'ticket_url': request.build_absolute_uri(reverse('uni_ticket:manage_ticket_url_detail',
+                                                                     kwargs={'ticket_id': ticket.code,
+                                                                             'structure_slug': structure.slug})),
+                   'ticket_subject': ticket.subject,
+                   'ticket_description': ticket.description,
+                   'ticket_user': ticket.created_by,
+                   'destination_office': office,
+                  }
+
+    m_subject = _('{} - {}'.format(settings.HOSTNAME, category))
+    operators = OrganizationalStructureOfficeEmployee.objects.filter(office=office,
+                                                                     employee__is_active=True)
+    # if no operators in office, get default office operators
+    if not operators:
+        operators = OrganizationalStructureOfficeEmployee.objects.filter(office__organizational_structure=structure,
+                                                                         office__is_default=True,
+                                                                         employee__is_active=True)
+    for op in operators:
+        mail_params['user'] = op.employee
+        send_custom_mail(subject=m_subject,
+                         recipient=op.employee,
+                         body=settings.NEW_TICKET_CREATED_EMPLOYEE_BODY,
+                         params=mail_params,
+                         force=True)
+
 @login_required
 def ticket_new_preload(request, structure_slug=None):
     """
@@ -296,6 +326,14 @@ def ticket_add_new(request, structure_slug, category_slug):
                                  messages.SUCCESS,
                                  compiled_message
                                 )
+
+            # if office operators must receive notification email
+            if category.receive_email:
+                # Send mail to ticket owner
+                _send_new_ticket_mail_to_operators(request=request,
+                                                   ticket=ticket,
+                                                   category=category)
+
             # if user is authenticated send mail and redirect to ticket page
             if request.user.is_authenticated:
                 # Send mail to ticket owner
@@ -922,6 +960,13 @@ def ticket_clone(request, ticket_id):
                                                              kwargs={'ticket_id': ticket.code})),
                             'added_text': compiled_message
                           }
+
+            # if office operators must receive notification email
+            if category.receive_email:
+                # Send mail to ticket owner
+                _send_new_ticket_mail_to_operators(request=request,
+                                                   ticket=ticket,
+                                                   category=category)
 
             m_subject = _('{} - {}'.format(settings.HOSTNAME,
                                            compiled_message))

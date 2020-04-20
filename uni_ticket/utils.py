@@ -324,9 +324,9 @@ def user_offices_list(office_employee_queryset):
     return offices
 
 # Custom email sender
-def send_custom_mail(subject, recipient, body, params={}):
+def send_custom_mail(subject, recipient, body, params={}, force=False):
     if not recipient: return False
-    if not recipient.email_notify: return False
+    if not force and not recipient.email_notify: return False
 
     msg_body_list = [settings.MSG_HEADER, body,
                      settings.MSG_FOOTER]

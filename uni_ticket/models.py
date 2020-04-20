@@ -84,6 +84,10 @@ class TicketCategory(models.Model):
                                                         "per inserire il codice del ticket. "
                                                         "Lascia vuoto per usare il testo predefinito \"{}\""
                                                         "").format(settings.NEW_TICKET_CREATED_ALERT))
+    # fields to map roles
+    receive_email = models.BooleanField(_("Mail ad operatori"),
+                                        default=False,
+                                        help_text=_("Operatori ricevono notifica email per ogni ticket aperto"))
 
     class Meta:
         unique_together = ("slug", "organizational_structure")
