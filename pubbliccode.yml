@@ -101,7 +101,7 @@ description:
       - Integazione SAML2 SSO (pySAML2);
     screenshots:
       - >-
-        https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/data/gallery/responsive.png
+        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/uniticket.png
     shortDescription: >-
       Django Ticket System per il tracciamento e la digitalizzazione dei flussi
       di richieste e documentali.
