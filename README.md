@@ -14,16 +14,15 @@ Principali caratteristiche:
 - Possibilità di trasferire e condividere ticket tra differenti uffici/aree;
 - Possibilità di aggiungere clausole di consenso da accettare prima di aprire un ticket;
 - Interdipendenza tra ticket;
-- WebChat (websocket) con possibilità di accedere in videoconferenza con gli operatori della piattaforma (jitsi);
-- Lista di attività atomiche per ogni ticket, per guidare l'utente nel processo di lavorazione ed evasione;
+- Lista di attività atomiche per ogni ticket, per guidare l’utente nel processo di lavorazione ed evasione;
 - Form builder, possibilità di creare i moduli di inserimento per ogni categoria di ticket;
 - Campi di input personalzzati, campi complessi e Django Formsets configurabili tramite widget;
-- Gestione allegati firmati digitalmente (PDF e P7M), con controllo e validazione dell'integrità dei dati;
+- Gestione allegati firmati digitalmente (PDF e P7M), con controllo e validazione dell’integrità dei dati;
+- Chat e videoconferenza per operatori e utenti;
 - Report di riepilogo via email che include la lista dei ticket pendenti agli operatori;
 - JQuery Datatables integrato, per una gestione Ajax con processamento lato server dei dati, per ottime performance;
-- Template grafico reponsive per una esperienza di navigazione ottimale anche sui dispositivi mobili;
+- Template grafico Bootstrap Italia (Linee Guida di Design pe la P.A.) reponsive per una esperienza di navigazione ottimale anche sui dispositivi mobili;
 - Integazione SAML2 SSO (pySAML2);
-- Pienamente rispondente alle linee guida AGID per le interfacce grafiche.
 
 [Documentazione ufficiale](https://uniticket.readthedocs.io/it/latest/index.html) su **readthedocs** per installazione e utilizzo del software.
 
@@ -37,15 +36,15 @@ Featurset:
 - Multi Tenant. Multiple office and organizational areas support in a single, unified, system;
 - Possibility to transfer and share tickets between different office/areas;
 - Possibility to add data consent or agreement submission before a ticket being created;
-- ticket interdependencies;
-- todo list for every ticket, to follow user to do things before submission;
+- Ticket interdependencies;
+- Todo list for every ticket, to follow user to do things before submission;
 - Custom fields, custom complex field, custom multi row (table) fields with configurable fancy widgets;
 - Pdf and p7m signed fields, with validation on data integrity (attachment);
+- Chat and videoconference for operators and users;
 - Report summary via email about pending tickets to office's operators;
 - datatables ajax server side processing, very good performances on mobile device;
-- Responsive template for a better mobile experience;
+- Bootstrap Italia responsive template for a better mobile experience;
 - SAML2 SSO integration (pySAML2);
-- Fully compliant Agid visual guidelines.
 
 Consult the [Official Documentation](https://uniticket.readthedocs.io/it/latest/index.html) at readthedocs for usage specifications and advanced topics.
 

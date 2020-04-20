@@ -438,19 +438,6 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if can_manage['readonly']:
-
-        # log action
-        logger.info('[{}] {} tried to add new dependence to'
-                    ' close readonly ticket {}'.format(timezone.now(),
-                                                        request.user,
-                                                        ticket))
-
-        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
-
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_dependence.html".format(user_type)
     title = _('Aggiungi dipendenza ticket')
@@ -549,18 +536,6 @@ def ticket_dependence_remove(request, structure_slug,
 
     :return: redirect
     """
-    if can_manage['readonly']:
-        # log action
-        logger.info('[{}] {} tried to add new dependence to'
-                    ' close readonly ticket {}'.format(timezone.now(),
-                                                        request.user,
-                                                        ticket))
-
-        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
-
     user_type = get_user_type(request.user, structure)
     master_ticket = get_object_or_404(Ticket, code=master_ticket_id)
     to_remove = get_object_or_404(Ticket2Ticket,
@@ -635,17 +610,6 @@ def ticket_close(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if can_manage['readonly']:
-        # log action
-        logger.info('[{}] {} tried to'
-                    ' close readonly ticket {}'.format(timezone.now(),
-                                                        request.user,
-                                                        ticket))
-
-        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
     # Se il ticket non è chiudibile (per dipendenze attive)
     if not ticket.is_closable():
         # log action
@@ -722,17 +686,6 @@ def ticket_reopen(request, structure_slug, ticket_id,
 
     :return: redirect
     """
-    if can_manage['readonly']:
-        # log action
-        logger.info('[{}] {} tried to reopen'
-                    ' readonly ticket {}'.format(timezone.now(),
-                                                 request.user,
-                                                 ticket))
-
-        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
     if not ticket.is_closed:
         # log action
         logger.info('[{}] {} tried to reopen'
@@ -884,18 +837,6 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if can_manage['readonly']:
-        # log action
-        logger.info('[{}] {} tried to add new competence to'
-                    ' readonly ticket {}'.format(timezone.now(),
-                                                 request.user,
-                                                 ticket))
-
-        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
-
     strutture = OrganizationalStructure.objects.filter(is_active = True)
     # Lista uffici ai quali il ticket è assegnato
     ticket_offices = ticket.get_assigned_to_offices(office_active=False)
@@ -1225,11 +1166,6 @@ def task_add_new(request, structure_slug, ticket_id,
 
     :return: render
     """
-    if can_manage['readonly']:
-        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_task.html".format(user_type)
     title = _('Aggiungi Attività')
@@ -1298,21 +1234,6 @@ def task_remove(request, structure_slug,
 
     :return: render
     """
-    if can_manage['readonly']:
-
-        # log action
-        logger.info('[{}] {} tried to'
-                    ' remove task {}'
-                    ' in readonly ticket {}'.format(timezone.now(),
-                                                    request.user,
-                                                    task,
-                                                    ticket))
-
-        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
-
     user_type = get_user_type(request.user, structure)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
 
@@ -1510,12 +1431,6 @@ def task_close(request, structure_slug, ticket_id, task_id,
 
     :return: render
     """
-    if can_manage['readonly']:
-        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
-
     # Se il ticket non è chiudibile (per dipendenze attive)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     if task.is_closed:
@@ -1593,20 +1508,6 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
 
     :return: redirect
     """
-    if can_manage['readonly']:
-        # log action
-        logger.info('[{}] {} tried to'
-                    ' remove task {}'
-                    ' in readonly ticket {}'.format(timezone.now(),
-                                                    request.user,
-                                                    task,
-                                                    ticket))
-
-        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
-
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     # Se il ticket non è chiuso blocca
     if not task.is_closed:
@@ -1694,20 +1595,6 @@ def task_edit(request, structure_slug, ticket_id, task_id,
 
     :return: render
     """
-    if can_manage['readonly']:
-        # log action
-        logger.info('[{}] {} tried to'
-                    ' edit task {}'
-                    ' in readonly ticket {}'.format(timezone.now(),
-                                                    request.user,
-                                                    task,
-                                                    ticket))
-
-        messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
-
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     usertype = get_user_type(request.user, structure)
     data = {'subject': task.subject,
@@ -1808,13 +1695,6 @@ def task_attachment_delete(request, structure_slug,
 
     :return: redirect
     """
-    if can_manage['readonly']:
-        messages.add_message(request, messages.ERROR,
-                             settings.READONLY_COMPETENCE_OVER_TICKET)
-        return redirect('uni_ticket:manage_ticket_url_detail',
-                        structure_slug=structure_slug,
-                        ticket_id=ticket_id)
-
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     if task.created_by != request.user:
         return custom_message(request, _("Permessi di modifica dell'attività mancanti"),

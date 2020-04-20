@@ -27,23 +27,33 @@ description:
   it:
     documentation: 'https://uniticket.readthedocs.io/it/latest/index.html'
     features:
-      - Integazione SAML2 SSO (pySAML2)
-      - Multi Tenant. Un unico sistema a supporto di diversi uffici e aree organizzative;
-      - Possibilità di trasferire e condividere ticket tra differenti uffici/aree
-      - Possibilità di aggiungere clausole di consenso da accettare prima di aprire un ticket
-      - Interdipendenza tra ticket
-      - Lista di attività atomiche per ogni ticket, per guidare l’utente nel processo di lavorazione ed evasione
-      - Form builder, possibilità di creare i moduli di inserimento per ogni categoria di ticket
-      - Campi di input personalzzati, campi complessi e Django Formsets configurabili tramite widget
-      - Gestione allegati firmati digitalmente (PDF e P7M), con controllo e validazione dell’integrità dei dati
-      - Report di riepilogo via email che include la lista dei ticket pendenti agli operatori
-      - JQuery Datatables integrato, per una gestione Ajax con processamento lato server dei dati, per ottime performance
-      - Template grafico reponsive per una esperienza di navigazione ottimale anche sui dispositivi mobili
-      - Integazione SAML2 SSO (pySAML2)
-      - Pienamente rispondente alle linee guida AGID per le interfacce grafiche
-    screenshots:
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/responsive.png
+        Multi Tenant. Un unico sistema a supporto di diversi uffici e aree
+        organizzative;
+      - >-
+        Possibilità di trasferire e condividere ticket tra differenti
+        uffici/aree;
+      - >-
+        Possibilità di aggiungere clausole di consenso da accettare prima di
+        aprire un ticket;
+      - Interdipendenza tra ticket;
+      - Lista di attività atomiche per ogni ticket;
+      - >-
+        Form builder, possibilità di creare i moduli di inserimento per ogni
+        categoria di ticket;
+      - >-
+        Campi di input personalzzati, campi complessi e Django Formsets
+        configurabili tramite widget;
+      - Gestione allegati firmati digitalmente (PDF e P7M);
+      - Chat e videoconferenza per operatori e utenti;
+      - >-
+        Report di riepilogo via email che include la lista dei ticket pendenti
+        agli operatori;
+      - >-
+        JQuery Datatables integrato, per una gestione Ajax con processamento
+        lato server dei dati;
+      - Template grafico Bootstrap Italia (Linee Guida di Design pe la P.A.);
+      - Integazione SAML2 SSO (pySAML2);
     genericName: applicazione web
     longDescription: >
       Django **Unified Ticket System** è un sistema software di ticketing ed
@@ -54,41 +64,44 @@ description:
       Principali caratteristiche:
 
 
-      - Multi Tenant. Un unico sistema a supporto di diversi uffici e aree
-      organizzative;
+      - Multi Tenant. Un unico sistema a supporto di diversi uffici e
+        aree organizzative;
 
       - Possibilità di trasferire e condividere ticket tra differenti
       uffici/aree;
 
-      - Possibilità di aggiungere clausole di consenso da accettare prima di
-      aprire un ticket;
+      - Possibilità di aggiungere clausole di consenso da accettare
+        prima di aprire un ticket;
 
       - Interdipendenza tra ticket;
 
-      - Lista di attività atomiche per ogni ticket, per guidare l’utente nel
-      processo di lavorazione ed evasione;
+      - Lista di attività atomiche per ogni ticket, per guidare l’utente
+        nel processo di lavorazione ed evasione;
 
-      - Form builder, possibilità di creare i moduli di inserimento per ogni
-      categoria di ticket;
+      - Form builder, possibilità di creare i moduli di inserimento
+        per ogni categoria di ticket;
 
       - Campi di input personalzzati, campi complessi e Django Formsets
-      configurabili tramite widget;
+        configurabili tramite widget;
 
-      - Gestione allegati firmati digitalmente (PDF e P7M), con controllo e
-      validazione dell’integrità dei dati;
+      - Gestione allegati firmati digitalmente (PDF e P7M), con controllo
+        e validazione dell’integrità dei dati;
 
-      - Report di riepilogo via email che include la lista dei ticket pendenti
-      agli operatori;
+      - Chat e videoconferenza per operatori e utenti;
+
+      - Report di riepilogo via email che include la lista dei ticket
+        pendenti agli operatori;
 
       - JQuery Datatables integrato, per una gestione Ajax con processamento
-      lato server dei dati, per ottime performance;
+        lato server dei dati, per ottime performance;
 
-      - Template grafico reponsive per una esperienza di navigazione ottimale
-      anche sui dispositivi mobili;
+      - Template grafico Bootstrap Italia (Linee Guida di Design pe la P.A.)
+        reponsive per una esperienza di navigazione ottimale anche sui dispositivi mobili;
 
       - Integazione SAML2 SSO (pySAML2);
-
-      - Pienamente rispondente alle linee guida AGID per le interfacce grafiche.
+    screenshots:
+      - >-
+        https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/data/gallery/responsive.png
     shortDescription: >-
       Django Ticket System per il tracciamento e la digitalizzazione dei flussi
       di richieste e documentali.
