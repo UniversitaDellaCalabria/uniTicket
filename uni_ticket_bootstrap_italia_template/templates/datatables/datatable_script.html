@@ -103,9 +103,11 @@ $(function() {
         ajax: ajax,
         stateSave: true,
         "initComplete": function() {
-            json_search = JSON.parse(datatable.state()['search']['search']);
-            $('#search_box').val(json_search['text']);
-            $('#year').val(json_search['year']);
+            if datatatable.state() {
+                json_search = JSON.parse(datatable.state()['search']['search']);
+                $('#search_box').val(json_search['text']);
+                $('#year').val(json_search['year']);
+            }
         }
     });
 
