@@ -50,6 +50,15 @@
                   <b>{% trans 'Attività predefinite attive' %}:</b>
                   {% tasks_in_category category as tasks_in_category %}
                   {{ tasks_in_category }}
+                  <br>
+                  <b>{% trans 'Notifica email a operatori' %}:</b>
+                  <svg class="icon icon-xs">
+                  {% if category.receive_email %}
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                  {% else %}
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                  {% endif %}
+                  </svg>
               </p>
             </div>
           </div>
