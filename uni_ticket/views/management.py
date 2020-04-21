@@ -1828,7 +1828,7 @@ def ticket_competence_leave(request, structure_slug, ticket_id,
                                        "<br>"
                                        "Rimuovendo la competenza "
                                        " di <b>{}</b>, "
-                                       "il ticket non sarà più gestito "
+                                       "il ticket non sarebbe più gestito "
                                        "da alcun ufficio. "
                                        "".format(office)))
             return redirect('uni_ticket:manage_ticket_url_detail',
