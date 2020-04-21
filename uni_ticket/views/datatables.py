@@ -33,8 +33,13 @@ class TicketDTD(DjangoDatatablesServerProc):
             params = json.loads(self.search_key)
             year = params['year']
             text = params['text']
+            category = params['category']
+            structure = params['structure']
             if year:
                 self.aqs = self.aqs.filter(created__year=year)
+            if category:
+                self.aqs = self.aqs.filter(input_module__ticket_category__slug=category,
+                                           input_module__ticket_category__organizational_structure__slug=structure)
             if text:
                 self.aqs = self.aqs.filter(
                     Q(code__icontains=text) | \

@@ -1,12 +1,14 @@
 {% load i18n %}
 {% load uni_ticket_tags %}
-{% year_list as year_list %}
-{% now 'Y' as current_year %}
+
 <div class="row">
-    <div class="col-md-4 col-lg-2">
+    <div class="col-lg-2">
         <div class="bootstrap-select-wrapper">
-            <select id="year" name="year">
+            <select id="search_year"
+                    name="search_year"
+                    data-live-search="true" data-live-search-placeholder="Cerca...">
                 <option value="" selected>- Tutti gli anni -</option>
+                {% year_list as year_list %}
                 {% for year in year_list %}
                 <option value="{{ year }}">
                     {{ year }}
@@ -15,7 +17,25 @@
             </select>
         </div>
     </div>
-    <div class="col-md-8 col-lg-10">
+    {% if structure %}
+    <div class="col-lg-5">
+        <div class="bootstrap-select-wrapper">
+            <select id="search_category"
+                    name="search_category"
+                    data-live-search="true" data-live-search-placeholder="Cerca...">
+                <option value="" selected>- Tutte le tipologie -</option>
+                {% categories_list structure request.user as categories_list %}
+                {% for category in categories_list %}
+                <option value="{{ category.slug }}">
+                    {{ category }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <input type="hidden" id="search_structure" name="search_structure" value="{{ structure.slug }}" />
+    {% endif %}
+    <div class="col-lg-5">
         <div class="form-group">
             <input type="text" id="search_box" placeholder="{% trans 'Cerca...' %}">
         </div>

@@ -106,16 +106,29 @@ $(function() {
             if(datatable.state()['search']['search']) {
                 json_search = JSON.parse(datatable.state()['search']['search']);
                 $('#search_box').val(json_search['text']);
-                $('#year').val(json_search['year']).change();
+                $('#search_year').val(json_search['year']).change();
+                $('#search_category').val(json_search['category']).change();
+                $('#search_structure').val(json_search['structure']);
             }
         }
     });
 
 
-    $('#year, #search_box').on('change keyup', function () {
-        var year = $('#year').val();
+    $('#search_year, #search_box, #search_category').on('change keyup', function () {
+        var year = $('#search_year').val();
+        var category = $('#search_category').val();
+        if (typeof category === 'undefined'){
+            category = "";
+        }
         var text = $('#search_box').val();
-        var args = '{"year": "'+year+'", "text": "'+text+'"}';
+        var structure = $('#search_structure').val();
+        if (typeof structure === 'undefined'){
+            structure = "";
+        }
+        var args = '{"year": "'+year+'", '+
+                   '"text": "'+text+'", '+
+                   '"category": "'+category+'", '+
+                   '"structure": "'+structure+'"}';
         datatable.search(args).draw();
     } );
 

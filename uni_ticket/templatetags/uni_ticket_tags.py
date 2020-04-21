@@ -14,6 +14,7 @@ from django.template.defaultfilters import stringfilter
 from django_form_builder import dynamic_fields
 from uni_ticket.models import (Ticket,
                                TicketAssignment,
+                               TicketCategory,
                                TicketCategoryCondition,
                                TicketCategoryModule)
 from uni_ticket import settings as uni_ticket_settings
@@ -22,6 +23,7 @@ from uni_ticket.utils import (download_file,
                               get_user_type,
                               office_can_be_deleted,
                               user_is_in_default_office,
+                              user_is_operator,
                               user_manage_something)
 
 register = template.Library()
@@ -43,6 +45,18 @@ def no_slugged(value):
 @register.simple_tag
 def year_list():
     return range(2019, timezone.localdate().year+1)
+
+@register.simple_tag
+def categories_list(structure, user):
+    if user_is_in_default_office(user, structure):
+        return TicketCategory.objects.filter(organizational_structure=structure)
+    categories = []
+    employee_offices = user_is_operator(user, structure)
+    for eo in employee_offices:
+        office_categories = TicketCategory.objects.filter(organizational_office=eo.office)
+        for oc in office_categories:
+            categories.append(oc)
+    return categories
 
 @register.simple_tag
 def current_date():
