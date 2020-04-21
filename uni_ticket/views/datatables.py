@@ -28,18 +28,15 @@ class TicketDTD(DjangoDatatablesServerProc):
         """
         Sets DataTable tickets common queryset
         """
+        self.aqs = self.queryset
         if self.search_key:
             params = json.loads(self.search_key)
             year = params['year']
             text = params['text']
-            if not year and not text:
-                self.aqs = self.queryset
             if year:
-                self.aqs = self.queryset.filter(created__year=year)
+                self.aqs = self.aqs.filter(created__year=year)
             if text:
-                queryset = self.queryset
-                if self.aqs: queryset = self.aqs
-                self.aqs = queryset.filter(
+                self.aqs = self.aqs.filter(
                     Q(code__icontains=text) | \
                     Q(subject__icontains=text) | \
                     Q(created_by__first_name__icontains=text) | \
@@ -50,7 +47,6 @@ class TicketDTD(DjangoDatatablesServerProc):
                     Q(closed_by__last_name__icontains=text) | \
                     Q(input_module__ticket_category__name__icontains=text) | \
                     Q(created__icontains=text))
-        else: self.aqs = self.queryset
 
 @csrf_exempt
 @login_required

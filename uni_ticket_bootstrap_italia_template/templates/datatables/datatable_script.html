@@ -11,7 +11,8 @@
 var url = "{{ var_url }}";
 var user_show_priority = "{{ user_show_priority }}";
 
-$(document).ready(function() {
+$(function() {
+
     var dom = 'lrtip';
     var aLengthMenu = [
             [10, 25, 50, 100, ], // -1],
@@ -31,7 +32,7 @@ $(document).ready(function() {
                 "first":      "{% trans 'Prima' %}",
                 "last":       "{% trans 'Ultima' %}",
                 "next":       "{% trans 'Successiva' %}",
-                "previous":   "{% trans 'Precedente' %}"
+                "previous":   "{% trans 'Precedente' %}",
             },
         };
     var ajax = {
@@ -46,10 +47,6 @@ $(document).ready(function() {
                 };
             }
         };
-    var paging = true;
-    var responsive = true;
-    var processing = true;
-    var serverSide = true;
 
     var columnDefs = [
             {
@@ -97,14 +94,21 @@ $(document).ready(function() {
     var datatable = $('.datatable-responsive-serverside').DataTable({
         dom: dom,
         aLengthMenu: aLengthMenu,
-        paging: paging,
-        responsive: responsive,
-        processing: processing,
-        serverSide: serverSide,
+        paging: true,
+        responsive: true,
+        processing: true,
+        serverSide: true,
         columnDefs: columnDefs,
         language: language,
         ajax: ajax,
+        stateSave: true,
+        "initComplete": function() {
+            json_search = JSON.parse(datatable.state()['search']['search']);
+            $('#search_box').val(json_search['text']);
+            $('#year').val(json_search['year']);
+        }
     });
+
 
     $('#year, #search_box').on('change keyup', function () {
         var year = $('#year').val();
@@ -112,13 +116,8 @@ $(document).ready(function() {
         var args = '{"year": "'+year+'", "text": "'+text+'"}';
         datatable.search(args).draw();
     } );
-    //$('#year_box').on( 'change', function () {
-        //datatable.search($('#year_box').val()).draw();
-    //} );
+
 
 });
 
-//$.extend($('.datatable-responsive-serverside').DataTable.ext.classes, {
-    //"sLengthSelect" : "uni_ticket_select",
-//} );
 </script>
