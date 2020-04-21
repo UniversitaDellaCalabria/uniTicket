@@ -103,7 +103,7 @@ $(function() {
         ajax: ajax,
         stateSave: true,
         "initComplete": function() {
-            if(datatable.state()) {
+            if(datatable.state()['search']['search']) {
                 json_search = JSON.parse(datatable.state()['search']['search']);
                 $('#search_box').val(json_search['text']);
                 $('#year').val(json_search['year']);
