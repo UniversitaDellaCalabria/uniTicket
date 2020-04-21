@@ -28,14 +28,18 @@ TICKET_HEADING_TEXT = _('Soggetto richiedente: <b>{user}</b>'
 # ticket subject
 TICKET_SUBJECT_ID = 'ticket_subject'
 TICKET_SUBJECT_LABEL = _('Oggetto della Richiesta')
-TICKET_SUBJECT_HELP_TEXT = _("Ulteriore specificazione o "
-                             "personalizzazione dell'Oggetto della Richiesta")
+TICKET_SUBJECT_HELP_TEXT = _('Il campo Oggetto è impostato con '
+                             'la denominazione della richiesta. '
+                             'E\' possibile modificare o integrare '
+                             'il campo per fornire indicazioni specifiche')
 
 # ticket description
 TICKET_DESCRIPTION_ID = 'ticket_description'
 TICKET_DESCRIPTION_LABEL = _('Descrizione')
-TICKET_DESCRIPTION_HELP_TEXT = ('Ulteriore Descrizione della Richiesta, '
-                                'eventuali note del Richiedente')
+TICKET_DESCRIPTION_HELP_TEXT = _('Il campo Descrizione è impostato con '
+                                 'la descrizione generica della richiesta. '
+                                 'E\' possibile modificare o integrare '
+                                 'il campo per fornire indicazioni specifiche')
 
 # captcha
 TICKET_CAPTCHA_ID = 'ticket_captcha'
