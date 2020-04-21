@@ -30,16 +30,16 @@ TICKET_SUBJECT_ID = 'ticket_subject'
 TICKET_SUBJECT_LABEL = _('Oggetto della Richiesta')
 TICKET_SUBJECT_HELP_TEXT = _('Il campo Oggetto è impostato con '
                              'la denominazione della richiesta. '
-                             'E\' possibile modificare o integrare '
-                             'il campo per fornire indicazioni specifiche')
+                             'E\' possibile modificarlo o integrarlo '
+                             'per fornire indicazioni specifiche')
 
 # ticket description
 TICKET_DESCRIPTION_ID = 'ticket_description'
 TICKET_DESCRIPTION_LABEL = _('Descrizione')
 TICKET_DESCRIPTION_HELP_TEXT = _('Il campo Descrizione è impostato con '
                                  'la descrizione generica della richiesta. '
-                                 'E\' possibile modificare o integrare '
-                                 'il campo per fornire indicazioni specifiche')
+                                 'E\' possibile modificarlo o integrarlo '
+                                 'per fornire indicazioni specifiche')
 
 # captcha
 TICKET_CAPTCHA_ID = 'ticket_captcha'
