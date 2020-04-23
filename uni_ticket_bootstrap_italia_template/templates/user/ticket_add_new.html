@@ -128,17 +128,24 @@
 
 {% block form_buttons %}
 <div>
-    <button class="btn btn-success btn-block"
+    <button class="btn btn-success"
             type="button"
             data-toggle="modal"
-            data-target="#action"
-            value="{% trans 'Conferma' %}">
+            data-target="#action">
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-        </svg> {% trans "Conferma" %}
+        </svg> {% trans "Conferma e apri il ticket" %}
+    </button>
+    {% settings_value name="TICKET_GENERATE_URL_BUTTON_NAME" as generate_url_button_name %}
+    <button class="btn btn-outline-success"
+            type="submit"
+            name="generate_url_submit"
+            value="{{ generate_url_button_name }}">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-link"></use>
+        </svg> {% trans "Genera URL per ticket precompilato" %}
     </button>
 </div>
-
 <div class="modal fade"
      tabindex="-1"
      role="dialog"
@@ -164,9 +171,11 @@
                 </p>
             </div>
             <div class="modal-footer">
+                {% settings_value name="TICKET_CREATE_BUTTON_NAME" as confirm_button_name %}
                 <input class="btn btn-success"
                        type="submit"
                        id="submitForm"
+                       name="{{ confirm_button_name }}"
                        value="{% trans 'Si, procedi' %}">
             </div>
         </div>

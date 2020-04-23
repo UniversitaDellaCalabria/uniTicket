@@ -26,6 +26,7 @@ from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOfficeEmployee,)
 from uni_ticket.decorators import *
 from uni_ticket.forms import *
+from uni_ticket.jwts import *
 from uni_ticket.models import *
 from uni_ticket.utils import *
 
@@ -226,11 +227,36 @@ def ticket_add_new(request, structure_slug, category_slug):
     title = category
     template = 'user/ticket_add_new.html'
     sub_title = category.description if category.description else _("Compila i campi richiesti")
-    modulo = get_object_or_404(TicketCategoryModule,
-                               ticket_category=category,
-                               is_active=True)
-    form = modulo.get_form(show_conditions=True,
-                           current_user=request.user)
+
+    # if there is an encrypted token with ticket params in URL
+    if request.GET.get('import'):
+        encoded_data = request.GET['import']
+        try:
+            # decrypt and get imported form content
+            imported_data = json.loads(decrypt_from_jwe(encoded_data))
+        except Exception as e:
+            return custom_message(request,
+                                  _("Dati da importare non consistenti."))
+        # get input_module id from imported data
+        module_id = imported_data.get('ticket_input_module')
+        if not module_id:
+            return custom_message(request,
+                                  _("Dati da importare non consistenti. "
+                                    "Modulo di input mancante"))
+        modulo = get_object_or_404(TicketCategoryModule,
+                                   ticket_category=category,
+                                   pk=module_id)
+        # get compiled form
+        form = modulo.get_form(data=imported_data,
+                               show_conditions=True,
+                               current_user=request.user)
+    else:
+        modulo = get_object_or_404(TicketCategoryModule,
+                                   ticket_category=category,
+                                   is_active=True)
+        form = modulo.get_form(show_conditions=True,
+                               current_user=request.user)
+
     clausole_categoria = category.get_conditions()
     d={'categoria': category,
        'category_conditions': clausole_categoria,
@@ -249,118 +275,141 @@ def ticket_add_new(request, structure_slug, category_slug):
 
         if form.is_valid():
             fields_to_pop = [settings.TICKET_CONDITIONS_FIELD_ID,
-                             settings.TICKET_SUBJECT_ID,
-                             settings.TICKET_DESCRIPTION_ID,
                              settings.TICKET_CAPTCHA_ID,
                              settings.TICKET_CAPTCHA_HIDDEN_ID]
-            json_data = get_POST_as_json(request=request,
-                                         fields_to_pop=fields_to_pop)
-            # make a UUID based on the host ID and current time
-            code = uuid_code()
-            subject = form.cleaned_data[settings.TICKET_SUBJECT_ID]
-            description = form.cleaned_data[settings.TICKET_DESCRIPTION_ID]
+            # if user generates an encrypted token in URL
+            if request.POST.get(settings.TICKET_GENERATE_URL_BUTTON_NAME):
+                fields_to_pop.append(settings.TICKET_GENERATE_URL_BUTTON_NAME)
+                json_data = get_POST_as_json(request=request,
+                                             fields_to_pop=fields_to_pop)
+                form_data = json.loads(json_data)
+                form_data.update({'ticket_input_module': modulo.pk})
+                # build encrypted url param with form data
+                encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
+                base_url = request.build_absolute_uri(reverse('uni_ticket:add_new_ticket',
+                                                              kwargs={'structure_slug': struttura.slug,
+                                                                      'category_slug': category.slug}))
+                # build url to display in message
+                url = base_url + '?import=' + encrypted_data
+                messages.add_message(request, messages.SUCCESS,
+                                     _("<b>La risorsa generata è disponibile a "
+                                       "<a href='{url}' title='{url}'>questo link</a></b>. "
+                                       "<br>"
+                                       "Condividila per finalizzare il ticket"
+                                       "").format(url=url))
+            # if user creates the ticket
+            elif request.POST.get(settings.TICKET_CREATE_BUTTON_NAME):
+                fields_to_pop.extend([settings.TICKET_SUBJECT_ID,
+                                      settings.TICKET_DESCRIPTION_ID,
+                                      settings.TICKET_CREATE_BUTTON_NAME])
+                json_data = get_POST_as_json(request=request,
+                                             fields_to_pop=fields_to_pop)
+                # make a UUID based on the host ID and current time
+                code = uuid_code()
+                subject = form.cleaned_data[settings.TICKET_SUBJECT_ID]
+                description = form.cleaned_data[settings.TICKET_DESCRIPTION_ID]
 
-            # destination office
-            office = category.organizational_office
+                # destination office
+                office = category.organizational_office
 
-            # take a random operator (or manager)
-            # only if category is_notify or user is anonymous
-            random_office_operator = None
-            if category.is_notify or not request.user.is_authenticated:
-                # get random operator from the office
-                random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(office)
+                # take a random operator (or manager)
+                # only if category is_notify or user is anonymous
+                random_office_operator = None
+                if category.is_notify or not request.user.is_authenticated:
+                    # get random operator from the office
+                    random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(office)
 
-            # set users (for current operation and for log)
-            current_user = request.user if request.user.is_authenticated else random_office_operator
-            log_user = request.user.username if request.user.is_authenticated else 'anonymous'
-            # create ticket
-            ticket = Ticket(code=code,
-                            subject=subject,
-                            description=description,
-                            modulo_compilato=json_data,
-                            created_by=current_user,
-                            input_module=modulo)
-            ticket.save()
+                # set users (for current operation and for log)
+                current_user = request.user if request.user.is_authenticated else random_office_operator
+                log_user = request.user.username if request.user.is_authenticated else 'anonymous'
+                # create ticket
+                ticket = Ticket(code=code,
+                                subject=subject,
+                                description=description,
+                                modulo_compilato=json_data,
+                                created_by=current_user,
+                                input_module=modulo)
+                ticket.save()
 
-            # log action
-            logger.info('[{}] user {} created new ticket {}'
-                        ' in category {}'.format(timezone.now(),
-                                                 log_user,
-                                                 ticket,
-                                                 category))
+                # log action
+                logger.info('[{}] user {} created new ticket {}'
+                            ' in category {}'.format(timezone.now(),
+                                                     log_user,
+                                                     ticket,
+                                                     category))
 
-            # salvataggio degli allegati nella cartella relativa
-            json_dict = json.loads(json_data)
-            json_stored = get_as_dict(compiled_module_json=json_dict)
-            _save_new_ticket_attachments(ticket=ticket,
-                                         json_stored=json_stored,
-                                         form=form,
-                                         request_files=request.FILES)
+                # salvataggio degli allegati nella cartella relativa
+                json_dict = json.loads(json_data)
+                json_stored = get_as_dict(compiled_module_json=json_dict)
+                _save_new_ticket_attachments(ticket=ticket,
+                                             json_stored=json_stored,
+                                             form=form,
+                                             request_files=request.FILES)
 
-            ticket_assignment = TicketAssignment(ticket=ticket,
-                                                 office=office)
-            ticket_assignment.save()
+                ticket_assignment = TicketAssignment(ticket=ticket,
+                                                     office=office)
+                ticket_assignment.save()
 
-            # if it's a notification ticket, take and close the ticket
-            if category.is_notify:
-                _close_notification_ticket(ticket=ticket,
-                                           user=current_user,
-                                           operator=random_office_operator,
-                                           ticket_assignment=ticket_assignment)
+                # if it's a notification ticket, take and close the ticket
+                if category.is_notify:
+                    _close_notification_ticket(ticket=ticket,
+                                               user=current_user,
+                                               operator=random_office_operator,
+                                               ticket_assignment=ticket_assignment)
 
-            # log action
-            logger.info('[{}] ticket {} assigned to '
-                        '{} office'.format(timezone.now(),
-                                           ticket,
-                                           office))
+                # log action
+                logger.info('[{}] ticket {} assigned to '
+                            '{} office'.format(timezone.now(),
+                                               ticket,
+                                               office))
 
-            # category default tasks
-            _assign_default_tasks_to_new_ticket(ticket=ticket,
-                                                category=category,
-                                                log_user=log_user)
+                # category default tasks
+                _assign_default_tasks_to_new_ticket(ticket=ticket,
+                                                    category=category,
+                                                    log_user=log_user)
 
-            ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
-                             settings.NEW_TICKET_CREATED_ALERT
-            compiled_message = ticket_message.format(ticket.subject)
-            messages.add_message(request,
-                                 messages.SUCCESS,
-                                 compiled_message
-                                )
+                ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
+                                 settings.NEW_TICKET_CREATED_ALERT
+                compiled_message = ticket_message.format(ticket.subject)
+                messages.add_message(request,
+                                     messages.SUCCESS,
+                                     compiled_message
+                                    )
 
-            # if office operators must receive notification email
-            if category.receive_email:
-                # Send mail to ticket owner
-                _send_new_ticket_mail_to_operators(request=request,
-                                                   ticket=ticket,
-                                                   category=category)
+                # if office operators must receive notification email
+                if category.receive_email:
+                    # Send mail to ticket owner
+                    _send_new_ticket_mail_to_operators(request=request,
+                                                       ticket=ticket,
+                                                       category=category)
 
-            # if user is authenticated send mail and redirect to ticket page
-            if request.user.is_authenticated:
-                # Send mail to ticket owner
-                mail_params = {'hostname': settings.HOSTNAME,
-                               'user': request.user,
-                               'ticket': ticket.code,
-                               'ticket_subject': subject,
-                               'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
-                                                                 kwargs={'ticket_id': ticket.code})),
-                                'added_text': compiled_message
-                              }
+                # if user is authenticated send mail and redirect to ticket page
+                if request.user.is_authenticated:
+                    # Send mail to ticket owner
+                    mail_params = {'hostname': settings.HOSTNAME,
+                                   'user': request.user,
+                                   'ticket': ticket.code,
+                                   'ticket_subject': subject,
+                                   'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
+                                                                     kwargs={'ticket_id': ticket.code})),
+                                    'added_text': compiled_message
+                                  }
 
-                m_subject = _('{} - {}'.format(settings.HOSTNAME,
-                                               compiled_message))
-                m_subject = m_subject[:80] + (m_subject[80:] and '...')
+                    m_subject = _('{} - {}'.format(settings.HOSTNAME,
+                                                   compiled_message))
+                    m_subject = m_subject[:80] + (m_subject[80:] and '...')
 
-                send_custom_mail(subject=m_subject,
-                                 recipient=request.user,
-                                 body=settings.NEW_TICKET_CREATED,
-                                 params=mail_params)
-                # END Send mail to ticket owner
-                return redirect('uni_ticket:ticket_detail',
-                                ticket_id=ticket.code)
-            else:
-                return redirect('uni_ticket:add_new_ticket',
-                                structure_slug=structure_slug,
-                                category_slug=category_slug)
+                    send_custom_mail(subject=m_subject,
+                                     recipient=request.user,
+                                     body=settings.NEW_TICKET_CREATED,
+                                     params=mail_params)
+                    # END Send mail to ticket owner
+                    return redirect('uni_ticket:ticket_detail',
+                                    ticket_id=ticket.code)
+                else:
+                    return redirect('uni_ticket:add_new_ticket',
+                                    structure_slug=structure_slug,
+                                    category_slug=category_slug)
         else:
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
@@ -888,100 +937,122 @@ def ticket_clone(request, ticket_id):
 
         if form.is_valid():
             fields_to_pop = [settings.TICKET_CONDITIONS_FIELD_ID,
-                             settings.TICKET_SUBJECT_ID,
-                             settings.TICKET_DESCRIPTION_ID]
-            json_data = get_POST_as_json(request=request,
-                                         fields_to_pop=fields_to_pop)
-            # make a UUID based on the host ID and current time
-            code = uuid_code()
-            subject = form.cleaned_data[settings.TICKET_SUBJECT_ID]
-            description = form.cleaned_data[settings.TICKET_DESCRIPTION_ID]
-            ticket = Ticket(code=code,
-                            subject=subject,
-                            description=description,
-                            modulo_compilato=json_data,
-                            created_by=request.user,
-                            input_module=master_ticket.input_module)
-            ticket.save()
+                             settings.TICKET_CAPTCHA_ID,
+                             settings.TICKET_CAPTCHA_HIDDEN_ID]
+             # if user generates an encrypted token in URL
+            if request.POST.get(settings.TICKET_GENERATE_URL_BUTTON_NAME):
+                fields_to_pop.append(settings.TICKET_GENERATE_URL_BUTTON_NAME)
+                json_data = get_POST_as_json(request=request,
+                                             fields_to_pop=fields_to_pop)
+                form_data = json.loads(json_data)
+                form_data.update({'ticket_input_module': master_ticket.input_module.pk})
+                encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
+                base_url = request.build_absolute_uri(reverse('uni_ticket:add_new_ticket',
+                                                              kwargs={'structure_slug': category.organizational_structure.slug,
+                                                                      'category_slug': category.slug}))
+                url = base_url + '?import=' + encrypted_data
+                messages.add_message(request, messages.SUCCESS,
+                                     _("<b>La risorsa generata è disponibile a "
+                                       "<a href='{url}' title='{url}'>questo link</a></b>. "
+                                       "<br>"
+                                       "Condividila per finalizzare il ticket"
+                                       "").format(url=url))
+            elif request.POST.get(settings.TICKET_CREATE_BUTTON_NAME):
+                fields_to_pop.extend([settings.TICKET_SUBJECT_ID,
+                                      settings.TICKET_DESCRIPTION_ID,
+                                      settings.TICKET_CREATE_BUTTON_NAME])
+                json_data = get_POST_as_json(request=request,
+                                             fields_to_pop=fields_to_pop)
+                # make a UUID based on the host ID and current time
+                code = uuid_code()
+                subject = form.cleaned_data[settings.TICKET_SUBJECT_ID]
+                description = form.cleaned_data[settings.TICKET_DESCRIPTION_ID]
+                ticket = Ticket(code=code,
+                                subject=subject,
+                                description=description,
+                                modulo_compilato=json_data,
+                                created_by=request.user,
+                                input_module=master_ticket.input_module)
+                ticket.save()
 
-            # log action
-            logger.info('[{}] user {} created new ticket {}'
-                        ' in category {}'.format(timezone.now(),
-                                                 request.user.username,
-                                                 ticket,
-                                                 category))
+                # log action
+                logger.info('[{}] user {} created new ticket {}'
+                            ' in category {}'.format(timezone.now(),
+                                                     request.user.username,
+                                                     ticket,
+                                                     category))
 
-            # salvataggio degli allegati nella cartella relativa
-            json_dict = ticket.get_modulo_compilato()
-            json_stored = get_as_dict(compiled_module_json=json_dict)
-            _save_new_ticket_attachments(ticket=ticket,
-                                         json_stored=json_stored,
-                                         form=form,
-                                         request_files=request.FILES)
+                # salvataggio degli allegati nella cartella relativa
+                json_dict = ticket.get_modulo_compilato()
+                json_stored = get_as_dict(compiled_module_json=json_dict)
+                _save_new_ticket_attachments(ticket=ticket,
+                                             json_stored=json_stored,
+                                             form=form,
+                                             request_files=request.FILES)
 
-            # Old version. Now a category MUST have an office!
-            # office = categoria.organizational_office or struttura.get_default_office()
-            office = category.organizational_office
-            ticket_assignment = TicketAssignment(ticket=ticket,
-                                                 office=office)
-                                                 # assigned_by=request.user)
-            ticket_assignment.save()
+                # Old version. Now a category MUST have an office!
+                # office = categoria.organizational_office or struttura.get_default_office()
+                office = category.organizational_office
+                ticket_assignment = TicketAssignment(ticket=ticket,
+                                                     office=office)
+                                                     # assigned_by=request.user)
+                ticket_assignment.save()
 
-            if category.is_notify:
-                random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(office)
+                if category.is_notify:
+                    random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(office)
 
-                # if ticket is a notify, take the ticket
-                _close_notification_ticket(ticket=ticket,
-                                           user=request.user,
-                                           operator=random_office_operator,
-                                           ticket_assignment=ticket_assignment)
+                    # if ticket is a notify, take the ticket
+                    _close_notification_ticket(ticket=ticket,
+                                               user=request.user,
+                                               operator=random_office_operator,
+                                               ticket_assignment=ticket_assignment)
 
-            # log action
-            logger.info('[{}] ticket {} assigned to '
-                        '{} office'.format(timezone.now(),
-                                           ticket,
-                                           office))
+                # log action
+                logger.info('[{}] ticket {} assigned to '
+                            '{} office'.format(timezone.now(),
+                                               ticket,
+                                               office))
 
-            # category default tasks
-            _assign_default_tasks_to_new_ticket(ticket=ticket,
-                                                category=category,
-                                                log_user=request.user)
+                # category default tasks
+                _assign_default_tasks_to_new_ticket(ticket=ticket,
+                                                    category=category,
+                                                    log_user=request.user)
 
-            # Send mail to ticket owner
-            ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
-                             settings.NEW_TICKET_CREATED_ALERT
-            compiled_message = ticket_message.format(ticket.subject)
-
-            mail_params = {'hostname': settings.HOSTNAME,
-                           'user': request.user,
-                           'ticket': ticket.code,
-                           'ticket_subject': subject,
-                           'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
-                                                             kwargs={'ticket_id': ticket.code})),
-                            'added_text': compiled_message
-                          }
-
-            # if office operators must receive notification email
-            if category.receive_email:
                 # Send mail to ticket owner
-                _send_new_ticket_mail_to_operators(request=request,
-                                                   ticket=ticket,
-                                                   category=category)
+                ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
+                                 settings.NEW_TICKET_CREATED_ALERT
+                compiled_message = ticket_message.format(ticket.subject)
 
-            m_subject = _('{} - {}'.format(settings.HOSTNAME,
-                                           compiled_message))
-            m_subject = m_subject[:80] + (m_subject[80:] and '...')
+                mail_params = {'hostname': settings.HOSTNAME,
+                               'user': request.user,
+                               'ticket': ticket.code,
+                               'ticket_subject': subject,
+                               'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
+                                                                 kwargs={'ticket_id': ticket.code})),
+                                'added_text': compiled_message
+                              }
 
-            send_custom_mail(subject=m_subject,
-                             recipient=request.user,
-                             body=settings.NEW_TICKET_CREATED,
-                             params=mail_params)
-            # END Send mail to ticket owner
+                # if office operators must receive notification email
+                if category.receive_email:
+                    # Send mail to ticket owner
+                    _send_new_ticket_mail_to_operators(request=request,
+                                                       ticket=ticket,
+                                                       category=category)
 
-            messages.add_message(request, messages.SUCCESS,
-                                 compiled_message)
-            return redirect('uni_ticket:ticket_detail',
-                            ticket_id=ticket.code)
+                m_subject = _('{} - {}'.format(settings.HOSTNAME,
+                                               compiled_message))
+                m_subject = m_subject[:80] + (m_subject[80:] and '...')
+
+                send_custom_mail(subject=m_subject,
+                                 recipient=request.user,
+                                 body=settings.NEW_TICKET_CREATED,
+                                 params=mail_params)
+                # END Send mail to ticket owner
+
+                messages.add_message(request, messages.SUCCESS,
+                                     compiled_message)
+                return redirect('uni_ticket:ticket_detail',
+                                ticket_id=ticket.code)
         else:
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,

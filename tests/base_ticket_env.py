@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
@@ -36,7 +37,8 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
 
         # Add ticket (base form with an attachment)
         params = {'ticket_subject': subject,
-                  'ticket_description': subject}
+                  'ticket_description': subject,
+                  settings.TICKET_CREATE_BUTTON_NAME: 'conferma'}
         if attachment:
             params['file_field_1'] = attachment
         response = self.client.post(reverse('uni_ticket:add_new_ticket',

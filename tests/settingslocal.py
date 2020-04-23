@@ -31,9 +31,9 @@ INSTALLED_APPS = [
     'datatables_ajax',
 
     'sass_processor',
-    'bootstrap_italia_template',
-    'django_unical_bootstrap_italia',
     'uni_ticket_bootstrap_italia_template',
+    'django_unical_bootstrap_italia',
+    'bootstrap_italia_template',
 
     'bootstrapform',
     'uni_ticket',
@@ -127,3 +127,9 @@ LOGGING = {
             },
     }
 }
+
+# UNITICKET JWE support
+UNITICKET_JWE_RSA_KEY_PATH = 'saml2_sp/saml2_config/certificates/private.key'
+UNITICKET_JWE_ALG = "RSA1_5"
+UNITICKET_JWE_ENC = "A128CBC-HS256"
+# end JWE support

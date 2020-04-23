@@ -3,25 +3,29 @@
 *~
 *__pycache__*
 */.~lock*
-tmp/*
-!tmp/README.md
-uni_ticket_project/settingslocal.py
-static/*
-data/static/*
+
 data/media/*
+data/static/*
 !data/static/README.md
 !data/media/README.md
-docs/build/*
-uni_ticket_project_cache/*
+
 db.sqlite3
 
+docs/build/*
+
+saml2_sp/settings.py
 saml2_sp/saml2_config/certificates/*pem
 saml2_sp/saml2_config/certificates/*key
 saml2_sp/saml2_config/certificates/*src
 saml2_sp/saml2_config/certificates/*crt
 saml2_sp/saml2_config/certificates/*cert
 saml2_sp/saml2_config/settings.py
-saml2_sp/settings.py
 saml2_sp/saml2_config/metadata/
 
+static/*
 
+tmp/*
+!tmp/README.md
+
+uni_ticket_project/settingslocal.py
+uni_ticket_project_cache/*

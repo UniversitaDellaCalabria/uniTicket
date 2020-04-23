@@ -46,6 +46,10 @@ TICKET_CAPTCHA_ID = 'ticket_captcha'
 TICKET_CAPTCHA_HIDDEN_ID = 'ticket_captcha_hidden'
 TICKET_CAPTCHA_LABEL = _('Codice di verifica')
 
+# new ticket submit buttons (create and generate import URL)
+TICKET_CREATE_BUTTON_NAME = 'confirm_submit'
+TICKET_GENERATE_URL_BUTTON_NAME  = 'generate_url_submit'
+
 # priority levels
 PRIORITY_LEVELS = (
                     ('-2',_('Molto alta')),

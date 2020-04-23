@@ -6,6 +6,11 @@ from cryptojwt.jwe.jwe_rsa import JWE_RSA
 from django.conf import settings
 
 
+RSA_KEY = settings.UNITICKET_JWE_RSA_KEY_PATH
+JWE_ALG = settings.UNITICKET_JWE_ALG
+JWE_ENC = settings.UNITICKET_JWE_ENC
+
+
 def encrypt_to_jwe(content):
     """Returns a string
     a serialized encryption from cryptojwt.jwe.jwe_rsa.JWE_RSA
@@ -18,10 +23,6 @@ def encrypt_to_jwe(content):
     if not isinstance(content, bytes):
         raise Exception('encrypt_to_jwe content must be a bytes object')
 
-    RSA_KEY = settings.UNITICKET_JWE_RSA_KEY_PATH
-    JWE_ALG = settings.UNITICKET_JWE_ALG
-    JWE_ENC = settings.UNITICKET_JWE_ENC
-
     priv_key = import_private_rsa_key_from_file(RSA_KEY)
     pub_key = priv_key.public_key()
     _rsa = JWE_RSA(content, alg=JWE_ALG, enc=JWE_ENC)
@@ -30,7 +31,8 @@ def encrypt_to_jwe(content):
 
 
 def decrypt_from_jwe(jwe):
-    RSA_KEY = settings.UNITICKET_JWT_RSA_KEY_PATH
+    # RSA_KEY = settings.UNITICKET_JWT_RSA_KEY_PATH
+    RSA_KEY = settings.UNITICKET_JWE_RSA_KEY_PATH
     JWE_ALG = settings.UNITICKET_JWE_ALG
     JWE_ENC = settings.UNITICKET_JWE_ENC
 
