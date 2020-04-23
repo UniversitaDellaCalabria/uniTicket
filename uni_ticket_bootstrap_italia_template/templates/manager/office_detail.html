@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load organizational_area_tags %}
 {% load uni_ticket_tags %}
 
 {% block menu_links %}
@@ -219,7 +220,8 @@
                                 <br>
                                 <small>{% trans 'Assegnato in data' %}: {{ employee.create_date }} </small>
                                 <br>
-                                {% with offices_number=employee.employee.organizationalstructureofficeemployee_set.all.count|add:"-1" %}
+                                {% employee_offices user=employee.employee structure=structure as employee_offices %}
+                                {% with offices_number=employee_offices.count|add:"-1" %}
                                 <small>
                                 {% if offices_number > 0 %}
                                 {% trans "L'operatore è assegnato ad altri" %} {{ offices_number }} {% trans "uffici" %}
