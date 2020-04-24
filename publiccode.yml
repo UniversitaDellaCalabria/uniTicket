@@ -105,6 +105,25 @@ description:
     screenshots:
       - >-
         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/uniticket.png
+      - >-
+        https://uniticket.readthedocs.io/it/latest/_images/dashboard1.png
+      - >-
+        https://uniticket.readthedocs.io/it/latest/_images/operator_takes_ticket1.png
+      - >-
+        https://uniticket.readthedocs.io/it/latest/_images/manager_dashboard1.png
+      - >-
+        https://uniticket.readthedocs.io/it/latest/_images/ticket_competence1.png
+      - >-
+        https://uniticket.readthedocs.io/it/latest/_images/ticket_dependence1.png
+      - >-
+        https://uniticket.readthedocs.io/it/latest/_images/category_new1.png
+      - >-
+        https://uniticket.readthedocs.io/it/latest/_images/category_detail1.png
+      - >-
+        https://uniticket.readthedocs.io/it/latest/_images/category_input_module_detail1.png
+      - >-
+
+
     shortDescription: >-
       Django Ticket System per il tracciamento e la digitalizzazione dei flussi
       di richieste e documentali.
