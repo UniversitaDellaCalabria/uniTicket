@@ -946,7 +946,4 @@ def ticket_clone(request, ticket_id):
                                                           'category_slug': category.slug}))
     # build url to display in message
     url = base_url + '?import=' + encrypted_data
-    messages.add_message(request, messages.SUCCESS,
-                         _("Di seguito il form pre-compilato con i dati "
-                           "del ticket {}").format(master_ticket))
     return redirect(url)
