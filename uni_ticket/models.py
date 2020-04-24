@@ -87,7 +87,7 @@ class TicketCategory(models.Model):
     # fields to map roles
     receive_email = models.BooleanField(_("Mail ad operatori"),
                                         default=False,
-                                        help_text=_("Operatori ricevono notifica email per ogni ticket aperto"))
+                                        help_text=_("Invia email a operatori per ogni ticket aperto"))
 
     class Meta:
         unique_together = ("slug", "organizational_structure")
