@@ -128,56 +128,86 @@
 
 {% block form_buttons %}
 <div>
-    <button class="btn btn-success"
+    <button class="btn btn-success btn-block"
             type="button"
             data-toggle="modal"
             data-target="#action">
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-        </svg> {% trans "Conferma e apri il ticket" %}
+        </svg> {% trans "Invia la richiesta" %}
     </button>
-    {% settings_value name="TICKET_GENERATE_URL_BUTTON_NAME" as generate_url_button_name %}
-    <button class="btn btn-outline-success"
-            type="submit"
-            name="generate_url_submit"
-            value="{{ generate_url_button_name }}">
-        <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-link"></use>
-        </svg> {% trans "Genera URL per ticket precompilato" %}
-    </button>
+    <div class="modal fade"
+         tabindex="-1"
+         role="dialog"
+         id="action">
+        <div class="modal-dialog modal-dialog-centered"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {% trans "Conferma" %}
+                    </h5>
+                    <button class="close"
+                            type="button"
+                            data-dismiss="modal"
+                            aria-label="Close">
+                       <svg class="icon">
+                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                       </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>{% trans "Desideri procedere e confermare i dati immessi?" %}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    {% settings_value name="TICKET_CREATE_BUTTON_NAME" as confirm_button_name %}
+                    <input class="btn btn-success"
+                           type="submit"
+                           id="submitForm"
+                           name="{{ confirm_button_name }}"
+                           value="{% trans 'Si, procedi' %}">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="modal fade"
-     tabindex="-1"
-     role="dialog"
-     id="action">
-    <div class="modal-dialog modal-dialog-centered"
-         role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    {% trans "Conferma" %}
-                </h5>
-                <button class="close"
-                        type="button"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                   <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                   </svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>{% trans "Desideri procedere e confermare i dati immessi?" %}
-                </p>
-            </div>
-            <div class="modal-footer">
-                {% settings_value name="TICKET_CREATE_BUTTON_NAME" as confirm_button_name %}
-                <input class="btn btn-success"
-                       type="submit"
-                       id="submitForm"
-                       name="{{ confirm_button_name }}"
-                       value="{% trans 'Si, procedi' %}">
-            </div>
+
+<div id="collapseDiv1-lft" class="mt-4 collapse-div collapse-left-icon" role="tablist">
+    <div class="collapse-header" id="heading1-lft">
+        <div data-toggle="collapse"
+                data-target="#collapse1-lft"
+                aria-expanded="false"
+                aria-controls="collapse1-lft">
+        {% trans "Se stai  compilando la richiesta che  deve essere inviata da un utente diverso (es. Direttore Dipartimento, altro responsabile), clicca qui" %}
+        </div>
+    </div>
+    <div id="collapse1-lft"
+         class="collapse"
+         role="tabpanel"
+         aria-labelledby="heading1-lft">
+        <div class="collapse-body">
+            {% settings_value name="TICKET_GENERATE_URL_BUTTON_NAME" as generate_url_button_name %}
+            {% settings_value "TICKET_COMPILED_BY_USER_NAME" as compiled_by_name %}
+            <input type="checkbox"
+                   id="{{ compiled_by_name }}"
+                   name="{{ compiled_by_name }}"
+                   checked>
+            <label for="{{ compiled_by_name }}">
+                <b>{% trans "Tieni traccia della mia compilazione nel ticket" %}</b>
+            </label>
+            <small class="form-text text-muted">
+                {% trans "Selezionando questa opzione i dati della tua utenza saranno visibili nella scheda di dettaglio del ticket" %}
+            </small>
+            <br>
+            <button class="btn btn-outline-success"
+                    type="submit"
+                    name="generate_url_submit"
+                    value="{{ generate_url_button_name }}">
+                <svg class="icon icon-xs">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-link"></use>
+                </svg> {% trans "Genera URL per ticket precompilato" %}
+            </button>
         </div>
     </div>
 </div>

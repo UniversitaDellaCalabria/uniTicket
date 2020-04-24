@@ -24,7 +24,8 @@ SHOW_HEADING_TEXT = True
 TICKET_HEADING_TEXT = _('Soggetto richiedente: <b>{user}</b>'
                         '<br><span class="x-small">[{taxpayer}]</span>')
 
-# new ticket static form fields
+# form fields names
+
 # ticket subject
 TICKET_SUBJECT_ID = 'ticket_subject'
 TICKET_SUBJECT_LABEL = _('Oggetto della Richiesta')
@@ -46,9 +47,11 @@ TICKET_CAPTCHA_ID = 'ticket_captcha'
 TICKET_CAPTCHA_HIDDEN_ID = 'ticket_captcha_hidden'
 TICKET_CAPTCHA_LABEL = _('Codice di verifica')
 
-# new ticket submit buttons (create and generate import URL)
+# new ticket submit buttons (create / generate import URL)
 TICKET_CREATE_BUTTON_NAME = 'confirm_submit'
 TICKET_GENERATE_URL_BUTTON_NAME  = 'generate_url_submit'
+TICKET_COMPILED_BY_USER_NAME = 'compiled_by_user'
+TICKET_INPUT_MODULE_NAME = 'ticket_input_module'
 
 # priority levels
 PRIORITY_LEVELS = (

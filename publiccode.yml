@@ -4,8 +4,11 @@
 
 publiccodeYmlVersion: '0.2'
 categories:
+  - collaboration
   - customer-service-and-support
   - help-desk
+  - office
+  - task-management
 dependsOn:
   open:
     - name: MariaDB

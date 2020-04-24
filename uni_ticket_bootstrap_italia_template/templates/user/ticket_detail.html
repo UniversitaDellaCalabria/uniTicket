@@ -24,7 +24,7 @@
 {% block under_content_title %}
 {% with ticket_assignments=ticket.ticketassignment_set.all.count %}
 {% ticket_has_been_taken ticket=ticket as ticket_taken %}
-{% if not ticket_taken and ticket_assignments == 1 %}
+{% if not ticket.is_closed and not ticket_taken and ticket_assignments == 1 %}
 <div class="alert alert-info alert-dismissible fade show mb-5" role="alert">
   {% trans "E' possibile <b>modificare</b> o <b>eliminare</b> il ticket fino a quando questo non sia stato assegnato ad un operatore" %}
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">

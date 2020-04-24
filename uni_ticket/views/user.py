@@ -6,6 +6,7 @@ import shutil
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
@@ -228,6 +229,9 @@ def ticket_add_new(request, structure_slug, category_slug):
     template = 'user/ticket_add_new.html'
     sub_title = category.description if category.description else _("Compila i campi richiesti")
 
+    # user that compiled ticket
+    compiled_by_user = None
+
     # if there is an encrypted token with ticket params in URL
     if request.GET.get('import'):
         encoded_data = request.GET['import']
@@ -238,7 +242,7 @@ def ticket_add_new(request, structure_slug, category_slug):
             return custom_message(request,
                                   _("Dati da importare non consistenti."))
         # get input_module id from imported data
-        module_id = imported_data.get('ticket_input_module')
+        module_id = imported_data.get(settings.TICKET_INPUT_MODULE_NAME)
         if not module_id:
             return custom_message(request,
                                   _("Dati da importare non consistenti. "
@@ -246,6 +250,10 @@ def ticket_add_new(request, structure_slug, category_slug):
         modulo = get_object_or_404(TicketCategoryModule,
                                    ticket_category=category,
                                    pk=module_id)
+        # get user that compiled module (if exists)
+        compiled_by_user_id = imported_data.get(settings.TICKET_COMPILED_BY_USER_NAME)
+        if compiled_by_user_id:
+            compiled_by_user = get_user_model().objects.filter(pk=compiled_by_user_id).first()
         # get compiled form
         form = modulo.get_form(data=imported_data,
                                show_conditions=True,
@@ -279,11 +287,20 @@ def ticket_add_new(request, structure_slug, category_slug):
                              settings.TICKET_CAPTCHA_HIDDEN_ID]
             # if user generates an encrypted token in URL
             if request.POST.get(settings.TICKET_GENERATE_URL_BUTTON_NAME):
+
+                # log action
+                logger.info('[{}] user {} generated a new ticket URL "{}" '
+                            'for submission'.format(timezone.now(),
+                                                    request.user,
+                                                    category))
+
                 fields_to_pop.append(settings.TICKET_GENERATE_URL_BUTTON_NAME)
                 json_data = get_POST_as_json(request=request,
                                              fields_to_pop=fields_to_pop)
                 form_data = json.loads(json_data)
-                form_data.update({'ticket_input_module': modulo.pk})
+                form_data.update({settings.TICKET_INPUT_MODULE_NAME: modulo.pk})
+                if request.POST.get(settings.TICKET_COMPILED_BY_USER_NAME):
+                    form_data.update({settings.TICKET_COMPILED_BY_USER_NAME: request.user.pk})
                 # build encrypted url param with form data
                 encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
                 base_url = request.build_absolute_uri(reverse('uni_ticket:add_new_ticket',
@@ -301,7 +318,8 @@ def ticket_add_new(request, structure_slug, category_slug):
             elif request.POST.get(settings.TICKET_CREATE_BUTTON_NAME):
                 fields_to_pop.extend([settings.TICKET_SUBJECT_ID,
                                       settings.TICKET_DESCRIPTION_ID,
-                                      settings.TICKET_CREATE_BUTTON_NAME])
+                                      settings.TICKET_CREATE_BUTTON_NAME,
+                                      settings.TICKET_COMPILED_BY_USER_NAME])
                 json_data = get_POST_as_json(request=request,
                                              fields_to_pop=fields_to_pop)
                 # make a UUID based on the host ID and current time
@@ -329,6 +347,9 @@ def ticket_add_new(request, structure_slug, category_slug):
                                 modulo_compilato=json_data,
                                 created_by=current_user,
                                 input_module=modulo)
+                if compiled_by_user:
+                    ticket.compiled_by = compiled_by_user
+                    ticket.compiled = timezone.now()
                 ticket.save()
 
                 # log action
@@ -848,7 +869,7 @@ def ticket_close(request, ticket_id):
                                          'closing_reason',
                                          'closed_date'])
             ticket.update_log(user=request.user,
-                              note=_("Chiusura ticket: {}".format(motivazione)))
+                              note=_("Chiusura ticket da utente proprietario: {}".format(motivazione)))
             messages.add_message(request, messages.SUCCESS,
                                  _("Ticket {} chiuso correttamente".format(ticket)))
 
@@ -912,149 +933,20 @@ def ticket_clone(request, ticket_id):
                                             "di usare non è più attivo."))
 
     category = master_ticket.input_module.ticket_category
-    data = master_ticket.get_modulo_compilato()
-    data['ticket_subject'] = master_ticket.subject
-    data['ticket_description'] = master_ticket.description
-    form = master_ticket.input_module.get_form(data=data, show_conditions=True)
-    title = category
-    template = 'user/ticket_add_new.html'
-    sub_title = category.description if category.description else _("Compila i campi richiesti")
-    clausole_categoria = category.get_conditions()
+    form_data = master_ticket.get_modulo_compilato()
 
-    d={'categoria': category,
-       'category_conditions': clausole_categoria,
-       'form': form,
-       'struttura': category.organizational_structure,
-       'sub_title': '{} - {}'.format(category.organizational_structure,
-                                     sub_title),
-       'title': title}
+    form_data.update({settings.TICKET_INPUT_MODULE_NAME: master_ticket.input_module.pk})
+    form_data.update({settings.TICKET_SUBJECT_ID: master_ticket.subject})
+    form_data.update({settings.TICKET_DESCRIPTION_ID: master_ticket.description})
 
-    if request.POST:
-        form = master_ticket.input_module.get_form(data=request.POST,
-                                                   files=request.FILES,
-                                                   show_conditions=True)
-        d['form'] = form
-
-        if form.is_valid():
-            fields_to_pop = [settings.TICKET_CONDITIONS_FIELD_ID,
-                             settings.TICKET_CAPTCHA_ID,
-                             settings.TICKET_CAPTCHA_HIDDEN_ID]
-             # if user generates an encrypted token in URL
-            if request.POST.get(settings.TICKET_GENERATE_URL_BUTTON_NAME):
-                fields_to_pop.append(settings.TICKET_GENERATE_URL_BUTTON_NAME)
-                json_data = get_POST_as_json(request=request,
-                                             fields_to_pop=fields_to_pop)
-                form_data = json.loads(json_data)
-                form_data.update({'ticket_input_module': master_ticket.input_module.pk})
-                encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
-                base_url = request.build_absolute_uri(reverse('uni_ticket:add_new_ticket',
-                                                              kwargs={'structure_slug': category.organizational_structure.slug,
-                                                                      'category_slug': category.slug}))
-                url = base_url + '?import=' + encrypted_data
-                messages.add_message(request, messages.SUCCESS,
-                                     _("<b>La risorsa generata è disponibile a "
-                                       "<a href='{url}' title='{url}'>questo link</a></b>. "
-                                       "<br>"
-                                       "Condividila per finalizzare il ticket"
-                                       "").format(url=url))
-            elif request.POST.get(settings.TICKET_CREATE_BUTTON_NAME):
-                fields_to_pop.extend([settings.TICKET_SUBJECT_ID,
-                                      settings.TICKET_DESCRIPTION_ID,
-                                      settings.TICKET_CREATE_BUTTON_NAME])
-                json_data = get_POST_as_json(request=request,
-                                             fields_to_pop=fields_to_pop)
-                # make a UUID based on the host ID and current time
-                code = uuid_code()
-                subject = form.cleaned_data[settings.TICKET_SUBJECT_ID]
-                description = form.cleaned_data[settings.TICKET_DESCRIPTION_ID]
-                ticket = Ticket(code=code,
-                                subject=subject,
-                                description=description,
-                                modulo_compilato=json_data,
-                                created_by=request.user,
-                                input_module=master_ticket.input_module)
-                ticket.save()
-
-                # log action
-                logger.info('[{}] user {} created new ticket {}'
-                            ' in category {}'.format(timezone.now(),
-                                                     request.user.username,
-                                                     ticket,
-                                                     category))
-
-                # salvataggio degli allegati nella cartella relativa
-                json_dict = ticket.get_modulo_compilato()
-                json_stored = get_as_dict(compiled_module_json=json_dict)
-                _save_new_ticket_attachments(ticket=ticket,
-                                             json_stored=json_stored,
-                                             form=form,
-                                             request_files=request.FILES)
-
-                # Old version. Now a category MUST have an office!
-                # office = categoria.organizational_office or struttura.get_default_office()
-                office = category.organizational_office
-                ticket_assignment = TicketAssignment(ticket=ticket,
-                                                     office=office)
-                                                     # assigned_by=request.user)
-                ticket_assignment.save()
-
-                if category.is_notify:
-                    random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(office)
-
-                    # if ticket is a notify, take the ticket
-                    _close_notification_ticket(ticket=ticket,
-                                               user=request.user,
-                                               operator=random_office_operator,
-                                               ticket_assignment=ticket_assignment)
-
-                # log action
-                logger.info('[{}] ticket {} assigned to '
-                            '{} office'.format(timezone.now(),
-                                               ticket,
-                                               office))
-
-                # category default tasks
-                _assign_default_tasks_to_new_ticket(ticket=ticket,
-                                                    category=category,
-                                                    log_user=request.user)
-
-                # Send mail to ticket owner
-                ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
-                                 settings.NEW_TICKET_CREATED_ALERT
-                compiled_message = ticket_message.format(ticket.subject)
-
-                mail_params = {'hostname': settings.HOSTNAME,
-                               'user': request.user,
-                               'ticket': ticket.code,
-                               'ticket_subject': subject,
-                               'url': request.build_absolute_uri(reverse('uni_ticket:ticket_detail',
-                                                                 kwargs={'ticket_id': ticket.code})),
-                                'added_text': compiled_message
-                              }
-
-                # if office operators must receive notification email
-                if category.receive_email:
-                    # Send mail to ticket owner
-                    _send_new_ticket_mail_to_operators(request=request,
-                                                       ticket=ticket,
-                                                       category=category)
-
-                m_subject = _('{} - {}'.format(settings.HOSTNAME,
-                                               compiled_message))
-                m_subject = m_subject[:80] + (m_subject[80:] and '...')
-
-                send_custom_mail(subject=m_subject,
-                                 recipient=request.user,
-                                 body=settings.NEW_TICKET_CREATED,
-                                 params=mail_params)
-                # END Send mail to ticket owner
-
-                messages.add_message(request, messages.SUCCESS,
-                                     compiled_message)
-                return redirect('uni_ticket:ticket_detail',
-                                ticket_id=ticket.code)
-        else:
-            for k,v in get_labeled_errors(form).items():
-                messages.add_message(request, messages.ERROR,
-                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
-    return render(request, template, d)
+    # build encrypted url param with form data
+    encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
+    base_url = request.build_absolute_uri(reverse('uni_ticket:add_new_ticket',
+                                                  kwargs={'structure_slug': category.organizational_structure.slug,
+                                                          'category_slug': category.slug}))
+    # build url to display in message
+    url = base_url + '?import=' + encrypted_data
+    messages.add_message(request, messages.SUCCESS,
+                         _("Di seguito il form pre-compilato con i dati "
+                           "del ticket {}").format(master_ticket))
+    return redirect(url)

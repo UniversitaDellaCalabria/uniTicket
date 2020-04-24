@@ -252,6 +252,11 @@ class Ticket(SavedFormContent):
                                    on_delete=models.SET_NULL,
                                    null=True,
                                    related_name='created_by_user')
+    compiled = models.DateTimeField(null=True, blank=True)
+    compiled_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                    on_delete=models.SET_NULL,
+                                    null=True,
+                                    related_name='compiled_by_user')
     input_module = models.ForeignKey(TicketCategoryModule,
                                      on_delete=models.PROTECT)
     # is_taken = models.BooleanField(default=False)
@@ -392,7 +397,7 @@ class Ticket(SavedFormContent):
 
     def get_status(self):
         if self.is_closed:
-            if self.input_module.ticket_category.is_notify:
+            if self.input_module.ticket_category.is_notify or not self.closed_by:
                 return _('<b class="text-success">Chiuso</b>')
             return _('<b class="text-success">Chiuso</b> <small>[{}]</small>').format(self.closed_by)
         if not self.has_been_taken(): return _('<b class="text-danger">Aperto</b>')

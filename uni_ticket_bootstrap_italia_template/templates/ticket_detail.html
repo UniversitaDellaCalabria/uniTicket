@@ -58,6 +58,32 @@
                     {% endif %}
                 </td>
             </tr>
+            {% if ticket.compiled_by %}
+            <tr>
+                <th scope="row">{% trans 'Precompilato da' %}</th>
+                <td>
+                    <b>{{ ticket.compiled_by.first_name }} {{ ticket.compiled_by.last_name }}</b> - {{ ticket.compiled }}
+                    {% if ticket.compiled_by.email %}
+                        <br><b>E-mail</b>: {{ticket.compiled_by.email}}
+                    {% endif %}
+                    {% if ticket.compiled_by.taxpayer_id %}
+                        <br><b>{% trans "Codice fiscale" %}</b>: {{ticket.compiled_by.taxpayer_id}}
+                    {% endif %}
+                    {% settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                    {% settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
+                    {% obj_get_attr ticket.compiled_by employee_attribute_name as user_employee_attribute %}
+                    {% if user_employee_attribute %}
+                        <br><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}
+                    {% endif %}
+                    {% settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
+                    {% settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
+                    {% obj_get_attr ticket.compiled_by user_attribute_name as user_user_attribute %}
+                    {% if user_user_attribute %}
+                        <br><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
             <tr>
                 <th scope="row">{% trans 'Competenza' %}</th>
                 <td>
