@@ -316,6 +316,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                                        "</button>"
                                        "<p class='text-success mt-3 mb-0' id='clipboard_message'></p>"
                                        "").format(url=url))
+                d['url_to_import'] = True
             # if user creates the ticket
             elif request.POST.get(settings.TICKET_CREATE_BUTTON_NAME):
                 fields_to_pop.extend([settings.TICKET_SUBJECT_ID,

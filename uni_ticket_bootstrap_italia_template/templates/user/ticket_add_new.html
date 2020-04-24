@@ -221,6 +221,7 @@ $('#submitForm').on('click', function(e){
     $('.modal-backdrop.fade').css('opacity', 0);
 });
 
+{% if url_to_import %}
 function copyToClipboard() {
     var copyText = document.getElementById("encrypted_ticket_url");
 
@@ -235,5 +236,6 @@ function copyToClipboard() {
     var message = document.getElementById("clipboard_message");
     message.innerHTML = "{% trans 'Copiato con successo!' %}"
 }
+{% endif %}
 </script>
 {% endblock extra_scripts %}
