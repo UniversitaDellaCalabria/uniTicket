@@ -121,9 +121,6 @@ description:
         https://uniticket.readthedocs.io/it/latest/_images/category_detail1.png
       - >-
         https://uniticket.readthedocs.io/it/latest/_images/category_input_module_detail1.png
-      - >-
-
-
     shortDescription: >-
       Django Ticket System per il tracciamento e la digitalizzazione dei flussi
       di richieste e documentali.
