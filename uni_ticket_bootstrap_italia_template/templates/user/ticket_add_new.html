@@ -220,5 +220,20 @@ $('#submitForm').on('click', function(e){
     $('#action').removeClass('show');
     $('.modal-backdrop.fade').css('opacity', 0);
 });
+
+function copyToClipboard() {
+    var copyText = document.getElementById("encrypted_ticket_url");
+
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+
+    /* make message visible*/
+    var message = document.getElementById("clipboard_message");
+    message.innerHTML = "{% trans 'Copiato con successo!' %}"
+}
 </script>
 {% endblock extra_scripts %}

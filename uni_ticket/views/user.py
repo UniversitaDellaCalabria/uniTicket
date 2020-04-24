@@ -309,10 +309,12 @@ def ticket_add_new(request, structure_slug, category_slug):
                 # build url to display in message
                 url = base_url + '?import=' + encrypted_data
                 messages.add_message(request, messages.SUCCESS,
-                                     _("<b>La risorsa generata è disponibile a "
-                                       "<a href='{url}' title='{url}'>questo link</a></b>. "
-                                       "<br>"
-                                       "Condividila per finalizzare il ticket"
+                                     _("<b>Di seguito l'URL del ticket precompilato</b>"
+                                       "<input type='text' value='{url}' id='encrypted_ticket_url' />"
+                                       "<button class='btn btn-sm btn-primary px-4 mt-3' onclick='copyToClipboard()'>"
+                                       "Copia negli appunti"
+                                       "</button>"
+                                       "<p class='text-success mt-3 mb-0' id='clipboard_message'></p>"
                                        "").format(url=url))
             # if user creates the ticket
             elif request.POST.get(settings.TICKET_CREATE_BUTTON_NAME):
