@@ -77,9 +77,9 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
         # 'CustomRadioBoxField': 'django.forms.widgets.RadioSelect',
     }
 
-- I parametri relativi alla configurazione delle app "chat" e "channels"
+- Definire parametri relativi alla configurazione delle app "chat" e "channels"
 
-.. code-block: python
+.. code-block:: python
 
     # chat: message to load in a conversation from history
     MESSAGES_TO_LOAD = 1500
@@ -95,6 +95,23 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
         },
     }
 
+- Definire i parametri per la criptazione basata su RSA dei token che viaggiano negli URL
+
+.. code-block:: python
+
+    # UNITICKET JWE support
+    UNITICKET_JWE_RSA_KEY_PATH = 'saml2_sp/saml2_config/certificates/key.pem'
+    UNITICKET_JWE_ALG = "RSA1_5"
+    UNITICKET_JWE_ENC = "A128CBC-HS256"
+    # end JWE support
+
+- Definire *secret_key* e *salt* per la criptazione del codice CAPTCHA
+
+.. code-block:: python
+
+    # CAPTCHA encryption
+    ENCRYPTION_SECRET = b'secret'
+    ENCRYPTION_SALT = b'salt'
 
 Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (ed eventualmente sovrascrivere in *settingslocal.py*):
 
@@ -113,7 +130,7 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (
 
 - Il parametro che consente di mostrare la priorità dei ticket agli utenti
 
-.. code-block: python
+.. code-block:: python
 
     # show ticket priority to simple userse
     SIMPLE_USER_SHOW_PRIORITY = False
@@ -121,7 +138,7 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (
 - ID e Label del checkbox di accettazione delle clausole obbligatorie
 
 .. code-block:: python
-    
+
     # category conditions form field
     TICKET_CONDITIONS_FIELD_ID = 'condizioni_field_id'
     TICKET_CONDITIONS_TEXT = _('Dichiara altresì di aver letto '
@@ -181,7 +198,7 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (
     MANAGER_PREFIX = 'Manager'
     OPERATOR_PREFIX = 'Operatore'
     USER_PREFIX = 'user'
-    
+
     # Do not edit! - START
     MANAGEMENT_URL_PREFIX = {'manager': MANAGER_PREFIX,
                              'operator': OPERATOR_PREFIX,
@@ -203,7 +220,7 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (
 
     # min ticket content length (digits) to compress
     TICKET_MIN_DIGITS_TO_COMPRESS = 90
-    
+
 - La definizione degli utenti "employee" e "internal user" in base al tipo di organizzazione (università o altro)
 
 .. code-block:: python
