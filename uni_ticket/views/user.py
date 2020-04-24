@@ -941,9 +941,7 @@ def ticket_clone(request, ticket_id):
 
     # build encrypted url param with form data
     encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
-    base_url = request.build_absolute_uri(reverse('uni_ticket:add_new_ticket',
-                                                  kwargs={'structure_slug': category.organizational_structure.slug,
-                                                          'category_slug': category.slug}))
-    # build url to display in message
-    url = base_url + '?import=' + encrypted_data
-    return redirect(url)
+    base_url = reverse('uni_ticket:add_new_ticket',
+                       kwargs={'structure_slug': category.organizational_structure.slug,
+                               'category_slug': category.slug})
+    return HttpResponseRedirect(base_url + "?import={}".format(encrypted_data))
