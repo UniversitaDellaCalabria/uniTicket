@@ -266,6 +266,21 @@ Creazione tabelle e superuser
     ./manage.py migrate
     ./manage.py createsuperuser
 
+Template Bootstrap Italia
+==========================
+
+Di default, il sistema si presenta con il template customizzato per
+l'Università della Calabria. Per utilizzare la versione standard
+di **Bootstrap Italia** basta modificare la riga 6 del file
+*uniTicket/uni_ticket_bootstrap_italia_template/base.html* come segue
+
+.. code-block:: python
+
+    {% extends 'bootstrap-italia-base.html' %}
+
+e, se si desidera, commentare l'app *django_unical_bootstrap_italia*
+dalle INSTALLED_APPS in *settingslocal.py*.
+
 Run
 ===
 
