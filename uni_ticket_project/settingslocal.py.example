@@ -2,7 +2,8 @@ import os
 
 # user model for auth
 AUTH_USER_MODEL = "accounts.User"
-ADMIN_PATH = '/admin'
+# Administration backed available at /admin or whatever configured above
+ADMIN_PATH = 'admin'
 
 # localization
 LANGUAGE_CODE = 'it'
