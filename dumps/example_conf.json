@@ -1,0 +1,267 @@
+OpenSSL 1.1.1  11 Sep 2018
+[
+{
+  "model": "uni_ticket.ticketcategory",
+  "pk": 1,
+  "fields": {
+    "name": "Category 1",
+    "slug": "category-1",
+    "description": "Example ticket category",
+    "created": "2020-04-25T13:30:56.799Z",
+    "modified": "2020-04-25T13:30:56.799Z",
+    "organizational_structure": 6,
+    "organizational_office": 34,
+    "is_active": true,
+    "not_available_message": "Sorry, this category isn't active!",
+    "show_heading_text": true,
+    "allow_anonymous": false,
+    "allow_guest": true,
+    "allow_user": true,
+    "allow_employee": true,
+    "is_notify": false,
+    "confirm_message_text": "",
+    "receive_email": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 1,
+  "fields": {
+    "name": "Module 1",
+    "ticket_category": 1,
+    "created": "2020-04-25T13:31:06.166Z",
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 1,
+  "fields": {
+    "name": "Email field",
+    "field_type": "CustomEmailField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "E-mail field help-text",
+    "pre_text": "",
+    "ordinamento": 0,
+    "category_module": 1
+  }
+},
+{
+  "model": "organizational_area.organizationalstructure",
+  "pk": 6,
+  "fields": {
+    "name": "Structure 1",
+    "slug": "structure-1",
+    "unique_code": "structure-1",
+    "structure_type": null,
+    "description": "This is an example structure, for test purpose",
+    "create_date": "2020-04-25T13:15:33.445Z",
+    "banner": "",
+    "url": null,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 33,
+  "fields": {
+    "name": "Help-Desk",
+    "slug": "help-desk",
+    "organizational_structure": 6,
+    "description": "Help-Desk Office",
+    "is_default": true,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 34,
+  "fields": {
+    "name": "Office 1",
+    "slug": "office-1",
+    "organizational_structure": 6,
+    "description": "Example office 1",
+    "is_default": false,
+    "is_active": true
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 40,
+  "fields": {
+    "password": "pbkdf2_sha256$180000$S27nvR0hw4ZP$6scKz4fHZ2sHXomX85+ZuP4QnKuYJWVcfxvdFlfd2KY=",
+    "last_login": "2020-04-25T13:19:43.129Z",
+    "is_superuser": true,
+    "username": "user1",
+    "is_staff": true,
+    "date_joined": "2020-04-25T13:19:35.446Z",
+    "is_active": true,
+    "email": "",
+    "matricola_dipendente": null,
+    "matricola_studente": null,
+    "first_name": "User",
+    "last_name": "Test",
+    "taxpayer_id": "AAABBB11C22D333E",
+    "email_notify": true,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 41,
+  "fields": {
+    "password": "pbkdf2_sha256$180000$Em5UIV6FNGNZ$jljOZ2T7mN12ThMTsvmIaZSzxVT3aM0h+WC63lQ87ck=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "user2",
+    "is_staff": false,
+    "date_joined": "2020-04-25T13:33:31.081Z",
+    "is_active": true,
+    "email": "",
+    "matricola_dipendente": null,
+    "matricola_studente": null,
+    "first_name": "User",
+    "last_name": "Test 2",
+    "taxpayer_id": "AAABBB11C22D444E",
+    "email_notify": true,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 946,
+  "fields": {
+    "action_time": "2020-04-25T13:19:59.709Z",
+    "user": 40,
+    "content_type": 1,
+    "object_id": "40",
+    "object_repr": "User Test",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Nome\", \"Cognome\", \"TaxPayer ID - codice fiscale\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 947,
+  "fields": {
+    "action_time": "2020-04-25T13:29:23.158Z",
+    "user": 40,
+    "content_type": 21,
+    "object_id": "33",
+    "object_repr": "(Structure 1) Help-Desk",
+    "action_flag": 2,
+    "change_message": "[{\"added\": {\"name\": \"Organizational Structure Office Employee\", \"object\": \"User Test - (Structure 1) Help-Desk\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 948,
+  "fields": {
+    "action_time": "2020-04-25T13:34:02.420Z",
+    "user": 40,
+    "content_type": 1,
+    "object_id": "41",
+    "object_repr": "Test User2",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Staff status\", \"Superuser status\", \"Nome\", \"Cognome\", \"TaxPayer ID - codice fiscale\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 949,
+  "fields": {
+    "action_time": "2020-04-25T13:34:12.693Z",
+    "user": 40,
+    "content_type": 21,
+    "object_id": "34",
+    "object_repr": "(Structure 1) Office 1",
+    "action_flag": 2,
+    "change_message": "[{\"added\": {\"name\": \"Organizational Structure Office Employee\", \"object\": \"Test User2 - (Structure 1) Office 1\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 950,
+  "fields": {
+    "action_time": "2020-04-25T13:34:24.229Z",
+    "user": 40,
+    "content_type": 1,
+    "object_id": "41",
+    "object_repr": "User Test2",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Nome\", \"Cognome\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 951,
+  "fields": {
+    "action_time": "2020-04-25T13:34:32.060Z",
+    "user": 40,
+    "content_type": 1,
+    "object_id": "41",
+    "object_repr": "User Test 2",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Cognome\"]}}]"
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 1,
+  "fields": {
+    "modulo_compilato": "{\"email_field\": \"mymail@ticket.mail.com\"}",
+    "code": "CdAEUzXTF2abunFTdpBB85",
+    "subject": "My ticket 1",
+    "description": "My ticket description",
+    "created": "2020-04-25T13:35:47.679Z",
+    "created_by": 40,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 1,
+    "is_closed": false,
+    "closed_date": null,
+    "closed_by": null,
+    "closing_reason": null,
+    "priority": 0
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 1,
+  "fields": {
+    "ticket": 1,
+    "office": 34,
+    "created": "2020-04-25T13:35:47.692Z",
+    "modified": "2020-04-25T13:35:47.692Z",
+    "note": null,
+    "assigned_by": null,
+    "taken_date": null,
+    "taken_by": null,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 1,
+  "fields": {
+    "employee": 40,
+    "office": 33,
+    "create_date": "2020-04-25T13:29:23.156Z",
+    "description": ""
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 2,
+  "fields": {
+    "employee": 41,
+    "office": 34,
+    "create_date": "2020-04-25T13:34:12.692Z",
+    "description": ""
+  }
+}
+]
