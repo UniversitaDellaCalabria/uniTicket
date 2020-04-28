@@ -1,6 +1,7 @@
 {% load django_form_builder_tags %}
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_bootstrap_italia_tags %}
 {% load uni_ticket_tags %}
 
 {% if not ticket.is_valid %}
@@ -163,7 +164,18 @@
                         {{ k|no_slugged }}
                     {% endif %}
                 </th>
-                <td>{{ v }}</td>
+                <td>
+                    {% is_list v as is_list %}
+                    {% if is_list %}
+                    <ul>
+                    {% for single_value in v %}
+                        <li>{{ single_value }}</li>
+                    {% endfor %}
+                    </ul>
+                    {% else %}
+                        {{ v }}
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
 
