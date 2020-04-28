@@ -335,11 +335,7 @@ def send_custom_mail(subject, recipient, body, params={}, force=False):
                        message=msg_body,
                        from_email=settings.EMAIL_SENDER,
                        recipient_list=[recipient.email,],
-                       fail_silently=True,
-                       auth_user=None,
-                       auth_password=None,
-                       connection=None,
-                       html_message=None)
+                       fail_silently=True)
     return result
 
 # START Roles 'get' methods

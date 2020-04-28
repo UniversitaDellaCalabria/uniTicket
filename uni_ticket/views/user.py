@@ -9,6 +9,7 @@ from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.core.mail import send_mail
 from django.db.models import Q
 from django.forms import formset_factory
 from django.http import Http404, HttpResponse, HttpResponseRedirect
@@ -122,13 +123,25 @@ def _send_new_ticket_mail_to_operators(request, ticket, category):
         operators = OrganizationalStructureOfficeEmployee.objects.filter(office__organizational_structure=structure,
                                                                          office__is_default=True,
                                                                          employee__is_active=True)
+    recipients = []
     for op in operators:
-        mail_params['user'] = op.employee
-        send_custom_mail(subject=m_subject,
-                         recipient=op.employee,
-                         body=settings.NEW_TICKET_CREATED_EMPLOYEE_BODY,
-                         params=mail_params,
-                         force=True)
+        recipients.append(op.employee.email)
+
+    mail_params['user'] = settings.OPERATOR_PREFIX
+    msg_body_list = [settings.MSG_HEADER,
+                     settings.NEW_TICKET_CREATED_EMPLOYEE_BODY,
+                     settings.MSG_FOOTER]
+    msg_body = ''.join([i.__str__() for i in msg_body_list]).format(**mail_params)
+    result = send_mail(subject=m_subject,
+                       message=msg_body,
+                       from_email=settings.EMAIL_SENDER,
+                       recipient_list=recipients,
+                       fail_silently=True)
+    logger.info('[{}] sent mail (result: {}) '
+                'to operators for ticket {}'
+                ''.format(timezone.now(),
+                          result,
+                          ticket))
 
 @login_required
 def ticket_new_preload(request, structure_slug=None):
