@@ -231,6 +231,7 @@ class TicketCategoryInputList(DynamicFieldMap):
     class Meta:
         verbose_name = _('Modulo di inserimento')
         verbose_name_plural = _('Moduli di inserimento')
+        ordering = ['ordinamento']
 
     @staticmethod
     def field_exist(module, field_name):
