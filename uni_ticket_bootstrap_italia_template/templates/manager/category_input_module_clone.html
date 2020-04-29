@@ -21,7 +21,7 @@
 <br>
 {% trans "Il nuovo modulo appena creato sarà <b>disabilitato</b> e dovrà essere attivato manualmente." %}</p>
 <b><label for="selected_structure_slug">{% trans "Struttura" %}</label></b>
-<div>
+<div class="bootstrap-select-wrapper">
     <select id="selected_structure_slug"
             name="selected_structure_slug"
             title="{% trans 'In quale struttura sarà creato il modulo?' %}"
@@ -47,7 +47,7 @@
       {% trans "Nessuna tipologia di richiesta disponibile per questa struttura o per questa tipologia di utente" %}
     </div>
     {% else %}
-    <div>
+    <div class="bootstrap-select-wrapper">
         <select id="selected_category_slug"
             {% if not selected_structure_slug %}disabled{% endif %}
                 name="selected_category_slug"
