@@ -28,45 +28,47 @@ def room(request, room_name):
     user_type = get_user_type(request.user, structure)
     user_is_operator = user_is_in_default_office(request.user, structure)
     if user_is_operator:
-        return render(request, 'room_{}.html'.format(user_type), {
-            'structure': structure,
-            'title': '{} [chat-room]'.format(structure),
-            'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
-        })
+        return render(request, 'room_{}.html'.format(user_type),
+                      {'structure': structure,
+                       'title': '{} [chat-room]'.format(structure),
+                       'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
+                      })
 
-    if not user_is_operator and not chat_operator_online(request.user, structure.slug):
-            return custom_message(request, _("Nessun operator online. "
-                                             "Chat inaccessibile"),
+    if not chat_operator_online(request.user, structure.slug):
+            return custom_message(request,
+                                  _("Nessun operator online. "
+                                    "Chat inaccessibile"),
                                   structure_slug=structure.slug)
 
     categorie = TicketCategory.objects.filter(organizational_structure=structure,
                                               is_active=True)
     # User roles
     is_employee = user_is_employee(request.user)
-    is_user = user_is_in_organization(request.user)
+    is_org_user = user_is_in_organization(request.user)
 
-    if is_employee and is_user:
+    if is_employee and is_org_user:
         categorie = categorie.filter(Q(allow_employee=True) |
                                      Q(allow_user=True) |
                                      Q(allow_guest=True))
     elif is_employee:
         categorie = categorie.filter(Q(allow_employee=True) |
                                      Q(allow_guest=True))
-    elif is_user:
+    elif is_org_user:
         categorie = categorie.filter(Q(allow_user=True) |
                                      Q(allow_guest=True))
     else:
         categorie = categorie.filter(allow_guest=True)
 
     if categorie:
-        return render(request, 'room_{}.html'.format(user_type), {
-            'structure': structure,
-            'title': '{} [chat-room]'.format(structure),
-            'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
-        })
-    return custom_message(request, _("Questa struttura non offre "
-                                     "categorie disponibili per la tua "
-                                     "tipologia di utenza"),
+        return render(request, 'room_{}.html'.format(user_type),
+                      {'structure': structure,
+                       'title': '{} [chat-room]'.format(structure),
+                       'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
+                      })
+    return custom_message(request,
+                          _("Questa struttura non offre "
+                            "categorie disponibili per la tua "
+                            "tipologia di utenza"),
                           structure_slug=structure.slug)
 
 # no login is required
