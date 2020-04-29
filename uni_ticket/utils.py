@@ -60,7 +60,7 @@ def user_manage_something(user):
         structure = eo.office.organizational_structure
         if structure.is_active and structure not in structures:
             structures.append(structure)
-    return structures
+    return structures.sort()
 
 def user_is_manager(user, structure):
     """
