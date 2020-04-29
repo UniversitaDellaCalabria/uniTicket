@@ -25,13 +25,21 @@ def room(request, room_name):
     structure = get_object_or_404(OrganizationalStructure,
                                   slug=room_name,
                                   is_active=True)
+    user_type = get_user_type(request.user, structure)
     user_is_operator = user_is_in_default_office(request.user, structure)
+    if user_is_operator:
+        return render(request, 'room_{}.html'.format(user_type), {
+            'structure': structure,
+            'title': '{} [chat-room]'.format(structure),
+            'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
+        })
+
     if not user_is_operator and not chat_operator_online(request.user, structure.slug):
             return custom_message(request, _("Nessun operator online. "
                                              "Chat inaccessibile"),
                                   structure_slug=structure.slug)
 
-    categorie = TicketCategory.objects.filter(organizational_structure=structure.pk,
+    categorie = TicketCategory.objects.filter(organizational_structure=structure,
                                               is_active=True)
     # User roles
     is_employee = user_is_employee(request.user)
@@ -51,7 +59,6 @@ def room(request, room_name):
         categorie = categorie.filter(allow_guest=True)
 
     if categorie:
-        user_type = get_user_type(request.user, structure)
         return render(request, 'room_{}.html'.format(user_type), {
             'structure': structure,
             'title': '{} [chat-room]'.format(structure),
