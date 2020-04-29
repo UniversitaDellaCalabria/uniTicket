@@ -2,6 +2,7 @@ import base64
 import json
 import zlib
 import magic
+import operator
 import os
 import random
 import re
@@ -60,7 +61,7 @@ def user_manage_something(user):
         structure = eo.office.organizational_structure
         if structure.is_active and structure not in structures:
             structures.append(structure)
-    return structures
+    return sorted(structures, key=operator.attrgetter("name"))
 
 def user_is_manager(user, structure):
     """
