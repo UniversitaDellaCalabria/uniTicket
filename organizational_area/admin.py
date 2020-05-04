@@ -1,7 +1,8 @@
 from django.contrib import admin
 
-from .models import *
 from .admin_inlines import *
+from .models import *
+
 
 class AbstractAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
@@ -29,7 +30,8 @@ class OrganizationalStructureAdmin(AbstractAdmin):
     list_filter = ('structure_type', 'is_active')
     list_editable = ('is_active',)
     inlines = [OrganizationalStructureLocationInline,
-               OrganizationalStructureOfficeInline,]
+               OrganizationalStructureOfficeInline,
+               UserManageOrganizationalStructureInline]
 
 
 @admin.register(OrganizationalStructureOffice)

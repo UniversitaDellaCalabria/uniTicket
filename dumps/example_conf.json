@@ -1,14 +1,13 @@
-OpenSSL 1.1.1  11 Sep 2018
 [
 {
   "model": "uni_ticket.ticketcategory",
   "pk": 1,
   "fields": {
-    "name": "Category 1",
-    "slug": "category-1",
-    "description": "Example ticket category",
+    "name": "Categoria 1",
+    "slug": "categoria-1",
+    "description": "Descrizione categoria 1",
     "created": "2020-04-25T13:30:56.799Z",
-    "modified": "2020-04-25T13:30:56.799Z",
+    "modified": "2020-05-04T21:38:00.445Z",
     "organizational_structure": 6,
     "organizational_office": 34,
     "is_active": true,
@@ -20,43 +19,43 @@ OpenSSL 1.1.1  11 Sep 2018
     "allow_employee": true,
     "is_notify": false,
     "confirm_message_text": "",
-    "receive_email": false
+    "receive_email": true
   }
 },
 {
   "model": "uni_ticket.ticketcategorymodule",
-  "pk": 1,
+  "pk": 5,
   "fields": {
     "name": "Module 1",
     "ticket_category": 1,
-    "created": "2020-04-25T13:31:06.166Z",
+    "created": "2020-04-29T10:38:06.946Z",
     "is_active": true
   }
 },
 {
-  "model": "uni_ticket.ticketcategoryinputlist",
+  "model": "uni_ticket.ticketcategorycondition",
   "pk": 1,
   "fields": {
-    "name": "Email field",
-    "field_type": "CustomEmailField",
-    "valore": "",
-    "is_required": true,
-    "aiuto": "E-mail field help-text",
-    "pre_text": "",
+    "category": 1,
+    "title": "Privacy",
+    "text": "Testo regolamento privacy da accettare",
     "ordinamento": 0,
-    "category_module": 1
+    "attachment": "",
+    "is_printable": false,
+    "is_collapsable": false,
+    "is_active": true
   }
 },
 {
   "model": "organizational_area.organizationalstructure",
   "pk": 6,
   "fields": {
-    "name": "Structure 1",
-    "slug": "structure-1",
-    "unique_code": "structure-1",
+    "name": "Struttura 1",
+    "slug": "struttura-1",
+    "unique_code": "struttura-1",
     "structure_type": null,
     "description": "This is an example structure, for test purpose",
-    "create_date": "2020-04-25T13:15:33.445Z",
+    "create_date": "2020-05-04T21:36:39.486Z",
     "banner": "",
     "url": null,
     "is_active": true
@@ -88,20 +87,20 @@ OpenSSL 1.1.1  11 Sep 2018
 },
 {
   "model": "accounts.user",
-  "pk": 40,
+  "pk": 43,
   "fields": {
-    "password": "pbkdf2_sha256$180000$S27nvR0hw4ZP$6scKz4fHZ2sHXomX85+ZuP4QnKuYJWVcfxvdFlfd2KY=",
-    "last_login": "2020-04-25T13:19:43.129Z",
+    "password": "pbkdf2_sha256$180000$cFZFmzeEdVNH$GDA4u8vsxjJhZ+TFBg+X7xnvJJEoQeBpWnD55G5o7nk=",
+    "last_login": "2020-05-04T21:35:03.429Z",
     "is_superuser": true,
-    "username": "user1",
+    "username": "utente1",
     "is_staff": true,
-    "date_joined": "2020-04-25T13:19:35.446Z",
+    "date_joined": "2020-05-04T21:34:42.865Z",
     "is_active": true,
     "email": "",
-    "matricola_dipendente": null,
-    "matricola_studente": null,
-    "first_name": "User",
-    "last_name": "Test",
+    "matricola_dipendente": "999999",
+    "matricola_studente": "111111",
+    "first_name": "Utente",
+    "last_name": "Test 1",
     "taxpayer_id": "AAABBB11C22D333E",
     "email_notify": true,
     "groups": [],
@@ -110,117 +109,39 @@ OpenSSL 1.1.1  11 Sep 2018
 },
 {
   "model": "accounts.user",
-  "pk": 41,
+  "pk": 44,
   "fields": {
-    "password": "pbkdf2_sha256$180000$Em5UIV6FNGNZ$jljOZ2T7mN12ThMTsvmIaZSzxVT3aM0h+WC63lQ87ck=",
+    "password": "pbkdf2_sha256$180000$auFETvC8Json$qd969cWI4KBJZElNcHLnYBlT0pDLhx8lcUEOvXfoRZY=",
     "last_login": null,
     "is_superuser": false,
-    "username": "user2",
+    "username": "utente2",
     "is_staff": false,
-    "date_joined": "2020-04-25T13:33:31.081Z",
+    "date_joined": "2020-05-04T21:34:52.719Z",
     "is_active": true,
     "email": "",
     "matricola_dipendente": null,
     "matricola_studente": null,
-    "first_name": "User",
+    "first_name": "Utente",
     "last_name": "Test 2",
-    "taxpayer_id": "AAABBB11C22D444E",
+    "taxpayer_id": null,
     "email_notify": true,
     "groups": [],
     "user_permissions": []
   }
 },
 {
-  "model": "admin.logentry",
-  "pk": 946,
-  "fields": {
-    "action_time": "2020-04-25T13:19:59.709Z",
-    "user": 40,
-    "content_type": 1,
-    "object_id": "40",
-    "object_repr": "User Test",
-    "action_flag": 2,
-    "change_message": "[{\"changed\": {\"fields\": [\"Nome\", \"Cognome\", \"TaxPayer ID - codice fiscale\"]}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 947,
-  "fields": {
-    "action_time": "2020-04-25T13:29:23.158Z",
-    "user": 40,
-    "content_type": 21,
-    "object_id": "33",
-    "object_repr": "(Structure 1) Help-Desk",
-    "action_flag": 2,
-    "change_message": "[{\"added\": {\"name\": \"Organizational Structure Office Employee\", \"object\": \"User Test - (Structure 1) Help-Desk\"}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 948,
-  "fields": {
-    "action_time": "2020-04-25T13:34:02.420Z",
-    "user": 40,
-    "content_type": 1,
-    "object_id": "41",
-    "object_repr": "Test User2",
-    "action_flag": 2,
-    "change_message": "[{\"changed\": {\"fields\": [\"Staff status\", \"Superuser status\", \"Nome\", \"Cognome\", \"TaxPayer ID - codice fiscale\"]}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 949,
-  "fields": {
-    "action_time": "2020-04-25T13:34:12.693Z",
-    "user": 40,
-    "content_type": 21,
-    "object_id": "34",
-    "object_repr": "(Structure 1) Office 1",
-    "action_flag": 2,
-    "change_message": "[{\"added\": {\"name\": \"Organizational Structure Office Employee\", \"object\": \"Test User2 - (Structure 1) Office 1\"}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 950,
-  "fields": {
-    "action_time": "2020-04-25T13:34:24.229Z",
-    "user": 40,
-    "content_type": 1,
-    "object_id": "41",
-    "object_repr": "User Test2",
-    "action_flag": 2,
-    "change_message": "[{\"changed\": {\"fields\": [\"Nome\", \"Cognome\"]}}]"
-  }
-},
-{
-  "model": "admin.logentry",
-  "pk": 951,
-  "fields": {
-    "action_time": "2020-04-25T13:34:32.060Z",
-    "user": 40,
-    "content_type": 1,
-    "object_id": "41",
-    "object_repr": "User Test 2",
-    "action_flag": 2,
-    "change_message": "[{\"changed\": {\"fields\": [\"Cognome\"]}}]"
-  }
-},
-{
   "model": "uni_ticket.ticket",
-  "pk": 1,
+  "pk": 33,
   "fields": {
-    "modulo_compilato": "{\"email_field\": \"mymail@ticket.mail.com\"}",
-    "code": "CdAEUzXTF2abunFTdpBB85",
-    "subject": "My ticket 1",
-    "description": "My ticket description",
-    "created": "2020-04-25T13:35:47.679Z",
-    "created_by": 40,
+    "modulo_compilato": "{}",
+    "code": "gehejDRNZhZ7GNpaMPnzzE",
+    "subject": "Categoria 1",
+    "description": "Descrizione categoria 1",
+    "created": "2020-05-04T21:39:40.504Z",
+    "created_by": 43,
     "compiled": null,
     "compiled_by": null,
-    "input_module": 1,
+    "input_module": 5,
     "is_closed": false,
     "closed_date": null,
     "closed_by": null,
@@ -230,12 +151,12 @@ OpenSSL 1.1.1  11 Sep 2018
 },
 {
   "model": "uni_ticket.ticketassignment",
-  "pk": 1,
+  "pk": 33,
   "fields": {
-    "ticket": 1,
+    "ticket": 33,
     "office": 34,
-    "created": "2020-04-25T13:35:47.692Z",
-    "modified": "2020-04-25T13:35:47.692Z",
+    "created": "2020-05-04T21:39:40.523Z",
+    "modified": "2020-05-04T21:39:40.523Z",
     "note": null,
     "assigned_by": null,
     "taken_date": null,
@@ -245,23 +166,64 @@ OpenSSL 1.1.1  11 Sep 2018
   }
 },
 {
-  "model": "organizational_area.organizationalstructureofficeemployee",
+  "model": "uni_ticket.task",
+  "pk": 4,
+  "fields": {
+    "subject": "Attivit\u00e0 1",
+    "code": "BcC9JPnfMJEDdstZuGcP7y",
+    "description": "Bisogna fare questa cosa altrimenti il ticket non si pu\u00f2 chiudere",
+    "created": "2020-05-04T21:39:40.540Z",
+    "created_by": null,
+    "priority": 0,
+    "attachment": "",
+    "ticket": 33,
+    "is_closed": false,
+    "closed_by": null,
+    "closed_date": null,
+    "closing_reason": null
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorytask",
   "pk": 1,
   "fields": {
-    "employee": 40,
+    "subject": "Attivit\u00e0 1",
+    "code": "NxgdyoJbQGtk6YKKutGWqy",
+    "description": "Bisogna fare questa cosa altrimenti il ticket non si pu\u00f2 chiudere",
+    "created": "2020-04-30T10:48:04.972Z",
+    "created_by": null,
+    "priority": 0,
+    "attachment": "",
+    "category": 1,
+    "is_active": true
+  }
+},
+{
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 7,
+  "fields": {
+    "employee": 43,
     "office": 33,
-    "create_date": "2020-04-25T13:29:23.156Z",
+    "create_date": "2020-05-04T21:36:53.645Z",
     "description": ""
   }
 },
 {
   "model": "organizational_area.organizationalstructureofficeemployee",
-  "pk": 2,
+  "pk": 8,
   "fields": {
-    "employee": 41,
+    "employee": 44,
     "office": 34,
-    "create_date": "2020-04-25T13:34:12.692Z",
+    "create_date": "2020-05-04T21:37:00.222Z",
     "description": ""
+  }
+},
+{
+  "model": "organizational_area.usermanageorganizationalstructure",
+  "pk": 3,
+  "fields": {
+    "user": 43,
+    "organizational_structure": 6
   }
 }
 ]

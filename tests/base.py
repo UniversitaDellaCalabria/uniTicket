@@ -15,22 +15,25 @@ class BaseTest(TestCase):
                                                       unique_code=slugify(name),
                                                       structure_type=structure_type)
 
-    def create_user(self, name, is_staff=False):
+    def create_user(self, name):
         user_model = apps.get_model(settings.AUTH_USER_MODEL)
         return user_model.objects.create_user(username=slugify(name),
                                               password='passw',
                                               first_name=name,
                                               last_name="Lastname {}".format(name),
-                                              email="{}@test.it".format(slugify(name)),
-                                              is_staff=is_staff)
+                                              email="{}@test.it".format(slugify(name)))
 
-    def assign_user_to_structure(self, user, structure):
+    def assign_user_to_structure(self, user, structure, manage=False):
         # Assign users to structure default office
         # Staff users become manager
         default_office = structure.get_default_office()
         osoe_model = OrganizationalStructureOfficeEmployee
         osoe = osoe_model.objects.create(employee=user,
                                          office=default_office)
+        if manage:
+            umos_model = UserManageOrganizationalStructure
+            umos = umos_model.objects.create(user=user,
+                                             organizational_structure=structure)
 
     def setUp(self):
         self.client = Client()
@@ -41,16 +44,16 @@ class BaseTest(TestCase):
 
         # Create users
         # Staff users
-        self.staff_1 = self.create_user(name="Staff 1", is_staff=True)
-        self.staff_2 = self.create_user(name="Staff 2", is_staff=True)
+        self.staff_1 = self.create_user(name="Staff 1")
+        self.staff_2 = self.create_user(name="Staff 2")
         # Simple users
-        self.user_1 = self.create_user(name="User 1", is_staff=False)
-        self.user_2 = self.create_user(name="User 2", is_staff=False)
+        self.user_1 = self.create_user(name="User 1")
+        self.user_2 = self.create_user(name="User 2")
 
         # Assign users to structures
         # These are staff users and for this reason they will be structure managers
-        self.assign_user_to_structure(self.staff_1, self.structure_1)
-        self.assign_user_to_structure(self.staff_2, self.structure_2)
+        self.assign_user_to_structure(self.staff_1, self.structure_1, manage=True)
+        self.assign_user_to_structure(self.staff_2, self.structure_2, manage=True)
         # These are simple users and for this reason they will be default office operators
         self.assign_user_to_structure(self.user_1, self.structure_1)
         self.assign_user_to_structure(self.user_2, self.structure_2)

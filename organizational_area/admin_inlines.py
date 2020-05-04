@@ -58,3 +58,16 @@ class OrganizationalStructureOfficeLocationInline(admin.TabularInline):
     model = OrganizationalStructureOfficeLocation
     form = OrganizationalStructureOfficeLocationModelForm
     extra = 0
+
+
+# User is structure manager
+class UserManageOrganizationalStructureModelForm(forms.ModelForm):
+    class Meta:
+        model = UserManageOrganizationalStructure
+        fields = ('__all__')
+
+
+class UserManageOrganizationalStructureInline(admin.TabularInline):
+    model = UserManageOrganizationalStructure
+    form = UserManageOrganizationalStructureModelForm
+    extra = 0

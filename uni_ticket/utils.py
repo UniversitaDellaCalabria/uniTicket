@@ -20,7 +20,8 @@ from django.utils.translation import gettext as _
 from django_form_builder.utils import get_POST_as_json
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
-                                        OrganizationalStructureOfficeEmployee)
+                                        OrganizationalStructureOfficeEmployee,
+                                        UserManageOrganizationalStructure)
 
 
 def compress_text_to_b64(text):
@@ -67,7 +68,10 @@ def user_is_manager(user, structure):
     """
     Returns True if user is a manager for the structure
     """
-    if not user.is_staff: return False
+    umos = UserManageOrganizationalStructure
+    user_structure_manager = umos.objects.filter(user=user,
+                                                 organizational_structure=structure).first()
+    if not user_structure_manager: return False
     if not structure: return False
     return user_is_in_default_office(user, structure)
 
