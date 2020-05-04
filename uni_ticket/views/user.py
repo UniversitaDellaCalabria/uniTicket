@@ -215,7 +215,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                                   slug=structure_slug,
                                   is_active=True)
     category = get_object_or_404(TicketCategory,
-                                 slug=category_slug)
+                                 slug=category_slug,
+                                 organizational_structure=struttura)
 
     if not category.is_active:
         return custom_message(request, category.not_available_message,
