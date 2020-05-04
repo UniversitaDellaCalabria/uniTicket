@@ -98,7 +98,15 @@
                     -
                     {% endif %}
                 </td>
-                <td>{{ field.is_required }}</td>
+                <td>
+                    <svg class="icon icon-xs icon-success">
+                    {% if field.is_required %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
                 <td>
                     <svg class="icon icon-xs icon-success">
                     {% if field.pre_text %}

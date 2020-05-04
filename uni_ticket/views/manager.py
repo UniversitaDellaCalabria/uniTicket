@@ -1455,12 +1455,24 @@ def category_input_module_preview(request, structure_slug,
     sub_title = "{} in {}".format(module, category)
     template = 'manager/category_input_module_preview.html'
     clausole_categoria = category.get_conditions()
-    d = {'category': category,
-         'conditions': clausole_categoria,
+    d = {'categoria': category,
+         'category_conditions': clausole_categoria,
          'form': form,
          'structure': structure,
          'sub_title': sub_title,
          'title': title,}
+    if request.POST:
+        form = module.get_form(data=request.POST,
+                               files=request.FILES,
+                               show_conditions=True)
+        d['form'] = form
+        if form.is_valid():
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Dati inseriti corretti"))
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
     return render(request, template, d)
 
 @login_required

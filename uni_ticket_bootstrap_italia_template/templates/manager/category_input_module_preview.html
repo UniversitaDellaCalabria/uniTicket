@@ -1,4 +1,4 @@
-{% extends "form_complete.html" %}
+{% extends "user/ticket_add_new.html" %}
 
 {% load i18n %}
 {% load static %}
@@ -8,33 +8,12 @@
 {% block footer %}{% endblock %}
 {% block top_buttons_surround %}{% endblock %}
 
-{% block over_content %}
-    {% if conditions %}
-    <div class="pb-4">
-        <div class="row">
-            <div class="col">
-                <div class="card-space card-wrapper">
-                    <div class="card card-bg no-after">
-                        <div class="card-body">
-                            {% for condition in conditions %}
-                            <h5 class="card-title text-left">{{ condition.title }}</h5>
-                            <p class="card-text">{{ condition.text | markdown | safe }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-{% endblock over_content %}
-
 {% block form_buttons %}
 <div>
-    <a class="btn btn-success btn-block" href="#">
+    <button class="btn btn-success btn-block" type="submit">
         <svg class="icon icon-xs icon-white">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-        </svg> {% trans "Crea ticket" %}
-    </a>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+        </svg> {% trans "Simula invio richiesta" %}
+    </button>
 </div>
 {% endblock %}
