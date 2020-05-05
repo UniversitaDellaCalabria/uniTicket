@@ -233,8 +233,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                                      organizational_structure=struttura)
 
     if not category.is_active:
-        return custom_message(request, category.not_available_message,
-                              status=404)
+        unavailable_msg = category.not_available_message or settings.UNAVAILABLE_TICKET_CATEGORY
+        return custom_message(request, unavailable_msg, status=404)
 
     # if anonymous user and category only for logged users
     if not category.allow_anonymous and not request.user.is_authenticated:

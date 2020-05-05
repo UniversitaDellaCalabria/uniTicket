@@ -122,6 +122,8 @@ Per problemi tecnici contatta il nostro staff.
 Cordiali saluti.
 """)
 
+UNAVAILABLE_TICKET_CATEGORY = _("""La tipologia di richiesta non è attiva""")
+
 NEW_TICKET_CREATED_ALERT = _("""Ticket "{}" creato con successo""")
 
 NEW_TICKET_CREATED = _("""{added_text}
