@@ -29,7 +29,7 @@
         <option value="">{% trans "Scegli un'opzione" %}</option>
         {% for struttura in strutture %}
         <option value="{{ struttura.slug }}"
-        {% if struttura.slug == structure_slug %} selected {% endif %}>
+        {% if struttura.slug == chosen_structure.slug %} selected {% endif %}>
             {{ struttura }}
         </option>
         {% endfor %}
@@ -38,7 +38,7 @@
 
 <div style="padding: 1.5rem 0 1rem" >
     <b><label for="category_slug">{% trans "Tipo di richiesta" %}</label></b>
-    {% if not structure_slug %}
+    {% if not chosen_structure %}
     <div class="alert alert-warning" role="alert">
       {% trans "Seleziona la struttura a cui inoltrare il ticket" %}
     </div>
@@ -49,7 +49,7 @@
     {% else %}
     <div class="bootstrap-select-wrapper">
         <select id="category_slug"
-                {% if not structure_slug %}disabled{% endif %}
+                {% if not chosen_structure %}disabled{% endif %}
                 name="category_slug"
                 title="{% trans 'A chi è indirizzata la richiesta?' %}"
                 data-live-search="true" data-live-search-placeholder="Cerca...">
@@ -71,7 +71,7 @@ function replace_last_param(url, new_param){
 }
 
 $('#structure_slug').on('change', function(event) {
-    {% if structure_slug %}
+    {% if chosen_structure %}
     window.location.href = replace_last_param(window.location.href, $(this).val());
     {% else %}
     window.location.href = window.location.href + $(this).val();

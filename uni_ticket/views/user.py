@@ -167,9 +167,14 @@ def ticket_new_preload(request, structure_slug=None):
     sub_title = _("Seleziona la struttura")
     structure = None
     if structure_slug:
-        structure = get_object_or_404(OrganizationalStructure,
-                                      slug=structure_slug,
-                                      is_active=True)
+        try:
+            structure = get_object_or_404(OrganizationalStructure,
+                                          pk=structure_slug,
+                                          is_active=True)
+        except:
+            structure = get_object_or_404(OrganizationalStructure,
+                                          slug=structure_slug,
+                                          is_active=True)
         categorie = TicketCategory.objects.filter(organizational_structure=structure,
                                                   is_active=True)
         # User roles
@@ -191,7 +196,6 @@ def ticket_new_preload(request, structure_slug=None):
 
         sub_title = _("Seleziona la Categoria")
     d = {'categorie': categorie,
-         'structure_slug': structure_slug,
          'chosen_structure': structure,
          'strutture': strutture,
          'sub_title': sub_title,
@@ -211,12 +215,22 @@ def ticket_add_new(request, structure_slug, category_slug):
 
     :return: render
     """
-    struttura = get_object_or_404(OrganizationalStructure,
-                                  slug=structure_slug,
-                                  is_active=True)
-    category = get_object_or_404(TicketCategory,
-                                 slug=category_slug,
-                                 organizational_structure=struttura)
+    try:
+        struttura = get_object_or_404(OrganizationalStructure,
+                                      pk=structure_slug,
+                                      is_active=True)
+    except:
+        struttura = get_object_or_404(OrganizationalStructure,
+                                      slug=structure_slug,
+                                      is_active=True)
+    try:
+        category = get_object_or_404(TicketCategory,
+                                     pk=category_slug,
+                                     organizational_structure=struttura)
+    except:
+        category = get_object_or_404(TicketCategory,
+                                     slug=category_slug,
+                                     organizational_structure=struttura)
 
     if not category.is_active:
         return custom_message(request, category.not_available_message,

@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
+from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -38,7 +39,14 @@ class TicketCategory(models.Model):
     Categoria di appartenenza dei Ticket
     Definisce un particolare ambito
     """
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255,
+                            validators=[
+                                RegexValidator(
+                                    regex='^(?=.*[a-zA-Z])',
+                                    message=_("Il nome deve contenere almeno un carattere alfabetico"),
+                                    code='invalid_name'
+                                ),
+                            ])
     slug = models.SlugField(max_length=255,
                             blank=False, null=False)
     description = models.TextField(max_length=500, null=True, blank=True)

@@ -677,7 +677,15 @@ def category_detail(request, structure_slug, category_slug, structure):
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
+    slug_url = request.build_absolute_uri(reverse('uni_ticket:add_new_ticket',
+                                                  kwargs={'structure_slug': structure.slug,
+                                                          'category_slug': category.slug}))
+    pk_url = request.build_absolute_uri(reverse('uni_ticket:add_new_ticket',
+                                                 kwargs={'structure_slug': structure.pk,
+                                                         'category_slug': category.pk}))
+    category_urls = (slug_url, pk_url)
     d = {'category': category,
+         'category_urls': category_urls,
          'form': form,
          'structure': structure,
          'sub_title': sub_title,

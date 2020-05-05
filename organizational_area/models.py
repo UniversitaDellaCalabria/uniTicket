@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext as _
 
@@ -37,7 +38,14 @@ class OrganizationalStructure(models.Model):
     """
     name = models.CharField(max_length=255, blank=True, unique=True)
     slug = models.SlugField(max_length=255,
-                            blank=False, null=False, unique=True)
+                            blank=False, null=False, unique=True,
+                            validators=[
+                                RegexValidator(
+                                    regex='^(?=.*[a-zA-Z])',
+                                    message=_("Lo slug un carattere alfabetico"),
+                                    code='invalid_slug'
+                                ),
+                            ])
     unique_code = models.CharField(max_length=255, blank=True, unique=True)
     structure_type = models.ForeignKey(OrganizationalStructureType,
                                        null=True, blank=True,

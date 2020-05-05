@@ -117,6 +117,23 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">{% trans 'URL nuovo ticket' %}</th>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ category_urls.0 }}">
+                                {{ category_urls.0 }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ category_urls.1 }}">
+                                {{ category_urls.1 }}
+                            </a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans 'Ufficio di competenza' %}</th>
                 <td>
                     {% if category.organizational_office %}
