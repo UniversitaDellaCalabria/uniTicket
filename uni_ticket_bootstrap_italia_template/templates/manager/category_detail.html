@@ -105,7 +105,13 @@
             <tr>
                 <th scope="row">{% trans 'Messaggio se non attiva' %}</th>
                 <td>
-                    {{ category.not_available_message| default_if_none:"" | linebreaks }}
+                    {% if category.not_available_message %}
+                        {{ category.not_available_message }}
+                    {% else %}
+                        {% trans "Messaggio predefinito:" %}
+                        {% settings_value "UNAVAILABLE_TICKET_CATEGORY" as default_unavailable_message %}
+                        {{ default_unavailable_message }}
+                    {% endif %}
                 </td>
             </tr>
             <tr>
