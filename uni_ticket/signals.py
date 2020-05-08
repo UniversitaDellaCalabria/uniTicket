@@ -4,14 +4,17 @@ from django.db.models.signals import *
 from django.dispatch import receiver
 from django.utils.translation import gettext as _
 
+from organizational_area.decorators import disable_for_loaddata
+
 from . models import *
 from . utils import delete_directory, delete_file
 
+
 @receiver(pre_save, sender=TicketCategory)
+@disable_for_loaddata
 def check_if_can_be_activated(sender, instance, **kwargs):
     """
-    Help-desk Office created by default
-    after Structure is created
+    Check if TicketCategory can be activated
     """
     if instance.is_active:
         problem = instance.something_stops_activation()

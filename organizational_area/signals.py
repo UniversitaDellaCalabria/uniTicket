@@ -6,14 +6,16 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
-from .models import (OrganizationalStructure,
-                     OrganizationalStructureOffice)
+from . decorators import disable_for_loaddata
+from . models import (OrganizationalStructure,
+                      OrganizationalStructureOffice)
 
 
 logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=OrganizationalStructure)
+@disable_for_loaddata
 def create_manager_office(sender, instance, created, **kwargs):
     """
     Help-desk Office created by default
