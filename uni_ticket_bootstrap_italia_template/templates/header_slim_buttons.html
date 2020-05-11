@@ -2,7 +2,6 @@
 {% load uni_ticket_tags %}
 
 {% if request.user.is_authenticated %}
-
 {% not_a_simple_user request.user as not_a_simple_user %}
 {% simple_user_context_name as simple_user_context_name %}
 <div class="nav-item dropdown">
@@ -55,4 +54,13 @@
     </a>
     {% endif %}
 </div>
+{% else %}
+{% settings_value name="LOGIN_URL" as login_url %}
+<a class="nav-link dropdown-toggle" href="{{ login_url }}/?next={{ request.get_full_path }}" data-toggle="dropdown" aria-expanded="false">
+    <div class="it-access-top-wrapper">
+        <button class="btn btn-primary btn-sm" href="" type="button">
+            {% trans "Accedi" %}
+        </button>
+    </div>
+</a>
 {% endif %}
