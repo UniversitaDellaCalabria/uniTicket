@@ -23,7 +23,7 @@
 {% settings_value name="OPERATOR_PREFIX" as operator_label %}
 {% settings_value name="DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE" as default_office %}
 
-{% if untaken_user_offices %}
+{% if untaken_user_offices and not ticket.is_closed %}
 <div class="alert alert-info mobile-adapt" role="alert">
     <h4 class="alert-heading">{% trans "Attenzione" %}</h4>
     <p>{% trans "Il ticket non è stato ancora assegnato a nessun operatore negli uffici" %}</p>
