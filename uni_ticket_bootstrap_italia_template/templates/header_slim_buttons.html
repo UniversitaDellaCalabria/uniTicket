@@ -56,11 +56,9 @@
 </div>
 {% else %}
 {% settings_value name="LOGIN_URL" as login_url %}
-<a class="nav-link dropdown-toggle" href="{{ login_url }}/?next={{ request.get_full_path }}" data-toggle="dropdown" aria-expanded="false">
-    <div class="it-access-top-wrapper">
-        <button class="btn btn-primary btn-sm" href="" type="button">
-            {% trans "Accedi" %}
-        </button>
-    </div>
+<a href="{{ login_url }}/?next={{ request.get_full_path }}">
+    <button class="btn btn-primary btn-sm" type="button">
+        {% trans "Accedi" %}
+    </button>
 </a>
 {% endif %}
