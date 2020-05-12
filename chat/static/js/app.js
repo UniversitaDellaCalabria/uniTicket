@@ -105,12 +105,16 @@ function addRemoveEvent(){
 }
 
 // add a user div in list
-function addUserDiv(user, user_fullname) {
+function addUserDiv(user, user_fullname, is_operator) {
     // build HTML user element in list
     var userItem = `<div class="item mb-2">
-                        <a role="button" user="${user}" class="user btn btn-outline-secondary w-75 p-3"`;
-    if (user == currentUser) userItem += `>Scrivi a tutti</a>`;
-    else userItem += `>${user_fullname}</a> &nbsp;&nbsp;`;
+                        <a role="button" user="${user}" class="user btn btn-outline-secondary w-75 p-3">`;
+    if (is_operator && user != currentUser) userItem += `<svg class="icon icon-xs">
+                                    <use xlink:href="/static/svg/sprite.svg#it-user"></use>
+                                  </svg>&nbsp;&nbsp;`;
+    if (user == currentUser) userItem += `Scrivi a tutti</a>`;
+    else userItem += `${user_fullname}</a> &nbsp;&nbsp;`;
+
     if (currentUser != user)
         userItem += `<svg class="icon icon-danger icon-xs item_delete">
                         <use xlink:href="/static/svg/sprite.svg#it-close-circle"></use>
@@ -167,11 +171,13 @@ function getConversation(recipient, room_name) {
 }
 
 // add user in users list
-function addUserInList(user, user_fullname, block_bot=false) {
+function addUserInList(user, user_fullname, is_operator=false, block_bot=false) {
     console.log("addUserInList: " + user);
     console.log("currentrecipient: "+ currentRecipient);
     if (!user_is_in_list(user)) {
-        addUserDiv(user=user, user_fullname=user_fullname);
+        addUserDiv(user=user,
+                   user_fullname=user_fullname,
+                   is_operator=is_operator);
         if (user != currentUser) users.push(parseInt(user));
         if (user == currentRecipient) {
             if(!block_bot)
@@ -338,7 +344,8 @@ $(document).ready(function () {
                     console.log("received join room: " + json_data['user']);
                     console.log(json_data);
                     addUserInList(user=json_data['user'],
-                                  user_fullname=json_data['user_fullname']);
+                                  user_fullname=json_data['user_fullname'],
+                                  is_operator=json_data['is_operator']);
                     break;
                 case 'leave_room':
                     console.log("received leave room: " + json_data['user']);
@@ -347,7 +354,8 @@ $(document).ready(function () {
                 case 'add_user':
                     console.log("add user: " + json_data['user']);
                     addUserInList(user=json_data['user'],
-                                  user_fullname=json_data['user_fullname']);
+                                  user_fullname=json_data['user_fullname'],
+                                  is_operator=json_data['is_operator']);
                     break;
             }
         else if (json_data['message']) {

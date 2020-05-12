@@ -43,6 +43,7 @@ class ChatConsumer(WebsocketConsumer):
             'type': 'join_room',
             'room': self.room_name,
             'user': self.user.pk,
+            # 'is_operator': chat_operator(self.user, self.room_name),
             'user_fullname': '{} {}'.format(self.user.first_name,
                                             self.user.last_name)
         }
@@ -60,6 +61,7 @@ class ChatConsumer(WebsocketConsumer):
                     'type': 'add_user',
                     'room': self.room_name,
                     'user': au.user.pk,
+                    # 'is_operator': chat_operator(au.user, self.room_name),
                     'user_fullname': '{} {}'.format(au.user.first_name,
                                                     au.user.last_name)
                 }
@@ -133,6 +135,7 @@ class ChatConsumer(WebsocketConsumer):
                     'command': 'join_room',
                     'room': event['room'],
                     'user': event['user'],
+                    'is_operator': chat_operator(user, event['room']),
                     'user_fullname': '{} {}'.format(user.first_name,
                                                     user.last_name)
                 })
@@ -155,6 +158,7 @@ class ChatConsumer(WebsocketConsumer):
                 'command': 'add_user',
                 'room': event['room'],
                 'user': event['user'],
+                'is_operator': chat_operator(event['user'], self.room_name),
                 'user_fullname': event['user_fullname'],
             })
         )

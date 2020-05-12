@@ -34,7 +34,11 @@
         <div class="row">
             <div class="col-md-3 chat-user-list">
                 <div id="user-list" class="list-group">
-                    <h5 class="list-group-item-heading mb-3">{% trans "Utenti" %}</h5>
+                    <h5 class="list-group-item-heading mb-3">
+                        {% block users_list_label %}
+                            {% trans "Utenti" %}
+                        {% endblock users_list_label %}
+                    </h5>
                     {# Users go here #}
                 </div>
             </div>
