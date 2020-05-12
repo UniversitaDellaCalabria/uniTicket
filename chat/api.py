@@ -58,8 +58,9 @@ class ChatMessageModelViewSet(ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         room = self.request.query_params.get('room')
-        msg = self.queryset.get(Q(recipient=request.user) | Q(user=request.user),
-                                pk=kwargs['pk'], room=room, )
+        msg = self.queryset.filter(Q(recipient=request.user) | Q(user=request.user),
+                                   pk=kwargs['pk'],
+                                   room=room).first()
         serializer = self.get_serializer(msg)
         return Response(serializer.data)
 
