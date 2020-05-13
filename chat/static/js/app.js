@@ -292,6 +292,10 @@ function disableInput() {
     videoChatButton.prop('disabled', true);
 }
 
+function reloadPage() {
+    window.location = self.location.href;
+}
+
 $(document).ready(function () {
     // disable input field
     disableInput();
@@ -301,6 +305,11 @@ $(document).ready(function () {
         ws_protocol + window.location.host +
         '/ws/chat/' + room_name + '/?session_key=' + sessionKey);
     console.log(socket);
+
+    // timeout
+    var timeout_milliseconds = 40000;
+    var timeout = setTimeout(reloadPage, timeout_milliseconds);
+
     // on ENTER click
     chatInput.keypress(function (e) {
         if (e.keyCode == 13)
@@ -342,8 +351,13 @@ $(document).ready(function () {
 
     // on socket message
     socket.onmessage = function (e) {
-        json_data = JSON.parse(e.data)
+        json_data = JSON.parse(e.data);
         console.log("socket.onmessage: " + json_data);
+
+        // clear timeout and redefine a new
+        clearTimeout(timeout);
+        timeout = setTimeout(reloadPage, timeout_milliseconds);
+
         if (json_data['command'])
             switch (json_data['command']) {
                 case 'join_room':
@@ -368,6 +382,5 @@ $(document).ready(function () {
             console.log("message: " + e.data);
             getMessageById(message=e.data, room_name=room_name);
         }
-
     };
 });

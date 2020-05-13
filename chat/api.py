@@ -69,6 +69,10 @@ class ChatMessageModelViewSet(ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         room = self.request.query_params.get('room')
+        channel = UserChannel.objects.filter(user=request.user,
+                                             room=room).first()
+        if channel:
+            channel.save(update_fields=['last_seen'])
         msg = self.queryset.filter(Q(recipient=request.user) | Q(user=request.user),
                                    pk=kwargs['pk'],
                                    room=room).first()
