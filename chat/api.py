@@ -9,7 +9,7 @@ from rest_framework.authentication import SessionAuthentication
 
 
 from .serializers import ChatMessageModelSerializer, UserModelSerializer
-from .models import ChatMessageModel
+from .models import ChatMessageModel, UserChannel
 
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -37,6 +37,13 @@ class ChatMessageModelViewSet(ModelViewSet):
     authentication_classes = (CsrfExemptSessionAuthentication,)
     pagination_class = ChatMessagePagination
 
+    def create(self, request):
+        channel = UserChannel.objects.filter(user=request.user,
+                                             room=request.POST['room']).first()
+        if channel:
+            channel.save(update_fields=['last_seen'])
+        return super(ChatMessageModelViewSet, self).create(request)
+
     def list(self, request, *args, **kwargs):
         self.queryset = self.queryset.filter(Q(recipient=request.user) |
                                              Q(user=request.user))
@@ -46,6 +53,10 @@ class ChatMessageModelViewSet(ModelViewSet):
 
         if room_name:
             self.queryset = self.queryset.filter(room=room_name)
+            channel = UserChannel.objects.filter(user=request.user,
+                                                 room=room_name).first()
+            if channel:
+                channel.save(update_fields=['last_seen'])
         if target and int(target)==request.user.pk:
             self.queryset = self.queryset.filter(user=request.user,
                                                  broadcast=True)
@@ -73,5 +84,5 @@ class UserModelViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         # Get all users except yourself
-        self.queryset = self.queryset.exclude(id = request.user.id)
+        self.queryset = self.queryset.exclude(id=request.user.id)
         return super(UserModelViewSet, self).list(request, *args, **kwargs)

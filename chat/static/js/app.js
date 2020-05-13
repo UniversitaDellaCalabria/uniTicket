@@ -106,24 +106,30 @@ function addRemoveEvent(){
 
 // add a user div in list
 function addUserDiv(user, user_fullname, is_operator) {
-    // build HTML user element in list
-    var userItem = `<div class="item mb-2">
-                        <a role="button" user="${user}" class="user btn btn-outline-secondary w-75 p-3">`;
-    if (is_operator && user != currentUser) userItem += `<svg class="icon icon-xs">
-                                    <use xlink:href="/static/svg/sprite.svg#it-user"></use>
-                                  </svg>&nbsp;&nbsp;`;
-    if (user == currentUser) userItem += `Scrivi a tutti</a>`;
-    else userItem += `${user_fullname}</a> &nbsp;&nbsp;`;
 
-    if (currentUser != user)
-        userItem += `<svg class="icon icon-danger icon-xs item_delete">
-                        <use xlink:href="/static/svg/sprite.svg#it-close-circle"></use>
-                    </svg>`;
-    userItem += `</div>`;
+    // if current user is already logged in chat
+    // (for example in another browser tab)
+    // than don't show (duplicate) button
+    if (!($("[user="+user+"]").length)){
+        // build HTML user element in list
+        var userItem = `<div class="item mb-2">
+                            <a role="button" user="${user}" class="user btn btn-outline-secondary w-75 p-3">`;
+        if (is_operator && user != currentUser) userItem += `<svg class="icon icon-xs">
+                                        <use xlink:href="/static/svg/sprite.svg#it-user"></use>
+                                      </svg>&nbsp;&nbsp;`;
+        if (user == currentUser) userItem += `Scrivi a tutti</a>`;
+        else userItem += `${user_fullname}</a> &nbsp;&nbsp;`;
 
-    $(userItem).appendTo(userList);
-    addClickEvent();
-    addRemoveEvent();
+        if (currentUser != user)
+            userItem += `<svg class="icon icon-danger icon-xs item_delete">
+                            <use xlink:href="/static/svg/sprite.svg#it-close-circle"></use>
+                        </svg>`;
+        userItem += `</div>`;
+
+        $(userItem).appendTo(userList);
+        addClickEvent();
+        addRemoveEvent();
+    }
 }
 
 // draw a message in chat
@@ -294,7 +300,7 @@ $(document).ready(function () {
     var socket = new WebSocket(
         ws_protocol + window.location.host +
         '/ws/chat/' + room_name + '/?session_key=' + sessionKey);
-
+    console.log(socket);
     // on ENTER click
     chatInput.keypress(function (e) {
         if (e.keyCode == 13)
