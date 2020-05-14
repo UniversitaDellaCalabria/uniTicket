@@ -36,6 +36,16 @@
             <div class="col-md-3 chat-user-list">
                 <div id="user-list" class="list-group">
                     <h5 class="list-group-item-heading mb-3">
+                        {% if user_operator_chat %}
+                        {% trans "Stato" %}
+                        <select id="operator_status"
+                                class="mt-3 mb-4"
+                                style="font-size: 16px"
+                                onchange="updateUserStatus();">
+                            <option value="busy">Disponibile</option>
+                            <option value="free">Occupato</option>
+                        </select>
+                        {% endif %}
                         {% block users_list_label %}
                             {% trans "Utenti" %}
                         {% endblock users_list_label %}

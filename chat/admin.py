@@ -25,9 +25,9 @@ class ChatMessageModelAdmin(admin.ModelAdmin):
 @admin.register(UserChannel)
 class UserChannel(admin.ModelAdmin):
     readonly_fields = ('user', 'channel', 'room',
-                       'created', 'last_seen',)
+                       'created', 'last_seen', 'status')
     search_fields = ('user__username', 'room', 'channel')
-    list_display = ('user', 'channel', 'room', 'created', 'last_seen')
+    list_display = ('user', 'channel', 'room', 'created', 'last_seen', 'status')
     list_filter = ('room', 'created', 'last_seen')
     date_hierarchy = 'created'
 

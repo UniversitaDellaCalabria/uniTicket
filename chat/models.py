@@ -123,6 +123,22 @@ class UserChannel(Model):
                             editable=False,
                             db_index=True)
     last_seen = DateTimeField(auto_now=True)
+    status = BooleanField(default=True)
+
+    def change_status(self):
+        self.status = not self.status
+        self.save(update_fields=['status'])
+
+        # Inform client there is a new message.
+        notification = {
+            'type': 'operator_status_changed',
+            'user': self.user.pk,
+            'status': self.status
+        }
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(self.room,
+                                                notification)
+
 
     # Meta
     class Meta:

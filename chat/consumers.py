@@ -53,7 +53,7 @@ class ChatConsumer(WebsocketConsumer):
             notification
         )
 
-    def _add_new_user_in_frontend(self):
+    def _add_users_in_frontend(self):
         active_users = UserChannel.objects.filter(room=self.room_name).exclude(user=self.user)
         for au in active_users:
             if(chat_operator(self.user, self.room_name)) or (chat_operator(au.user, self.room_name)):
@@ -61,6 +61,7 @@ class ChatConsumer(WebsocketConsumer):
                     'type': 'add_user',
                     'room': self.room_name,
                     'user': au.user.pk,
+                    'operator_status': au.status,
                     # 'is_operator': chat_operator(au.user, self.room_name),
                     'user_fullname': '{} {}'.format(au.user.first_name,
                                                     au.user.last_name)
@@ -96,7 +97,7 @@ class ChatConsumer(WebsocketConsumer):
 
         self._purge_inactive_channels()
         self._notify_other_users()
-        self._add_new_user_in_frontend()
+        self._add_users_in_frontend()
 
     def disconnect(self, close_code):
         logger.info("disconnected from websocket")
@@ -159,6 +160,7 @@ class ChatConsumer(WebsocketConsumer):
                 'room': event['room'],
                 'user': event['user'],
                 'is_operator': chat_operator(event['user'], self.room_name),
+                'operator_status': event['operator_status'],
                 'user_fullname': event['user_fullname'],
             })
         )
@@ -184,5 +186,19 @@ class ChatConsumer(WebsocketConsumer):
             text_data=json.dumps({
                 'message': message,
                 'user_fullname': user_fullname
+            })
+        )
+
+    # Room operator changed status
+    def operator_status_changed(self, event):
+        # broadcast only for staff users
+        user = event['user']
+        status = event['status']
+        # Send message to WebSocket
+        self.send(
+            text_data=json.dumps({
+                'command': 'update_operator_status',
+                'status': status,
+                'user': user
             })
         )

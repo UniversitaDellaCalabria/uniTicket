@@ -15,7 +15,6 @@ from uni_ticket.utils import (custom_message,
                               user_is_in_organization,
                               user_is_in_default_office)
 
-from . models import UserChannel
 from . utils import chat_operator_online
 from . views import *
 
@@ -27,6 +26,7 @@ def room(request, room_name):
                                   is_active=True)
     user_type = get_user_type(request.user, structure)
     user_is_operator = user_is_in_default_office(request.user, structure)
+
     if user_is_operator:
         return render(request, 'room_{}.html'.format(user_type),
                       {'structure': structure,
@@ -34,11 +34,11 @@ def room(request, room_name):
                        'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
                       })
 
-    if not chat_operator_online(request.user, structure.slug):
-            return custom_message(request,
-                                  _("Nessun operator online. "
-                                    "Chat inaccessibile"),
-                                  structure_slug=structure.slug)
+    # if not chat_operator_online(request.user, structure.slug):
+            # return custom_message(request,
+                                  # _("Nessun operator online. "
+                                    # "Chat inaccessibile"),
+                                  # structure_slug=structure.slug)
 
     categorie = TicketCategory.objects.filter(organizational_structure=structure,
                                               is_active=True)

@@ -86,8 +86,16 @@ class ChatMessageModelViewSet(ModelViewSet):
 class UserModelViewSet(ModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserModelSerializer
-    allowed_methods = ('GET', 'HEAD', 'OPTIONS')
+    allowed_methods = ('GET', 'HEAD', 'OPTIONS', 'PUT')
+    authentication_classes = (CsrfExemptSessionAuthentication,)
     pagination_class = None  # Get all user
+
+    def update(self, request, *args, **kwargs):
+        channel = UserChannel.objects.filter(room=request.POST['room'],
+                                             user__pk=kwargs.get('pk')).first()
+        if channel:
+            channel.change_status()
+        return Response()
 
     def list(self, request, *args, **kwargs):
         # Get all users except yourself

@@ -13,7 +13,7 @@ router.register(r'user', UserModelViewSet, basename='user-api')
 app_name="chat"
 
 urlpatterns = [
-    path(r'api/v1/', include(router.urls)),
+    path(r'api/chat/', include(router.urls)),
     path('chat/<str:room_name>/', views.room, name='room'),
     path('chat/random-vc-provider', views.random_vc_provider, name='random_vc_provider'),
 ]
