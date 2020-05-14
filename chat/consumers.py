@@ -24,7 +24,7 @@ class ChatConsumer(WebsocketConsumer):
         UserChannel.objects.filter(user=user, room=room).delete()
         # create new
         UserChannel.objects.create(user=user,
-                                   channel=self.channel_name,
+                                   channel=channel_name,
                                    room=room)
 
     def _purge_inactive_channels(self):
