@@ -15,7 +15,8 @@
 {% endblock menu_links %}
 
 {% block top_buttons %}
-<a role="button" class="btn btn-outline-secondary"
+<a role="button" id="leave_chat_button"
+   class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:user_dashboard' %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>

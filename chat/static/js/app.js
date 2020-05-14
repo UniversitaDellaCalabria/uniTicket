@@ -186,11 +186,11 @@ function addUserInList(user, user_fullname, is_operator=false, block_bot=false) 
                    is_operator=is_operator);
         if (user != currentUser) users.push(parseInt(user));
         if (user == currentRecipient) {
-            if(!block_bot)
-                drawMessage(message="L'utente è rientrato nella chat",
-                            user_fullname='BOT',
-                            from_bot=true);
-            messageList.animate({scrollTop: messageList.prop('scrollHeight')});
+            //if(!block_bot)
+                //drawMessage(message="L'utente è rientrato nella chat",
+                            //user_fullname='BOT',
+                            //from_bot=true);
+            //messageList.animate({scrollTop: messageList.prop('scrollHeight')});
             enableInput();
             make_active(user);
         } else if (currentRecipient && block_bot) {
@@ -212,12 +212,12 @@ function removeUserFromList(user, manual_remove=false) {
     console.log("Users list after remove: " + user);
     // if currentRecipient leaves the room, you can't write anymore
     if (user == currentRecipient){
-        if (!manual_remove) {
-            drawMessage(message="L'utente ha abbandonato la chat",
-                        user_fullname='BOT',
-                        from_bot=true);
-            messageList.animate({scrollTop: messageList.prop('scrollHeight')});
-        }
+        //if (!manual_remove) {
+            //drawMessage(message="L'utente ha abbandonato la chat",
+                        //user_fullname='BOT',
+                        //from_bot=true);
+            //messageList.animate({scrollTop: messageList.prop('scrollHeight')});
+        //}
         disableInput();
     }
     //currentRecipient = null;
@@ -293,7 +293,8 @@ function disableInput() {
 }
 
 function reloadPage() {
-    window.location = self.location.href;
+    window.location.hash = '#leave_chat_button';
+    window.location.reload(true);
 }
 
 $(document).ready(function () {

@@ -57,15 +57,18 @@ class ChatMessageModelViewSet(ModelViewSet):
                                                  room=room_name).first()
             if channel:
                 channel.save(update_fields=['last_seen'])
-        if target and int(target)==request.user.pk:
-            self.queryset = self.queryset.filter(user=request.user,
-                                                 broadcast=True)
-        elif target:
-            self.queryset = self.queryset.filter(
-                Q(recipient=request.user, user__pk=int(target)) |
-                Q(recipient__pk=int(target), user=request.user))
+        try:
+            if target and int(target)==request.user.pk:
+                self.queryset = self.queryset.filter(user=request.user,
+                                                     broadcast=True)
+            elif target:
+                self.queryset = self.queryset.filter(
+                    Q(recipient=request.user, user__pk=int(target)) |
+                    Q(recipient__pk=int(target), user=request.user))
 
-        return super(ChatMessageModelViewSet, self).list(request, *args, **kwargs)
+            return super(ChatMessageModelViewSet, self).list(request, *args, **kwargs)
+        except ValueError as verr:
+            return
 
     def retrieve(self, request, *args, **kwargs):
         room = self.request.query_params.get('room')
