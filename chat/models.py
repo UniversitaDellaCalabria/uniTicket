@@ -50,31 +50,50 @@ class ChatMessageModel(Model):
         """
         return len(self.body)
 
-    def notify_single_client(self, recipient):
+    def notify_single_client(self, sender, recipient):
         """
         Inform client there is a new message.
         """
+        channel_layer = get_channel_layer()
+        sender_channel = UserChannel.objects.filter(user__pk=sender.pk,
+                                                    room=self.room).first()
+        recipient_channel = UserChannel.objects.filter(user__pk=recipient.pk,
+                                                       room=self.room).first()
+
         notification = {
             'type': 'receive',
-            'message': '{}'.format(self.id),
+            'message': self.id,
             'user_fullname': '{} {}'.format(self.user.first_name,
-                                            self.user.last_name)
+                                            self.user.last_name),
+            'is_operator': chat_operator(self.user, self.room),
+            'operator_status': sender_channel.status if sender_channel else True
         }
-        channel_layer = get_channel_layer()
-        uc = UserChannel.objects.filter(user__pk=recipient.pk,
-                                        room=self.room).first()
-        if uc and uc.channel:
-            async_to_sync(channel_layer.send)(uc.channel, notification)
+
+        print(notification)
+
+        if sender_channel and sender_channel.channel:
+            async_to_sync(channel_layer.send)(sender_channel.channel,
+                                              notification)
+
+        if recipient_channel and recipient_channel.channel:
+            async_to_sync(channel_layer.send)(recipient_channel.channel,
+                                              notification)
 
     def notify_ws_clients(self):
         """
         Inform client there is a new message.
         """
+        channel_layer = get_channel_layer()
+        sender_channel = UserChannel.objects.filter(user=self.user,
+                                                    room=self.room).first()
         notification = {
             'type': 'receive_group_message',
             'message': '{}'.format(self.id),
             'user_fullname': '{} {}'.format(self.user.first_name,
-                                            self.user.last_name)
+                                            self.user.last_name),
+
+            'is_operator': chat_operator(self.user, self.room),
+            'operator_status': sender_channel.status if sender_channel else True
         }
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(self.room,
@@ -93,13 +112,18 @@ class ChatMessageModel(Model):
         # Escape text to avoi XSS attack and render hrefs
         self.body = get_text_with_hrefs(escape(self.body))
         super(ChatMessageModel, self).save(*args, **kwargs)
+        channel = UserChannel.objects.filter(user=self.user,
+                                             room=self.room).first()
+        if channel:
+            channel.save(update_fields=['last_seen'])
         if not new:
             if self.broadcast: self.notify_ws_clients()
             else:
-                # notify recipient
-                self.notify_single_client(recipient=self.recipient)
+                # notify sender and recipient
+                self.notify_single_client(sender=self.user,
+                                          recipient=self.recipient)
                 # notify sender
-                self.notify_single_client(recipient=self.user)
+                # self.notify_single_client(recipient=self.user)
 
     # Meta
     class Meta:

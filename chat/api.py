@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext as _
+
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -37,13 +39,6 @@ class ChatMessageModelViewSet(ModelViewSet):
     authentication_classes = (CsrfExemptSessionAuthentication,)
     pagination_class = ChatMessagePagination
 
-    def create(self, request):
-        channel = UserChannel.objects.filter(user=request.user,
-                                             room=request.POST['room']).first()
-        if channel:
-            channel.save(update_fields=['last_seen'])
-        return super(ChatMessageModelViewSet, self).create(request)
-
     def list(self, request, *args, **kwargs):
         self.queryset = self.queryset.filter(Q(recipient=request.user) |
                                              Q(user=request.user))
@@ -68,17 +63,17 @@ class ChatMessageModelViewSet(ModelViewSet):
 
             return super(ChatMessageModelViewSet, self).list(request, *args, **kwargs)
         except ValueError as verr:
-            return
+            return Response(_("Argomenti errati"))
 
     def retrieve(self, request, *args, **kwargs):
         room = self.request.query_params.get('room')
-        channel = UserChannel.objects.filter(user=request.user,
-                                             room=room).first()
-        if channel:
-            channel.save(update_fields=['last_seen'])
         msg = self.queryset.filter(Q(recipient=request.user) | Q(user=request.user),
                                    pk=kwargs['pk'],
                                    room=room).first()
+        channel = UserChannel.objects.filter(user=request.user,
+                                             room=room).first()
+        if msg and channel:
+            channel.save(update_fields=['last_seen'])
         serializer = self.get_serializer(msg)
         return Response(serializer.data)
 
@@ -86,18 +81,25 @@ class ChatMessageModelViewSet(ModelViewSet):
 class UserModelViewSet(ModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserModelSerializer
-    allowed_methods = ('GET', 'HEAD', 'OPTIONS', 'PUT')
+    allowed_methods = ('PUT',)
     authentication_classes = (CsrfExemptSessionAuthentication,)
     pagination_class = None  # Get all user
 
+    def retrieve(self, request, *args, **kwargs):
+        try:
+            if not request.user.is_superuser and int(kwargs.get('pk')) != request.user.pk:
+                return Response(_("Non hai accesso a questa risorsa"))
+        except ValueError as verr:
+            return Response(_("Argomenti errati"))
+        user = self.queryset.filter(pk=kwargs.get('pk')).first()
+        serializer = self.get_serializer(user)
+        return Response(serializer.data)
+
     def update(self, request, *args, **kwargs):
+        if not request.user.is_superuser and int(kwargs.get('pk')) != request.user.pk:
+            return Response(_("Non hai accesso a questa risorsa"))
         channel = UserChannel.objects.filter(room=request.POST['room'],
                                              user__pk=kwargs.get('pk')).first()
         if channel:
             channel.change_status()
-        return Response()
-
-    def list(self, request, *args, **kwargs):
-        # Get all users except yourself
-        self.queryset = self.queryset.exclude(id=request.user.id)
-        return super(UserModelViewSet, self).list(request, *args, **kwargs)
+        return Response("updated")

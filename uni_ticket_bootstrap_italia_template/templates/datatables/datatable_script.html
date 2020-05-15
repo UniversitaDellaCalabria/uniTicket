@@ -93,6 +93,7 @@ $(function() {
 
     var datatable = $('.datatable-responsive-serverside').DataTable({
         dom: dom,
+        stateSave: true,
         aLengthMenu: aLengthMenu,
         paging: true,
         responsive: true,
@@ -101,7 +102,6 @@ $(function() {
         columnDefs: columnDefs,
         language: language,
         ajax: ajax,
-        stateSave: true,
         "initComplete": function() {
             if(datatable.state()['search']['search']) {
                 json_search = JSON.parse(datatable.state()['search']['search']);

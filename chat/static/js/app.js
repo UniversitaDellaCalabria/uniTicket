@@ -226,7 +226,7 @@ function addUserInList(user,
             make_active(user);
             //make_unread(user);
         }
-    } else if (user != currentRecipient) {
+    //} else if (user != currentRecipient) {
         //make_unread(user);
     }
 }
@@ -254,7 +254,7 @@ function removeUserFromList(user, manual_remove=false) {
 }
 
 // get a message from API
-function getMessageById(message, room_name) {
+function getMessageById(message, room_name, is_operator=false, operator_status=true) {
     id = JSON.parse(message).message;
     user_fullname = JSON.parse(message).user_fullname;
     console.log("getMessageById: " + currentRecipient);
@@ -265,6 +265,8 @@ function getMessageById(message, room_name) {
             if(inactive_chat_with(data.user)){
                 addUserInList(user=data.user,
                               user_fullname=user_fullname,
+                              is_operator=is_operator,
+                              operator_status=operator_status,
                               block_bot=true);
                 make_active(data.user);
                 beep();
@@ -278,6 +280,8 @@ function getMessageById(message, room_name) {
             if(!user_is_in_list(data.user)) {
                 addUserInList(user=data.user,
                               user_fullname=user_fullname,
+                              is_operator=is_operator,
+                              operator_status=operator_status,
                               block_bot=true);
             }
             make_unread(data.user);
@@ -434,7 +438,10 @@ $(document).ready(function () {
             }
         else if (json_data['message']) {
             console.log("message: " + e.data);
-            getMessageById(message=e.data, room_name=room_name);
+            getMessageById(message=e.data,
+                           room_name=room_name,
+                           is_operator=json_data['is_operator'],
+                           operator_status=json_data['operator_status']);
         }
     };
 });

@@ -167,12 +167,12 @@ class ChatConsumer(WebsocketConsumer):
 
     # Receive one-to-one message from WebSocket
     def receive(self, event):
-        message = event['message']
-        user_fullname = event['user_fullname']
         self.send(
             text_data=json.dumps({
-                'message': message,
-                'user_fullname': user_fullname
+                'message': event['message'],
+                'user_fullname': event['user_fullname'],
+                'is_operator': event['is_operator'],
+                'operator_status': event['operator_status'],
             })
         )
 
@@ -185,7 +185,9 @@ class ChatConsumer(WebsocketConsumer):
         self.send(
             text_data=json.dumps({
                 'message': message,
-                'user_fullname': user_fullname
+                'user_fullname': user_fullname,
+                'is_operator': event['is_operator'],
+                'operator_status': event['operator_status'],
             })
         )
 
