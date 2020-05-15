@@ -17,7 +17,7 @@
 {% block top_buttons %}
 <a role="button" id="leave_chat_button"
    class="btn btn-outline-secondary"
-   href="{% url 'uni_ticket:user_dashboard' %}">
+   href="{% url 'uni_ticket:manage' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Lascia la chat" %}
