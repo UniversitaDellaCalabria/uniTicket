@@ -15,6 +15,7 @@ from django.utils.translation import gettext as _
 
 from django_form_builder.dynamic_fields import format_field_name, get_fields_types
 from django.conf import settings
+from django_form_builder.forms import BaseDynamicForm
 from django_form_builder.models import DynamicFieldMap, SavedFormContent
 from django_form_builder.utils import get_as_dict, set_as_dict
 from organizational_area.models import (OrganizationalStructure,
@@ -205,15 +206,20 @@ class TicketCategoryModule(models.Model):
                  show_conditions=False,
                  **kwargs):
         ticket_input_list = self.ticketcategoryinputlist_set.all().order_by('ordinamento')
-        # Static method of DynamicFieldMap
-        constructor_dict = DynamicFieldMap.build_constructor_dict(ticket_input_list)
+
+        # Static method of BaseDynamicForm
+        constructor_dict = BaseDynamicForm.build_constructor_dict(ticket_input_list)
+
         custom_params = {}
         custom_params['show_conditions'] = show_conditions
         custom_params['category_owner'] = self.ticket_category
         custom_params['subject_initial'] = self.ticket_category.name
         custom_params['description_initial'] = self.ticket_category.description
         custom_params['current_user'] = kwargs.get('current_user')
-        form = DynamicFieldMap.get_form(DynamicForm,
+        custom_params['lang'] = settings.LANGUAGE_CODE
+
+        # get_form(): class method of BaseDynamicForm
+        form = BaseDynamicForm.get_form(class_obj=DynamicForm,
                                         constructor_dict=constructor_dict,
                                         custom_params=custom_params,
                                         data=data,

@@ -62,6 +62,7 @@ class DynamicForm(BaseDynamicForm):
                             'captcha_hidden_name': dynamic_fields.format_field_name(settings.TICKET_CAPTCHA_HIDDEN_ID)}
             captcha_field = getattr(dynamic_fields,
                                     'CustomCaptchaComplexField')(**captcha_data)
+            captcha_field.define_value(custom_value='', **custom_params)
             for single_field in captcha_field.get_fields():
                 self.final_fields[single_field.name] = single_field
 
