@@ -253,5 +253,5 @@ UNITICKET_JWE_ENC = "A128CBC-HS256"
 # end JWE support
 
 # CAPTCHA encryption
-ENCRYPTION_SECRET = b'secret'
-ENCRYPTION_SALT = b'salt'
+CAPTCHA_SECRET = b'secret'
+CAPTCHA_SALT = b'salt'
