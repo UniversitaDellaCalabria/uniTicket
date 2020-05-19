@@ -110,8 +110,9 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
 .. code-block:: python
 
     # CAPTCHA encryption
-    ENCRYPTION_SECRET = b'secret'
-    ENCRYPTION_SALT = b'salt'
+    CAPTCHA_SECRET = b'secret'
+    CAPTCHA_SALT = b'salt'
+    # end CAPTCHA encryption
 
 Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (ed eventualmente sovrascrivere in *settingslocal.py*):
 
