@@ -255,3 +255,29 @@ UNITICKET_JWE_ENC = "A128CBC-HS256"
 # CAPTCHA encryption
 CAPTCHA_SECRET = b'secret'
 CAPTCHA_SALT = b'salt'
+
+# PROTOCOLLO, questi valori possono variare sulla base di come
+# vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
+
+# Flusso entrata per dipendenti
+# mittente persona fisica come dipendente, destinatario Unical
+parametri_ws_archipro_tmpl = '<Parametro nome="{nome}" valore="{valore}" />'
+parametri_ws_archipro = [{'nome': 'agd', 'valore': '483'},
+                         {'nome': 'uo', 'valore': '1231'}]
+
+PROTOCOLLO_FASCICOLO_DEFAULT = '3'
+PROTOCOLLO_TITOLARIO_DEFAULT = '9095'
+PROTOCOLLO_CODICI_TITOLARI = (
+                               ('9095','7.1'), # dipendenti
+                               ('9099', '7.5'), # docenti una-tantum
+                             )
+
+# PRODUCTION
+PROT_URL = 'http://PROT_URL?wsdl'
+PROT_LOGIN = 'PROT_USERNAME'
+PROT_PASSW = 'PROT_PASSW'
+
+# TEST
+PROT_TEST_URL = 'http://PROT_TEST_URL?wsdl'
+PROT_TEST_LOGIN = 'PROT_USERNAME'
+PROT_TEST_PASSW = 'PROT_PASSW'

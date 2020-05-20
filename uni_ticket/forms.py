@@ -333,3 +333,19 @@ class TicketOperatorOfficesForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['office'].queryset = offices
         self.fields['office'].to_field_name = 'slug'
+
+
+class OrganizationalStructureWSArchiProModelForm(ModelForm):
+    """
+    """
+    class Meta:
+        model = OrganizationalStructureWSArchiPro
+        fields = ['protocollo_cod_titolario',
+                  'protocollo_fascicolo_numero',
+                  'protocollo_template']
+        labels = {'protocollo_cod_titolario': _('Codice titolario'),
+                  'protocollo_fascicolo_numero': _('Numero fascicolo'),
+                  'protocollo_template': _('Template XML') }
+
+    class Media:
+        js = ('js/textarea-autosize.js',)

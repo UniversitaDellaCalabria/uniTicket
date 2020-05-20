@@ -17,7 +17,8 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
                        'is_notify', 'confirm_message_text')
     inlines = [TicketCategoryModuleNestedInline,
                TicketCategoryConditionNestedInline,
-               TicketCategoryTaskNestedInline,]
+               TicketCategoryTaskNestedInline,
+               TicketCategoryWSArchiProNestedInline,]
                # TicketCategoryOfficeNestedInline,]
 
     list_display = ('name', 'created',
@@ -86,3 +87,11 @@ class TaskAdmin(nested_admin.NestedModelAdmin):
         # last_status = status_list.order_by('-modified').first()
         # return last_status.status
     # get_status.short_description = 'Status'
+
+
+@admin.register(OrganizationalStructureWSArchiPro)
+class OrganizationalStructureWSArchiProAdmin(admin.ModelAdmin):
+    list_display = ('organizational_structure',
+                    'protocollo_cod_titolario',
+                    'protocollo_fascicolo_numero',
+                    'protocollo_template',)

@@ -116,6 +116,7 @@ condition = '{}/conditions'.format(category_id)
 condition_id = '{}/<int:condition_id>'.format(condition)
 category_task = '{}/default-tasks'.format(category_id)
 category_task_id = '{}/<str:task_id>'.format(category_task)
+protocol_configuration = '{}/protocol-configurations'.format(category_id)
 
 urlpatterns += [
     path('{}/{}/'.format(base, _dashboard_name), manager.dashboard, name='manager_dashboard'),
@@ -184,6 +185,9 @@ urlpatterns += [
     path('{}/enable/'.format(condition_id), manager.category_condition_enable, name='manager_category_condition_enable'),
     path('{}/'.format(condition_id), manager.category_condition_detail, name='manager_category_condition_detail'),
 
+    # Protocol configurations
+    path('{}/new/'.format(protocol_configuration), manager.category_protocol_configuration_new, name='manager_category_protocol_configuration_new'),
+
     # Category default tasks
     path('{}/new/'.format(category_task), manager.category_task_new, name='manager_category_task_new'),
     path('{}/edit/'.format(category_task_id), manager.category_task_edit, name='manager_category_task_edit'),
@@ -194,8 +198,10 @@ urlpatterns += [
     path('{}/'.format(category_task_id), manager.category_task_detail, name='manager_category_task_detail'),
     path('{}/download/attachment/'.format(category_task_id), manager.category_task_download_attachment, name='category_task_download_attachment'),
 
+    # Settings
+    path('{}/settings/'.format(base), manager.settings, name='manager_user_settings'),
+
     # Others generic
-    path('{}/settings/'.format(base), login_required(is_manager(generic.user_settings)), name='manager_user_settings'),
     path('{}/messages/'.format(base), login_required(is_manager(generic.ticket_messages)), name='manager_messages'),
 ]
 

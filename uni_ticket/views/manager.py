@@ -15,6 +15,8 @@ from django.utils.translation import gettext as _
 
 from django_form_builder.utils import get_labeled_errors
 from organizational_area.models import *
+
+from uni_ticket.admin_nested_inlines import TicketCategoryWSArchiProModelForm
 from uni_ticket.decorators import (has_access_to_ticket,
                                    is_manager,
                                    ticket_assigned_to_structure,
@@ -2382,3 +2384,105 @@ def category_task_delete(request, structure_slug, category_slug,
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
+
+
+@login_required
+@is_manager
+def settings(request, structure_slug, structure):
+    """
+    Gets manager settings (personal and structure)
+
+    :type structure_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: response
+    """
+    user_type = get_user_type(request.user, structure)
+    template = "{}/user_settings.html".format(user_type)
+    title = _("Configurazione impostazioni")
+    sub_title = _("dati personali e della struttura")
+
+    protocol_data = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure).first()
+    form = OrganizationalStructureWSArchiProModelForm(instance=protocol_data)
+
+    if request.method == 'POST':
+        form = OrganizationalStructureWSArchiProModelForm(request.POST)
+        if form.is_valid():
+            protocol_data.protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario']
+            protocol_data.protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero']
+            protocol_data.protocollo_template = form.cleaned_data['protocollo_template']
+            protocol_data.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Configurazione protocollo informatico aggiornata"))
+            return redirect('uni_ticket:manager_user_settings',
+                            structure_slug=structure_slug)
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+    d = {'form': form,
+         'structure': structure,
+         'sub_title': sub_title,
+         'title': title,}
+    response = render(request, template, d)
+    return response
+
+@login_required
+@is_manager
+def category_protocol_configuration_new(request, structure_slug,
+                                        category_slug, structure):
+    """
+    Creates a new protocol configuration for category
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    title = _('Nuova configuratione del protocollo informatico')
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    form = TicketCategoryWSArchiProModelForm()
+    if request.method == 'POST':
+        form = TicketCategoryWSArchiProModelForm(request.POST, request.FILES)
+        if form.is_valid():
+            configuration = form.save(commit=False)
+            configuration.ticket_category = category
+            configuration.save()
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} created the new protocol configuration {}'
+                        ' for category {}'.format(timezone.now(),
+                                                  structure,
+                                                  request.user,
+                                                  configuration,
+                                                  category))
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Configurazione creata con successo"))
+            return redirect('uni_ticket:manager_category_detail',
+                            structure_slug=structure_slug,
+                            category_slug=category_slug)
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+
+    template = 'manager/category_protocol_configuration_add_new.html'
+    d = {'category': category,
+         'form': form,
+         'structure': structure,
+         'sub_title': category,
+         'title': title,}
+    return render(request, template, d)

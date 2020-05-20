@@ -12,13 +12,19 @@
 </a>
 {% endblock top_buttons %}
 
-{% block page_content %}
-<form method="post" enctype="multipart/form-data">
-    {% include 'form_template.html' %}
-    {% block allegati %}{% endblock allegati %}
-    {% block form_buttons %}{% endblock form_buttons %}
-</form>
-{% endblock page_content %}
+{% block clean_content %}
+    {% block page_content %}
+        {% block pre_form %}
+        {% endblock pre_form %}
+        <form method="post" enctype="multipart/form-data">
+            {% include 'form_template.html' %}
+            {% block allegati %}{% endblock allegati %}
+            {% block form_buttons %}{% endblock form_buttons %}
+        </form>
+        {% block post_form %}
+        {% endblock post_form %}
+    {% endblock page_content %}
+{% endblock clean_content %}
 
 {% block extra_scripts %}
 {{ block.super }}

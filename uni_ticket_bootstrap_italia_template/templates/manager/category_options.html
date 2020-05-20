@@ -59,4 +59,23 @@
             </div>
         </div>
     </div>
+
+    <div class="collapse-header" id="heading4-lft">
+        <button data-toggle="collapse" data-target="#collapse4-lft" aria-expanded="false" aria-controls="collapse4-lft">
+            {% trans "Configurazioni protocollo informatico" %} ({{ category.ticketcategorywsarchipro_set.all.count }})
+        </button>
+    </div>
+    <div id="collapse4-lft" class="collapse" role="tabpanel" aria-labelledby="heading4-lft">
+        <div class="collapse-body">
+            {% include "manager/category_protocol_configurations.html" %}
+            <div>
+                <a class="btn btn-outline-success btn-block mt-4"
+                   href="{% url 'uni_ticket:manager_category_protocol_configuration_new' structure_slug=structure.slug category_slug=category.slug %}">
+                    <svg class="icon icon-xs icon-success">
+                        <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
+                    </svg> {% trans "Aggiungi nuova configurazione" %}
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

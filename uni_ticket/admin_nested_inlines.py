@@ -3,8 +3,9 @@ import nested_admin
 from django import forms
 from django.contrib import admin
 from django.urls import reverse
+from django.utils.translation import gettext as _
 
-from .models import *
+from . models import *
 
 
 # Ticket Category Module Input List
@@ -58,6 +59,36 @@ class TicketCategoryModuleNestedInline(nested_admin.NestedTabularInline):
     inlines = [TicketCategoryInputListNestedInline,]
     classes = ['collapse',]
     readonly_fields = ('name', 'ticket_category', 'created', 'is_active')
+
+
+# TicketCategoryWSArchiPro Form
+class TicketCategoryWSArchiProModelForm(forms.ModelForm):
+
+    class Meta:
+        model = TicketCategoryWSArchiPro
+        fields = ('name',
+                  'protocollo_cod_titolario',
+                  'protocollo_fascicolo_numero',
+                  'protocollo_template')
+
+        labels = {'name': _('Denominazione'),
+                  'protocollo_cod_titolario': _('Codice titolario'),
+                  'protocollo_fascicolo_numero': _('Numero fascicolo'),
+                  'protocollo_template': _('Template XML') }
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+class TicketCategoryWSArchiProNestedInline(nested_admin.NestedTabularInline):
+    model = TicketCategoryWSArchiPro
+    form = TicketCategoryWSArchiProModelForm
+    #sortable_field_name = "name"
+    extra = 0
+    classes = ['collapse',]
+    readonly_fields = ('name',
+                       'protocollo_cod_titolario',
+                       'protocollo_fascicolo_numero',
+                       'protocollo_template')
 
 
 # Ticket Category Task Form

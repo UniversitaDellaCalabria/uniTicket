@@ -1017,3 +1017,39 @@ class TicketCategoryTask(AbstractTask):
 
     def __str__(self):
         return '{} - {}'.format(self.subject, self.category)
+
+
+class AbstractWSArchiPro(models.Model):
+    """
+    """
+    protocollo_cod_titolario = models.CharField('Codice titolario',
+                                                max_length=12,
+                                                # choices=settings.PROTOCOLLO_CODICI_TITOLARI,
+                                                null=True, blank=True)
+    protocollo_fascicolo_numero = models.CharField('Fascicolo numero',
+                                                   max_length=12,
+                                                   null=False, blank=False,)
+                                                   # default=settings.PROTOCOLLO_FASCICOLO_DEFAULT)
+    protocollo_template = models.TextField(help_text=("Template XML che "
+                                                      "descrive il flusso"))
+
+    class Meta:
+        abstract = True
+
+
+class OrganizationalStructureWSArchiPro(AbstractWSArchiPro):
+    organizational_structure = models.OneToOneField(OrganizationalStructure,
+                                                    on_delete=models.CASCADE)
+
+class TicketCategoryWSArchiPro(AbstractWSArchiPro):
+    ticket_category = models.ForeignKey(TicketCategory,
+                                        on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    created = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=False)
+
+    def disable_other_configurations(self):
+        others = TicketCategoryWSArchiPro.objects.filter(ticket_category=self.ticket_category).exclude(pk=self.pk)
+        for other in others:
+            other.is_active = False
+            other.save(update_fields = ['is_active'])

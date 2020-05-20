@@ -18,6 +18,9 @@
     </div>
     {% include 'email-toggle-notify.html' %}
     {% include 'user_data.html' %}
+
+    {% block other_settings %}
+    {% endblock other_settings %}
 {% endblock %}
 
 {% block extra_scripts %}

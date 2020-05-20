@@ -1,5 +1,104 @@
-{% extends "user_settings.html" %}
+{% extends "form_complete.html" %}
+
+{% load i18n %}
+{% load static %}
 
 {% block menu_links %}
 {% include 'manager/main_menu.html' %}
 {% endblock menu_links %}
+
+{% block clean_content %}
+
+<div id="collapseDiv1-lft" class="collapse-div collapse-left-icon" role="tablist">
+    <div class="collapse-header" id="heading1-lft">
+        <button data-toggle="collapse" data-target="#collapse1-lft" aria-expanded="false" aria-controls="collapse1-lft">
+            <svg class="icon icon-sm">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+            </svg>
+            {% trans "Configurazione dati personali" %}
+        </button>
+    </div>
+    <div id="collapse1-lft" class="collapse" role="tabpanel" aria-labelledby="heading1-lft">
+        <div class="collapse-body">
+            {% include 'email-toggle-notify.html' %}
+            {% include 'user_data.html' %}
+        </div>
+    </div>
+
+    <div class="collapse-header" id="heading2-lft">
+        <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
+            <svg class="icon icon-sm">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-file"></use>
+            </svg>
+            {% trans "Configurazione protocollo informatico" %}
+        </button>
+    </div>
+    <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
+        <div class="collapse-body">
+            <div class="row">
+                <div class="col">
+                    <div class="card-space card-wrapper">
+                        <div class="card card-bg no-after">
+                            <div class="card-body">
+                                <form method="post" enctype="multipart/form-data">
+                                    {% include 'form_template.html' %}
+                                    {% block allegati %}{% endblock allegati %}
+                                    {% block form_buttons %}
+                                    <div>
+                                        <button class="btn btn-success btn-block"
+                                                type="button"
+                                                data-toggle="modal"
+                                                data-target="#updateConfiguration">
+                                            <svg class="icon icon-xs icon-white">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                                            </svg> {% trans 'Salva configurazione' %}
+                                        </button>
+                                    </div>
+                                    <div class="modal fade" tabindex="-1" role="dialog" id="updateConfiguration">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">
+                                                        {% trans "Aggiornamento configurazione protocollo informatico" %}
+                                                    </h5>
+                                                    <button class="close"
+                                                            type="button"
+                                                            data-dismiss="modal"
+                                                            aria-label="Close">
+                                                       <svg class="icon">
+                                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                       </svg>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>
+                                                        {% trans "Vuoi davvero aggiornare la configurazione" %}?
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <input class="btn btn-success"
+                                                           type="submit"
+                                                           id="submitForm"
+                                                           value="{% trans 'Si, procedi' %}">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endblock form_buttons %}
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock clean_content %}
+
+{% block extra_scripts %}
+{{ block.super }}
+<script type="text/javascript" src="{% static 'js/intercooler-1.2.2.js' %}"></script>
+{% endblock extra_scripts %}
