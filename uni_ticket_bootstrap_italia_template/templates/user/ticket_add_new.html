@@ -134,7 +134,12 @@
             data-target="#action">
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-        </svg> {% trans "Invia la richiesta" %}
+        </svg>
+        {% if categoria.protocol_required %}
+            {% trans "Invia e protocolla la richiesta" %}
+        {% else %}
+            {% trans "Invia la richiesta" %}
+        {% endif %}
     </button>
     <div class="modal fade"
          tabindex="-1"
@@ -145,7 +150,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        {% trans "Conferma" %}
+                        {% if categoria.protocol_required %}
+                            {% trans "Conferma e protocolla" %}
+                        {% else %}
+                            {% trans "Conferma" %}
+                        {% endif %}
                     </h5>
                     <button class="close"
                             type="button"
@@ -157,7 +166,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>{% trans "Desideri procedere e confermare i dati immessi?" %}
+                    <p>
+                        {% if categoria.protocol_required %}
+                            {% trans "Desideri procedere, confermare i dati immessi e protocollare la tua richiesta?" %}
+                        {% else %}
+                            {% trans "Desideri procedere e confermare i dati immessi?" %}
+                        {% endif %}
                     </p>
                 </div>
                 <div class="modal-footer">

@@ -57,6 +57,9 @@
                     {% if user_user_attribute %}
                         <br><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}
                     {% endif %}
+                    {% if ticket.protocol_number %}
+                        <br><b>{% trans "Protocollo"</b>: {{ticket.protocol_number}} {% trans "del" %} {{ticket.protocol_date}}
+                    {% endif %}
                 </td>
             </tr>
             {% if ticket.compiled_by %}
