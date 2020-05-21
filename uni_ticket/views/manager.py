@@ -2405,19 +2405,99 @@ def settings(request, structure_slug, structure):
     title = _("Configurazione impostazioni")
     sub_title = _("dati personali e della struttura")
 
-    protocol_data = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure).first()
-    form = OrganizationalStructureWSArchiProModelForm(instance=protocol_data)
+    protocol_configurations = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure)
+    d = {'protocol_configurations': protocol_configurations,
+         'structure': structure,
+         'sub_title': sub_title,
+         'title': title,}
+    response = render(request, template, d)
+    return response
+
+@login_required
+@is_manager
+def structure_protocol_configuration_detail(request, structure_slug,
+                                            configuration_id, structure):
+    """
+    Structure protocol configuration details
+
+    :type structure_slug: String
+    :type configuration_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param configuration_id: protocol configuration pk
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: response
+    """
+    configuration = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure,
+                                                                     pk=configuration_id).first()
+    template = "manager/structure_protocol_configuration.html"
+    title = _("Configurazione protocollo informatico")
+
+    form = OrganizationalStructureWSArchiProModelForm(instance=configuration)
 
     if request.method == 'POST':
         form = OrganizationalStructureWSArchiProModelForm(request.POST)
         if form.is_valid():
-            protocol_data.protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario']
-            protocol_data.protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero']
-            protocol_data.protocollo_template = form.cleaned_data['protocollo_template']
-            protocol_data.save()
+            configuration.name = form.cleaned_data['name']
+            configuration.protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario']
+            configuration.protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero']
+            configuration.protocollo_template = form.cleaned_data['protocollo_template']
+            configuration.save(update_fields = ['name', 'modified',
+                                                'protocollo_cod_titolario',
+                                                'protocollo_fascicolo_numero',
+                                                'protocollo_template'])
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Configurazione protocollo informatico aggiornata"))
+            return redirect('uni_ticket:manager_structure_protocol_configuration_detail',
+                            structure_slug=structure_slug,
+                            configuration_id=configuration.pk)
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+    d = {'configuration': configuration,
+         'form': form,
+         'structure': structure,
+         'sub_title': structure,
+         'title': title,}
+    response = render(request, template, d)
+    return response
+
+@login_required
+@is_manager
+def structure_protocol_configuration_new(request, structure_slug,
+                                         structure):
+    """
+    New structure protocol configuration
+
+    :type structure_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: response
+    """
+    template = "manager/structure_protocol_configuration_new.html"
+    title = _("Nuova configurazione protocollo informatico")
+
+    form = OrganizationalStructureWSArchiProModelForm()
+
+    if request.method == 'POST':
+        form = OrganizationalStructureWSArchiProModelForm(request.POST)
+        if form.is_valid():
+            configuration = OrganizationalStructureWSArchiPro(name = form.cleaned_data['name'],
+                                                              organizational_structure=structure,
+                                                              protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario'],
+                                                              protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero'],
+                                                              protocollo_template = form.cleaned_data['protocollo_template'])
+            configuration.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Configurazione protocollo informatico creata"))
             return redirect('uni_ticket:manager_user_settings',
                             structure_slug=structure_slug)
         else:
@@ -2426,7 +2506,201 @@ def settings(request, structure_slug, structure):
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
     d = {'form': form,
          'structure': structure,
-         'sub_title': sub_title,
+         'sub_title': structure,
+         'title': title,}
+    response = render(request, template, d)
+    return response
+
+@login_required
+@is_manager
+def structure_protocol_configuration_delete(request, structure_slug,
+                                            configuration_id, structure):
+    """
+    Deletes a structure protocol configuration
+
+    :type structure_slug: String
+    :type configuration_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param configuration_id: protocol configuration pk
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: redirect
+    """
+    configuration = get_object_or_404(OrganizationalStructureWSArchiPro,
+                                      organizational_structure=structure,
+                                      pk=configuration_id)
+
+    # effettuare tutti i controlli sui moduli che
+    # hanno il protocollo obbligatorio e che ereditano questa
+    # configurazione del protocollo!
+
+    messages.add_message(request, messages.SUCCESS,
+                         _("Configurazione <b>{}</b> eliminata correttamente"
+                           "".format(configuration)))
+    configuration.delete()
+    return redirect('uni_ticket:manager_user_settings',
+                    structure_slug=structure_slug)
+
+@login_required
+@is_manager
+def structure_protocol_configuration_disable(request, structure_slug,
+                                             configuration_id, structure):
+    """
+    Disables a structure protocol configuration
+
+    :type structure_slug: String
+    :type configuration_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param configuration_id: protocol configuration pk
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: redirect
+    """
+    configuration = get_object_or_404(OrganizationalStructureWSArchiPro,
+                                      organizational_structure=structure,
+                                      pk=configuration_id)
+
+    if configuration.is_active:
+        configuration.is_active = False
+        configuration.save(update_fields = ['is_active', 'modified'])
+        messages.add_message(request, messages.SUCCESS,
+                             _("Configurazione <b>{}</b> disattivata con successo"
+                               "".format(configuration)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} disabled the protocol configuration {}'
+                    ''.format(timezone.now(),
+                              structure,
+                              request.user,
+                              configuration))
+    else:
+        messages.add_message(request, messages.ERROR,
+                             _("Configurazione {} già disattivata"
+                               "".format(configuration)))
+
+    return redirect('uni_ticket:manager_structure_protocol_configuration_detail',
+                    structure_slug=structure_slug,
+                    configuration_id=configuration_id)
+
+@login_required
+@is_manager
+def structure_protocol_configuration_enable(request, structure_slug,
+                                            configuration_id, structure):
+    """
+    Enables a structure protocol configuration
+
+    :type structure_slug: String
+    :type configuration_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param configuration_id: protocol configuration pk
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: redirect
+    """
+    configuration = get_object_or_404(OrganizationalStructureWSArchiPro,
+                                      organizational_structure=structure,
+                                      pk=configuration_id)
+    if configuration.is_active:
+        messages.add_message(request,
+                             messages.ERROR,
+                             _("Configurazione {} già attivata"
+                               "".format(configuration)))
+    else:
+        configuration.is_active = True
+        configuration.save(update_fields = ['is_active', 'modified'])
+
+        # only one
+        configuration.disable_other_configurations()
+
+        messages.add_message(request, messages.SUCCESS,
+                             _("Configurazione <b>{}</b> attivata con successo"
+                               "".format(configuration)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} enabled the protocol configuration {}'
+                    ''.format(timezone.now(),
+                              structure,
+                              request.user,
+                              configuration))
+
+    return redirect('uni_ticket:manager_structure_protocol_configuration_detail',
+                    structure_slug=structure_slug,
+                    configuration_id=configuration_id)
+
+
+
+
+
+
+
+
+
+@login_required
+@is_manager
+def category_protocol_configuration_detail(request, structure_slug,
+                                           category_slug,
+                                           configuration_id, structure):
+    """
+    Category protocol configuration detail
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type configuration_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param configuration_id: protocol configuration pk
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: response
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
+                                                            pk=configuration_id).first()
+
+    template = "manager/category_protocol_configuration_detail.html"
+    title = _("Configurazione protocollo informatico")
+
+    form = TicketCategoryWSArchiProModelForm(instance=configuration)
+
+    if request.method == 'POST':
+        form = TicketCategoryWSArchiProModelForm(request.POST)
+        if form.is_valid():
+            configuration.name = form.cleaned_data['name']
+            configuration.protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario']
+            configuration.protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero']
+            configuration.protocollo_template = form.cleaned_data['protocollo_template']
+            configuration.save(update_fields = ['name', 'modified',
+                                                'protocollo_cod_titolario',
+                                                'protocollo_fascicolo_numero',
+                                                'protocollo_template'])
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Configurazione protocollo informatico aggiornata"))
+            return redirect('uni_ticket:manager_category_protocol_configuration_detail',
+                            structure_slug=structure_slug,
+                            category_slug=category_slug,
+                            configuration_id=configuration.pk)
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+    d = {'category': category,
+         'configuration': configuration,
+         'form': form,
+         'structure': structure,
+         'sub_title': category,
          'title': title,}
     response = render(request, template, d)
     return response
@@ -2453,11 +2727,15 @@ def category_protocol_configuration_new(request, structure_slug,
                                  organizational_structure=structure,
                                  slug=category_slug)
     form = TicketCategoryWSArchiProModelForm()
+
     if request.method == 'POST':
         form = TicketCategoryWSArchiProModelForm(request.POST, request.FILES)
         if form.is_valid():
-            configuration = form.save(commit=False)
-            configuration.ticket_category = category
+            configuration = TicketCategoryWSArchiPro(name = form.cleaned_data['name'],
+                                                     ticket_category=category,
+                                                     protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario'],
+                                                     protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero'],
+                                                     protocollo_template = form.cleaned_data['protocollo_template'])
             configuration.save()
 
             # log action
@@ -2471,6 +2749,7 @@ def category_protocol_configuration_new(request, structure_slug,
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Configurazione creata con successo"))
+
             return redirect('uni_ticket:manager_category_detail',
                             structure_slug=structure_slug,
                             category_slug=category_slug)
@@ -2479,10 +2758,151 @@ def category_protocol_configuration_new(request, structure_slug,
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
 
-    template = 'manager/category_protocol_configuration_add_new.html'
+    template = "manager/category_protocol_configuration_new.html"
     d = {'category': category,
          'form': form,
          'structure': structure,
          'sub_title': category,
          'title': title,}
     return render(request, template, d)
+
+@login_required
+@is_manager
+def category_protocol_configuration_delete(request, structure_slug,
+                                           category_slug,
+                                           configuration_id, structure):
+    """
+    Deletes a category protocol configuration
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type configuration_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param configuration_id: protocol configuration pk
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: redirect
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
+                                                            pk=configuration_id).first()
+
+    # effettuare tutti i controlli sui moduli che
+    # hanno il protocollo obbligatorio e che ereditano questa
+    # configurazione del protocollo!
+
+    messages.add_message(request, messages.SUCCESS,
+                         _("Configurazione <b>{}</b> eliminata correttamente"
+                           "".format(configuration)))
+    configuration.delete()
+    return redirect('uni_ticket:manager_category_detail',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug)
+
+@login_required
+@is_manager
+def category_protocol_configuration_disable(request, structure_slug,
+                                            category_slug,
+                                            configuration_id, structure):
+    """
+    Disables a category protocol configuration
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type configuration_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param configuration_id: protocol configuration pk
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: redirect
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
+                                                            pk=configuration_id).first()
+
+    if configuration.is_active:
+        configuration.is_active = False
+        configuration.save(update_fields = ['is_active', 'modified'])
+        messages.add_message(request, messages.SUCCESS,
+                             _("Configurazione <b>{}</b> disattivata con successo"
+                               "".format(configuration)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} disabled the category {} protocol configuration {}'
+                    ''.format(timezone.now(),
+                              structure,
+                              request.user,
+                              category,
+                              configuration))
+    else:
+        messages.add_message(request, messages.ERROR,
+                             _("Configurazione {} già disattivata"
+                               "".format(configuration)))
+
+    return redirect('uni_ticket:manager_category_detail',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug)
+
+@is_manager
+def category_protocol_configuration_enable(request, structure_slug,
+                                           category_slug,
+                                           configuration_id, structure):
+    """
+    Enables a category protocol configuration
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type configuration_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param configuration_id: protocol configuration pk
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: redirect
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
+                                                            pk=configuration_id).first()
+    if configuration.is_active:
+        messages.add_message(request,
+                             messages.ERROR,
+                             _("Configurazione {} già attivata"
+                               "".format(configuration)))
+    else:
+        configuration.is_active = True
+        configuration.save(update_fields = ['is_active', 'modified'])
+
+        # only one
+        configuration.disable_other_configurations()
+
+        messages.add_message(request, messages.SUCCESS,
+                             _("Configurazione <b>{}</b> attivata con successo"
+                               "".format(configuration)))
+
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} enabled the category {} protocol configuration {}'
+                    ''.format(timezone.now(),
+                              structure,
+                              request.user,
+                              category,
+                              configuration))
+
+    return redirect('uni_ticket:manager_category_detail',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug)

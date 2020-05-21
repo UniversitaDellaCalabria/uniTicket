@@ -1,0 +1,81 @@
+{% extends "form_complete.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_links %}
+{% include 'manager/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_dashboard' structure_slug=structure.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Dashboard" %}
+</a>
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=category.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna alla tipologia di richiesta" %}
+</a>
+{% endblock top_buttons %}
+
+{% block clean_content %}
+<div class="row">
+    <div class="col">
+        <div class="card-space card-wrapper">
+            <div class="card card-bg no-after">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% include 'form_template.html' %}
+                        {% block form_buttons %}
+                        <div>
+                            <button class="btn btn-success btn-block"
+                                    type="button"
+                                    data-toggle="modal"
+                                    data-target="#updateConfiguration">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                                </svg> {% trans 'Crea configurazione' %}
+                            </button>
+                        </div>
+                        <div class="modal fade" tabindex="-1" role="dialog" id="updateConfiguration">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Creazione configurazione protocollo informatico" %}
+                                        </h5>
+                                        <button class="close"
+                                                type="button"
+                                                data-dismiss="modal"
+                                                aria-label="Close">
+                                           <svg class="icon">
+                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                           </svg>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            {% trans "Vuoi davvero creare la configurazione" %}?
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input class="btn btn-success"
+                                               type="submit"
+                                               id="submitForm"
+                                               value="{% trans 'Si, procedi' %}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endblock form_buttons %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock clean_content %}

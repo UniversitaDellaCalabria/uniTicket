@@ -8,6 +8,8 @@
         {% for task in category.ticketcategorytask_set.all %}
         <li class="py-2 clearfix">
             <b>{{ task.subject }}</b>
+            <br>
+            {{ task.created }}
             {% if task.is_active %}
                 <span class="badge badge-success">
                     {% trans "attivo" %}

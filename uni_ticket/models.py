@@ -1022,13 +1022,15 @@ class TicketCategoryTask(AbstractTask):
 class AbstractWSArchiPro(models.Model):
     """
     """
+    name = models.CharField(max_length=255)
+    created = models.DateTimeField(auto_now=True)
+    modified = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=False)
     protocollo_cod_titolario = models.CharField('Codice titolario',
-                                                max_length=12,
+                                                max_length=12,)
                                                 # choices=settings.PROTOCOLLO_CODICI_TITOLARI,
-                                                null=True, blank=True)
     protocollo_fascicolo_numero = models.CharField('Fascicolo numero',
-                                                   max_length=12,
-                                                   null=False, blank=False,)
+                                                   max_length=12)
                                                    # default=settings.PROTOCOLLO_FASCICOLO_DEFAULT)
     protocollo_template = models.TextField(help_text=("Template XML che "
                                                       "descrive il flusso"))
@@ -1038,18 +1040,28 @@ class AbstractWSArchiPro(models.Model):
 
 
 class OrganizationalStructureWSArchiPro(AbstractWSArchiPro):
-    organizational_structure = models.OneToOneField(OrganizationalStructure,
-                                                    on_delete=models.CASCADE)
+    organizational_structure = models.ForeignKey(OrganizationalStructure,
+                                                 on_delete=models.CASCADE)
+
+    def disable_other_configurations(self):
+        others = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=self.organizational_structure).exclude(pk=self.pk)
+        for other in others:
+            other.is_active = False
+            other.save(update_fields = ['is_active', 'modified'])
+
+    def __str__(self):
+        return '{} - {}'.format(self.name, self.organizational_structure)
+
 
 class TicketCategoryWSArchiPro(AbstractWSArchiPro):
     ticket_category = models.ForeignKey(TicketCategory,
                                         on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    created = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=False)
 
     def disable_other_configurations(self):
         others = TicketCategoryWSArchiPro.objects.filter(ticket_category=self.ticket_category).exclude(pk=self.pk)
         for other in others:
             other.is_active = False
-            other.save(update_fields = ['is_active'])
+            other.save(update_fields = ['is_active', 'modified'])
+
+    def __str__(self):
+        return '{} - {}'.format(self.name, self.ticket_category)

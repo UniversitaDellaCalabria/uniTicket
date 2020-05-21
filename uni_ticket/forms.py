@@ -340,7 +340,8 @@ class OrganizationalStructureWSArchiProModelForm(ModelForm):
     """
     class Meta:
         model = OrganizationalStructureWSArchiPro
-        fields = ['protocollo_cod_titolario',
+        fields = ['name',
+                  'protocollo_cod_titolario',
                   'protocollo_fascicolo_numero',
                   'protocollo_template']
         labels = {'protocollo_cod_titolario': _('Codice titolario'),

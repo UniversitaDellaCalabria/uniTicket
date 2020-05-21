@@ -1,4 +1,4 @@
-{% extends "form_complete.html" %}
+{% extends "base_page_schema.html" %}
 
 {% load i18n %}
 {% load static %}
@@ -30,62 +30,98 @@
             <svg class="icon icon-sm">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-file"></use>
             </svg>
-            {% trans "Configurazione protocollo informatico" %}
+            {% trans "Configurazioni protocollo informatico" %}
         </button>
     </div>
+
     <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
         <div class="collapse-body">
+
+            <div class="row">
+                <div class="col">
+                    <div class="card-wrapper card-space pb-3">
+                        <div class="card card-bg no-after">
+                            <div class="card-body">
+                                Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore et dolore magna aliqua.
+                                Ut enim ad minim veniam, quis nostrud exercitation
+                                ullamco laboris nisi ut aliquip ex ea commodo
+                                consequat. Duis aute irure dolor in reprehenderit
+                                in voluptate velit esse cillum dolore eu
+                                fugiat nulla pariatur. Excepteur sint
+                                occaecat cupidatat non proident, sunt in
+                                culpa qui officia deserunt mollit anim
+                                id est laborum.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col">
                     <div class="card-space card-wrapper">
                         <div class="card card-bg no-after">
                             <div class="card-body">
-                                <form method="post" enctype="multipart/form-data">
-                                    {% include 'form_template.html' %}
-                                    {% block allegati %}{% endblock allegati %}
-                                    {% block form_buttons %}
-                                    <div>
-                                        <button class="btn btn-success btn-block"
-                                                type="button"
-                                                data-toggle="modal"
-                                                data-target="#updateConfiguration">
-                                            <svg class="icon icon-xs icon-white">
-                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
-                                            </svg> {% trans 'Salva configurazione' %}
-                                        </button>
+                                {% if protocol_configurations %}
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th>{% trans "Denominazione" %}</th>
+                                                    <th>{% trans "Creata il" %}</th>
+                                                    <th>{% trans "Modificata il" %}</th>
+                                                    <th>{% trans "Cod. titolario" %}</th>
+                                                    <th>{% trans "Cod. fascicolo" %}</th>
+                                                    <th>{% trans "Stato" %}</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for conf in protocol_configurations %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="{% url 'uni_ticket:manager_structure_protocol_configuration_detail' structure_slug=structure.slug configuration_id=conf.pk %}">
+                                                            {{ conf.name }}
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ conf.created }}</td>
+                                                    <td>{{ conf.modified }}</td>
+                                                    <td>{{ conf.protocollo_cod_titolario }}</td>
+                                                    <td>{{ conf.protocollo_fascicolo_numero }}</td>
+                                                    <td>
+                                                        {% if conf.is_active %}
+                                                        <span class="badge badge-success mb-2">
+                                                            {% trans "Attiva" %}
+                                                        </span>
+                                                        {% else %}
+                                                        <span class="badge badge-danger mb-2">
+                                                            {% trans "Non attiva" %}
+                                                        </span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <button type="button"
+                                                                class="mx-1 btn btn-outline-danger btn-xs float-right"
+                                                                data-toggle="modal"
+                                                                data-target="#deleteConf{{ forloop.counter0 }}">
+                                                            {% trans "Elimina" %}
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
                                     </div>
-                                    <div class="modal fade" tabindex="-1" role="dialog" id="updateConfiguration">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">
-                                                        {% trans "Aggiornamento configurazione protocollo informatico" %}
-                                                    </h5>
-                                                    <button class="close"
-                                                            type="button"
-                                                            data-dismiss="modal"
-                                                            aria-label="Close">
-                                                       <svg class="icon">
-                                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                       </svg>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>
-                                                        {% trans "Vuoi davvero aggiornare la configurazione" %}?
-                                                    </p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <input class="btn btn-success"
-                                                           type="submit"
-                                                           id="submitForm"
-                                                           value="{% trans 'Si, procedi' %}">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endblock form_buttons %}
-                                </form>
+                                {% endif %}
+                                <div>
+                                    <a class="btn btn-outline-success btn-block mt-4"
+                                       href="{% url 'uni_ticket:manager_structure_protocol_configuration_new' structure_slug=structure.slug %}">
+                                        <svg class="icon icon-xs icon-success">
+                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+                                        </svg> Aggiungi nuova configurazione
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

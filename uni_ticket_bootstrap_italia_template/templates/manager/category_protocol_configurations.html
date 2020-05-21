@@ -8,6 +8,8 @@
         {% for configuration in category.ticketcategorywsarchipro_set.all %}
         <li class="py-2 clearfix">
             <b>{{ configuration.name }}</b>
+            <br>
+            {{ configuration.created }}
             {% if configuration.is_active %}
                 <span class="badge badge-success">
                     {% trans "attiva" %}
@@ -42,17 +44,17 @@
             {% endif %}
             <a role="button"
                class="mx-1 btn btn-outline-secondary btn-xs float-right"
-               href="#">
+               href="{% url 'uni_ticket:manager_category_protocol_configuration_detail' structure_slug=structure.slug category_slug=category.slug configuration_id=configuration.pk %}">
                 {% trans "Modifica" %}
             </a>
 
 
-            <div class="modal fade" tabindex="-1" role="dialog" id="enableTask{{ forloop.counter0 }}">
+            <div class="modal fade" tabindex="-1" role="dialog" id="enableConfiguration{{ forloop.counter0 }}">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">
-                                {% trans "Attivazione attività" %}
+                                {% trans "Attivazione configurazione" %}
                             </h5>
                             <button class="close" type="button"
                                     data-dismiss="modal" aria-label="Close">
@@ -62,25 +64,25 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>{% trans "Vuoi davvero attivare l'attività " %}
-                               <b>{{ task }}</b> ?
+                            <p>{% trans "Vuoi davvero attivare la configurazione " %}
+                               <b>{{ configuration }}</b> ?
                             </p>
                         </div>
                         <div class="modal-footer">
                             <a role="button" class="btn btn-success"
-                               href="#">
-                                {% trans "Si, attiva l'attività" %}
+                               href="{% url 'uni_ticket:manager_category_protocol_configuration_enable' structure_slug=structure.slug category_slug=category.slug configuration_id=configuration.pk %}">
+                                {% trans "Si, attiva la configurazione" %}
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal fade" tabindex="-1" role="dialog" id="disableTask{{ forloop.counter0 }}">
+            <div class="modal fade" tabindex="-1" role="dialog" id="disableConfiguration{{ forloop.counter0 }}">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">
-                                {% trans "Disattivazione attività" %}
+                                {% trans "Disattivazione configurazione" %}
                             </h5>
                             <button class="close" type="button"
                                     data-dismiss="modal" aria-label="Close">
@@ -90,25 +92,25 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>{% trans "Vuoi davvero disattivare l'attività " %}
+                            <p>{% trans "Vuoi davvero disattivare la configurazione " %}
                                <b>{{ task }}</b> ?
                             </p>
                         </div>
                         <div class="modal-footer">
                             <a role="button" class="btn btn-danger"
-                               href="#">
-                                {% trans "Si, disattiva l'attività" %}
+                               href="{% url 'uni_ticket:manager_category_protocol_configuration_disable' structure_slug=structure.slug category_slug=category.slug configuration_id=configuration.pk %}">
+                                {% trans "Si, disattiva la configurazione" %}
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal fade" tabindex="-1" role="dialog" id="deleteTask{{ forloop.counter0 }}">
+            <div class="modal fade" tabindex="-1" role="dialog" id="deleteConfiguration{{ forloop.counter0 }}">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">
-                                {% trans "Eliminazione attività" %}
+                                {% trans "Eliminazione configurazione" %}
                             </h5>
                             <button class="close" type="button"
                                     data-dismiss="modal" aria-label="Close">
@@ -118,14 +120,14 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>{% trans "Vuoi davvero eliminare l'attività " %}
-                               <b>{{ task }}</b> ?
+                            <p>{% trans "Vuoi davvero eliminare la configurazione " %}
+                               <b>{{ configuration }}</b> ?
                             </p>
                         </div>
                         <div class="modal-footer">
                             <a role="button" class="btn btn-danger"
-                               href="#">
-                                {% trans "Si, elimina l'attività" %}
+                               href="{% url 'uni_ticket:manager_category_protocol_configuration_delete' structure_slug=structure.slug category_slug=category.slug configuration_id=configuration.pk %}">
+                                {% trans "Si, elimina la configurazione" %}
                             </a>
                         </div>
                     </div>

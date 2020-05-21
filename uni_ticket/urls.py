@@ -116,7 +116,12 @@ condition = '{}/conditions'.format(category_id)
 condition_id = '{}/<int:condition_id>'.format(condition)
 category_task = '{}/default-tasks'.format(category_id)
 category_task_id = '{}/<str:task_id>'.format(category_task)
-protocol_configuration = '{}/protocol-configurations'.format(category_id)
+
+structure_protocol_configurations = '{}/settings/protocol-configurations'.format(base)
+structure_protocol_configuration = '{}/<int:configuration_id>'.format(structure_protocol_configurations)
+
+category_protocol_configurations = '{}/protocol-configurations'.format(category_id)
+category_protocol_configuration = '{}/<int:configuration_id>'.format(category_protocol_configurations)
 
 urlpatterns += [
     path('{}/{}/'.format(base, _dashboard_name), manager.dashboard, name='manager_dashboard'),
@@ -185,9 +190,6 @@ urlpatterns += [
     path('{}/enable/'.format(condition_id), manager.category_condition_enable, name='manager_category_condition_enable'),
     path('{}/'.format(condition_id), manager.category_condition_detail, name='manager_category_condition_detail'),
 
-    # Protocol configurations
-    path('{}/new/'.format(protocol_configuration), manager.category_protocol_configuration_new, name='manager_category_protocol_configuration_new'),
-
     # Category default tasks
     path('{}/new/'.format(category_task), manager.category_task_new, name='manager_category_task_new'),
     path('{}/edit/'.format(category_task_id), manager.category_task_edit, name='manager_category_task_edit'),
@@ -197,6 +199,20 @@ urlpatterns += [
     path('{}/enable/'.format(category_task_id), manager.category_task_enable, name='manager_category_task_enable'),
     path('{}/'.format(category_task_id), manager.category_task_detail, name='manager_category_task_detail'),
     path('{}/download/attachment/'.format(category_task_id), manager.category_task_download_attachment, name='category_task_download_attachment'),
+
+    # Structure Protocol configurations
+    path('{}/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_detail, name='manager_structure_protocol_configuration_detail'),
+    path('{}/new/'.format(structure_protocol_configurations), manager.structure_protocol_configuration_new, name='manager_structure_protocol_configuration_new'),
+    path('{}/delete/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_delete, name='manager_structure_protocol_configuration_delete'),
+    path('{}/disable/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_disable, name='manager_structure_protocol_configuration_disable'),
+    path('{}/enable/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_enable, name='manager_structure_protocol_configuration_enable'),
+
+    # Category Protocol configurations
+    path('{}/'.format(category_protocol_configuration), manager.category_protocol_configuration_detail, name='manager_category_protocol_configuration_detail'),
+    path('{}/new/'.format(category_protocol_configurations), manager.category_protocol_configuration_new, name='manager_category_protocol_configuration_new'),
+    path('{}/delete/'.format(category_protocol_configuration), manager.category_protocol_configuration_delete, name='manager_category_protocol_configuration_delete'),
+    path('{}/disable/'.format(category_protocol_configuration), manager.category_protocol_configuration_disable, name='manager_category_protocol_configuration_disable'),
+    path('{}/enable/'.format(category_protocol_configuration), manager.category_protocol_configuration_enable, name='manager_category_protocol_configuration_enable'),
 
     # Settings
     path('{}/settings/'.format(base), manager.settings, name='manager_user_settings'),
