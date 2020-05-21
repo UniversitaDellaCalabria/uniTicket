@@ -18,7 +18,7 @@
    href="{% url 'uni_ticket:manager_user_settings' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Torna alla configurazione" %}
+    </svg> {% trans "Torna alla gestione parametri" %}
 </a>
 {% if configuration.is_active %}
 <button type="button"
@@ -165,7 +165,7 @@
     </div>
 </div>
 {% endif %}
-<div class="modal fade" tabindex="-1" role="dialog" id="deleteCategory">
+<div class="modal fade" tabindex="-1" role="dialog" id="deleteConfiguration">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">

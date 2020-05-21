@@ -786,6 +786,16 @@ def category_add_new(request, structure_slug, structure):
                                    " nome {} o slug {}".format(name, slug)))
             else:
                 new_category = form.save(commit=False)
+
+                # check if protocol can be activated
+                protocol_required = form.cleaned_data['protocol_required']
+                if protocol_required and not OrganizationalStructureWSArchiPro.get_active_protocol_configuration(organizational_structure=structure):
+                    protocol_required = False
+                    messages.add_message(request, messages.INFO,
+                                         _("Il protocollo non può essere attivato. "
+                                           "Nessuna configurazione attiva"))
+
+                new_category.protocol_required = protocol_required
                 new_category.slug = slug
                 new_category.organizational_structure = structure
                 new_category.save()
@@ -839,6 +849,15 @@ def category_edit(request, structure_slug, category_slug, structure):
         form = CategoryForm(instance=category, data=request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
+
+            # check if protocol can be activated
+            protocol_required = form.cleaned_data['protocol_required']
+            if protocol_required and not category.get_active_protocol_configuration():
+                protocol_required = False
+                messages.add_message(request, messages.INFO,
+                                     _("Il protocollo non può essere attivato. "
+                                       "Nessuna configurazione attiva"))
+
             slug = slugify(name)
             slug_name_exist = TicketCategory.objects.filter(Q(name=name) | Q(slug=slug),
                                                             organizational_structure=structure).exclude(pk=category.pk)
@@ -849,6 +868,7 @@ def category_edit(request, structure_slug, category_slug, structure):
             else:
                 edited_category = form.save(commit=False)
                 edited_category.slug = slug
+                edited_category.protocol_required = protocol_required
                 edited_category.save(update_fields = ['name', 'slug',
                                                       'description',
                                                       'show_heading_text',
@@ -860,6 +880,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                       'allow_user',
                                                       'allow_employee',
                                                       'receive_email',
+                                                      'protocol_required',
                                                       'modified'])
                 # log action
                 logger.info('[{}] manager of structure {}'
@@ -2535,6 +2556,17 @@ def structure_protocol_configuration_delete(request, structure_slug,
     # effettuare tutti i controlli sui moduli che
     # hanno il protocollo obbligatorio e che ereditano questa
     # configurazione del protocollo!
+    categories = TicketCategory.objects.filter(organizational_structure=structure,
+                                               protocol_required=True)
+    for cat in categories:
+        if not cat.get_active_protocol_configuration():
+            cat.protocol_required = False
+            cat.save(update_fields=['protocol_required',])
+            messages.add_message(request, messages.INFO,
+                                 _("Nessuna configurazione di protocollo "
+                                   "valida per la tipologia <b>{}</b>. "
+                                   "Protocollo obbligatorio disabilitato."
+                                   "".format(cat)))
 
     messages.add_message(request, messages.SUCCESS,
                          _("Configurazione <b>{}</b> eliminata correttamente"
@@ -2570,6 +2602,21 @@ def structure_protocol_configuration_disable(request, structure_slug,
         messages.add_message(request, messages.SUCCESS,
                              _("Configurazione <b>{}</b> disattivata con successo"
                                "".format(configuration)))
+
+        # effettuare tutti i controlli sui moduli che
+        # hanno il protocollo obbligatorio e che ereditano questa
+        # configurazione del protocollo!
+        categories = TicketCategory.objects.filter(organizational_structure=structure,
+                                                   protocol_required=True)
+        for cat in categories:
+            if not cat.get_active_protocol_configuration():
+                cat.protocol_required = False
+                cat.save(update_fields=['protocol_required',])
+                messages.add_message(request, messages.INFO,
+                                     _("Nessuna configurazione di protocollo "
+                                       "valida per la tipologia  <b>{}</b>. "
+                                       "Protocollo obbligatorio disabilitato."
+                                       "".format(cat)))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -2795,6 +2842,14 @@ def category_protocol_configuration_delete(request, structure_slug,
     # effettuare tutti i controlli sui moduli che
     # hanno il protocollo obbligatorio e che ereditano questa
     # configurazione del protocollo!
+    if not category.get_active_protocol_configuration():
+        category.protocol_required = False
+        category.save(update_fields=['protocol_required',])
+        messages.add_message(request, messages.INFO,
+                             _("Nessuna configurazione di protocollo "
+                               "valida per la tipologia. "
+                               "Protocollo obbligatorio disabilitato."
+                               "".format(category)))
 
     messages.add_message(request, messages.SUCCESS,
                          _("Configurazione <b>{}</b> eliminata correttamente"
@@ -2836,6 +2891,18 @@ def category_protocol_configuration_disable(request, structure_slug,
         messages.add_message(request, messages.SUCCESS,
                              _("Configurazione <b>{}</b> disattivata con successo"
                                "".format(configuration)))
+
+        # effettuare tutti i controlli sui moduli che
+        # hanno il protocollo obbligatorio e che ereditano questa
+        # configurazione del protocollo!
+        if not category.get_active_protocol_configuration():
+            category.protocol_required = False
+            category.save(update_fields=['protocol_required',])
+            messages.add_message(request, messages.INFO,
+                                 _("Nessuna configurazione di protocollo "
+                                   "valida per la tipologia. "
+                                   "Protocollo obbligatorio disabilitato."
+                                   "".format(category)))
 
         # log action
         logger.info('[{}] manager of structure {}'

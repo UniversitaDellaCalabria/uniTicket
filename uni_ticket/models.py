@@ -169,6 +169,15 @@ class TicketCategory(models.Model):
         if user_is_in_organization(user) and self.allow_user: return True
         return False
 
+    def get_active_protocol_configuration(self):
+        tcwap = TicketCategoryWSArchiPro
+        conf = tcwap.objects.filter(ticket_category=self,
+                                    is_active=True).first()
+        if not conf:
+            oswsap = OrganizationalStructureWSArchiPro
+            conf = oswsap.get_active_protocol_configuration(organizational_structure=self.organizational_structure)
+        return conf if conf else False
+
     def __str__(self):
         return '{}'.format(self.name)
 
@@ -1058,6 +1067,12 @@ class OrganizationalStructureWSArchiPro(AbstractWSArchiPro):
         for other in others:
             other.is_active = False
             other.save(update_fields = ['is_active', 'modified'])
+
+    @classmethod
+    def get_active_protocol_configuration(cls, organizational_structure):
+        conf = cls.objects.filter(organizational_structure=organizational_structure,
+                                     is_active=True).first()
+        return conf if conf else False
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.organizational_structure)
