@@ -67,3 +67,6 @@ daphne
 markdown
 
 cryptojwt
+
+# pyWSArchiPRO
+git+https://github.com/peppelinux/pyWSArchiPRO.git

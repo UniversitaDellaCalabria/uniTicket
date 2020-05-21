@@ -76,9 +76,13 @@ INSTALLED_APPS = [
     'channels',
     'chat',
 
-    ##SAML2 SP
+    # SAML2 SP
     'djangosaml2',
     'saml2_sp',
+
+    # protocollo webservice in uso
+    # ogni università dovrebbe interfacciare il proprio
+    # 'protocollo_ws',
 ]
 
 # Import chat app settings

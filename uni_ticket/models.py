@@ -77,7 +77,7 @@ class TicketCategory(models.Model):
     allow_user = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_USER_LABEL), default=True)
     allow_employee = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_EMPLOYEE_LABEL), default=True)
 
-    # ticket notify
+    # ticket type = notification
     is_notify = models.BooleanField(_("Ticket di tipo Notifica"),
                                     default=False,
                                     help_text=_("Ticket che viene "
@@ -97,6 +97,10 @@ class TicketCategory(models.Model):
     receive_email = models.BooleanField(_("Mail ad operatori"),
                                         default=False,
                                         help_text=_("Invia email a operatori per ogni ticket aperto"))
+
+    # protocol action required
+    protocol_required = models.BooleanField(_("Protocollo obbligatorio"),
+                                            default=False)
 
     class Meta:
         unique_together = ("slug", "organizational_structure")
@@ -287,6 +291,12 @@ class Ticket(SavedFormContent):
                                   related_name='closed_by_user')
     closing_reason = models.TextField(blank=True, null=True)
     priority = models.IntegerField(default=0)
+
+    # protocol
+    protocol_number = models.CharField(blank=True, default='',
+                                       max_length=32)
+    protocol_date = models.DateTimeField(help_text=_("Quando la richiesta è stato protocollata"),
+                                         blank=True, null=True)
 
     class Meta:
         ordering = ["is_closed",
