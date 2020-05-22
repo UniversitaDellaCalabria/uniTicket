@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Intestazione>
+<Oggetto>Autorizzazione Trasferta Dipendente</Oggetto>
+<Identificatore>
+<CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+<CodiceAOO>AOO1</CodiceAOO>
+<Flusso>U</Flusso></Identificatore>
+<Mittente>
+<Amministrazione>
+<Denominazione>UNICAL</Denominazione>
+<CodiceAmministrazione>AOO1</CodiceAmministrazione>
+<IndirizzoTelematico tipo="smtp">amministrazione@pec.unical.it</IndirizzoTelematico>
+<UnitaOrganizzativa id="5" /></Amministrazione>
+</Mittente>
+<Destinatario>
+<Persona id="rssmro74s04f158d">
+<Denominazione>Mario Rossi</Denominazione>
+</Persona>
+</Destinatario>
+ <Classifica>
+  <CodiceTitolario>9002</CodiceTitolario>
+ </Classifica>
+ <!-- Informazioni sul fascicolo -->
+ <Fascicolo numero="15" anno="2013"/>
+</Intestazione>
+<Descrizione>
+<Documento id="1" nome="RichiestaAutorizzazione.pdf">
+<DescrizioneDocumento>RichiestaAutorizzazione.pdf</DescrizioneDocumento>
+<TipoDocumento>RichiestaAutorizzazione.pdf</TipoDocumento>
+</Documento>
+</Descrizione>
+<ApplicativoProtocollo nome="ArchiPRO">
+<Parametro nome="agd" valore="101" />
+<Parametro nome="uo" valore="866" />
+</ApplicativoProtocollo>
+</Segnatura>

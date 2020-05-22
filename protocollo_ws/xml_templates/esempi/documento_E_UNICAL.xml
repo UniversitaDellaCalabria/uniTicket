@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Intestazione>
+<Oggetto>Autorizzazione Trasferta Dipendente</Oggetto>
+<Identificatore>
+<CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+<CodiceAOO>AOO1</CodiceAOO>
+  <NumeroRegistrazione>2111-14</NumeroRegistrazione>
+  <DataRegistrazione>0</DataRegistrazione>
+  <Flusso>E</Flusso>
+ </Identificatore> 
+ <Mittente>
+  <Persona id="RSSMRC66M11Z999Z">
+   <Nome>Marco</Nome>
+   <Cognome>Rossi</Cognome>
+   <Denominazione>Cittadino</Denominazione>
+  </Persona>
+ </Mittente> 
+ <Destinatario>
+<Amministrazione>
+<Denominazione>UNICAL</Denominazione>
+<CodiceAmministrazione>AOO1</CodiceAmministrazione>
+<IndirizzoTelematico tipo="smtp">amministrazione@pec.unical.it</IndirizzoTelematico>
+<UnitaOrganizzativa id="5" /></Amministrazione>
+</Destinatario>
+ <Classifica>
+  <CodiceTitolario>9135</CodiceTitolario>
+ </Classifica>
+ <!-- Informazioni sul fascicolo -->
+ <Fascicolo numero="1" anno="2018"/>
+</Intestazione>
+<Descrizione>
+<Documento id="1" nome="RichiestaAutorizzazione.pdf">
+<DescrizioneDocumento>RichiestaAutorizzazione.pdf</DescrizioneDocumento>
+<TipoDocumento>RichiestaAutorizzazione.pdf</TipoDocumento>
+</Documento>
+</Descrizione>
+<ApplicativoProtocollo nome="ArchiPRO">
+<Parametro nome="agd" valore="101" />
+<Parametro nome="uo" valore="866" />
+</ApplicativoProtocollo>
+</Segnatura>

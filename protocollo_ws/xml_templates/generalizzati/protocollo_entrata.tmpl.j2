@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Intestazione>
+        <Oggetto>Autorizzazione Trasferta Dipendente</Oggetto>
+        
+        <Identificatore>
+            <CodiceAmministrazione>{codice_amministrazione}</CodiceAmministrazione>
+            <CodiceAOO>{codice_aoo}</CodiceAOO>
+            <Flusso>{flusso}</Flusso>
+        </Identificatore>
+        
+        <Mittente>
+          <Dipendente id="{matricola_dipendente}">
+           <Denominazione>{denominazione_persona}</Denominazione>
+          </Dipendente>
+        </Mittente>
+
+        <Destinatario>
+            <Amministrazione>
+                <Denominazione>{denominazione_amministrazione}</Denominazione>
+                <CodiceAmministrazione>{codice_amministrazione}</CodiceAmministrazione>
+                <IndirizzoTelematico tipo="smtp">{email_amministrazione}</IndirizzoTelematico>
+                <UnitaOrganizzativa id="{uo_id}" />
+            </Amministrazione>
+        </Destinatario>
+
+        <Classifica>
+            <CodiceTitolario>{cod_titolario}</CodiceTitolario>
+        </Classifica>
+
+        <!-- Informazioni sul fascicolo -->
+        <Fascicolo numero="{fascicolo_numero}" anno="{fascicolo_anno}"/>
+    </Intestazione>
+
+    <Descrizione>
+        <Documento id="1" nome="{nome_doc}">
+        <DescrizioneDocumento>{nome_doc}</DescrizioneDocumento>
+        <TipoDocumento>{tipo_doc}</TipoDocumento>
+        </Documento>
+        <!--
+        <Allegati>
+            <Documento nome="verbale.doc" id="2">
+            <DescrizioneDocumento>Allegato A - Richiesta concessione occupazione suolo</DescrizioneDocumento>
+            <TipoDocumento>Allegato</TipoDocumento>
+            </Documento>
+        </Allegati>
+        -->
+    </Descrizione>
+
+    <ApplicativoProtocollo nome="ArchiPRO">
+        <!--
+        <Parametro nome="agd" valore="483" />
+        <Parametro nome="uo" valore="1231" />
+        -->
+        {parametri}
+    </ApplicativoProtocollo>
+
+</Segnatura>

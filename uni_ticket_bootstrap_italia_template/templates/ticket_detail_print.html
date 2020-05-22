@@ -21,54 +21,27 @@
 {% endblock main_menu %}
 
 {% block page_content %}
-{% block user_ticket_head %}
-{% if category_conditions %}
-<div class="pb-4">
-    <div class="row">
-        <div class="col">
-            <div class="card-space card-wrapper">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
-                        {% if ticket.input_module.ticket_category.show_heading_text %}
-                        <p class="card-title text-left">
-                            {% settings_value name="TICKET_HEADING_TEXT" user=ticket.created_by taxpayer=ticket.created_by.taxpayer_id category=ticket.input_module.ticket_category as heading %}
-                            {{ heading|safe  }}
-                            {% settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
-                            {% settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
-                            {% obj_get_attr ticket.created_by employee_attribute_name as user_employee_attribute %}
-                            {% if user_employee_attribute %}
-                                <br><span class="x-small"><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}</span>
-                            {% endif %}
-                            {% settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
-                            {% settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
-                            {% obj_get_attr ticket.created_by user_attribute_name as user_user_attribute %}
-                            {% if user_user_attribute %}
-                                <br><span class="x-small"><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}</span>
-                            {% endif %}
-                        </p>
-                        <hr>
-                        {% endif %}
-                        {% for condition in category_conditions %}
-                        {% if not forloop.first %}<hr>{% endif %}
-                        <h6>{{ condition.title }}</h6>
-                        <p class="card-text">{{ condition.text | markdown | safe }}</p>
-                        {% if condition.attachment %}
-                        <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=condition.category.slug condition_id=condition.pk %}">
-                                <svg class="icon">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
-                                </svg>{{ condition.attachment|filename }}
-                            </a>
-                        {% endif %}
-                        {% endfor %}
+    {% block user_ticket_head %}
+        {% if category_conditions %}
+        <div class="pb-4">
+            <div class="row">
+                <div class="col">
+                    <div class="card-space card-wrapper">
+                        <div class="card card-bg no-after">
+                            <div class="card-body">
+                                {% include "ticket_detail_category_conditions.html" %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-{% endif %}
-{% endblock %}
-{% include 'ticket_detail.html' %}
+        {% endif %}
+    {% endblock user_ticket_head %}
+
+    {% block ticket_data %}
+        {% include 'ticket_detail.html' %}
+    {% endblock ticket_data %}
 {% endblock page_content %}
 
 {% block footer %}{% endblock %}

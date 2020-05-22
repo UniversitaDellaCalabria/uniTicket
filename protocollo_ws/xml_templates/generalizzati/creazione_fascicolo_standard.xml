@@ -1,0 +1,10 @@
+<Fascicolo>
+    <CodiceTitolario>{id_titolario}</CodiceTitolario>
+    <Oggetto>{oggetto}</Oggetto>
+    <Soggetto>{soggetto}</Soggetto>
+    <Note></Note>
+    <ApplicativoProtocollo nome="ArchiPRO">
+        <Parametro nome="agd" valore="{agd}" />
+        <Parametro nome="uo" valore="{uo}" />
+    </ApplicativoProtocollo>
+</Fascicolo>

@@ -451,7 +451,7 @@ def download_condition_attachment(request, category_slug, condition_id):
 def download_ticket_pdf(request, ticket_id, ticket):
     response = user.ticket_detail(request,
                                   ticket_id=ticket_id,
-                                  template='ticket_detail_print.html')
+                                  template='ticket_detail_print_pdf.html')
 
     # file names
     pdf_fname = '{}.pdf'.format(ticket.code)
@@ -469,7 +469,7 @@ def download_ticket_pdf(request, ticket_id, ticket):
             path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
                                      ticket.get_folder(),
                                      v)
-            merger.append(allegato)
+            merger.append(path)
         merger.write(pdf_path)
 
         # put all in response
@@ -477,16 +477,14 @@ def download_ticket_pdf(request, ticket_id, ticket):
         response = HttpResponse(f.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline; filename=' + pdf_fname
     except Exception as e:
-        #mdb_dict = mdb.get_as_dict()
         json_dict = json.loads(ticket.modulo_compilato)
         ticket_dict = get_as_dict(json_dict)
         return render(request, 'custom_message.html',
-                      {'avviso': ("E' stato incorso un errore relativo alla interpretazione "
-                                  "dei file PDF da te immessi come allegato.<br>"
-                                  "Nello specifico: '{}' presenta delle anomalie di formato"
-                                  ". Questo è dovuto "
-                                  "al processo di produzione "
-                                  "del PDF. <br>E' necessario ricreare il PDF "
+                      {'avviso': _("Sei incorso in un errore relativo alla interpretazione "
+                                  "dei file PDF da te immessi come allegato. "
+                                  "Nello specifico: '{}' presenta delle anomalie di formato. "
+                                  "Questo è dovuto al processo di produzione "
+                                  "del PDF. E' necessario ricreare il PDF "
                                   "con una procedura differente da quella "
                                   "precedenemente utilizzata oppure, più "
                                   "semplicemente, ristampare il PDF come file, "

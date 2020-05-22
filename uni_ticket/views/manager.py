@@ -1,5 +1,7 @@
 import logging
 
+from io import StringIO, BytesIO
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -1504,10 +1506,9 @@ def category_input_module_preview(request, structure_slug,
                 protocol_data = {'wsdl_url' : settings.PROT_TEST_URL,
                                  'username' : settings.PROT_TEST_LOGIN,
                                  'password' : settings.PROT_TEST_PASSW,
-                                 'aoo': settings.PROT_TEST_AOO,
                                  'template_xml_flusso': protocol_configuration.protocollo_template,
 
-                                 'oggetto':'{} - {}'.format(form.cleaned_data['subject'],
+                                 'oggetto':'{} - {}'.format(form.cleaned_data['ticket_subject'],
                                                             request.user),
                                   # Variabili
                                  'matricola_dipendente': request.user.matricola_dipendente,
@@ -1515,21 +1516,26 @@ def category_input_module_preview(request, structure_slug,
                                                                     request.user.last_name,)),
 
                                  # attributi creazione protocollo
-                                 'id_titolario': protocol_configuration.protocollo_cod_titolario, # settings.PROTOCOLLO_TITOLARIO_DEFAULT,
-                                 'fascicolo_numero': protocol_configuration.protocollo_fascicolo_numero, # settings.PROTOCOLLO_FASCICOLO_DEFAULT,
-                                 'fascicolo_anno': timezone.now().year}
+                                 'aoo': protocol_configuration.protocollo_aoo,
+                                 'agd': protocol_configuration.protocollo_agd,
+                                 'uo': protocol_configuration.protocollo_uo,
+                                 'uo_id': protocol_configuration.protocollo_id_uo,
+                                 'id_titolario': protocol_configuration.protocollo_cod_titolario,
+                                 'fascicolo_numero': protocol_configuration.protocollo_fascicolo_numero,
+                                 'fascicolo_anno': protocol_configuration.protocollo_fascicolo_anno}
 
                 protclass = __import__(settings.CLASSE_PROTOCOLLO, globals(), locals(), ['*'])
                 wsclient = protclass.Protocollo(**protocol_data)
 
-                logger.info('Protocollazione richiesta {}'.format(form.cleaned_data['subject']))
+                logger.info('Protocollazione richiesta {}'.format(form.cleaned_data['ticket_subject']))
                 docPrinc = BytesIO()
-                docPrinc.write(download_domanda_pdf(request, bando_id, domanda_bando_id).content)
+                docPrinc.write(b'')
+                # docPrinc.write(download_ticket_pdf(request, ticket.code).content)
                 docPrinc.seek(0)
                 wsclient.aggiungi_docPrinc(docPrinc,
-                                           nome_doc="domanda_{}_{}.pdf".format(dipendente.matricola,
-                                                                               bando.pk),
-                                           tipo_doc='{} - {}'.format(bando.pk, dipendente.matricola))
+                                           nome_doc="{}.pdf".format(form.cleaned_data['ticket_subject']),
+                                           tipo_doc='{} - {}'.format(form.cleaned_data['ticket_subject'],
+                                                                     request.user))
 
                 # allegati disabilitati
                 # for modulo in domanda_bando.modulodomandabando_set.all():
@@ -1548,10 +1554,14 @@ def category_input_module_preview(request, structure_slug,
                 # print(wsclient.is_valid())
                 logger.debug(wsclient.render_dataXML())
                 prot_resp = wsclient.protocolla()
-                domanda_bando.numero_protocollo = wsclient.numero
-                logger.info('Avvenuta Protocollazione Domanda {} numero: {}'.format(domanda_bando,
-                                                                                    domanda_bando.numero_protocollo))
-                domanda_bando.data_protocollazione = timezone.localtime()
+                # domanda_bando.numero_protocollo = wsclient.numero
+                messages.add_message(request, messages.SUCCESS,
+                                     _("Protocollo effettuato "
+                                       "con successo: n. <b>{}/{}</b>").format(wsclient.numero,
+                                                                               timezone.now().year))
+                # logger.info('Avvenuta Protocollazione Richiesta {} numero: {}'.format(form.cleaned_data['subject'],
+                                                                                      # domanda_bando.numero_protocollo))
+                # domanda_bando.data_protocollazione = timezone.localtime()
                 # se non torna un numero di protocollo emerge l'eccezione
                 assert wsclient.numero
 
@@ -2520,13 +2530,15 @@ def structure_protocol_configuration_detail(request, structure_slug,
         form = OrganizationalStructureWSArchiProModelForm(request.POST)
         if form.is_valid():
             configuration.name=form.cleaned_data['name']
+            configuration.protocollo_aoo=form.cleaned_data['protocollo_aoo']
+            configuration.protocollo_agd=form.cleaned_data['protocollo_agd']
+            configuration.protocollo_uo=form.cleaned_data['protocollo_uo']
+            configuration.protocollo_id_uo=form.cleaned_data['protocollo_id_uo']
             configuration.protocollo_cod_titolario=form.cleaned_data['protocollo_cod_titolario']
             configuration.protocollo_fascicolo_numero=form.cleaned_data['protocollo_fascicolo_numero']
+            configuration.protocollo_fascicolo_anno=form.cleaned_data['protocollo_fascicolo_anno']
             configuration.protocollo_template=form.cleaned_data['protocollo_template']
-            configuration.save(update_fields=['name', 'modified',
-                                              'protocollo_cod_titolario',
-                                              'protocollo_fascicolo_numero',
-                                              'protocollo_template'])
+            configuration.save()
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Configurazione protocollo informatico aggiornata"))
@@ -2780,14 +2792,16 @@ def category_protocol_configuration_detail(request, structure_slug,
     if request.method == 'POST':
         form = TicketCategoryWSArchiProModelForm(request.POST)
         if form.is_valid():
-            configuration.name = form.cleaned_data['name']
-            configuration.protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario']
-            configuration.protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero']
-            configuration.protocollo_template = form.cleaned_data['protocollo_template']
-            configuration.save(update_fields = ['name', 'modified',
-                                                'protocollo_cod_titolario',
-                                                'protocollo_fascicolo_numero',
-                                                'protocollo_template'])
+            configuration.name=form.cleaned_data['name']
+            configuration.protocollo_aoo=form.cleaned_data['protocollo_aoo']
+            configuration.protocollo_agd=form.cleaned_data['protocollo_agd']
+            configuration.protocollo_uo=form.cleaned_data['protocollo_uo']
+            configuration.protocollo_id_uo=form.cleaned_data['protocollo_id_uo']
+            configuration.protocollo_cod_titolario=form.cleaned_data['protocollo_cod_titolario']
+            configuration.protocollo_fascicolo_numero=form.cleaned_data['protocollo_fascicolo_numero']
+            configuration.protocollo_fascicolo_anno=form.cleaned_data['protocollo_fascicolo_anno']
+            configuration.protocollo_template=form.cleaned_data['protocollo_template']
+            configuration.save()
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Configurazione protocollo informatico aggiornata"))

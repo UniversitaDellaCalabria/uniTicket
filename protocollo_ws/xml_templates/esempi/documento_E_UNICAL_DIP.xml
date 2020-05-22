@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Intestazione>
+<Oggetto>Autorizzazione Trasferta il Dipendente (inserita dentro fascicolo nuovo)</Oggetto>
+<Identificatore>
+<CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+<CodiceAOO>AOO1</CodiceAOO>
+  <Flusso>E</Flusso>
+ </Identificatore> 
+ <Mittente>
+  <Dipendente id="1041">
+   <Denominazione>Fabrizio Di Franco</Denominazione>
+  </Dipendente>
+ </Mittente> 
+ <Destinatario>
+<Amministrazione>
+<Denominazione>UNICAL</Denominazione>
+<CodiceAmministrazione>AOO1</CodiceAmministrazione>
+<IndirizzoTelematico tipo="smtp">amministrazione@pec.unical.it</IndirizzoTelematico>
+<UnitaOrganizzativa id="5" /></Amministrazione>
+</Destinatario>
+ <Classifica>
+  <CodiceTitolario>9135</CodiceTitolario>
+ </Classifica>
+ <!-- Informazioni sul fascicolo -->
+ <Fascicolo numero="2" anno="2018"/>
+</Intestazione>
+<Descrizione>
+<Documento id="1" nome="RichiestaAutorizzazione.pdf">
+<DescrizioneDocumento>RichiestaAutorizzazione.pdf</DescrizioneDocumento>
+<TipoDocumento>RichiestaAutorizzazione.pdf</TipoDocumento>
+</Documento>
+</Descrizione>
+<ApplicativoProtocollo nome="ArchiPRO">
+<Parametro nome="agd" valore="483" />
+<Parametro nome="uo" valore="1231" />
+</ApplicativoProtocollo>
+</Segnatura>

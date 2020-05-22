@@ -1,0 +1,15 @@
+<!--
+PEO UNICAL
+TITOLARIO              7.1
+FASCICOLO                3   anno 2018.
+-->
+<Fascicolo>
+  <CodiceTitolario>9135</CodiceTitolario>  
+  <Oggetto>Autorizzazione Trasfete Dipendenti </Oggetto>
+  <Soggetto>Richiesta autorizzazioni Dipendenti 2018</Soggetto>
+  <Note>note del fascicolo.... </Note>
+<ApplicativoProtocollo nome="ArchiPRO">
+<Parametro nome="agd" valore="483" />
+<Parametro nome="uo" valore="1231" />
+</ApplicativoProtocollo>
+</Fascicolo>
