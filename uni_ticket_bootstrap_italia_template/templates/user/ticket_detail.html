@@ -10,15 +10,26 @@
 
 {% block right_button %}
 {% ticket_has_been_taken ticket=ticket as ticket_taken %}
-<a role="button" class="btn btn-outline-secondary float-right"
-   href="{% url 'uni_ticket:ticket_detail_print' ticket_id=ticket.code %}"
-   target="_blank"
-   data-toggle="tooltip"
-   title="{% trans 'Versione stampabile' %}">
-    <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-print"></use>
-    </svg>
-</a>
+<div class="pull-right">
+    <a role="button" class="btn btn-outline-secondary"
+       href="{% url 'uni_ticket:ticket_detail_print' ticket_id=ticket.code %}"
+       target="_blank"
+       data-toggle="tooltip"
+       title="{% trans 'Versione stampabile' %}">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-print"></use>
+        </svg>
+    </a>
+    <a role="button" class="btn btn-outline-secondary"
+       href="{% url 'uni_ticket:ticket_detail_print_pdf' ticket_id=ticket.code %}"
+       target="_blank"
+       data-toggle="tooltip"
+       title="{% trans 'Versione PDF' %}">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-download"></use>
+        </svg>
+    </a>
+</div>
 {% endblock %}
 
 {% block under_content_title %}

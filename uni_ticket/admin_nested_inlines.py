@@ -67,14 +67,17 @@ class TicketCategoryWSArchiProModelForm(forms.ModelForm):
     class Meta:
         model = TicketCategoryWSArchiPro
         fields = ('name',
+                  'protocollo_aoo',
+                  'protocollo_agd',
+                  'protocollo_uo',
+                  'protocollo_id_uo',
                   'protocollo_cod_titolario',
                   'protocollo_fascicolo_numero',
+                  'protocollo_fascicolo_anno',
                   'protocollo_template')
 
         labels = {'name': _('Denominazione'),
-                  'protocollo_cod_titolario': _('Codice titolario'),
-                  'protocollo_fascicolo_numero': _('Numero fascicolo'),
-                  'protocollo_template': _('Template XML') }
+                  'protocollo_cod_titolario': _('Codice titolario')}
 
     class Media:
         js = ('js/textarea-autosize.js',)

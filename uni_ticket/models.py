@@ -1045,14 +1045,22 @@ class AbstractWSArchiPro(models.Model):
     created = models.DateTimeField(auto_now=True)
     modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=False)
-    protocollo_cod_titolario = models.CharField('Codice titolario',
+
+    protocollo_aoo = models.CharField('AOO', max_length=12)
+    protocollo_agd = models.CharField('AGD', max_length=12)
+    protocollo_uo = models.CharField('UO', max_length=12,)
+    protocollo_id_uo = models.CharField(_('ID Unità Organizzativa'),
+                                      max_length=12)
+    protocollo_cod_titolario = models.CharField(_('Codice titolario'),
                                                 max_length=12,)
                                                 # choices=settings.PROTOCOLLO_CODICI_TITOLARI,
-    protocollo_fascicolo_numero = models.CharField('Fascicolo numero',
+    protocollo_fascicolo_numero = models.CharField(_('Fascicolo numero'),
                                                    max_length=12)
                                                    # default=settings.PROTOCOLLO_FASCICOLO_DEFAULT)
-    protocollo_template = models.TextField(help_text=("Template XML che "
-                                                      "descrive il flusso"))
+    protocollo_fascicolo_anno = models.IntegerField(_('Fascicolo anno'))
+    protocollo_template = models.TextField('XML template',
+                                           help_text=_('Template XML che '
+                                                      'descrive il flusso'))
 
     class Meta:
         abstract = True

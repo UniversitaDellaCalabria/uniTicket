@@ -71,8 +71,6 @@
                                                     <th>{% trans "Denominazione" %}</th>
                                                     <th>{% trans "Creata il" %}</th>
                                                     <th>{% trans "Modificata il" %}</th>
-                                                    <th>{% trans "Cod. titolario" %}</th>
-                                                    <th>{% trans "Cod. fascicolo" %}</th>
                                                     <th>{% trans "Stato" %}</th>
                                                     <th></th>
                                                 </tr>
@@ -87,8 +85,6 @@
                                                     </td>
                                                     <td>{{ conf.created }}</td>
                                                     <td>{{ conf.modified }}</td>
-                                                    <td>{{ conf.protocollo_cod_titolario }}</td>
-                                                    <td>{{ conf.protocollo_fascicolo_numero }}</td>
                                                     <td>
                                                         {% if conf.is_active %}
                                                         <span class="badge badge-success mb-2">
@@ -104,11 +100,39 @@
                                                         <button type="button"
                                                                 class="mx-1 btn btn-outline-danger btn-xs float-right"
                                                                 data-toggle="modal"
-                                                                data-target="#deleteConf{{ forloop.counter0 }}">
+                                                                data-target="#deleteConfiguration{{ forloop.counter0 }}">
                                                             {% trans "Elimina" %}
                                                         </button>
                                                     </td>
                                                 </tr>
+                                                <div class="modal fade" tabindex="-1" role="dialog" id="deleteConfiguration{{ forloop.counter0 }}">
+                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">
+                                                                    {% trans "Eliminazione configurazione" %}
+                                                                </h5>
+                                                                <button class="close" type="button"
+                                                                        data-dismiss="modal" aria-label="Close">
+                                                                   <svg class="icon">
+                                                                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                                   </svg>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>{% trans "Vuoi davvero eliminare la configurazione " %}
+                                                                   <b>{{ conf }}</b> ?
+                                                                </p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <a role="button" class="btn btn-danger"
+                                                                   href="{% url 'uni_ticket:manager_structure_protocol_configuration_delete' structure_slug=structure.slug configuration_id=conf.pk %}">
+                                                                    {% trans "Si, elimina la configurazione" %}
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 {% endfor %}
                                             </tbody>
                                         </table>

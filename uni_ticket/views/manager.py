@@ -1498,6 +1498,64 @@ def category_input_module_preview(request, structure_slug,
                                show_conditions=True)
         d['form'] = form
         if form.is_valid():
+
+            if category.protocol_required:
+                protocol_configuration = category.get_active_protocol_configuration()
+                protocol_data = {'wsdl_url' : settings.PROT_TEST_URL,
+                                 'username' : settings.PROT_TEST_LOGIN,
+                                 'password' : settings.PROT_TEST_PASSW,
+                                 'aoo': settings.PROT_TEST_AOO,
+                                 'template_xml_flusso': protocol_configuration.protocollo_template,
+
+                                 'oggetto':'{} - {}'.format(form.cleaned_data['subject'],
+                                                            request.user),
+                                  # Variabili
+                                 'matricola_dipendente': request.user.matricola_dipendente,
+                                 'denominazione_persona': ' '.join((request.user.first_name,
+                                                                    request.user.last_name,)),
+
+                                 # attributi creazione protocollo
+                                 'id_titolario': protocol_configuration.protocollo_cod_titolario, # settings.PROTOCOLLO_TITOLARIO_DEFAULT,
+                                 'fascicolo_numero': protocol_configuration.protocollo_fascicolo_numero, # settings.PROTOCOLLO_FASCICOLO_DEFAULT,
+                                 'fascicolo_anno': timezone.now().year}
+
+                protclass = __import__(settings.CLASSE_PROTOCOLLO, globals(), locals(), ['*'])
+                wsclient = protclass.Protocollo(**protocol_data)
+
+                logger.info('Protocollazione richiesta {}'.format(form.cleaned_data['subject']))
+                docPrinc = BytesIO()
+                docPrinc.write(download_domanda_pdf(request, bando_id, domanda_bando_id).content)
+                docPrinc.seek(0)
+                wsclient.aggiungi_docPrinc(docPrinc,
+                                           nome_doc="domanda_{}_{}.pdf".format(dipendente.matricola,
+                                                                               bando.pk),
+                                           tipo_doc='{} - {}'.format(bando.pk, dipendente.matricola))
+
+                # allegati disabilitati
+                # for modulo in domanda_bando.modulodomandabando_set.all():
+                    # if not get_allegati(modulo): continue
+                    # allegato = BytesIO()
+                    # logger.info('Protocollazione Domanda {} - allegato {}'.format(domanda_bando,
+                                                                                  # modulo.pk))
+                    # allegato.write(download_modulo_inserito_pdf(request, bando_id, modulo.pk).content)
+                    # allegato.seek(0)
+                    # wsclient.aggiungi_allegato(nome="domanda_{}_{}-{}.pdf".format(dipendente,
+                                                                                  # bando.pk,
+                                                                                  # modulo.pk),
+                                               # descrizione='{} - {}'.format(modulo.descrizione_indicatore.id_code,
+                                                                            # modulo.get_identificativo_veloce()),
+                                               # fopen=allegato)
+                # print(wsclient.is_valid())
+                logger.debug(wsclient.render_dataXML())
+                prot_resp = wsclient.protocolla()
+                domanda_bando.numero_protocollo = wsclient.numero
+                logger.info('Avvenuta Protocollazione Domanda {} numero: {}'.format(domanda_bando,
+                                                                                    domanda_bando.numero_protocollo))
+                domanda_bando.data_protocollazione = timezone.localtime()
+                # se non torna un numero di protocollo emerge l'eccezione
+                assert wsclient.numero
+
+
             messages.add_message(request, messages.SUCCESS,
                                  _("Dati inseriti corretti"))
         else:
@@ -2409,7 +2467,7 @@ def category_task_delete(request, structure_slug, category_slug,
 
 @login_required
 @is_manager
-def settings(request, structure_slug, structure):
+def manager_settings(request, structure_slug, structure):
     """
     Gets manager settings (personal and structure)
 
@@ -2461,14 +2519,14 @@ def structure_protocol_configuration_detail(request, structure_slug,
     if request.method == 'POST':
         form = OrganizationalStructureWSArchiProModelForm(request.POST)
         if form.is_valid():
-            configuration.name = form.cleaned_data['name']
-            configuration.protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario']
-            configuration.protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero']
-            configuration.protocollo_template = form.cleaned_data['protocollo_template']
-            configuration.save(update_fields = ['name', 'modified',
-                                                'protocollo_cod_titolario',
-                                                'protocollo_fascicolo_numero',
-                                                'protocollo_template'])
+            configuration.name=form.cleaned_data['name']
+            configuration.protocollo_cod_titolario=form.cleaned_data['protocollo_cod_titolario']
+            configuration.protocollo_fascicolo_numero=form.cleaned_data['protocollo_fascicolo_numero']
+            configuration.protocollo_template=form.cleaned_data['protocollo_template']
+            configuration.save(update_fields=['name', 'modified',
+                                              'protocollo_cod_titolario',
+                                              'protocollo_fascicolo_numero',
+                                              'protocollo_template'])
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Configurazione protocollo informatico aggiornata"))
@@ -2505,16 +2563,14 @@ def structure_protocol_configuration_new(request, structure_slug,
     template = "manager/structure_protocol_configuration_new.html"
     title = _("Nuova configurazione protocollo informatico")
 
-    form = OrganizationalStructureWSArchiProModelForm()
+    initial_data = {'protocollo_template': settings.PROTOCOL_XML, }
+    form = OrganizationalStructureWSArchiProModelForm(initial_data)
 
     if request.method == 'POST':
         form = OrganizationalStructureWSArchiProModelForm(request.POST)
         if form.is_valid():
-            configuration = OrganizationalStructureWSArchiPro(name = form.cleaned_data['name'],
-                                                              organizational_structure=structure,
-                                                              protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario'],
-                                                              protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero'],
-                                                              protocollo_template = form.cleaned_data['protocollo_template'])
+            configuration = form.save(commit=False)
+            configuration.organizational_structure=structure
             configuration.save()
 
             messages.add_message(request, messages.SUCCESS,
@@ -2773,16 +2829,17 @@ def category_protocol_configuration_new(request, structure_slug,
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    form = TicketCategoryWSArchiProModelForm()
+    structure_protocol = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure,
+                                                                          is_active=True).first()
+    xml_template = structure_protocol.protocollo_template if structure_protocol else settings.PROTOCOL_XML
+    initial_data = {'protocollo_template': xml_template}
+    form = TicketCategoryWSArchiProModelForm(initial_data)
 
     if request.method == 'POST':
         form = TicketCategoryWSArchiProModelForm(request.POST, request.FILES)
         if form.is_valid():
-            configuration = TicketCategoryWSArchiPro(name = form.cleaned_data['name'],
-                                                     ticket_category=category,
-                                                     protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario'],
-                                                     protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero'],
-                                                     protocollo_template = form.cleaned_data['protocollo_template'])
+            configuration = form.save(commit=False)
+            configuration.ticket_category=category
             configuration.save()
 
             # log action

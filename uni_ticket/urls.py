@@ -34,6 +34,7 @@ urlpatterns = [
 
     path('email-notify/update/', generic.email_notify_change, name='email_notify_change'),
     path('print/ticket/<str:ticket_id>/', generic.ticket_detail_print, name='ticket_detail_print'),
+    path('print/ticket/<str:ticket_id>/pdf/', generic.download_ticket_pdf, name='ticket_detail_print_pdf'),
 ]
 
 # Datatables URLs
@@ -215,7 +216,7 @@ urlpatterns += [
     path('{}/enable/'.format(category_protocol_configuration), manager.category_protocol_configuration_enable, name='manager_category_protocol_configuration_enable'),
 
     # Settings
-    path('{}/settings/'.format(base), manager.settings, name='manager_user_settings'),
+    path('{}/settings/'.format(base), manager.manager_settings, name='manager_user_settings'),
 
     # Others generic
     path('{}/messages/'.format(base), login_required(is_manager(generic.ticket_messages)), name='manager_messages'),

@@ -70,3 +70,11 @@ cryptojwt
 
 # pyWSArchiPRO
 git+https://github.com/peppelinux/pyWSArchiPRO.git
+
+# wkhtmltopdf
+django-wkhtmltopdf
+pdfkit
+pypdf2
+
+# SOAP Client protocollazione
+zeep

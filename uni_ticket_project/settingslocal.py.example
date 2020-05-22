@@ -76,6 +76,9 @@ INSTALLED_APPS = [
     'channels',
     'chat',
 
+    # Libreria per la generazione dei PDF
+    'wkhtmltopdf',
+
     # SAML2 SP
     'djangosaml2',
     'saml2_sp',
@@ -89,6 +92,7 @@ INSTALLED_APPS = [
 if 'chat' in INSTALLED_APPS:
     from chat.settings import *
 
+CUSTOM_WIDGETS_IN_FORMSETS = False
 CUSTOM_WIDGETS = {
     'BaseDateField': 'bootstrap_italia_template.widgets.BootstrapItaliaDateWidget',
     # 'BaseDateTimeField': 'bootstrap_italia_template.widgets.BootstrapItaliaTimeWidget',
@@ -262,6 +266,53 @@ CAPTCHA_SALT = b'salt'
 
 # PROTOCOLLO, questi valori possono variare sulla base di come
 # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
+
+CLASSE_PROTOCOLLO = 'protocollo_ws.protocollo'
+
+# XML flusso
+PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Intestazione>
+<Oggetto>{oggetto}</Oggetto>
+<Identificatore>
+<CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+<CodiceAOO>{aoo}</CodiceAOO>
+<Flusso>E</Flusso>
+</Identificatore>
+<Mittente>
+<Dipendente id="{matricola_dipendente}">
+<Denominazione>{denominazione_persona}</Denominazione>
+</Dipendente>
+</Mittente>
+<Destinatario>
+<Amministrazione>
+<Denominazione>UNICAL</Denominazione>
+<CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+<IndirizzoTelematico tipo="smtp">amministrazione@pec.unical.it</IndirizzoTelematico>
+<UnitaOrganizzativa id="5"/>
+</Amministrazione>
+</Destinatario>
+<Classifica>
+<!--  Titolario PEO 7.1; id: 9095   -->
+<CodiceTitolario>{id_titolario}</CodiceTitolario>
+</Classifica>
+<!--  Informazioni sul fascicolo  -->
+<Fascicolo numero="{fascicolo_numero}" anno="{fascicolo_anno}"/>
+</Intestazione>
+<Descrizione>
+<Documento id="1" nome="{nome_doc}">
+<DescrizioneDocumento>{nome_doc}</DescrizioneDocumento>
+<TipoDocumento>{tipo_doc}</TipoDocumento>
+</Documento>
+<Allegati>
+<!--  Allegati  -->
+</Allegati>
+</Descrizione>
+<ApplicativoProtocollo nome="ArchiPRO">
+<Parametro nome="agd" valore="483"/>
+<Parametro nome="uo" valore="1231"/>
+</ApplicativoProtocollo>
+</Segnatura>
+"""
 
 # Flusso entrata per dipendenti
 # mittente persona fisica come dipendente, destinatario Unical
