@@ -68,7 +68,7 @@ $(function() {
                 targets: [ 2 ],
                 //render: $.fn.dataTable.render.text(),
                 render: function ( data, type, row ) {
-                    return "<a href='"+url+row[1]+"'>"+escapeHtml(data)+"</a>";
+                    return "<a href='"+url+row[1]+"'><span style='word-break: break-word;'>"+escapeHtml(data)+"</span></a>";
                 }
             },
             {
