@@ -391,38 +391,37 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 # Protocol
                 if category.protocol_required:
-                    protocol_configuration = category.get_active_protocol_configuration()
-                    response = download_ticket_pdf(request=request,
-                                                   ticket_id=ticket.code).content
-                    protocol_number = ticket_protocol(configuration=protocol_configuration,
-                                                      user=current_user,
-                                                      subject=ticket.subject,
-                                                      response=response)
-
-                    # se non torna un numero di protocollo emerge l'eccezione
-                    # assert wsclient.numero
-                    if not protocol_number:
+                    try:
+                        protocol_configuration = category.get_active_protocol_configuration()
+                        response = download_ticket_pdf(request=request,
+                                                       ticket_id=ticket.code).content
+                        protocol_number = ticket_protocol(configuration=protocol_configuration,
+                                                          user=current_user,
+                                                          subject=ticket.subject,
+                                                          response=response)
+                        # set protocol data in ticket
+                        ticket.protocol_number = protocol_number
+                        ticket.protocol_date = timezone.now()
+                        ticket.save(update_fields=['protocol_number',
+                                                   'protocol_date'])
+                        messages.add_message(request, messages.SUCCESS,
+                                             _("Protocollo effettuato "
+                                               "con successo: n. <b>{}/{}</b>").format(protocol_number,
+                                                                                       timezone.now().year))
+                    except Exception as e:
                         # log protocol fails
-                        logger.info('[{}] user {} protocol for ticket {} failed'
+                        logger.info('[{}] user {} protocol for ticket {} '
+                                    'failed: {}'
                                     ''.format(timezone.now(),
                                               log_user,
-                                              ticket))
+                                              ticket,
+                                              e))
                         ticket.delete()
                         messages.add_message(request, messages.ERROR,
-                                             _("Protocollo fallito"))
+                                             _("<b>Errore protocollo</b>: {}").format(e))
                         return redirect('uni_ticket:add_new_ticket',
                                         structure_slug=structure_slug,
                                         category_slug=category_slug)
-
-                    # set protocol data in ticket
-                    ticket.protocol_number = protocol_number
-                    ticket.protocol_date = timezone.now()
-                    ticket.save(update_fields=['protocol_number',
-                                               'protocol_date'])
-                    messages.add_message(request, messages.SUCCESS,
-                                         _("Protocollo effettuato "
-                                           "con successo: n. <b>{}/{}</b>").format(protocol_number,
-                                                                                   timezone.now().year))
                 # end Protocol
 
                 # log action

@@ -475,5 +475,5 @@ def ticket_protocol(configuration,
                                                                           # domanda_bando.numero_protocollo))
     # domanda_bando.data_protocollazione = timezone.localtime()
     # se non torna un numero di protocollo emerge l'eccezione
-    # assert wsclient.numero
+    assert wsclient.numero
     return wsclient.numero

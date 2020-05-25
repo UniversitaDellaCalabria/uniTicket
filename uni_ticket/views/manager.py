@@ -1503,39 +1503,42 @@ def category_input_module_preview(request, structure_slug,
             # Protocol TEST
             if category.protocol_required:
                 protocol_configuration = category.get_active_protocol_configuration()
-                protocol_number = ticket_protocol(configuration=protocol_configuration,
-                                                  user=request.user,
-                                                  subject=form.cleaned_data['ticket_subject'],
-                                                  test=True)
-                assert protocol_number
-                messages.add_message(request, messages.SUCCESS,
-                                     _("Il test del sistema di protocollo "
-                                       "ha dato esito positivo: n. <b>{}/{}</b>. "
-                                       "<br>"
-                                       "Per il test sono stati utilizzati "
-                                       "i seguenti parametri"
-                                       "<ul>"
-                                       "<li><b>AOO</b>: {}</li>"
-                                       "<li><b>Fascicolo (num)</b>: {}</li>"
-                                       "<li><b>Fascicolo (anno)</b>: {}</li>"
-                                       "<li><b>AGD</b>: {}</li>"
-                                       "<li><b>UO</b>: {}</li>"
-                                       "<li><b>ID UO</b>: {}</li>"
-                                       "<li><b>Titolario</b>: {}</li>"
-                                       ).format(protocol_number,
-                                                timezone.now().year,
-                                                settings.PROT_TEST_AOO,
-                                                settings.PROTOCOLLO_FASCICOLO_DEFAULT,
-                                                settings.PROTOCOLLO_FASCICOLO_ANNO_DEFAULT,
-                                                settings.PROTOCOLLO_AGD_DEFAULT,
-                                                settings.PROTOCOLLO_UO_DEFAULT,
-                                                settings.PROTOCOLLO_UO_ID_DEFAULT,
-                                                settings.PROTOCOLLO_TITOLARIO_DEFAULT
-                                                ))
+                try:
+                    protocol_number = ticket_protocol(configuration=protocol_configuration,
+                                                      user=request.user,
+                                                      subject=form.cleaned_data['ticket_subject'],
+                                                      test=True)
+                    messages.add_message(request, messages.SUCCESS,
+                                         _("Il test del sistema di protocollo "
+                                           "ha dato esito positivo: n. <b>{}/{}</b>. "
+                                           "<br>"
+                                           "Per il test sono stati utilizzati "
+                                           "i seguenti parametri"
+                                           "<ul>"
+                                           "<li><b>AOO</b>: {}</li>"
+                                           "<li><b>Fascicolo (num)</b>: {}</li>"
+                                           "<li><b>Fascicolo (anno)</b>: {}</li>"
+                                           "<li><b>AGD</b>: {}</li>"
+                                           "<li><b>UO</b>: {}</li>"
+                                           "<li><b>ID UO</b>: {}</li>"
+                                           "<li><b>Titolario</b>: {}</li>"
+                                           ).format(protocol_number,
+                                                    timezone.now().year,
+                                                    settings.PROT_TEST_AOO,
+                                                    settings.PROTOCOLLO_FASCICOLO_DEFAULT,
+                                                    settings.PROTOCOLLO_FASCICOLO_ANNO_DEFAULT,
+                                                    settings.PROTOCOLLO_AGD_DEFAULT,
+                                                    settings.PROTOCOLLO_UO_DEFAULT,
+                                                    settings.PROTOCOLLO_UO_ID_DEFAULT,
+                                                    settings.PROTOCOLLO_TITOLARIO_DEFAULT
+                                                    ))
+                except Exception as e:
+                    messages.add_message(request, messages.ERROR,
+                                         _("<b>Errore protocollo</b>: {}").format(e))
             # end Protocol TEST
 
             messages.add_message(request, messages.SUCCESS,
-                                 _("Dati inseriti corretti"))
+                                 _("Dati inseriti nel modulo formalmente corretti"))
         else:
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
