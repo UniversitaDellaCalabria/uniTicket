@@ -17,13 +17,8 @@ from django.utils.translation import gettext as _
 from django_form_builder.utils import get_as_dict
 from organizational_area.models import OrganizationalStructure
 
-# pdfs
-from PyPDF2 import PdfFileMerger
-from io import StringIO, BytesIO
-
 from uni_ticket.decorators import *
 from uni_ticket.models import *
-from uni_ticket.pdf_utils import response_as_pdf
 from uni_ticket.utils import *
 from uni_ticket.views import user
 
@@ -250,25 +245,6 @@ def email_notify_change(request):
     raise Http404
 
 @login_required
-@has_access_to_ticket
-def ticket_detail_print(request, ticket_id, ticket):
-    """
-    Displays ticket print version
-
-    :type ticket_id: String
-    :type ticket: Ticket (from @has_access_to_ticket)
-
-    :param ticket_id: ticket code
-    :param ticket: ticket object (from @has_access_to_ticket)
-
-    :return: view response
-    """
-    response = user.ticket_detail(request,
-                                  ticket_id=ticket_id,
-                                  template='ticket_detail_print.html')
-    return response
-
-@login_required
 def user_settings(request, structure_slug=None,
                   structure=None, office_employee=None):
     """
@@ -445,54 +421,3 @@ def download_condition_attachment(request, category_slug, condition_id):
                                os.path.basename(condition.attachment.name))
         return result
     raise Http404
-
-@login_required
-@has_access_to_ticket
-def download_ticket_pdf(request, ticket_id, ticket):
-    response = user.ticket_detail(request,
-                                  ticket_id=ticket_id,
-                                  template='ticket_detail_print_pdf.html')
-
-    # file names
-    pdf_fname = '{}.pdf'.format(ticket.code)
-    pdf_path = settings.TMP_DIR + os.path.sep + pdf_fname
-
-    # get main pdf
-    main_pdf_file = response_as_pdf(response, pdf_fname).content
-    merger = PdfFileMerger(strict=False)
-    main_pdf_file = BytesIO(main_pdf_file)
-    merger.append(main_pdf_file)
-
-    try:
-        # append attachments
-        for k,v in ticket.get_allegati_dict().items():
-            path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
-                                     ticket.get_folder(),
-                                     v)
-            merger.append(path)
-        merger.write(pdf_path)
-
-        # put all in response
-        f = open(pdf_path, 'rb')
-        response = HttpResponse(f.read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'inline; filename=' + pdf_fname
-    except Exception as e:
-        json_dict = json.loads(ticket.modulo_compilato)
-        ticket_dict = get_as_dict(json_dict)
-        return render(request, 'custom_message.html',
-                      {'avviso': _("Sei incorso in un errore relativo alla interpretazione "
-                                  "dei file PDF da te immessi come allegato. "
-                                  "Nello specifico: '{}' presenta delle anomalie di formato. "
-                                  "Questo è dovuto al processo di produzione "
-                                  "del PDF. E' necessario ricreare il PDF "
-                                  "con una procedura differente da quella "
-                                  "precedenemente utilizzata oppure, più "
-                                  "semplicemente, ristampare il PDF come file, "
-                                  "rimuovere il vecchio allegato dal modulo inserito "
-                                  "e caricare il nuovo appena ristampato/riconvertito."
-                                  ).format(ticket_dict.get('allegati'))})
-    # pulizia
-    f.close()
-    main_pdf_file.close()
-    os.remove(pdf_path)
-    return response

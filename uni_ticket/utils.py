@@ -1,6 +1,7 @@
 import base64
+from io import StringIO, BytesIO
 import json
-import zlib
+import logging
 import magic
 import operator
 import os
@@ -8,6 +9,7 @@ import random
 import re
 import shutil
 import shortuuid
+import zlib
 
 from django.apps import apps
 from django.conf import settings
@@ -22,6 +24,9 @@ from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,
                                         UserManageOrganizationalStructure)
+
+
+logger = logging.getLogger(__name__)
 
 
 def compress_text_to_b64(text):
@@ -384,3 +389,91 @@ def get_text_with_hrefs(text):
         a_value = href_tmpl.format(target, ele, ele)
         new_text = new_text.replace(ele, a_value)
     return new_text
+
+def ticket_protocol(configuration,
+                    user,
+                    subject,
+                    response=b'',
+                    test=False):
+
+    if test:
+        prot_url = settings.PROT_TEST_URL
+        prot_login = settings.PROT_TEST_LOGIN
+        prot_passw = settings.PROT_TEST_PASSW
+        prot_aoo = settings.PROT_TEST_AOO
+        prot_agd = settings.PROTOCOLLO_AGD_DEFAULT
+        prot_uo = settings.PROTOCOLLO_UO_DEFAULT
+        prot_id_uo = settings.PROTOCOLLO_UO_ID_DEFAULT
+        prot_titolario = settings.PROTOCOLLO_TITOLARIO_DEFAULT
+        prot_fascicolo_num = settings.PROTOCOLLO_FASCICOLO_DEFAULT
+        prot_fascicolo_anno = settings.PROTOCOLLO_FASCICOLO_ANNO_DEFAULT
+    else:
+        prot_url = settings.PROT_URL
+        prot_login = settings.PROT_LOGIN
+        prot_passw = settings.PROT_PASSW
+        prot_aoo = configuration.protocollo_aoo
+        prot_agd = configuration.protocollo_agd
+        prot_uo = configuration.protocollo_uo
+        prot_id_uo = configuration.protocollo_id_uo
+        prot_titolario = configuration.protocollo_cod_titolario
+        prot_fascicolo_num = configuration.protocollo_fascicolo_numero
+        prot_fascicolo_anno = configuration.protocollo_fascicolo_anno
+
+    protocol_data = {'wsdl_url' : prot_url,
+                     'username' : prot_login,
+                     'password' : prot_passw,
+                     'template_xml_flusso': configuration.protocollo_template,
+
+                      # Variabili
+                     'oggetto':'{} - {}'.format(subject, user),
+                     'matricola_dipendente': user.matricola_dipendente,
+                     'denominazione_persona': ' '.join((user.first_name,
+                                                        user.last_name,)),
+
+                     # attributi creazione protocollo
+                     'aoo': prot_aoo,
+                     'agd': prot_agd,
+                     'uo': prot_uo,
+                     'uo_id': prot_id_uo,
+                     'id_titolario': prot_titolario,
+                     'fascicolo_numero': prot_fascicolo_num,
+                     'fascicolo_anno': prot_fascicolo_anno
+                    }
+
+    protclass = __import__(settings.CLASSE_PROTOCOLLO, globals(), locals(), ['*'])
+    wsclient = protclass.Protocollo(**protocol_data)
+
+    logger.info('Protocollazione richiesta {}'.format(subject))
+
+    docPrinc = BytesIO()
+    docPrinc.write(response)
+    docPrinc.seek(0)
+
+    wsclient.aggiungi_docPrinc(docPrinc,
+                               nome_doc="{}.pdf".format(subject),
+                               tipo_doc='{} - {}'.format(subject, user))
+
+    # allegati disabilitati
+    # for modulo in domanda_bando.modulodomandabando_set.all():
+        # if not get_allegati(modulo): continue
+        # allegato = BytesIO()
+        # logger.info('Protocollazione Domanda {} - allegato {}'.format(domanda_bando,
+                                                                      # modulo.pk))
+        # allegato.write(download_modulo_inserito_pdf(request, bando_id, modulo.pk).content)
+        # allegato.seek(0)
+        # wsclient.aggiungi_allegato(nome="domanda_{}_{}-{}.pdf".format(dipendente,
+                                                                      # bando.pk,
+                                                                      # modulo.pk),
+                                   # descrizione='{} - {}'.format(modulo.descrizione_indicatore.id_code,
+                                                                # modulo.get_identificativo_veloce()),
+                                   # fopen=allegato)
+    # print(wsclient.is_valid())
+    logger.debug(wsclient.render_dataXML())
+    prot_resp = wsclient.protocolla()
+
+    # logger.info('Avvenuta Protocollazione Richiesta {} numero: {}'.format(form.cleaned_data['subject'],
+                                                                          # domanda_bando.numero_protocollo))
+    # domanda_bando.data_protocollazione = timezone.localtime()
+    # se non torna un numero di protocollo emerge l'eccezione
+    # assert wsclient.numero
+    return wsclient.numero

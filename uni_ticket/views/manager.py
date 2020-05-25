@@ -1,7 +1,5 @@
 import logging
 
-from io import StringIO, BytesIO
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -27,6 +25,7 @@ from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.utils import (custom_message,
                               office_can_be_deleted,
+                              ticket_protocol,
                               user_is_manager,
                               uuid_code)
 
@@ -1501,70 +1500,39 @@ def category_input_module_preview(request, structure_slug,
         d['form'] = form
         if form.is_valid():
 
+            # Protocol TEST
             if category.protocol_required:
                 protocol_configuration = category.get_active_protocol_configuration()
-                protocol_data = {'wsdl_url' : settings.PROT_TEST_URL,
-                                 'username' : settings.PROT_TEST_LOGIN,
-                                 'password' : settings.PROT_TEST_PASSW,
-                                 'template_xml_flusso': protocol_configuration.protocollo_template,
-
-                                 'oggetto':'{} - {}'.format(form.cleaned_data['ticket_subject'],
-                                                            request.user),
-                                  # Variabili
-                                 'matricola_dipendente': request.user.matricola_dipendente,
-                                 'denominazione_persona': ' '.join((request.user.first_name,
-                                                                    request.user.last_name,)),
-
-                                 # attributi creazione protocollo
-                                 'aoo': protocol_configuration.protocollo_aoo,
-                                 'agd': protocol_configuration.protocollo_agd,
-                                 'uo': protocol_configuration.protocollo_uo,
-                                 'uo_id': protocol_configuration.protocollo_id_uo,
-                                 'id_titolario': protocol_configuration.protocollo_cod_titolario,
-                                 'fascicolo_numero': protocol_configuration.protocollo_fascicolo_numero,
-                                 'fascicolo_anno': protocol_configuration.protocollo_fascicolo_anno}
-
-                protclass = __import__(settings.CLASSE_PROTOCOLLO, globals(), locals(), ['*'])
-                wsclient = protclass.Protocollo(**protocol_data)
-
-                logger.info('Protocollazione richiesta {}'.format(form.cleaned_data['ticket_subject']))
-                docPrinc = BytesIO()
-                docPrinc.write(b'')
-                # docPrinc.write(download_ticket_pdf(request, ticket.code).content)
-                docPrinc.seek(0)
-                wsclient.aggiungi_docPrinc(docPrinc,
-                                           nome_doc="{}.pdf".format(form.cleaned_data['ticket_subject']),
-                                           tipo_doc='{} - {}'.format(form.cleaned_data['ticket_subject'],
-                                                                     request.user))
-
-                # allegati disabilitati
-                # for modulo in domanda_bando.modulodomandabando_set.all():
-                    # if not get_allegati(modulo): continue
-                    # allegato = BytesIO()
-                    # logger.info('Protocollazione Domanda {} - allegato {}'.format(domanda_bando,
-                                                                                  # modulo.pk))
-                    # allegato.write(download_modulo_inserito_pdf(request, bando_id, modulo.pk).content)
-                    # allegato.seek(0)
-                    # wsclient.aggiungi_allegato(nome="domanda_{}_{}-{}.pdf".format(dipendente,
-                                                                                  # bando.pk,
-                                                                                  # modulo.pk),
-                                               # descrizione='{} - {}'.format(modulo.descrizione_indicatore.id_code,
-                                                                            # modulo.get_identificativo_veloce()),
-                                               # fopen=allegato)
-                # print(wsclient.is_valid())
-                logger.debug(wsclient.render_dataXML())
-                prot_resp = wsclient.protocolla()
-                # domanda_bando.numero_protocollo = wsclient.numero
+                protocol_number = ticket_protocol(configuration=protocol_configuration,
+                                                  user=request.user,
+                                                  subject=form.cleaned_data['ticket_subject'],
+                                                  test=True)
+                assert protocol_number
                 messages.add_message(request, messages.SUCCESS,
-                                     _("Protocollo effettuato "
-                                       "con successo: n. <b>{}/{}</b>").format(wsclient.numero,
-                                                                               timezone.now().year))
-                # logger.info('Avvenuta Protocollazione Richiesta {} numero: {}'.format(form.cleaned_data['subject'],
-                                                                                      # domanda_bando.numero_protocollo))
-                # domanda_bando.data_protocollazione = timezone.localtime()
-                # se non torna un numero di protocollo emerge l'eccezione
-                assert wsclient.numero
-
+                                     _("Il test del sistema di protocollo "
+                                       "ha dato esito positivo: n. <b>{}/{}</b>. "
+                                       "<br>"
+                                       "Per il test sono stati utilizzati "
+                                       "i seguenti parametri"
+                                       "<ul>"
+                                       "<li><b>AOO</b>: {}</li>"
+                                       "<li><b>Fascicolo (num)</b>: {}</li>"
+                                       "<li><b>Fascicolo (anno)</b>: {}</li>"
+                                       "<li><b>AGD</b>: {}</li>"
+                                       "<li><b>UO</b>: {}</li>"
+                                       "<li><b>ID UO</b>: {}</li>"
+                                       "<li><b>Titolario</b>: {}</li>"
+                                       ).format(protocol_number,
+                                                timezone.now().year,
+                                                settings.PROT_TEST_AOO,
+                                                settings.PROTOCOLLO_FASCICOLO_DEFAULT,
+                                                settings.PROTOCOLLO_FASCICOLO_ANNO_DEFAULT,
+                                                settings.PROTOCOLLO_AGD_DEFAULT,
+                                                settings.PROTOCOLLO_UO_DEFAULT,
+                                                settings.PROTOCOLLO_UO_ID_DEFAULT,
+                                                settings.PROTOCOLLO_TITOLARIO_DEFAULT
+                                                ))
+            # end Protocol TEST
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Dati inseriti corretti"))

@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+from PyPDF2 import PdfFileMerger
 import shutil
 
 from django.conf import settings
@@ -26,11 +27,14 @@ from django_form_builder.utils import (get_as_dict,
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,)
+
 from uni_ticket.decorators import *
 from uni_ticket.forms import *
 from uni_ticket.jwts import *
 from uni_ticket.models import *
+from uni_ticket.pdf_utils import response_as_pdf
 from uni_ticket.utils import *
+
 
 logger = logging.getLogger(__name__)
 
@@ -381,7 +385,45 @@ def ticket_add_new(request, structure_slug, category_slug):
                 if compiled_by_user:
                     ticket.compiled_by = compiled_by_user
                     ticket.compiled = timezone.now()
+
+                # save ticket
                 ticket.save()
+
+                # Protocol
+                if category.protocol_required:
+                    protocol_configuration = category.get_active_protocol_configuration()
+                    response = download_ticket_pdf(request=request,
+                                                   ticket_id=ticket.code).content
+                    protocol_number = ticket_protocol(configuration=protocol_configuration,
+                                                      user=current_user,
+                                                      subject=ticket.subject,
+                                                      response=response)
+
+                    # se non torna un numero di protocollo emerge l'eccezione
+                    # assert wsclient.numero
+                    if not protocol_number:
+                        # log protocol fails
+                        logger.info('[{}] user {} protocol for ticket {} failed'
+                                    ''.format(timezone.now(),
+                                              log_user,
+                                              ticket))
+                        ticket.delete()
+                        messages.add_message(request, messages.ERROR,
+                                             _("Protocollo fallito"))
+                        return redirect('uni_ticket:add_new_ticket',
+                                        structure_slug=structure_slug,
+                                        category_slug=category_slug)
+
+                    # set protocol data in ticket
+                    ticket.protocol_number = protocol_number
+                    ticket.protocol_date = timezone.now()
+                    ticket.save(update_fields=['protocol_number',
+                                               'protocol_date'])
+                    messages.add_message(request, messages.SUCCESS,
+                                         _("Protocollo effettuato "
+                                           "con successo: n. <b>{}/{}</b>").format(protocol_number,
+                                                                                   timezone.now().year))
+                # end Protocol
 
                 # log action
                 logger.info('[{}] user {} created new ticket {}'
@@ -422,7 +464,7 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
                                  settings.NEW_TICKET_CREATED_ALERT
-                compiled_message = ticket_message.format(ticket.subject)
+                compiled_message = ticket_message.format(ticket.code)
                 messages.add_message(request,
                                      messages.SUCCESS,
                                      compiled_message
@@ -524,6 +566,13 @@ def ticket_edit(request, ticket_id):
     :return: render
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
+
+    if ticket.protocol_number:
+        messages.add_message(request, messages.ERROR,
+                             _("Impossibile modificare una richiesta protocollata"))
+        return redirect('uni_ticket:ticket_detail',
+                        ticket_id=ticket.code)
+
     categoria = ticket.input_module.ticket_category
     title = _("Modifica ticket")
     sub_title = ticket
@@ -660,6 +709,13 @@ def ticket_delete(request, ticket_id):
     :return: redirect
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
+
+    if ticket.protocol_number:
+        messages.add_message(request, messages.ERROR,
+                             _("Impossibile eliminare una richiesta protocollata"))
+        return redirect('uni_ticket:ticket_detail',
+                        ticket_id=ticket.code)
+
     ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
 
     # log action
@@ -877,6 +933,7 @@ def ticket_close(request, ticket_id):
     :return: render
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
+
     if ticket.is_closed:
         # log action
         logger.info('[{}] user {} tried to close '
@@ -976,3 +1033,73 @@ def ticket_clone(request, ticket_id):
                        kwargs={'structure_slug': category.organizational_structure.slug,
                                'category_slug': category.slug})
     return HttpResponseRedirect(base_url + "?import={}".format(encrypted_data))
+
+@login_required
+@has_access_to_ticket
+def ticket_detail_print(request, ticket_id, ticket):
+    """
+    Displays ticket print version
+
+    :type ticket_id: String
+    :type ticket: Ticket (from @has_access_to_ticket)
+
+    :param ticket_id: ticket code
+    :param ticket: ticket object (from @has_access_to_ticket)
+
+    :return: view response
+    """
+    response = ticket_detail(request,
+                             ticket_id=ticket_id,
+                             template='ticket_detail_print.html')
+    return response
+
+@login_required
+@has_access_to_ticket
+def download_ticket_pdf(request, ticket_id, ticket):
+    response = ticket_detail(request,
+                             ticket_id=ticket_id,
+                             template='ticket_detail_print_pdf.html')
+
+    # file names
+    pdf_fname = '{}.pdf'.format(ticket.code)
+    pdf_path = settings.TMP_DIR + os.path.sep + pdf_fname
+
+    # get main pdf
+    main_pdf_file = response_as_pdf(response, pdf_fname).content
+    merger = PdfFileMerger(strict=False)
+    main_pdf_file = BytesIO(main_pdf_file)
+    merger.append(main_pdf_file)
+
+    try:
+        # append attachments
+        for k,v in ticket.get_allegati_dict().items():
+            path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
+                                     ticket.get_folder(),
+                                     v)
+            merger.append(path)
+        merger.write(pdf_path)
+
+        # put all in response
+        f = open(pdf_path, 'rb')
+        response = HttpResponse(f.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename=' + pdf_fname
+    except Exception as e:
+        json_dict = json.loads(ticket.modulo_compilato)
+        ticket_dict = get_as_dict(json_dict)
+        return render(request, 'custom_message.html',
+                      {'avviso': _("Sei incorso in un errore relativo alla interpretazione "
+                                  "dei file PDF da te immessi come allegato. "
+                                  "Nello specifico: '{}' presenta delle anomalie di formato. "
+                                  "Questo è dovuto al processo di produzione "
+                                  "del PDF. E' necessario ricreare il PDF "
+                                  "con una procedura differente da quella "
+                                  "precedenemente utilizzata oppure, più "
+                                  "semplicemente, ristampare il PDF come file, "
+                                  "rimuovere il vecchio allegato dal modulo inserito "
+                                  "e caricare il nuovo appena ristampato/riconvertito."
+                                  ).format(ticket_dict.get('allegati'))})
+    # pulizia
+    f.close()
+    main_pdf_file.close()
+    os.remove(pdf_path)
+    return response

@@ -33,8 +33,8 @@ urlpatterns = [
     path('messages/delete/<str:ticket_message_id>/', generic.ticket_message_delete, name='message_delete'),
 
     path('email-notify/update/', generic.email_notify_change, name='email_notify_change'),
-    path('print/ticket/<str:ticket_id>/', generic.ticket_detail_print, name='ticket_detail_print'),
-    path('print/ticket/<str:ticket_id>/pdf/', generic.download_ticket_pdf, name='ticket_detail_print_pdf'),
+    path('print/ticket/<str:ticket_id>/', user.ticket_detail_print, name='ticket_detail_print'),
+    path('print/ticket/<str:ticket_id>/pdf/', user.download_ticket_pdf, name='ticket_detail_print_pdf'),
 ]
 
 # Datatables URLs

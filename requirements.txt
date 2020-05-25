@@ -69,7 +69,8 @@ markdown
 cryptojwt
 
 # pyWSArchiPRO
-git+https://github.com/peppelinux/pyWSArchiPRO.git
+# (app folder included in project, not installed via pip)
+# git+https://github.com/peppelinux/pyWSArchiPRO.git
 
 # wkhtmltopdf
 django-wkhtmltopdf
