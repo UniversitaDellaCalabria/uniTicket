@@ -138,6 +138,9 @@
         {% endfor %}
     </ul>
     {% else %}
-    {% trans "Nessuna configurazione presente. Sarà usata quella di default della struttura" %}
+    {% trans "Nessuna configurazione attiva. Sarà usata, se presente, " %}
+    <a href="{% url 'uni_ticket:manager_user_settings' structure_slug=structure.slug %}">
+        <b>{% trans "quella della struttura" %}</b>
+    </a>
     {% endif %}
 </div>

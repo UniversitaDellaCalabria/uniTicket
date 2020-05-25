@@ -2816,8 +2816,19 @@ def category_protocol_configuration_new(request, structure_slug,
                                  slug=category_slug)
     structure_protocol = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure,
                                                                           is_active=True).first()
-    xml_template = structure_protocol.protocollo_template if structure_protocol else settings.PROTOCOL_XML
-    initial_data = {'protocollo_template': xml_template}
+
+    if structure_protocol:
+        initial_data = {'protocollo_aoo': structure_protocol.protocollo_aoo,
+                        'protocollo_agd': structure_protocol.protocollo_agd,
+                        'protocollo_uo': structure_protocol.protocollo_uo,
+                        'protocollo_id_uo': structure_protocol.protocollo_id_uo,
+                        'protocollo_cod_titolario': structure_protocol.protocollo_cod_titolario,
+                        'protocollo_fascicolo_numero': structure_protocol.protocollo_fascicolo_numero,
+                        'protocollo_fascicolo_anno': structure_protocol.protocollo_fascicolo_anno,
+                        'protocollo_template': structure_protocol.protocollo_template}
+    else:
+        initial_data = {'protocollo_template': settings.PROTOCOL_XML}
+
     form = TicketCategoryWSArchiProModelForm(initial_data)
 
     if request.method == 'POST':

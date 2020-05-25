@@ -25,19 +25,21 @@
 {% block clean_content %}
 <div class="row">
     <div class="col">
+        <div class="alert alert-info" role="alert">
+            {% trans "La configurazione di un flusso di protocollo prevede la compilazione dei parametri di base." %}
+            <br>
+            {% trans "Eventuali <b>parametri errati</b> comporteranno un <b>errore in fase di protocollazione</b>" %}
+            {% trans " e la conseguente interruzione del processo di generazione della richiesta." %}
+            <br>
+            {% trans "Di default, i dati vengono ereditati dalla " %}
+            <a href="{% url 'uni_ticket:manager_user_settings' structure_slug=structure.slug %}">
+                <b>{% trans "configurazione del protcollo della struttura," %}</b>
+            </a>
+            {% trans " se presente, o dalla configurazione globale del sistema." %}
+        </div>
         <div class="card-space card-wrapper">
             <div class="card card-bg no-after">
                 <div class="card-body">
-                    <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore
-                    magna aliqua. Ut enim ad minim veniam, quis nostrud
-                    exercitation ullamco laboris nisi ut aliquip ex ea
-                    commodo consequat. Duis aute irure dolor in reprehenderit
-                    in voluptate velit esse cillum dolore eu fugiat nulla
-                    pariatur. Excepteur sint occaecat cupidatat non proident,
-                    sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </p>
                     <form method="post" enctype="multipart/form-data">
                         {% include 'form_template.html' %}
                         {% block form_buttons %}
