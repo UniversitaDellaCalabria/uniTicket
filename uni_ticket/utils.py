@@ -1,5 +1,4 @@
 import base64
-from io import StringIO, BytesIO
 import json
 import logging
 import magic
@@ -20,6 +19,9 @@ from django.shortcuts import render
 from django.utils.translation import gettext as _
 
 from django_form_builder.utils import get_POST_as_json
+
+from io import StringIO, BytesIO
+
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,

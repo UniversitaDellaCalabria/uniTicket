@@ -1,7 +1,6 @@
 import os
 import json
 import logging
-from PyPDF2 import PdfFileMerger
 import shutil
 
 from django.conf import settings
@@ -27,6 +26,7 @@ from django_form_builder.utils import (get_as_dict,
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,)
+from PyPDF2 import PdfFileMerger
 
 from uni_ticket.decorators import *
 from uni_ticket.forms import *
@@ -219,6 +219,7 @@ def ticket_add_new(request, structure_slug, category_slug):
 
     :return: render
     """
+    # get structure by pk or by slug
     try:
         struttura = get_object_or_404(OrganizationalStructure,
                                       pk=structure_slug,
@@ -227,6 +228,7 @@ def ticket_add_new(request, structure_slug, category_slug):
         struttura = get_object_or_404(OrganizationalStructure,
                                       slug=structure_slug,
                                       is_active=True)
+    # get category by pk or by slug
     try:
         category = get_object_or_404(TicketCategory,
                                      pk=category_slug,
@@ -236,6 +238,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                                      slug=category_slug,
                                      organizational_structure=struttura)
 
+    # if category is not active, return an error message
     if not category.is_active:
         unavailable_msg = category.not_available_message or settings.UNAVAILABLE_TICKET_CATEGORY
         return custom_message(request, unavailable_msg, status=404)
@@ -314,10 +317,15 @@ def ticket_add_new(request, structure_slug, category_slug):
         d['form'] = form
 
         if form.is_valid():
+            # add static static fields to fields to pop
+            # these fields are useful only in frontend
             fields_to_pop = [settings.TICKET_CONDITIONS_FIELD_ID,
                              settings.TICKET_CAPTCHA_ID,
                              settings.TICKET_CAPTCHA_HIDDEN_ID]
+            #
             # if user generates an encrypted token in URL
+            # no ticket is saved. compiled form is serialized
+            #
             if request.POST.get(settings.TICKET_GENERATE_URL_BUTTON_NAME):
 
                 # log action
@@ -326,13 +334,20 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                     request.user,
                                                     category))
 
+                # add the "generate url" button to fields to pop
                 fields_to_pop.append(settings.TICKET_GENERATE_URL_BUTTON_NAME)
+
+                # get form data in json
                 json_data = get_POST_as_json(request=request,
                                              fields_to_pop=fields_to_pop)
                 form_data = json.loads(json_data)
+
+                # insert input module pk to json data
                 form_data.update({settings.TICKET_INPUT_MODULE_NAME: modulo.pk})
+
                 if request.POST.get(settings.TICKET_COMPILED_BY_USER_NAME):
                     form_data.update({settings.TICKET_COMPILED_BY_USER_NAME: request.user.pk})
+
                 # build encrypted url param with form data
                 encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
                 base_url = request.build_absolute_uri(reverse('uni_ticket:add_new_ticket',
@@ -349,16 +364,25 @@ def ticket_add_new(request, structure_slug, category_slug):
                                        "<p class='text-success mt-3 mb-0' id='clipboard_message'></p>"
                                        "").format(url=url))
                 d['url_to_import'] = True
+            #
             # if user creates the ticket
+            #
             elif request.POST.get(settings.TICKET_CREATE_BUTTON_NAME):
+
+                # extends fields_to_pop list
                 fields_to_pop.extend([settings.TICKET_SUBJECT_ID,
                                       settings.TICKET_DESCRIPTION_ID,
                                       settings.TICKET_CREATE_BUTTON_NAME,
                                       settings.TICKET_COMPILED_BY_USER_NAME])
+
+                # get form data in json
                 json_data = get_POST_as_json(request=request,
                                              fields_to_pop=fields_to_pop)
+
                 # make a UUID based on the host ID and current time
                 code = uuid_code()
+
+                # get ticket subject and description
                 subject = form.cleaned_data[settings.TICKET_SUBJECT_ID]
                 description = form.cleaned_data[settings.TICKET_DESCRIPTION_ID]
 
@@ -372,9 +396,11 @@ def ticket_add_new(request, structure_slug, category_slug):
                     # get random operator from the office
                     random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(office)
 
-                # set users (for current operation and for log)
+                # set users for current operations and for log
+                # if current_user isn't authenticated, for logging we use 'anonymous'
                 current_user = request.user if request.user.is_authenticated else random_office_operator
                 log_user = request.user.username if request.user.is_authenticated else 'anonymous'
+
                 # create ticket
                 ticket = Ticket(code=code,
                                 subject=subject,
@@ -382,47 +408,14 @@ def ticket_add_new(request, structure_slug, category_slug):
                                 modulo_compilato=json_data,
                                 created_by=current_user,
                                 input_module=modulo)
+
+                # if ticket has been compiled by another user
                 if compiled_by_user:
                     ticket.compiled_by = compiled_by_user
                     ticket.compiled = timezone.now()
 
                 # save ticket
                 ticket.save()
-
-                # Protocol
-                if category.protocol_required:
-                    try:
-                        protocol_configuration = category.get_active_protocol_configuration()
-                        response = download_ticket_pdf(request=request,
-                                                       ticket_id=ticket.code).content
-                        protocol_number = ticket_protocol(configuration=protocol_configuration,
-                                                          user=current_user,
-                                                          subject=ticket.subject,
-                                                          response=response)
-                        # set protocol data in ticket
-                        ticket.protocol_number = protocol_number
-                        ticket.protocol_date = timezone.now()
-                        ticket.save(update_fields=['protocol_number',
-                                                   'protocol_date'])
-                        messages.add_message(request, messages.SUCCESS,
-                                             _("Protocollo effettuato "
-                                               "con successo: n. <b>{}/{}</b>").format(protocol_number,
-                                                                                       timezone.now().year))
-                    except Exception as e:
-                        # log protocol fails
-                        logger.info('[{}] user {} protocol for ticket {} '
-                                    'failed: {}'
-                                    ''.format(timezone.now(),
-                                              log_user,
-                                              ticket,
-                                              e))
-                        ticket.delete()
-                        messages.add_message(request, messages.ERROR,
-                                             _("<b>Errore protocollo</b>: {}").format(e))
-                        return redirect('uni_ticket:add_new_ticket',
-                                        structure_slug=structure_slug,
-                                        category_slug=category_slug)
-                # end Protocol
 
                 # log action
                 logger.info('[{}] user {} created new ticket {}'
@@ -431,7 +424,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                      ticket,
                                                      category))
 
-                # salvataggio degli allegati nella cartella relativa
+                # save ticket attachments in ticket folder
                 json_dict = json.loads(json_data)
                 json_stored = get_as_dict(compiled_module_json=json_dict)
                 _save_new_ticket_attachments(ticket=ticket,
@@ -439,6 +432,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                                              form=form,
                                              request_files=request.FILES)
 
+                # assign ticket to the office
                 ticket_assignment = TicketAssignment(ticket=ticket,
                                                      office=office)
                 ticket_assignment.save()
@@ -456,11 +450,60 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                ticket,
                                                office))
 
-                # category default tasks
+                # Protocol
+                if category.protocol_required:
+                    try:
+                        protocol_configuration = category.get_active_protocol_configuration()
+
+                        response = download_ticket_pdf(request=request,
+                                                       ticket_id=ticket.code).content
+
+                        protocol_number = ticket_protocol(configuration=protocol_configuration,
+                                                          user=current_user,
+                                                          subject=ticket.code,
+                                                          response=response)
+                        # set protocol data in ticket
+                        ticket.protocol_number = protocol_number
+                        ticket.protocol_date = timezone.now()
+                        ticket.save(update_fields=['protocol_number',
+                                                   'protocol_date'])
+                        messages.add_message(request, messages.SUCCESS,
+                                             _("Protocollo effettuato "
+                                               "con successo: n. <b>{}/{}</b>").format(protocol_number,
+                                                                                       timezone.now().year))
+                    # if protocol fails
+                    # raise Exception and do some operations
+                    except Exception as e:
+                        # log protocol fails
+                        logger.info('[{}] user {} protocol for ticket {} '
+                                    'failed: {}'
+                                    ''.format(timezone.now(),
+                                              log_user,
+                                              ticket,
+                                              e))
+                        # delete attachments
+                        try:
+                            folder = '{}/{}'.format(settings.MEDIA_ROOT,
+                                                    ticket.get_folder())
+                            shutil.rmtree(folder)
+                        except:
+                            pass
+                        # delete assignment
+                        ticket_assignment.delete()
+                        # delete ticket
+                        ticket.delete()
+                        messages.add_message(request, messages.ERROR,
+                                             _("<b>Errore protocollo</b>: {}").format(e))
+                        # stop all other operations and come back to form
+                        return render(request, template, d)
+                # end Protocol
+
+                # category default tasks assigned to ticket (if present)
                 _assign_default_tasks_to_new_ticket(ticket=ticket,
                                                     category=category,
                                                     log_user=log_user)
 
+                # send success message to user
                 ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
                                  settings.NEW_TICKET_CREATED_ALERT
                 compiled_message = ticket_message.format(ticket.code)
@@ -497,6 +540,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                                      body=settings.NEW_TICKET_CREATED,
                                      params=mail_params)
                     # END Send mail to ticket owner
+
                     return redirect('uni_ticket:ticket_detail',
                                     ticket_id=ticket.code)
                 else:
@@ -1076,6 +1120,7 @@ def download_ticket_pdf(request, ticket_id, ticket):
                                      ticket.get_folder(),
                                      v)
             merger.append(path)
+        # end append attachments
         merger.write(pdf_path)
 
         # put all in response
@@ -1085,18 +1130,18 @@ def download_ticket_pdf(request, ticket_id, ticket):
     except Exception as e:
         json_dict = json.loads(ticket.modulo_compilato)
         ticket_dict = get_as_dict(json_dict)
-        return render(request, 'custom_message.html',
-                      {'avviso': _("Sei incorso in un errore relativo alla interpretazione "
-                                  "dei file PDF da te immessi come allegato. "
-                                  "Nello specifico: '{}' presenta delle anomalie di formato. "
-                                  "Questo è dovuto al processo di produzione "
-                                  "del PDF. E' necessario ricreare il PDF "
-                                  "con una procedura differente da quella "
-                                  "precedenemente utilizzata oppure, più "
-                                  "semplicemente, ristampare il PDF come file, "
-                                  "rimuovere il vecchio allegato dal modulo inserito "
-                                  "e caricare il nuovo appena ristampato/riconvertito."
-                                  ).format(ticket_dict.get('allegati'))})
+        return custom_message(request,
+                              _("Sei incorso in un errore relativo alla interpretazione "
+                                "dei file PDF da te immessi come allegato. "
+                                "Nello specifico: '{}' presenta delle anomalie di formato. "
+                                "Questo è dovuto al processo di produzione "
+                                "del PDF. E' necessario ricreare il PDF "
+                                "con una procedura differente da quella "
+                                "precedenemente utilizzata oppure, più "
+                                "semplicemente, ristampare il PDF come file, "
+                                "rimuovere il vecchio allegato dal modulo inserito "
+                                "e caricare il nuovo appena ristampato/riconvertito."
+                                ).format(ticket_dict.get('allegati')))
     # pulizia
     f.close()
     main_pdf_file.close()
