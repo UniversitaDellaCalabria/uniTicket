@@ -395,7 +395,10 @@ def get_text_with_hrefs(text):
 def ticket_protocol(configuration,
                     user,
                     subject,
+                    file_name='test_name',
                     response=b'',
+                    attachments_folder=settings.MEDIA_ROOT,
+                    attachments_dict={},
                     test=False):
 
     if test:
@@ -409,6 +412,7 @@ def ticket_protocol(configuration,
         prot_titolario = settings.PROTOCOLLO_TITOLARIO_DEFAULT
         prot_fascicolo_num = settings.PROTOCOLLO_FASCICOLO_DEFAULT
         prot_fascicolo_anno = settings.PROTOCOLLO_FASCICOLO_ANNO_DEFAULT
+        prot_template = settings.PROTOCOL_XML
     else:
         prot_url = settings.PROT_URL
         prot_login = settings.PROT_LOGIN
@@ -420,14 +424,15 @@ def ticket_protocol(configuration,
         prot_titolario = configuration.protocollo_cod_titolario
         prot_fascicolo_num = configuration.protocollo_fascicolo_numero
         prot_fascicolo_anno = configuration.protocollo_fascicolo_anno
+        prot_template = configuration.protocollo_template
 
     protocol_data = {'wsdl_url' : prot_url,
                      'username' : prot_login,
                      'password' : prot_passw,
-                     'template_xml_flusso': configuration.protocollo_template,
+                     'template_xml_flusso': prot_template,
 
                       # Variabili
-                     'oggetto':'{} - {}'.format(subject, user),
+                     'oggetto':'{}'.format(subject),
                      'matricola_dipendente': user.matricola_dipendente,
                      'denominazione_persona': ' '.join((user.first_name,
                                                         user.last_name,)),
@@ -446,29 +451,33 @@ def ticket_protocol(configuration,
     wsclient = protclass.Protocollo(**protocol_data)
 
     logger.info('Protocollazione richiesta {}'.format(subject))
-
     docPrinc = BytesIO()
     docPrinc.write(response)
     docPrinc.seek(0)
 
     wsclient.aggiungi_docPrinc(docPrinc,
-                               nome_doc="{}.pdf".format(subject),
-                               tipo_doc='{} - {}'.format(subject, user))
+                               nome_doc="{}.pdf".format(file_name),
+                               tipo_doc='uniTicket request')
 
-    # allegati disabilitati
-    # for modulo in domanda_bando.modulodomandabando_set.all():
-        # if not get_allegati(modulo): continue
-        # allegato = BytesIO()
-        # logger.info('Protocollazione Domanda {} - allegato {}'.format(domanda_bando,
-                                                                      # modulo.pk))
-        # allegato.write(download_modulo_inserito_pdf(request, bando_id, modulo.pk).content)
-        # allegato.seek(0)
-        # wsclient.aggiungi_allegato(nome="domanda_{}_{}-{}.pdf".format(dipendente,
-                                                                      # bando.pk,
-                                                                      # modulo.pk),
-                                   # descrizione='{} - {}'.format(modulo.descrizione_indicatore.id_code,
-                                                                # modulo.get_identificativo_veloce()),
-                                   # fopen=allegato)
+    # attachments
+    if attachments_dict:
+        for k,v in attachments_dict.items():
+            file_path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
+                                          attachments_folder,
+                                          v)
+            mime = magic.Magic(mime=True)
+            content_type = mime.from_file(file_path)
+            f = open(file_path, 'rb')
+            attachment_response = HttpResponse(f.read(), content_type=content_type)
+            attachment_response['Content-Disposition'] = 'inline; filename=' + v
+            f.close()
+            allegato = BytesIO()
+            allegato.write(attachment_response.content)
+            allegato.seek(0)
+            wsclient.aggiungi_allegato(nome=v,
+                                       descrizione=subject,
+                                       fopen=allegato)
+
     # print(wsclient.is_valid())
     logger.debug(wsclient.render_dataXML())
     prot_resp = wsclient.protocolla()

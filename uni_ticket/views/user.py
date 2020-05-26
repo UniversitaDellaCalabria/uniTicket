@@ -460,8 +460,11 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                         protocol_number = ticket_protocol(configuration=protocol_configuration,
                                                           user=current_user,
-                                                          subject=ticket.code,
-                                                          response=response)
+                                                          subject=ticket.subject,
+                                                          file_name=ticket.code,
+                                                          response=response,
+                                                          attachments_folder=ticket.get_folder(),
+                                                          attachments_dict=ticket.get_allegati_dict())
                         # set protocol data in ticket
                         ticket.protocol_number = protocol_number
                         ticket.protocol_date = timezone.now()
@@ -1115,11 +1118,12 @@ def download_ticket_pdf(request, ticket_id, ticket):
 
     try:
         # append attachments
-        for k,v in ticket.get_allegati_dict().items():
-            path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
-                                     ticket.get_folder(),
-                                     v)
-            merger.append(path)
+        # disabled
+        # for k,v in ticket.get_allegati_dict().items():
+            # path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
+                                     # ticket.get_folder(),
+                                     # v)
+            # merger.append(path)
         # end append attachments
         merger.write(pdf_path)
 

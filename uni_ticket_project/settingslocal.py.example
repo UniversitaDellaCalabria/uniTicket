@@ -279,20 +279,29 @@ PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instanc
 <Flusso>E</Flusso>
 </Identificatore>
 <Mittente>
+
 <Dipendente id="{matricola_dipendente}">
 <Denominazione>{denominazione_persona}</Denominazione>
 </Dipendente>
+
+<Studente id="{matricola_studente}">
+<Denominazione>{denominazione_persona}</Denominazione>
+</Studente>
+
+<Persona id="{matricola_dipendente}">
+<Denominazione>{denominazione_persona}</Denominazione>
+</Persona>
+
 </Mittente>
 <Destinatario>
 <Amministrazione>
 <Denominazione>UNICAL</Denominazione>
 <CodiceAmministrazione>UNICAL</CodiceAmministrazione>
 <IndirizzoTelematico tipo="smtp">amministrazione@pec.unical.it</IndirizzoTelematico>
-<UnitaOrganizzativa id="5"/>
+<UnitaOrganizzativa id="{uo_id}"/>
 </Amministrazione>
 </Destinatario>
 <Classifica>
-<!--  Titolario PEO 7.1; id: 9095   -->
 <CodiceTitolario>{id_titolario}</CodiceTitolario>
 </Classifica>
 <!--  Informazioni sul fascicolo  -->
@@ -304,35 +313,31 @@ PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instanc
 <TipoDocumento>{tipo_doc}</TipoDocumento>
 </Documento>
 <Allegati>
-<!--  Allegati  -->
+<!-- Allegati -->
 </Allegati>
 </Descrizione>
 <ApplicativoProtocollo nome="ArchiPRO">
-<Parametro nome="agd" valore="483"/>
-<Parametro nome="uo" valore="1231"/>
+<Parametro nome="agd" valore="{agd}"/>
+<Parametro nome="uo" valore="{uo}"/>
 </ApplicativoProtocollo>
 </Segnatura>
 """
 
-# Flusso entrata per dipendenti
-# mittente persona fisica come dipendente, destinatario Unical
-parametri_ws_archipro_tmpl = '<Parametro nome="{nome}" valore="{valore}" />'
-parametri_ws_archipro = [{'nome': 'agd', 'valore': '483'},
-                         {'nome': 'uo', 'valore': '1231'}]
-
-PROTOCOLLO_FASCICOLO_DEFAULT = '3'
-PROTOCOLLO_TITOLARIO_DEFAULT = '9095'
-PROTOCOLLO_CODICI_TITOLARI = (
-                               ('9095','7.1'), # dipendenti
-                               ('9099', '7.5'), # docenti una-tantum
-                             )
-
-# PRODUCTION
-PROT_URL = 'http://PROT_URL?wsdl'
-PROT_LOGIN = 'PROT_USERNAME'
-PROT_PASSW = 'PROT_PASSW'
 
 # TEST
-PROT_TEST_URL = 'http://PROT_TEST_URL?wsdl'
-PROT_TEST_LOGIN = 'PROT_USERNAME'
-PROT_TEST_PASSW = 'PROT_PASSW'
+PROT_TEST_AOO = 'default_aoo'
+PROTOCOLLO_FASCICOLO_DEFAULT = 'default_fascicolo'
+PROTOCOLLO_FASCICOLO_ANNO_DEFAULT = 'default_year'
+PROTOCOLLO_AGD_DEFAULT = 'default_agd'
+PROTOCOLLO_UO_DEFAULT = 'default_uo'
+PROTOCOLLO_UO_ID_DEFAULT = 'default_uo_id'
+PROTOCOLLO_TITOLARIO_DEFAULT = 'default_titolario'
+PROT_TEST_URL = 'url_test'
+PROT_TEST_LOGIN = 'test_login'
+PROT_TEST_PASSW = 'test_passw'
+
+# PRODUCTION USE
+# PROT_AOO = PROT_TEST_AOO if DEBUG else 'prod_aoo'
+PROT_URL = PROT_TEST_URL if DEBUG else 'prod_url'
+PROT_LOGIN = PROT_TEST_LOGIN if DEBUG else 'prod_login'
+PROT_PASSW = PROT_TEST_PASSW if DEBUG else 'prod_passw'

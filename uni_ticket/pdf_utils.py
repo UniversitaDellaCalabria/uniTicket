@@ -3,7 +3,7 @@ import pdfkit
 import re
 
 from django.conf import settings
-from django.http.response import HttpResponse
+from django.http import HttpResponse
 
 
 def response_as_pdf(response, pdf_fname):

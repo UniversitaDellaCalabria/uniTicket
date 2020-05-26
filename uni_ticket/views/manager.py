@@ -1509,11 +1509,8 @@ def category_input_module_preview(request, structure_slug,
                                                       subject=form.cleaned_data['ticket_subject'],
                                                       test=True)
                     messages.add_message(request, messages.SUCCESS,
-                                         _("Il test del sistema di protocollo "
-                                           "ha dato esito positivo: n. <b>{}/{}</b>. "
-                                           "<br>"
-                                           "Per il test sono stati utilizzati "
-                                           "i seguenti parametri"
+                                         _("Il sistema di protocollo ha risposto "
+                                           "correttamente, utilizzando la seguente configurazione."
                                            "<ul>"
                                            "<li><b>AOO</b>: {}</li>"
                                            "<li><b>Fascicolo (num)</b>: {}</li>"
@@ -1522,17 +1519,24 @@ def category_input_module_preview(request, structure_slug,
                                            "<li><b>UO</b>: {}</li>"
                                            "<li><b>ID UO</b>: {}</li>"
                                            "<li><b>Titolario</b>: {}</li>"
-                                           ).format(protocol_number,
-                                                    timezone.now().year,
-                                                    settings.PROT_TEST_AOO,
+                                           "</ul>"
+                                           "Questa non corrisponde a quella da te configurata "
+                                           "e <b>serve solo a verificare che i sistemi comunichino "
+                                           "correttamente</b>"
+                                           "<br>"
+                                           "Numero protocollo: <b>{}/{}</b>. "
+                                           ).format(settings.PROT_TEST_AOO,
                                                     settings.PROTOCOLLO_FASCICOLO_DEFAULT,
                                                     settings.PROTOCOLLO_FASCICOLO_ANNO_DEFAULT,
                                                     settings.PROTOCOLLO_AGD_DEFAULT,
                                                     settings.PROTOCOLLO_UO_DEFAULT,
                                                     settings.PROTOCOLLO_UO_ID_DEFAULT,
-                                                    settings.PROTOCOLLO_TITOLARIO_DEFAULT
+                                                    settings.PROTOCOLLO_TITOLARIO_DEFAULT,
+                                                    protocol_number,
+                                                    timezone.now().year,
                                                     ))
                 except Exception as e:
+                    logger.error("Errore Protocollazione: {} - {}".format(request.user, e))
                     messages.add_message(request, messages.ERROR,
                                          _("<b>Errore protocollo</b>: {}").format(e))
             # end Protocol TEST

@@ -289,6 +289,8 @@ class WSArchiPROClient(object):
         allegato.fileContent = self._encode_filestream(fopen)
         allegato_dict['ns0:attach']  = allegato
 
+
+
         self.allegati.append(allegato_dict)
         return self.render_AllegatoXML(allegato_dict)
 
