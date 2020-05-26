@@ -159,6 +159,7 @@ def delete_directory(path):
         shutil.rmtree(path)
         return path
     except:
+        logger.error('Error removing folder{}'.format(path))
         return False
 
 def save_file(f, path, nome_file):
@@ -484,7 +485,6 @@ def ticket_protocol(configuration,
 
     # logger.info('Avvenuta Protocollazione Richiesta {} numero: {}'.format(form.cleaned_data['subject'],
                                                                           # domanda_bando.numero_protocollo))
-    # domanda_bando.data_protocollazione = timezone.localtime()
-    # se non torna un numero di protocollo emerge l'eccezione
+    # raise exception if wsclient hasn't a protocol number
     assert wsclient.numero
     return wsclient.numero

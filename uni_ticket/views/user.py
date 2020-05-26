@@ -63,10 +63,10 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
                 if os.path.exists(source):
                     shutil.copytree(source, destination)
             except:
-                logger.info('[{}] {} try to copy not existent folder {}'
-                            ''.format(timezone.now(),
-                                      log_user,
-                                      source))
+                logger.error('[{}] {} try to copy not existent folder {}'
+                             ''.format(timezone.now(),
+                                       log_user,
+                                       source))
 
 # close ticket as soon as opened if it's a notification ticket
 def _close_notification_ticket(ticket, user, operator, ticket_assignment):
@@ -478,19 +478,15 @@ def ticket_add_new(request, structure_slug, category_slug):
                     # raise Exception and do some operations
                     except Exception as e:
                         # log protocol fails
-                        logger.info('[{}] user {} protocol for ticket {} '
-                                    'failed: {}'
-                                    ''.format(timezone.now(),
-                                              log_user,
-                                              ticket,
-                                              e))
+                        logger.error('[{}] user {} protocol for ticket {} '
+                                     'failed: {}'
+                                     ''.format(timezone.now(),
+                                               log_user,
+                                               ticket,
+                                               e))
                         # delete attachments
-                        try:
-                            folder = '{}/{}'.format(settings.MEDIA_ROOT,
-                                                    ticket.get_folder())
-                            shutil.rmtree(folder)
-                        except:
-                            pass
+                        delete_directory(ticket.get_folder())
+
                         # delete assignment
                         ticket_assignment.delete()
                         # delete ticket
@@ -890,10 +886,10 @@ def ticket_message(request, ticket_id):
     if request.method == 'POST':
         if not ticket.is_open():
             # log action
-            logger.info('[{}] user {} tried to submit'
-                        ' a message for the not opened ticket {}'.format(timezone.now(),
-                                                                        request.user,
-                                                                        ticket))
+            logger.errpr('[{}] user {} tried to submit'
+                         ' a message for the not opened ticket {}'.format(timezone.now(),
+                                                                         request.user,
+                                                                         ticket))
             return custom_message(request, _("Il ticket non è modificabile"))
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
@@ -982,10 +978,10 @@ def ticket_close(request, ticket_id):
 
     if ticket.is_closed:
         # log action
-        logger.info('[{}] user {} tried to close '
-                    ' the already closed ticket {}'.format(timezone.now(),
-                                                           request.user,
-                                                           ticket))
+        logger.error('[{}] user {} tried to close '
+                     ' the already closed ticket {}'.format(timezone.now(),
+                                                            request.user,
+                                                            ticket))
 
         return custom_message(request, _("Il ticket è già chiuso!"))
 
@@ -1118,7 +1114,9 @@ def download_ticket_pdf(request, ticket_id, ticket):
 
     try:
         # append attachments
-        # disabled
+
+        # disabled (not PDF files raise Exception!)
+
         # for k,v in ticket.get_allegati_dict().items():
             # path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
                                      # ticket.get_folder(),
@@ -1132,21 +1130,30 @@ def download_ticket_pdf(request, ticket_id, ticket):
         response = HttpResponse(f.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline; filename=' + pdf_fname
     except Exception as e:
-        json_dict = json.loads(ticket.modulo_compilato)
-        ticket_dict = get_as_dict(json_dict)
+        logger.error('[{}] user {} tried to download pdf version '
+                     ' of ticket {} but got an error'
+                     ''.format(timezone.now(),
+                               request.user,
+                               ticket))
+
+        # if attachments!
+        # json_dict = json.loads(ticket.modulo_compilato)
+        # ticket_dict = get_as_dict(json_dict)
+        # return custom_message(request,
+                              # _("Sei incorso in un errore relativo alla interpretazione "
+                                # "dei file PDF da te immessi come allegato. "
+                                # "Nello specifico: '{}' presenta delle anomalie di formato. "
+                                # "Questo è dovuto al processo di produzione "
+                                # "del PDF. E' necessario ricreare il PDF "
+                                # "con una procedura differente da quella "
+                                # "precedenemente utilizzata oppure, più "
+                                # "semplicemente, ristampare il PDF come file, "
+                                # "rimuovere il vecchio allegato dal modulo inserito "
+                                # "e caricare il nuovo appena ristampato/riconvertito."
+                                # ).format(ticket_dict.get('allegati')))
         return custom_message(request,
-                              _("Sei incorso in un errore relativo alla interpretazione "
-                                "dei file PDF da te immessi come allegato. "
-                                "Nello specifico: '{}' presenta delle anomalie di formato. "
-                                "Questo è dovuto al processo di produzione "
-                                "del PDF. E' necessario ricreare il PDF "
-                                "con una procedura differente da quella "
-                                "precedenemente utilizzata oppure, più "
-                                "semplicemente, ristampare il PDF come file, "
-                                "rimuovere il vecchio allegato dal modulo inserito "
-                                "e caricare il nuovo appena ristampato/riconvertito."
-                                ).format(ticket_dict.get('allegati')))
-    # pulizia
+                              _("Errore nella generazione del file PDF"))
+    # clean
     f.close()
     main_pdf_file.close()
     os.remove(pdf_path)

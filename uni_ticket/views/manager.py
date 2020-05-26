@@ -775,13 +775,13 @@ def category_add_new(request, structure_slug, structure):
                                                organizational_structure=structure)
             if slug_name_exist:
                 # log action
-                logger.info('[{}] manager of structure {}'
-                            ' {} tried to add a new category'
-                            ' with existent name {} or slug {}'.format(timezone.now(),
-                                                                       structure,
-                                                                       request.user,
-                                                                       name,
-                                                                       slug))
+                logger.error('[{}] manager of structure {}'
+                             ' {} tried to add a new category'
+                             ' with existent name {} or slug {}'.format(timezone.now(),
+                                                                        structure,
+                                                                        request.user,
+                                                                        name,
+                                                                        slug))
                 messages.add_message(request, messages.ERROR,
                                  _("Esiste già una tipologia di richiesta con"
                                    " nome {} o slug {}".format(name, slug)))
@@ -1278,13 +1278,13 @@ def category_input_module_delete(request, structure_slug,
     if not module.can_be_deleted():
 
         # log action
-        logger.info('[{}] manager of structure {}'
-                    ' {} tried to delete'
-                    ' the module {} of category {}'.format(timezone.now(),
-                                                           structure,
-                                                           request.user,
-                                                           module,
-                                                           category))
+        logger.error('[{}] manager of structure {}'
+                     ' {} tried to delete'
+                     ' the module {} of category {}'.format(timezone.now(),
+                                                            structure,
+                                                            request.user,
+                                                            module,
+                                                            category))
 
         messages.add_message(request, messages.ERROR,
                              _("Impossibile eliminare il modulo {}."
@@ -1425,13 +1425,13 @@ def category_input_field_delete(request, structure_slug,
     if not module.can_be_deleted():
 
         # log action
-        logger.info('[{}] manager of structure {}'
-                    ' {} tried to delete a field'
-                    ' from module {} of category {}'.format(timezone.now(),
-                                                            structure,
-                                                            request.user,
-                                                            module,
-                                                            category))
+        logger.error('[{}] manager of structure {}'
+                     ' {} tried to delete a field'
+                     ' from module {} of category {}'.format(timezone.now(),
+                                                             structure,
+                                                             request.user,
+                                                             module,
+                                                             category))
 
         messages.add_message(request, messages.ERROR,
                              _("Impossibile eliminare il modulo {}."
@@ -1585,13 +1585,13 @@ def category_input_field_edit(request, structure_slug,
         if not module.can_be_deleted():
 
             # log action
-            logger.info('[{}] manager of structure {}'
-                        ' {} tried to edit a field'
-                        ' from module {} of category {}'.format(timezone.now(),
-                                                                structure,
-                                                                request.user,
-                                                                module,
-                                                                category))
+            logger.error('[{}] manager of structure {}'
+                         ' {} tried to edit a field'
+                         ' from module {} of category {}'.format(timezone.now(),
+                                                                 structure,
+                                                                 request.user,
+                                                                 module,
+                                                                 category))
 
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare il campo"))

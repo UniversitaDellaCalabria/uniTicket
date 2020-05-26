@@ -613,8 +613,8 @@ def ticket_close(request, structure_slug, ticket_id,
     # Se il ticket non è chiudibile (per dipendenze attive)
     if not ticket.is_closable():
         # log action
-        logger.info('[{}] {} tried to'
-                    ' close not closable ticket {}'.format(timezone.now(),
+        logger.error('[{}] {} tried to'
+                     ' close not closable ticket {}'.format(timezone.now(),
                                                             request.user,
                                                             ticket))
         return custom_message(request,
@@ -688,28 +688,28 @@ def ticket_reopen(request, structure_slug, ticket_id,
     """
     if not ticket.is_closed:
         # log action
-        logger.info('[{}] {} tried to reopen'
-                    ' not closed ticket {}'.format(timezone.now(),
-                                                   request.user,
-                                                   ticket))
+        logger.error('[{}] {} tried to reopen'
+                     ' not closed ticket {}'.format(timezone.now(),
+                                                    request.user,
+                                                    ticket))
         return custom_message(request,
                               _("Il ticket {} non è stato chiuso").format(ticket),
                               structure_slug=structure.slug)
 
     if ticket.input_module.ticket_category.is_notify:
         # log action
-        logger.info('[{}] {} tried to reopen'
-                    ' a notification ticket {}'.format(timezone.now(),
-                                                       request.user,
-                                                       ticket))
+        logger.error('[{}] {} tried to reopen'
+                     ' a notification ticket {}'.format(timezone.now(),
+                                                        request.user,
+                                                        ticket))
         return custom_message(request,
                               _("Il ticket {} non può essere riaperto").format(ticket),
                               structure_slug=structure.slug)
 
     if not ticket.has_been_taken():
         # log action
-        logger.info('[{}] {} tried to reopen'
-                    ' not taken ticket {}'.format(timezone.now(),
+        logger.error('[{}] {} tried to reopen'
+                     ' not taken ticket {}'.format(timezone.now(),
                                                    request.user,
                                                    ticket))
         return custom_message(request,
@@ -1238,9 +1238,9 @@ def task_remove(request, structure_slug,
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
 
     # log action
-    logger.info('[{}] {} tried to'
-                ' removed task {}'
-                ' in ticket {}'.format(timezone.now(),
+    logger.error('[{}] {} tried to'
+                 ' removed task {}'
+                 ' in ticket {}'.format(timezone.now(),
                                         request.user,
                                         task,
                                         ticket))
@@ -1314,12 +1314,12 @@ def task_detail(request, structure_slug, ticket_id, task_id,
         if can_manage['readonly']:
 
             # log action
-            logger.info('[{}] {} tried to'
-                        ' edit task {}'
-                        ' in readonly ticket {}'.format(timezone.now(),
-                                                        request.user,
-                                                        task,
-                                                        ticket))
+            logger.error('[{}] {} tried to'
+                         ' edit task {}'
+                         ' in readonly ticket {}'.format(timezone.now(),
+                                                         request.user,
+                                                         task,
+                                                         ticket))
 
             messages.add_message(request, messages.ERROR, settings.READONLY_COMPETENCE_OVER_TICKET)
             return redirect('uni_ticket:manage_ticket_url_detail',
@@ -1328,10 +1328,10 @@ def task_detail(request, structure_slug, ticket_id, task_id,
         if task.is_closed:
 
             # log action
-            logger.info('[{}] {} tried to'
-                        ' edit closed task {}'.format(timezone.now(),
-                                                      request.user,
-                                                      task))
+            logger.error('[{}] {} tried to'
+                         ' edit closed task {}'.format(timezone.now(),
+                                                       request.user,
+                                                       task))
 
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare un'attività chiusa"))
@@ -1352,12 +1352,12 @@ def task_detail(request, structure_slug, ticket_id, task_id,
             ticket.update_log(user=request.user, note=msg)
 
             # log action
-            logger.info('[{}] {} tried to'
-                        ' edited task {}'
-                        ' priority to {}'.format(timezone.now(),
-                                                 request.user,
-                                                 task,
-                                                 priority_text))
+            logger.error('[{}] {} tried to'
+                         ' edited task {}'
+                         ' priority to {}'.format(timezone.now(),
+                                                  request.user,
+                                                  task,
+                                                  priority_text))
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Attività aggiornata con successo"))
@@ -1515,12 +1515,12 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
                               structure_slug=structure.slug)
     if ticket.is_closed:
         # log action
-        logger.info('[{}] {} tried to'
-                    ' remove task {}'
-                    ' in closed ticket {}'.format(timezone.now(),
-                                                  request.user,
-                                                  task,
-                                                  ticket))
+        logger.error('[{}] {} tried to'
+                     ' remove task {}'
+                     ' in closed ticket {}'.format(timezone.now(),
+                                                   request.user,
+                                                   task,
+                                                   ticket))
         return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
                               structure_slug=structure.slug)
 
@@ -1530,12 +1530,12 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
     task.update_log(user=request.user,note=msg)
 
     # log action
-    logger.info('[{}] {} tried to'
-                ' reopened task {}'
-                ' in closed ticket {}'.format(timezone.now(),
-                                              request.user,
-                                              task,
-                                              ticket))
+    logger.error('[{}] {} tried to'
+                 ' reopened task {}'
+                 ' in closed ticket {}'.format(timezone.now(),
+                                               request.user,
+                                               task,
+                                               ticket))
 
     ticket.update_log(user=request.user,note=msg)
     messages.add_message(request, messages.SUCCESS,
@@ -1604,10 +1604,10 @@ def task_edit(request, structure_slug, ticket_id, task_id,
     if request.method == 'POST':
         if task.is_closed:
             # log action
-            logger.info('[{}] {} tried to'
-                        ' edit closed task {}'.format(timezone.now(),
-                                                      request.user,
-                                                      task))
+            logger.error('[{}] {} tried to'
+                         ' edit closed task {}'.format(timezone.now(),
+                                                       request.user,
+                                                       task))
 
             messages.add_message(request, messages.ERROR,
                                  _("Impossibile modificare un'attività chiusa"))
