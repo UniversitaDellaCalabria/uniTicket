@@ -140,7 +140,7 @@ USER_TICKET_MESSAGE = _("""Hai {status} un messaggio per il ticket \"{ticket}\"
 
 Oggetto: {message_subject}
 
-Testo: {message_body}
+Testo: {message_text}
 
 Clicca qui {url} per aprire il pannello dei messaggi.""")
 
