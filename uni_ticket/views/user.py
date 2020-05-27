@@ -450,6 +450,16 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                ticket,
                                                office))
 
+                # category default tasks assigned to ticket (if present)
+                _assign_default_tasks_to_new_ticket(ticket=ticket,
+                                                    category=category,
+                                                    log_user=log_user)
+
+                # send success message to user
+                ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
+                                 settings.NEW_TICKET_CREATED_ALERT
+                compiled_message = ticket_message.format(ticket.subject)
+
                 # Protocol
                 if category.protocol_required:
                     try:
@@ -471,9 +481,9 @@ def ticket_add_new(request, structure_slug, category_slug):
                         ticket.save(update_fields=['protocol_number',
                                                    'protocol_date'])
                         messages.add_message(request, messages.SUCCESS,
-                                             _("Protocollo effettuato "
-                                               "con successo: n. <b>{}/{}</b>").format(protocol_number,
-                                                                                       timezone.now().year))
+                                             _("Richiesta protocollata "
+                                               "correttamente: n. <b>{}/{}</b>").format(protocol_number,
+                                                                                        timezone.now().year))
                     # if protocol fails
                     # raise Exception and do some operations
                     except Exception as e:
@@ -485,31 +495,30 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                ticket,
                                                e))
                         # delete attachments
-                        delete_directory(ticket.get_folder())
+                        # delete_directory(ticket.get_folder())
 
                         # delete assignment
-                        ticket_assignment.delete()
+                        # ticket_assignment.delete()
                         # delete ticket
-                        ticket.delete()
+                        # ticket.delete()
                         messages.add_message(request, messages.ERROR,
                                              _("<b>Errore protocollo</b>: {}").format(e))
+                        messages.add_message(request, messages.INFO,
+                                             _("<b>Attenzione</b>: la tua richiesta è stata "
+                                               "comunque creata, nonostante "
+                                               "la protocollazione sia fallita."
+                                               "<br>"
+                                               "Questa tipologia di richieste "
+                                               "prevede il numero di protocollo obbligatorio."
+                                               "<br>"
+                                               "Pertanto, puoi eliminarla e crearne una nuova "
+                                               "o contattare il supporto tecnico."))
                         # stop all other operations and come back to form
-                        return render(request, template, d)
+                        # return render(request, template, d)
                 # end Protocol
 
-                # category default tasks assigned to ticket (if present)
-                _assign_default_tasks_to_new_ticket(ticket=ticket,
-                                                    category=category,
-                                                    log_user=log_user)
-
-                # send success message to user
-                ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
-                                 settings.NEW_TICKET_CREATED_ALERT
-                compiled_message = ticket_message.format(ticket.subject)
-                messages.add_message(request,
-                                     messages.SUCCESS,
-                                     compiled_message
-                                    )
+                if category.protocol_required and ticket.protocol_number or not category.protocol_required:
+                    messages.add_message(request, messages.SUCCESS, compiled_message)
 
                 # if office operators must receive notification email
                 if category.receive_email:
