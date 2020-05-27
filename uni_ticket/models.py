@@ -90,7 +90,7 @@ class TicketCategory(models.Model):
                                             help_text=_("Es: 'Hai correttamente "
                                                         "confermato la tua partecipazione'. "
                                                         "Apri e chiudi le parentesi graffe "
-                                                        "per inserire il codice del ticket. "
+                                                        "per inserire l'oggetto del ticket. "
                                                         "Lascia vuoto per usare il testo predefinito \"{}\""
                                                         "").format(settings.NEW_TICKET_CREATED_ALERT))
     # fields to map roles

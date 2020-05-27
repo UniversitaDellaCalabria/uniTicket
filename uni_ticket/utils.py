@@ -75,6 +75,7 @@ def user_is_manager(user, structure):
     """
     Returns True if user is a manager for the structure
     """
+    # if user.is_superuser: return True
     umos = UserManageOrganizationalStructure
     user_structure_manager = umos.objects.filter(user=user,
                                                  organizational_structure=structure).first()
@@ -434,7 +435,10 @@ def ticket_protocol(configuration,
 
                       # Variabili
                      'oggetto':'{}'.format(subject),
-                     'matricola_dipendente': user.matricola_dipendente,
+                     # 'matricola_dipendente': user.matricola_dipendente,
+                     'id_persona': user.taxpayer_id,
+                     'nome_persona': user.first_name,
+                     'cognome_persona': user.last_name,
                      'denominazione_persona': ' '.join((user.first_name,
                                                         user.last_name,)),
 
@@ -481,6 +485,7 @@ def ticket_protocol(configuration,
 
     # print(wsclient.is_valid())
     logger.debug(wsclient.render_dataXML())
+    print(wsclient.render_dataXML())
     prot_resp = wsclient.protocolla()
 
     # logger.info('Avvenuta Protocollazione Richiesta {} numero: {}'.format(form.cleaned_data['subject'],

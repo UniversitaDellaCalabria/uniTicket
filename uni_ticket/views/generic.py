@@ -369,12 +369,17 @@ def ticket_message_delete(request, ticket_message_id):
                          _("Messaggio <b>{}</b> eliminato con successo.".format(ticket_message)))
 
     # delete message
+    msg_subject = ticket_message.subject
+    msg_text = ticket_message.text
+
     ticket_message.delete()
     if user_type=='user':
 
         # Send mail to ticket owner
         mail_params = {'hostname': settings.HOSTNAME,
                        'status': _("eliminato"),
+                       'message_subject': msg_subject,
+                       'message_text': msg_text,
                        'ticket': ticket,
                        'user': request.user,
                        'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',

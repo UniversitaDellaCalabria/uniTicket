@@ -138,6 +138,10 @@ TICKET_UPDATED = _("""Il ticket "{ticket}" è stato aggiornato con il seguente m
 
 USER_TICKET_MESSAGE = _("""Hai {status} un messaggio per il ticket \"{ticket}\"
 
+Oggetto: {message_subject}
+
+Testo: {message_body}
+
 Clicca qui {url} per aprire il pannello dei messaggi.""")
 
 TICKET_DELETED = _("""Il ticket "{ticket}" è stato eliminato correttamente.""")

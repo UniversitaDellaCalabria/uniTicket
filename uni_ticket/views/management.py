@@ -1090,6 +1090,8 @@ def ticket_message(request, structure_slug, ticket_id,
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
                            'status': _("ricevuto"),
+                           'message_subject': ticket_reply.subject,
+                           'message_text': ticket_reply.text,
                            'ticket': ticket,
                            'user': ticket.created_by,
                            'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',

@@ -505,7 +505,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                 # send success message to user
                 ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
                                  settings.NEW_TICKET_CREATED_ALERT
-                compiled_message = ticket_message.format(ticket.code)
+                compiled_message = ticket_message.format(ticket.subject)
                 messages.add_message(request,
                                      messages.SUCCESS,
                                      compiled_message
@@ -886,7 +886,7 @@ def ticket_message(request, ticket_id):
     if request.method == 'POST':
         if not ticket.is_open():
             # log action
-            logger.errpr('[{}] user {} tried to submit'
+            logger.error('[{}] user {} tried to submit'
                          ' a message for the not opened ticket {}'.format(timezone.now(),
                                                                          request.user,
                                                                          ticket))
@@ -910,6 +910,8 @@ def ticket_message(request, ticket_id):
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
                            'status': _("inviato"),
+                           'message_subject': ticket_reply.subject,
+                           'message_text': ticket_reply.text,
                            'ticket': ticket,
                            'user': request.user,
                            'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',

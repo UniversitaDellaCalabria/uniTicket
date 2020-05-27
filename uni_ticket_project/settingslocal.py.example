@@ -288,7 +288,9 @@ PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instanc
 <Denominazione>{denominazione_persona}</Denominazione>
 </Studente>
 
-<Persona id="{matricola_dipendente}">
+<Persona id="{id_persona}">
+<Nome>{nome_persona}</Nome>
+<Cognome>{cognome_persona}</Cognome>
 <Denominazione>{denominazione_persona}</Denominazione>
 </Persona>
 

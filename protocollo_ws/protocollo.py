@@ -6,7 +6,10 @@ import datetime
 import io
 import os
 
+from django.utils.translation import gettext as _
+
 from zeep import Client
+
 from protocollo_ws.utils import clean_string
 from protocollo_ws.settings import (PROT_TEMPLATE_FLUSSO_ENTRATA_DIPENDENTE_PATH,
                                     PROT_DOC_ENCODING,
@@ -42,10 +45,13 @@ class WSArchiPROClient(object):
                            'id_titolario',
 
                            'oggetto',
-                           'matricola_dipendente',
-                           'denominazione_persona',
-                           'nome_doc',
-                           'tipo_doc']
+                           # 'matricola_dipendente',
+                           'id_persona',
+                           'nome_persona',
+                           'cognome_persona',
+                           'denominazione_persona',]
+                           # 'nome_doc',
+                           # 'tipo_doc']
 
     def __init__(self,
                  wsdl_url,
@@ -59,11 +65,12 @@ class WSArchiPROClient(object):
         """
 
         for attr in required_attributes:
-            print(attr)
-            setattr(self, attr, clean_string(kwargs.get(attr)))
+            # setattr(self, attr, clean_string(kwargs.get(attr)))
+            if not kwargs.get(attr):
+                raise Exception(_('Value of {} is null').format(attr))
+            setattr(self, attr, clean_string(kwargs[attr]))
 
-        #self.doc_fopen = kwargs.get('fopen')
-        #
+        # self.doc_fopen = kwargs.get('fopen')
 
         # numero viene popolato a seguito di una protocollazione
         if kwargs.get('numero') and kwargs.get('anno'):
@@ -73,8 +80,8 @@ class WSArchiPROClient(object):
             self.numero = None
             self.anno = None
 
-        if kwargs.get('aoo'):
-            self.aoo = kwargs.get('aoo')
+        # if kwargs.get('aoo'):
+            # self.aoo = kwargs.get('aoo')
 
         # diventa vero solo se numero/anno sono stati opportunamente estratti e verificati dal server del protocollo
         self.protocollato = False
