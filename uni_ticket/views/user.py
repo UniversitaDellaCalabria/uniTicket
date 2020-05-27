@@ -1108,7 +1108,19 @@ def download_ticket_pdf(request, ticket_id, ticket):
     pdf_fname = '{}.pdf'.format(ticket.code)
     pdf_path = settings.TMP_DIR + os.path.sep + pdf_fname
 
-    # get main pdf
+    # get PDF
+
+    # no need to merge if not attachments to manage :)
+    return response_as_pdf(response, pdf_fname)
+
+    #
+    #
+    #
+    # if we want to manage attachments
+    # we have to merge them in the main file (but only pdf!)
+    #
+    #
+    #
     main_pdf_file = response_as_pdf(response, pdf_fname).content
     merger = PdfFileMerger(strict=False)
     main_pdf_file = BytesIO(main_pdf_file)
@@ -1117,13 +1129,13 @@ def download_ticket_pdf(request, ticket_id, ticket):
     try:
         # append attachments
 
-        # disabled (not PDF files raise Exception!)
+        # not PDF files raise Exception!
 
-        # for k,v in ticket.get_allegati_dict().items():
-            # path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
-                                     # ticket.get_folder(),
-                                     # v)
-            # merger.append(path)
+        for k,v in ticket.get_allegati_dict().items():
+            path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
+                                     ticket.get_folder(),
+                                     v)
+            merger.append(path)
         # end append attachments
         merger.write(pdf_path)
 
