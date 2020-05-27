@@ -428,10 +428,11 @@ def ticket_protocol(configuration,
         prot_fascicolo_anno = configuration.protocollo_fascicolo_anno
         prot_template = configuration.protocollo_template
 
-    protocol_data = {'wsdl_url' : prot_url,
-                     'username' : prot_login,
-                     'password' : prot_passw,
-                     'template_xml_flusso': prot_template,
+    protocol_data = {
+                     # 'wsdl_url' : prot_url,
+                     # 'username' : prot_login,
+                     # 'password' : prot_passw,
+                     # 'template_xml_flusso': prot_template,
 
                       # Variabili
                      'oggetto':'{}'.format(subject),
@@ -453,7 +454,14 @@ def ticket_protocol(configuration,
                     }
 
     protclass = __import__(settings.CLASSE_PROTOCOLLO, globals(), locals(), ['*'])
-    wsclient = protclass.Protocollo(**protocol_data)
+
+    # wsclient = protclass.Protocollo(**protocol_data)
+    wsclient = protclass.Protocollo(wsdl_url=prot_url,
+                                    username=prot_login,
+                                    password=prot_passw,
+                                    template_xml_flusso=prot_template,
+                                    strictly_required=True,
+                                    **protocol_data)
 
     logger.info('Protocollazione richiesta {}'.format(subject))
     docPrinc = BytesIO()
@@ -485,7 +493,7 @@ def ticket_protocol(configuration,
 
     # print(wsclient.is_valid())
     logger.debug(wsclient.render_dataXML())
-    print(wsclient.render_dataXML())
+    # print(wsclient.render_dataXML())
     prot_resp = wsclient.protocolla()
 
     # logger.info('Avvenuta Protocollazione Richiesta {} numero: {}'.format(form.cleaned_data['subject'],

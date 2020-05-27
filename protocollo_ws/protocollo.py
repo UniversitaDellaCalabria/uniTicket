@@ -59,16 +59,19 @@ class WSArchiPROClient(object):
                  password,
                  template_xml_flusso=open(PROT_TEMPLATE_FLUSSO_ENTRATA_DIPENDENTE_PATH).read(),
                  required_attributes=REQUIRED_ATTRIBUTES,
+                 strictly_required=False,
                  **kwargs):
         """
         il codice titolario in WSArchiPRO corrisponde alla PRIMARYKEY dello schema SQL
         """
 
         for attr in required_attributes:
-            # setattr(self, attr, clean_string(kwargs.get(attr)))
-            if not kwargs.get(attr):
-                raise Exception(_('Value of {} is null').format(attr))
-            setattr(self, attr, clean_string(kwargs[attr]))
+            if strictly_required:
+                if not kwargs.get(attr):
+                    raise Exception(_('Value of {} is null').format(attr))
+                setattr(self, attr, clean_string(kwargs[attr]))
+            else:
+                setattr(self, attr, clean_string(kwargs.get(attr)))
 
         # self.doc_fopen = kwargs.get('fopen')
 
