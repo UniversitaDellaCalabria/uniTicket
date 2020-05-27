@@ -1509,32 +1509,9 @@ def category_input_module_preview(request, structure_slug,
                                                       subject=form.cleaned_data['ticket_subject'],
                                                       test=True)
                     messages.add_message(request, messages.SUCCESS,
-                                         _("Il sistema di protocollo ha risposto "
-                                           "correttamente, utilizzando la seguente configurazione."
-                                           "<ul>"
-                                           "<li><b>AOO</b>: {}</li>"
-                                           "<li><b>Fascicolo (num)</b>: {}</li>"
-                                           "<li><b>Fascicolo (anno)</b>: {}</li>"
-                                           "<li><b>AGD</b>: {}</li>"
-                                           "<li><b>UO</b>: {}</li>"
-                                           "<li><b>ID UO</b>: {}</li>"
-                                           "<li><b>Titolario</b>: {}</li>"
-                                           "</ul>"
-                                           "Questa non corrisponde a quella da te configurata "
-                                           "e <b>serve solo a verificare che i sistemi comunichino "
-                                           "correttamente</b>"
-                                           "<br>"
-                                           "Numero protocollo: <b>{}/{}</b>. "
-                                           ).format(settings.PROT_TEST_AOO,
-                                                    settings.PROTOCOLLO_FASCICOLO_DEFAULT,
-                                                    settings.PROTOCOLLO_FASCICOLO_ANNO_DEFAULT,
-                                                    settings.PROTOCOLLO_AGD_DEFAULT,
-                                                    settings.PROTOCOLLO_UO_DEFAULT,
-                                                    settings.PROTOCOLLO_UO_ID_DEFAULT,
-                                                    settings.PROTOCOLLO_TITOLARIO_DEFAULT,
-                                                    protocol_number,
-                                                    timezone.now().year,
-                                                    ))
+                                         _("Protocollo di test riuscito: "
+                                           "n. <b>{}/{}</b>").format(protocol_number,
+                                                                     timezone.now().year))
                 except Exception as e:
                     logger.error("Errore Protocollazione: {} - {}".format(request.user, e))
                     messages.add_message(request, messages.ERROR,
@@ -2726,12 +2703,39 @@ def structure_protocol_configuration_enable(request, structure_slug,
                     configuration_id=configuration_id)
 
 
+@login_required
+@is_manager
+def structure_protocol_configuration_test(request, structure_slug,
+                                          configuration_id, structure):
+    """
+    Structure protocol configuration test
 
+    :type structure_slug: String
+    :type configuration_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
 
+    :param structure_slug: structure slug
+    :param configuration_id: protocol configuration pk
+    :param structure: structure object (from @is_manager/@is_operator)
 
-
-
-
+    :return: response
+    """
+    configuration = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure,
+                                                                     pk=configuration_id).first()
+    try:
+        protocol_number = ticket_protocol(configuration=configuration,
+                                          user=request.user,
+                                          subject='test {}'.format(request.user),
+                                          test=True)
+        messages.add_message(request, messages.SUCCESS,
+                             _("Complimenti! Configurazione valida."))
+    except Exception as e:
+        logger.error("Errore Protocollazione: {} - {}".format(request.user, e))
+        messages.add_message(request, messages.ERROR,
+                             _("<b>Errore protocollo</b>: {}").format(e))
+    return redirect('uni_ticket:manager_structure_protocol_configuration_detail',
+                    structure_slug=structure_slug,
+                    configuration_id=configuration.pk)
 
 @login_required
 @is_manager
@@ -2854,9 +2858,10 @@ def category_protocol_configuration_new(request, structure_slug,
             messages.add_message(request, messages.SUCCESS,
                                  _("Configurazione creata con successo"))
 
-            return redirect('uni_ticket:manager_category_detail',
+            return redirect('uni_ticket:manager_category_protocol_configuration_detail',
                             structure_slug=structure_slug,
-                            category_slug=category_slug)
+                            category_slug=category_slug,
+                            configuration_id=configuration.pk)
         else:
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
@@ -2978,6 +2983,7 @@ def category_protocol_configuration_disable(request, structure_slug,
                     structure_slug=structure_slug,
                     category_slug=category_slug)
 
+@login_required
 @is_manager
 def category_protocol_configuration_enable(request, structure_slug,
                                            category_slug,
@@ -3030,3 +3036,72 @@ def category_protocol_configuration_enable(request, structure_slug,
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
+
+@login_required
+@is_manager
+def category_protocol_configuration_test(request, structure_slug,
+                                         category_slug,
+                                         configuration_id, structure):
+    """
+    Test a category protocol configuration
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type configuration_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param configuration_id: protocol configuration pk
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: redirect
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
+                                                            pk=configuration_id).first()
+    try:
+        protocol_number = ticket_protocol(configuration=configuration,
+                                          user=request.user,
+                                          subject='test {}'.format(request.user),
+                                          test=True)
+        messages.add_message(request, messages.SUCCESS,
+                             _("Complimenti! Configurazione valida."))
+    except Exception as e:
+        logger.error("Errore Protocollazione: {} - {}".format(request.user, e))
+        messages.add_message(request, messages.ERROR,
+                             _("<b>Errore protocollo</b>: {}").format(e))
+    return redirect('uni_ticket:manager_category_protocol_configuration_detail',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug,
+                    configuration_id=configuration.pk)
+
+@login_required
+@is_manager
+def manager_settings_check_protocol(request, structure_slug,
+                                    structure):
+    """
+    Test the protocol system
+
+    :type structure_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param structure: structure object (from @is_manager/@is_operator)
+
+    :return: redirect
+    """
+    try:
+        protocol_number = ticket_protocol(user=request.user,
+                                          subject='test {}'.format(request.user),
+                                          test=True)
+        messages.add_message(request, messages.SUCCESS,
+                             _("Il sistema di protocollo ha risposto correttamente."))
+    except Exception as e:
+        logger.error("Errore Protocollazione: {} - {}".format(request.user, e))
+        messages.add_message(request, messages.ERROR,
+                             _("<b>Errore protocollo</b>: {}").format(e))
+    return redirect('uni_ticket:manager_user_settings',
+                    structure_slug=structure_slug)

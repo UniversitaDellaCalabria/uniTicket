@@ -394,16 +394,17 @@ def get_text_with_hrefs(text):
         new_text = new_text.replace(ele, a_value)
     return new_text
 
-def ticket_protocol(configuration,
-                    user,
+def ticket_protocol(user,
                     subject,
+                    configuration=None,
                     file_name='test_name',
                     response=b'',
                     attachments_folder=settings.MEDIA_ROOT,
                     attachments_dict={},
                     test=False):
 
-    if test:
+    # Check only if protocol system works
+    if test and not configuration:
         prot_url = settings.PROT_TEST_URL
         prot_login = settings.PROT_TEST_LOGIN
         prot_passw = settings.PROT_TEST_PASSW
@@ -415,7 +416,21 @@ def ticket_protocol(configuration,
         prot_fascicolo_num = settings.PROTOCOLLO_FASCICOLO_DEFAULT
         prot_fascicolo_anno = settings.PROTOCOLLO_FASCICOLO_ANNO_DEFAULT
         prot_template = settings.PROTOCOL_XML
-    else:
+    # check my configuration in test environment
+    elif test and configuration:
+        prot_url = settings.PROT_TEST_URL
+        prot_login = settings.PROT_TEST_LOGIN
+        prot_passw = settings.PROT_TEST_PASSW
+        prot_aoo = configuration.protocollo_aoo
+        prot_agd = configuration.protocollo_agd
+        prot_uo = configuration.protocollo_uo
+        prot_id_uo = configuration.protocollo_id_uo
+        prot_titolario = configuration.protocollo_cod_titolario
+        prot_fascicolo_num = configuration.protocollo_fascicolo_numero
+        prot_fascicolo_anno = configuration.protocollo_fascicolo_anno
+        prot_template = configuration.protocollo_template
+    # for production
+    elif not test and configuration:
         prot_url = settings.PROT_URL
         prot_login = settings.PROT_LOGIN
         prot_passw = settings.PROT_PASSW
@@ -427,6 +442,9 @@ def ticket_protocol(configuration,
         prot_fascicolo_num = configuration.protocollo_fascicolo_numero
         prot_fascicolo_anno = configuration.protocollo_fascicolo_anno
         prot_template = configuration.protocollo_template
+    # for production a custom configuration is necessary
+    elif not test and not configuration:
+        raise Exception(_('Missing XML configuration for production'))
 
     protocol_data = {
                      # 'wsdl_url' : prot_url,

@@ -20,6 +20,14 @@
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna alla gestione parametri" %}
 </a>
+
+<a role="button" class="btn btn-outline-success"
+   href="{% url 'uni_ticket:manager_structure_protocol_configuration_test' structure_slug=structure.slug configuration_id=configuration.pk %}">
+    <svg class="icon icon-xs icon-success">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+    </svg> {% trans "Verifica" %}
+</a>
+
 {% if configuration.is_active %}
 <button type="button"
         class="btn btn-outline-secondary"

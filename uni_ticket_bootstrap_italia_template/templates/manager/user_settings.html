@@ -46,6 +46,13 @@
                                 {% trans "Qui puoi definire <b>flussi personalizzati</b> di protocollo per le pratiche della struttura." %}
                                 <br>
                                 {% trans "La configurazione attiva sarà ereditata da ogni tipologia di richiesta." %}
+                                <hr>
+                                <a role="button" class="mt-3 btn btn-outline-success"
+                                   href="{% url 'uni_ticket:manager_user_settings_check_protocol' structure_slug=structure.slug %}">
+                                    <svg class="icon icon-xs icon-success">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                    </svg> {% trans "Verifica il corretto funzionamento del sistema di protocollo" %}
+                                </a>
                             </div>
                         </div>
                     </div>
