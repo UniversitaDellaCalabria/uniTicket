@@ -2650,9 +2650,8 @@ def structure_protocol_configuration_disable(request, structure_slug,
                              _("Configurazione {} già disattivata"
                                "".format(configuration)))
 
-    return redirect('uni_ticket:manager_structure_protocol_configuration_detail',
-                    structure_slug=structure_slug,
-                    configuration_id=configuration_id)
+    return redirect('uni_ticket:manager_user_settings',
+                    structure_slug=structure_slug)
 
 @login_required
 @is_manager
@@ -2698,9 +2697,8 @@ def structure_protocol_configuration_enable(request, structure_slug,
                               request.user,
                               configuration))
 
-    return redirect('uni_ticket:manager_structure_protocol_configuration_detail',
-                    structure_slug=structure_slug,
-                    configuration_id=configuration_id)
+    return redirect('uni_ticket:manager_user_settings',
+                    structure_slug=structure_slug)
 
 
 @login_required
