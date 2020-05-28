@@ -122,6 +122,97 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     CAPTCHA_SALT = b'salt'
     # end CAPTCHA encryption
 
+- Configurare le impostazioni del protocollo informatico (ArchiPRO)
+
+.. code-block:: python
+
+    # PROTOCOLLO, questi valori possono variare sulla base di come
+    # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
+
+    CLASSE_PROTOCOLLO = 'protocollo_ws.protocollo'
+
+    # XML flusso
+    PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Intestazione>
+    <Oggetto>{oggetto}</Oggetto>
+    <Identificatore>
+    <CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+    <CodiceAOO>{aoo}</CodiceAOO>
+    <Flusso>E</Flusso>
+    </Identificatore>
+    <Mittente>
+
+    <Dipendente id="{matricola_dipendente}">
+    <Denominazione>{denominazione_persona}</Denominazione>
+    </Dipendente>
+
+    <Studente id="{matricola_studente}">
+    <Denominazione>{denominazione_persona}</Denominazione>
+    </Studente>
+
+    <Persona id="{id_persona}">
+    <Nome>{nome_persona}</Nome>
+    <Cognome>{cognome_persona}</Cognome>
+    <Denominazione>{denominazione_persona}</Denominazione>
+    </Persona>
+
+    </Mittente>
+    <Destinatario>
+    <Amministrazione>
+    <Denominazione>UNICAL</Denominazione>
+    <CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+    <IndirizzoTelematico tipo="smtp">amministrazione@pec.unical.it</IndirizzoTelematico>
+    <UnitaOrganizzativa id="{uo_id}"/>
+    </Amministrazione>
+    </Destinatario>
+    <Classifica>
+    <CodiceTitolario>{id_titolario}</CodiceTitolario>
+    </Classifica>
+    <!--  Informazioni sul fascicolo  -->
+    <Fascicolo numero="{fascicolo_numero}" anno="{fascicolo_anno}"/>
+    </Intestazione>
+    <Descrizione>
+    <Documento id="1" nome="{nome_doc}">
+    <DescrizioneDocumento>{nome_doc}</DescrizioneDocumento>
+    <TipoDocumento>{tipo_doc}</TipoDocumento>
+    </Documento>
+    <Allegati>
+    <!-- Allegati -->
+    </Allegati>
+    </Descrizione>
+    <ApplicativoProtocollo nome="ArchiPRO">
+    <Parametro nome="agd" valore="{agd}"/>
+    <Parametro nome="uo" valore="{uo}"/>
+    </ApplicativoProtocollo>
+    </Segnatura>
+    """
+
+
+    # TEST
+    PROT_TEST_AOO = 'default_aoo'
+    PROTOCOLLO_FASCICOLO_DEFAULT = 'default_fascicolo'
+    PROTOCOLLO_FASCICOLO_ANNO_DEFAULT = 'default_year'
+    PROTOCOLLO_AGD_DEFAULT = 'default_agd'
+    PROTOCOLLO_UO_DEFAULT = 'default_uo'
+    PROTOCOLLO_UO_ID_DEFAULT = 'default_uo_id'
+    PROTOCOLLO_TITOLARIO_DEFAULT = 'default_titolario'
+    PROT_TEST_URL = 'url_test'
+    PROT_TEST_LOGIN = 'test_login'
+    PROT_TEST_PASSW = 'test_passw'
+
+    # PRODUCTION USE
+    # PROT_AOO = PROT_TEST_AOO if DEBUG else 'prod_aoo'
+    PROT_URL = PROT_TEST_URL if DEBUG else 'prod_url'
+    PROT_LOGIN = PROT_TEST_LOGIN if DEBUG else 'prod_login'
+    PROT_PASSW = PROT_TEST_PASSW if DEBUG else 'prod_passw'
+
+- Consentire ai super utenti Django di accedere a tutte le strutture in frontend
+
+.. code-block: python
+
+    # superusers view all
+    SUPER_USER_VIEW_ALL = True
+
 Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (ed eventualmente sovrascrivere in *settingslocal.py*):
 
 - I nomi delle cartelle nelle quali verranno conservati gli allegati
