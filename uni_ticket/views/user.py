@@ -458,6 +458,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                 # send success message to user
                 ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
                                  settings.NEW_TICKET_CREATED_ALERT
+
                 compiled_message = ticket_message.format(ticket.subject)
 
                 # Protocol
