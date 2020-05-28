@@ -343,3 +343,6 @@ PROT_TEST_PASSW = 'test_passw'
 PROT_URL = PROT_TEST_URL if DEBUG else 'prod_url'
 PROT_LOGIN = PROT_TEST_LOGIN if DEBUG else 'prod_login'
 PROT_PASSW = PROT_TEST_PASSW if DEBUG else 'prod_passw'
+
+# superusers view all
+SUPER_USER_VIEW_ALL = True
