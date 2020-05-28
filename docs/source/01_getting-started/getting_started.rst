@@ -23,6 +23,14 @@ Download del software e dipendenze
     cd uniTicket
     pip3 install -r requirements
 
+Convert HTML to PDF using Webkit (QtWebKit)
+
+.. code-block::
+
+    wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb
+    sudo dpkg -i wkhtmltox_0.12.5-1.buster_amd64.deb
+    sudo apt install -f
+
 Setup parametri
 ===============
 
