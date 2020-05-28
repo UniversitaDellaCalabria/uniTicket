@@ -9,6 +9,9 @@ TICKET_MESSAGES_ATTACHMENT_SUBFOLDER = 'messages'
 TICKET_TASK_ATTACHMENT_SUBFOLDER = 'task'
 CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER = 'conditions'
 
+# superusers view all
+SUPER_USER_VIEW_ALL = True
+
 # show ticket priority to simple userse
 SIMPLE_USER_SHOW_PRIORITY = False
 

@@ -60,22 +60,25 @@ def user_manage_something(user):
     Tells us if the user is a manager or operator in some structure/office
     """
     if not user: return False
-    osoe = OrganizationalStructureOfficeEmployee
-    employee_offices = osoe.objects.filter(employee=user,
-                                           office__is_active=True)
-    if not employee_offices: return False
-    structures = []
-    for eo in employee_offices:
-        structure = eo.office.organizational_structure
-        if structure.is_active and structure not in structures:
-            structures.append(structure)
+    if settings.SUPER_USER_VIEW_ALL and user.is_superuser:
+        structures = OrganizationalStructure.objects.filter(is_active=True)
+    else:
+        osoe = OrganizationalStructureOfficeEmployee
+        employee_offices = osoe.objects.filter(employee=user,
+                                               office__is_active=True)
+        if not employee_offices: return False
+        structures = []
+        for eo in employee_offices:
+            structure = eo.office.organizational_structure
+            if structure.is_active and structure not in structures:
+                structures.append(structure)
     return sorted(structures, key=operator.attrgetter("name"))
 
 def user_is_manager(user, structure):
     """
     Returns True if user is a manager for the structure
     """
-    # if user.is_superuser: return True
+    if settings.SUPER_USER_VIEW_ALL and user.is_superuser: return True
     umos = UserManageOrganizationalStructure
     user_structure_manager = umos.objects.filter(user=user,
                                                  organizational_structure=structure).first()
@@ -88,6 +91,7 @@ def user_is_in_default_office(user, structure):
     Returns True is user is assigned to structure default office
     """
     if not user or not structure: return False
+    if settings.SUPER_USER_VIEW_ALL and user.is_superuser: return True
     osoe = OrganizationalStructureOfficeEmployee
     help_desk_assigned = osoe.objects.filter(employee=user,
                                              office__organizational_structure=structure,
