@@ -12,9 +12,12 @@
         </tr>
         {% if ticket.is_closed and ticket.closing_reason %}
         <tr>
+            <th scope="row">{% trans 'Data chiusura' %}</th>
+            <td>{{ ticket.closed_date }}</td>
+        </tr>
+        <tr>
             <th scope="row">{% trans 'Motivazione chiusura' %}</th>
             <td>{{ ticket.closing_reason | linebreaks }}</td>
-            <td>{{ ticket.closed_date }}</td>
         </tr>
         {% endif %}
         <!-- stupid var passed to template only to
