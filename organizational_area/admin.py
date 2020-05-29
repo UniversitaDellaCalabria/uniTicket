@@ -9,7 +9,7 @@ class AbstractAdmin(admin.ModelAdmin):
 
     class Media:
         js = ('js/textarea-autosize.js',)
-        css = {'all': ('css/textarea-small.css',),}
+        # css = {'all': ('css/textarea-small.css',),}
 
 
 @admin.register(OrganizationalStructureFunction)

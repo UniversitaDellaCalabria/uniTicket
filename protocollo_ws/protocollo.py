@@ -6,8 +6,6 @@ import datetime
 import io
 import os
 
-from django.utils.translation import gettext as _
-
 from zeep import Client
 
 from protocollo_ws.utils import clean_string
@@ -68,7 +66,7 @@ class WSArchiPROClient(object):
         for attr in required_attributes:
             if strictly_required:
                 if not kwargs.get(attr):
-                    raise Exception(_('Value of {} is null').format(attr))
+                    raise Exception('Value of {} is null'.format(attr))
                 setattr(self, attr, clean_string(kwargs[attr]))
             else:
                 setattr(self, attr, clean_string(kwargs.get(attr)))
