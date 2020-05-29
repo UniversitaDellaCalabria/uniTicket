@@ -1,5 +1,6 @@
 import nested_admin
 
+from admin_adv_search_builder.filters import AdvancedSearchBuilder
 from django.contrib import admin
 
 from .admin_nested_inlines import *
@@ -45,7 +46,8 @@ class TicketAdmin(nested_admin.NestedModelAdmin):
                        'closing_reason', 'priority')
     list_display = ('code', 'subject', 'priority', 'created_by', 'created',
                     'is_closed', 'closed_date', 'closed_by' )
-    list_filter = ('created', 'is_closed', 'closed_date', 'priority')
+    list_filter = (AdvancedSearchBuilder, 'created', 'is_closed',
+                   'closed_date', 'priority',)
     search_fields = ('code', 'subject', 'description',
                      'created_by__first_name', 'created_by__last_name',
                      'created_by__username',

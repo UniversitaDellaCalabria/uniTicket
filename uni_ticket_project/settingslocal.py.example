@@ -86,6 +86,9 @@ INSTALLED_APPS = [
     # protocollo webservice in uso
     # ogni università dovrebbe interfacciare il proprio
     # 'protocollo_ws',
+
+    # advanced search builder
+    admin_adv_search_builder,
 ]
 
 # Import chat app settings

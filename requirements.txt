@@ -73,9 +73,17 @@ cryptojwt
 # git+https://github.com/peppelinux/pyWSArchiPRO.git
 
 # wkhtmltopdf
+# [
+#   wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb
+#   sudo dpkg -i wkhtmltox_0.12.5-1.buster_amd64.deb
+#   sudo apt install -f
+# ]
 django-wkhtmltopdf
 pdfkit
 pypdf2
 
 # SOAP Client protocollazione
 zeep
+
+# advanced filter in admin
+django-admin-search-builder
