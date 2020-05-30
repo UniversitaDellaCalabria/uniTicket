@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse
 from django.utils.html import escape, strip_tags
 from django.utils.translation import gettext as _
 
@@ -644,8 +645,17 @@ def ticket_close(request, structure_slug, ticket_id,
 
             ticket.update_log(user=request.user,
                               note=_("Chiusura ticket: {}".format(motivazione)))
+
+            opened_ticket_url = reverse('uni_ticket:manage_opened_ticket_url',
+                                        kwargs={'structure_slug': structure.slug})
+
             messages.add_message(request, messages.SUCCESS,
-                                 _("Ticket {} chiuso correttamente".format(ticket)))
+                                 _("Ticket {} chiuso correttamente"
+                                   "<br>"
+                                   "<a href='{}'><b>"
+                                   "Clicca qui per tornare ai ticket assegnati"
+                                   "</b></a>").format(ticket,
+                                                      opened_ticket_url))
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
