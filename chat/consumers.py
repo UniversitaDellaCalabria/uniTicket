@@ -154,12 +154,13 @@ class ChatConsumer(WebsocketConsumer):
 
     # Add user to room
     def add_user(self, event):
+        user = get_user_model().objects.filter(pk=event['user']).first()
         self.send(
             text_data=json.dumps({
                 'command': 'add_user',
                 'room': event['room'],
                 'user': event['user'],
-                'is_operator': chat_operator(event['user'], self.room_name),
+                'is_operator': chat_operator(user, self.room_name),
                 'operator_status': event['operator_status'],
                 'user_fullname': event['user_fullname'],
             })

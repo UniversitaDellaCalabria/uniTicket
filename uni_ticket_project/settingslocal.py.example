@@ -267,6 +267,8 @@ UNITICKET_JWE_ENC = "A128CBC-HS256"
 CAPTCHA_SECRET = b'secret'
 CAPTCHA_SALT = b'salt'
 
+CAPTCHA_EXPIRATION_TIME = 45000 # milliseconds
+
 # PROTOCOLLO, questi valori possono variare sulla base di come
 # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
 
