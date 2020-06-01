@@ -19,8 +19,9 @@ def validate_file_size(f):
                                                  settings.MAX_UPLOAD_SIZE,))
 
 def validate_file_length(f):
-    if len(f.name) > settings.ATTACH_NAME_MAX_LEN:
+    file_name = os.path.basename(f.name)
+    if len(file_name) > settings.ATTACH_NAME_MAX_LEN:
         raise ValidationError(_('Lunghezza del nome del file troppo grande: {} caratteri. '
-                                'Max {} caratteri').format(len(f.name),
+                                'Max {} caratteri').format(len(file_name),
                                                            settings.ATTACH_NAME_MAX_LEN,))
 

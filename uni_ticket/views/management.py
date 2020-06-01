@@ -1082,10 +1082,7 @@ def ticket_message(request, structure_slug, ticket_id,
                                   structure_slug=structure.slug)
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
-            ticket_reply = TicketReply()
-            ticket_reply.subject = form.cleaned_data['subject']
-            ticket_reply.text = get_text_with_hrefs(escape(form.cleaned_data['text']))
-            ticket_reply.attachment = form.cleaned_data['attachment']
+            ticket_reply = form.save(commit=False)
             ticket_reply.ticket = ticket
             ticket_reply.structure = structure
             ticket_reply.owner = request.user
@@ -1186,12 +1183,8 @@ def task_add_new(request, structure_slug, ticket_id,
     if request.method == 'POST':
         form = TaskForm(data=request.POST, files=request.FILES)
         if form.is_valid():
-            new_task = Task()
-            new_task.subject = form.cleaned_data['subject']
-            new_task.description = form.cleaned_data['description']
-            new_task.attachment = form.cleaned_data['attachment']
+            new_task = form.save(commit=False)
             new_task.ticket = ticket
-            new_task.priority = form.cleaned_data['priority']
             new_task.created_by = request.user
             new_task.code = uuid_code()
             new_task.save()
@@ -1612,7 +1605,16 @@ def task_edit(request, structure_slug, ticket_id, task_id,
     data = {'subject': task.subject,
             'description': task.description,
             'priority': task.priority,}
-    form = TaskForm(initial=data)
+    form = TaskForm(instance=task)
+
+    template = '{}/task_edit.html'.format(usertype)
+    title = _('Modifica attività')
+    sub_title = task
+    allegati = {}
+    if task.attachment:
+        allegati[form.fields['attachment'].label.lower()] = os.path.basename(task.attachment.name)
+        del form.fields['attachment']
+
     if request.method == 'POST':
         if task.is_closed:
             # log action
@@ -1628,22 +1630,16 @@ def task_edit(request, structure_slug, ticket_id, task_id,
                             ticket_id=ticket_id,
                             task_id=task_id)
 
-        form = TaskForm(data=request.POST,
+        form = TaskForm(instance=task,
+                        data=request.POST,
                         files=request.FILES)
+
         if form.is_valid():
             msg = _("Modifica attività {}".format(task))
-            task.subject = form.cleaned_data['subject']
-            task.description = form.cleaned_data['description']
             if task.priority != form.cleaned_data['priority']:
                 msg = msg + _(" e Priorità assegnata: {}"
                               "".format(dict(settings.PRIORITY_LEVELS).get(form.cleaned_data['priority'])))
-            task.priority = form.cleaned_data['priority']
-            if form.cleaned_data['attachment']:
-                task.attachment = form.cleaned_data['attachment']
-            task.save(update_fields = ['subject',
-                                       'description',
-                                       'priority',
-                                       'attachment'])
+            form.save()
 
             # log action
             logger.info('[{}] {} edited task {}'.format(timezone.now(),
@@ -1662,13 +1658,6 @@ def task_edit(request, structure_slug, ticket_id, task_id,
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
-    template = '{}/task_edit.html'.format(usertype)
-    title = _('Modifica attività')
-    sub_title = task
-    allegati = {}
-    if task.attachment:
-        allegati[form.fields['attachment'].label.lower()] = os.path.basename(task.attachment.name)
-        del form.fields['attachment']
 
     d = {'allegati': allegati,
          'form': form,

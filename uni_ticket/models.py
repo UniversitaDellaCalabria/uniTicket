@@ -620,7 +620,8 @@ class Ticket(SavedFormContent):
     def get_priority(self):
         """
         """
-        return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
+        # return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
+        return dict(settings.PRIORITY_LEVELS).get(self.priority)
 
     def get_messages_count(self, by_operator=False):
         all_messages = TicketReply.objects.filter(ticket=self)
@@ -893,7 +894,9 @@ class AbstractTask(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                    on_delete=models.SET_NULL,
                                    null=True)
-    priority = models.IntegerField(default=0)
+    # priority = models.IntegerField(default=0)
+    priority = models.IntegerField(default=0,
+                                   choices=settings.PRIORITY_LEVELS)
     attachment = models.FileField(upload_to=_attachment_upload,
                                   null=True, blank=True,
                                   max_length=255,
@@ -907,7 +910,8 @@ class AbstractTask(models.Model):
     def get_priority(self):
         """
         """
-        return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
+        # return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
+        return dict(settings.PRIORITY_LEVELS).get(self.priority)
 
 
 class Task(AbstractTask):

@@ -903,10 +903,7 @@ def ticket_message(request, ticket_id):
             return custom_message(request, _("Il ticket non è modificabile"))
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
-            ticket_reply = TicketReply()
-            ticket_reply.subject = form.cleaned_data['subject']
-            ticket_reply.text = get_text_with_hrefs(escape(form.cleaned_data['text']))
-            ticket_reply.attachment = form.cleaned_data['attachment']
+            ticket_reply = form.save(commit=False)
             ticket_reply.ticket = ticket
             ticket_reply.owner = request.user
             ticket_reply.save()

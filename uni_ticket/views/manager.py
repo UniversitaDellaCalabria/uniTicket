@@ -2059,15 +2059,11 @@ def category_task_new(request, structure_slug,
                                  slug=category_slug)
     form = CategoryTaskForm()
     if request.method == 'POST':
-        form = CategoryTaskForm(request.POST, request.FILES)
+        form = CategoryTaskForm(data=request.POST,
+                                files=request.FILES)
         if form.is_valid():
-            new_task = TicketCategoryTask()
-            new_task.subject = form.cleaned_data['subject']
-            new_task.description = form.cleaned_data['description']
-            new_task.attachment = form.cleaned_data['attachment']
+            new_task = form.save(commit=False)
             new_task.category = category
-            new_task.priority = form.cleaned_data['priority']
-            new_task.is_active = form.cleaned_data['is_active']
             new_task.created_by = request.user
             new_task.code = uuid_code()
             new_task.save()
@@ -2198,22 +2194,24 @@ def category_task_edit(request, structure_slug, category_slug,
             'description': task.description,
             'priority': task.priority,
             'is_active': task.is_active}
-    form = CategoryTaskForm(initial=data)
+    form = CategoryTaskForm(instance=task)
+
+    template = 'manager/category_task_edit.html'
+    title = _('Modifica attività')
+    sub_title = task
+
+    allegati = {}
+    if task.attachment:
+        allegati[form.fields['attachment'].label.lower()] = os.path.basename(task.attachment.name)
+        del form.fields['attachment']
+
     if request.method == 'POST':
-        form = CategoryTaskForm(data=request.POST,
+        form = CategoryTaskForm(instance=task,
+                                data=request.POST,
                                 files=request.FILES)
         if form.is_valid():
-            task.subject = form.cleaned_data['subject']
-            task.description = form.cleaned_data['description']
-            task.priority = form.cleaned_data['priority']
-            task.is_active = form.cleaned_data['is_active']
-            if form.cleaned_data['attachment']:
-                task.attachment = form.cleaned_data['attachment']
-            task.save(update_fields = ['subject',
-                                       'description',
-                                       'priority',
-                                       'is_active',
-                                       'attachment'])
+            form.save()
+
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} edited a task'
@@ -2228,14 +2226,6 @@ def category_task_edit(request, structure_slug, category_slug,
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
-    template = 'manager/category_task_edit.html'
-    title = _('Modifica attività')
-    sub_title = task
-
-    allegati = {}
-    if task.attachment:
-        allegati[form.fields['attachment'].label.lower()] = os.path.basename(task.attachment.name)
-        del form.fields['attachment']
 
     d = {'allegati': allegati,
          'category': category,
@@ -2479,17 +2469,9 @@ def structure_protocol_configuration_detail(request, structure_slug,
     form = OrganizationalStructureWSArchiProModelForm(instance=configuration)
 
     if request.method == 'POST':
-        form = OrganizationalStructureWSArchiProModelForm(request.POST)
+        form = OrganizationalStructureWSArchiProModelForm(instance=configuration,
+                                                          data=request.POST)
         if form.is_valid():
-            configuration.name=form.cleaned_data['name']
-            configuration.protocollo_aoo=form.cleaned_data['protocollo_aoo']
-            configuration.protocollo_agd=form.cleaned_data['protocollo_agd']
-            configuration.protocollo_uo=form.cleaned_data['protocollo_uo']
-            configuration.protocollo_id_uo=form.cleaned_data['protocollo_id_uo']
-            configuration.protocollo_cod_titolario=form.cleaned_data['protocollo_cod_titolario']
-            configuration.protocollo_fascicolo_numero=form.cleaned_data['protocollo_fascicolo_numero']
-            configuration.protocollo_fascicolo_anno=form.cleaned_data['protocollo_fascicolo_anno']
-            configuration.protocollo_template=form.cleaned_data['protocollo_template']
             configuration.save()
 
             messages.add_message(request, messages.SUCCESS,
@@ -2531,7 +2513,7 @@ def structure_protocol_configuration_new(request, structure_slug,
     form = OrganizationalStructureWSArchiProModelForm(initial_data)
 
     if request.method == 'POST':
-        form = OrganizationalStructureWSArchiProModelForm(request.POST)
+        form = OrganizationalStructureWSArchiProModelForm(data=request.POST)
         if form.is_valid():
             configuration = form.save(commit=False)
             configuration.organizational_structure=structure

@@ -6,7 +6,7 @@ from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext as _
 
 from bootstrap_italia_template.widgets import BootstrapItaliaSelectWidget
-from django_form_builder.dynamic_fields import CustomFileField
+# from django_form_builder.dynamic_fields import CustomFileField
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,)
@@ -125,19 +125,21 @@ class OfficeAddOperatorForm(forms.Form):
 
 
 class PriorityForm(forms.Form):
-    priorita = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
-                                 required=True,
-                                 initial=0,
-                                 label=_('Priorità'),
-                                 widget=BootstrapItaliaSelectWidget)
+    priorita = forms.TypedChoiceField(choices=settings.PRIORITY_LEVELS,
+                                      required=True,
+                                      initial=0,
+                                      label=_('Priorità'),
+                                      coerce=int,
+                                      widget=BootstrapItaliaSelectWidget)
 
 
 class TakeTicketForm(forms.Form):
-    priority = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
-                                 required=True,
-                                 initial=0,
-                                 label=_('Priorità'),
-                                 widget=BootstrapItaliaSelectWidget)
+    priority = forms.TypedChoiceField(choices=settings.PRIORITY_LEVELS,
+                                      required=True,
+                                      initial=0,
+                                      label=_('Priorità'),
+                                      coerce=int,
+                                      widget=BootstrapItaliaSelectWidget)
     office = forms.CharField(required=True)
 
     def __init__(self, *args, **kwargs):
@@ -146,12 +148,15 @@ class TakeTicketForm(forms.Form):
         self.fields['office'].widget=forms.HiddenInput(attrs={'value': office_arg})
 
 
-class ReplyForm(forms.Form):
-    subject = forms.CharField(label=_('Oggetto'), required=True)
-    text = forms.CharField(label=_('Testo'),
-                           required=True,
-                           widget=forms.Textarea)
-    attachment = CustomFileField(label=_('Allegato'), required=False)
+class ReplyForm(ModelForm):
+    """
+    """
+    class Meta:
+        model = TicketReply
+        fields = ['subject', 'text', 'attachment']
+        labels = {'subject': _('Oggetto'),
+                  'text': _('Testo'),
+                  'attachment': _('Allegato')}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -236,16 +241,17 @@ class TicketDependenceForm(forms.Form):
         js = ('js/textarea-autosize.js',)
 
 
-class TaskForm(forms.Form):
-    subject = forms.CharField(label=_('Oggetto'), required=True)
-    description = forms.CharField(label=_('Testo'),
-                                  required=True,
-                                  widget=forms.Textarea)
-    priority = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
-                                 required=True,
-                                 initial=0,
-                                 label=_('Priorità'),)
-    attachment = CustomFileField(label=_('Allegato'), required=False)
+class TaskForm(ModelForm):
+    """
+    """
+    class Meta:
+        model = Task
+        fields = ['subject', 'description', 'priority', 'attachment']
+        labels = {'subject': _('Oggetto'),
+                  'description': _('Testo'),
+                  'priority': _('Priorità'),
+                  'attachment': _('Allegato')}
+        widgets = {'priority': BootstrapItaliaSelectWidget,}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -281,16 +287,33 @@ class OfficeAddCategoryForm(forms.Form):
         self.fields['category'].to_field_name='slug'
 
 
-class CategoryTaskForm(TaskForm):
-    is_active = forms.BooleanField(label=_('Attiva'), required=False)
+# class CategoryTaskForm(TaskForm):
+    # is_active = forms.BooleanField(label=_('Attiva'), required=False)
+class CategoryTaskForm(ModelForm):
+    """
+    """
+    class Meta:
+        model = TicketCategoryTask
+        fields = ['subject', 'description', 'priority',
+                  'attachment', 'is_active']
+        labels = {'subject': _('Oggetto'),
+                  'description': _('Testo'),
+                  'priority': _('Priorità'),
+                  'attachment': _('Allegato'),
+                  'is_active': _('Attiva')}
+        widgets = {'priority': BootstrapItaliaSelectWidget,}
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
 
 
 class AssignTicketToOperatorForm(forms.Form):
-    priorita = forms.ChoiceField(choices=settings.PRIORITY_LEVELS,
-                                 required=True,
-                                 initial=0,
-                                 label=_('Priorità'),
-                                 widget=BootstrapItaliaSelectWidget)
+    priorita = forms.TypedChoiceField(choices=settings.PRIORITY_LEVELS,
+                                      required=True,
+                                      initial=0,
+                                      label=_('Priorità'),
+                                      coerce=int,
+                                      widget=BootstrapItaliaSelectWidget)
     assign_to = forms.ModelChoiceField(label=_('Seleziona operatore'),
                                        queryset=None, required=True,
                                        widget=BootstrapItaliaSelectWidget)

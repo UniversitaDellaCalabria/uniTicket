@@ -58,11 +58,11 @@ TICKET_INPUT_MODULE_NAME = 'ticket_input_module'
 
 # priority levels
 PRIORITY_LEVELS = (
-                    ('-2',_('Molto alta')),
-                    ('-1',_('Alta')),
-                    ('0',_('Normale')),
-                    ('1',_('Bassa')),
-                    ('2',_('Molto bassa')),
+                    (-2, _('Molto alta')),
+                    (-1, _('Alta')),
+                    (0, _('Normale')),
+                    (1, _('Bassa')),
+                    (2, _('Molto bassa')),
                   )
 
 # If 0 = Unlimited

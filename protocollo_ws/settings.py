@@ -1,6 +1,6 @@
 # win-chrk4d7tc85 must be resolved in /etc/hosts or DNS
 PROT_DOC_ENCODING = 'utf-8'
-PROT_MAX_LABEL_LENGHT = 99
+PROT_MAX_LABEL_LENGTH = 99
 # most common oracle wildcard chars
 PROT_UNALLOWED_CHARS = ['&', '(', ')', ',', '?', '!', '{', '}', '\\', '[', ']',
                         ':', '~', '|', '$', '<', '>', '*', '%',
