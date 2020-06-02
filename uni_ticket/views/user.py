@@ -16,6 +16,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from django.utils.html import escape, strip_tags
 from django.utils.translation import gettext as _
 
@@ -245,7 +246,9 @@ def ticket_add_new(request, structure_slug, category_slug):
 
     # if anonymous user and category only for logged users
     if not category.allow_anonymous and not request.user.is_authenticated:
-        return redirect('{}?next={}'.format(settings.LOGIN_URL, request.path))
+        redirect_url = '{}?next={}'.format(settings.LOGIN_URL,
+                                           request.get_full_path())
+        return redirect(redirect_url)
 
     # is user is authenticated
     if request.user.is_authenticated:
@@ -266,6 +269,7 @@ def ticket_add_new(request, structure_slug, category_slug):
 
     # user that compiled ticket
     compiled_by_user = None
+    compiled_date = None
 
     # if there is an encrypted token with ticket params in URL
     if request.GET.get('import'):
@@ -289,6 +293,9 @@ def ticket_add_new(request, structure_slug, category_slug):
         compiled_by_user_id = imported_data.get(settings.TICKET_COMPILED_BY_USER_NAME)
         if compiled_by_user_id:
             compiled_by_user = get_user_model().objects.filter(pk=compiled_by_user_id).first()
+            compiled_date = parse_datetime(imported_data.get(settings.TICKET_COMPILED_CREATION_DATE)) \
+                            if imported_data.get(settings.TICKET_COMPILED_CREATION_DATE) \
+                            else timezone.now()
         # get compiled form
         form = modulo.get_form(data=imported_data,
                                show_conditions=True,
@@ -347,6 +354,7 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 if request.POST.get(settings.TICKET_COMPILED_BY_USER_NAME):
                     form_data.update({settings.TICKET_COMPILED_BY_USER_NAME: request.user.pk})
+                    form_data.update({settings.TICKET_COMPILED_CREATION_DATE: timezone.now().isoformat()})
 
                 # build encrypted url param with form data
                 encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
@@ -373,7 +381,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                 fields_to_pop.extend([settings.TICKET_SUBJECT_ID,
                                       settings.TICKET_DESCRIPTION_ID,
                                       settings.TICKET_CREATE_BUTTON_NAME,
-                                      settings.TICKET_COMPILED_BY_USER_NAME])
+                                      settings.TICKET_COMPILED_BY_USER_NAME,
+                                      settings.TICKET_COMPILED_CREATION_DATE])
 
                 # get form data in json
                 json_data = get_POST_as_json(request=request,
@@ -412,7 +421,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                 # if ticket has been compiled by another user
                 if compiled_by_user:
                     ticket.compiled_by = compiled_by_user
-                    ticket.compiled = timezone.now()
+                    ticket.compiled = compiled_date
 
                 # save ticket
                 ticket.save()

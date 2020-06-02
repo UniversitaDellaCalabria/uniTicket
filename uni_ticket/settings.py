@@ -54,6 +54,7 @@ TICKET_CAPTCHA_LABEL = _('Codice di verifica')
 TICKET_CREATE_BUTTON_NAME = 'confirm_submit'
 TICKET_GENERATE_URL_BUTTON_NAME  = 'generate_url_submit'
 TICKET_COMPILED_BY_USER_NAME = 'compiled_by_user'
+TICKET_COMPILED_CREATION_DATE = 'compiled_date'
 TICKET_INPUT_MODULE_NAME = 'ticket_input_module'
 
 # priority levels
