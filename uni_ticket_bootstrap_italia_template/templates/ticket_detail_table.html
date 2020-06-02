@@ -60,7 +60,8 @@
         <tr>
             <th scope="row">{% trans 'Precompilato da' %}</th>
             <td>
-                <b>{{ ticket.compiled_by.first_name }} {{ ticket.compiled_by.last_name }}</b> - {{ ticket.compiled }}
+                <b>{{ ticket.compiled_by.first_name }} {{ ticket.compiled_by.last_name }}</b>
+                {% comment %} - {{ ticket.compiled }} {% endcomment %}
                 {% if ticket.compiled_by.email %}
                     <br><b>E-mail</b>: {{ticket.compiled_by.email}}
                 {% endif %}
