@@ -2749,17 +2749,9 @@ def category_protocol_configuration_detail(request, structure_slug,
     form = TicketCategoryWSArchiProModelForm(instance=configuration)
 
     if request.method == 'POST':
-        form = TicketCategoryWSArchiProModelForm(request.POST)
+        form = TicketCategoryWSArchiProModelForm(instance=configuration,
+                                                 data=request.POST)
         if form.is_valid():
-            configuration.name=form.cleaned_data['name']
-            configuration.protocollo_aoo=form.cleaned_data['protocollo_aoo']
-            configuration.protocollo_agd=form.cleaned_data['protocollo_agd']
-            configuration.protocollo_uo=form.cleaned_data['protocollo_uo']
-            configuration.protocollo_id_uo=form.cleaned_data['protocollo_id_uo']
-            configuration.protocollo_cod_titolario=form.cleaned_data['protocollo_cod_titolario']
-            configuration.protocollo_fascicolo_numero=form.cleaned_data['protocollo_fascicolo_numero']
-            configuration.protocollo_fascicolo_anno=form.cleaned_data['protocollo_fascicolo_anno']
-            configuration.protocollo_template=form.cleaned_data['protocollo_template']
             configuration.save()
 
             messages.add_message(request, messages.SUCCESS,
@@ -2820,7 +2812,7 @@ def category_protocol_configuration_new(request, structure_slug,
     form = TicketCategoryWSArchiProModelForm(initial_data)
 
     if request.method == 'POST':
-        form = TicketCategoryWSArchiProModelForm(request.POST, request.FILES)
+        form = TicketCategoryWSArchiProModelForm(data=request.POST)
         if form.is_valid():
             configuration = form.save(commit=False)
             configuration.ticket_category=category
