@@ -2472,7 +2472,7 @@ def structure_protocol_configuration_detail(request, structure_slug,
         form = OrganizationalStructureWSArchiProModelForm(instance=configuration,
                                                           data=request.POST)
         if form.is_valid():
-            configuration.save()
+            form.save()
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Configurazione protocollo informatico aggiornata"))
@@ -2752,7 +2752,7 @@ def category_protocol_configuration_detail(request, structure_slug,
         form = TicketCategoryWSArchiProModelForm(instance=configuration,
                                                  data=request.POST)
         if form.is_valid():
-            configuration.save()
+            form.save()
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Configurazione protocollo informatico aggiornata"))
