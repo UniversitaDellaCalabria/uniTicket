@@ -310,6 +310,7 @@ def ticket_add_new(request, structure_slug, category_slug):
     clausole_categoria = category.get_conditions()
     d={'categoria': category,
        'category_conditions': clausole_categoria,
+       'compiled_by': compiled_by_user,
        'form': form,
        'struttura': struttura,
        'sub_title': '{} - {}'.format(struttura, sub_title),

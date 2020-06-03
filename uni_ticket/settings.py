@@ -26,6 +26,8 @@ TICKET_CONDITIONS_TEXT = _('Dichiara altresì di aver letto '
 SHOW_HEADING_TEXT = True
 TICKET_HEADING_TEXT = _('Soggetto richiedente: <b>{user}</b>'
                         '<br><span class="x-small">[{taxpayer}]</span>')
+TICKET_COMPILED_HEADING_TEXT = _('Compilato da: <b>{user}</b>'
+                                 '<br><span class="x-small">[{taxpayer}]</span>')
 
 # form fields names
 
