@@ -122,6 +122,12 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     CAPTCHA_SALT = b'salt'
     # end CAPTCHA encryption
 
+- Definire la validità del CAPTCHA (in millisecondi)
+
+.. code-block:: python
+
+    CAPTCHA_EXPIRATION_TIME = 45000 # milliseconds
+
 - Configurare le impostazioni del protocollo informatico (ArchiPRO)
 
 .. code-block:: python
