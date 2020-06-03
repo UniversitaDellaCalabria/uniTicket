@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 
+
 def validate_file_extension(f):
     if hasattr(f.file, 'content_type'):
         content_type = f.file.content_type

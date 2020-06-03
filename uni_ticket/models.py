@@ -869,11 +869,11 @@ class Ticket2Ticket(models.Model):
         verbose_name = _("Dipendenza Ticket")
         verbose_name_plural = _("Dipendenze Ticket")
 
-    @staticmethod
-    def master_is_already_used(ticket):
+    @classmethod
+    def master_is_already_used(cls, ticket):
         """
         """
-        relations = Ticket2Ticket.objects.filter(slave_ticket=ticket)
+        relations = cls.objects.filter(slave_ticket=ticket)
         if not relations: return False
         for relation in relations:
             master = relation.master_ticket
