@@ -385,7 +385,12 @@ class Ticket(SavedFormContent):
         Ritorna True se l'utente passato come argomento ha creato il ticket
         """
         if not user: return False
-        if user == self.created_by: return True
+        if user == self.created_by or user == self.compiled_by: return True
+
+    def get_owners(self):
+        owners = [self.created_by]
+        if self.compiled_by: owners.append(self.compiled_by)
+        return owners
 
     def get_allegati_dict(self, ticket_dict={}):
         allegati_dict = {}
@@ -446,11 +451,11 @@ class Ticket(SavedFormContent):
                  'message': mail_msg or note,
                  'ticket': self
                 }
-            m_subject = _('{} - ticket {} aggiornato'.format(settings.HOSTNAME,
+            m_subject = _('{} - richiesta {} aggiornata'.format(settings.HOSTNAME,
                                                              self))
             # Start send mail to ticket owner
             send_custom_mail(subject=m_subject,
-                             recipient=self.created_by,
+                             recipients=self.get_owners(),
                              body=settings.TICKET_UPDATED,
                              params=d)
             # End send mail to ticket owner

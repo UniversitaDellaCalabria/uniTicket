@@ -107,18 +107,22 @@ def _save_new_ticket_attachments(ticket,
         set_as_dict(ticket, json_stored)
 
 # send email to operators when new ticket is opened
-def _send_new_ticket_mail_to_operators(request, ticket, category):
+def _send_new_ticket_mail_to_operators(request,
+                                       ticket,
+                                       category,
+                                       message_template,
+                                       mail_params):
     office = category.organizational_office
     structure = category.organizational_structure
-    mail_params = {'hostname': settings.HOSTNAME,
-                   'ticket_url': request.build_absolute_uri(reverse('uni_ticket:manage_ticket_url_detail',
-                                                                     kwargs={'ticket_id': ticket.code,
-                                                                             'structure_slug': structure.slug})),
-                   'ticket_subject': ticket.subject,
-                   'ticket_description': ticket.description,
-                   'ticket_user': ticket.created_by,
-                   'destination_office': office,
-                  }
+    # mail_params = {'hostname': settings.HOSTNAME,
+                   # 'ticket_url': request.build_absolute_uri(reverse('uni_ticket:manage_ticket_url_detail',
+                                                                     # kwargs={'ticket_id': ticket.code,
+                                                                             # 'structure_slug': structure.slug})),
+                   # 'ticket_subject': ticket.subject,
+                   # 'ticket_description': ticket.description,
+                   # 'ticket_user': ticket.created_by,
+                   # 'destination_office': office,
+                  # }
 
     m_subject = _('{} - {}'.format(settings.HOSTNAME, category))
     operators = OrganizationalStructureOfficeEmployee.objects.filter(office=office,
@@ -134,7 +138,7 @@ def _send_new_ticket_mail_to_operators(request, ticket, category):
 
     mail_params['user'] = settings.OPERATOR_PREFIX
     msg_body_list = [settings.MSG_HEADER,
-                     settings.NEW_TICKET_CREATED_EMPLOYEE_BODY,
+                     message_template,
                      settings.MSG_FOOTER]
     msg_body = ''.join([i.__str__() for i in msg_body_list]).format(**mail_params)
     result = send_mail(subject=m_subject,
@@ -533,10 +537,22 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 # if office operators must receive notification email
                 if category.receive_email:
-                    # Send mail to ticket owner
+                    # Send mail to ticket
+                    structure = category.organizational_structure
+                    mail_params = {'hostname': settings.HOSTNAME,
+                                   'ticket_url': request.build_absolute_uri(reverse('uni_ticket:manage_ticket_url_detail',
+                                                                                     kwargs={'ticket_id': ticket.code,
+                                                                                             'structure_slug': structure.slug})),
+                                   'ticket_subject': ticket.subject,
+                                   'ticket_description': ticket.description,
+                                   'ticket_user': ticket.created_by,
+                                   'destination_office': category.organizational_office,
+                                  }
                     _send_new_ticket_mail_to_operators(request=request,
                                                        ticket=ticket,
-                                                       category=category)
+                                                       category=category,
+                                                       message_template=settings.NEW_TICKET_CREATED_EMPLOYEE_BODY,
+                                                       mail_params=mail_params)
 
                 # if user is authenticated send mail and redirect to ticket page
                 if request.user.is_authenticated:
@@ -550,12 +566,16 @@ def ticket_add_new(request, structure_slug, category_slug):
                                     'added_text': compiled_message
                                   }
 
-                    m_subject = _('{} - {}'.format(settings.HOSTNAME,
-                                                   compiled_message))
-                    m_subject = m_subject[:80] + (m_subject[80:] and '...')
+                    # m_subject = _('{} - {}'.format(settings.HOSTNAME,
+                                                   # compiled_message))
+                    # m_subject = m_subject[:80] + (m_subject[80:] and '...')
+                    m_subject = _('{} - richiesta {} '
+                                  'creata con successo'
+                                  '').format(settings.HOSTNAME,
+                                             ticket)
 
                     send_custom_mail(subject=m_subject,
-                                     recipient=request.user,
+                                     recipients=ticket.get_owners(),
                                      body=settings.NEW_TICKET_CREATED,
                                      params=mail_params)
                     # END Send mail to ticket owner
@@ -632,6 +652,13 @@ def ticket_edit(request, ticket_id):
     if ticket.protocol_number:
         messages.add_message(request, messages.ERROR,
                              _("Impossibile modificare una richiesta protocollata"))
+        return redirect('uni_ticket:ticket_detail',
+                        ticket_id=ticket.code)
+
+    # deny action if user is not the owner but has compiled only
+    if not request.user == ticket.created_by:
+        messages.add_message(request, messages.ERROR,
+                             settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by))
         return redirect('uni_ticket:ticket_detail',
                         ticket_id=ticket.code)
 
@@ -778,6 +805,13 @@ def ticket_delete(request, ticket_id):
         return redirect('uni_ticket:ticket_detail',
                         ticket_id=ticket.code)
 
+    # deny action if user is not the owner but has compiled only
+    if not request.user == ticket.created_by:
+        messages.add_message(request, messages.ERROR,
+                             settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by))
+        return redirect('uni_ticket:ticket_detail',
+                        ticket_id=ticket.code)
+
     ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
 
     # log action
@@ -797,11 +831,11 @@ def ticket_delete(request, ticket_id):
                    'status': _("eliminato"),
                    'ticket': ticket
                   }
-    m_subject = _('{} - ticket {} eliminato'.format(settings.HOSTNAME,
+    m_subject = _('{} - richiesta {} eliminata'.format(settings.HOSTNAME,
                                                     ticket))
 
     send_custom_mail(subject=m_subject,
-                     recipient=request.user,
+                     recipients=ticket.get_owners(),
                      body=settings.TICKET_DELETED,
                      params=mail_params)
     # END Send mail to ticket owner
@@ -904,13 +938,21 @@ def ticket_message(request, ticket_id):
         reply.save(update_fields = ['read_by', 'read_date'])
 
     if request.method == 'POST':
+
+        # deny action if user is not the owner but has compiled only
+        if not request.user == ticket.created_by:
+            messages.add_message(request, messages.ERROR,
+                                 settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by))
+            return redirect('uni_ticket:ticket_message',
+                            ticket_id=ticket_id)
+
         if not ticket.is_open():
             # log action
             logger.error('[{}] user {} tried to submit'
                          ' a message for the not opened ticket {}'.format(timezone.now(),
                                                                          request.user,
                                                                          ticket))
-            return custom_message(request, _("Il ticket non è modificabile"))
+            return custom_message(request, _("La richiesta non è modificabile"))
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
             ticket_reply = form.save(commit=False)
@@ -934,13 +976,33 @@ def ticket_message(request, ticket_id):
                            'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
                                                              kwargs={'ticket_id': ticket.code}))
                           }
-            m_subject = _('{} - ticket {} messaggio inviato'.format(settings.HOSTNAME,
+            m_subject = _('{} - richiesta {} messaggio inviato'.format(settings.HOSTNAME,
                                                                     ticket))
             send_custom_mail(subject=m_subject,
-                             recipient=request.user,
+                             recipients=[request.user],
                              body=settings.USER_TICKET_MESSAGE,
                              params=mail_params)
             # END Send mail to ticket owner
+
+            # Send email to operators (if category flag is checked)
+            category = ticket.input_module.ticket_category
+            return_url = request.build_absolute_uri(reverse('uni_ticket:manage_ticket_message_url',
+                                                             kwargs={'ticket_id': ticket.code,
+                                                                     'structure_slug': category.organizational_structure.slug}))
+            if category.receive_email:
+                # Send mail to ticket
+                mail_params = {'hostname': settings.HOSTNAME,
+                               'url': return_url,
+                               'message_subject': ticket_reply.subject,
+                               'message_text': ticket_reply.text,
+                               'ticket': ticket,
+                              }
+                _send_new_ticket_mail_to_operators(request=request,
+                                                   ticket=ticket,
+                                                   category=category,
+                                                   message_template=settings.NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY,
+                                                   mail_params=mail_params)
+            # END Send email to operators
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Messaggio inviato con successo"))
@@ -1002,9 +1064,16 @@ def ticket_close(request, ticket_id):
                                                             request.user,
                                                             ticket))
 
-        return custom_message(request, _("Il ticket è già chiuso!"))
+        return custom_message(request, _("La richiesta è già chiusa!"))
 
-    title = _('Chiusura del ticket')
+    # deny action if user is not the owner but has compiled only
+    if not request.user == ticket.created_by:
+        messages.add_message(request, messages.ERROR,
+                             settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by))
+        return redirect('uni_ticket:ticket_detail',
+                        ticket_id=ticket.code)
+
+    title = _('Chiusura della richiesta')
     sub_title = ticket
     form = ChiusuraForm()
     if request.method=='POST':

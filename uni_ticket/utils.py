@@ -322,7 +322,7 @@ def send_summary_email(users=[]):
         m_subject = _('{} - ticket summary'.format(settings.HOSTNAME))
 
         sent = send_custom_mail(subject=m_subject,
-                                recipient=user,
+                                recipients=[user],
                                 body=settings.SUMMARY_EMPLOYEE_EMAIL,
                                 params=d)
         if not sent:
@@ -342,19 +342,24 @@ def user_offices_list(office_employee_queryset):
     return offices
 
 # Custom email sender
-def send_custom_mail(subject, recipient, body, params={}, force=False):
-    if not recipient: return False
-    if not force and not recipient.email_notify: return False
+def send_custom_mail(subject, recipients, body, params={}, force=False):
+    if not recipients: return False
+    recipients_list = []
+    for recipient in recipients:
+        if not recipient.email: continue
+        if not force and not recipient.email_notify: continue
+        recipients_list.append(recipient.email)
 
-    msg_body_list = [settings.MSG_HEADER, body,
-                     settings.MSG_FOOTER]
-    msg_body = ''.join([i.__str__() for i in msg_body_list]).format(**params)
-    result = send_mail(subject=subject,
-                       message=msg_body,
-                       from_email=settings.EMAIL_SENDER,
-                       recipient_list=[recipient.email,],
-                       fail_silently=True)
-    return result
+    if recipients_list:
+        msg_body_list = [settings.MSG_HEADER, body,
+                         settings.MSG_FOOTER]
+        msg_body = ''.join([i.__str__() for i in msg_body_list]).format(**params)
+        result = send_mail(subject=subject,
+                           message=msg_body,
+                           from_email=settings.EMAIL_SENDER,
+                           recipient_list=recipients_list,
+                           fail_silently=True)
+        return result
 
 # START Roles 'get' methods
 def user_is_employee(user):

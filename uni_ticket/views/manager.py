@@ -48,7 +48,7 @@ def dashboard(request, structure_slug, structure):
     :return: render
     """
     title = _("Pannello di Controllo")
-    sub_title = _("Gestisci ticket per la struttura {}").format(structure)
+    sub_title = _("Gestisci le richieste per la struttura {}").format(structure)
     template = "manager/dashboard.html"
 
     ta = TicketAssignment

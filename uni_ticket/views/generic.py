@@ -385,10 +385,10 @@ def ticket_message_delete(request, ticket_message_id):
                        'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
                                                                  kwargs={'ticket_id': ticket.code}))
                       }
-        m_subject = _("{} - ticket {} messaggio eliminato".format(settings.HOSTNAME,
+        m_subject = _("{} - richiesta {} messaggio eliminato".format(settings.HOSTNAME,
                                                                   ticket))
         send_custom_mail(subject=m_subject,
-                         recipient=request.user,
+                         recipients=[request.user],
                          body=settings.USER_TICKET_MESSAGE,
                          params=mail_params)
         # END Send mail to ticket owner

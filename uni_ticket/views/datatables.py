@@ -64,7 +64,8 @@ def user_all_tickets(request):
     columns = _no_priority
     if settings.SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
-    ticket_list = Ticket.objects.filter(created_by=request.user)
+    ticket_list = Ticket.objects.filter(Q(created_by=request.user) | \
+                                        Q(compiled_by=request.user))
     dtd = TicketDTD( request, ticket_list, columns )
     return JsonResponse(dtd.get_dict())
 
@@ -79,7 +80,8 @@ def user_unassigned_ticket(request):
     columns = _no_priority
     if settings.SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
-    ticket_list = Ticket.objects.filter(created_by=request.user,
+    ticket_list = Ticket.objects.filter(Q(created_by=request.user) | \
+                                        Q(compiled_by=request.user),
                                         is_closed=False)
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
@@ -99,7 +101,8 @@ def user_opened_ticket(request):
     columns = _no_priority
     if settings.SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
-    ticket_list = Ticket.objects.filter(created_by=request.user,
+    ticket_list = Ticket.objects.filter(Q(created_by=request.user) | \
+                                        Q(compiled_by=request.user),
                                         is_closed=False)
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
@@ -119,7 +122,8 @@ def user_closed_ticket(request):
     columns = _no_priority
     if settings.SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
-    ticket_list = Ticket.objects.filter(created_by=request.user,
+    ticket_list = Ticket.objects.filter(Q(created_by=request.user) | \
+                                        Q(compiled_by=request.user),
                                         is_closed=True)
     dtd = TicketDTD( request, ticket_list, columns )
     return JsonResponse(dtd.get_dict())

@@ -17,9 +17,9 @@ SIMPLE_USER_SHOW_PRIORITY = False
 
 # category conditions form field
 TICKET_CONDITIONS_FIELD_ID = 'condizioni_field_id'
-TICKET_CONDITIONS_TEXT = _('Dichiara altresì di aver letto '
+TICKET_CONDITIONS_TEXT = _('Dichiara di aver letto '
                            'e compreso quanto scritto sopra '
-                           'e di assumere ogni responsabilità '
+                           'e di assumersi ogni responsabilità '
                            'su quanto di seguito dichiarato')
 
 # new ticket heading text (user informations)
@@ -86,9 +86,9 @@ MANAGEMENT_URL_PREFIX = {'manager': MANAGER_PREFIX,
 # Do not edit! - END
 
 # ticket competence abandoned
-NO_MORE_COMPETENCE_OVER_TICKET = _("Nessuna competenza sul ticket")
+NO_MORE_COMPETENCE_OVER_TICKET = _("Nessuna competenza sulla richiesta")
 # ticket readonly access
-READONLY_COMPETENCE_OVER_TICKET = _("Hai accesso al ticket in sola lettura")
+READONLY_COMPETENCE_OVER_TICKET = _("Hai accesso alla richiesta in sola lettura")
 
 # min ticket content length (digits) to compress
 TICKET_MIN_DIGITS_TO_COMPRESS = 90
@@ -110,7 +110,11 @@ USER_ATTRIBUTE_LABEL = 'Matricola studente'
 # Label
 ORGANIZATION_USER_LABEL = 'Studenti'
 
-
+# error message for user that has compiled a request but it's not the owner
+TICKET_SHARING_USER_ERROR_MESSAGE = _("Impossibile effettuare l'operazione."
+                                      "<br>"
+                                      "Nonostante tu abbia precompilato la richiesta, "
+                                       "è l'utente <b>{}</b> che l'ha sottomessa")
 # E-mail messages
 MSG_HEADER = _("""Gentile {user},
 questo messaggio è stato inviato da {hostname}.
@@ -130,7 +134,7 @@ Cordiali saluti.
 
 UNAVAILABLE_TICKET_CATEGORY = _("""La tipologia di richiesta non è attiva""")
 
-NEW_TICKET_CREATED_ALERT = _("""Ticket "{}" creato con successo""")
+NEW_TICKET_CREATED_ALERT = _("""Richiesta "{}" creata con successo""")
 
 NEW_TICKET_CREATED = _("""{added_text}
 
@@ -138,11 +142,11 @@ L'identificativo univoco di questa transazione è {ticket}.
 
 Clicca qui {url} per prenderne visione.""")
 
-TICKET_UPDATED = _("""Il ticket "{ticket}" è stato aggiornato con il seguente messaggio:
+TICKET_UPDATED = _("""La richiesta "{ticket}" è stata aggiornata con il seguente messaggio:
 
 {message}""")
 
-USER_TICKET_MESSAGE = _("""Hai {status} un messaggio per il ticket \"{ticket}\"
+USER_TICKET_MESSAGE = _("""Hai {status} un nuovo messaggio per la richiesta \"{ticket}\"
 
 Oggetto: {message_subject}
 
@@ -150,13 +154,13 @@ Testo: {message_text}
 
 Clicca qui {url} per aprire il pannello dei messaggi.""")
 
-TICKET_DELETED = _("""Il ticket "{ticket}" è stato eliminato correttamente.""")
+TICKET_DELETED = _("""La richiesta "{ticket}" è stata eliminata correttamente.""")
 
-SUMMARY_USER_EMAIL = _("""Il seguente ticket {event msg}:
+SUMMARY_USER_EMAIL = _("""La seguente richiesta {event msg}:
 
 {ticket}""")
 
-SUMMARY_EMPLOYEE_EMAIL = _("""Ci sono {opened_ticket_number} tickets da gestire.
+SUMMARY_EMPLOYEE_EMAIL = _("""Ci sono {opened_ticket_number} richieste da gestire.
 
 {tickets_per_office}""")
 
@@ -167,6 +171,14 @@ Oggetto: {ticket_subject}
 Descrizione: {ticket_description}
 
 URL: {ticket_url}""")
+
+NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY = _("""Hai ricevuto un nuovo messaggio per la richiesta \"{ticket}\"
+
+Oggetto: {message_subject}
+
+Testo: {message_text}
+
+Clicca qui {url} per aprire il pannello dei messaggi.""")
 
 
 # Old english version

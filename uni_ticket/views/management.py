@@ -491,10 +491,10 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                                                             master_ticket))
 
             ticket.update_log(user=request.user,
-                              note=_("Aggiunta dipendenza dal ticket:"
+                              note=_("Aggiunta dipendenza dalla richiesta:"
                                      " {}".format(master_ticket)))
             messages.add_message(request, messages.SUCCESS,
-                                 _("Dipendenza dal ticket <b>{}</b>"
+                                 _("Dipendenza dalla richiesta <b>{}</b>"
                                    " aggiunta con successo".format(master_ticket.code)))
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
@@ -558,7 +558,7 @@ def ticket_dependence_remove(request, structure_slug,
                                                         master_ticket))
         to_remove.delete()
         ticket.update_log(user=request.user,
-                          note=_("Rimossa dipendenza dal ticket:"
+                          note=_("Rimossa dipendenza dalla richiesta:"
                                  " {}".format(master_ticket)))
         messages.add_message(request, messages.SUCCESS,
                              _("Dipendenza rimossa correttamente"))
@@ -619,10 +619,10 @@ def ticket_close(request, structure_slug, ticket_id,
                                                             request.user,
                                                             ticket))
         return custom_message(request,
-                              _("Non è possibile chiudere il ticket,"
+                              _("Non è possibile chiudere la richiesta,"
                                 " ci sono dipendenze attive!"),
                               structure_slug=structure.slug)
-    title = _('Chiusura del ticket')
+    title = _('Chiusura della richiesta')
     sub_title = ticket
     form = ChiusuraForm()
     if request.method=='POST':
@@ -644,16 +644,16 @@ def ticket_close(request, structure_slug, ticket_id,
                                                           ticket))
 
             ticket.update_log(user=request.user,
-                              note=_("Chiusura ticket: {}".format(motivazione)))
+                              note=_("Chiusura richiesta: {}".format(motivazione)))
 
             opened_ticket_url = reverse('uni_ticket:manage_opened_ticket_url',
                                         kwargs={'structure_slug': structure.slug})
 
             messages.add_message(request, messages.SUCCESS,
-                                 _("Ticket {} chiuso correttamente"
+                                 _("Richiesta {} chiusa correttamente"
                                    "<br>"
                                    "<a href='{}'><b>"
-                                   "Clicca qui per tornare ai ticket assegnati"
+                                   "Clicca qui per tornare alle richieste assegnate"
                                    "</b></a>").format(ticket,
                                                       opened_ticket_url))
             return redirect('uni_ticket:manage_ticket_url_detail',
@@ -703,7 +703,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                                                     request.user,
                                                     ticket))
         return custom_message(request,
-                              _("Il ticket {} non è stato chiuso").format(ticket),
+                              _("La richiesta {} non è stata chiusa").format(ticket),
                               structure_slug=structure.slug)
 
     if ticket.input_module.ticket_category.is_notify:
@@ -713,7 +713,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                                                         request.user,
                                                         ticket))
         return custom_message(request,
-                              _("Il ticket {} non può essere riaperto").format(ticket),
+                              _("La richiesta {} non può essere riaperta").format(ticket),
                               structure_slug=structure.slug)
 
     if not ticket.has_been_taken():
@@ -723,8 +723,8 @@ def ticket_reopen(request, structure_slug, ticket_id,
                                                    request.user,
                                                    ticket))
         return custom_message(request,
-                              _("Il ticket {} è stato chiuso dall'utente, "
-                                " pertanto non può essere riaperto").format(ticket),
+                              _("La richiesta {} è stata chiusa dall'utente, "
+                                " pertanto non può essere riaperta").format(ticket),
                               structure_slug=structure.slug)
 
     # at least one of ticket offices must be active and must follow
@@ -735,13 +735,13 @@ def ticket_reopen(request, structure_slug, ticket_id,
     if not active_assignments:
         return custom_message(request,
                               _("Nessuno degli uffici assegnati in precedenza "
-                                "può prendere nuovamente in carico il ticket {} e "
-                                "pertanto questo non può essere riaperto").format(ticket),
+                                "può prendere nuovamente in carico la richiesta {} e "
+                                "pertanto questa non può essere riaperta").format(ticket),
                               structure_slug=structure.slug)
     ticket.is_closed = False
     ticket.save(update_fields = ['is_closed'])
     ticket.update_log(user=request.user,
-                      note= _("Riapertura ticket"))
+                      note= _("Riapertura richiesta"))
 
     # log action
     logger.info('[{}] {} reopened ticket {}'.format(timezone.now(),
@@ -749,7 +749,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                                                     ticket))
 
     messages.add_message(request, messages.SUCCESS,
-                         _("Ticket {} riaperto correttamente".format(ticket)))
+                         _("Richiesta {} riaperta correttamente".format(ticket)))
     return redirect('uni_ticket:manage_ticket_url_detail',
                     structure_slug=structure_slug,
                     ticket_id=ticket_id)
@@ -1104,10 +1104,10 @@ def ticket_message(request, structure_slug, ticket_id,
                            'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
                                                              kwargs={'ticket_id': ticket.code}))
                           }
-            m_subject = _('{} - ticket {} nuovo messaggio'.format(settings.HOSTNAME,
+            m_subject = _('{} - richiesta {} nuovo messaggio'.format(settings.HOSTNAME,
                                                                    ticket))
             send_custom_mail(subject=m_subject,
-                             recipient=ticket.created_by,
+                             recipients=ticket.get_owners(),
                              body=settings.USER_TICKET_MESSAGE,
                              params=mail_params)
             # END Send mail to ticket owner
@@ -1442,7 +1442,7 @@ def task_close(request, structure_slug, ticket_id, task_id,
         return custom_message(request, _("Attività già chiusa!"),
                               structure_slug=structure.slug)
     if ticket.is_closed:
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
+        return custom_message(request, _("La richiesta {} è chiusa".format(ticket)),
                               structure_slug=structure.slug)
 
     title = _("Chiusura dell'attività")
@@ -1526,7 +1526,7 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
                                                    request.user,
                                                    task,
                                                    ticket))
-        return custom_message(request, _("Il ticket {} è chiuso".format(ticket)),
+        return custom_message(request, _("La richiesta {} è chiusa".format(ticket)),
                               structure_slug=structure.slug)
 
     task.is_closed = False
