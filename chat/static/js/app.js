@@ -7,6 +7,10 @@ var userList = $('#user-list');
 var messageList = $('#messages');
 var users = [];
 
+// timeout
+var timeout_milliseconds = 40000;
+var timeout = null;
+
 // play sound
 function beep(){
     document.getElementById("beep_sound").play();
@@ -344,6 +348,12 @@ function reloadPage() {
     window.location.reload(true);
 }
 
+function reset_timeout() {
+    // clear timeout and redefine a new
+    clearTimeout(timeout);
+    timeout = setTimeout(reloadPage, timeout_milliseconds);
+}
+
 $(document).ready(function () {
     // disable input field
     disableInput();
@@ -354,9 +364,8 @@ $(document).ready(function () {
         '/ws/chat/' + room_name + '/?session_key=' + sessionKey);
     console.log(socket);
 
-    // timeout
-    var timeout_milliseconds = 40000;
-    var timeout = setTimeout(reloadPage, timeout_milliseconds);
+    // set timeout to reloadPage
+    timeout = setTimeout(reloadPage, timeout_milliseconds);
 
     // on ENTER click
     chatInput.keypress(function (e) {
@@ -403,8 +412,9 @@ $(document).ready(function () {
         console.log("socket.onmessage: " + json_data);
 
         // clear timeout and redefine a new
-        clearTimeout(timeout);
-        timeout = setTimeout(reloadPage, timeout_milliseconds);
+        reset_timeout();
+        //clearTimeout(timeout);
+        //timeout = setTimeout(reloadPage, timeout_milliseconds);
 
         if (json_data['command'])
             switch (json_data['command']) {
