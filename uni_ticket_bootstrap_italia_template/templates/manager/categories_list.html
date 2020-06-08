@@ -59,6 +59,15 @@
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
                   {% endif %}
                   </svg>
+                  <br>
+                  <b>{% trans 'Protocollo obbligatorio' %}:</b>
+                  <svg class="icon icon-xs">
+                  {% if category.protocol_required %}
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                  {% else %}
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                  {% endif %}
+                  </svg>
               </p>
             </div>
           </div>

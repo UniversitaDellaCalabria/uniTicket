@@ -129,6 +129,7 @@ def user_closed_ticket(request):
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
+@login_required
 @is_manager
 def manager_not_closed_ticket(request, structure_slug, structure):
     """
@@ -149,6 +150,7 @@ def manager_not_closed_ticket(request, structure_slug, structure):
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
+@login_required
 @is_manager
 def manager_unassigned_ticket(request, structure_slug, structure):
     """
@@ -173,6 +175,7 @@ def manager_unassigned_ticket(request, structure_slug, structure):
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
+@login_required
 @is_manager
 def manager_opened_ticket(request, structure_slug, structure):
     """
@@ -197,6 +200,7 @@ def manager_opened_ticket(request, structure_slug, structure):
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
+@login_required
 @is_manager
 def manager_my_opened_ticket(request, structure_slug, structure):
     """
@@ -222,6 +226,7 @@ def manager_my_opened_ticket(request, structure_slug, structure):
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
+@login_required
 @is_manager
 def manager_closed_ticket(request, structure_slug, structure):
     """
@@ -241,6 +246,7 @@ def manager_closed_ticket(request, structure_slug, structure):
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
+@login_required
 @is_operator
 def operator_not_closed_ticket(request, structure_slug,
                                structure, office_employee):
@@ -264,6 +270,7 @@ def operator_not_closed_ticket(request, structure_slug,
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
+@login_required
 @is_operator
 def operator_unassigned_ticket(request, structure_slug,
                                structure, office_employee):
@@ -292,6 +299,7 @@ def operator_unassigned_ticket(request, structure_slug,
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
+@login_required
 @is_operator
 def operator_opened_ticket(request, structure_slug,
                            structure, office_employee):
@@ -321,6 +329,7 @@ def operator_opened_ticket(request, structure_slug,
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
+@login_required
 @is_operator
 def operator_my_opened_ticket(request, structure_slug,
                               structure, office_employee):
@@ -351,6 +360,7 @@ def operator_my_opened_ticket(request, structure_slug,
     return JsonResponse(dtd.get_dict())
 
 @csrf_exempt
+@login_required
 @is_operator
 def operator_closed_ticket(request, structure_slug,
                            structure, office_employee):
