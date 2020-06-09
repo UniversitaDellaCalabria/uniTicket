@@ -40,7 +40,7 @@
     <b><label for="category_slug">{% trans "Tipo di richiesta" %}</label></b>
     {% if not chosen_structure %}
     <div class="alert alert-warning" role="alert">
-      {% trans "Seleziona la struttura a cui inoltrare il ticket" %}
+      {% trans "Seleziona la struttura a cui inoltrare la richiesta" %}
     </div>
     {% elif not categorie %}
     <div class="alert alert-danger" role="alert">
@@ -51,9 +51,9 @@
         <select id="category_slug"
                 {% if not chosen_structure %}disabled{% endif %}
                 name="category_slug"
-                title="{% trans 'A chi è indirizzata la richiesta?' %}"
+                title="{% trans 'Di cosa si tratta?' %}"
                 data-live-search="true" data-live-search-placeholder="Cerca...">
-            <option value="">{% trans "Scegli un'opzione per aprire subito un ticket" %}</option>
+            <option value="">{% trans "Scegli un'opzione" %}</option>
             {% for categoria in categorie %}
             <option value="{{ categoria.slug }}">{{ categoria }}</option>
             {% endfor %}
