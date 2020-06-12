@@ -82,8 +82,8 @@ def dashboard(request, structure_slug, structure):
 
     messages = 0
     for ticket in tickets:
-        if not ticket.is_followed_in_structure(structure=structure):
-            continue
+        # if not ticket.is_followed_in_structure(structure=structure):
+            # continue
         messages += ticket.get_messages_count()[1]
 
     d = {'ticket_messages': messages,

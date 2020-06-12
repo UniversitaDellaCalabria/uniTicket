@@ -57,8 +57,8 @@ def dashboard(request, structure_slug, structure, office_employee):
     chiusi = tickets.filter(is_closed=True).count()
     messages = 0
     for ticket in tickets:
-        if not ticket.is_followed_by_one_of_offices(offices):
-            continue
+        # if not ticket.is_followed_by_one_of_offices(offices):
+            # continue
         messages += ticket.get_messages_count()[1]
 
     d = {'ticket_messages': messages,

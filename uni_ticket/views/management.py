@@ -354,7 +354,6 @@ def tickets(request, structure_slug, structure, office_employee=None):
     ticket_list = []
     # if user is operator
     if office_employee:
-        offices = user_offices_list(office_employee)
         ticket_list = visible_tickets_to_user(user=request.user,
                                               structure=structure,
                                               office_employee=office_employee)
@@ -362,8 +361,9 @@ def tickets(request, structure_slug, structure, office_employee=None):
     else:
         ticket_list = TicketAssignment.get_ticket_per_structure(structure)
 
-    not_closed = Ticket.objects.filter(code__in=ticket_list,
-                                       is_closed=False)
+    tickets = Ticket.objects.filter(code__in=ticket_list)
+
+    not_closed = tickets.filter(is_closed=False)
     # unassigned = []
     # opened = []
     # my_opened = []
@@ -382,13 +382,18 @@ def tickets(request, structure_slug, structure, office_employee=None):
             # unassigned.append(nc)
             unassigned += 1
     # chiusi = Ticket.objects.filter(code__in=ticket_list, is_closed=True)
-    chiusi = Ticket.objects.filter(code__in=ticket_list,
-                                   is_closed=True).count()
+    chiusi = tickets.filter(is_closed=True).count()
+
+    # unread messages
+    messages = 0
+    for ticket in tickets:
+        messages += ticket.get_messages_count()[1]
 
     d = {'ticket_aperti': opened,
          'ticket_assegnati_a_me': my_opened,
          'ticket_chiusi': chiusi,
          'ticket_non_gestiti': unassigned,
+         'ticket_messages': messages,
          'structure': structure,
          'sub_title': sub_title,
          'title': title,}

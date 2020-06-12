@@ -1,5 +1,8 @@
 {% extends "base_page_schema.html" %}
 
+{% load i18n %}
+{% load static %}
+
 {% block menu_links %}
 {% include 'operator/main_menu.html' %}
 {% endblock menu_links %}
@@ -7,11 +10,31 @@
 {% block top_buttons %}
 <div class="d-none d-md-block">
     {% include 'management/ticket_cards.html' %}
+    <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
+        {% if ticket_messages > 0 %}
+        <span class="badge badge-primary">
+            {{ ticket_messages }}
+        </span>
+        {% endif %}
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
+        </svg>
+        {% trans 'Messaggi' %}
+    </a>
 </div>
 <div class="d-block d-md-none">
     <nav class="toolbar">
         <ul>
             {% include 'management/ticket_cards_mobile.html' %}
+            <li>
+                <a href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
+                    {% if ticket_messages > 0 %}
+                    <div class="badge-wrapper"><span class="toolbar-badge badge-primary">{{ ticket_messages }}</span></div>
+                    {% endif %}
+                    <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use></svg>
+                    <span class="toolbar-label">{% trans 'Messaggi' %}</span></span>
+                </a>
+            </li>
         </ul>
     </nav>
 </div>
