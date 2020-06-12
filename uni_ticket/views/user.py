@@ -166,13 +166,13 @@ def ticket_new_preload(request, structure_slug=None):
     if Ticket.number_limit_reached_by_user(request.user):
         messages.add_message(request, messages.ERROR,
                              _("Hai raggiunto il limite massimo giornaliero"
-                               " di ticket: <b>{}</b>".format(settings.MAX_DAILY_TICKET_PER_USER)))
+                               " di richieste: <b>{}</b>".format(settings.MAX_DAILY_TICKET_PER_USER)))
         return redirect(reverse('uni_ticket:user_dashboard'))
 
     strutture = OrganizationalStructure.objects.filter(is_active=True)
     categorie = None
     template = "user/new_ticket_preload.html"
-    title = _("Apri un nuovo ticket")
+    title = _("Effettua una nuova richiesta")
     sub_title = _("Seleziona la struttura")
     structure = None
     if structure_slug:
@@ -260,7 +260,7 @@ def ticket_add_new(request, structure_slug, category_slug):
         if Ticket.number_limit_reached_by_user(request.user):
             messages.add_message(request, messages.ERROR,
                                  _("Hai raggiunto il limite massimo giornaliero"
-                                   " di ticket: <b>{}</b>"
+                                   " di richieste: <b>{}</b>"
                                    "".format(settings.MAX_DAILY_TICKET_PER_USER)))
             return redirect('uni_ticket:user_dashboard')
         # check if user is allowed to access this category
@@ -369,7 +369,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                 # build url to display in message
                 url = base_url + '?import=' + encrypted_data
                 messages.add_message(request, messages.SUCCESS,
-                                     _("<b>Di seguito l'URL del ticket precompilato</b>"
+                                     _("<b>Di seguito l'URL della richiesta precompilata</b>"
                                        "<input type='text' value='{url}' id='encrypted_ticket_url' />"
                                        "<button class='btn btn-sm btn-primary px-4 mt-3' onclick='copyToClipboard()'>"
                                        "Copia negli appunti"
@@ -601,7 +601,7 @@ def dashboard(request):
     """
     # Ci pensa datatables a popolare la tabella
     title =_("Pannello di controllo")
-    sub_title = _("Gestisci i tuoi ticket o aprine di nuovi")
+    sub_title = _("Gestisci le tue richieste o aprine di nuove")
     template = "user/dashboard.html"
     tickets = Ticket.objects.filter(created_by=request.user)
     not_closed = tickets.filter(is_closed=False)
@@ -1087,9 +1087,9 @@ def ticket_close(request, ticket_id):
                                          'closing_reason',
                                          'closed_date'])
             ticket.update_log(user=request.user,
-                              note=_("Chiusura ticket da utente proprietario: {}".format(motivazione)))
+                              note=_("Chiusura richiesta da utente proprietario: {}".format(motivazione)))
             messages.add_message(request, messages.SUCCESS,
-                                 _("Ticket {} chiuso correttamente".format(ticket)))
+                                 _("Richiesta {} chiusa correttamente".format(ticket)))
 
             # log action
             logger.info('[{}] user {} closed ticket {}'.format(timezone.now(),
@@ -1143,7 +1143,7 @@ def ticket_clone(request, ticket_id):
     # if ticket is not closed and owner has closed it
     if not master_ticket.is_closed:
        return custom_message(request, _("Operazione non permessa. "
-                                        "Il ticket è ancora attivo"))
+                                        "La richiesta è ancora attiva"))
 
     # if ticket module is out of date
     if not master_ticket.input_module.is_active:

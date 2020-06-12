@@ -8,7 +8,7 @@
    href="{% url 'uni_ticket:manage_ticket_url_detail' structure_slug=structure.slug ticket_id=ticket.code %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Torna al ticket" %}
+    </svg> {% trans "Torna alla richiesta" %}
 </a>
 {% endblock top_buttons %}
 
@@ -41,7 +41,7 @@
         <b><label for="category_slug">{% trans "Categoria" %}</label></b>
         {% if not structure_slug %}
         <div class="alert alert-warning" role="alert">
-          {% trans "Seleziona la struttura a cui inoltrare il ticket" %}
+          {% trans "Seleziona la struttura a cui inoltrare la richiesta" %}
         </div>
         {% elif not categorie %}
         <div class="alert alert-danger" role="alert">
@@ -68,7 +68,7 @@
             <div class="mb-2">
                 <b>
                     <label for="id_follow" class="mb-0">
-                        {% trans "Mantieni la possibilità di gestire il ticket:" %}
+                        {% trans "Mantieni la possibilità di gestire la richiesta:" %}
                     </label>
                 </b>
                 <input type="checkbox" name="follow" id="id_follow"
@@ -76,19 +76,19 @@
                        onclick="hide_readonly()"
                        checked>
                 <small class="form-text text-muted">
-                    {% trans "Deselezionando questa opzione non si avrà più accesso al ticket" %}
+                    {% trans "Deselezionando questa opzione non si avrà più accesso alla richiesta" %}
                 </small>
             </div>
             <div id="readonly_div">
                 <b>
                     <label for="id_readonly" class="mb-0">
-                        {% trans "Accedi al ticket in sola lettura:" %}
+                        {% trans "Accedi alla richiesta in sola lettura:" %}
                     </label>
                 </b>
                 <input type="checkbox" name="readonly" id="id_readonly"
                        class="">
                 <small class="form-text text-muted">
-                    {% trans "Selezionando questa opzione insieme a quella precedente si avrà accesso al ticket in sola lettura" %}
+                    {% trans "Selezionando questa opzione insieme a quella precedente si avrà accesso alla richiesta in sola lettura" %}
                 </small>
             </div>
         </div>

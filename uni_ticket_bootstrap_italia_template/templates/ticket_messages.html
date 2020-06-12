@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load static %}
+
+{% if ticket_messages %}
+<div class="it-list-wrapper">
+    <ul class="it-list">
+        {% for message in ticket_messages %}
+            <li>
+                {{ message }}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+{% trans "Nessun messaggio" %}
+{% endif %}

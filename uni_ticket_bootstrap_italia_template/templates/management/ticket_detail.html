@@ -37,7 +37,7 @@
 {% if untaken_user_offices and not ticket.is_closed %}
 <div class="alert alert-info mobile-adapt" role="alert">
     <h4 class="alert-heading">{% trans "Attenzione" %}</h4>
-    <p>{% trans "Il ticket non è stato ancora assegnato a nessun operatore negli uffici" %}</p>
+    <p>{% trans "La richiesta non è stata ancora assegnata a nessun operatore negli uffici" %}</p>
     <ul>
         {% for office in untaken_user_offices %}
             <li>
@@ -52,7 +52,7 @@
                                 aria-controls="accordion{{ office.pk }}"
                                 style="padding-left: 0; padding-right: 0; border-top: 0;">
                             <small>
-                                {% trans "clicca qui per prendere in carico il ticket" %}
+                                {% trans "clicca qui per prendere in carico la richiesta" %}
                             </small>
                         </button>
                     </div>
@@ -77,7 +77,7 @@
                                                 <svg class="icon icon-xs icon-white">
                                                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
                                                 </svg>
-                                                {% trans "Prendi il ticket in carico" %}
+                                                {% trans "Prendi in carico la richiesta" %}
                                         </button>
                                         <!-- priority ticket modal -->
                                         <div class="modal-div modal fade"
@@ -89,7 +89,7 @@
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">
-                                                            {% trans "Modifica ticket" %}
+                                                            {% trans "Modifica richiesta" %}
                                                         </h5>
                                                         <button class="close"
                                                                 type="button"
@@ -101,7 +101,7 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <p>{% trans "Vuoi davvero procedere modificando il ticket" %}
+                                                        <p>{% trans "Vuoi davvero procedere modificando la richiesta" %}
                                                            <br>
                                                            <b>{{ ticket }}</b> ?
                                                         </p>
@@ -157,7 +157,7 @@
                                             <svg class="icon icon-xs icon-white">
                                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
                                             </svg>
-                                            {% trans "Assegna ticket a un operatore dell'ufficio" %}
+                                            {% trans "Assegna richiesta a un operatore dell'ufficio" %}
                                     </button>
                                     <!-- priority ticket modal -->
                                     <div class="modal-div modal fade"
@@ -169,7 +169,7 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title">
-                                                        {% trans "Modifica ticket" %}
+                                                        {% trans "Modifica richiesta" %}
                                                     </h5>
                                                     <button class="close"
                                                             type="button"
@@ -181,7 +181,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <p>{% trans "Vuoi davvero procedere modificando il ticket" %}
+                                                    <p>{% trans "Vuoi davvero procedere modificando la richiesta" %}
                                                        <br>
                                                        <b>{{ ticket }}</b> ?
                                                     </p>
@@ -220,7 +220,7 @@
            href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
             <svg class="icon icon-xs">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-            </svg> {% trans "Torna ai ticket chiusi" %}
+            </svg> {% trans "Torna alle richieste chiuse" %}
         </a>
     {% elif ticket_taken %}
     <a role="button"
@@ -228,7 +228,7 @@
            href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
             <svg class="icon icon-xs">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-            </svg> {% trans "Torna ai ticket assegnati" %}
+            </svg> {% trans "Torna alle richieste assegnate" %}
         </a>
     {% else %}
     <a role="button"
@@ -236,7 +236,7 @@
        href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Torna ai ticket aperti" %}
+        </svg> {% trans "Torna alle richieste aperte" %}
     </a>
     {% endif %}
 </div>
@@ -263,14 +263,14 @@
         data-target="#reopenTicket">
         <svg class="icon icon-xs icon-warning">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-exchange-circle"></use>
-        </svg> {% trans "Riapri ticket" %}
+        </svg> {% trans "Riapri richiesta" %}
     </button>
     <div class="modal fade" tabindex="-1" role="dialog" id="reopenTicket">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        {% trans "Riapertura ticket" %}
+                        {% trans "Riapertura richiesta" %}
                     </h5>
                     <button class="close"
                             type="button"
@@ -282,7 +282,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>{% trans "Vuoi davvero riaprire il ticket" %}
+                    <p>{% trans "Vuoi davvero riaprire la richiesta" %}
                        <br>
                        <b>{{ ticket }}</b> ?
                     </p>
@@ -290,7 +290,7 @@
                 <div class="modal-footer">
                     <a role="button" class="btn btn-warning"
                        href="{% url 'uni_ticket:reopen_ticket' structure_slug=structure.slug ticket_id=ticket.code %}">
-                        {% trans "Si, riapri il ticket" %}
+                        {% trans "Si, riapri la richiesta" %}
                     </a>
                 </div>
             </div>
@@ -371,7 +371,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">
-                                        {% trans "Modifica ticket" %}
+                                        {% trans "Modifica richiesta" %}
                                     </h5>
                                     <button class="close"
                                             type="button"
@@ -383,7 +383,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>{% trans "Vuoi davvero procedere modificando il ticket" %}
+                                    <p>{% trans "Vuoi davvero procedere modificando la richiesta" %}
                                        <br>
                                        <b>{{ ticket }}</b> ?
                                     </p>

@@ -54,7 +54,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>{% trans "Vuoi davvero eliminare la dipendenza dal ticket" %}
+                            <p>{% trans "Vuoi davvero eliminare la dipendenza dalla richiesta" %}
                                <br>
                                <b>{{ dependence }}</b> ?
                             </p>
@@ -72,7 +72,7 @@
             <a role="button"
                class="mx-1 btn btn-outline-secondary btn-xs float-right"
                href="{% url 'uni_ticket:manage_ticket_url_detail' structure_slug=structure.slug ticket_id=dependence.master_ticket.code %}">
-                {% trans "Vai al ticket" %}
+                {% trans "Vai alla richiesta" %}
             </a>
         </li>
         {% endfor %}
@@ -168,7 +168,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>{% trans "Vuoi davvero eliminare l'attività dal ticket" %}
+                            <p>{% trans "Vuoi davvero eliminare l'attività dalla richiesta" %}
                                <br>
                                <b>{{ task }}</b> ?
                             </p>

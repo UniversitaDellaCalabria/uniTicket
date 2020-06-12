@@ -4,12 +4,12 @@
 <a role="button"
    class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
-    <span class="badge badge-light">{{ ticket_non_gestiti }}</span> {% trans 'Ticket aperti' %}
+    <span class="badge badge-light">{{ ticket_non_gestiti }}</span> {% trans 'Aperte' %}
 </a>
 <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
-    <span class="badge badge-light">{{ ticket_aperti }}</span> {% trans 'Ticket assegnati' %}
+    <span class="badge badge-light">{{ ticket_aperti }}</span> {% trans 'Assegnate' %}
     (<span class="badge badge-light">{{ ticket_assegnati_a_me }}</span> a me)
 </a>
 <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
-    <span class="badge badge-light">{{ ticket_chiusi }}</span> {% trans 'Ticket chiusi' %}
+    <span class="badge badge-light">{{ ticket_chiusi }}</span> {% trans 'Chiuse' %}
 </a>

@@ -265,16 +265,16 @@ def ticket_detail(request, structure_slug, ticket_id,
                                                'taken_by',
                                                'modified'])
                 priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
-                msg = _("Ticket assegnato a {} da {}. "
+                msg = _("Richiesta assegnata a {} da {}. "
                         "Priorità assegnata: {}".format(operator,
                                                         request.user,
                                                         priority_text))
                 if not settings.SIMPLE_USER_SHOW_PRIORITY:
-                    msg = _("Ticket assegnato a {} da {}.".format(operator,
+                    msg = _("Richiesta assegnata a {} da {}.".format(operator,
                                                                   request.user))
                 ticket.update_log(user=request.user, note=msg)
                 messages.add_message(request, messages.SUCCESS,
-                                 _("Ticket <b>{}</b> assegnato"
+                                 _("Richiesta <b>{}</b> assegnata"
                                    " con successo a {}".format(ticket.code,
                                                                operator)))
                 return redirect('uni_ticket:manage_ticket_url_detail',
@@ -301,8 +301,8 @@ def ticket_detail(request, structure_slug, ticket_id,
             ticket.priority = priority
             ticket.save(update_fields = ['priority'])
             messages.add_message(request, messages.SUCCESS,
-                                 _("Ticket <b>{}</b> aggiornato"
-                                   " con successo".format(ticket.code)))
+                                 _("Richiesta <b>{}</b> aggiornata"
+                                   " con successo").format(ticket.code))
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
@@ -348,8 +348,8 @@ def tickets(request, structure_slug, structure, office_employee=None):
     """
     user_type = get_user_type(request.user, structure)
     template = "{}/tickets.html".format(user_type)
-    title = _('Gestione ticket')
-    sub_title = _("Assegnati o aperti")
+    title = _('Gestione richieste')
+    sub_title = _("Assegnate o aperte")
 
     ticket_list = []
     # if user is operator
@@ -441,7 +441,7 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
     """
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_dependence.html".format(user_type)
-    title = _('Aggiungi dipendenza ticket')
+    title = _('Aggiungi dipendenza da richiesta')
     sub_title = '{} ({})'.format(ticket.subject, ticket_id)
     # Lista dei pk dei ticket da cui quello corrente dipende
     ticket_dependences = ticket.get_dependences()
@@ -464,17 +464,17 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
             note = form.cleaned_data['note']
             if Ticket2Ticket.master_is_already_used(master_ticket):
                 messages.add_message(request, messages.ERROR,
-                                     "La dipendenza non può essere aggiunta."
-                                     " Il ticket <b>{}</b> è dipendente da"
-                                     " altri ticket".format(master_ticket))
+                                     _("La dipendenza non può essere aggiunta. "
+                                       "La richiesta <b>{}</b> è dipendente da "
+                                       "altre richieste").format(master_ticket))
                 return redirect('uni_ticket:add_ticket_dependence_url',
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
             if ticket.blocks_some_ticket():
                 messages.add_message(request, messages.ERROR,
-                                     "La dipendenza non può essere aggiunta."
-                                     " Ci sono ticket che dipendono da"
-                                     " quello corrente <b>{}</b>".format(ticket))
+                                     _("La dipendenza non può essere aggiunta. "
+                                       "Ci sono richieste che dipendono da "
+                                       "quella corrente <b>{}</b>").format(ticket))
                 return redirect('uni_ticket:add_ticket_dependence_url',
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
@@ -495,7 +495,7 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                                      " {}".format(master_ticket)))
             messages.add_message(request, messages.SUCCESS,
                                  _("Dipendenza dalla richiesta <b>{}</b>"
-                                   " aggiunta con successo".format(master_ticket.code)))
+                                   " aggiunta con successo").format(master_ticket.code))
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id = ticket_id)
@@ -545,9 +545,9 @@ def ticket_dependence_remove(request, structure_slug,
     # Se il ticket master che sto eliminando non è assegnato alla struttura corrente
     if structure not in master_ticket.get_assigned_to_structures():
         return custom_message(request,
-                              _("Il ticket <b>{}</b> non è stato assegnato"
+                              _("La richiesta <b>{}</b> non è stata assegnata"
                                 " a questa struttura, pertanto"
-                                " non puoi gestirlo".format(master_ticket)),
+                                " non puoi gestirla").format(master_ticket),
                               structure_slug=structure.slug)
     else:
         # log action
@@ -749,7 +749,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                                                     ticket))
 
     messages.add_message(request, messages.SUCCESS,
-                         _("Richiesta {} riaperta correttamente".format(ticket)))
+                         _("Richiesta {} riaperta correttamente").format(ticket))
     return redirect('uni_ticket:manage_ticket_url_detail',
                     structure_slug=structure_slug,
                     ticket_id=ticket_id)
@@ -808,7 +808,7 @@ def ticket_competence_add_new(request, structure_slug, ticket_id,
 
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_competence.html".format(user_type)
-    title = _('Trasferisci competenza ticket')
+    title = _('Trasferisci competenza richiesta')
     sub_title = '{} ({})'.format(ticket.subject, ticket_id)
     strutture = OrganizationalStructure.objects.filter(is_active=True)
     d = {'structure': structure,
@@ -898,11 +898,11 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
             # Perchè l'ufficio speciale Help-Desk è già competente sul ticket
             if not categoria.organizational_office:
                 messages.add_message(request, messages.ERROR,
-                                     _("Il ticket è già di competenza"
+                                     _("La richiesta è già di competenza"
                                        " dell'ufficio speciale <b>{}</b>,"
-                                       " che ha la competenza della tipologia di richiesta "
-                                       "<b>{}</b>".format(settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
-                                                   categoria)))
+                                       " responsabile della tipologia di richiesta "
+                                       "<b>{}</b>").format(settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+                                                           categoria))
                 return redirect('uni_ticket:manage_ticket_url_detail',
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
@@ -911,10 +911,10 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
 
             if new_office in ticket_offices:
                 messages.add_message(request, messages.ERROR,
-                                     _("Il ticket è già di competenza"
+                                     _("La richiesta è già di competenza"
                                        " dell'ufficio <b>{}</b>, responsabile"
-                                       " della tipologia di richiesta <b>{}</b>".format(new_office,
-                                                                           categoria)))
+                                       " della tipologia di richiesta <b>{}</b>"
+                                       "").format(new_office, categoria))
                 return redirect('uni_ticket:manage_ticket_url_detail',
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
@@ -982,7 +982,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_competence.html".format(user_type)
-    title = _('Trasferisci competenza ticket')
+    title = _('Trasferisci competenza richiesta')
     sub_title = '{} ({})'.format(ticket.subject, ticket_id)
     d = {'can_manage': can_manage,
          'categorie': categorie,
@@ -1070,7 +1070,7 @@ def ticket_message(request, structure_slug, ticket_id,
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
         if not ticket_taken:
-            m = _("Il ticket deve essere prima preso in carico")
+            m = _("La richiesta deve essere prima presa in carico")
             messages.add_message(request, messages.ERROR, m)
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
@@ -1078,7 +1078,7 @@ def ticket_message(request, structure_slug, ticket_id,
         # Se il ticket non è aperto non è possibile scrivere
         # if not ticket.is_open(request.user):
         if ticket.is_closed:
-            return custom_message(request, _("Il ticket non è modificabile"),
+            return custom_message(request, _("La richiesta non è modificabile"),
                                   structure_slug=structure.slug)
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
@@ -1526,7 +1526,8 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
                                                    request.user,
                                                    task,
                                                    ticket))
-        return custom_message(request, _("La richiesta {} è chiusa".format(ticket)),
+        return custom_message(request,
+                              _("La richiesta {} è chiusa").format(ticket),
                               structure_slug=structure.slug)
 
     task.is_closed = False
@@ -1782,9 +1783,9 @@ def ticket_competence_leave(request, structure_slug, ticket_id,
                                      ticket=ticket)
     user_type = get_user_type(request.user, structure)
     template = "{}/leave_ticket_competence.html".format(user_type)
-    title = _('Abbandona competenza ticket')
+    title = _('Abbandona competenza richiesta')
     sub_title = _('Seleziona l\'ufficio che deve abbandonare '
-                  'la competenza sul ticket "{}"').format(ticket.subject)
+                  'la competenza sulla richiesta "{}"').format(ticket.subject)
 
     if request.method == 'POST':
         form = TicketOperatorOfficesForm(data=request.POST,
@@ -1829,9 +1830,9 @@ def ticket_competence_leave(request, structure_slug, ticket_id,
                                        "<br>"
                                        "Rimuovendo la competenza "
                                        " di <b>{}</b>, "
-                                       "il ticket non sarebbe più gestito "
+                                       "la ichiesta non sarebbe più gestita "
                                        "da alcun ufficio. "
-                                       "".format(office)))
+                                       "").format(office))
             return redirect('uni_ticket:manage_ticket_url_detail',
                         structure_slug=structure_slug,
                         ticket_id=ticket_id)

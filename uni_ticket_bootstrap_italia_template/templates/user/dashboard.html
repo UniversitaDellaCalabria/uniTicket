@@ -14,27 +14,65 @@
 {% app_is_installed "channels" as channels_installed %}
 
 <div class="pb-4 clearfix">
-    <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_unassigned_ticket' %}">
-        <span class="badge badge-light">{{ ticket_non_gestiti }}</span> {% trans 'Ticket aperti' %}
-    </a>
-    <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_opened_ticket' %}">
-        <span class="badge badge-light">{{ ticket_aperti }}</span> {% trans 'Ticket assegnati' %}
-    </a>
-    <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_closed_ticket' %}">
-        <span class="badge badge-light">{{ ticket_chiusi }}</span> {% trans 'Ticket chiusi' %}
-    </a>
-    <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:messages' %}">
-        {% if ticket_messages > 0 %}
-        <span class="badge badge-primary">
-            {{ ticket_messages }}
-        </span>
-        {% endif %}
-        <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
-        </svg>
-        {% trans 'Messaggi' %}
-    </a>
-    <div class="float-md-right">
+    <div class="pull-left d-none d-md-block">
+        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_unassigned_ticket' %}">
+            <span class="badge badge-light">{{ ticket_non_gestiti }}</span> {% trans 'Aperte' %}
+        </a>
+        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_opened_ticket' %}">
+            <span class="badge badge-light">{{ ticket_aperti }}</span> {% trans 'Assegnate' %}
+        </a>
+        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_closed_ticket' %}">
+            <span class="badge badge-light">{{ ticket_chiusi }}</span> {% trans 'Chiuse' %}
+        </a>
+        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:messages' %}">
+            {% if ticket_messages > 0 %}
+            <span class="badge badge-primary">
+                {{ ticket_messages }}
+            </span>
+            {% endif %}
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
+            </svg>
+            {% trans 'Messaggi' %}
+        </a>
+    </div>
+    <div class="d-block d-md-none">
+        <nav class="toolbar">
+            <ul>
+                <li>
+                    <a href="{% url 'uni_ticket:user_unassigned_ticket' %}">
+                        <div class="badge-wrapper"><span class="toolbar-badge badge-primary">{{ ticket_non_gestiti }}</span></div>
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use></svg>
+                        <span class="toolbar-label">{% trans 'Aperte' %}</span></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'uni_ticket:user_opened_ticket' %}">
+                        <div class="badge-wrapper"><span class="toolbar-badge">{{ ticket_aperti }}</span></div>
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use></svg>
+                        <span class="toolbar-label">{% trans 'Assegnate' %}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'uni_ticket:user_closed_ticket' %}">
+                        <div class="badge-wrapper"><span class="toolbar-badge">{{ ticket_chiusi }}</span></div>
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use></svg>
+                        <span class="toolbar-label">{% trans 'Chiuse' %}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'uni_ticket:messages' %}">
+                        {% if ticket_messages > 0 %}
+                        <div class="badge-wrapper"><span class="toolbar-badge badge-primary">{{ ticket_messages }}</span></div>
+                        {% endif %}
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use></svg>
+                        <span class="toolbar-label">{% trans 'Messaggi' %}</span></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="pull-right">
         {% if chat_installed and channels_installed %}
         <a role="button"
            class="btn btn-outline-success"
@@ -49,9 +87,10 @@
            href="{% url 'uni_ticket:new_ticket_preload' %}">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
-                </svg> {% trans "Apri un nuovo ticket" %}
+                </svg> {% trans "Nuova richiesta" %}
         </a>
     </div>
+
 </div>
 
 {% endblock top_buttons %}

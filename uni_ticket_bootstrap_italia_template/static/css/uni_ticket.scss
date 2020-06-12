@@ -279,3 +279,20 @@ select {
     color: #fff;
     font-weight: bold;
 }
+
+/*
+ * Toolbar shadow hidden
+ */
+.toolbar>ul {
+    z-index: 0;
+}
+.toolbar:before {
+    display: none;
+}
+
+.toolbar .toolbar-alert, .toolbar .toolbar-badge{
+    background-color: #383838;
+}
+.toolbar .toolbar-alert, .toolbar .badge-primary{
+    background-color: #b71918;
+}

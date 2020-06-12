@@ -60,7 +60,7 @@ class TicketCategory(models.Model):
                                               null=True, blank=True)
     is_active = models.BooleanField(default=False,
                                     help_text=_("Se disabilitato, non sarà "
-                                                "visibile in Aggiungi Ticket"))
+                                                "visibile in Aggiungi Richiesta"))
     not_available_message = models.CharField(_("Messaggio se non attiva"),
                                              max_length=255,
                                              null=True, blank=True,
@@ -68,7 +68,7 @@ class TicketCategory(models.Model):
                                                          "se cercano di accedere al form"))
     show_heading_text = models.BooleanField(_("Mostra agli utenti un testo "
                                               "di accettazione in fase di "
-                                              "apertura nuovo ticket"),
+                                              "apertura nuova richiesta"),
                                             default=settings.SHOW_HEADING_TEXT)
     # fields to map roles
     allow_anonymous = models.BooleanField(_("Accessibile a Utenti anonimi"),
@@ -78,10 +78,10 @@ class TicketCategory(models.Model):
     allow_employee = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_EMPLOYEE_LABEL), default=True)
 
     # ticket type = notification
-    is_notify = models.BooleanField(_("Ticket di tipo Notifica"),
+    is_notify = models.BooleanField(_("Richiesta di tipo Notifica"),
                                     default=False,
-                                    help_text=_("Ticket che viene "
-                                                "automaticamente preso "
+                                    help_text=_("Richiesta che viene "
+                                                "automaticamente presa "
                                                 "in carico"))
     confirm_message_text = models.TextField(_("Messaggio di conferma"),
                                             max_length=500,
@@ -90,13 +90,13 @@ class TicketCategory(models.Model):
                                             help_text=_("Es: 'Hai correttamente "
                                                         "confermato la tua partecipazione'. "
                                                         "Apri e chiudi le parentesi graffe "
-                                                        "per inserire l'oggetto del ticket. "
+                                                        "per inserire l'oggetto della richiesta. "
                                                         "Lascia vuoto per usare il testo predefinito \"{}\""
                                                         "").format(settings.NEW_TICKET_CREATED_ALERT))
     # fields to map roles
     receive_email = models.BooleanField(_("Mail ad operatori"),
                                         default=False,
-                                        help_text=_("Invia email a operatori per ogni ticket aperto"))
+                                        help_text=_("Invia email a operatori per ogni richiesta aperta"))
 
     # protocol action required
     protocol_required = models.BooleanField(_("Protocollo obbligatorio"),
@@ -105,8 +105,8 @@ class TicketCategory(models.Model):
     class Meta:
         unique_together = ("slug", "organizational_structure")
         ordering = ["name"]
-        verbose_name = _("Categoria dei Ticket")
-        verbose_name_plural = _("Categorie dei Ticket")
+        verbose_name = _("Categoria della Richiesta")
+        verbose_name_plural = _("Categorie delle Richieste")
 
     def can_be_deleted(self):
         """
@@ -194,8 +194,8 @@ class TicketCategoryModule(models.Model):
 
     class Meta:
         ordering = ["-created"]
-        verbose_name = _("Modulo di Inserimento Ticket")
-        verbose_name_plural = _("Moduli di Inserimento Ticket")
+        verbose_name = _("Modulo di Inserimento Richiesta")
+        verbose_name_plural = _("Moduli di Inserimento Richieste")
 
     def can_be_deleted(self):
         """

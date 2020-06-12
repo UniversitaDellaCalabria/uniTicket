@@ -19,7 +19,7 @@
     {% if ticket_taken or ticket.is_closed %}
     <div class="collapse-header" id="heading3-lft">
         <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
-            {% trans "Attività del ticket" %} ({{ ticket_task|length }})
+            {% trans "Attività della richiesta" %} ({{ ticket_task|length }})
         </button>
     </div>
     <div id="collapse3-lft" class="collapse" role="tabpanel" aria-labelledby="heading3-lft">
@@ -31,7 +31,7 @@
     </div>
     <div class="collapse-header" id="heading4-lft">
         <button data-toggle="collapse" data-target="#collapse4-lft" aria-expanded="false" aria-controls="collapse4-lft">
-            {% trans "Dipendenze da altri ticket" %} ({{ dependences|length }})
+            {% trans "Dipendenze da altre richieste" %} ({{ dependences|length }})
         </button>
     </div>
     <div id="collapse4-lft" class="collapse" role="tabpanel" aria-labelledby="heading4-lft">

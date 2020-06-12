@@ -145,7 +145,7 @@ def opened_ticket(request, structure_slug=None,
 
     :return: render
     """
-    title = _("Ticket assegnati")
+    title = _("Richieste assegnate")
     user_type = get_user_type(request.user, structure)
     template = "{}/opened_ticket.html".format(user_type)
     d = {'structure': structure,
@@ -169,7 +169,7 @@ def my_opened_ticket(request, structure_slug=None,
 
     :return: render
     """
-    title = _("Ticket assegnati a me")
+    title = _("Richieste assegnate a me")
     user_type = get_user_type(request.user, structure)
     template = "{}/my_opened_ticket.html".format(user_type)
     d = {'structure': structure,
@@ -193,7 +193,7 @@ def unassigned_ticket(request, structure_slug=None,
 
     :return: render
     """
-    title = _("Ticket aperti")
+    title = _("Richieste aperte")
     user_type = get_user_type(request.user, structure)
     template = "{}/unassigned_ticket.html".format(user_type)
     d = {'structure': structure,
@@ -217,7 +217,7 @@ def closed_ticket(request, structure_slug=None,
 
     :return: render
     """
-    title = _("Ticket chiusi")
+    title = _("Richieste chiuse")
     user_type = get_user_type(request.user, structure)
     template = "{}/closed_ticket.html".format(user_type)
     d = {'structure': structure,

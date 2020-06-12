@@ -37,7 +37,7 @@
 {% ticket_has_been_taken ticket=ticket as ticket_taken %}
 {% if not ticket.is_closed and not ticket_taken and ticket_assignments == 1 and not ticket.protocol_number %}
 <div class="alert alert-info alert-dismissible fade show mb-5" role="alert">
-  {% trans "E' possibile <b>modificare</b> o <b>eliminare</b> il ticket fino a quando questo non sia stato assegnato ad un operatore" %}
+  {% trans "E' possibile <b>modificare</b> o <b>eliminare</b> la richiesta fino a quando questo non sia stata assegnata ad un operatore" %}
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
   </button>
@@ -60,14 +60,14 @@
        href="{% url 'uni_ticket:user_closed_ticket' %}">
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Ticket chiusi" %}
+        </svg> {% trans "Richieste chiuse" %}
     </a>
     <a role="button"
        href="{% url 'uni_ticket:user_clone_ticket' ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
        <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-copy"></use>
-       </svg> {% trans "Apri ticket simile" %}
+       </svg> {% trans "Effettua richiesta simile" %}
     </a>
 {% elif ticket_taken %}
 
@@ -75,14 +75,14 @@
        href="{% url 'uni_ticket:user_opened_ticket' %}">
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Ticket assegnati" %}
+        </svg> {% trans "Richieste assegnate" %}
     </a>
 {% else %}
     <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:user_unassigned_ticket' %}">
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Ticket aperti" %}
+        </svg> {% trans "Richieste aperte" %}
     </a>
 {% endif %}
 
@@ -140,7 +140,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>{% trans "Vuoi davvero eliminare il ticket" %}
+                <p>{% trans "Vuoi davvero eliminare la richiesta" %}
                     <br>
                     <b>{{ ticket.code }}</b> ?
                 </p>

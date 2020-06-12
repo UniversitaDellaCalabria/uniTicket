@@ -5,7 +5,16 @@
 {% endblock menu_links %}
 
 {% block top_buttons %}
-{% include 'management/ticket_cards.html' %}
+<div class="d-none d-md-block">
+    {% include 'management/ticket_cards.html' %}
+</div>
+<div class="d-block d-md-none">
+    <nav class="toolbar">
+        <ul>
+            {% include 'management/ticket_cards_mobile.html' %}
+        </ul>
+    </nav>
+</div>
 {% endblock top_buttons %}
 
 {% block page_content %}

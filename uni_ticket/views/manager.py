@@ -1288,7 +1288,7 @@ def category_input_module_delete(request, structure_slug,
 
         messages.add_message(request, messages.ERROR,
                              _("Impossibile eliminare il modulo {}."
-                               " Ci sono dei ticket collegati".format(module)))
+                               " Ci sono delle richieste collegate").format(module))
     else:
         if module.is_active:
             category.is_active = False
@@ -1435,7 +1435,7 @@ def category_input_field_delete(request, structure_slug,
 
         messages.add_message(request, messages.ERROR,
                              _("Impossibile eliminare il modulo {}."
-                               " Ci sono dei ticket collegati".format(module)))
+                               " Ci sono delle richieste collegate").format(module))
     else:
         field = get_object_or_404(TicketCategoryInputList,
                                   pk=field_id,

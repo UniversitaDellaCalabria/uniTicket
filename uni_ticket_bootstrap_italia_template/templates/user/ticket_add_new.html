@@ -226,10 +226,10 @@
                    name="{{ compiled_by_name }}"
                    checked>
             <label for="{{ compiled_by_name }}">
-                <b>{% trans "Tieni traccia della mia compilazione nel ticket" %}</b>
+                <b>{% trans "Tieni traccia della mia compilazione nella richiesta" %}</b>
             </label>
             <small class="form-text text-muted">
-                {% trans "Selezionando questa opzione i dati della tua utenza saranno visibili nella scheda di dettaglio del ticket" %}
+                {% trans "Selezionando questa opzione i dati della tua utenza saranno visibili nella scheda di dettaglio della richiesta" %}
             </small>
             <br>
             <button class="btn btn-outline-success"
@@ -238,7 +238,7 @@
                     value="{{ generate_url_button_name }}">
                 <svg class="icon icon-xs">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-link"></use>
-                </svg> {% trans "Genera URL per ticket precompilato" %}
+                </svg> {% trans "Genera URL per richiesta precompilata" %}
             </button>
         </div>
     </div>

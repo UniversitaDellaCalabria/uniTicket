@@ -266,7 +266,7 @@ class CategoryConditionForm(ModelForm):
                   'text': _('Testo'),
                   'ordinamento': _('Ordinamento'),
                   'attachment': _('Allegato'),
-                  'is_collapsable': _('Collassabile (in nuovo ticket)'),
+                  'is_collapsable': _('Collassabile (in nuova richiesta)'),
                   'is_printable': _('Visibile nel documento di stampa'),
                   'is_active': _('Attiva'),}
 

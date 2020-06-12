@@ -28,7 +28,7 @@ def dashboard(request, structure_slug, structure, office_employee):
     :return: render
     """
     title = _("Pannello di Controllo")
-    sub_title = _("Gestisci i ticket in modalità {}").format(settings.OPERATOR_PREFIX)
+    sub_title = _("Gestisci le richieste in modalità {}").format(settings.OPERATOR_PREFIX)
     template = "operator/dashboard.html"
     offices = user_offices_list(office_employee)
     user_tickets = visible_tickets_to_user(user=request.user,

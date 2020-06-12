@@ -18,14 +18,14 @@
    href="{% url 'uni_ticket:operator_tickets' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Torna a tutti i ticket" %}
+    </svg> {% trans "Torna a tutte le richieste" %}
 </a>
     {% block my_tickets_button %}
     <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:operator_my_opened_ticket' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
-        </svg> {% trans "Vedi ticket assegnati a me" %}
+        </svg> {% trans "Vedi richieste assegnate a me" %}
     </a>
     {% endblock my_tickets_button %}
 {% endblock top_buttons %}
