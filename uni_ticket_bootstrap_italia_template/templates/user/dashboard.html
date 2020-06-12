@@ -41,21 +41,27 @@
             <ul>
                 <li>
                     <a href="{% url 'uni_ticket:user_unassigned_ticket' %}">
+                        {% if ticket_non_gestiti > 0 %}
                         <div class="badge-wrapper"><span class="toolbar-badge badge-primary">{{ ticket_non_gestiti }}</span></div>
+                        {% endif %}
                         <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use></svg>
                         <span class="toolbar-label">{% trans 'Aperte' %}</span></span>
                     </a>
                 </li>
                 <li>
                     <a href="{% url 'uni_ticket:user_opened_ticket' %}">
+                        {% if ticket_aperti > 0 %}
                         <div class="badge-wrapper"><span class="toolbar-badge">{{ ticket_aperti }}</span></div>
+                        {% endif %}
                         <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use></svg>
                         <span class="toolbar-label">{% trans 'Assegnate' %}</span>
                     </a>
                 </li>
                 <li>
                     <a href="{% url 'uni_ticket:user_closed_ticket' %}">
+                        {% if ticket_chiusi > 0 %}
                         <div class="badge-wrapper"><span class="toolbar-badge">{{ ticket_chiusi }}</span></div>
+                        {% endif %}
                         <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use></svg>
                         <span class="toolbar-label">{% trans 'Chiuse' %}</span>
                     </a>
