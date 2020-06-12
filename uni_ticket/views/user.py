@@ -603,7 +603,8 @@ def dashboard(request):
     title =_("Pannello di controllo")
     sub_title = _("Gestisci le tue richieste o aprine di nuove")
     template = "user/dashboard.html"
-    tickets = Ticket.objects.filter(created_by=request.user)
+    tickets = Ticket.objects.filter(Q(created_by=request.user) | \
+                                    Q(compiled_by=request.user))
     not_closed = tickets.filter(is_closed=False)
     # unassigned = []
     # opened = []
