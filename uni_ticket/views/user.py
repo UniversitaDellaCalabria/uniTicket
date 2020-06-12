@@ -933,10 +933,11 @@ def ticket_message(request, ticket_id):
     form = ReplyForm()
     # if ticket.is_open():
     agent_replies = ticket_replies.filter(read_by=None).exclude(structure=None)
-    for reply in agent_replies:
-        reply.read_by = request.user
-        reply.read_date = timezone.now()
-        reply.save(update_fields = ['read_by', 'read_date'])
+    if request.user == ticket.created_by:
+        for reply in agent_replies:
+            reply.read_by = request.user
+            reply.read_date = timezone.now()
+            reply.save(update_fields = ['read_by', 'read_date'])
 
     if request.method == 'POST':
 

@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import (HttpResponse,
                          HttpResponseRedirect,
                          Http404,
@@ -289,7 +290,8 @@ def ticket_messages(request, structure_slug=None,
     user_type = get_user_type(request.user, structure)
     by_operator = False
     if user_type=='user':
-        tickets = Ticket.objects.filter(created_by=request.user)
+        tickets = Ticket.objects.filter(Q(created_by=request.user) | \
+                                        Q(compiled_by=request.user))
         # if user_type is 'user', retrieve messages leaved by a manager/operator
         # (linked to a structure)
         by_operator = True
