@@ -966,6 +966,12 @@ def ticket_message(request, ticket_id):
                                                 request.user,
                                                 ticket))
 
+            # add to ticket log history
+            log_msg = _("Nuovo messaggio (da utente). Oggetto: {} / "
+                        "Testo: {}").format(ticket_reply.subject,
+                                            ticket_reply.text)
+            ticket.update_log(request.user, note=log_msg, send_mail=False)
+
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
                            'status': _("inviato"),

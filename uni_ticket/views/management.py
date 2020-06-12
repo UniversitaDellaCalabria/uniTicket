@@ -1094,6 +1094,13 @@ def ticket_message(request, structure_slug, ticket_id,
                                             request.user,
                                             ticket))
 
+            log_msg = _("Nuovo messaggio (da operatore {}). "
+                        "Oggetto: {} / "
+                        "Testo: {}").format(structure,
+                                            ticket_reply.subject,
+                                            ticket_reply.text)
+            ticket.update_log(request.user, note=log_msg, send_mail=False)
+
             # Send mail to ticket owner
             mail_params = {'hostname': settings.HOSTNAME,
                            'status': _("ricevuto"),

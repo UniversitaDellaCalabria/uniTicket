@@ -373,6 +373,12 @@ def ticket_message_delete(request, ticket_message_id):
     msg_text = ticket_message.text
 
     ticket_message.delete()
+
+    # add to ticket log history
+    log_msg = _("Messaggio eliminato. Oggetto: {}"
+                "").format(msg_subject)
+    ticket.update_log(request.user, note=log_msg, send_mail=False)
+
     if user_type=='user':
 
         # Send mail to ticket owner
