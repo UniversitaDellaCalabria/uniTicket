@@ -1,5 +1,7 @@
 import os
 
+from django import forms
+
 # user model for auth
 AUTH_USER_MODEL = "accounts.User"
 # Administration backed available at /admin or whatever configured above
