@@ -51,6 +51,13 @@
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
     </svg> {% trans "Nuova Attività" %}
 </a>
+<a role="button"
+   href="{% url 'uni_ticket:manager_category_default_reply_new' structure_slug=structure.slug category_slug=category.slug %}"
+   class="btn btn-outline-secondary">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+    </svg> {% trans "Nuova Risposta predefinita" %}
+</a>
 {% if category.is_active %}
 <button type="button"
         class="btn btn-outline-secondary"
