@@ -212,7 +212,7 @@ class TicketDependenceForm(forms.Form):
     ticket = forms.ModelChoiceField(queryset=None, required=True,
                                     widget=BootstrapItaliaSelectWidget)
     note = forms.CharField(label=_('Note'),
-                           widget=forms.Textarea,
+                           widget=forms.Textarea(attrs={'rows':2}),
                            required=True)
 
     def __init__(self, *args, **kwargs):
