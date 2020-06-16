@@ -29,6 +29,8 @@ class CategoryForm(ModelForm):
                   'protocol_required']
         labels = {'name': _('Nome'),
                   'description': _('Descrizione'),}
+        widgets = {'description': forms.Textarea(attrs={'rows':2})}
+
     class Media:
         js = ('js/textarea-autosize.js',)
 
@@ -61,14 +63,16 @@ class CategoryInputListForm(ModelForm):
         labels = {'name': _('Nome'),
                   'is_required': _('Obbligatorio'),
                   'field_type': _('Tipologia di campo'),}
-        widgets = {'field_type': BootstrapItaliaSelectWidget,}
+        widgets = {'field_type': BootstrapItaliaSelectWidget,
+                   'valore': forms.Textarea(attrs={'rows':2}),
+                   'pre_text': forms.Textarea(attrs={'rows':2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
 
 class ChiusuraForm(forms.Form):
     note = forms.CharField(label=_('Motivazione'),
-                           widget=forms.Textarea,
+                           widget=forms.Textarea(attrs={'rows':2}),
                            required=True)
 
     class Media:
@@ -83,6 +87,7 @@ class OfficeForm(ModelForm):
         fields = ['name', 'description']
         labels = {'name': _('Nome'),
                   'description': _('Descrizione'),}
+        widgets = {'description': forms.Textarea(attrs={'rows':2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -93,7 +98,7 @@ class OfficeAddOperatorForm(forms.Form):
                                        queryset=None, required=True,
                                        widget=BootstrapItaliaSelectWidget)
     description = forms.CharField(label=_('Note'),
-                                  widget=forms.Textarea,
+                                  widget=forms.Textarea(attrs={'rows':2}),
                                   required=False)
     def __init__(self, *args, **kwargs):
         structure = kwargs.pop('structure', None)
@@ -157,6 +162,7 @@ class ReplyForm(ModelForm):
         labels = {'subject': _('Oggetto'),
                   'text': _('Testo'),
                   'attachment': _('Allegato')}
+        widgets = {'text': forms.Textarea(attrs={'rows':2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -251,7 +257,8 @@ class TaskForm(ModelForm):
                   'description': _('Testo'),
                   'priority': _('Priorità'),
                   'attachment': _('Allegato')}
-        widgets = {'priority': BootstrapItaliaSelectWidget,}
+        widgets = {'priority': BootstrapItaliaSelectWidget,
+                   'description': forms.Textarea(attrs={'rows':2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -269,6 +276,20 @@ class CategoryConditionForm(ModelForm):
                   'is_collapsable': _('Collassabile (in nuova richiesta)'),
                   'is_printable': _('Visibile nel documento di stampa'),
                   'is_active': _('Attiva'),}
+        widgets = {'text': forms.Textarea(attrs={'rows':2})}
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class CategoryDefaultReplyForm(ModelForm):
+    class Meta:
+        model = TicketCategoryDefaultReply
+        fields = ['text',]
+                  # 'is_active',]
+        labels = {'text': _('Testo'),}
+                  # 'is_active': _('Attiva'),}
+        widgets = {'text': forms.Textarea(attrs={'rows':2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -301,7 +322,8 @@ class CategoryTaskForm(ModelForm):
                   'priority': _('Priorità'),
                   'attachment': _('Allegato'),
                   'is_active': _('Attiva')}
-        widgets = {'priority': BootstrapItaliaSelectWidget,}
+        widgets = {'priority': BootstrapItaliaSelectWidget,
+                   'description': forms.Textarea(attrs={'rows':2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
@@ -374,6 +396,7 @@ class OrganizationalStructureWSArchiProModelForm(ModelForm):
                   'protocollo_fascicolo_anno',
                   'protocollo_template']
         labels = {'protocollo_cod_titolario': _('Codice titolario')}
+        widgets = {'protocollo_template': forms.Textarea(attrs={'rows':2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)

@@ -1,0 +1,140 @@
+{% extends "manager/category_default_reply_add_new.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+{% block menu_links %}
+{% include 'manager/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=category.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna alla tipologia di richiesta" %}
+</a>
+
+{% if default_reply.is_active %}
+<button type="button"
+        class="btn btn-outline-secondary"
+        data-toggle="modal"
+        data-target="#disableReply">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-invisible"></use>
+        </svg> {% trans "Disattiva" %}
+</button>
+{% else %}
+<button type="button"
+        class="btn btn-outline-secondary"
+        data-toggle="modal"
+        data-target="#enableReply">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-visible"></use>
+        </svg> {% trans "Attiva" %}
+</button>
+{% endif %}
+<button type="button"
+        class="btn btn-outline-danger"
+        data-toggle="modal"
+        data-target="#deleteReply">
+        <svg class="icon icon-xs icon-danger">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+        </svg> {% trans "Elimina" %}
+</button>
+
+{% if default_reply.is_active %}
+<div class="modal fade" tabindex="-1" role="dialog" id="disableReply">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Disattivazione risposta predefinita" %}
+                </h5>
+                <button class="close" type="button"
+                        data-dismiss="modal" aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero disattivare la risposta predefinita?" %}</p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-danger"
+                   href="{% url 'uni_ticket:manager_category_default_reply_disable' structure_slug=structure.slug category_slug=category.slug default_reply_id=default_reply.pk %}">
+                    {% trans "Si, disattiva" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="modal fade" tabindex="-1" role="dialog" id="enableReply">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Attivazione risposta predefinita" %}
+                </h5>
+                <button class="close" type="button"
+                        data-dismiss="modal" aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero attivare la risposta predefinita?" %}</p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-success"
+                   href="{% url 'uni_ticket:manager_category_default_reply_enable' structure_slug=structure.slug category_slug=category.slug default_reply_id=default_reply.pk %}">
+                    {% trans "Si, attiva" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="modal fade" tabindex="-1" role="dialog" id="deleteReply">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Eliminazione risposta predefinita" %}
+                </h5>
+                <button class="close" type="button"
+                        data-dismiss="modal" aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "Vuoi davvero eliminare la risposta predefinita?" %}</p>
+            </div>
+            <div class="modal-footer">
+                <a role="button" class="btn btn-danger"
+                   href="{% url 'uni_ticket:manager_category_default_reply_delete' structure_slug=structure.slug category_slug=category.slug default_reply_id=default_reply.pk %}">
+                    {% trans "Si, elimina" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock top_buttons %}
+
+
+
+{% block form_buttons %}
+<div>
+    <button class="btn btn-success btn-block" type="submit">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+        </svg> {% trans 'Modifica risposta predefinita' %}
+    </button>
+</div>
+{% endblock form_buttons %}

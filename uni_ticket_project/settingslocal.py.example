@@ -99,12 +99,13 @@ CUSTOM_WIDGETS_IN_FORMSETS = False
 CUSTOM_WIDGETS = {
     'BaseDateField': 'bootstrap_italia_template.widgets.BootstrapItaliaDateWidget',
     # 'BaseDateTimeField': 'bootstrap_italia_template.widgets.BootstrapItaliaTimeWidget',
-    #'CustomSelectBoxField': 'bootstrap_italia_template.widgets.BootstrapItaliaSelectWidget',
+    'CustomSelectBoxField': 'bootstrap_italia_template.widgets.BootstrapItaliaSelectWidget',
     'CustomRadioBoxField': 'bootstrap_italia_template.widgets.BootstrapItaliaRadioWidget',
-    # 'BaseDateField': 'django.forms.widgets.DateInput',
-    # 'DateField': 'django.forms.widgets.DateInput',
-    # 'CustomSelectBoxField': 'django.forms.widgets.Select',
-    # 'CustomRadioBoxField': 'django.forms.widgets.RadioSelect',
+    # 'BaseDateField': forms.widgets.DateInput(),
+    # 'DateField': forms.widgets.DateInput(),
+    # 'CustomSelectBoxField': forms.widgets.Select(),
+    # 'CustomRadioBoxField': forms.widgets.RadioSelect(),
+    'TextAreaField': forms.widgets.Textarea(attrs={"rows":2})
 }
 
 # DjangoSAML2 conf

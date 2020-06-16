@@ -115,6 +115,8 @@ cat_input = '{}/input'.format(category_id)
 cat_input_id = '{}/<int:module_id>'.format(cat_input)
 condition = '{}/conditions'.format(category_id)
 condition_id = '{}/<int:condition_id>'.format(condition)
+default_reply = '{}/default_replies'.format(category_id)
+default_reply_id = '{}/<int:default_reply_id>'.format(default_reply)
 category_task = '{}/default-tasks'.format(category_id)
 category_task_id = '{}/<str:task_id>'.format(category_task)
 
@@ -200,6 +202,13 @@ urlpatterns += [
     path('{}/enable/'.format(category_task_id), manager.category_task_enable, name='manager_category_task_enable'),
     path('{}/'.format(category_task_id), manager.category_task_detail, name='manager_category_task_detail'),
     path('{}/download/attachment/'.format(category_task_id), manager.category_task_download_attachment, name='category_task_download_attachment'),
+
+    # Category default ticket replies
+    path('{}/new/'.format(default_reply), manager.category_default_reply_new, name='manager_category_default_reply_new'),
+    path('{}/delete/'.format(default_reply_id), manager.category_default_reply_delete, name='manager_category_default_reply_delete'),
+    path('{}/disable/'.format(default_reply_id), manager.category_default_reply_disable, name='manager_category_default_reply_disable'),
+    path('{}/enable/'.format(default_reply_id), manager.category_default_reply_enable, name='manager_category_default_reply_enable'),
+    path('{}/'.format(default_reply_id), manager.category_default_reply_detail, name='manager_category_default_reply_detail'),
 
     # Structure Protocol configurations
     path('{}/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_detail, name='manager_structure_protocol_configuration_detail'),

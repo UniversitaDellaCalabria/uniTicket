@@ -1,3 +1,4 @@
+from django import forms
 from django.conf import settings
 from django_form_builder.forms import BaseDynamicForm
 from django_form_builder import dynamic_fields
@@ -53,6 +54,7 @@ class DynamicForm(BaseDynamicForm):
         description_field = getattr(dynamic_fields,
                                     'TextAreaField')(**description_data)
         self.initial_fields[description_id] = description_field
+        self.initial_fields[description_id].widget = forms.Textarea(attrs={'rows':2})
 
         # if current_user is anonymous, generate CAPTCHA field
         # and put it in final_fields

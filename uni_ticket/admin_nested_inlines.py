@@ -78,6 +78,7 @@ class TicketCategoryWSArchiProModelForm(forms.ModelForm):
 
         labels = {'name': _('Denominazione'),
                   'protocollo_cod_titolario': _('Codice titolario')}
+        widgets = {'protocollo_template': forms.Textarea(attrs={'rows':2})}
 
     class Media:
         js = ('js/textarea-autosize.js',)

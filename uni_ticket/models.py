@@ -754,6 +754,24 @@ class Ticket(SavedFormContent):
         return '{} ({})'.format(self.subject, self.code)
 
 
+class TicketCategoryDefaultReply(models.Model):
+    """
+    """
+    ticket_category = models.ForeignKey(TicketCategory,
+                                        on_delete = models.CASCADE)
+    text = models.TextField()
+    created = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ["-created"]
+        verbose_name = _("Risposta prefefinita")
+        verbose_name_plural = _("Risposte predefinite")
+
+    def __str__(self):
+        return (self.text[:80] + '..')
+
+
 class TicketAssignment(models.Model):
     """
     Ufficio di competenza per la gestione Ticket

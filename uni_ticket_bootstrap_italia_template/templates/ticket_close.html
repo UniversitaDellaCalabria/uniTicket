@@ -7,6 +7,10 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
+
+{% block default_replies %}
+{% endblock default_replies %}
+
 <form method="post" enctype="multipart/form-data">
     {% include 'form_template.html' %}
     {% block form_buttons %}
@@ -42,6 +46,7 @@
                     <div class="modal-footer">
                         <input class="btn btn-success"
                                type="submit"
+                               id="submitForm"
                                value="{% trans 'Si, chiudi la richiesta' %}">
                     </div>
                 </div>
@@ -54,4 +59,10 @@
 
 {% block extra_scripts %}
 {{ form.media }}
+<script>
+$('#submitForm').on('click', function(e){
+    $('#closeticket').removeClass('show');
+    $('.modal-backdrop.fade').css('opacity', 0);
+});
+</script>
 {% endblock extra_scripts %}

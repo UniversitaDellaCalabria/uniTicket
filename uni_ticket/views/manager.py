@@ -3077,3 +3077,251 @@ def manager_settings_check_protocol(request, structure_slug,
                              _("<b>Errore protocollo</b>: {}").format(e))
     return redirect('uni_ticket:manager_user_settings',
                     structure_slug=structure_slug)
+
+@login_required
+@is_manager
+def category_default_reply_new(request, structure_slug,
+                               category_slug, structure):
+    """
+    Creates a new default ticket reply for category
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    title = _('Nuova risposta predefinita per chiusura ticket')
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    form = CategoryDefaultReplyForm()
+    if request.method == 'POST':
+        form = CategoryDefaultReplyForm(request.POST)
+        if form.is_valid():
+            default_reply = form.save(commit=False)
+            default_reply.text = escape(form.cleaned_data['text'])
+            default_reply.ticket_category = category
+            default_reply.save()
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} created the new default reply {}'
+                        ' for category {}'.format(timezone.now(),
+                                                  structure,
+                                                  request.user,
+                                                  default_reply,
+                                                  category))
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Risposta predefinita creata con successo"))
+            return redirect('uni_ticket:manager_category_detail',
+                            structure_slug=structure_slug,
+                            category_slug=category_slug)
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+
+    template = 'manager/category_default_reply_add_new.html'
+    d = {'category': category,
+         'form': form,
+         'structure': structure,
+         'sub_title': category,
+         'title': title,}
+    return render(request, template, d)
+
+@login_required
+@is_manager
+def category_default_reply_delete(request, structure_slug, category_slug,
+                                  default_reply_id, structure):
+    """
+    Deletes default_reply from a category
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type default_reply_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param default_reply_id: default_reply id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    default_reply = get_object_or_404(TicketCategoryDefaultReply,
+                                      pk=default_reply_id,
+                                      ticket_category=category)
+    messages.add_message(request, messages.SUCCESS,
+                         _("Risposta predefinita eliminata correttamente"))
+
+    # log action
+    logger.info('[{}] manager of structure {}'
+                ' {} deleted a default reply'
+                ' for category {}'.format(timezone.now(),
+                                          structure,
+                                          request.user,
+                                          category))
+
+    default_reply.delete()
+    return redirect('uni_ticket:manager_category_detail',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug)
+
+@login_required
+@is_manager
+def category_default_reply_disable(request, structure_slug, category_slug,
+                                   default_reply_id, structure):
+    """
+    Disables a default_reply from a category
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type default_reply_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param default_reply_id: default_reply id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    default_reply = get_object_or_404(TicketCategoryDefaultReply,
+                                      pk=default_reply_id,
+                                      ticket_category=category)
+    if default_reply.is_active:
+        default_reply.is_active = False
+        default_reply.save(update_fields = ['is_active'])
+        messages.add_message(request, messages.SUCCESS,
+                             _("Risposta predefinita disattivata con successo"))
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} disabled a default reply'
+                    ' for category {}'.format(timezone.now(),
+                                              structure,
+                                              request.user,
+                                              category))
+    else:
+        messages.add_message(request, messages.ERROR,
+                             _("Risposta predefinita già disattivata"))
+    return redirect('uni_ticket:manager_category_detail',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug)
+
+@login_required
+@is_manager
+def category_default_reply_enable(request, structure_slug, category_slug,
+                                  default_reply_id, structure):
+    """
+    Enables a default_reply from a category
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type default_reply_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param default_reply_id: default_reply id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    default_reply = get_object_or_404(TicketCategoryDefaultReply,
+                                      pk=default_reply_id,
+                                      ticket_category=category)
+    if default_reply.is_active:
+        messages.add_message(request, messages.ERROR,
+                             _("Risposta predefinita già attivata"))
+    else:
+        default_reply.is_active = True
+        default_reply.save(update_fields = ['is_active'])
+        messages.add_message(request, messages.SUCCESS,
+                             _("Risposta predefinita attivata con successo"))
+        # log action
+        logger.info('[{}] manager of structure {}'
+                    ' {} enabled a default reply'
+                    ' for category {}'.format(timezone.now(),
+                                              structure,
+                                              request.user,
+                                              category))
+
+    return redirect('uni_ticket:manager_category_detail',
+                    structure_slug=structure_slug,
+                    category_slug=category_slug)
+
+@login_required
+@is_manager
+def category_default_reply_detail(request, structure_slug, category_slug,
+                                  default_reply_id, structure):
+    """
+    Shows default_reply details
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type default_reply_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param default_reply_id: default_reply id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    title = _('Gestione dettaglio risposta predefinita')
+    template = 'manager/category_default_reply_detail.html'
+    category = get_object_or_404(TicketCategory,
+                                 organizational_structure=structure,
+                                 slug=category_slug)
+    default_reply = get_object_or_404(TicketCategoryDefaultReply,
+                                      pk=default_reply_id,
+                                      ticket_category=category)
+    form = CategoryDefaultReplyForm(instance=default_reply)
+    if request.method == 'POST':
+        form = CategoryDefaultReplyForm(instance=default_reply,
+                                        data=request.POST)
+        if form.is_valid():
+            # edited_default_reply = form.save(commit=False)
+            default_reply.text = escape(form.cleaned_data['text'])
+            default_reply.save()
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} edited a default_reply'
+                        ' for category {}'.format(timezone.now(),
+                                                  structure,
+                                                  request.user,
+                                                  category))
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Risposta predefinita modificata con successo"))
+            return redirect('uni_ticket:manager_category_default_reply_detail',
+                            structure_slug=structure_slug,
+                            category_slug=category_slug,
+                            default_reply_id=default_reply_id)
+        else:
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+    d = {'category': category,
+         'default_reply': default_reply,
+         'form': form,
+         'structure': structure,
+         'title': title,}
+    return render(request, template, d)

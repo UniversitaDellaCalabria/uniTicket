@@ -629,6 +629,11 @@ def ticket_close(request, structure_slug, ticket_id,
                               structure_slug=structure.slug)
     title = _('Chiusura della richiesta')
     sub_title = ticket
+
+    category = ticket.input_module.ticket_category
+    default_replies = TicketCategoryDefaultReply.objects.filter(ticket_category=category,
+                                                                is_active=True)
+
     form = ChiusuraForm()
     if request.method=='POST':
         form = ChiusuraForm(request.POST)
@@ -671,7 +676,8 @@ def ticket_close(request, structure_slug, ticket_id,
 
     user_type = get_user_type(request.user, structure)
     template = "{}/ticket_close.html".format(user_type)
-    d = {'form': form,
+    d = {'default_replies': default_replies,
+         'form': form,
          'structure': structure,
          'sub_title': sub_title,
          'ticket': ticket,
