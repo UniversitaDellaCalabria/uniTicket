@@ -291,6 +291,8 @@ urlpatterns += [
     path('{}/'.format(ticket_id), login_required(is_the_owner(user.ticket_detail)), name='ticket_detail'),
     path('settings/', generic.user_settings, name='user_settings'),
     path('messages/', generic.ticket_messages, name='messages'),
+
+    path('ajax_test/', user.ajax_test, name='ajax_test'),
 ]
 
 if 'chat' in settings.INSTALLED_APPS:

@@ -125,3 +125,31 @@ dell'Università della Calabria.
 
 {% block footer_menu_section %}
 {% endblock footer_menu_section %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+<script>
+new Vue({
+    el: '#vue',
+    delimiters: ['[[', ']]'],
+    data: {
+        messages: 0
+    },
+    methods: {
+        loadData: function () {
+            $.get("{% url 'uni_ticket:ajax_test' %}", function (response) {
+                this.messages = response;
+            }.bind(this));
+        }
+    },
+    created: function () {
+        this.loadData();
+
+        setInterval(function () {
+            console.log(this.messages);
+            this.loadData();
+        }.bind(this), 5000);
+    }
+});
+</script>
+{% endblock extra_scripts %}

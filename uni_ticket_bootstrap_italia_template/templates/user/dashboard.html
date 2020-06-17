@@ -13,7 +13,7 @@
 {% app_is_installed "chat" as chat_installed %}
 {% app_is_installed "channels" as channels_installed %}
 
-<div class="pb-4 clearfix">
+<div class="pb-4 clearfix" id="vue">
     <div class="pull-left d-none d-md-block">
         <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_unassigned_ticket' %}">
             <span class="badge badge-light">{{ ticket_non_gestiti }}</span> {% trans 'Aperte' %}
@@ -25,11 +25,9 @@
             <span class="badge badge-light">{{ ticket_chiusi }}</span> {% trans 'Chiuse' %}
         </a>
         <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:messages' %}">
-            {% if ticket_messages > 0 %}
-            <span class="badge badge-primary">
-                {{ ticket_messages }}
+            <span class="badge badge-primary" v-if="messages>0">
+                [[ messages ]]
             </span>
-            {% endif %}
             <svg class="icon icon-xs">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
             </svg>
@@ -108,6 +106,22 @@
 
 
 {% block extra_scripts %}
+<!--
+<script>
+    setInterval(function()
+{
+    $.ajax({
+        type: "get",
+        url: "{% url 'uni_ticket:ajax_test' %}",
+        success:function(data)
+        {
+            console.log(data);
+        }
+    });
+}, 5000);
+</script>
+-->
+    {{ block.super }}
     {% settings_value name="SIMPLE_USER_SHOW_PRIORITY" as user_show_priority %}
     {% url 'uni_ticket:user_ticket_url' as var_url %}
     {% url 'uni_ticket:user_all_tickets_json' as ajax_url %}

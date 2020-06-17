@@ -1266,3 +1266,22 @@ def download_ticket_pdf(request, ticket_id, ticket):
     main_pdf_file.close()
     os.remove(pdf_path)
     return response
+
+
+
+
+@login_required
+def ajax_test(request):
+    """
+    Dashboard of user, with tickets list
+
+    :return: render
+    """
+    tickets = Ticket.objects.filter(Q(created_by=request.user) | \
+                                    Q(compiled_by=request.user))
+    messages = 0
+    for ticket in tickets:
+        messages += ticket.get_messages_count(by_operator=True)[1]
+    print(messages)
+    response = HttpResponse(messages)
+    return response
