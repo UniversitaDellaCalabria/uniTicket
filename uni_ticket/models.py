@@ -441,13 +441,35 @@ class Ticket(SavedFormContent):
 
     def get_status(self):
         if self.is_closed:
+            # if is a notification ticket
             if self.input_module.ticket_category.is_notify or not self.closed_by:
-                return _('<b class="text-success">Chiusa</b>')
-            return _('<b class="text-success">Chiusa</b> <small>{} [{}]</small>'
-                     '').format(dict(settings.CLOSING_LEVELS).get(self.closing_status),
-                                self.closed_by)
-        if not self.has_been_taken(): return _('<b class="text-danger">Aperta</b>')
-        return _('<b class="text-warning">Assegnata</b> {}').format(self.taken_by_html_list())
+                return _('<span class="badge badge-success">Chiusa</span')
+            # normal ticket
+            status_literal = dict(settings.CLOSING_LEVELS).get(self.closing_status)
+            html = _('<span class="badge badge-success">Chiusa</span> '
+                      '<span class="badge badge-{}">{}</span>')
+            if self.closing_status == -1:
+                html = html.format("danger", status_literal)
+            elif self.closing_status == 0:
+                html = html.format("warning", status_literal)
+            elif self.closing_status == 1:
+                html = html.format("success", status_literal)
+            elif self.closing_status == 2:
+                html = html.format("secondary", status_literal)
+            return '{}<br><small>{}</small>'.format(html, self.closed_by)
+        if not self.has_been_taken():
+            return _('<span class="badge badge-danger">Aperta</span>')
+        return _('<span class="badge badge-warning">Assegnata</span> {}'
+                 '').format(self.taken_by_html_list())
+
+        # if self.is_closed:
+            # if self.input_module.ticket_category.is_notify or not self.closed_by:
+                # return _('<b class="text-success">Chiusa</b>')
+            # return _('<b class="text-success">Chiusa</b> <small>{} [{}]</small>'
+                     # '').format(dict(settings.CLOSING_LEVELS).get(self.closing_status),
+                                # self.closed_by)
+        # if not self.has_been_taken(): return _('<b class="text-danger">Aperta</b>')
+        # return _('<b class="text-warning">Assegnata</b> {}').format(self.taken_by_html_list())
 
     def update_log(self, user, note='', send_mail=True, mail_msg=''):
         if not user: return False
@@ -986,11 +1008,20 @@ class Task(AbstractTask):
 
     def get_status(self):
         if self.is_closed:
-            return _('<span class="badge badge-danger">Chiusa - {}</span> '
-                     '<small>{}</small>'
-                     '').format(dict(settings.CLOSING_LEVELS).get(self.closing_status),
-                                self.closed_by)
-        return _('<span class="badge badge-success">Aperta</span>')
+            status_literal = dict(settings.CLOSING_LEVELS).get(self.closing_status)
+
+            html = _('<span class="badge badge-success">Chiusa</span> '
+                      '<span class="badge badge-{}">{}</span>')
+            if self.closing_status == -1:
+                html = html.format("danger", status_literal)
+            elif self.closing_status == 0:
+                html = html.format("warning", status_literal)
+            elif self.closing_status == 1:
+                html = html.format("success", status_literal)
+            elif self.closing_status == 2:
+                html = html.format("secondary", status_literal)
+            return '{} <small>{}</small>'.format(html, self.closed_by)
+        return _('<span class="badge badge-danger">Aperta</span>')
 
     def __str__(self):
         return '{} - ticket: {}'.format(self.subject, self.ticket)
