@@ -75,8 +75,11 @@ def _close_notification_ticket(ticket, user, operator, ticket_assignment):
     ticket.is_closed = True
     ticket.closed_date = timezone.now()
     ticket.closed_by = user
+    # default closing status: success
+    ticket.closing_status = 1
     ticket.save(update_fields=['is_closed',
                                'closed_date',
+                               'closing_status',
                                'closed_by'])
 
     # assign to an operator
@@ -166,7 +169,8 @@ def ticket_new_preload(request, structure_slug=None):
     if Ticket.number_limit_reached_by_user(request.user):
         messages.add_message(request, messages.ERROR,
                              _("Hai raggiunto il limite massimo giornaliero"
-                               " di richieste: <b>{}</b>".format(settings.MAX_DAILY_TICKET_PER_USER)))
+                               " di richieste: <b>{}</b>"
+                               "").format(settings.MAX_DAILY_TICKET_PER_USER))
         return redirect(reverse('uni_ticket:user_dashboard'))
 
     strutture = OrganizationalStructure.objects.filter(is_active=True)
@@ -497,8 +501,9 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                    'protocol_date'])
                         messages.add_message(request, messages.SUCCESS,
                                              _("Richiesta protocollata "
-                                               "correttamente: n. <b>{}/{}</b>").format(protocol_number,
-                                                                                        timezone.now().year))
+                                               "correttamente: n. <b>{}/{}</b>"
+                                               "").format(protocol_number,
+                                                          timezone.now().year))
                     # if protocol fails
                     # raise Exception and do some operations
                     except Exception as e:
@@ -1044,11 +1049,13 @@ def task_detail(request, ticket_id, task_id):
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
+    priority = task.get_priority()
     title = _("Dettaglio task")
-    d={'sub_title': task,
+    d={'priority': priority,
+       'sub_title': task,
        'task': task,
        'title': title}
-    template = "task_detail.html"
+    template = "user/task_detail.html"
     return render(request, template, d)
 
 @login_required
@@ -1088,16 +1095,23 @@ def ticket_close(request, ticket_id):
         form = ChiusuraForm(request.POST)
         if form.is_valid():
             motivazione = form.cleaned_data['note']
+            closing_status = form.cleaned_data['status']
             ticket.is_closed = True
             ticket.closing_reason = motivazione
+            ticket.closing_status = closing_status
             ticket.closed_date = timezone.now()
             ticket.save(update_fields = ['is_closed',
                                          'closing_reason',
+                                         'closing_status',
                                          'closed_date'])
             ticket.update_log(user=request.user,
-                              note=_("Chiusura richiesta da utente proprietario: {}".format(motivazione)))
+                              note=_("Chiusura richiesta {} da utente "
+                                     "proprietario: {}"
+                                     "").format(dict(settings.CLOSING_LEVELS).get(closing_status),
+                                                motivazione))
             messages.add_message(request, messages.SUCCESS,
-                                 _("Richiesta {} chiusa correttamente".format(ticket)))
+                                 _("Richiesta {} chiusa correttamente"
+                                   "").format(ticket))
 
             # log action
             logger.info('[{}] user {} closed ticket {}'.format(timezone.now(),

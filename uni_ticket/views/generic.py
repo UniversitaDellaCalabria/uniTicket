@@ -368,7 +368,8 @@ def ticket_message_delete(request, ticket_message_id):
                               structure_slug=structure.slug)
     ticket = ticket_message.ticket
     messages.add_message(request, messages.SUCCESS,
-                         _("Messaggio <b>{}</b> eliminato con successo.".format(ticket_message)))
+                         _("Messaggio <b>{}</b> eliminato con successo."
+                           "").format(ticket_message))
 
     # delete message
     msg_subject = ticket_message.subject
@@ -393,8 +394,9 @@ def ticket_message_delete(request, ticket_message_id):
                        'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
                                                                  kwargs={'ticket_id': ticket.code}))
                       }
-        m_subject = _("{} - richiesta {} messaggio eliminato".format(settings.HOSTNAME,
-                                                                  ticket))
+        m_subject = _("{} - richiesta {} messaggio eliminato"
+                      "").format(settings.HOSTNAME,
+                                 ticket)
         send_custom_mail(subject=m_subject,
                          recipients=[request.user],
                          body=settings.USER_TICKET_MESSAGE,

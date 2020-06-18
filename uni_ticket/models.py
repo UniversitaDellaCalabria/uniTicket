@@ -284,6 +284,7 @@ class Ticket(SavedFormContent):
     compiled_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                     on_delete=models.SET_NULL,
                                     null=True,
+                                    blank=True,
                                     related_name='compiled_by_user')
     input_module = models.ForeignKey(TicketCategoryModule,
                                      on_delete=models.PROTECT)
@@ -299,7 +300,11 @@ class Ticket(SavedFormContent):
                                   null=True, blank=True,
                                   related_name='closed_by_user')
     closing_reason = models.TextField(blank=True, null=True)
-    priority = models.IntegerField(default=0)
+    closing_status = models.IntegerField(choices=settings.CLOSING_LEVELS,
+                                         null=True,
+                                         blank=True)
+    priority = models.IntegerField(choices=settings.PRIORITY_LEVELS,
+                                   default=0)
 
     # protocol
     protocol_number = models.CharField(blank=True, default='',
@@ -437,10 +442,12 @@ class Ticket(SavedFormContent):
     def get_status(self):
         if self.is_closed:
             if self.input_module.ticket_category.is_notify or not self.closed_by:
-                return _('<b class="text-success">Chiuso</b>')
-            return _('<b class="text-success">Chiuso</b> <small>[{}]</small>').format(self.closed_by)
-        if not self.has_been_taken(): return _('<b class="text-danger">Aperto</b>')
-        return _('<b class="text-warning">Assegnato</b> {}').format(self.taken_by_html_list())
+                return _('<b class="text-success">Chiusa</b>')
+            return _('<b class="text-success">Chiusa</b> <small>{} [{}]</small>'
+                     '').format(dict(settings.CLOSING_LEVELS).get(self.closing_status),
+                                self.closed_by)
+        if not self.has_been_taken(): return _('<b class="text-danger">Aperta</b>')
+        return _('<b class="text-warning">Assegnata</b> {}').format(self.taken_by_html_list())
 
     def update_log(self, user, note='', send_mail=True, mail_msg=''):
         if not user: return False
@@ -918,8 +925,8 @@ class AbstractTask(models.Model):
                                    on_delete=models.SET_NULL,
                                    null=True)
     # priority = models.IntegerField(default=0)
-    priority = models.IntegerField(default=0,
-                                   choices=settings.PRIORITY_LEVELS)
+    priority = models.IntegerField(choices=settings.PRIORITY_LEVELS,
+                                   default=0)
     attachment = models.FileField(upload_to=_attachment_upload,
                                   null=True, blank=True,
                                   max_length=255,
@@ -950,6 +957,9 @@ class Task(AbstractTask):
                                   related_name='task_closed_by_user')
     closed_date = models.DateTimeField(blank=True, null=True)
     closing_reason = models.TextField(blank=True, null=True)
+    closing_status = models.IntegerField(choices=settings.CLOSING_LEVELS,
+                                         null=True,
+                                         blank=True)
 
     class Meta:
         ordering = ["created"]
@@ -973,6 +983,14 @@ class Task(AbstractTask):
                                    settings.TICKET_TASK_ATTACHMENT_SUBFOLDER,
                                    self.code)
         return folder
+
+    def get_status(self):
+        if self.is_closed:
+            return _('<span class="badge badge-danger">Chiusa - {}</span> '
+                     '<small>{}</small>'
+                     '').format(dict(settings.CLOSING_LEVELS).get(self.closing_status),
+                                self.closed_by)
+        return _('<span class="badge badge-success">Aperta</span>')
 
     def __str__(self):
         return '{} - ticket: {}'.format(self.subject, self.ticket)

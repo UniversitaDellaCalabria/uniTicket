@@ -639,13 +639,16 @@ def ticket_close(request, structure_slug, ticket_id,
         form = ChiusuraForm(request.POST)
         if form.is_valid():
             motivazione = form.cleaned_data['note']
+            closing_status = form.cleaned_data['status']
             ticket.is_closed = True
             ticket.closed_by = request.user
             ticket.closing_reason = motivazione
+            ticket.closing_status = closing_status
             ticket.closed_date = timezone.now()
             ticket.save(update_fields = ['is_closed',
                                          'closed_by',
                                          'closing_reason',
+                                         'closing_status',
                                          'closed_date'])
 
             # log action
@@ -654,7 +657,9 @@ def ticket_close(request, structure_slug, ticket_id,
                                                           ticket))
 
             ticket.update_log(user=request.user,
-                              note=_("Chiusura richiesta: {}".format(motivazione)))
+                              note=_("Chiusura richiesta ({}): {}"
+                                     "").format(dict(settings.CLOSING_LEVELS).get(closing_status),
+                                                motivazione))
 
             opened_ticket_url = reverse('uni_ticket:manage_opened_ticket_url',
                                         kwargs={'structure_slug': structure.slug})
@@ -1470,12 +1475,15 @@ def task_close(request, structure_slug, ticket_id, task_id,
         form = ChiusuraForm(request.POST)
         if form.is_valid():
             motivazione = form.cleaned_data['note']
+            closing_status = form.cleaned_data['status']
             task.is_closed = True
             task.closed_by = request.user
             task.closing_reason = motivazione
+            task.closing_status = closing_status
             task.closed_date = timezone.now()
             task.save(update_fields = ['is_closed',
                                        'closing_reason',
+                                       'closing_status',
                                        'closed_date',
                                        'closed_by'])
 
@@ -1484,7 +1492,9 @@ def task_close(request, structure_slug, ticket_id, task_id,
                                                         request.user,
                                                         task))
 
-            msg = _("Chiusura attività: {} - {}".format(task, motivazione))
+            msg = _("Chiusura attività ({}): {} - {}".format(task,
+                                                             dict(settings.CLOSING_LEVELS).get(closing_status),
+                                                             motivazione))
             task.update_log(user=request.user,note=msg)
             ticket.update_log(user=request.user,note=msg)
             messages.add_message(request, messages.SUCCESS,

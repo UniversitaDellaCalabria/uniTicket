@@ -68,6 +68,14 @@ PRIORITY_LEVELS = (
                     (2, _('Molto bassa')),
                   )
 
+# closing levels
+CLOSING_LEVELS = (
+                   (-1, _('Rifiutata')),
+                   (0, _('Non risolta')),
+                   (1, _('Risolta con successo')),
+                   (2, _('Non definita')),
+                 )
+
 # If 0 = Unlimited
 MAX_DAILY_TICKET_PER_USER = 10
 

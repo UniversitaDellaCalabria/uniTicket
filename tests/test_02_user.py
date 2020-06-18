@@ -48,7 +48,8 @@ class Test_UserFunctions(BaseTicketEnvironment):
 
     def test_close_ticket(self):
         # Close ticket
-        params = {'note': 'My notes'}
+        params = {'note': 'My notes',
+                  'status': 1}
         response = self.client.post(reverse('uni_ticket:user_close_ticket',
                                             kwargs={'ticket_id': self.ticket.code}),
                                     params,

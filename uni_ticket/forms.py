@@ -71,6 +71,12 @@ class CategoryInputListForm(ModelForm):
         js = ('js/textarea-autosize.js',)
 
 class ChiusuraForm(forms.Form):
+    status = forms.TypedChoiceField(choices=settings.CLOSING_LEVELS,
+                                    required=True,
+                                    initial=1,
+                                    label=_('Stato chiusura'),
+                                    coerce=int,
+                                    widget=BootstrapItaliaSelectWidget)
     note = forms.CharField(label=_('Motivazione'),
                            widget=forms.Textarea(attrs={'rows':2}),
                            required=True)

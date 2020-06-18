@@ -8,16 +8,17 @@
         <li class="py-2">
             <b>{{ task }}</b>
             <br>
-            {{ task.created }}
-            {% if task.is_closed %}
-                <span class="badge badge-danger">
-                    {% trans "Chiusa" %}
-                </span>
-            {% else %}
-                <span class="badge badge-success">
-                    {% trans "Aperta" %}
-                </span>
-            {% endif %}
+            <small>{{ task.created }}</small>
+            <br>
+            {{ task.get_status|safe }}
+            <div>
+                <a role="button"
+                   class="my-1 btn btn-outline-secondary btn-xs float-left"
+                   href="{% url 'uni_ticket:task_detail' ticket_id=ticket.code task_id=task.code %}">
+                    {% trans "Dettagli" %}
+                </a>
+            </div>
+
         </li>
         {% endfor %}
     </ul>

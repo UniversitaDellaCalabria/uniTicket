@@ -109,10 +109,10 @@
 {% if not ticket.is_closed %}
 <a role="button"
    href="{% url 'uni_ticket:user_close_ticket' ticket_id=ticket.code %}"
-   class="btn btn-outline-secondary">
-   <svg class="icon icon-xs">
-    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
-   </svg> {% trans "Chiudi" %}
+   class="btn btn-outline-success">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+    </svg> {% trans "Chiudi" %}
 </a>
 {% endif %}
 

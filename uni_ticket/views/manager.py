@@ -479,7 +479,7 @@ def office_remove_operator(request, structure_slug,
                                              office))
         office_employee.delete()
         messages.add_message(request, messages.SUCCESS,
-                             _("Operatore {} rimosso correttamente".format(employee)))
+                             _("Operatore {} rimosso correttamente").format(employee))
     return redirect('uni_ticket:manager_office_detail',
                     structure_slug=structure_slug,
                     office_slug=office_slug)
@@ -530,11 +530,11 @@ def office_disable(request, structure_slug, office_slug, structure):
             cat.is_active = False
             cat.save(update_fields = ['is_active'])
             messages.add_message(request, messages.SUCCESS,
-                                 _("Categoria {} disattivata correttamente".format(cat)))
+                                 _("Categoria {} disattivata correttamente").format(cat))
         office.is_active = False
         office.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Ufficio {} disattivato con successo".format(office)))
+                             _("Ufficio {} disattivato con successo").format(office))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -545,7 +545,7 @@ def office_disable(request, structure_slug, office_slug, structure):
 
     else:
         messages.add_message(request, messages.ERROR,
-                             _("Ufficio {} già disattivato".format(office)))
+                             _("Ufficio {} già disattivato").format(office))
     return redirect('uni_ticket:manager_office_detail',
                     structure_slug=structure_slug,
                     office_slug=office_slug)
@@ -571,12 +571,12 @@ def office_enable(request, structure_slug, office_slug, structure):
                                slug=office_slug)
     if office.is_active:
         messages.add_message(request, messages.ERROR,
-                             _("Ufficio {} già attivato".format(office)))
+                             _("Ufficio {} già attivato").format(office))
     else:
         office.is_active = True
         office.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Ufficio {} attivato con successo".format(office)))
+                             _("Ufficio {} attivato con successo").format(office))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -614,9 +614,9 @@ def office_delete(request, structure_slug, office_slug, structure):
             cat.is_active = False
             cat.save(update_fields = ['is_active'])
             messages.add_message(request, messages.SUCCESS,
-                                 _("Categoria {} disattivata correttamente".format(cat)))
+                                 _("Categoria {} disattivata correttamente").format(cat))
         messages.add_message(request, messages.SUCCESS,
-                             _("Ufficio {} eliminato correttamente".format(office)))
+                             _("Ufficio {} eliminato correttamente").format(office))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -630,7 +630,7 @@ def office_delete(request, structure_slug, office_slug, structure):
     messages.add_message(request, messages.ERROR,
                          _("Impossibile eliminare l'ufficio {}."
                            " Ci sono ticket assegnati"
-                           " o è l'ufficio predefinito della struttura.".format(office)))
+                           " o è l'ufficio predefinito della struttura.").format(office))
     return redirect('uni_ticket:manager_office_detail',
                     structure_slug=structure_slug,
                     office_slug=office_slug)
@@ -729,10 +729,10 @@ def category_remove_office(request, structure_slug,
         category.is_active = False
         category.save(update_fields = ['is_active', 'organizational_office'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Competenza ufficio {} rimossa correttamente".format(office)))
+                             _("Competenza ufficio {} rimossa correttamente").format(office))
         messages.add_message(request, messages.ERROR,
                              _("Tipo di richieste {} disattivato poichè"
-                               " priva di ufficio competente".format(category)))
+                               " priva di ufficio competente").format(category))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -783,8 +783,8 @@ def category_add_new(request, structure_slug, structure):
                                                                         name,
                                                                         slug))
                 messages.add_message(request, messages.ERROR,
-                                 _("Esiste già una tipologia di richiesta con"
-                                   " nome {} o slug {}".format(name, slug)))
+                                     _("Esiste già una tipologia di richiesta con"
+                                       " nome {} o slug {}").format(name, slug))
             else:
                 new_category = form.save(commit=False)
 
@@ -932,7 +932,8 @@ def category_disable(request, structure_slug, category_slug, structure):
         category.is_active = False
         category.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Tipo di richieste {} disattivato con successo".format(category)))
+                             _("Tipo di richieste {} disattivato con successo"
+                               "").format(category))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -943,7 +944,8 @@ def category_disable(request, structure_slug, category_slug, structure):
 
     else:
         messages.add_message(request, messages.ERROR,
-                             _("Tipo di richieste {} già disattivato".format(category)))
+                             _("Tipo di richieste {} già disattivato"
+                               "").format(category))
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
@@ -971,14 +973,16 @@ def category_enable(request, structure_slug, category_slug, structure):
     if category.is_active:
         messages.add_message(request,
                              messages.ERROR,
-                             _("Tipo di richieste {} già attivato".format(category)))
+                             _("Tipo di richieste {} già attivato"
+                               "").format(category))
     elif problem:
         messages.add_message(request, messages.ERROR, problem)
     else:
         category.is_active = True
         category.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Tipo di richieste {} attivato con successo".format(category)))
+                             _("Tipo di richieste {} attivato con successo"
+                               "").format(category))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -1020,14 +1024,15 @@ def category_delete(request, structure_slug, category_slug, structure):
                                                          category))
 
         messages.add_message(request, messages.SUCCESS,
-                             _("Categoria {} eliminata correttamente".format(category)))
+                             _("Categoria {} eliminata correttamente"
+                               "").format(category))
 
         category.delete()
         return redirect('uni_ticket:manager_dashboard',
                         structure_slug=structure_slug)
     messages.add_message(request, messages.ERROR,
                          _("Impossibile eliminare la tipologia di richiesta {}."
-                           " Ci sono ticket assegnati.".format(category)))
+                           " Ci sono ticket assegnati.").format(category))
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
@@ -1073,7 +1078,7 @@ def category_input_module_new(request, structure_slug,
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Modulo di inserimento <b>{}</b>"
-                                   " creato con successo".format(new_module.name)))
+                                   " creato con successo").format(new_module.name))
             return redirect('uni_ticket:manager_category_input_module',
                             structure_slug=structure_slug,
                             category_slug=category_slug,
@@ -1180,13 +1185,13 @@ def category_input_module_enable(request, structure_slug,
                                ticket_category=category)
     if module.is_active:
         messages.add_message(request, messages.ERROR,
-                             _("Modulo {} già attivato".format(module)))
+                             _("Modulo {} già attivato").format(module))
     else:
         module.is_active = True
         module.save(update_fields = ['is_active'])
         module.disable_other_modules()
         messages.add_message(request, messages.SUCCESS,
-                             _("Modulo {} attivato con successo".format(module)))
+                             _("Modulo {} attivato con successo").format(module))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -1228,14 +1233,14 @@ def category_input_module_disable(request, structure_slug,
                                ticket_category=category)
     if not module.is_active:
         messages.add_message(request, messages.ERROR,
-                             _("Modulo {} già disattivato".format(module)))
+                             _("Modulo {} già disattivato").format(module))
     else:
         category.is_active = False
         category.save(update_fields = ['is_active'])
         module.is_active = False
         module.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Modulo {} disattivato con successo".format(module)))
+                             _("Modulo {} disattivato con successo").format(module))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -1296,10 +1301,10 @@ def category_input_module_delete(request, structure_slug,
             messages.add_message(request, messages.SUCCESS,
                                  _("Modulo <b>{}</b> eliminato con successo"
                                    " e tipologia di richiesta <b>{}</b> disattivata"
-                                   " (nessun modulo attivo)".format(module,
-                                                                    category)))
+                                   " (nessun modulo attivo)").format(module,
+                                                                     category))
         else: messages.add_message(request, messages.SUCCESS,
-                                   _("Modulo {} eliminato con successo".format(module)))
+                                   _("Modulo {} eliminato con successo").format(module))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -1451,7 +1456,7 @@ def category_input_field_delete(request, structure_slug,
                                                             category))
         field.delete()
         messages.add_message(request, messages.SUCCESS,
-                             _("Campo {} eliminato con successo".format(field.name)))
+                             _("Campo {} eliminato con successo").format(field.name))
     return redirect('uni_ticket:manager_category_input_module',
                     structure_slug=structure_slug,
                     category_slug=category_slug,
@@ -1761,7 +1766,7 @@ def category_condition_delete(request, structure_slug, category_slug,
                                   pk=condition_id,
                                   category=category)
     messages.add_message(request, messages.SUCCESS,
-                         _("Clausola {} eliminata correttamente".format(condition)))
+                         _("Clausola {} eliminata correttamente").format(condition))
 
     # log action
     logger.info('[{}] manager of structure {}'
@@ -1805,7 +1810,7 @@ def category_condition_disable(request, structure_slug, category_slug,
         condition.is_active = False
         condition.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Clausola {} disattivata con successo".format(condition)))
+                             _("Clausola {} disattivata con successo").format(condition))
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} disabled a condition'
@@ -1815,7 +1820,7 @@ def category_condition_disable(request, structure_slug, category_slug,
                                               category))
     else:
         messages.add_message(request, messages.ERROR,
-                             _("Clausola {} già disattivata".format(condition)))
+                             _("Clausola {} già disattivata").format(condition))
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
                     category_slug=category_slug)
@@ -1847,12 +1852,12 @@ def category_condition_enable(request, structure_slug, category_slug,
                                   category=category)
     if condition.is_active:
         messages.add_message(request, messages.ERROR,
-                             _("Clausola {} già attivata".format(condition)))
+                             _("Clausola {} già attivata").format(condition))
     else:
         condition.is_active = True
         condition.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Clausola {} attivata con successo".format(condition)))
+                             _("Clausola {} attivata con successo").format(condition))
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} enabled a condition'
@@ -2029,8 +2034,8 @@ def category_input_module_clone(request, structure_slug,
 
     messages.add_message(request, messages.SUCCESS,
                          _("Modulo di input <b>{}</b> clonato con successo"
-                         " nella tipologia di richieste <b>{}</b>".format(module.name,
-                                                                   selected_category)))
+                         " nella tipologia di richieste <b>{}</b>"
+                         "").format(module.name, selected_category))
     return redirect('uni_ticket:manager_category_input_module',
                     structure_slug=selected_structure.slug,
                     category_slug=selected_category.slug,
@@ -2268,7 +2273,7 @@ def category_task_attachment_delete(request, structure_slug, category_slug,
     task.attachment=None
     task.save(update_fields = ['attachment'])
 
-    msg = _("Allegato attività {} eliminato".format(task))
+    msg = _("Allegato attività {} eliminato").format(task)
 
     # log action
     logger.info('[{}] {} deleted attachment'
@@ -2310,12 +2315,12 @@ def category_task_enable(request, structure_slug, category_slug,
                              category=category)
     if task.is_active:
         messages.add_message(request, messages.ERROR,
-                             _("Attività {} già attivata".format(task)))
+                             _("Attività {} già attivata").format(task))
     else:
         task.is_active = True
         task.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Attività {} attivata con successo".format(task)))
+                             _("Attività {} attivata con successo").format(task))
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} enabled a task'
@@ -2357,7 +2362,7 @@ def category_task_disable(request, structure_slug, category_slug,
         task.is_active = False
         task.save(update_fields = ['is_active'])
         messages.add_message(request, messages.SUCCESS,
-                             _("Attività {} disattivata con successo".format(task)))
+                             _("Attività {} disattivata con successo").format(task))
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} disabled a task'
@@ -2367,7 +2372,7 @@ def category_task_disable(request, structure_slug, category_slug,
                                               category))
     else:
         messages.add_message(request, messages.ERROR,
-                             _("Attività {} già disattivata".format(task)))
+                             _("Attività {} già disattivata").format(task))
 
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
@@ -2399,7 +2404,7 @@ def category_task_delete(request, structure_slug, category_slug,
                              code=task_id,
                              category=category)
     messages.add_message(request, messages.SUCCESS,
-                         _("Attività {} eliminata correttamente".format(task)))
+                         _("Attività {} eliminata correttamente").format(task))
 
     # log action
     logger.info('[{}] manager of structure {}'
@@ -2568,11 +2573,11 @@ def structure_protocol_configuration_delete(request, structure_slug,
                                  _("Nessuna configurazione di protocollo "
                                    "valida per la tipologia <b>{}</b>. "
                                    "Protocollo obbligatorio disabilitato."
-                                   "".format(cat)))
+                                   "").format(cat))
 
     messages.add_message(request, messages.SUCCESS,
                          _("Configurazione <b>{}</b> eliminata correttamente"
-                           "".format(configuration)))
+                           "").format(configuration))
     configuration.delete()
     return redirect('uni_ticket:manager_user_settings',
                     structure_slug=structure_slug)
@@ -2603,7 +2608,7 @@ def structure_protocol_configuration_disable(request, structure_slug,
         configuration.save(update_fields = ['is_active', 'modified'])
         messages.add_message(request, messages.SUCCESS,
                              _("Configurazione <b>{}</b> disattivata con successo"
-                               "".format(configuration)))
+                               "").format(configuration))
 
         # effettuare tutti i controlli sui moduli che
         # hanno il protocollo obbligatorio e che ereditano questa
@@ -2630,7 +2635,7 @@ def structure_protocol_configuration_disable(request, structure_slug,
     else:
         messages.add_message(request, messages.ERROR,
                              _("Configurazione {} già disattivata"
-                               "".format(configuration)))
+                               "").format(configuration))
 
     return redirect('uni_ticket:manager_user_settings',
                     structure_slug=structure_slug)
@@ -2669,7 +2674,7 @@ def structure_protocol_configuration_enable(request, structure_slug,
 
         messages.add_message(request, messages.SUCCESS,
                              _("Configurazione <b>{}</b> attivata con successo"
-                               "".format(configuration)))
+                               "").format(configuration))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -2883,11 +2888,11 @@ def category_protocol_configuration_delete(request, structure_slug,
                              _("Nessuna configurazione di protocollo "
                                "valida per la tipologia. "
                                "Protocollo obbligatorio disabilitato."
-                               "".format(category)))
+                               "").format(category))
 
     messages.add_message(request, messages.SUCCESS,
                          _("Configurazione <b>{}</b> eliminata correttamente"
-                           "".format(configuration)))
+                           "").format(configuration))
     configuration.delete()
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
@@ -2924,7 +2929,7 @@ def category_protocol_configuration_disable(request, structure_slug,
         configuration.save(update_fields = ['is_active', 'modified'])
         messages.add_message(request, messages.SUCCESS,
                              _("Configurazione <b>{}</b> disattivata con successo"
-                               "".format(configuration)))
+                               "").format(configuration))
 
         # effettuare tutti i controlli sui moduli che
         # hanno il protocollo obbligatorio e che ereditano questa
@@ -2936,7 +2941,7 @@ def category_protocol_configuration_disable(request, structure_slug,
                                  _("Nessuna configurazione di protocollo "
                                    "valida per la tipologia. "
                                    "Protocollo obbligatorio disabilitato."
-                                   "".format(category)))
+                                   "").format(category))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -2949,7 +2954,7 @@ def category_protocol_configuration_disable(request, structure_slug,
     else:
         messages.add_message(request, messages.ERROR,
                              _("Configurazione {} già disattivata"
-                               "".format(configuration)))
+                               "").format(configuration))
 
     return redirect('uni_ticket:manager_category_detail',
                     structure_slug=structure_slug,
@@ -2984,7 +2989,7 @@ def category_protocol_configuration_enable(request, structure_slug,
         messages.add_message(request,
                              messages.ERROR,
                              _("Configurazione {} già attivata"
-                               "".format(configuration)))
+                               "").format(configuration))
     else:
         configuration.is_active = True
         configuration.save(update_fields = ['is_active', 'modified'])
@@ -2994,7 +2999,7 @@ def category_protocol_configuration_enable(request, structure_slug,
 
         messages.add_message(request, messages.SUCCESS,
                              _("Configurazione <b>{}</b> attivata con successo"
-                               "".format(configuration)))
+                               "").format(configuration))
 
         # log action
         logger.info('[{}] manager of structure {}'

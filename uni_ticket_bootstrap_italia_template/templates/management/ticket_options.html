@@ -98,16 +98,10 @@
         {% for task in ticket_task %}
         <li class="py-2 clearfix">
             <b>{{ task }}</b>
-            {% if task.is_closed %}
-                <span class="badge badge-danger">
-                    {% trans "Chiusa" %}
-                </span>
-            {% else %}
-                <span class="badge badge-success">
-                    {% trans "Aperta" %}
-                </span>
-            {% endif %}
-
+            <br>
+            <small>{{ task.created }}</small>
+            <br>
+            {{ task.get_status|safe }}
             <div>
                 {% if not ticket.is_closed %}
                 <button type="button"

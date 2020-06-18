@@ -87,7 +87,8 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         assert self.ticket
 
         # Close ticket
-        params = {'note': "notes"}
+        params = {'note': "notes",
+                  'status': 1}
         response = self.client.post(reverse('uni_ticket:manager_close_ticket',
                                            kwargs={'structure_slug': self.structure_1.slug,
                                                    'ticket_id': self.ticket.code}),
@@ -463,7 +464,8 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         assert not task.is_closed
 
         # Close task with motivation
-        params = {'note': "notes"}
+        params = {'note': "notes",
+                  'status': 1}
         response = self.client.post(reverse('uni_ticket:manager_close_task',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'ticket_id': self.ticket.code,

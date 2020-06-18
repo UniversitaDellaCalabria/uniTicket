@@ -7,19 +7,18 @@
         <tbody>
             <tr>
                 <th scope="row">{% trans 'Stato' %}</th>
-                <td>
-                    {% if task.is_closed %}
-                    <span class="text-danger">
-                        <b> {% trans "Chiusa" %}</b>
-                    </span>
-                    <small>[{{ task.closed_by }}]</small>
-                    {% else %}
-                    <span class="text-success">
-                        <b> {% trans "Aperta" %}</b>
-                    </span>
-                    {% endif %}
-                </td>
+                <td>{{ task.get_status|safe }}</td>
             </tr>
+            {% if task.is_closed %}
+            <tr>
+                <th scope="row">{% trans 'Data chiusura' %}</th>
+                <td>{{ task.closed_date }}</td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Motivazione chiusura' %}</th>
+                <td>{{ task.closing_reason | linebreaks }}</td>
+            </tr>
+            {% endif %}
             <tr>
                 <th scope="row">{% trans 'Priorità' %}</th>
                 <td>{{ priority }}</td>

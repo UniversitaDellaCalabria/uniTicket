@@ -1,0 +1,21 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block menu_links %}
+{% include 'user/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:ticket_detail' ticket_id=task.ticket.code %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna alla richiesta" %}
+</a>
+{% endblock top_buttons %}
+
+{% block page_content %}
+    {% include 'task_detail.html' %}
+{% endblock page_content %}
