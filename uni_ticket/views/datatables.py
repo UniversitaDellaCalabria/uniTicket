@@ -17,9 +17,9 @@ from uni_ticket.utils import visible_tickets_to_user
 
 
 _ticket_columns = ['pk','code','subject','get_category',
-                   'created','created_by','get_priority','get_status']
+                   'created','created_by','get_priority','get_status_table']
 _no_priority = ['pk','code','subject','get_category',
-                'created','created_by','get_status']
+                'created','created_by','get_status_table']
 
 
 class TicketDTD(DjangoDatatablesServerProc):

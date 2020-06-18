@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.contenttypes.models import ContentType
+from django.templatetags.static import static
 from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse
@@ -439,6 +440,7 @@ class Ticket(SavedFormContent):
                     fields_to_pop=[settings.TICKET_SUBJECT_ID,
                                    settings.TICKET_DESCRIPTION_ID])
 
+    # HTML representation of status
     def get_status(self):
         if self.is_closed:
             # if is a notification ticket
@@ -470,6 +472,42 @@ class Ticket(SavedFormContent):
                                 # self.closed_by)
         # if not self.has_been_taken(): return _('<b class="text-danger">Aperta</b>')
         # return _('<b class="text-warning">Assegnata</b> {}').format(self.taken_by_html_list())
+
+    # for datatables (show icons)
+    def get_status_table(self):
+        if self.is_closed:
+            # if is a notification ticket
+            if self.input_module.ticket_category.is_notify or not self.closed_by:
+                return _('<span class="badge badge-success">Chiusa</span')
+            # normal ticket
+            status_literal = dict(settings.CLOSING_LEVELS).get(self.closing_status)
+
+            # get svg file from static
+            static_icon = static('svg/sprite.svg')
+
+            html = _('<span class="badge badge-success">Chiusa</span> '
+                      '<svg class="icon icon-xs {}">'
+                      '<title>{}</title>'
+                      '<use xlink:href="{}#{}"></use>'
+                      '</svg>')
+
+            if self.closing_status == -1:
+                html = html.format("icon-danger", status_literal,
+                                   static_icon, "it-cross-circle")
+            elif self.closing_status == 0:
+                html = html.format("icon-warning", status_literal,
+                                   static_icon, "it-warning-circle")
+            elif self.closing_status == 1:
+                html = html.format("icon-success", status_literal,
+                                   static_icon, "it-check-circle")
+            elif self.closing_status == 2:
+                html = html.format("icon-secondary", status_literal,
+                                   static_icon, "it-minus-circle")
+            return '{}<br><small>{}</small>'.format(html, self.closed_by)
+        if not self.has_been_taken():
+            return _('<span class="badge badge-danger">Aperta</span>')
+        return _('<span class="badge badge-warning">Assegnata</span> {}'
+                 '').format(self.taken_by_html_list())
 
     def update_log(self, user, note='', send_mail=True, mail_msg=''):
         if not user: return False
