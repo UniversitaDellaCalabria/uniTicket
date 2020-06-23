@@ -1,3 +1,5 @@
+import copy
+
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -5,7 +7,8 @@ from django.forms import ModelForm
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext as _
 
-from bootstrap_italia_template.widgets import BootstrapItaliaSelectWidget
+from bootstrap_italia_template.widgets import (BootstrapItaliaSelectWidget,
+                                               BootstrapItaliaSelectMultipleWidget)
 # from django_form_builder.dynamic_fields import CustomFileField
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
@@ -25,11 +28,14 @@ class CategoryForm(ModelForm):
                   'show_heading_text',
                   'allow_anonymous', 'allow_guest',
                   'allow_user', 'allow_employee',
+                  'allowed_users',
                   'receive_email',
                   'protocol_required']
         labels = {'name': _('Nome'),
-                  'description': _('Descrizione'),}
-        widgets = {'description': forms.Textarea(attrs={'rows':2})}
+                  'description': _('Descrizione'),
+                  'allowed_users': _('Solo i seguenti utenti possono effettuare richieste')}
+        widgets = {'description': forms.Textarea(attrs={'rows':2}),
+                   'allowed_users': BootstrapItaliaSelectMultipleWidget,}
 
     class Media:
         js = ('js/textarea-autosize.js',)

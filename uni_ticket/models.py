@@ -78,6 +78,10 @@ class TicketCategory(models.Model):
     allow_user = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_USER_LABEL), default=True)
     allow_employee = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_EMPLOYEE_LABEL), default=True)
 
+    # allowed users
+    allowed_users = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                           blank=True)
+
     # ticket type = notification
     is_notify = models.BooleanField(_("Richiesta di tipo Notifica"),
                                     default=False,

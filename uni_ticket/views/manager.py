@@ -883,6 +883,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                       'receive_email',
                                                       'protocol_required',
                                                       'modified'])
+                form.save_m2m()
                 # log action
                 logger.info('[{}] manager of structure {}'
                             ' {} edited the category {}'.format(timezone.now(),

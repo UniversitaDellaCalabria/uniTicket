@@ -292,3 +292,10 @@ select {
 .toolbar .toolbar-alert, .toolbar .badge-primary{
     background-color: #b71918;
 }
+
+.bootstrap-select-wrapper .dropdown.bootstrap-select .btn {
+    height: auto;
+}
+.filter-option-inner-inner {
+    white-space: normal;
+}

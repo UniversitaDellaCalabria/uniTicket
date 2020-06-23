@@ -146,6 +146,7 @@
 
 {% block form_buttons %}
 <div>
+    {% if not categoria.allowed_users.all or request.user in categoria.allowed_users.all %}
     <button class="btn btn-success btn-block"
             type="button"
             data-toggle="modal"
@@ -203,6 +204,15 @@
             </div>
         </div>
     </div>
+    {% else %}
+    <button class="btn btn-secondary disabled btn-block"
+            type="button">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-ban"></use>
+        </svg>
+        {% trans "Solo gli utenti abilitati possono generare richieste di questo tipo" %}
+    </button>
+    {% endif %}
 </div>
 
 <div id="collapseDiv1-lft" class="mt-4 collapse-div collapse-left-icon" role="tablist">

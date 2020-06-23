@@ -51,8 +51,9 @@ class User(AbstractUser):
     # webpage_url = models.CharField(_('Pagina web'), max_length=512, blank=True, null=True)
 
     class Meta:
-        ordering = ['username']
+        ordering = ['last_name', 'first_name']
         verbose_name_plural = _("Utenti")
 
     def __str__(self):
-        return '{} {}'.format(self.first_name, self.last_name)
+        return '{} {}'.format(self.last_name,
+                              self.first_name)

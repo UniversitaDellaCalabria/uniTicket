@@ -386,6 +386,14 @@ def ticket_add_new(request, structure_slug, category_slug):
             #
             elif request.POST.get(settings.TICKET_CREATE_BUTTON_NAME):
 
+                # if user is not allowed (category allowed users list)
+                if category.allowed_users.all() and request.user not in category.allowed_users.all():
+                    return custom_message(request,
+                                          _("Solo gli utenti abilitati "
+                                            "possono generare richieste "
+                                            "di questo tipo"),
+                                          status=404)
+
                 # extends fields_to_pop list
                 fields_to_pop.extend([settings.TICKET_SUBJECT_ID,
                                       settings.TICKET_DESCRIPTION_ID,
