@@ -284,12 +284,14 @@
             <tr>
                 <th scope="row">{% trans "Solo i seguenti utenti possono effettuare richieste" %}</th>
                 <td>
-                    {% if category.allowed_users %}
+                    {% if category.allowed_users.all %}
                         <ul>
                             {% for allowed in category.allowed_users.all %}
                                 <li>{{ allowed }} - {{ allowed.email|lower }}</li>
                             {% endfor %}
                         </ul>
+                    {% else %}
+                    -
                     {% endif %}
                 </td>
             </tr>
