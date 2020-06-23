@@ -282,6 +282,19 @@
                 </td>
             </tr>
             <tr>
+                {% settings_value name="ORGANIZATION_EMPLOYEE_LABEL" as organization_employee_label %}
+                <th scope="row">{% trans "Accessibile a" %} {{ organization_employee_label }}</th>
+                <td>
+                    <svg class="icon icon-sm icon-secondary">
+                    {% if category.allow_employee %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans "Solo i seguenti utenti possono effettuare richieste" %}</th>
                 <td>
                     {% if category.allowed_users.all %}
@@ -293,19 +306,6 @@
                     {% else %}
                     -
                     {% endif %}
-                </td>
-            </tr>
-            <tr>
-                {% settings_value name="ORGANIZATION_EMPLOYEE_LABEL" as organization_employee_label %}
-                <th scope="row">{% trans "Accessibile a" %} {{ organization_employee_label }}</th>
-                <td>
-                    <svg class="icon icon-sm icon-secondary">
-                    {% if category.allow_employee %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
-                    {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                    {% endif %}
-                    </svg>
                 </td>
             </tr>
             <tr>
