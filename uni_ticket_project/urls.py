@@ -94,3 +94,6 @@ if 'rest_framework' in settings.INSTALLED_APPS:
 if 'chat' in settings.INSTALLED_APPS:
     import chat.urls
     urlpatterns += path('', include(chat.urls, 'chat')),
+
+from schema_graph.views import Schema
+urlpatterns += path("schema/", Schema.as_view()),

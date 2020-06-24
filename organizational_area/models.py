@@ -3,13 +3,15 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext as _
 
-from ckeditor.fields import RichTextField
-from uni_ticket.validators import *
+from . settings import *
+
+STRUCTURES_FOLDER = getattr(settings, 'STRUCTURES_FOLDER', STRUCTURES_FOLDER)
+LOGOS_FOLDER = getattr(settings, 'LOGOS_FOLDER', LOGOS_FOLDER)
 
 
 def _logo_upload(instance, filename):
     """
-    this function has to return the location to upload the file
+    Returns the location to upload the logo file
     """
     folder = instance.get_logo_folder()
     return os.path.join('{}/{}'.format(folder, filename))
@@ -17,7 +19,7 @@ def _logo_upload(instance, filename):
 
 class OrganizationalStructureType(models.Model):
     """
-    aula, dipartimento, segreteria, centro, servizio(mensa, alloggio...)
+    Classroom, department, secretary, center, service (canteen, accommodation ...)
     """
     name = models.CharField(max_length=128, blank=True, unique=True)
     description = models.TextField(max_length=768, null=True,blank=True)
@@ -34,7 +36,7 @@ class OrganizationalStructureType(models.Model):
 
 class OrganizationalStructure(models.Model):
     """
-    dipartimento, struttura
+    Department, structure
     """
     name = models.CharField(max_length=255, blank=True, unique=True)
     slug = models.SlugField(max_length=255,
@@ -42,7 +44,8 @@ class OrganizationalStructure(models.Model):
                             validators=[
                                 RegexValidator(
                                     regex='^(?=.*[a-zA-Z])',
-                                    message=_("Lo slug un carattere alfabetico"),
+                                    message=_("Lo slug deve contenere "
+                                              "almeno un carattere alfabetico"),
                                     code='invalid_slug'
                                 ),
                             ])
@@ -50,16 +53,12 @@ class OrganizationalStructure(models.Model):
     structure_type = models.ForeignKey(OrganizationalStructureType,
                                        null=True, blank=True,
                                        on_delete=models.SET_NULL)
-    #description = RichTextField(max_length=12000, null=True,blank=True)
     description = models.TextField(max_length=1024, null=True,blank=True)
     create_date = models.DateTimeField(auto_now=True)
     banner = models.ImageField(upload_to=_logo_upload,
                                null=True, blank=True,
-                               max_length=255,
-                               validators=[validate_file_size,
-                                           validate_file_length])
+                               max_length=255)
     url = models.CharField(max_length=768, null=True, blank=True)
-    #locati = models.CharField(max_length=255, null=True,blank=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -70,7 +69,7 @@ class OrganizationalStructure(models.Model):
     # OnCreate -> signals.py per creazione ufficio di Default
     def get_default_office(self):
         """
-        Restituisce l'ufficio di default per la Struttura
+        Returns the default structure office
         """
         office = OrganizationalStructureOffice.objects.filter(organizational_structure=self,
                                                               is_default=True).first()
@@ -78,17 +77,16 @@ class OrganizationalStructure(models.Model):
 
     def get_folder(self):
         """
-        Returns ticket attachments folder path
+        Returns structure attachments folder path
         """
-        folder = '{}/{}'.format(settings.STRUCTURES_FOLDER, self.slug)
+        folder = '{}/{}'.format(STRUCTURES_FOLDER, self.slug)
         return folder
 
     def get_logo_folder(self):
         """
-        Returns ticket attachments folder path
+        Returns logos folder path
         """
-        folder = '{}/{}'.format(settings.LOGOS_FOLDER,
-                                self.slug)
+        folder = '{}/{}'.format(LOGOS_FOLDER, self.slug)
         return folder
 
     def __str__(self):
@@ -99,7 +97,7 @@ class OrganizationalStructure(models.Model):
 
 class OrganizationalStructureFunction(models.Model):
     """
-    descrive la funzione assolta da una struttura
+    Organizational structure function
     """
     name = models.CharField(max_length=128, blank=True, unique=True)
     description = models.TextField(max_length=768, null=True,blank=True)
@@ -115,8 +113,12 @@ class OrganizationalStructureFunction(models.Model):
 
 
 class EquipmentType(models.Model):
+    """
+    Equipment
+    """
     name = models.CharField(max_length=128, blank=True, unique=True)
     description = models.TextField(max_length=1024, null=True,blank=True)
+
     class Meta:
         ordering = ['name']
         verbose_name = _("Equipment Type")
@@ -128,7 +130,7 @@ class EquipmentType(models.Model):
 
 class AbstractLocation(models.Model):
     """
-    una struttura può essere dislocata in più locazioni
+    Location
     """
     address = models.CharField(max_length=768, null=True,blank=True)
     coordinate = models.CharField(max_length=64, null=True,blank=True)
@@ -154,7 +156,7 @@ class AbstractLocation(models.Model):
 
 class OrganizationalStructureLocation(AbstractLocation):
     """
-    una struttura può essere dislocata in più locazioni
+    An organizational structure can be located in multiple locations
     """
     organizational_structure = models.ForeignKey(OrganizationalStructure,
                                                  on_delete=models.CASCADE)
@@ -169,6 +171,9 @@ class OrganizationalStructureLocation(AbstractLocation):
 
 
 class OrganizationalStructureOffice(models.Model):
+    """
+    Organizational structure office
+    """
     name = models.CharField(max_length=128, null=False, blank=False)
     slug = models.SlugField(max_length=255,
                             blank=False, null=False)
@@ -191,7 +196,7 @@ class OrganizationalStructureOffice(models.Model):
 
 class OrganizationalStructureOfficeLocation(AbstractLocation):
     """
-    può essere dislocata in più locazioni
+    An organizational structure office can be located in multiple locations
     """
     office = models.ForeignKey(OrganizationalStructureOffice,
                                on_delete=models.CASCADE)
@@ -207,6 +212,9 @@ class OrganizationalStructureOfficeLocation(AbstractLocation):
 
 
 class OrganizationalStructureOfficeEmployee(models.Model):
+    """
+    Employee-office relationship
+    """
     employee = models.ForeignKey(settings.AUTH_USER_MODEL,
                                  on_delete=models.CASCADE)
     office = models.ForeignKey(OrganizationalStructureOffice,
@@ -222,6 +230,11 @@ class OrganizationalStructureOfficeEmployee(models.Model):
 
     @classmethod
     def get_default_operator_or_manager(cls, office):
+        """
+        Returns an use randomly.
+        Try to get an office employee if exists.
+        Else returns one of managers.
+        """
         office_employees = cls.objects.filter(office=office,
                                               employee__is_active=True).order_by('?')
         if not office_employees:
@@ -236,6 +249,9 @@ class OrganizationalStructureOfficeEmployee(models.Model):
 
 
 class UserManageOrganizationalStructure(models.Model):
+    """
+    Organizational structure manager users
+    """
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     organizational_structure = models.ForeignKey(OrganizationalStructure,

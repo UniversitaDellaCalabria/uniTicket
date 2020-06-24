@@ -7,10 +7,6 @@ from .models import *
 class AbstractAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
 
-    class Media:
-        js = ('js/textarea-autosize.js',)
-        # css = {'all': ('css/textarea-small.css',),}
-
 
 @admin.register(OrganizationalStructureFunction)
 class OrganizationalStructureFunctionAdmin(AbstractAdmin):
@@ -52,17 +48,10 @@ class OrganizationalStructureOfficeAdmin(AbstractAdmin):
 #class TipoDotazioneAdmin(admin.ModelAdmin):
     #list_display = ('nome', 'descrizione')
 
-    #class Media:
-        #js = ('js/textarea-autosize.js',)
-        #css = {'all': ('css/textarea-small.css',),}
 
 #@admin.register(Locazione)
 #class LocazioneAdmin(admin.ModelAdmin):
     #list_display = ('nome', 'indirizzo', 'descrizione_breve',)
-
-    #class Media:
-        #js = ('js/textarea-autosize.js',)
-        #css = {'all': ('css/textarea-small.css',),}
 
 
 # @admin.register(OrganizationalStructureFunction)

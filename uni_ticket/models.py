@@ -497,7 +497,7 @@ class Ticket(SavedFormContent):
 
             if self.closing_status == -1:
                 html = html.format("icon-danger", status_literal,
-                                   static_icon, "it-cross-circle")
+                                   static_icon, "it-close-circle")
             elif self.closing_status == 0:
                 html = html.format("icon-warning", status_literal,
                                    static_icon, "it-warning-circle")
