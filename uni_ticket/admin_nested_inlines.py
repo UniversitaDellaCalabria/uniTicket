@@ -70,12 +70,13 @@ class TicketCategoryWSArchiProModelForm(forms.ModelForm):
                   'protocollo_aoo',
                   'protocollo_agd',
                   'protocollo_uo',
+                  'protocollo_email',
                   'protocollo_id_uo',
                   'protocollo_cod_titolario',
                   'protocollo_fascicolo_numero',
                   'protocollo_fascicolo_anno',
                   'protocollo_template')
-
+        help_texts = {'protocollo_email': _('Se vuoto: {}').format(settings.PROT_EMAIL_DEFAULT)}
         labels = {'name': _('Denominazione'),
                   'protocollo_cod_titolario': _('Codice titolario')}
         widgets = {'protocollo_template': forms.Textarea(attrs={'rows':2})}

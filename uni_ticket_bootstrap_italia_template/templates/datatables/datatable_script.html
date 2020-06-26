@@ -13,7 +13,13 @@ var user_show_priority = "{{ user_show_priority }}";
 
 $(function() {
 
-    var dom = 'lrtip';
+    var dom = 'Blrtip';
+    var buttons = [
+             { "extend": "csv", "text": "CSV" },
+             { "extend": "excel", "text": "Excel" },
+             { "extend": "pdf", "text": "PDF" },
+             { "extend": "print", "text": "{% trans 'Stampa' %}" },
+        ];
     var aLengthMenu = [
             [10, 25, 50, 100, ], // -1],
             [10, 25, 50, 100, ] //"All"]
@@ -93,6 +99,15 @@ $(function() {
 
     var datatable = $('.datatable-responsive-serverside').DataTable({
         dom: dom,
+        buttons: {
+            dom: {
+              button: {
+                tag: 'button',
+                className: 'btn btn-primary btn-sm'
+              }
+            },
+            buttons: buttons,
+        },
         stateSave: true,
         aLengthMenu: aLengthMenu,
         paging: true,
@@ -112,7 +127,6 @@ $(function() {
             }
         }
     });
-
 
     $('#search_year, #search_box, #search_category').on('change keyup', function () {
         var year = $('#search_year').val();

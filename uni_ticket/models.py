@@ -1167,6 +1167,9 @@ class AbstractWSArchiPro(models.Model):
     protocollo_aoo = models.CharField('AOO', max_length=12)
     protocollo_agd = models.CharField('AGD', max_length=12)
     protocollo_uo = models.CharField('UO', max_length=12,)
+    protocollo_email = models.EmailField('E-mail',
+                                         max_length=255,
+                                         blank=True, null=True)
     protocollo_id_uo = models.CharField(_('ID Unità Organizzativa'),
                                       max_length=12)
     protocollo_cod_titolario = models.CharField(_('Codice titolario'),

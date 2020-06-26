@@ -418,12 +418,13 @@ def ticket_protocol(user,
         prot_login = settings.PROT_TEST_LOGIN
         prot_passw = settings.PROT_TEST_PASSW
         prot_aoo = settings.PROT_TEST_AOO
-        prot_agd = settings.PROTOCOLLO_AGD_DEFAULT
-        prot_uo = settings.PROTOCOLLO_UO_DEFAULT
-        prot_id_uo = settings.PROTOCOLLO_UO_ID_DEFAULT
-        prot_titolario = settings.PROTOCOLLO_TITOLARIO_DEFAULT
-        prot_fascicolo_num = settings.PROTOCOLLO_FASCICOLO_DEFAULT
-        prot_fascicolo_anno = settings.PROTOCOLLO_FASCICOLO_ANNO_DEFAULT
+        prot_agd = settings.PROT_AGD_DEFAULT
+        prot_uo = settings.PROT_UO_DEFAULT
+        prot_email = settings.PROT_EMAIL_DEFAULT
+        prot_id_uo = settings.PROT_UO_ID_DEFAULT
+        prot_titolario = settings.PROT_TITOLARIO_DEFAULT
+        prot_fascicolo_num = settings.PROT_FASCICOLO_DEFAULT
+        prot_fascicolo_anno = settings.PROT_FASCICOLO_ANNO_DEFAULT
         prot_template = settings.PROTOCOL_XML
     # check my configuration in test environment
     elif test and configuration:
@@ -433,6 +434,7 @@ def ticket_protocol(user,
         prot_aoo = configuration.protocollo_aoo
         prot_agd = configuration.protocollo_agd
         prot_uo = configuration.protocollo_uo
+        prot_email = configuration.protocollo_email
         prot_id_uo = configuration.protocollo_id_uo
         prot_titolario = configuration.protocollo_cod_titolario
         prot_fascicolo_num = configuration.protocollo_fascicolo_numero
@@ -446,6 +448,7 @@ def ticket_protocol(user,
         prot_aoo = configuration.protocollo_aoo
         prot_agd = configuration.protocollo_agd
         prot_uo = configuration.protocollo_uo
+        prot_email = configuration.protocollo_email
         prot_id_uo = configuration.protocollo_id_uo
         prot_titolario = configuration.protocollo_cod_titolario
         prot_fascicolo_num = configuration.protocollo_fascicolo_numero
@@ -474,6 +477,7 @@ def ticket_protocol(user,
                      'aoo': prot_aoo,
                      'agd': prot_agd,
                      'uo': prot_uo,
+                     'email': prot_email,
                      'uo_id': prot_id_uo,
                      'id_titolario': prot_titolario,
                      'fascicolo_numero': prot_fascicolo_num,

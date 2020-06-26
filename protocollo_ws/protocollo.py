@@ -37,6 +37,7 @@ class WSArchiPROClient(object):
     REQUIRED_ATTRIBUTES = ['aoo',
                            'agd',
                            'uo',
+                           'email',
                            'uo_id',
                            'fascicolo_numero',
                            'fascicolo_anno',

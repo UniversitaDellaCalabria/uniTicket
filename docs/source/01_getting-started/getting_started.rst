@@ -196,12 +196,12 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
 
     # TEST
     PROT_TEST_AOO = 'default_aoo'
-    PROTOCOLLO_FASCICOLO_DEFAULT = 'default_fascicolo'
-    PROTOCOLLO_FASCICOLO_ANNO_DEFAULT = 'default_year'
-    PROTOCOLLO_AGD_DEFAULT = 'default_agd'
-    PROTOCOLLO_UO_DEFAULT = 'default_uo'
-    PROTOCOLLO_UO_ID_DEFAULT = 'default_uo_id'
-    PROTOCOLLO_TITOLARIO_DEFAULT = 'default_titolario'
+    PROT_FASCICOLO_DEFAULT = 'default_fascicolo'
+    PROT_FASCICOLO_ANNO_DEFAULT = 'default_year'
+    PROT_AGD_DEFAULT = 'default_agd'
+    PROT_UO_DEFAULT = 'default_uo'
+    PROT_UO_ID_DEFAULT = 'default_uo_id'
+    PROT_TITOLARIO_DEFAULT = 'default_titolario'
     PROT_TEST_URL = 'url_test'
     PROT_TEST_LOGIN = 'test_login'
     PROT_TEST_PASSW = 'test_passw'

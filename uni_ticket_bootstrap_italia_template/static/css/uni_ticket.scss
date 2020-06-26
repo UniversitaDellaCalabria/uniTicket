@@ -98,6 +98,10 @@ h5.card-title .badge {
 .paginate_button {
     padding: 0 10px;
 }
+.dataTables_wrapper .dt-buttons {
+    float: right;
+}
+
 
 /*
  * Callout
@@ -293,6 +297,9 @@ select {
     background-color: #b71918;
 }
 
+/*
+ * Bootstrap Italia select box
+ */
 .bootstrap-select-wrapper .dropdown.bootstrap-select .btn {
     height: auto;
 }

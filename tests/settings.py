@@ -16,6 +16,7 @@ import pathlib
 # load applications settings file, overload what needed if needed
 from django_form_builder.settings import *
 from organizational_area.settings import *
+from protocollo_ws.settings import *
 from uni_ticket.settings import *
 
 from . settingslocal import *

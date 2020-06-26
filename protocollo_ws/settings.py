@@ -17,6 +17,9 @@ PROT_PARAMETRI_TMPL_ROW = '<Parametro nome="{nome}" valore="{valore}" />'
 PROT_PARAMETRI = [{'nome': 'agd', 'valore': '483'},
                   {'nome': 'uo', 'valore': '1231'}]
 
+# DEFAULT EMAIL
+PROT_EMAIL_DEFAULT = 'amministrazione@pec.unical.it'
+
 # PROTOCOLLO, questi valori possono variare sulla base di come
 # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
 PROT_FASCICOLO_DEFAULT = '3'
@@ -27,7 +30,7 @@ PROT_CODICI_TITOLARI = (
                         )
 
 PROT_AOO = 'AOO55' # test
-# PROTOCOLLO_AOO = 'AOO1' # produzione
+# PROT_AOO = 'AOO1' # produzione
 
 # PRODUCTION USE
 PROT_URL = 'http://PROT_URL?wsdl'

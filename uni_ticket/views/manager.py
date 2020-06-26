@@ -2478,7 +2478,10 @@ def structure_protocol_configuration_detail(request, structure_slug,
         form = OrganizationalStructureWSArchiProModelForm(instance=configuration,
                                                           data=request.POST)
         if form.is_valid():
-            form.save()
+            configuration = form.save(commit=False)
+            if not configuration.protocollo_email:
+                configuration.protocollo_email = settings.PROT_EMAIL_DEFAULT
+            configuration.save()
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Configurazione protocollo informatico aggiornata"))
@@ -2522,6 +2525,8 @@ def structure_protocol_configuration_new(request, structure_slug,
         form = OrganizationalStructureWSArchiProModelForm(data=request.POST)
         if form.is_valid():
             configuration = form.save(commit=False)
+            if not configuration.protocollo_email:
+                configuration.protocollo_email = settings.PROT_EMAIL_DEFAULT
             configuration.organizational_structure=structure
             configuration.save()
 
@@ -2758,7 +2763,9 @@ def category_protocol_configuration_detail(request, structure_slug,
         form = TicketCategoryWSArchiProModelForm(instance=configuration,
                                                  data=request.POST)
         if form.is_valid():
-            form.save()
+            configuration = form.save(commit=False)
+            if not configuration.protocollo_email:
+                configuration.protocollo_email = settings.PROT_EMAIL_DEFAULT
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Configurazione protocollo informatico aggiornata"))
@@ -2807,6 +2814,7 @@ def category_protocol_configuration_new(request, structure_slug,
         initial_data = {'protocollo_aoo': structure_protocol.protocollo_aoo,
                         'protocollo_agd': structure_protocol.protocollo_agd,
                         'protocollo_uo': structure_protocol.protocollo_uo,
+                        'protocollo_email': structure_protocol.protocollo_email,
                         'protocollo_id_uo': structure_protocol.protocollo_id_uo,
                         'protocollo_cod_titolario': structure_protocol.protocollo_cod_titolario,
                         'protocollo_fascicolo_numero': structure_protocol.protocollo_fascicolo_numero,
@@ -2821,6 +2829,8 @@ def category_protocol_configuration_new(request, structure_slug,
         form = TicketCategoryWSArchiProModelForm(data=request.POST)
         if form.is_valid():
             configuration = form.save(commit=False)
+            if not configuration.protocollo_email:
+                configuration.protocollo_email = settings.PROT_EMAIL_DEFAULT
             configuration.ticket_category=category
             configuration.save()
 
