@@ -17,9 +17,9 @@ from uni_ticket.utils import visible_tickets_to_user
 
 
 _ticket_columns = ['pk','code','subject','get_category',
-                   'created','created_by','get_priority','get_status_table']
+                   'created','get_owners_html','get_priority','get_status_table']
 _no_priority = ['pk','code','subject','get_category',
-                'created','created_by','get_status_table']
+                'created','get_owners_html','get_status_table']
 
 
 class TicketDTD(DjangoDatatablesServerProc):
@@ -46,6 +46,8 @@ class TicketDTD(DjangoDatatablesServerProc):
                     Q(subject__icontains=text) | \
                     Q(created_by__first_name__icontains=text) | \
                     Q(created_by__last_name__icontains=text) | \
+                    Q(compiled_by__first_name__icontains=text) | \
+                    Q(compiled_by__last_name__icontains=text) | \
                     # Q(taken_by__first_name__icontains=text) | \
                     # Q(taken_by__last_name__icontains=text) | \
                     Q(closed_by__first_name__icontains=text) | \

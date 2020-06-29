@@ -397,6 +397,14 @@ class Ticket(SavedFormContent):
         if not user: return False
         if user == self.created_by or user == self.compiled_by: return True
 
+    def get_owners_html(self):
+        if self.compiled_by:
+            return '<li style="white-space:nowrap">' \
+                   '{}</li>' \
+                   '<li style="white-space:nowrap">' \
+                   '{}</li>'.format(self.created_by, self.compiled_by)
+        return self.created_by
+
     def get_owners(self):
         owners = [self.created_by]
         if self.compiled_by: owners.append(self.compiled_by)
