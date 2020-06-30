@@ -11,14 +11,14 @@
 
 <div id="collapseDiv1-lft" class="collapse-div collapse-left-icon" role="tablist">
     <div class="collapse-header" id="heading1-lft">
-        <button data-toggle="collapse" data-target="#collapse1-lft" aria-expanded="true" aria-controls="collapse1-lft">
+        <button data-toggle="collapse" data-target="#collapse1-lft" aria-expanded="false" aria-controls="collapse1-lft">
             <svg class="icon icon-sm">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
             </svg>
             {% trans "Configurazione dati personali" %}
         </button>
     </div>
-    <div id="collapse1-lft" class="collapse show" role="tabpanel" aria-labelledby="heading1-lft">
+    <div id="collapse1-lft" class="collapse" role="tabpanel" aria-labelledby="heading1-lft">
         <div class="collapse-body">
             {% include 'email-toggle-notify.html' %}
             {% include 'user_data.html' %}
@@ -26,7 +26,7 @@
     </div>
 
     <div class="collapse-header" id="heading2-lft">
-        <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="true" aria-controls="collapse2-lft">
+        <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
             <svg class="icon icon-sm">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-file"></use>
             </svg>
@@ -35,7 +35,7 @@
         </button>
     </div>
 
-    <div id="collapse2-lft" class="collapse show" role="tabpanel" aria-labelledby="heading2-lft">
+    <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
         <div class="collapse-body">
 
             <div class="row">

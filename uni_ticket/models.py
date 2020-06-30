@@ -399,10 +399,11 @@ class Ticket(SavedFormContent):
 
     def get_owners_html(self):
         if self.compiled_by:
-            return '<li style="white-space:nowrap">' \
-                   '{}</li>' \
-                   '<li style="white-space:nowrap">' \
-                   '{}</li>'.format(self.created_by, self.compiled_by)
+            return '<span="white-space:nowrap">' \
+                   '- {} </span>' \
+                   '<br>' \
+                   '<span style="white-space:nowrap">' \
+                   '- {}</span>'.format(self.created_by, self.compiled_by)
         return self.created_by
 
     def get_owners(self):
