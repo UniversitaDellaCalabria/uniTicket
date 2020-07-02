@@ -87,7 +87,7 @@ INSTALLED_APPS = [
 
     # protocollo webservice in uso
     # ogni università dovrebbe interfacciare il proprio
-    # 'protocollo_ws',
+    # 'archipro_ws',
 
     # advanced search builder
     admin_adv_search_builder,
@@ -275,7 +275,7 @@ CAPTCHA_EXPIRATION_TIME = 45000 # milliseconds
 # PROTOCOLLO, questi valori possono variare sulla base di come
 # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
 
-CLASSE_PROTOCOLLO = 'protocollo_ws.protocollo'
+CLASSE_PROTOCOLLO = 'archipro_ws.protocollo'
 
 # XML flusso
 PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -308,7 +308,7 @@ PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instanc
 <Denominazione>UNICAL</Denominazione>
 <CodiceAmministrazione>UNICAL</CodiceAmministrazione>
 <IndirizzoTelematico tipo="smtp">amministrazione@pec.unical.it</IndirizzoTelematico>
-<UnitaOrganizzativa id="{uo_id}"/>
+<UnitaOrganizzativa id=""/>
 </Amministrazione>
 </Destinatario>
 <Classifica>
@@ -340,17 +340,11 @@ PROT_FASCICOLO_DEFAULT = 'default_fascicolo'
 PROT_FASCICOLO_ANNO_DEFAULT = 'default_year'
 PROT_AGD_DEFAULT = 'default_agd'
 PROT_UO_DEFAULT = 'default_uo'
-PROT_UO_ID_DEFAULT = 'default_uo_id'
+# PROT_UO_ID_DEFAULT = 'default_uo_id'
 PROT_TITOLARIO_DEFAULT = 'default_titolario'
 PROT_TEST_URL = 'url_test'
 PROT_TEST_LOGIN = 'test_login'
 PROT_TEST_PASSW = 'test_passw'
-
-# PRODUCTION USE
-# PROT_AOO = PROT_TEST_AOO if DEBUG else 'prod_aoo'
-PROT_URL = PROT_TEST_URL if DEBUG else 'prod_url'
-PROT_LOGIN = PROT_TEST_LOGIN if DEBUG else 'prod_login'
-PROT_PASSW = PROT_TEST_PASSW if DEBUG else 'prod_passw'
 
 # superusers view all
 SUPER_USER_VIEW_ALL = True

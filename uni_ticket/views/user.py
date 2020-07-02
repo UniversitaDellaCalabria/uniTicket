@@ -34,6 +34,7 @@ from uni_ticket.forms import *
 from uni_ticket.jwts import *
 from uni_ticket.models import *
 from uni_ticket.pdf_utils import response_as_pdf
+from uni_ticket.protocol_utils import ticket_protocol
 from uni_ticket.utils import *
 
 
@@ -490,12 +491,16 @@ def ticket_add_new(request, structure_slug, category_slug):
                 # Protocol
                 if category.protocol_required:
                     try:
+                        protocol_struct_configuration = OrganizationalStructureWSArchiPro.get_active_protocol_configuration(struttura)
                         protocol_configuration = category.get_active_protocol_configuration()
 
                         response = download_ticket_pdf(request=request,
                                                        ticket_id=ticket.code).content
 
-                        protocol_number = ticket_protocol(configuration=protocol_configuration,
+                        protocol_number = ticket_protocol(prot_login=protocol_struct_configuration.protocollo_username,
+                                                          prot_passw=protocol_struct_configuration.protocollo_password,
+                                                          structure_configuration=protocol_struct_configuration,
+                                                          configuration=protocol_configuration,
                                                           user=current_user,
                                                           subject=ticket.subject,
                                                           file_name=ticket.code,
@@ -534,13 +539,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                         messages.add_message(request, messages.INFO,
                                              _("<b>Attenzione</b>: la tua richiesta è stata "
                                                "comunque creata, nonostante "
-                                               "la protocollazione sia fallita."
-                                               "<br>"
-                                               "Questa tipologia di richieste "
-                                               "prevede il numero di protocollo obbligatorio."
-                                               "<br>"
-                                               "Pertanto, puoi eliminarla e crearne una nuova "
-                                               "o contattare il supporto tecnico."))
+                                               "la protocollazione sia fallita."))
                         # stop all other operations and come back to form
                         # return render(request, template, d)
                 # end Protocol

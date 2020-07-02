@@ -304,7 +304,9 @@
                             {% endfor %}
                         </ul>
                     {% else %}
-                    -
+                    <svg class="icon icon-sm icon-secondary">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-minus"></use>
+                    </svg>
                     {% endif %}
                 </td>
             </tr>

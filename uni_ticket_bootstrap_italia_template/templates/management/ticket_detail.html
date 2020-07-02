@@ -35,6 +35,9 @@
 {% settings_value name="DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE" as default_office %}
 
 {% if untaken_user_offices and not ticket.is_closed %}
+
+{% include "ticket_protocol_required_alert.html" with ticket=ticket %}
+
 <div class="alert alert-info mobile-adapt" role="alert">
     <h4 class="alert-heading">{% trans "Attenzione" %}</h4>
     <p>{% trans "La richiesta non è stata ancora assegnata a nessun operatore negli uffici" %}</p>

@@ -2,13 +2,13 @@
 <Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <Intestazione>
         <Oggetto>Autorizzazione Trasferta Dipendente</Oggetto>
-        
+
         <Identificatore>
             <CodiceAmministrazione>{codice_amministrazione}</CodiceAmministrazione>
             <CodiceAOO>{codice_aoo}</CodiceAOO>
             <Flusso>{flusso}</Flusso>
         </Identificatore>
-        
+
         <Mittente>
           <Dipendente id="{matricola_dipendente}">
            <Denominazione>{denominazione_persona}</Denominazione>
@@ -20,7 +20,7 @@
                 <Denominazione>{denominazione_amministrazione}</Denominazione>
                 <CodiceAmministrazione>{codice_amministrazione}</CodiceAmministrazione>
                 <IndirizzoTelematico tipo="smtp">{email_amministrazione}</IndirizzoTelematico>
-                <UnitaOrganizzativa id="{uo_id}" />
+                <UnitaOrganizzativa id="" />
             </Amministrazione>
         </Destinatario>
 

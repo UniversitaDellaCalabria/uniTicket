@@ -26,16 +26,14 @@
 <div class="row">
     <div class="col">
         <div class="alert alert-info" role="alert">
-            {% trans "La configurazione di un flusso di protocollo prevede la compilazione dei parametri di base." %}
+            {% trans "La configurazione di un flusso di protocollo prevede la definizione dei parametri relativi a titolario e fascicolo." %}
             <br>
-            {% trans "Eventuali <b>parametri errati</b> comporteranno un <b>errore in fase di protocollazione</b>" %}
-            {% trans " e la conseguente interruzione del processo di generazione della richiesta." %}
+            {% trans "Eventuali <b>valori errati</b> comporteranno un <b>errore in fase di protocollazione</b>." %}
             <br>
-            {% trans "Di default, i dati vengono ereditati dalla " %}
+            {% trans "La configurazione dei parametri di protocollo della struttura è disponibile " %}
             <a href="{% url 'uni_ticket:manager_user_settings' structure_slug=structure.slug %}">
-                <b>{% trans "configurazione del protcollo della struttura," %}</b>
+                <b>{% trans "qui" %}</b>.
             </a>
-            {% trans " se presente, o dalla configurazione globale del sistema." %}
         </div>
         <div class="card-space card-wrapper">
             <div class="card card-bg no-after">

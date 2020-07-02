@@ -94,6 +94,9 @@ class TaskAdmin(nested_admin.NestedModelAdmin):
 @admin.register(OrganizationalStructureWSArchiPro)
 class OrganizationalStructureWSArchiProAdmin(admin.ModelAdmin):
     list_display = ('organizational_structure',
-                    'protocollo_cod_titolario',
-                    'protocollo_fascicolo_numero',
-                    'protocollo_template',)
+                    'name',
+                    'created',
+                    'modified',
+                    'is_active')
+    list_filter = ('organizational_structure',
+                   'is_active')

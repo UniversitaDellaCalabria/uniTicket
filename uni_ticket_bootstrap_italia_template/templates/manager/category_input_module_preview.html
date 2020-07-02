@@ -14,11 +14,7 @@
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
         </svg>
-        {% if categoria.protocol_required %}
-            {% trans "Simula invio e protocollo della richiesta" %}
-        {% else %}
-            {% trans "Simula invio richiesta" %}
-        {% endif %}
+        {% trans "Simula invio richiesta" %}
     </button>
 </div>
 {% endblock %}

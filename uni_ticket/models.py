@@ -52,7 +52,7 @@ class TicketCategory(models.Model):
     slug = models.SlugField(max_length=255,
                             blank=False, null=False)
     description = models.TextField(max_length=500, null=True, blank=True)
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     organizational_structure = models.ForeignKey(OrganizationalStructure,
                                                  on_delete=models.PROTECT)
@@ -175,12 +175,16 @@ class TicketCategory(models.Model):
         return False
 
     def get_active_protocol_configuration(self):
+        # if structure hasn't an active configuration returns False
+        oswap = OrganizationalStructureWSArchiPro
+        str_conf = oswap.get_active_protocol_configuration(self.organizational_structure)
+        if not str_conf: return False
+
+        # returns category active configuration or False
         tcwap = TicketCategoryWSArchiPro
         conf = tcwap.objects.filter(ticket_category=self,
                                     is_active=True).first()
-        if not conf:
-            oswsap = OrganizationalStructureWSArchiPro
-            conf = oswsap.get_active_protocol_configuration(organizational_structure=self.organizational_structure)
+
         return conf if conf else False
 
     def __str__(self):
@@ -194,7 +198,7 @@ class TicketCategoryModule(models.Model):
     name = models.CharField(max_length=255)
     ticket_category = models.ForeignKey(TicketCategory,
                                         on_delete = models.CASCADE)
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
 
     class Meta:
@@ -280,7 +284,7 @@ class Ticket(SavedFormContent):
     code = models.CharField(max_length=255, unique=True)
     subject = models.CharField(max_length=255)
     description = models.TextField()
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                    on_delete=models.SET_NULL,
                                    null=True,
@@ -840,7 +844,7 @@ class TicketCategoryDefaultReply(models.Model):
     ticket_category = models.ForeignKey(TicketCategory,
                                         on_delete = models.CASCADE)
     text = models.TextField()
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -859,7 +863,7 @@ class TicketAssignment(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     office = models.ForeignKey(OrganizationalStructureOffice,
                                on_delete=models.PROTECT)
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     note = models.TextField(blank=True, null=True)
     assigned_by = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -930,7 +934,7 @@ class TicketReply(models.Model):
                                   validators=[validate_file_extension,
                                               validate_file_size,
                                               validate_file_length])
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     read_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.SET_NULL,
                                 null=True, blank=True,
@@ -993,7 +997,7 @@ class AbstractTask(models.Model):
     subject = models.CharField(max_length=255)
     code = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                    on_delete=models.SET_NULL,
                                    null=True)
@@ -1165,40 +1169,63 @@ class TicketCategoryTask(AbstractTask):
         return '{} - {}'.format(self.subject, self.category)
 
 
-class AbstractWSArchiPro(models.Model):
-    """
-    """
-    name = models.CharField(max_length=255)
-    created = models.DateTimeField(auto_now=True)
+# class AbstractWSArchiPro(models.Model):
+    # """
+    # """
+    # name = models.CharField(max_length=255)
+    # created = models.DateTimeField(auto_now_add=True)
+    # modified = models.DateTimeField(auto_now=True)
+    # is_active = models.BooleanField(default=False)
+
+    # protocollo_aoo = models.CharField('AOO', max_length=12)
+    # protocollo_agd = models.CharField('AGD', max_length=12)
+    # protocollo_uo = models.CharField('UO', max_length=12,)
+    # protocollo_email = models.EmailField('E-mail',
+                                         # max_length=255,
+                                         # blank=True, null=True)
+    # protocollo_id_uo = models.CharField(_('ID Unità Organizzativa'),
+                                      # max_length=12)
+    # protocollo_cod_titolario = models.CharField(_('Codice titolario'),
+                                                # max_length=12,
+                                                # choices=settings.TITOLARIO_DICT)
+    # protocollo_fascicolo_numero = models.CharField(_('Fascicolo numero'),
+                                                   # max_length=12)
+                                                   # default=settings.PROTOCOLLO_FASCICOLO_DEFAULT)
+    # protocollo_fascicolo_anno = models.IntegerField(_('Fascicolo anno'))
+    # protocollo_template = models.TextField('XML template',
+                                           # help_text=_('Template XML che '
+                                                      # 'descrive il flusso'))
+
+    # class Meta:
+        # abstract = True
+
+
+class OrganizationalStructureWSArchiPro(models.Model):
+    organizational_structure = models.ForeignKey(OrganizationalStructure,
+                                                 on_delete=models.CASCADE)
+    name = models.CharField(_('Denominazione configurazione'),
+                            max_length=255)
+    created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=False)
 
+    protocollo_username = models.CharField('Username', max_length=255)
+    protocollo_password = models.CharField('Password', max_length=255)
     protocollo_aoo = models.CharField('AOO', max_length=12)
     protocollo_agd = models.CharField('AGD', max_length=12)
     protocollo_uo = models.CharField('UO', max_length=12,)
     protocollo_email = models.EmailField('E-mail',
                                          max_length=255,
-                                         blank=True, null=True)
-    protocollo_id_uo = models.CharField(_('ID Unità Organizzativa'),
-                                      max_length=12)
-    protocollo_cod_titolario = models.CharField(_('Codice titolario'),
-                                                max_length=12,)
-                                                # choices=settings.PROTOCOLLO_CODICI_TITOLARI,
-    protocollo_fascicolo_numero = models.CharField(_('Fascicolo numero'),
-                                                   max_length=12)
-                                                   # default=settings.PROTOCOLLO_FASCICOLO_DEFAULT)
-    protocollo_fascicolo_anno = models.IntegerField(_('Fascicolo anno'))
-    protocollo_template = models.TextField('XML template',
-                                           help_text=_('Template XML che '
-                                                      'descrive il flusso'))
+                                         blank=True, null=True,
+                                         help_text = 'Se vuoto: {}'.format(settings.PROT_EMAIL_DEFAULT))
+    # protocollo_template = models.TextField('XML template',
+                                           # help_text=_('Template XML che '
+                                                      # 'descrive il flusso'))
 
     class Meta:
-        abstract = True
-
-
-class OrganizationalStructureWSArchiPro(AbstractWSArchiPro):
-    organizational_structure = models.ForeignKey(OrganizationalStructure,
-                                                 on_delete=models.CASCADE)
+        ordering = ["-created"]
+        verbose_name = _("Configurazione WSArchiPro Struttura")
+        verbose_name_plural = _("Configurazioni WSArchiPro Strutture")
 
     def disable_other_configurations(self):
         others = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=self.organizational_structure).exclude(pk=self.pk)
@@ -1209,16 +1236,30 @@ class OrganizationalStructureWSArchiPro(AbstractWSArchiPro):
     @classmethod
     def get_active_protocol_configuration(cls, organizational_structure):
         conf = cls.objects.filter(organizational_structure=organizational_structure,
-                                     is_active=True).first()
+                                  is_active=True).first()
         return conf if conf else False
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.organizational_structure)
 
 
-class TicketCategoryWSArchiPro(AbstractWSArchiPro):
+class TicketCategoryWSArchiPro(models.Model):
     ticket_category = models.ForeignKey(TicketCategory,
                                         on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=False)
+    protocollo_cod_titolario = models.CharField(_('Codice titolario'),
+                                                max_length=12,
+                                                choices=settings.TITOLARIO_DICT)
+    protocollo_fascicolo_numero = models.IntegerField(_('Fascicolo numero'))
+    protocollo_fascicolo_anno = models.IntegerField(_('Fascicolo anno'))
+
+    class Meta:
+        ordering = ["-created"]
+        verbose_name = _("Configurazione WSArchiPro Categoria")
+        verbose_name_plural = _("Configurazioni WSArchiPro Categorie")
 
     def disable_other_configurations(self):
         others = TicketCategoryWSArchiPro.objects.filter(ticket_category=self.ticket_category).exclude(pk=self.pk)

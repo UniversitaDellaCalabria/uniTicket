@@ -135,7 +135,7 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     # PROTOCOLLO, questi valori possono variare sulla base di come
     # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
 
-    CLASSE_PROTOCOLLO = 'protocollo_ws.protocollo'
+    CLASSE_PROTOCOLLO = 'archipro_ws.protocollo'
 
     # XML flusso
     PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -168,7 +168,7 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     <Denominazione>UNICAL</Denominazione>
     <CodiceAmministrazione>UNICAL</CodiceAmministrazione>
     <IndirizzoTelematico tipo="smtp">amministrazione@pec.unical.it</IndirizzoTelematico>
-    <UnitaOrganizzativa id="{uo_id}"/>
+    <UnitaOrganizzativa id=""/>
     </Amministrazione>
     </Destinatario>
     <Classifica>
@@ -200,7 +200,7 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     PROT_FASCICOLO_ANNO_DEFAULT = 'default_year'
     PROT_AGD_DEFAULT = 'default_agd'
     PROT_UO_DEFAULT = 'default_uo'
-    PROT_UO_ID_DEFAULT = 'default_uo_id'
+    # PROT_UO_ID_DEFAULT = 'default_uo_id'
     PROT_TITOLARIO_DEFAULT = 'default_titolario'
     PROT_TEST_URL = 'url_test'
     PROT_TEST_LOGIN = 'test_login'

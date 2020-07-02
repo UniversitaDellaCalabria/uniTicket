@@ -33,135 +33,137 @@
 {% endblock %}
 
 {% block under_content_title %}
-{% with ticket_assignments=ticket.ticketassignment_set.all.count %}
-{% ticket_has_been_taken ticket=ticket as ticket_taken %}
-{% if not ticket.is_closed and not ticket_taken and ticket_assignments == 1 and not ticket.protocol_number %}
-<div class="alert alert-info alert-dismissible fade show mb-5" role="alert">
-  {% trans "E' possibile <b>modificare</b> o <b>eliminare</b> la richiesta fino a quando questo non sia stata assegnata ad un operatore" %}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-{% endif %}
-{% endwith %}
+    {% with ticket_assignments=ticket.ticketassignment_set.all.count %}
+        {% ticket_has_been_taken ticket=ticket as ticket_taken %}
+        {% if not ticket.is_closed and not ticket_taken and ticket_assignments == 1 %}
+            {% include "ticket_protocol_required_alert.html" with ticket=ticket %}
+            {% if not ticket.protocol_number %}
+            <div class="alert alert-info alert-dismissible fade show mb-5" role="alert">
+              {% trans "E' possibile <b>modificare</b> o <b>eliminare</b> la richiesta fino a quando questo non sia stata assegnata ad un operatore" %}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            {% endif %}
+        {% endif %}
+    {% endwith %}
 {% endblock under_content_title %}
 
 {% block top_buttons %}
-{% with ticket_assignments=ticket.ticketassignment_set.all.count %}
-{% ticket_has_been_taken ticket=ticket as ticket_taken %}
-<a role="button" class="btn btn-outline-secondary"
-       href="{% url 'uni_ticket:user_dashboard' %}">
-        <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Dashboard" %}
-    </a>
-{% if ticket.is_closed %}
-    <a role="button" class="btn btn-outline-secondary"
-       href="{% url 'uni_ticket:user_closed_ticket' %}">
-        <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Richieste chiuse" %}
-    </a>
-    <a role="button"
-       href="{% url 'uni_ticket:user_clone_ticket' ticket_id=ticket.code %}"
-       class="btn btn-outline-secondary">
-       <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-copy"></use>
-       </svg> {% trans "Effettua richiesta simile" %}
-    </a>
-{% elif ticket_taken %}
+    {% with ticket_assignments=ticket.ticketassignment_set.all.count %}
+        {% ticket_has_been_taken ticket=ticket as ticket_taken %}
+        <a role="button" class="btn btn-outline-secondary"
+               href="{% url 'uni_ticket:user_dashboard' %}">
+                <svg class="icon icon-xs">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+                </svg> {% trans "Dashboard" %}
+            </a>
+        {% if ticket.is_closed %}
+            <a role="button" class="btn btn-outline-secondary"
+               href="{% url 'uni_ticket:user_closed_ticket' %}">
+                <svg class="icon icon-xs">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+                </svg> {% trans "Richieste chiuse" %}
+            </a>
+            <a role="button"
+               href="{% url 'uni_ticket:user_clone_ticket' ticket_id=ticket.code %}"
+               class="btn btn-outline-secondary">
+               <svg class="icon icon-xs">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-copy"></use>
+               </svg> {% trans "Effettua richiesta simile" %}
+            </a>
+        {% elif ticket_taken %}
+            <a role="button" class="btn btn-outline-secondary"
+               href="{% url 'uni_ticket:user_opened_ticket' %}">
+                <svg class="icon icon-xs">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+                </svg> {% trans "Richieste assegnate" %}
+            </a>
+        {% else %}
+            <a role="button" class="btn btn-outline-secondary"
+               href="{% url 'uni_ticket:user_unassigned_ticket' %}">
+                <svg class="icon icon-xs">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+                </svg> {% trans "Richieste aperte" %}
+            </a>
+        {% endif %}
 
-    <a role="button" class="btn btn-outline-secondary"
-       href="{% url 'uni_ticket:user_opened_ticket' %}">
-        <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Richieste assegnate" %}
-    </a>
-{% else %}
-    <a role="button" class="btn btn-outline-secondary"
-       href="{% url 'uni_ticket:user_unassigned_ticket' %}">
-        <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-        </svg> {% trans "Richieste aperte" %}
-    </a>
-{% endif %}
+        {% if ticket_taken %}
+            <a role="button" href="{% url 'uni_ticket:ticket_message' ticket_id=ticket.code %}"
+               class="btn btn-outline-secondary">
+                {% get_unread_messages ticket=ticket as unread_messages %}
+                {% if unread_messages > 0 %}
+                <span class="badge badge-primary">{{ unread_messages }}</span>
+                {% endif %}
+                <svg class="icon icon-xs">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
+                </svg> {% trans "Messaggi" %}
+            </a>
+        {% elif not ticket.is_closed and ticket_assignments == 1 and not ticket.protocol_number %}
+            <a role="button"
+               class="btn btn-outline-secondary"
+               href="{% url 'uni_ticket:ticket_edit' ticket_id=ticket.code %}">
+                <svg class="icon icon-xs">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                </svg> {% trans 'Modifica' %}
+            </a>
+        {% endif %}
+        {% if not ticket.is_closed %}
+            <a role="button"
+               href="{% url 'uni_ticket:user_close_ticket' ticket_id=ticket.code %}"
+               class="btn btn-outline-success">
+                <svg class="icon icon-xs">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                </svg> {% trans "Chiudi" %}
+            </a>
+        {% endif %}
 
-{% if ticket_taken %}
-<a role="button" href="{% url 'uni_ticket:ticket_message' ticket_id=ticket.code %}"
-   class="btn btn-outline-secondary">
-    {% get_unread_messages ticket=ticket as unread_messages %}
-    {% if unread_messages > 0 %}
-    <span class="badge badge-primary">{{ unread_messages }}</span>
-    {% endif %}
-    <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
-    </svg> {% trans "Messaggi" %}
-</a>
-{% elif not ticket.is_closed and ticket_assignments == 1 and not ticket.protocol_number %}
-<a role="button"
-   class="btn btn-outline-secondary"
-   href="{% url 'uni_ticket:ticket_edit' ticket_id=ticket.code %}">
-    <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-    </svg> {% trans 'Modifica' %}
-</a>
-{% endif %}
-{% if not ticket.is_closed %}
-<a role="button"
-   href="{% url 'uni_ticket:user_close_ticket' ticket_id=ticket.code %}"
-   class="btn btn-outline-success">
-    <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
-    </svg> {% trans "Chiudi" %}
-</a>
-{% endif %}
-
-{% if not ticket_taken and not ticket.is_closed and ticket_assignments == 1 and not ticket.protocol_number %}
-<button type="button" class="btn btn-outline-danger"
-        data-toggle="modal"  data-target="#modalCenter">
-    <svg class="icon icon-xs icon-danger">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
-    </svg> {% trans 'Elimina' %}
-</button>
-<div class="modal fade" tabindex="-1" role="dialog" id="modalCenter">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    {% trans "Richiesta conferma eliminazione" %}
-                </h5>
-                <button class="close"
-                        type="button"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                   <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                   </svg>
-                </button>
+        {% if not ticket_taken and not ticket.is_closed and ticket_assignments == 1 and not ticket.protocol_number %}
+            <button type="button" class="btn btn-outline-danger"
+                    data-toggle="modal"  data-target="#modalCenter">
+                <svg class="icon icon-xs icon-danger">
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                </svg> {% trans 'Elimina' %}
+            </button>
+            <div class="modal fade" tabindex="-1" role="dialog" id="modalCenter">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Richiesta conferma eliminazione" %}
+                            </h5>
+                            <button class="close"
+                                    type="button"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero eliminare la richiesta" %}
+                                <br>
+                                <b>{{ ticket.code }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button"
+                               class="btn btn-danger"
+                               href="{% url 'uni_ticket:ticket_delete' ticket_id=ticket.code %}">
+                               {% trans "Si, elimina" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <p>{% trans "Vuoi davvero eliminare la richiesta" %}
-                    <br>
-                    <b>{{ ticket.code }}</b> ?
-                </p>
-            </div>
-            <div class="modal-footer">
-                <a role="button"
-                   class="btn btn-danger"
-                   href="{% url 'uni_ticket:ticket_delete' ticket_id=ticket.code %}">
-                   {% trans "Si, elimina" %}
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-{% endwith %}
+        {% endif %}
+    {% endwith %}
 {% endblock top_buttons %}
 
 {% block page_content %}
-{% include 'ticket_detail.html' with is_simple_user=request.user %}
-{% include 'ticket_options.html' %}
+    {% include 'ticket_detail.html' with is_simple_user=request.user %}
+    {% include 'ticket_options.html' %}
 {% endblock page_content %}
 
 {% block extra_scripts %}

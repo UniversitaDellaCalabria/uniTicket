@@ -4,6 +4,7 @@ from django import forms
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.translation import gettext as _
+from bootstrap_italia_template.widgets import BootstrapItaliaSelectWidget
 
 from . models import *
 
@@ -66,23 +67,8 @@ class TicketCategoryWSArchiProModelForm(forms.ModelForm):
 
     class Meta:
         model = TicketCategoryWSArchiPro
-        fields = ('name',
-                  'protocollo_aoo',
-                  'protocollo_agd',
-                  'protocollo_uo',
-                  'protocollo_email',
-                  'protocollo_id_uo',
-                  'protocollo_cod_titolario',
-                  'protocollo_fascicolo_numero',
-                  'protocollo_fascicolo_anno',
-                  'protocollo_template')
-        help_texts = {'protocollo_email': _('Se vuoto: {}').format(settings.PROT_EMAIL_DEFAULT)}
-        labels = {'name': _('Denominazione'),
-                  'protocollo_cod_titolario': _('Codice titolario')}
-        widgets = {'protocollo_template': forms.Textarea(attrs={'rows':2})}
+        fields = ('__all__')
 
-    class Media:
-        js = ('js/textarea-autosize.js',)
 
 class TicketCategoryWSArchiProNestedInline(nested_admin.NestedTabularInline):
     model = TicketCategoryWSArchiPro
@@ -90,10 +76,6 @@ class TicketCategoryWSArchiProNestedInline(nested_admin.NestedTabularInline):
     #sortable_field_name = "name"
     extra = 0
     classes = ['collapse',]
-    readonly_fields = ('name',
-                       'protocollo_cod_titolario',
-                       'protocollo_fascicolo_numero',
-                       'protocollo_template')
 
 
 # Ticket Category Task Form

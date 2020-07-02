@@ -133,3 +133,7 @@ UNITICKET_JWE_RSA_KEY_PATH = 'saml2_sp/saml2_config/certificates/private.key'
 UNITICKET_JWE_ALG = "RSA1_5"
 UNITICKET_JWE_ENC = "A128CBC-HS256"
 # end JWE support
+
+# TEST
+PROT_TEST_LOGIN = 'prot_login'
+PROT_TEST_PASSW = 'prot_passw'

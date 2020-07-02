@@ -82,8 +82,6 @@ urlpatterns += [
     path('{}/competence/leave/'.format(ticket_id), management.ticket_competence_leave, name='leave_ticket_competence'),
     path('{}/dependence/add/'.format(ticket_id), management.ticket_dependence_add_url, name='add_ticket_dependence_url'),
     path('{}/dependence/remove/<str:master_ticket_id>/'.format(ticket_id), management.ticket_dependence_remove, name='remove_ticket_dependence'),
-    # Non usato
-    # path('{}/take/'.format(ticket_id), management.ticket_take, name='prendi_ticket_in_carico'),
     path('{}/close/'.format(ticket_id), management.ticket_close_url, name='close_ticket'),
     path('{}/reopen/'.format(ticket_id), management.ticket_reopen, name='reopen_ticket'),
     path('{}/assign-offices/'.format(ticket_id), management.ticket_taken_by_unassigned_offices, name='ticket_taken_by_unassigned_offices'),
@@ -212,11 +210,11 @@ urlpatterns += [
 
     # Structure Protocol configurations
     path('{}/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_detail, name='manager_structure_protocol_configuration_detail'),
-    path('{}/new/'.format(structure_protocol_configurations), manager.structure_protocol_configuration_new, name='manager_structure_protocol_configuration_new'),
-    path('{}/delete/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_delete, name='manager_structure_protocol_configuration_delete'),
-    path('{}/disable/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_disable, name='manager_structure_protocol_configuration_disable'),
-    path('{}/enable/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_enable, name='manager_structure_protocol_configuration_enable'),
-    path('{}/test/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_test, name='manager_structure_protocol_configuration_test'),
+    #FRONTEND ACTIONS DISABLED
+    # path('{}/new/'.format(structure_protocol_configurations), manager.structure_protocol_configuration_new, name='manager_structure_protocol_configuration_new'),
+    # path('{}/delete/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_delete, name='manager_structure_protocol_configuration_delete'),
+    # path('{}/disable/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_disable, name='manager_structure_protocol_configuration_disable'),
+    # path('{}/enable/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_enable, name='manager_structure_protocol_configuration_enable'),
 
     # Category Protocol configurations
     path('{}/'.format(category_protocol_configuration), manager.category_protocol_configuration_detail, name='manager_category_protocol_configuration_detail'),
@@ -224,7 +222,6 @@ urlpatterns += [
     path('{}/delete/'.format(category_protocol_configuration), manager.category_protocol_configuration_delete, name='manager_category_protocol_configuration_delete'),
     path('{}/disable/'.format(category_protocol_configuration), manager.category_protocol_configuration_disable, name='manager_category_protocol_configuration_disable'),
     path('{}/enable/'.format(category_protocol_configuration), manager.category_protocol_configuration_enable, name='manager_category_protocol_configuration_enable'),
-    path('{}/test/'.format(category_protocol_configuration), manager.category_protocol_configuration_test, name='manager_category_protocol_configuration_test'),
 
     # Settings
     path('{}/settings/'.format(base), manager.manager_settings, name='manager_user_settings'),

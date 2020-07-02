@@ -8,12 +8,12 @@ import os
 
 from zeep import Client
 
-from protocollo_ws.utils import clean_string
-from protocollo_ws.settings import (PROT_TEMPLATE_FLUSSO_ENTRATA_DIPENDENTE_PATH,
-                                    PROT_DOC_ENCODING,
-                                    PROT_ALLEGATO_EXAMPLE_FILE,
-                                    PROT_PARAMETRI_TMPL_ROW,
-                                    PROT_PARAMETRI)
+from archipro_ws.utils import clean_string
+from archipro_ws.settings import (PROT_TEMPLATE_FLUSSO_ENTRATA_DIPENDENTE_PATH,
+                                  PROT_DOC_ENCODING,
+                                  PROT_ALLEGATO_EXAMPLE_FILE,
+                                  PROT_PARAMETRI_TMPL_ROW,
+                                  PROT_PARAMETRI)
 
 class WSArchiPROClient(object):
     _ALLEGATO_XML = """
@@ -38,7 +38,7 @@ class WSArchiPROClient(object):
                            'agd',
                            'uo',
                            'email',
-                           'uo_id',
+                           # 'uo_id',
                            'fascicolo_numero',
                            'fascicolo_anno',
                            'id_titolario',

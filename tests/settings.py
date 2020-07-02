@@ -14,12 +14,12 @@ import os
 import pathlib
 
 # load applications settings file, overload what needed if needed
+from archipro_ws.settings import *
 from django_form_builder.settings import *
 from organizational_area.settings import *
-from protocollo_ws.settings import *
 from uni_ticket.settings import *
-
-from . settingslocal import *
+from uni_ticket_project.settingslocal import *
+# from . settingslocal import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

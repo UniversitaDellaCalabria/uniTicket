@@ -2,28 +2,28 @@
 <Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 <Intestazione>
     <Oggetto>{oggetto}</Oggetto>
-    
+
     <Identificatore>
         <CodiceAmministrazione>{codice_amministrazione}</CodiceAmministrazione>
         <CodiceAOO>{codice_aoo}</CodiceAOO>
         <Flusso>{flusso}</Flusso>
     </Identificatore>
-    
+
     <Mittente>
         <Amministrazione>
             <Denominazione>{id_amm}</Denominazione>
             <CodiceAmministrazione>{cod_aoo}</CodiceAmministrazione>
             <IndirizzoTelematico tipo="smtp">{email}</IndirizzoTelematico>
-            <UnitaOrganizzativa id="{uo_id}" />
+            <UnitaOrganizzativa id="" />
         </Amministrazione>
     </Mittente>
-    
+
     <Destinatario>
         <Persona id="{identificativo_persona}">
             <Denominazione>{denominazione_persona}</Denominazione>
         </Persona>
     </Destinatario>
-    
+
     <Classifica>
         <CodiceTitolario>{cod_titolario}</CodiceTitolario>
     </Classifica>

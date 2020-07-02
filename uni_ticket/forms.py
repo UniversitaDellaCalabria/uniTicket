@@ -35,6 +35,7 @@ class CategoryForm(ModelForm):
                   'description': _('Descrizione'),
                   'allowed_users': _('Solo i seguenti utenti possono effettuare richieste')}
         widgets = {'description': forms.Textarea(attrs={'rows':2}),
+                   'confirm_message_text': forms.Textarea(attrs={'rows':2}),
                    'allowed_users': BootstrapItaliaSelectMultipleWidget,}
 
     class Media:
@@ -399,18 +400,46 @@ class OrganizationalStructureWSArchiProModelForm(ModelForm):
     class Meta:
         model = OrganizationalStructureWSArchiPro
         fields = ['name',
+                  'protocollo_username',
+                  'protocollo_password',
                   'protocollo_aoo',
                   'protocollo_agd',
                   'protocollo_uo',
-                  'protocollo_email',
-                  'protocollo_id_uo',
+                  'protocollo_email',]
+                  # 'protocollo_id_uo',
+                  # 'protocollo_cod_titolario',
+                  # 'protocollo_fascicolo_numero',
+                  # 'protocollo_fascicolo_anno',
+                  # 'protocollo_template']
+        # help_texts = {'protocollo_email': _('Se vuoto: {}').format(settings.PROT_EMAIL_DEFAULT)}
+        # labels = {'protocollo_cod_titolario': _('Codice titolario')}
+        widgets = {'name': forms.TextInput(attrs={'disabled': True}),
+                   'protocollo_username': forms.TextInput(attrs={'disabled': True}),
+                   'protocollo_password': forms.TextInput(attrs={'disabled': True}),
+                   'protocollo_aoo': forms.TextInput(attrs={'disabled': True}),
+                   'protocollo_agd': forms.TextInput(attrs={'disabled': True}),
+                   'protocollo_uo': forms.TextInput(attrs={'disabled': True}),
+                   'protocollo_email': forms.TextInput(attrs={'disabled': True}),}
+                   # 'protocollo_template': forms.Textarea(attrs={'disabled': True})}
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class CategoryWSArchiProModelForm(forms.ModelForm):
+
+    class Meta:
+        model = TicketCategoryWSArchiPro
+        fields = ('name',
                   'protocollo_cod_titolario',
                   'protocollo_fascicolo_numero',
-                  'protocollo_fascicolo_anno',
-                  'protocollo_template']
-        help_texts = {'protocollo_email': _('Se vuoto: {}').format(settings.PROT_EMAIL_DEFAULT)}
-        labels = {'protocollo_cod_titolario': _('Codice titolario')}
-        widgets = {'protocollo_template': forms.Textarea(attrs={'rows':2})}
+                  'protocollo_fascicolo_anno',)
+        labels = {'name': _('Denominazione configurazione'),
+                  'protocollo_cod_titolario': _('Titolario'),
+                  'protocollo_fascicolo_numero': _('Numero Fascicolo'),
+                  'protocollo_fascicolo_anno': _('Anno Fascicolo')}
+        help_texts = {'name': _('A discrezione dell\'utente. Es: "Configurazione anno 2020"'),}
+        widgets = {'protocollo_cod_titolario': BootstrapItaliaSelectWidget}
 
     class Media:
         js = ('js/textarea-autosize.js',)
