@@ -164,10 +164,10 @@ name: uniTicket
 platforms:
   - linux
   - web
-releaseDate: '2020-05-05'
+releaseDate: '2020-06-23'
 roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
 softwareType: standalone/web
-softwareVersion: v1.0.9
+softwareVersion: v1.1.0
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
   - 'https://www.unical.it'

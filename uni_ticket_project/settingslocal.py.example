@@ -334,6 +334,9 @@ PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instanc
 """
 
 
+# DEFAULT EMAIL
+PROT_EMAIL_DEFAULT = 'default@email.com'
+
 # TEST
 PROT_TEST_AOO = 'default_aoo'
 PROT_FASCICOLO_DEFAULT = 'default_fascicolo'
@@ -342,7 +345,8 @@ PROT_AGD_DEFAULT = 'default_agd'
 PROT_UO_DEFAULT = 'default_uo'
 # PROT_UO_ID_DEFAULT = 'default_uo_id'
 PROT_TITOLARIO_DEFAULT = 'default_titolario'
-PROT_TEST_URL = 'url_test'
+
+PROT_URL = 'url_test'
 PROT_TEST_LOGIN = 'test_login'
 PROT_TEST_PASSW = 'test_passw'
 

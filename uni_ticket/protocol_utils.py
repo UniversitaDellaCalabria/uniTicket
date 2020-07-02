@@ -23,7 +23,7 @@ def ticket_protocol(user,
     # Check only if protocol system works
     # if test and not configuration:
     if test:
-        prot_url = settings.PROT_TEST_URL
+        prot_url = settings.PROT_URL
         prot_aoo = settings.PROT_TEST_AOO
         prot_agd = settings.PROT_AGD_DEFAULT
         prot_uo = settings.PROT_UO_DEFAULT
@@ -36,7 +36,7 @@ def ticket_protocol(user,
     # for production
     # elif not test and configuration:
     elif not test and valid_conf:
-        prot_url = settings.PROT_TEST_URL
+        prot_url = settings.PROT_URL
         prot_login = prot_login
         prot_passw = prot_passw
         prot_aoo = structure_configuration.protocollo_aoo

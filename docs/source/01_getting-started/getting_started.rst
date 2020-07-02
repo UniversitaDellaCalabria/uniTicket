@@ -193,6 +193,8 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     </Segnatura>
     """
 
+    # DEFAULT EMAIL
+    PROT_EMAIL_DEFAULT = 'default@email.com'
 
     # TEST
     PROT_TEST_AOO = 'default_aoo'
@@ -202,15 +204,10 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     PROT_UO_DEFAULT = 'default_uo'
     # PROT_UO_ID_DEFAULT = 'default_uo_id'
     PROT_TITOLARIO_DEFAULT = 'default_titolario'
-    PROT_TEST_URL = 'url_test'
+
+    PROT_URL = 'url_test'
     PROT_TEST_LOGIN = 'test_login'
     PROT_TEST_PASSW = 'test_passw'
-
-    # PRODUCTION USE
-    # PROT_AOO = PROT_TEST_AOO if DEBUG else 'prod_aoo'
-    PROT_URL = PROT_TEST_URL if DEBUG else 'prod_url'
-    PROT_LOGIN = PROT_TEST_LOGIN if DEBUG else 'prod_login'
-    PROT_PASSW = PROT_TEST_PASSW if DEBUG else 'prod_passw'
 
 - Consentire ai super utenti Django di accedere a tutte le strutture in frontend
 
