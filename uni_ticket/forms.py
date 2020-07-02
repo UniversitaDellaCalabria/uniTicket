@@ -401,7 +401,7 @@ class OrganizationalStructureWSArchiProModelForm(ModelForm):
         model = OrganizationalStructureWSArchiPro
         fields = ['name',
                   'protocollo_username',
-                  'protocollo_password',
+                  # 'protocollo_password',
                   'protocollo_aoo',
                   'protocollo_agd',
                   'protocollo_uo',
