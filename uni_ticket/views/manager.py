@@ -9,7 +9,7 @@ from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, render, redirect
-from django.utils.html import escape, strip_tags
+from django.utils.html import strip_tags
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
@@ -1368,7 +1368,7 @@ def category_input_module_details(request, structure_slug,
                 # if is_required_value == 'on': is_required=True
                 input_list = form.save(commit=False)
                 input_list.category_module = module
-                input_list.pre_text = escape(form.cleaned_data['pre_text'])
+                input_list.pre_text = strip_tags(form.cleaned_data['pre_text'])
                 input_list.save()
                 messages.add_message(request, messages.SUCCESS,
                                      _("Campo di input creato con successo"))
@@ -1568,7 +1568,7 @@ def category_input_field_edit(request, structure_slug,
         form = CategoryInputListForm(data=request.POST, instance=field)
         if form.is_valid():
             field = form.save(commit=False)
-            field.pre_text = escape(form.cleaned_data['pre_text'])
+            field.pre_text = strip_tags(form.cleaned_data['pre_text'])
             field.save()
 
             # log action
@@ -1630,7 +1630,7 @@ def category_condition_new(request, structure_slug,
         form = CategoryConditionForm(request.POST, request.FILES)
         if form.is_valid():
             condition = form.save(commit=False)
-            condition.text = escape(form.cleaned_data['text'])
+            condition.text = strip_tags(form.cleaned_data['text'])
             condition.category = category
             condition.save()
 
@@ -1692,9 +1692,9 @@ def category_condition_edit(request, structure_slug, category_slug,
                                      data=request.POST,
                                      files=request.FILES)
         if form.is_valid():
-            edited_category = form.save(commit=False)
-            edited_category.text = escape(form.cleaned_data['text'])
-            edited_category.save()
+            edited_condition = form.save(commit=False)
+            edited_condition.text = strip_tags(form.cleaned_data['text'])
+            edited_condition.save()
 
             # log action
             logger.info('[{}] manager of structure {}'
@@ -3023,7 +3023,7 @@ def category_default_reply_new(request, structure_slug,
         form = CategoryDefaultReplyForm(request.POST)
         if form.is_valid():
             default_reply = form.save(commit=False)
-            default_reply.text = escape(form.cleaned_data['text'])
+            default_reply.text = strip_tags(form.cleaned_data['text'])
             default_reply.ticket_category = category
             default_reply.save()
 
@@ -3217,7 +3217,7 @@ def category_default_reply_detail(request, structure_slug, category_slug,
                                         data=request.POST)
         if form.is_valid():
             # edited_default_reply = form.save(commit=False)
-            default_reply.text = escape(form.cleaned_data['text'])
+            default_reply.text = strip_tags(form.cleaned_data['text'])
             default_reply.save()
 
             # log action

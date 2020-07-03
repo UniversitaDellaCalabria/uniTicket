@@ -8,7 +8,7 @@ from django.db.models import (Model,
                               DateTimeField,
                               ForeignKey,
                               CASCADE)
-from django.utils.html import escape
+from django.utils.html import strip_tags
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -110,7 +110,7 @@ class ChatMessageModel(Model):
         new = self.id
         self.body = self.body.strip()  # Trimming whitespaces from the body
         # Escape text to avoi XSS attack and render hrefs
-        self.body = get_text_with_hrefs(escape(self.body))
+        self.body = get_text_with_hrefs(strip_tags(self.body))
         super(ChatMessageModel, self).save(*args, **kwargs)
         channel = UserChannel.objects.filter(user=self.user,
                                              room=self.room).first()

@@ -17,7 +17,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from django.utils.html import escape, strip_tags
+from django.utils.html import strip_tags
 from django.utils.translation import gettext as _
 
 from django_form_builder.utils import (get_as_dict,
