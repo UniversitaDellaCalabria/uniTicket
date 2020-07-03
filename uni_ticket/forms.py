@@ -127,7 +127,8 @@ class CategoryInputListForm(ModelForm):
     class Media:
         js = ('js/textarea-autosize.js',)
 
-class ChiusuraForm(forms.Form):
+
+class TaskCloseForm(forms.Form):
     status = forms.TypedChoiceField(choices=settings.CLOSING_LEVELS,
                                     required=True,
                                     initial=1,
@@ -135,6 +136,24 @@ class ChiusuraForm(forms.Form):
                                     coerce=int,
                                     widget=BootstrapItaliaSelectWidget)
     note = forms.CharField(label=_('Motivazione'),
+                           widget=forms.Textarea(attrs={'rows':2}),
+                           required=True)
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
+
+
+class TicketCloseForm(forms.Form):
+    status = forms.TypedChoiceField(choices=settings.CLOSING_LEVELS,
+                                    required=True,
+                                    initial=1,
+                                    label=_('Stato chiusura'),
+                                    coerce=int,
+                                    widget=BootstrapItaliaSelectWidget)
+    note = forms.CharField(label=_('Motivazione'),
+                           help_text=_('Inserisci il tag {user} per inserire '
+                                       'automaticamente il nome e cognome '
+                                       'dell\'utente che ha creato la richiesta'),
                            widget=forms.Textarea(attrs={'rows':2}),
                            required=True)
 
@@ -351,6 +370,10 @@ class CategoryDefaultReplyForm(ModelForm):
         fields = ['text',]
                   # 'is_active',]
         labels = {'text': _('Testo'),}
+        help_texts = {'text': _('Inserisci il tag {user} per inserire '
+                                'automaticamente il nome e cognome '
+                                'dell\'utente che ha creato la richiesta')
+                     }
                   # 'is_active': _('Attiva'),}
         widgets = {'text': forms.Textarea(attrs={'rows':2})}
 

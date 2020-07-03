@@ -1097,9 +1097,9 @@ def ticket_close(request, ticket_id):
 
     title = _('Chiusura della richiesta')
     sub_title = ticket
-    form = ChiusuraForm()
+    form = TicketCloseForm()
     if request.method=='POST':
-        form = ChiusuraForm(request.POST)
+        form = TicketCloseForm(request.POST)
         if form.is_valid():
             motivazione = form.cleaned_data['note']
             closing_status = form.cleaned_data['status']

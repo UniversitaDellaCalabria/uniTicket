@@ -634,15 +634,15 @@ def ticket_close(request, structure_slug, ticket_id,
     default_replies = TicketCategoryDefaultReply.objects.filter(ticket_category=category,
                                                                 is_active=True)
 
-    form = ChiusuraForm()
+    form = TicketCloseForm()
     if request.method=='POST':
-        form = ChiusuraForm(request.POST)
+        form = TicketCloseForm(request.POST)
         if form.is_valid():
             motivazione = form.cleaned_data['note']
             closing_status = form.cleaned_data['status']
             ticket.is_closed = True
             ticket.closed_by = request.user
-            ticket.closing_reason = motivazione
+            ticket.closing_reason = motivazione.format(user=ticket.created_by)
             ticket.closing_status = closing_status
             ticket.closed_date = timezone.now()
             ticket.save(update_fields = ['is_closed',
@@ -1470,9 +1470,9 @@ def task_close(request, structure_slug, ticket_id, task_id,
 
     title = _("Chiusura dell'attività")
     sub_title = task
-    form = ChiusuraForm()
+    form = TaskCloseForm()
     if request.method=='POST':
-        form = ChiusuraForm(request.POST)
+        form = TaskCloseForm(request.POST)
         if form.is_valid():
             motivazione = form.cleaned_data['note']
             closing_status = form.cleaned_data['status']
