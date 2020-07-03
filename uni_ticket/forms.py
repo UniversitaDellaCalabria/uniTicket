@@ -79,6 +79,11 @@ class CategoryInputListForm(ModelForm):
                       'aiuto': _("Testo per guidare nella fase di compilazione"),
                       'ordinamento': _("Posizione nel form rispetto agli altri campi"),
                       'valore': _("<li>"
+                                  "La compilazione di quest'area di testo "
+                                  "non avrà effetti sui campi che non "
+                                  "accettano una serie di opzioni."
+                                  "</li>"
+                                  "<li>"
                                   "Se il campo prevede una serie di opzioni "
                                   "(es: <b>Lista di Opzioni, Checkbox multi-valore</b>) "
                                   "queste devono essere definite rispettando la sintassi: "
@@ -95,12 +100,25 @@ class CategoryInputListForm(ModelForm):
                                   "<br>"
                                   "(Utilizzando la stringa "
                                   "\"<b>opzione 1;opzione 2;opzione 3#2</b>\", "
-                                  "ad esempio, saranno ammesse al massimo 2 scelte). "
+                                  "ad esempio, saranno ammesse al massimo 2 scelte)."
+                                  "</li>"
                                   "<li>"
-                                  "<b>La compilazione di quest'area di testo "
-                                  "non avrà effetti sui campi che non "
-                                  "accettano una serie di opzioni.</b>"
-                                  "</li>")
+                                  "Per gli Inserimenti Multipli (<b>Formset</b>) la sintassi "
+                                  "prevede la definizione di ogni singolo campo "
+                                  "che andrà a comporre la tabella:"
+                                  "<br>"
+                                  "<b>denominazione_campo1({'type':'classe tipo campo', 'choices': 'eventuali opzioni',})#denominazione_campo_2</b>..."
+                                  "<br>"
+                                  "Con il '<b>#</b>' si separano i singoli campi. "
+                                  "Se il tipo non è specificato, di default viene creato un campo di testo."
+                                  "<br>"
+                                  "(Utilizzando la stringa \"<b>campo1({'type':'CustomSelectBoxField', 'choices': 'scelta1;scelta2;scelta3',})#campo2#campo3({'type':'BaseDateField'})</b>\", "
+                                  "ad esempio, verrà creata una tabella con i seguenti campi: "
+                                  "una SelectBox con 3 opzioni, un campo di Testo semplice e un campo di tipo data)."
+                                  "<br>"
+                                  "Le definizioni delle classi dei campi sono disponibili <a href='https://github.com/UniversitaDellaCalabria/django-form-builder/blob/master/django_form_builder/dynamic_fields.py'>qui</a>."
+                                  "</li>"
+                                  )
                      }
         widgets = {'field_type': BootstrapItaliaSelectWidget,
                    'valore': forms.Textarea(attrs={'rows':2}),
