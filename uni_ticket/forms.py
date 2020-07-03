@@ -65,11 +65,43 @@ class CategoryInputModuleForm(ModelForm):
 class CategoryInputListForm(ModelForm):
     class Meta:
         model = TicketCategoryInputList
-        fields = ['name', 'field_type', 'valore', 'pre_text',
+        fields = ['field_type', 'name', 'valore', 'pre_text',
                   'aiuto', 'is_required', 'ordinamento']
-        labels = {'name': _('Nome'),
+        labels = {'name': _('Denominazione'),
+                  'field_type': _('Tipo di campo'),
+                  'pre_text': _('Testo statico (Pre-text)'),
+                  'valore': _('Definizione delle scelte'),
                   'is_required': _('Obbligatorio'),
-                  'field_type': _('Tipologia di campo'),}
+                  }
+        help_texts = {'name': _("Il nome che comparirà nel form"),
+                      'pre_text': _("Da visualizzare prima del campo "
+                                    "(accetta formattazione Markdown)"),
+                      'aiuto': _("Testo per guidare nella fase di compilazione"),
+                      'ordinamento': _("Posizione nel form rispetto agli altri campi"),
+                      'valore': _("<li>"
+                                  "Se il campo prevede una serie di opzioni "
+                                  "(es: <b>Lista di Opzioni, Checkbox multi-valore</b>) "
+                                  "queste devono essere definite rispettando la sintassi: "
+                                  "<br>"
+                                  "\"<b>opzione 1;opzione 2;opzione 3</b>\" "
+                                  "(utilizzando, cioè, il '<b>;</b>' come separatore)."
+                                  "</li>"
+                                  "<li>"
+                                  "Per il Checkbox multi-valore, "
+                                  "che ammette più di una scelta, "
+                                  "è possibile definire anche il numero "
+                                  "massimo delle scelte ammesse "
+                                  "aggiungendo \"#_valore\" in coda "
+                                  "<br>"
+                                  "(Utilizzando la stringa "
+                                  "\"<b>opzione 1;opzione 2;opzione 3#2</b>\" - "
+                                  "saranno ammesse al massimo 2 scelte). "
+                                  "<li>"
+                                  "<b>La compilazione di quest'area di testo "
+                                  "non avrà effetti sui campi che non "
+                                  "accettano opzioni multiple.</b>"
+                                  "</li>")
+                     }
         widgets = {'field_type': BootstrapItaliaSelectWidget,
                    'valore': forms.Textarea(attrs={'rows':2}),
                    'pre_text': forms.Textarea(attrs={'rows':2})}
