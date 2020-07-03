@@ -90,7 +90,7 @@ class CategoryInputListForm(ModelForm):
                                   "Per il Checkbox multi-valore, "
                                   "che ammette più di una scelta, "
                                   "è possibile definire anche il numero "
-                                  "massimo delle scelte ammesse "
+                                  "massimo delle opzioni selezionabili "
                                   "aggiungendo \"#_valore\" in coda "
                                   "<br>"
                                   "(Utilizzando la stringa "
@@ -99,7 +99,7 @@ class CategoryInputListForm(ModelForm):
                                   "<li>"
                                   "<b>La compilazione di quest'area di testo "
                                   "non avrà effetti sui campi che non "
-                                  "accettano opzioni multiple.</b>"
+                                  "accettano una serie di opzioni.</b>"
                                   "</li>")
                      }
         widgets = {'field_type': BootstrapItaliaSelectWidget,
