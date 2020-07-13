@@ -72,6 +72,7 @@ $(function() {
             },
             {
                 targets: [ 2 ],
+                className: "min-mobile-p",
                 //render: $.fn.dataTable.render.text(),
                 render: function ( data, type, row ) {
                     return "<a href='"+url+row[1]+"'><span style='word-break: break-word;'>"+escapeHtml(data)+"</span></a>";
@@ -79,11 +80,20 @@ $(function() {
             },
             {
                 targets: [ 3 ],
+                className: "desktop",
                 orderable: false,
-
+            },
+            {
+                targets: [ 4 ],
+                className: "desktop",
+            },
+            {
+                targets: [ 5 ],
+                className: "desktop",
             },
             {
                 targets: [ 6 ],
+                className: "desktop",
                 orderable: false,
             }
 
@@ -92,9 +102,10 @@ $(function() {
             columnDefs.push(
             {
                 targets: [ 7 ],
+                className: "desktop",
                 orderable: false,
             }
-        );
+        )
 
 
     var datatable = $('.datatable-responsive-serverside').DataTable({

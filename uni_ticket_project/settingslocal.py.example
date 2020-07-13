@@ -271,6 +271,7 @@ CAPTCHA_SECRET = b'secret'
 CAPTCHA_SALT = b'salt'
 
 CAPTCHA_EXPIRATION_TIME = 45000 # milliseconds
+CAPTCHA_DEFAULT_LANG = 'it'
 
 # PROTOCOLLO, questi valori possono variare sulla base di come
 # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento

@@ -403,7 +403,7 @@ class Ticket(SavedFormContent):
 
     def get_owners_html(self):
         if self.compiled_by:
-            return '<span="white-space:nowrap">' \
+            return '<span style="white-space:nowrap">' \
                    '- {} </span>' \
                    '<br>' \
                    '<span style="white-space:nowrap">' \
