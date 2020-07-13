@@ -40,10 +40,10 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
 
 @admin.register(Ticket)
 class TicketAdmin(nested_admin.NestedModelAdmin):
-    readonly_fields = ('code', 'subject', 'description', 'modulo_compilato',
-                       'created', 'created_by', 'input_module',
-                       'is_closed', 'closed_date', 'closed_by',
-                       'closing_reason', 'priority')
+    # readonly_fields = ('code', 'subject', 'description', 'modulo_compilato',
+                       # 'created', 'created_by', 'input_module',
+                       # 'is_closed', 'closed_date', 'closed_by',
+                       # 'closing_reason', 'priority')
     list_display = ('code', 'subject', 'priority', 'created_by', 'created',
                     'is_closed', 'closed_date', 'closed_by' )
     list_filter = (AdvancedSearchBuilder, 'created', 'is_closed',
