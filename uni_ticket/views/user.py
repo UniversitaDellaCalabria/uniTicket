@@ -444,6 +444,9 @@ def ticket_add_new(request, structure_slug, category_slug):
                 # save ticket
                 ticket.save()
 
+                # compress content (default makes a check on length)
+                ticket.compress_modulo_compilato()
+
                 # log action
                 logger.info('[{}] user {} created new ticket {}'
                             ' in category {}'.format(timezone.now(),
@@ -720,14 +723,18 @@ def ticket_edit(request, ticket_id):
                               nome_allegato)
                     json_response[settings.ATTACHMENTS_DICT_PREFIX]["{}".format(key)] = "{}".format(nome_allegato)
             elif allegati:
-                # Se non ho aggiornato i miei allegati lasciandoli invariati rispetto
-                # all'inserimento precedente
+                # If data aren't updated (the same as the original)
                 json_response[settings.ATTACHMENTS_DICT_PREFIX] = allegati
-            # salva il modulo
+
+            # save module
             ticket.save_data(form.cleaned_data[settings.TICKET_SUBJECT_ID],
                              form.cleaned_data[settings.TICKET_DESCRIPTION_ID],
                              json_response)
-            # data di modifica
+
+            # compress content (default makes a check on length)
+            ticket.compress_modulo_compilato()
+
+            # update modified date
             ticket.update_log(user=request.user,
                               note=_("Ticket modificato"))
 
@@ -736,7 +743,7 @@ def ticket_edit(request, ticket_id):
                                                                request.user,
                                                                ticket))
 
-            # Allega il messaggio al redirect
+            # Attach a message to redirect action
             messages.add_message(request, messages.SUCCESS,
                                  _("Modifica effettuata con successo"))
             return redirect('uni_ticket:ticket_edit', ticket_id=ticket_id)

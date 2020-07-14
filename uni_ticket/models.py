@@ -330,11 +330,6 @@ class Ticket(SavedFormContent):
         verbose_name = _("Ticket")
         verbose_name_plural = _("Ticket")
 
-    def save(self, *args, **kwargs):
-        if len(self.modulo_compilato) > settings.TICKET_MIN_DIGITS_TO_COMPRESS:
-            self.modulo_compilato = compress_text_to_b64(self.modulo_compilato).decode()
-        super().save(*args, **kwargs)
-
     def get_category(self):
         return self.input_module.ticket_category
 
@@ -346,6 +341,13 @@ class Ticket(SavedFormContent):
                                    self.get_year(),
                                    self.code)
         return folder
+
+    def compress_modulo_compilato(self, check_length=True):
+        # if check on length is abled and length is short
+        if check_length and not len(self.modulo_compilato) > settings.TICKET_MIN_DIGITS_TO_COMPRESS:
+            return
+        self.modulo_compilato = compress_text_to_b64(self.modulo_compilato).decode()
+        self.save(update_fields=['modulo_compilato'])
 
     def get_modulo_compilato(self):
         try:
