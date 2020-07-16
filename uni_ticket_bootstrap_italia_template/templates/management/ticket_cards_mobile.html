@@ -18,7 +18,7 @@
         <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use></svg>
         <span class="toolbar-label">{% trans 'Assegnate' %}
         {% if ticket_assegnati_a_me > 0 %}
-            <br>({{ ticket_assegnati_a_me }} a me)
+            <br>({{ ticket_assegnati_a_me }} {% trans 'a me' %})
         {% endif %}
         </span>
     </a>
