@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-16 21:20+0200\n"
-"PO-Revision-Date: 2020-07-16 21:23+0200\n"
+"PO-Revision-Date: 2020-07-16 21:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -4660,11 +4660,11 @@ msgid ""
 "Desideri procedere, confermare i dati immessi e protocollare la tua "
 "richiesta?"
 msgstr ""
-"Do you want to proceed, confirm the data entered and record your request?"
+"Do you want to proceed, confirm the entered data and record your request?"
 
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:192
 msgid "Desideri procedere e confermare i dati immessi?"
-msgstr "Do you want to proceed and confirm the data entered?"
+msgstr "Do you want to proceed and confirm the entered data?"
 
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:224
 msgid ""
