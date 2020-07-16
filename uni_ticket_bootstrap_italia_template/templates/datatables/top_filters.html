@@ -6,8 +6,8 @@
         <div class="bootstrap-select-wrapper">
             <select id="search_year"
                     name="search_year"
-                    data-live-search="true" data-live-search-placeholder="Cerca...">
-                <option value="" selected>- Tutti gli anni -</option>
+                    data-live-search="true" data-live-search-placeholder="{% trans 'Cerca...' %}">
+                <option value="" selected>- {% trans "Tutti gli anni" %} -</option>
                 {% year_list as year_list %}
                 {% for year in year_list %}
                 <option value="{{ year }}">

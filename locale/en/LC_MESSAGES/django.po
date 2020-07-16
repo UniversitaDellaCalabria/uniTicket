@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-16 15:56+0200\n"
-"PO-Revision-Date: 2020-07-16 20:59+0200\n"
+"POT-Creation-Date: 2020-07-16 21:16+0200\n"
+"PO-Revision-Date: 2020-07-16 21:17+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -2795,9 +2795,14 @@ msgstr "Created on"
 msgid "Creato da"
 msgstr "Created by"
 
+#: uni_ticket_bootstrap_italia_template/templates/datatables/top_filters.html:9
 #: uni_ticket_bootstrap_italia_template/templates/datatables/top_filters.html:40
 msgid "Cerca..."
 msgstr "Search..."
+
+#: uni_ticket_bootstrap_italia_template/templates/datatables/top_filters.html:10
+msgid "Tutti gli anni"
+msgstr "All years"
 
 #: uni_ticket_bootstrap_italia_template/templates/email-toggle-notify.html:17
 msgid "Notifiche e-mail"
@@ -4578,7 +4583,7 @@ msgstr "No message"
 
 #: uni_ticket_bootstrap_italia_template/templates/ticket_options.html:22
 msgid "Attività della richiesta"
-msgstr "Request activities"
+msgstr "Request tasks"
 
 #: uni_ticket_bootstrap_italia_template/templates/ticket_options.html:34
 msgid "Dipendenze da altre richieste"
