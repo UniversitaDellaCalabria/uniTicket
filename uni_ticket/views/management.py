@@ -1770,9 +1770,9 @@ def ticket_taken_by_unassigned_offices(request, structure_slug, ticket_id,
                                        'taken_by'])
 
         msg = _("Ticket {} correttamente "
-                "assegnato a Ufficio: {} [{}]</b>".format(ticket,
-                                                          office,
-                                                          request.user))
+                "assegnato a Ufficio: {} [{}]".format(ticket,
+                                                      office,
+                                                      request.user))
         ticket.update_log(user=request.user, note=msg)
         messages.add_message(request, messages.SUCCESS, msg)
     return redirect('uni_ticket:manage_ticket_url_detail',

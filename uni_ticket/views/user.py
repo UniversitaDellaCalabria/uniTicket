@@ -616,6 +616,7 @@ def dashboard(request):
 
     :return: render
     """
+
     # Ci pensa datatables a popolare la tabella
     title =_("Pannello di controllo")
     sub_title = _("Gestisci le tue richieste o creane di nuove")
