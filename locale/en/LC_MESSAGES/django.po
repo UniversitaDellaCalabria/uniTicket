@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-16 15:56+0200\n"
-"PO-Revision-Date: 2020-07-16 20:56+0200\n"
+"PO-Revision-Date: 2020-07-16 20:59+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -4598,7 +4598,7 @@ msgstr "Page"
 
 #: uni_ticket_bootstrap_italia_template/templates/user/dashboard.html:88
 msgid "Avvia chat con operatore"
-msgstr "Avvia chat con operatore"
+msgstr "Chat with an operator"
 
 #: uni_ticket_bootstrap_italia_template/templates/user/dashboard.html:96
 #: uni_ticket_bootstrap_italia_template/templates/user/main_menu.html:22
