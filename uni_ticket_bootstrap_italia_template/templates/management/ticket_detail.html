@@ -259,7 +259,7 @@
 </a>
 {% endif %}
 
-{% if ticket_taken and ticket.is_closed and not ticket.input_module.ticket_category.is_notify %}
+{% if ticket_taken and ticket.is_closed and not ticket.is_notification %}
     <button type="button"
         class="btn btn-outline-warning"
         data-toggle="modal"

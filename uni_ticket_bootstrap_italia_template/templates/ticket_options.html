@@ -2,7 +2,7 @@
 {% load static %}
 {% load uni_ticket_tags %}
 
-{% if not ticket.input_module.ticket_category.is_notify %}
+{% if not ticket.is_notification %}
 {% ticket_has_been_taken ticket=ticket as ticket_taken %}
 
 <div id="collapseDiv1-lft" class="collapse-div collapse-left-icon" role="tablist">

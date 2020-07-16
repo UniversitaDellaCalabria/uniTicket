@@ -24,7 +24,7 @@ class CategoryForm(ModelForm):
         fields = ['name', 'description',
                   'confirm_message_text',
                   'not_available_message',
-                  'is_notify',
+                  'is_notification',
                   'show_heading_text',
                   'allow_anonymous', 'allow_guest',
                   'allow_user', 'allow_employee',

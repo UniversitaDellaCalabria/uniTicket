@@ -875,7 +875,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                 edited_category.save(update_fields = ['name', 'slug',
                                                       'description',
                                                       'show_heading_text',
-                                                      'is_notify',
+                                                      'is_notification',
                                                       'confirm_message_text',
                                                       'not_available_message',
                                                       'allow_anonymous',

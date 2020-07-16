@@ -15,7 +15,7 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
                        'organizational_office', 'is_active',
                        'show_heading_text',
                        'allow_guest', 'allow_user', 'allow_employee',
-                       'is_notify', 'confirm_message_text')
+                       'is_notification', 'confirm_message_text')
     inlines = [TicketCategoryModuleNestedInline,
                TicketCategoryConditionNestedInline,
                TicketCategoryTaskNestedInline,
@@ -25,7 +25,7 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
     list_display = ('name', 'created',
                     'allow_guest', 'allow_user', 'allow_employee',
                     'confirm_message_text',
-                    'is_notify',
+                    'is_notification',
                     'is_active')
     list_filter = ('created', 'organizational_structure',
                    'allow_guest', 'allow_user', 'allow_employee', 'is_active')
@@ -45,9 +45,9 @@ class TicketAdmin(nested_admin.NestedModelAdmin):
                        # 'is_closed', 'closed_date', 'closed_by',
                        # 'closing_reason', 'priority')
     list_display = ('code', 'subject', 'priority', 'created_by', 'created',
-                    'is_closed', 'closed_date', 'closed_by' )
+                    'is_closed', 'closed_date', 'closed_by', 'is_notification' )
     list_filter = (AdvancedSearchBuilder, 'created', 'is_closed',
-                   'closed_date', 'priority',)
+                   'closed_date', 'priority', 'is_notification')
     search_fields = ('code', 'subject', 'description',
                      'created_by__first_name', 'created_by__last_name',
                      'created_by__username',

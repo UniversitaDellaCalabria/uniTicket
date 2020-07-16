@@ -83,11 +83,11 @@ class TicketCategory(models.Model):
                                            blank=True)
 
     # ticket type = notification
-    is_notify = models.BooleanField(_("Richiesta di tipo Notifica"),
-                                    default=False,
-                                    help_text=_("Richiesta che viene "
-                                                "automaticamente presa "
-                                                "in carico"))
+    is_notification = models.BooleanField(_("Richiesta di tipo Notifica"),
+                                            default=False,
+                                            help_text=_("Richiesta che viene "
+                                                        "automaticamente presa "
+                                                        "in carico"))
     confirm_message_text = models.TextField(_("Messaggio di conferma"),
                                             max_length=500,
                                             blank=True,
@@ -315,6 +315,10 @@ class Ticket(SavedFormContent):
     priority = models.IntegerField(choices=settings.PRIORITY_LEVELS,
                                    default=0)
 
+    # ticket type = notification
+    is_notification = models.BooleanField(_("Richiesta di tipo Notifica"),
+                                          default=False)
+
     # protocol
     protocol_number = models.CharField(blank=True, default='',
                                        max_length=32)
@@ -463,7 +467,7 @@ class Ticket(SavedFormContent):
     def get_status(self):
         if self.is_closed:
             # if is a notification ticket
-            if self.input_module.ticket_category.is_notify or not self.closed_by:
+            if self.is_notification or not self.closed_by:
                 return _('<span class="badge badge-success">Chiusa</span')
             # normal ticket
             status_literal = dict(settings.CLOSING_LEVELS).get(self.closing_status)
@@ -483,20 +487,11 @@ class Ticket(SavedFormContent):
         return _('<span class="badge badge-warning">Assegnata</span> {}'
                  '').format(self.taken_by_html_list())
 
-        # if self.is_closed:
-            # if self.input_module.ticket_category.is_notify or not self.closed_by:
-                # return _('<b class="text-success">Chiusa</b>')
-            # return _('<b class="text-success">Chiusa</b> <small>{} [{}]</small>'
-                     # '').format(dict(settings.CLOSING_LEVELS).get(self.closing_status),
-                                # self.closed_by)
-        # if not self.has_been_taken(): return _('<b class="text-danger">Aperta</b>')
-        # return _('<b class="text-warning">Assegnata</b> {}').format(self.taken_by_html_list())
-
     # for datatables (show icons)
     def get_status_table(self):
         if self.is_closed:
             # if is a notification ticket
-            if self.input_module.ticket_category.is_notify or not self.closed_by:
+            if self.is_notification or not self.closed_by:
                 return _('<span class="badge badge-success">Chiusa</span')
             # normal ticket
             status_literal = dict(settings.CLOSING_LEVELS).get(self.closing_status)

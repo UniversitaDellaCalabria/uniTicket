@@ -73,12 +73,14 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
 # close ticket as soon as opened if it's a notification ticket
 def _close_notification_ticket(ticket, user, operator, ticket_assignment):
     # close ticket
+    ticket.is_notification = True
     ticket.is_closed = True
     ticket.closed_date = timezone.now()
     ticket.closed_by = user
     # default closing status: success
     ticket.closing_status = 1
-    ticket.save(update_fields=['is_closed',
+    ticket.save(update_fields=['is_notification',
+                               'is_closed',
                                'closed_date',
                                'closing_status',
                                'closed_by'])
@@ -417,9 +419,9 @@ def ticket_add_new(request, structure_slug, category_slug):
                 office = category.organizational_office
 
                 # take a random operator (or manager)
-                # only if category is_notify or user is anonymous
+                # only if category is_notification or user is anonymous
                 random_office_operator = None
-                if category.is_notify or not request.user.is_authenticated:
+                if category.is_notification or not request.user.is_authenticated:
                     # get random operator from the office
                     random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(office)
 
@@ -468,7 +470,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                 ticket_assignment.save()
 
                 # if it's a notification ticket, take and close the ticket
-                if category.is_notify:
+                if category.is_notification:
                     _close_notification_ticket(ticket=ticket,
                                                user=current_user,
                                                operator=random_office_operator,

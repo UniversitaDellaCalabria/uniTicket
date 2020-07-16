@@ -17,7 +17,7 @@
         "allow_guest": true,
         "allow_user": true,
         "allow_employee": true,
-        "is_notify": false,
+        "is_notification": false,
         "confirm_message_text": "",
         "receive_email": false
     }
@@ -160,6 +160,7 @@
         "closed_date": null,
         "closed_by": null,
         "closing_reason": null,
+        "is_notification": false,
         "priority": 0
     }
 },

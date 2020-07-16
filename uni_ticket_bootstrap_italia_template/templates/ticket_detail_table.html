@@ -109,7 +109,7 @@
                         {% else %}
                         <b>{{ assignment.office }}</b>
                         {% endif %}
-                        {% if not ticket.input_module.ticket_category.is_notify %}
+                        {% if not ticket.is_notification %}
                             <br>
                             {% if assignment.assigned_by %}
                                 <small>- {% trans "Assegnato da" %}:
