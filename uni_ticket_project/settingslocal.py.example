@@ -7,10 +7,6 @@ AUTH_USER_MODEL = "accounts.User"
 # Administration backed available at /admin or whatever configured above
 ADMIN_PATH = 'admin'
 
-# localization
-LANGUAGE_CODE = 'it'
-TIME_ZONE = 'Europe/Rome'
-
 # date/datetime format
 DEFAULT_DATE_FORMAT = '%Y-%m-%d'
 DEFAULT_DATETIME_FORMAT = '{} %H:%M'.format(DEFAULT_DATE_FORMAT)
@@ -353,3 +349,14 @@ PROT_TEST_PASSW = 'test_passw'
 
 # superusers view all
 SUPER_USER_VIEW_ALL = True
+
+# localization
+LANGUAGES = (
+  ('it', _('Italiano')),
+  ('en', _('Inglese')),
+)
+LANGUAGE_CODE = 'it'
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, "locale"),
+)
+TIME_ZONE = 'Europe/Rome'
