@@ -50,14 +50,6 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     # user model fpr auth
     AUTH_USER_MODEL = "accounts.User"
 
-- Definire i parametri per la localizzazione
-
-.. code-block:: python
-
-    # localization
-    LANGUAGE_CODE = 'it'
-    TIME_ZONE = 'Europe/Rome'
-
 - Definire i formati delle date da utilizzare
 
 .. code-block:: python
@@ -215,6 +207,21 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
 
     # superusers view all
     SUPER_USER_VIEW_ALL = True
+
+- Definire i parametri per la localizzazione
+
+.. code-block:: python
+
+    # localization
+    LANGUAGES = (
+      ('it', _('Italiano')),
+      ('en', _('Inglese')),
+    )
+    LANGUAGE_CODE = 'it'
+    LOCALE_PATHS = (
+        os.path.join(BASE_DIR, "locale"),
+    )
+    TIME_ZONE = 'Europe/Rome'
 
 Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (ed eventualmente sovrascrivere in *settingslocal.py*):
 
@@ -398,6 +405,7 @@ Ricorda di eseguire compilescss collectstatic per compilare e copiare tutti i fi
 
 .. code-block:: python
 
+    ./manage.py compilemessages
     ./manage.py compilescss
     ./manage.py collectstatic
 
