@@ -176,6 +176,7 @@ CREATE DATABASE IF NOT EXISTS ${DB} CHARACTER SET = 'utf8' COLLATE = 'utf8_gener
 GRANT ALL PRIVILEGES ON ${DB}.* TO '${USER}'@'${HOST}';"
 
 ./manage.py migrate
+./manage.py compilemessages
 ./manage.py collectstatic
 ./manage.py createsuperuser
 ./manage.py runserver
