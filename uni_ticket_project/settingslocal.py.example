@@ -304,7 +304,7 @@ PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instanc
 <Amministrazione>
 <Denominazione>UNICAL</Denominazione>
 <CodiceAmministrazione>UNICAL</CodiceAmministrazione>
-<IndirizzoTelematico tipo="smtp">amministrazione@pec.unical.it</IndirizzoTelematico>
+<IndirizzoTelematico tipo="smtp">{email}</IndirizzoTelematico>
 <UnitaOrganizzativa id=""/>
 </Amministrazione>
 </Destinatario>

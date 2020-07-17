@@ -42,7 +42,7 @@ def ticket_protocol(user,
         prot_aoo = structure_configuration.protocollo_aoo
         prot_agd = structure_configuration.protocollo_agd
         prot_uo = structure_configuration.protocollo_uo
-        prot_email = structure_configuration.protocollo_email
+        prot_email = structure_configuration.protocollo_email or settings.PROT_EMAIL_DEFAULT
         # prot_id_uo = configuration.protocollo_id_uo
         prot_titolario = configuration.protocollo_cod_titolario
         prot_fascicolo_num = configuration.protocollo_fascicolo_numero
