@@ -101,9 +101,14 @@ class OrganizationalStructureWSArchiProAdmin(admin.ModelAdmin):
     list_filter = ('organizational_structure',
                    'is_active')
     list_editable = ('is_active',)
-    actions = ['enable_selected']
+    actions = ['enable_selected', 'disable_selected']
 
     def enable_selected(self, request, queryset):
         updated = queryset.filter(is_active=False).update(is_active=True)
         self.message_user(request, "{} rows updated".format(updated), messages.SUCCESS)
     enable_selected.short_description = "Attiva selezionate"
+
+    def disable_selected(self, request, queryset):
+        updated = queryset.filter(is_active=True).update(is_active=False)
+        self.message_user(request, "{} rows updated".format(updated), messages.SUCCESS)
+    disable_selected.short_description = "Disattiva selezionate"
