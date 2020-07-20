@@ -452,8 +452,8 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
     ticket_dependences = ticket.get_dependences()
     ticket_dependences_code_list = []
     for td in ticket_dependences:
-        if td.master_ticket.code not in ticket_dependences_code_list:
-            ticket_dependences_code_list.append(td.master_ticket.code)
+        if td.main_ticket.code not in ticket_dependences_code_list:
+            ticket_dependences_code_list.append(td.main_ticket.code)
     form = TicketDependenceForm(user=request.user,
                                 structure=structure,
                                 ticket_id=ticket.code,
@@ -465,13 +465,13 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                                     ticket_id=ticket.code,
                                     ticket_dependences=ticket_dependences_code_list)
         if form.is_valid():
-            master_ticket = form.cleaned_data['ticket']
+            main_ticket = form.cleaned_data['ticket']
             note = form.cleaned_data['note']
-            if Ticket2Ticket.master_is_already_used(master_ticket):
+            if Ticket2Ticket.main_is_already_used(main_ticket):
                 messages.add_message(request, messages.ERROR,
                                      _("La dipendenza non può essere aggiunta. "
                                        "La richiesta <b>{}</b> è dipendente da "
-                                       "altre richieste").format(master_ticket))
+                                       "altre richieste").format(main_ticket))
                 return redirect('uni_ticket:add_ticket_dependence_url',
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
@@ -483,8 +483,8 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                 return redirect('uni_ticket:add_ticket_dependence_url',
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
-            t2t = Ticket2Ticket(slave_ticket=ticket,
-                                master_ticket=master_ticket,
+            t2t = Ticket2Ticket(subordinate_ticket=ticket,
+                                main_ticket=main_ticket,
                                 note=note)
             t2t.save()
 
@@ -493,14 +493,14 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
                         ' ticket {} from ticket {}'.format(timezone.now(),
                                                             request.user,
                                                             ticket,
-                                                            master_ticket))
+                                                            main_ticket))
 
             ticket.update_log(user=request.user,
                               note=_("Aggiunta dipendenza dalla richiesta:"
-                                     " {}".format(master_ticket)))
+                                     " {}".format(main_ticket)))
             messages.add_message(request, messages.SUCCESS,
                                  _("Dipendenza dalla richiesta <b>{}</b>"
-                                   " aggiunta con successo").format(master_ticket.code))
+                                   " aggiunta con successo").format(main_ticket.code))
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id = ticket_id)
@@ -521,21 +521,21 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def ticket_dependence_remove(request, structure_slug,
-                             ticket_id, master_ticket_id,
+                             ticket_id, main_ticket_id,
                              structure, can_manage, ticket):
     """
     Removes ticket dependence
 
     :type structure_slug: String
     :type ticket_id: String
-    :type master_ticket_id: String
+    :type main_ticket_id: String
     :type structure: OrganizationalStructure (from @has_admin_privileges)
     :type can_manage: Dictionary (from @has_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
-    :param master_ticket_id: master ticket code
+    :param main_ticket_id: main ticket code
     :param structure: structure object (from @has_admin_privileges)
     :param can_manage: if user can manage or can read only (from @has_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
@@ -543,16 +543,16 @@ def ticket_dependence_remove(request, structure_slug,
     :return: redirect
     """
     user_type = get_user_type(request.user, structure)
-    master_ticket = get_object_or_404(Ticket, code=master_ticket_id)
+    main_ticket = get_object_or_404(Ticket, code=main_ticket_id)
     to_remove = get_object_or_404(Ticket2Ticket,
-                                  slave_ticket=ticket,
-                                  master_ticket=master_ticket)
-    # Se il ticket master che sto eliminando non è assegnato alla struttura corrente
-    if structure not in master_ticket.get_assigned_to_structures():
+                                  subordinate_ticket=ticket,
+                                  main_ticket=main_ticket)
+    # Se il ticket main che sto eliminando non è assegnato alla struttura corrente
+    if structure not in main_ticket.get_assigned_to_structures():
         return custom_message(request,
                               _("La richiesta <b>{}</b> non è stata assegnata"
                                 " a questa struttura, pertanto"
-                                " non puoi gestirla").format(master_ticket),
+                                " non puoi gestirla").format(main_ticket),
                               structure_slug=structure.slug)
     else:
         # log action
@@ -560,11 +560,11 @@ def ticket_dependence_remove(request, structure_slug,
                     ' ticket {} from ticket {}'.format(timezone.now(),
                                                         request.user,
                                                         ticket,
-                                                        master_ticket))
+                                                        main_ticket))
         to_remove.delete()
         ticket.update_log(user=request.user,
                           note=_("Rimossa dipendenza dalla richiesta:"
-                                 " {}".format(master_ticket)))
+                                 " {}".format(main_ticket)))
         messages.add_message(request, messages.SUCCESS,
                              _("Dipendenza rimossa correttamente"))
     return redirect('uni_ticket:manage_ticket_url_detail',

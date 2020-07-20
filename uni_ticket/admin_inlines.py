@@ -99,4 +99,4 @@ class Ticket2TicketInline(admin.TabularInline):
     model = Ticket2Ticket
     form = Ticket2TicketModelForm
     extra = 0
-    fk_name = 'slave_ticket'
+    fk_name = 'subordinate_ticket'
