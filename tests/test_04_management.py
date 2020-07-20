@@ -334,18 +334,18 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                     params,
                                     follow=True)
         assert response.status_code == 200
-        t2t = Ticket2Ticket.objects.filter(slave_ticket=self.ticket,
-                                           master_ticket=self.ticket_2).first()
+        t2t = Ticket2Ticket.objects.filter(subordinate_ticket=self.ticket,
+                                           main_ticket=self.ticket_2).first()
         assert t2t
 
         response = self.client.get(reverse('uni_ticket:remove_ticket_dependence',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'ticket_id': self.ticket.code,
-                                                    'master_ticket_id': self.ticket_2.code}),
+                                                    'main_ticket_id': self.ticket_2.code}),
                                     follow=True)
         assert response.status_code == 200
-        t2t = Ticket2Ticket.objects.filter(slave_ticket=self.ticket,
-                                           master_ticket=self.ticket_2)
+        t2t = Ticket2Ticket.objects.filter(subordinate_ticket=self.ticket,
+                                           main_ticket=self.ticket_2)
         self.assertFalse(t2t)
 
     def test_ticket_message(self):

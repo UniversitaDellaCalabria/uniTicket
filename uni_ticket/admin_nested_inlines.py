@@ -134,4 +134,4 @@ class Ticket2TicketNestedInline(nested_admin.NestedTabularInline):
     model = Ticket2Ticket
     form = Ticket2TicketModelForm
     extra = 0
-    fk_name = 'slave_ticket'
+    fk_name = 'subordinate_ticket'

@@ -653,7 +653,7 @@ class Ticket(SavedFormContent):
     def get_dependences(self):
         """
         """
-        t2t_list = Ticket2Ticket.objects.filter(slave_ticket=self).all()
+        t2t_list = Ticket2Ticket.objects.filter(subordinate_ticket=self).all()
         return t2t_list
 
     def get_task(self):
@@ -669,9 +669,9 @@ class Ticket(SavedFormContent):
         """
         """
         dependences = []
-        t2t_list = Ticket2Ticket.objects.filter(master_ticket=self).all()
+        t2t_list = Ticket2Ticket.objects.filter(main_ticket=self).all()
         for t2t in t2t_list:
-            dependences.append(t2t.slave_ticket)
+            dependences.append(t2t.subordinate_ticket)
         return dependences
 
     def is_closable(self):
@@ -683,7 +683,7 @@ class Ticket(SavedFormContent):
         task_list = self.get_task()
         if not dependences and not task_list: return True
         for dependence in dependences:
-            if not dependence.master_ticket.is_closed: return False
+            if not dependence.main_ticket.is_closed: return False
         for task in task_list:
             if not task.is_closed: return False
         return True
@@ -959,33 +959,33 @@ class TicketReply(models.Model):
 class Ticket2Ticket(models.Model):
     """
     Dipendenza Ticket da altri Ticket
-    Lo Slave non può essere chiuso se ci sono Master da risolvere
+    Lo Subordinate non può essere chiuso se ci sono Main da risolvere
     """
-    slave_ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE,
-                                     related_name="master")
-    master_ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE,
-                                      related_name="slave")
+    subordinate_ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE,
+                                     related_name="main")
+    main_ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE,
+                                      related_name="subordinate")
     note = models.TextField(blank=True, null=True)
 
     class Meta:
-        unique_together = ("slave_ticket", "master_ticket")
-        ordering = ["slave_ticket", "master_ticket"]
+        unique_together = ("subordinate_ticket", "main_ticket")
+        ordering = ["subordinate_ticket", "main_ticket"]
         verbose_name = _("Dipendenza Ticket")
         verbose_name_plural = _("Dipendenze Ticket")
 
     @classmethod
-    def master_is_already_used(cls, ticket):
+    def main_is_already_used(cls, ticket):
         """
         """
-        relations = cls.objects.filter(slave_ticket=ticket)
+        relations = cls.objects.filter(subordinate_ticket=ticket)
         if not relations: return False
         for relation in relations:
-            master = relation.master_ticket
-            if not master.is_closed: return True
+            main = relation.main_ticket
+            if not main.is_closed: return True
         return False
 
     def __str__(self):
-        return '{} - {}'.format(self.slave_ticket, self.master_ticket)
+        return '{} - {}'.format(self.subordinate_ticket, self.main_ticket)
 
 
 class AbstractTask(models.Model):

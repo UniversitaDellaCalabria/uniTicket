@@ -100,13 +100,13 @@ class Migration(migrations.Migration):
             name='Ticket2Ticket',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('master_ticket', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='master', to='uni_ticket.Ticket')),
-                ('slave_ticket', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='slave', to='uni_ticket.Ticket')),
+                ('main_ticket', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='main', to='uni_ticket.Ticket')),
+                ('subordinate_ticket', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='subordinate', to='uni_ticket.Ticket')),
             ],
             options={
                 'verbose_name': 'Dipendenza Ticket',
                 'verbose_name_plural': 'Dipendenze Ticket',
-                'ordering': ['master_ticket', 'slave_ticket'],
+                'ordering': ['main_ticket', 'subordinate_ticket'],
             },
         ),
         migrations.CreateModel(
@@ -255,7 +255,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='ticket2ticket',
-            unique_together={('master_ticket', 'slave_ticket')},
+            unique_together={('main_ticket', 'subordinate_ticket')},
         ),
         migrations.AlterUniqueTogether(
             name='task2ticket',

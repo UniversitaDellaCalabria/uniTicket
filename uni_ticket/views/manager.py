@@ -1992,13 +1992,13 @@ def category_input_module_clone(request, structure_slug,
     selected_category = get_object_or_404(TicketCategory,
                                           organizational_structure=selected_structure,
                                           slug=selected_category_slug)
-    # create new module in selected category with master module name
+    # create new module in selected category with main module name
     new_module = TicketCategoryModule.objects.create(name=module.name,
                                                      ticket_category=selected_category)
 
-    # get all input fields of master module and clone these in new module
-    master_module_inputlist = TicketCategoryInputList.objects.filter(category_module=module)
-    for module_input in master_module_inputlist:
+    # get all input fields of main module and clone these in new module
+    main_module_inputlist = TicketCategoryInputList.objects.filter(category_module=module)
+    for module_input in main_module_inputlist:
         input_dict = module_input.__dict__
         del input_dict['_state']
         del input_dict['id']

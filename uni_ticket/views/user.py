@@ -1176,25 +1176,25 @@ def chat_new_preload(request, structure_slug=None):
 
 @login_required
 def ticket_clone(request, ticket_id):
-    master_ticket = get_object_or_404(Ticket,
+    main_ticket = get_object_or_404(Ticket,
                                       code=ticket_id,
                                       created_by=request.user)
     # if ticket is not closed and owner has closed it
-    if not master_ticket.is_closed:
+    if not main_ticket.is_closed:
        return custom_message(request, _("Operazione non permessa. "
                                         "La richiesta è ancora attiva"))
 
     # if ticket module is out of date
-    if not master_ticket.input_module.is_active:
+    if not main_ticket.input_module.is_active:
            return custom_message(request, _("Il modulo che stai cercando "
                                             "di usare non è più attivo."))
 
-    category = master_ticket.input_module.ticket_category
-    form_data = master_ticket.get_modulo_compilato()
+    category = main_ticket.input_module.ticket_category
+    form_data = main_ticket.get_modulo_compilato()
 
-    form_data.update({settings.TICKET_INPUT_MODULE_NAME: master_ticket.input_module.pk})
-    form_data.update({settings.TICKET_SUBJECT_ID: master_ticket.subject})
-    form_data.update({settings.TICKET_DESCRIPTION_ID: master_ticket.description})
+    form_data.update({settings.TICKET_INPUT_MODULE_NAME: main_ticket.input_module.pk})
+    form_data.update({settings.TICKET_SUBJECT_ID: main_ticket.subject})
+    form_data.update({settings.TICKET_DESCRIPTION_ID: main_ticket.description})
 
     # build encrypted url param with form data
     encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
