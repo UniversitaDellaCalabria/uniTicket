@@ -13,12 +13,12 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='ticket2ticket',
-            name='main_ticket',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subordinate', to='uni_ticket.Ticket'),
+            name='master_ticket',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='slave', to='uni_ticket.Ticket'),
         ),
         migrations.AlterField(
             model_name='ticket2ticket',
-            name='subordinate_ticket',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='main', to='uni_ticket.Ticket'),
+            name='slave_ticket',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='master', to='uni_ticket.Ticket'),
         ),
     ]
