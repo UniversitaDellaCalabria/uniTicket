@@ -13,20 +13,20 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='ticket2ticket',
-            options={'ordering': ['subordinate_ticket', 'main_ticket'], 'verbose_name': 'Dipendenza Ticket', 'verbose_name_plural': 'Dipendenze Ticket'},
+            options={'ordering': ['slave_ticket', 'master_ticket'], 'verbose_name': 'Dipendenza Ticket', 'verbose_name_plural': 'Dipendenze Ticket'},
         ),
         migrations.AlterField(
             model_name='ticket2ticket',
-            name='main_ticket',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='subordinate', to='uni_ticket.Ticket'),
+            name='master_ticket',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='slave', to='uni_ticket.Ticket'),
         ),
         migrations.AlterField(
             model_name='ticket2ticket',
-            name='subordinate_ticket',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='main', to='uni_ticket.Ticket'),
+            name='slave_ticket',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='master', to='uni_ticket.Ticket'),
         ),
         migrations.AlterUniqueTogether(
             name='ticket2ticket',
-            unique_together={('subordinate_ticket', 'main_ticket')},
+            unique_together={('slave_ticket', 'master_ticket')},
         ),
     ]

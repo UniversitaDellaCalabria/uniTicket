@@ -47,8 +47,8 @@ class WSArchiPROClient(object):
                            # 'matricola_dipendente',
                            'id_persona',
                            'nome_persona',
-                           'cognome_persona',
-                           'denominazione_persona',]
+                           'cognome_persona',]
+                           # 'denominazione_persona',
                            # 'nome_doc',
                            # 'tipo_doc']
 

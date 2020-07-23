@@ -64,8 +64,8 @@ def ticket_protocol(user,
                      'id_persona': user.taxpayer_id,
                      'nome_persona': user.first_name,
                      'cognome_persona': user.last_name,
-                     'denominazione_persona': ' '.join((user.first_name,
-                                                        user.last_name,)),
+                     # 'denominazione_persona': ' '.join((user.first_name,
+                                                        # user.last_name,)),
 
                      # attributi creazione protocollo
                      'aoo': prot_aoo,
