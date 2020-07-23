@@ -6,7 +6,7 @@
     <ul class="it-list">
         {% for dependence in dependences %}
         <li class="py-2">
-            <b>{{ dependence.master_ticket }}</b>
+            <b>{{ dependence.main_ticket }}</b>
             {% if dependence.is_closed %}
                 <span class="badge badge-danger">
                     {% trans "Chiuso" %}
@@ -22,7 +22,7 @@
             {% endif %}
             <a role="button"
                class="mx-1 btn btn-outline-secondary btn-xs float-right"
-               href="{% url 'uni_ticket:ticket_detail' ticket_id=dependence.master_ticket.code %}">
+               href="{% url 'uni_ticket:ticket_detail' ticket_id=dependence.main_ticket.code %}">
                 {% trans "Vai alla richiesta" %}
             </a>
         </li>

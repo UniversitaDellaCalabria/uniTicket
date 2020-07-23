@@ -2235,8 +2235,8 @@
   "model": "uni_ticket.ticket2ticket",
   "pk": 1,
   "fields": {
-    "slave_ticket": 18,
-    "master_ticket": 16
+    "subordinate_ticket": 18,
+    "main_ticket": 16
   }
 },
 {
