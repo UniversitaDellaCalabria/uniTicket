@@ -413,15 +413,9 @@
 {% endblock page_content %}
 
 {% block extra_scripts %}
-{{ block.super }}
 <script>
 $(function () {
-  $('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip();
 })
-
-$('.modal-submit').on('click', function(e){
-    $('.modal-div').removeClass('show');
-    $('.modal-backdrop.fade').css('opacity', 0);
-});
 </script>
 {% endblock %}

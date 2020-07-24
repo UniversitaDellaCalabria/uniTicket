@@ -258,11 +258,6 @@
 {% block extra_scripts %}
 {{ block.super }}
 <script>
-$('#submitForm').on('click', function(e){
-    $('#action').removeClass('show');
-    $('.modal-backdrop.fade').css('opacity', 0);
-});
-
 {% if url_to_import %}
 function copyToClipboard() {
     var copyText = document.getElementById("encrypted_ticket_url");

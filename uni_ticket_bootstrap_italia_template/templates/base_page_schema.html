@@ -28,3 +28,14 @@
     </div>
     {% endblock clean_content %}
 {% endblock container_inner %}
+
+{% block bottom_scripts %}
+{{ block.super }}
+<script>
+<!-- Close modal window on submit first click -->
+$('.modal :submit').on('click', function(e){
+    $('.modal').removeClass('show');
+    $('.modal-backdrop.fade').css('opacity', 0);
+});
+</script>
+{% endblock bottom_scripts %}

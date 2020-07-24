@@ -59,10 +59,4 @@
 
 {% block extra_scripts %}
 {{ form.media }}
-<script>
-$('#submitForm').on('click', function(e){
-    $('#closeticket').removeClass('show');
-    $('.modal-backdrop.fade').css('opacity', 0);
-});
-</script>
 {% endblock extra_scripts %}

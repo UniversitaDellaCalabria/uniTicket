@@ -189,10 +189,5 @@ $('#structure_slug').on('change', function(event) {
     window.location.href = window.location.href + $(this).val();
     {% endif %}
 });
-
-$('#submitForm').on('click', function(e){
-    $('#confirmData').removeClass('show');
-    $('.modal-backdrop.fade').css('opacity', 0);
-});
 </script>
 {% endblock extra_scripts %}
