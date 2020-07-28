@@ -502,9 +502,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                         response = download_ticket_pdf(request=request,
                                                        ticket_id=ticket.code).content
 
-                        protocol_number = ticket_protocol(prot_login=protocol_struct_configuration.protocollo_username,
-                                                          prot_passw=protocol_struct_configuration.protocollo_password,
-                                                          structure_configuration=protocol_struct_configuration,
+                        protocol_number = ticket_protocol(structure_configuration=protocol_struct_configuration,
                                                           configuration=protocol_configuration,
                                                           user=current_user,
                                                           subject=ticket.subject,

@@ -8,8 +8,6 @@ logger = logging.getLogger(__name__)
 
 def ticket_protocol(user,
                     subject,
-                    prot_login=settings.PROT_TEST_LOGIN,
-                    prot_passw=settings.PROT_TEST_PASSW,
                     structure_configuration=None,
                     configuration=None,
                     file_name='test_name',
@@ -24,6 +22,8 @@ def ticket_protocol(user,
     # if test and not configuration:
     if test:
         prot_url = settings.PROT_URL
+        prot_login = settings.PROT_TEST_LOGIN
+        prot_passw = settings.PROT_TEST_PASSW
         prot_aoo = settings.PROT_TEST_AOO
         prot_agd = settings.PROT_AGD_DEFAULT
         prot_uo = settings.PROT_UO_DEFAULT
@@ -37,8 +37,8 @@ def ticket_protocol(user,
     # elif not test and configuration:
     elif not test and valid_conf:
         prot_url = settings.PROT_URL
-        prot_login = prot_login
-        prot_passw = prot_passw
+        prot_login = structure_configuration.protocollo_username
+        prot_passw = structure_configuration.protocollo_password
         prot_aoo = structure_configuration.protocollo_aoo
         prot_agd = structure_configuration.protocollo_agd
         prot_uo = structure_configuration.protocollo_uo
