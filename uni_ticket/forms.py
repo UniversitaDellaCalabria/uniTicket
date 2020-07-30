@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.forms import ModelForm
 from django.template.defaultfilters import filesizeformat
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from bootstrap_italia_template.widgets import (BootstrapItaliaSelectWidget,
                                                BootstrapItaliaSelectMultipleWidget)

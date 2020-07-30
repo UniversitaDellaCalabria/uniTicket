@@ -22,8 +22,8 @@
         <div class="bootstrap-select-wrapper">
             <select id="search_category"
                     name="search_category"
-                    data-live-search="true" data-live-search-placeholder="Cerca...">
-                <option value="" selected>- Tutte le tipologie -</option>
+                    data-live-search="true" data-live-search-placeholder="{% trans 'Cerca' %}...">
+                <option value="" selected>- {% trans "Tutte le tipologie" %} -</option>
                 {% categories_list structure request.user as categories_list %}
                 {% for category in categories_list %}
                 <option value="{{ category.slug }}">

@@ -349,7 +349,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
     user_type = get_user_type(request.user, structure)
     template = "{}/tickets.html".format(user_type)
     title = _('Gestione richieste')
-    sub_title = _("Assegnate o aperte")
+    sub_title = _("Tutti gli stati")
 
     ticket_list = []
     # if user is operator

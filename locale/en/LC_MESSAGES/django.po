@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-16 21:20+0200\n"
+"POT-Creation-Date: 2020-07-30 12:30+0200\n"
 "PO-Revision-Date: 2020-07-16 21:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -80,515 +80,585 @@ msgstr "Email notifications"
 msgid "Utenti"
 msgstr "Users"
 
-#: archipro_ws/settings.py:49
-msgid "Normativa e relativa attuazione"
+#: archipro_ws/settings.py:43
+#, fuzzy
+#| msgid "Normativa e relativa attuazione"
+msgid "[9002] Normativa e relativa attuazione"
 msgstr "Regulations and their implementation"
 
-#: archipro_ws/settings.py:50
-msgid "Statuto"
+#: archipro_ws/settings.py:44
+#, fuzzy
+#| msgid "Statuto"
+msgid "[9003] Statuto"
 msgstr "Statute"
 
-#: archipro_ws/settings.py:51
-msgid "Regolamenti"
+#: archipro_ws/settings.py:45
+#, fuzzy
+#| msgid "Regolamenti"
+msgid "[9004] Regolamenti"
 msgstr "Regulations"
 
-#: archipro_ws/settings.py:52
-msgid "Stemma, gonfalone e sigillo"
+#: archipro_ws/settings.py:46
+#, fuzzy
+#| msgid "Stemma, gonfalone e sigillo"
+msgid "[9005] Stemma, gonfalone e sigillo"
 msgstr "Coat of arms, banner and seal"
 
-#: archipro_ws/settings.py:53
-msgid "Sistema informativo, sicurezza dell'informazione e sistema informatico"
+#: archipro_ws/settings.py:47
+#, fuzzy
+#| msgid ""
+#| "Sistema informativo, sicurezza dell'informazione e sistema informatico"
+msgid ""
+"[9006] Sistema informativo, sicurezza dell'informazione e sistema informatico"
 msgstr "Information system, information security and IT system"
 
-#: archipro_ws/settings.py:54
-msgid "Protezione dei dati personali"
+#: archipro_ws/settings.py:48
+#, fuzzy
+#| msgid "Protezione dei dati personali"
+msgid "[9007] Protezione dei dati personali"
 msgstr "Protection of personal data"
 
-#: archipro_ws/settings.py:55
-msgid "Archivio"
+#: archipro_ws/settings.py:49
+#, fuzzy
+#| msgid "Archivio"
+msgid "[9008] Archivio"
 msgstr "Archive"
 
-#: archipro_ws/settings.py:56
-msgid "Trasparenza e relazioni con il pubblico"
+#: archipro_ws/settings.py:50
+#, fuzzy
+#| msgid "Trasparenza e relazioni con il pubblico"
+msgid "[9009] Trasparenza e relazioni con il pubblico"
 msgstr "Transparency and relations with the public"
 
-#: archipro_ws/settings.py:57
-msgid "Strategie per il personale, organigramma e funzionigramma"
+#: archipro_ws/settings.py:51
+#, fuzzy
+#| msgid "Strategie per il personale, organigramma e funzionigramma"
+msgid "[9010] Strategie per il personale, organigramma e funzionigramma"
 msgstr "Staff strategies, organization chart and function chart"
 
-#: archipro_ws/settings.py:58
-msgid "Rapporti sindacali e contrattazione"
+#: archipro_ws/settings.py:52
+#, fuzzy
+#| msgid "Rapporti sindacali e contrattazione"
+msgid "[9011] Rapporti sindacali e contrattazione"
 msgstr "Union relations and bargaining"
 
-#: archipro_ws/settings.py:59
-msgid "Controllo di gestione e sistema qualità"
+#: archipro_ws/settings.py:53
+#, fuzzy
+#| msgid "Controllo di gestione e sistema qualità"
+msgid "[9012] Controllo di gestione e sistema qualità"
 msgstr "Management control and quality system"
 
-#: archipro_ws/settings.py:60
-msgid "Statistica e auditing"
+#: archipro_ws/settings.py:54
+#, fuzzy
+#| msgid "Statistica e auditing"
+msgid "[9013] Statistica e auditing"
 msgstr "Statistics and auditing"
 
-#: archipro_ws/settings.py:61
-msgid "Elezioni e designazioni"
+#: archipro_ws/settings.py:55
+#, fuzzy
+#| msgid "Elezioni e designazioni"
+msgid "[9014] Elezioni e designazioni"
 msgstr "Elections and designations"
 
-#: archipro_ws/settings.py:62
-msgid "Associazioni e attività culturali, sportive e ricreative"
+#: archipro_ws/settings.py:56
+#, fuzzy
+#| msgid "Associazioni e attività culturali, sportive e ricreative"
+msgid "[9015] Associazioni e attività culturali, sportive e ricreative"
 msgstr "Associations and cultural, sporting and recreational activities"
 
-#: archipro_ws/settings.py:63
-msgid "Editoria e attività informativo-promozionale"
+#: archipro_ws/settings.py:57
+#, fuzzy
+#| msgid "Editoria e attività informativo-promozionale"
+msgid "[9016] Editoria e attività informativo-promozionale"
 msgstr "Publishing and information-promotional activities"
 
-#: archipro_ws/settings.py:64
-msgid "Onorificenze, cerimoniale e attività di rappresentanza"
+#: archipro_ws/settings.py:58
+#, fuzzy
+#| msgid "Onorificenze, cerimoniale e attività di rappresentanza"
+msgid "[9017] Onorificenze, cerimoniale e attività di rappresentanza"
 msgstr "Honors, ceremonial and representation activities"
 
-#: archipro_ws/settings.py:65
-msgid "Politiche e interventi per le pari opportunità"
+#: archipro_ws/settings.py:59
+#, fuzzy
+#| msgid "Politiche e interventi per le pari opportunità"
+msgid "[9018] Politiche e interventi per le pari opportunità"
 msgstr "Policies and interventions for equal opportunities"
 
-#: archipro_ws/settings.py:66
-msgid "Interventi di carattere politico, economico, sociale e umanitario"
+#: archipro_ws/settings.py:60
+#, fuzzy
+#| msgid "Interventi di carattere politico, economico, sociale e umanitario"
+msgid ""
+"[9019] Interventi di carattere politico, economico, sociale e umanitario"
 msgstr "Political, economic, social and humanitarian interventions"
 
-#: archipro_ws/settings.py:67
-msgid "Rettore"
+#: archipro_ws/settings.py:61
+#, fuzzy
+#| msgid "Rettore"
+msgid "[9021] Rettore"
 msgstr "Rector"
 
-#: archipro_ws/settings.py:68
-msgid "Prorettore vicario e delegati"
+#: archipro_ws/settings.py:62
+#, fuzzy
+#| msgid "Prorettore vicario e delegati"
+msgid "[9022] Prorettore vicario e delegati"
 msgstr "Deputy Rector and Delegates"
 
-#: archipro_ws/settings.py:69
-msgid "Direttore generale"
+#: archipro_ws/settings.py:63
+#, fuzzy
+#| msgid "Direttore generale"
+msgid "[9023] Direttore generale"
 msgstr "General manager"
 
-#: archipro_ws/settings.py:70
-msgid "Direttore"
+#: archipro_ws/settings.py:64
+#, fuzzy
+#| msgid "Direttore"
+msgid "[9024] Direttore"
 msgstr "Director"
 
-#: archipro_ws/settings.py:71
-msgid "Presidente"
+#: archipro_ws/settings.py:65
+#, fuzzy
+#| msgid "Presidente"
+msgid "[9025] Presidente"
 msgstr "President"
 
-#: archipro_ws/settings.py:72
-msgid "Senato accademico"
+#: archipro_ws/settings.py:66
+#, fuzzy
+#| msgid "Senato accademico"
+msgid "[9026] Senato accademico"
 msgstr "Academic Senate"
 
-#: archipro_ws/settings.py:73
-msgid "Consiglio di amministrazione"
+#: archipro_ws/settings.py:67
+#, fuzzy
+#| msgid "Consiglio di amministrazione"
+msgid "[9027] Consiglio di amministrazione"
 msgstr "Board of directors"
 
-#: archipro_ws/settings.py:74
-msgid "Consiglio"
+#: archipro_ws/settings.py:68
+#, fuzzy
+#| msgid "Consiglio"
+msgid "[9028] Consiglio"
 msgstr "Council"
 
-#: archipro_ws/settings.py:75
-msgid "Giunta"
+#: archipro_ws/settings.py:69
+msgid "[9029] Giunta"
 msgstr ""
 
-#: archipro_ws/settings.py:76
-msgid "Commissione didattica paritetica docenti-studenti"
+#: archipro_ws/settings.py:70
+#, fuzzy
+#| msgid "Commissione didattica paritetica docenti-studenti"
+msgid "[9030] Commissione didattica paritetica docenti-studenti"
 msgstr "Teaching committee for teachers-students"
 
-#: archipro_ws/settings.py:77
-msgid "Nucleo di valutazione"
+#: archipro_ws/settings.py:71
+#, fuzzy
+#| msgid "Nucleo di valutazione"
+msgid "[9031] Nucleo di valutazione"
 msgstr "Evaluation team"
 
+#: archipro_ws/settings.py:72
+msgid "[9032] Collegio dei revisori dei conti"
+msgstr ""
+
+#: archipro_ws/settings.py:73
+msgid "[9033] Collegio di disciplina (per i docenti)"
+msgstr ""
+
+#: archipro_ws/settings.py:74
+msgid "[9034] Senato degli studenti"
+msgstr ""
+
+#: archipro_ws/settings.py:75
+#, fuzzy
+#| msgid "Politiche e interventi per le pari opportunità"
+msgid "[9035] Comitato unico di garanzia e per le pari opportunità"
+msgstr "Policies and interventions for equal opportunities"
+
+#: archipro_ws/settings.py:76
+msgid "[9036] Comitato tecnico scientifico"
+msgstr ""
+
+#: archipro_ws/settings.py:77
+msgid "[9037] Conferenza dei rettori delle università italiane] CRUI"
+msgstr ""
+
 #: archipro_ws/settings.py:78
-msgid "Collegio dei revisori dei conti"
+msgid "[9038] Comitato regionale di coordinamento"
 msgstr ""
 
 #: archipro_ws/settings.py:79
-msgid "Collegio di disciplina (per i docenti)"
+msgid "[9039] Comitato per lo sport universitario"
 msgstr ""
 
 #: archipro_ws/settings.py:80
-msgid "Senato degli studenti"
+msgid "[9041] Ordinamento didattico"
 msgstr ""
 
 #: archipro_ws/settings.py:81
-msgid "Comitato unico di garanzia e per le pari opportunità"
+msgid "[9042] Corsi di studio"
 msgstr ""
 
 #: archipro_ws/settings.py:82
-msgid "Comitato tecnico scientifico"
+msgid "[9043] Corsi a ordinamento speciale"
 msgstr ""
 
 #: archipro_ws/settings.py:83
-msgid "Conferenza dei rettori delle università italiane - CRUI"
+msgid "[9044] Corsi di specializzazione"
 msgstr ""
 
 #: archipro_ws/settings.py:84
-msgid "Comitato regionale di coordinamento"
+msgid "[9045] Master"
 msgstr ""
 
 #: archipro_ws/settings.py:85
-msgid "Comitato per lo sport universitario"
+msgid "[9046] Corsi di dottorato"
 msgstr ""
 
 #: archipro_ws/settings.py:86
-msgid "Ordinamento didattico"
+msgid "[9047] Corsi di perfezionamento e corsi di formazione permanente"
 msgstr ""
 
 #: archipro_ws/settings.py:87
-msgid "Corsi di studio"
+msgid ""
+"[9048] Programmazione didattica, orario delle lezioni, gestione delle aule e "
+"degli spazi"
 msgstr ""
 
 #: archipro_ws/settings.py:88
-msgid "Corsi a ordinamento speciale"
+msgid "[9049] Gestione di esami di profitto, di laurea e di prove di idoneità"
 msgstr ""
 
 #: archipro_ws/settings.py:89
-msgid "Corsi di specializzazione"
+msgid ""
+"[9050] Programmazione e sviluppo, comprese aree, macroaree e settori "
+"scientifico-disciplinari"
 msgstr ""
 
 #: archipro_ws/settings.py:90
-msgid "Master"
+msgid "[9051] Strategie e valutazione della didattica e della ricerca"
 msgstr ""
 
 #: archipro_ws/settings.py:91
-msgid "Corsi di dottorato"
+msgid "[9052] Premi e borse di studio finalizzati e vincolati"
 msgstr ""
 
 #: archipro_ws/settings.py:92
-msgid "Corsi di perfezionamento e corsi di formazione permanente"
+msgid "[9053] Progetti e finanziamenti"
 msgstr ""
 
 #: archipro_ws/settings.py:93
-msgid ""
-"Programmazione didattica, orario delle lezioni, gestione delle aule e degli "
-"spazi"
+msgid "[9054] Accordi per la didattica e la ricerca"
 msgstr ""
 
 #: archipro_ws/settings.py:94
-msgid "Gestione di esami di profitto, di laurea e di prove di idoneità"
+msgid "[9055] Rapporti con enti e istituti di area socio-sanitaria"
 msgstr ""
 
 #: archipro_ws/settings.py:95
-msgid ""
-"Programmazione e sviluppo, comprese aree, macroaree e settori scientifico-"
-"disciplinari"
+msgid "[9056] Opere dell'ingegno, brevetti e imprenditoria della ricerca"
 msgstr ""
 
 #: archipro_ws/settings.py:96
-msgid "Strategie e valutazione della didattica e della ricerca"
+msgid "[9057] Piani di sviluppo dell'università"
 msgstr ""
 
 #: archipro_ws/settings.py:97
-msgid "Premi e borse di studio finalizzati e vincolati"
+msgid "[9058] Cooperazione con paesi in via di sviluppo"
 msgstr ""
 
 #: archipro_ws/settings.py:98
-msgid "Progetti e finanziamenti"
+msgid "[9059] Attività per conto terzi"
 msgstr ""
 
 #: archipro_ws/settings.py:99
-msgid "Accordi per la didattica e la ricerca"
+msgid "[9061] Contenzioso"
 msgstr ""
 
 #: archipro_ws/settings.py:100
-msgid "Rapporti con enti e istituti di area socio-sanitaria"
+msgid "[9062] Atti di liberalità"
 msgstr ""
 
 #: archipro_ws/settings.py:101
-msgid "Opere dell'ingegno, brevetti e imprenditoria della ricerca"
+msgid "[9063] Violazioni amministrative e reati"
 msgstr ""
 
 #: archipro_ws/settings.py:102
-msgid "Piani di sviluppo dell'università"
+msgid "[9064] Responsabilità civile, penale e amministrativa del personale"
 msgstr ""
 
 #: archipro_ws/settings.py:103
-msgid "Cooperazione con paesi in via di sviluppo"
+msgid "[9065] Pareri e consulenze"
 msgstr ""
 
 #: archipro_ws/settings.py:104
-msgid "Attività per conto terzi"
+msgid "[9067] Orientamento, informazione e tutorato"
 msgstr ""
 
 #: archipro_ws/settings.py:105
-msgid "Contenzioso"
+msgid "[9068] Selezioni, immatricolazioni e ammissioni"
 msgstr ""
 
 #: archipro_ws/settings.py:106
-msgid "Atti di liberalità"
+msgid "[9069] Trasferimenti e passaggi"
 msgstr ""
 
 #: archipro_ws/settings.py:107
-msgid "Violazioni amministrative e reati"
+msgid "[9070] Cursus studiorum e provvedimenti disciplinari"
 msgstr ""
 
 #: archipro_ws/settings.py:108
-msgid "Responsabilità civile, penale e amministrativa del personale"
+msgid ""
+"[9071] Diritto allo studio, assicurazioni, benefici economici, tasse e "
+"contributi"
 msgstr ""
 
 #: archipro_ws/settings.py:109
-msgid "Pareri e consulenze"
+msgid "[9072] Tirocinio, formazione e attività di ricerca"
 msgstr ""
 
 #: archipro_ws/settings.py:110
-msgid "Orientamento, informazione e tutorato"
+msgid "[9073] Servizi di assistenza socio-sanitaria e a richiesta"
 msgstr ""
 
 #: archipro_ws/settings.py:111
-msgid "Selezioni, immatricolazioni e ammissioni"
+msgid "[9074] Conclusione e cessazione della carriera di studio"
 msgstr ""
 
 #: archipro_ws/settings.py:112
-msgid "Trasferimenti e passaggi"
+msgid "[9075] Esami di stato e ordini professionali"
 msgstr ""
 
 #: archipro_ws/settings.py:113
-msgid "Cursus studiorum e provvedimenti disciplinari"
+msgid ""
+"[9076] Associazionismo, goliardia e manifestazioni organizzate da studenti o "
+"ex studenti"
 msgstr ""
 
 #: archipro_ws/settings.py:114
-msgid ""
-"Diritto allo studio, assicurazioni, benefici economici, tasse e contributi"
+msgid "[9077] Benefici Legge 390/91 "
 msgstr ""
 
 #: archipro_ws/settings.py:115
-msgid "Tirocinio, formazione e attività di ricerca"
+msgid "[9078] Servizi abitativi e mensa per gli studenti"
 msgstr ""
 
 #: archipro_ws/settings.py:116
-msgid "Servizi di assistenza socio-sanitaria e a richiesta"
-msgstr ""
+#, fuzzy
+#| msgid "Associazioni e attività culturali, sportive e ricreative"
+msgid "[9079] Attività culturali e ricreative"
+msgstr "Associations and cultural, sporting and recreational activities"
 
 #: archipro_ws/settings.py:117
-msgid "Conclusione e cessazione della carriera di studio"
+msgid "[9081] Poli"
 msgstr ""
 
 #: archipro_ws/settings.py:118
-msgid "Esami di stato e ordini professionali"
+msgid "[9082] Scuole e strutture di raccordo"
 msgstr ""
 
 #: archipro_ws/settings.py:119
-msgid ""
-"Associazionismo, goliardia e manifestazioni organizzate da studenti o ex "
-"studenti"
+msgid "[9083] Dipartimenti"
 msgstr ""
 
 #: archipro_ws/settings.py:120
-msgid "Benefici Legge 390/91 "
+msgid "[9084] Strutture a ordinamento speciale"
 msgstr ""
 
 #: archipro_ws/settings.py:121
-msgid "Servizi abitativi e mensa per gli studenti"
+msgid "[9085] Scuole di specializzazione"
 msgstr ""
 
 #: archipro_ws/settings.py:122
-msgid "Attività culturali e ricreative"
+msgid "[9086] Scuole di dottorato"
 msgstr ""
 
 #: archipro_ws/settings.py:123
-msgid "Poli"
+msgid "[9087] Scuole interdipartimentali"
 msgstr ""
 
 #: archipro_ws/settings.py:124
-msgid "Scuole e strutture di raccordo"
+msgid "[9088] Centri"
 msgstr ""
 
 #: archipro_ws/settings.py:125
-msgid "Dipartimenti"
+msgid "[9089] Sistema bibliotecario"
 msgstr ""
 
 #: archipro_ws/settings.py:126
-msgid "Strutture a ordinamento speciale"
+msgid "[9090] Musei, pinacoteche e collezioni"
 msgstr ""
 
 #: archipro_ws/settings.py:127
-msgid "Scuole di specializzazione"
+msgid "[9091] Consorzi ed enti a partecipazione universitaria"
 msgstr ""
 
 #: archipro_ws/settings.py:128
-msgid "Scuole di dottorato"
+msgid "[9092] Fondazioni"
 msgstr ""
 
 #: archipro_ws/settings.py:129
-msgid "Scuole interdipartimentali"
+msgid "[9093] Servizi di ristorazione, alloggi e foresterie"
 msgstr ""
 
 #: archipro_ws/settings.py:130
-msgid "Centri"
+msgid "[9095] Concorsi e selezioni"
 msgstr ""
 
 #: archipro_ws/settings.py:131
-msgid "Sistema bibliotecario"
-msgstr ""
+#, fuzzy
+#| msgid "Elezioni e designazioni"
+msgid "[9096] Assunzioni e cessazioni"
+msgstr "Elections and designations"
 
 #: archipro_ws/settings.py:132
-msgid "Musei, pinacoteche e collezioni"
+msgid "[9097] Comandi e distacchi"
 msgstr ""
 
 #: archipro_ws/settings.py:133
-msgid "Consorzi ed enti a partecipazione universitaria"
+msgid "[9098] Mansioni e incarichi"
 msgstr ""
 
 #: archipro_ws/settings.py:134
-msgid "Fondazioni"
+msgid "[9099] Carriera e inquadramenti"
 msgstr ""
 
 #: archipro_ws/settings.py:135
-msgid "Servizi di ristorazione, alloggi e foresterie"
+msgid "[9100] Retribuzione e compensi"
 msgstr ""
 
 #: archipro_ws/settings.py:136
-msgid "Concorsi e selezioni"
+msgid "[9101] Adempimenti fiscali, contributivi e assicurativi"
 msgstr ""
 
 #: archipro_ws/settings.py:137
-msgid "Assunzioni e cessazioni"
+msgid "[9102] Pre-ruolo, trattamento di quiescenza, buonuscita"
 msgstr ""
 
 #: archipro_ws/settings.py:138
-msgid "Comandi e distacchi"
+msgid "[9103] Dichiarazioni di infermità ed equo indennizzo"
 msgstr ""
 
 #: archipro_ws/settings.py:139
-msgid "Mansioni e incarichi"
+msgid "[9104] Servizi a domanda individuale"
 msgstr ""
 
 #: archipro_ws/settings.py:140
-msgid "Carriera e inquadramenti"
+msgid "[9105] Assenze"
 msgstr ""
 
 #: archipro_ws/settings.py:141
-msgid "Retribuzione e compensi"
+msgid "[9106] Tutela della salute e sorveglianza sanitaria"
 msgstr ""
 
 #: archipro_ws/settings.py:142
-msgid "Adempimenti fiscali, contributivi e assicurativi"
+msgid "[9107] Valutazione, giudizi di merito e provvedimenti disciplinari"
 msgstr ""
 
 #: archipro_ws/settings.py:143
-msgid "Pre-ruolo, trattamento di quiescenza, buonuscita"
+msgid "[9108] Formazione e aggiornamento professionale"
 msgstr ""
 
 #: archipro_ws/settings.py:144
-msgid "Dichiarazioni di infermità ed equo indennizzo"
+msgid "[9109] Deontologia professionale ed etica del lavoro"
 msgstr ""
 
 #: archipro_ws/settings.py:145
-msgid "Servizi a domanda individuale"
-msgstr ""
+#, fuzzy
+#| msgid "dati personali e della struttura"
+msgid "[9110] Personale non strutturato"
+msgstr "personal and structure data"
 
 #: archipro_ws/settings.py:146
-msgid "Assenze"
+msgid "[9112] Ricavi ed entrate"
 msgstr ""
 
 #: archipro_ws/settings.py:147
-msgid "Tutela della salute e sorveglianza sanitaria"
+msgid "[9113] Costi e uscite"
 msgstr ""
 
 #: archipro_ws/settings.py:148
-msgid "Valutazione, giudizi di merito e provvedimenti disciplinari"
+msgid "[9114] Bilancio"
 msgstr ""
 
 #: archipro_ws/settings.py:149
-msgid "Formazione e aggiornamento professionale"
+msgid "[9115] Tesoreria, cassa e istituti di credito"
 msgstr ""
 
 #: archipro_ws/settings.py:150
-msgid "Deontologia professionale ed etica del lavoro"
+msgid "[9116] Imposte, tasse, ritenute previdenziali e assistenziali"
 msgstr ""
 
 #: archipro_ws/settings.py:151
-msgid "Personale non strutturato"
+msgid ""
+"[9118] Progettazione e costruzione di opere edilizie con relativi impianti"
 msgstr ""
 
 #: archipro_ws/settings.py:152
-msgid "Ricavi ed entrate"
-msgstr ""
-
-#: archipro_ws/settings.py:153
-msgid "Costi e uscite"
-msgstr ""
-
-#: archipro_ws/settings.py:154
-msgid "Bilancio"
-msgstr ""
-
-#: archipro_ws/settings.py:155
-msgid "Tesoreria, cassa e istituti di credito"
-msgstr ""
-
-#: archipro_ws/settings.py:156
-msgid "Imposte, tasse, ritenute previdenziali e assistenziali"
-msgstr ""
-
-#: archipro_ws/settings.py:157
-msgid "Progettazione e costruzione di opere edilizie con relativi impianti"
-msgstr ""
-
-#: archipro_ws/settings.py:158
 msgid ""
-"Manutenzione ordinaria, straordinaria, ristrutturazione, restauro e "
+"[9119] Manutenzione ordinaria, straordinaria, ristrutturazione, restauro e "
 "destinazione d'uso"
 msgstr ""
 
+#: archipro_ws/settings.py:153
+msgid "[9120] Sicurezza e messa a norma degli ambienti di lavoro"
+msgstr ""
+
+#: archipro_ws/settings.py:154
+msgid "[9121] Telefonia e infrastruttura informatica"
+msgstr ""
+
+#: archipro_ws/settings.py:155
+msgid "[9122] Programmazione Territoriale"
+msgstr ""
+
+#: archipro_ws/settings.py:156
+msgid "[9124] Acquisizione e gestione di beni immobili e relativi servizi"
+msgstr ""
+
+#: archipro_ws/settings.py:157
+msgid "[9125] Locazione di beni immobili, di beni mobili e relativi servizi"
+msgstr ""
+
+#: archipro_ws/settings.py:158
+msgid "[9126] Alienazione di beni immobili e di beni mobili"
+msgstr ""
+
 #: archipro_ws/settings.py:159
-msgid "Sicurezza e messa a norma degli ambienti di lavoro"
+msgid ""
+"[9127] Acquisizione e fornitura di beni mobili, di materiali e attrezzature "
+"non tecniche e di servizi"
 msgstr ""
 
 #: archipro_ws/settings.py:160
-msgid "Telefonia e infrastruttura informatica"
+msgid "[9128] Manutenzione di beni mobili"
 msgstr ""
 
 #: archipro_ws/settings.py:161
-msgid "Programmazione Territoriale"
+msgid ""
+"[9129] Materiali, attrezzature, impiantistica e adempimenti tecnico-normativi"
 msgstr ""
 
 #: archipro_ws/settings.py:162
-msgid "Acquisizione e gestione di beni immobili e relativi servizi"
+msgid "[9130] Partecipazioni e investimenti finanziari"
 msgstr ""
 
 #: archipro_ws/settings.py:163
-msgid "Locazione di beni immobili, di beni mobili e relativi servizi"
+msgid "[9131] Inventario, rendiconto patrimoniale, beni in comodato"
 msgstr ""
 
 #: archipro_ws/settings.py:164
-msgid "Alienazione di beni immobili e di beni mobili"
+msgid "[9132] Patrimonio culturale – Tutela e valorizzazione"
 msgstr ""
 
 #: archipro_ws/settings.py:165
-msgid ""
-"Acquisizione e fornitura di beni mobili, di materiali e attrezzature non "
-"tecniche e di servizi"
+msgid "[9133] Gestione dei rifiuti"
 msgstr ""
 
 #: archipro_ws/settings.py:166
-msgid "Manutenzione di beni mobili"
+msgid "[9134] Albo dei fornitori"
 msgstr ""
 
 #: archipro_ws/settings.py:167
-msgid "Materiali, attrezzature, impiantistica e adempimenti tecnico-normativi"
-msgstr ""
-
-#: archipro_ws/settings.py:168
-msgid "Partecipazioni e investimenti finanziari"
-msgstr ""
-
-#: archipro_ws/settings.py:169
-msgid "Inventario, rendiconto patrimoniale, beni in comodato"
-msgstr ""
-
-#: archipro_ws/settings.py:170
-msgid "Patrimonio culturale – Tutela e valorizzazione"
-msgstr ""
-
-#: archipro_ws/settings.py:171
-msgid "Gestione dei rifiuti"
-msgstr ""
-
-#: archipro_ws/settings.py:172
-msgid "Albo dei fornitori"
-msgstr ""
-
-#: archipro_ws/settings.py:173
-msgid "Oggetti diversi"
+msgid "[9135] Oggetti diversi"
 msgstr ""
 
 #: chat/api.py:66 chat/api.py:93
@@ -796,7 +866,7 @@ msgstr "Only the following users can make requests"
 
 #: uni_ticket/forms.py:46
 msgid "Assegna competenza ufficio"
-msgstr "Assign office expertise"
+msgstr "Assign office competence"
 
 #: uni_ticket/forms.py:70
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:95
@@ -1637,7 +1707,7 @@ msgid "Impossibile recuperare il messaggio"
 msgstr "Could not retrieve the message"
 
 #: uni_ticket/views/generic.py:350 uni_ticket/views/generic.py:367
-#: uni_ticket/views/management.py:111 uni_ticket/views/user.py:936
+#: uni_ticket/views/management.py:111 uni_ticket/views/user.py:934
 msgid "Permesso negato"
 msgstr "Permission denied"
 
@@ -1653,7 +1723,7 @@ msgstr "Message <b>{}</b> successfully deleted."
 msgid "Messaggio eliminato. Oggetto: {}"
 msgstr "Message deleted. Subject: {}"
 
-#: uni_ticket/views/generic.py:389 uni_ticket/views/user.py:854
+#: uni_ticket/views/generic.py:389 uni_ticket/views/user.py:852
 msgid "eliminato"
 msgstr "deleted"
 
@@ -1710,8 +1780,8 @@ msgid "Gestione richieste"
 msgstr "Request management"
 
 #: uni_ticket/views/management.py:352
-msgid "Assegnate o aperte"
-msgstr "Assigned or open"
+msgid "Tutti gli stati"
+msgstr "All requests"
 
 #: uni_ticket/views/management.py:449
 msgid "Aggiungi dipendenza da richiesta"
@@ -1761,7 +1831,7 @@ msgstr "Dependency removed correctly"
 msgid "Non è possibile chiudere la richiesta, ci sono dipendenze attive!"
 msgstr "The request cannot be closed, there are active dependencies!"
 
-#: uni_ticket/views/management.py:630 uni_ticket/views/user.py:1108
+#: uni_ticket/views/management.py:630 uni_ticket/views/user.py:1106
 msgid "Chiusura della richiesta"
 msgstr "Closing the request"
 
@@ -1850,7 +1920,7 @@ msgstr "Competence transferred from Office: {}. (Office kept read-only access)"
 msgid "Nuova competenza: {} - {} - Categoria: {}"
 msgstr "New competence: {} - {} - Category: {}"
 
-#: uni_ticket/views/management.py:1060 uni_ticket/views/user.py:951
+#: uni_ticket/views/management.py:1060 uni_ticket/views/user.py:949
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:258
 #: uni_ticket_bootstrap_italia_template/templates/manager/dashboard.html:28
 #: uni_ticket_bootstrap_italia_template/templates/manager/dashboard.html:41
@@ -1875,7 +1945,7 @@ msgstr "Messages"
 msgid "La richiesta deve essere prima presa in carico"
 msgstr "The request must first be processed"
 
-#: uni_ticket/views/management.py:1097 uni_ticket/views/user.py:979
+#: uni_ticket/views/management.py:1097 uni_ticket/views/user.py:977
 msgid "La richiesta non è modificabile"
 msgstr "The request cannot be modified"
 
@@ -1891,7 +1961,7 @@ msgstr "received"
 msgid "{} - richiesta {} nuovo messaggio"
 msgstr "{} - request {} new message"
 
-#: uni_ticket/views/management.py:1139 uni_ticket/views/user.py:1038
+#: uni_ticket/views/management.py:1139 uni_ticket/views/user.py:1036
 msgid "Messaggio inviato con successo"
 msgstr "The message has been successfully sent"
 
@@ -2378,7 +2448,7 @@ msgid "Clona modulo [{}] ({} - {})"
 msgstr "Clone module [{}] ({} - {})"
 
 #: uni_ticket/views/manager.py:1939 uni_ticket/views/user.py:183
-#: uni_ticket/views/user.py:1165
+#: uni_ticket/views/user.py:1163
 msgid "Seleziona la struttura"
 msgstr "Select the structure"
 
@@ -2485,7 +2555,7 @@ msgstr "Configuration <b>{}</b> activated successfully"
 msgid "Il sistema di protocollo ha risposto correttamente."
 msgstr "The protocol system responded correctly."
 
-#: uni_ticket/views/manager.py:2996 uni_ticket/views/user.py:543
+#: uni_ticket/views/manager.py:2996 uni_ticket/views/user.py:541
 msgid "<b>Errore protocollo</b>: {}"
 msgstr "<b>Protocol error</b>: {}"
 
@@ -2575,11 +2645,11 @@ msgstr ""
 msgid "Solo gli utenti abilitati possono generare richieste di questo tipo"
 msgstr "Only enabled users can generate requests of this type"
 
-#: uni_ticket/views/user.py:521
+#: uni_ticket/views/user.py:519
 msgid "Richiesta protocollata correttamente: n. <b>{}/{}</b>"
 msgstr "Request registered correctly: n. <b>{}/{}</b>"
 
-#: uni_ticket/views/user.py:545
+#: uni_ticket/views/user.py:543
 msgid ""
 "<b>Attenzione</b>: la tua richiesta è stata comunque creata, nonostante la "
 "protocollazione sia fallita."
@@ -2587,98 +2657,98 @@ msgstr ""
 "<b>Warning</b>: your request has been created anyway, despite the failure of "
 "the protocol."
 
-#: uni_ticket/views/user.py:589
+#: uni_ticket/views/user.py:587
 msgid "{} - richiesta {} creata con successo"
 msgstr "{} - request {} successfully created"
 
-#: uni_ticket/views/user.py:621
+#: uni_ticket/views/user.py:619
 msgid "Pannello di controllo"
 msgstr "Dashboard"
 
-#: uni_ticket/views/user.py:622
+#: uni_ticket/views/user.py:620
 msgid "Gestisci le tue richieste o creane di nuove"
 msgstr "Manage your requests or create new ones"
 
-#: uni_ticket/views/user.py:673
+#: uni_ticket/views/user.py:671
 msgid "Impossibile modificare una richiesta protocollata"
 msgstr ""
 
-#: uni_ticket/views/user.py:685
+#: uni_ticket/views/user.py:683
 msgid "Modifica ticket"
 msgstr "Edit request"
 
-#: uni_ticket/views/user.py:742
+#: uni_ticket/views/user.py:740
 msgid "Ticket modificato"
 msgstr "Request edited"
 
-#: uni_ticket/views/user.py:751
+#: uni_ticket/views/user.py:749
 msgid "Modifica effettuata con successo"
 msgstr "Successful modification"
 
-#: uni_ticket/views/user.py:796
+#: uni_ticket/views/user.py:794
 #: uni_ticket_bootstrap_italia_template/templates/management/task_edit.html:57
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_edit.html:57
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_edit.html:64
 msgid "Elimina allegato"
 msgstr "Delete attachment"
 
-#: uni_ticket/views/user.py:806
+#: uni_ticket/views/user.py:804
 msgid "Allegato eliminato correttamente"
 msgstr "Attachment successfully deleted"
 
-#: uni_ticket/views/user.py:827
+#: uni_ticket/views/user.py:825
 msgid "Impossibile eliminare una richiesta protocollata"
 msgstr "Unable to delete a protocol registered request"
 
-#: uni_ticket/views/user.py:857
+#: uni_ticket/views/user.py:855
 msgid "{} - richiesta {} eliminata"
 msgstr "{} - request {} deleted"
 
-#: uni_ticket/views/user.py:874
+#: uni_ticket/views/user.py:872
 msgid "Ticket {} eliminato correttamente"
 msgstr "Ticket {} successfully deleted"
 
-#: uni_ticket/views/user.py:994
+#: uni_ticket/views/user.py:992
 msgid "Nuovo messaggio (da utente). Oggetto: {} / Testo: {}"
 msgstr "New message (from user). Subject: {} / Text: {}"
 
-#: uni_ticket/views/user.py:1001
+#: uni_ticket/views/user.py:999
 msgid "inviato"
 msgstr "sent"
 
-#: uni_ticket/views/user.py:1009
+#: uni_ticket/views/user.py:1007
 msgid "{} - richiesta {} messaggio inviato"
 msgstr "{} - request {} message sent"
 
-#: uni_ticket/views/user.py:1070
+#: uni_ticket/views/user.py:1068
 msgid "Dettaglio task"
 msgstr "Task details"
 
-#: uni_ticket/views/user.py:1099
+#: uni_ticket/views/user.py:1097
 msgid "La richiesta è già chiusa!"
 msgstr "The request is already closed!"
 
-#: uni_ticket/views/user.py:1125
+#: uni_ticket/views/user.py:1123
 msgid "Chiusura richiesta {} da utente proprietario: {}"
 msgstr "Closing request {} from owner user: {}"
 
-#: uni_ticket/views/user.py:1130
+#: uni_ticket/views/user.py:1128
 msgid "Richiesta {} chiusa correttamente"
 msgstr "Request {} closed successfully"
 
-#: uni_ticket/views/user.py:1164
+#: uni_ticket/views/user.py:1162
 msgid "Avvia chat con un operatore"
 msgstr "Start chat with an operator"
 
-#: uni_ticket/views/user.py:1184
+#: uni_ticket/views/user.py:1182
 msgid "Operazione non permessa. La richiesta è ancora attiva"
 msgstr "Operation not permitted. The request is still active"
 
-#: uni_ticket/views/user.py:1189
+#: uni_ticket/views/user.py:1187
 msgid "Il modulo che stai cercando di usare non è più attivo."
 msgstr "The module you are trying to use is no longer active."
 
-#: uni_ticket/views/user.py:1294
+#: uni_ticket/views/user.py:1292
 msgid "Errore nella generazione del file PDF"
 msgstr "Error generating PDF file"
 
@@ -2803,6 +2873,17 @@ msgstr "Search..."
 #: uni_ticket_bootstrap_italia_template/templates/datatables/top_filters.html:10
 msgid "Tutti gli anni"
 msgstr "All years"
+
+#: uni_ticket_bootstrap_italia_template/templates/datatables/top_filters.html:25
+#, fuzzy
+#| msgid "Cerca..."
+msgid "Cerca"
+msgstr "Search..."
+
+#: uni_ticket_bootstrap_italia_template/templates/datatables/top_filters.html:26
+#: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:104
+msgid "Tutte le tipologie"
+msgstr "All types"
 
 #: uni_ticket_bootstrap_italia_template/templates/email-toggle-notify.html:17
 msgid "Notifiche e-mail"
@@ -4212,10 +4293,6 @@ msgstr "Special office"
 msgid "Tipologie di competenza"
 msgstr "Types of competence"
 
-#: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:104
-msgid "Tutte le tipologie"
-msgstr "All types"
-
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:138
 msgid "Rimozione tipologia di richiesta"
 msgstr "Request type removal"
@@ -4691,7 +4768,7 @@ msgstr ""
 msgid "Genera URL per richiesta precompilata"
 msgstr "Generate URL for pre-filled request"
 
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:279
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:274
 msgid "Copiato con successo!"
 msgstr "Copied successfully!"
 
@@ -4723,10 +4800,10 @@ msgstr "Other informations"
 msgid "E-mail"
 msgstr ""
 
-#: uni_ticket_project/settingslocal.py:340
+#: uni_ticket_project/settingslocal.py:339
 msgid "Italiano"
 msgstr ""
 
-#: uni_ticket_project/settingslocal.py:341
+#: uni_ticket_project/settingslocal.py:340
 msgid "Inglese"
 msgstr ""

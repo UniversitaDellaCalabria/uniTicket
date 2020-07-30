@@ -133,7 +133,7 @@ def user_closed_ticket(request):
 @csrf_exempt
 @login_required
 @is_manager
-def manager_not_closed_ticket(request, structure_slug, structure):
+def manager_all_tickets(request, structure_slug, structure):
     """
     Returns all not closed tickets managed by manager
 
@@ -146,8 +146,8 @@ def manager_not_closed_ticket(request, structure_slug, structure):
     :return: JsonResponse
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(code__in=tickets,
-                                        is_closed=False)
+    ticket_list = Ticket.objects.filter(code__in=tickets)
+                                        # is_closed=False)
     dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 
@@ -250,7 +250,7 @@ def manager_closed_ticket(request, structure_slug, structure):
 @csrf_exempt
 @login_required
 @is_operator
-def operator_not_closed_ticket(request, structure_slug,
+def operator_all_tickets(request, structure_slug,
                                structure, office_employee):
     """
     Returns all not closed tickets managed by operator
@@ -266,8 +266,8 @@ def operator_not_closed_ticket(request, structure_slug,
     :return: JsonResponse
     """
     tickets = visible_tickets_to_user(request.user, structure, office_employee)
-    ticket_list = Ticket.objects.filter(code__in=tickets,
-                                        is_closed=False)
+    ticket_list = Ticket.objects.filter(code__in=tickets)
+                                        # is_closed=False)
     dtd = TicketDTD( request, ticket_list, _ticket_columns )
     return JsonResponse(dtd.get_dict())
 

@@ -46,6 +46,6 @@
 
 {% block extra_scripts %}
 {% url 'uni_ticket:manage_ticket_url' structure.slug as var_url %}
-{% url 'uni_ticket:manager_not_closed_ticket_json' structure.slug as ajax_url %}
+{% url 'uni_ticket:manager_all_tickets_json' structure.slug as ajax_url %}
 {% include 'datatables/datatable_script.html' with var_url=var_url ajax_url=ajax_url %}
 {% endblock extra_scripts %}

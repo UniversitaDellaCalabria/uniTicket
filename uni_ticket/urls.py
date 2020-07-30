@@ -51,14 +51,14 @@ urlpatterns += [
     path('{}/manager_opened_ticket.json'.format(structure), datatables.manager_opened_ticket, name='manager_opened_ticket_json'),
     path('{}/my/manager_opened_ticket.json'.format(structure), datatables.manager_my_opened_ticket, name='manager_my_opened_ticket_json'),
     path('{}/manager_closed_ticket.json'.format(structure), datatables.manager_closed_ticket, name='manager_closed_ticket_json'),
-    path('{}/manager_not_closed_ticket.json'.format(structure), datatables.manager_not_closed_ticket, name='manager_not_closed_ticket_json'),
+    path('{}/manager_all_tickets.json'.format(structure), datatables.manager_all_tickets, name='manager_all_tickets_json'),
 
     # Operator json
     path('{}/operator_unassigned_ticket.json'.format(structure), datatables.operator_unassigned_ticket, name='operator_unassigned_ticket_json'),
     path('{}/operator_opened_ticket.json'.format(structure), datatables.operator_opened_ticket, name='operator_opened_ticket_json'),
     path('{}/my/operator_opened_ticket.json'.format(structure), datatables.operator_my_opened_ticket, name='operator_my_opened_ticket_json'),
     path('{}/operator_closed_ticket.json'.format(structure), datatables.operator_closed_ticket, name='operator_closed_ticket_json'),
-    path('{}/operator_not_closed_ticket.json'.format(structure), datatables.operator_not_closed_ticket, name='operator_not_closed_ticket_json'),
+    path('{}/operator_all_tickets.json'.format(structure), datatables.operator_all_tickets, name='operator_all_tickets_json'),
 ]
 
 # Management URLs (manager and operator)
