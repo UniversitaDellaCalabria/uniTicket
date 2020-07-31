@@ -16,7 +16,7 @@
             {% include "logs.html" %}
         </div>
     </div>
-    {% if ticket_taken or ticket.is_closed %}
+    {% if ticket_task %}
     <div class="collapse-header" id="heading3-lft">
         <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
             {% trans "Attività della richiesta" %} ({{ ticket_task|length }})
@@ -29,6 +29,9 @@
             {% endblock ticket_task %}
         </div>
     </div>
+    {% endif %}
+
+    {% if dependences %}
     <div class="collapse-header" id="heading4-lft">
         <button data-toggle="collapse" data-target="#collapse4-lft" aria-expanded="false" aria-controls="collapse4-lft">
             {% trans "Dipendenze da altre richieste" %} ({{ dependences|length }})

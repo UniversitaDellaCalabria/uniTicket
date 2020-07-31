@@ -3,96 +3,8 @@
 {% load i18n %}
 {% load static %}
 
-{% block ticket_dependences %}
-{% if dependences %}
-<div class="it-list-wrapper">
-    <ul class="it-list">
-        {% for dependence in dependences %}
-        <li class="py-2 clearfix">
-            <b>{{ dependence.main_ticket }}</b>
-            {% if dependence.main_ticket.is_closed %}
-                <span class="badge badge-danger">
-                    {% trans "Chiuso" %}
-                </span>
-            {% else %}
-                <span class="badge badge-success">
-                    {% trans "Aperto" %}
-                </span>
-            {% endif %}
-            <br>
-            {{ dependence.main_ticket.input_module.ticket_category }}
-            [{{ dependence.main_ticket.input_module.ticket_category.organizational_structure }}]
-            {% if dependence.note %}
-            <br>
-            <i>{{ dependence.note }}</i>
-            {% endif %}
-
-            {% if not ticket.is_closed %}
-            <button type="button"
-                class="mx-1 btn btn-outline-danger btn-xs float-right"
-                data-toggle="modal"
-                data-target="#deleteDependence{{ forloop.counter0 }}">
-                {% trans "Rimuovi dipendenza" %}
-            </button>
-            <div class="modal fade"
-                 tabindex="-1"
-                 role="dialog"
-                 id="deleteDependence{{ forloop.counter0 }}">
-                <div class="modal-dialog modal-dialog-centered"
-                     role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                {% trans "Eliminazione dipendenza" %}
-                            </h5>
-                            <button class="close" type="button"
-                                    data-dismiss="modal"
-                                    aria-label="Close">
-                               <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                               </svg>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>{% trans "Vuoi davvero eliminare la dipendenza dalla richiesta" %}
-                               <br>
-                               <b>{{ dependence }}</b> ?
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <a role="button" class="btn btn-danger"
-                               href="{% url 'uni_ticket:remove_ticket_dependence' structure_slug=structure.slug ticket_id=ticket.code main_ticket_id=dependence.main_ticket.code %}">
-                                {% trans "Si, elimina la dipendenza" %}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-            <a role="button"
-               class="mx-1 btn btn-outline-secondary btn-xs float-right"
-               href="{% url 'uni_ticket:manage_ticket_url_detail' structure_slug=structure.slug ticket_id=dependence.main_ticket.code %}">
-                {% trans "Vai alla richiesta" %}
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
-</div>
-{% else %}
-{% trans "Nessuna dipendenza" %}
-{% endif %}
-<div>
-    <a class="btn btn-outline-success btn-block mt-4"
-       href="{% url 'uni_ticket:add_ticket_dependence_url' structure_slug=structure.slug ticket_id=ticket.code %}">
-        <svg class="icon icon-xs icon-success">
-            <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
-        </svg> {% trans "Aggiungi nuova dipendenza" %}
-    </a>
-</div>
-{% endblock ticket_dependences %}
 
 {% block ticket_task %}
-{% if ticket_task %}
 <div class="it-list-wrapper">
     <ul class="it-list">
         {% for task in ticket_task %}
@@ -214,9 +126,6 @@
         {% endfor %}
     </ul>
 </div>
-{% else %}
-{% trans "Nessuna attività" %}
-{% endif %}
 <div>
     <a class="btn btn-outline-success btn-block mt-4"
        href="{% url 'uni_ticket:add_ticket_task_url' structure_slug=structure.slug ticket_id=ticket.code %}">
@@ -226,3 +135,87 @@
     </a>
 </div>
 {% endblock ticket_task %}
+
+{% block ticket_dependences %}
+<div class="it-list-wrapper">
+    <ul class="it-list">
+        {% for dependence in dependences %}
+        <li class="py-2 clearfix">
+            <b>{{ dependence.main_ticket }}</b>
+            {% if dependence.main_ticket.is_closed %}
+                <span class="badge badge-danger">
+                    {% trans "Chiuso" %}
+                </span>
+            {% else %}
+                <span class="badge badge-success">
+                    {% trans "Aperto" %}
+                </span>
+            {% endif %}
+            <br>
+            {{ dependence.main_ticket.input_module.ticket_category }}
+            [{{ dependence.main_ticket.input_module.ticket_category.organizational_structure }}]
+            {% if dependence.note %}
+            <br>
+            <i>{{ dependence.note }}</i>
+            {% endif %}
+
+            {% if not ticket.is_closed %}
+            <button type="button"
+                class="mx-1 btn btn-outline-danger btn-xs float-right"
+                data-toggle="modal"
+                data-target="#deleteDependence{{ forloop.counter0 }}">
+                {% trans "Rimuovi dipendenza" %}
+            </button>
+            <div class="modal fade"
+                 tabindex="-1"
+                 role="dialog"
+                 id="deleteDependence{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Eliminazione dipendenza" %}
+                            </h5>
+                            <button class="close" type="button"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero eliminare la dipendenza dalla richiesta" %}
+                               <br>
+                               <b>{{ dependence }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-danger"
+                               href="{% url 'uni_ticket:remove_ticket_dependence' structure_slug=structure.slug ticket_id=ticket.code main_ticket_id=dependence.main_ticket.code %}">
+                                {% trans "Si, elimina la dipendenza" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <a role="button"
+               class="mx-1 btn btn-outline-secondary btn-xs float-right"
+               href="{% url 'uni_ticket:manage_ticket_url_detail' structure_slug=structure.slug ticket_id=dependence.main_ticket.code %}">
+                {% trans "Vai alla richiesta" %}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    <a class="btn btn-outline-success btn-block mt-4"
+       href="{% url 'uni_ticket:add_ticket_dependence_url' structure_slug=structure.slug ticket_id=ticket.code %}">
+        <svg class="icon icon-xs icon-success">
+            <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
+        </svg> {% trans "Aggiungi nuova dipendenza" %}
+    </a>
+</div>
+{% endblock ticket_dependences %}
