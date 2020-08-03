@@ -285,3 +285,226 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         assert response.status_code == 200
         assert not office_deleted
 
+    def test_category_protocol_configuration(self):
+        # Create
+        name = 'Conf test 1'
+        protocollo_cod_titolario = '9002'
+        protocollo_fascicolo_numero = 1
+        protocollo_fascicolo_anno = 2020
+
+        params = {'name': name,
+                  'protocollo_cod_titolario': protocollo_cod_titolario,
+                  'protocollo_fascicolo_numero': protocollo_fascicolo_numero,
+                  'protocollo_fascicolo_anno': protocollo_fascicolo_anno}
+
+        response = self.client.post(reverse('uni_ticket:manager_category_protocol_configuration_new',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug}),
+                                    params,
+                                    follow=True)
+        configuration = TicketCategoryWSArchiPro.objects.get(ticket_category=self.category_1_str_1,
+                                                             name=name)
+        assert response.status_code == 200
+        assert configuration
+        assert not configuration.is_active
+
+        # Edit
+        new_name = 'Conf test 1 - edited'
+
+        params = {'name': new_name,
+                  'protocollo_cod_titolario': protocollo_cod_titolario,
+                  'protocollo_fascicolo_numero': protocollo_fascicolo_numero,
+                  'protocollo_fascicolo_anno': protocollo_fascicolo_anno}
+
+        response = self.client.post(reverse('uni_ticket:manager_category_protocol_configuration_detail',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'configuration_id': configuration.pk}),
+                                    params,
+                                    follow=True)
+
+        assert response.status_code == 200
+
+        configuration.refresh_from_db()
+        assert configuration.name == new_name
+        # assert condition.is_active
+
+        #Enable
+        response = self.client.get(reverse('uni_ticket:manager_category_protocol_configuration_enable',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'configuration_id': configuration.pk}),
+                                    follow=True)
+
+        assert response.status_code == 200
+
+        configuration.refresh_from_db()
+        assert configuration.is_active
+
+        #Disable
+        response = self.client.get(reverse('uni_ticket:manager_category_protocol_configuration_disable',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'configuration_id': configuration.pk}),
+                                    follow=True)
+
+        assert response.status_code == 200
+
+        configuration.refresh_from_db()
+        assert not configuration.is_active
+
+        #Delete
+        response = self.client.get(reverse('uni_ticket:manager_category_protocol_configuration_delete',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'configuration_id': configuration.pk}),
+                                    follow=True)
+
+        assert response.status_code == 200
+        assert not TicketCategoryWSArchiPro.objects.filter(ticket_category=self.category_1_str_1,
+                                                           name=new_name)
+
+    def test_category_default_reply(self):
+        # Create
+        text = 'Default reply'
+
+        params = {'text': text}
+
+        response = self.client.post(reverse('uni_ticket:manager_category_default_reply_new',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug}),
+                                    params,
+                                    follow=True)
+        reply = TicketCategoryDefaultReply.objects.get(ticket_category=self.category_1_str_1,
+                                                       text=text)
+        assert response.status_code == 200
+        assert reply
+        assert reply.is_active
+
+        # Edit
+        new_text = 'Default reply - edited'
+
+        params = {'text': new_text}
+
+        response = self.client.post(reverse('uni_ticket:manager_category_default_reply_detail',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'default_reply_id': reply.pk}),
+                                    params,
+                                    follow=True)
+
+        assert response.status_code == 200
+
+        reply.refresh_from_db()
+        assert reply.text == new_text
+        # assert condition.is_active
+
+        #Disable
+        response = self.client.get(reverse('uni_ticket:manager_category_default_reply_disable',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'default_reply_id': reply.pk}),
+                                    follow=True)
+
+        assert response.status_code == 200
+
+        reply.refresh_from_db()
+        assert not reply.is_active
+
+        #Enable
+        response = self.client.get(reverse('uni_ticket:manager_category_default_reply_enable',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'default_reply_id': reply.pk}),
+                                    follow=True)
+
+        assert response.status_code == 200
+
+        reply.refresh_from_db()
+        assert reply.is_active
+
+        #Delete
+        response = self.client.get(reverse('uni_ticket:manager_category_default_reply_delete',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'default_reply_id': reply.pk}),
+                                    follow=True)
+
+        assert response.status_code == 200
+        assert not TicketCategoryDefaultReply.objects.filter(ticket_category=self.category_1_str_1,
+                                                           text=new_text)
+
+    def test_category_task(self):
+        # Create
+        subject = 'Category task'
+        description = 'Task description'
+
+        params = {'subject': subject,
+                  'description': description,
+                  'priority': 0}
+
+        response = self.client.post(reverse('uni_ticket:manager_category_task_new',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug}),
+                                    params,
+                                    follow=True)
+        task = TicketCategoryTask.objects.get(category=self.category_1_str_1,
+                                              subject=subject)
+        assert response.status_code == 200
+        assert task
+        assert not task.is_active
+
+        # Edit
+        new_priority = 2
+
+        params = {'subject': subject,
+                  'description': description,
+                  'priority': new_priority}
+
+        response = self.client.post(reverse('uni_ticket:manager_category_task_edit',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'task_id': task.code}),
+                                    params,
+                                    follow=True)
+
+        assert response.status_code == 200
+
+        task.refresh_from_db()
+        assert task.priority == new_priority
+        # assert condition.is_active
+
+        #Enable
+        response = self.client.get(reverse('uni_ticket:manager_category_task_enable',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'task_id': task.code}),
+                                    follow=True)
+
+        assert response.status_code == 200
+
+        task.refresh_from_db()
+        assert task.is_active
+
+        #Disable
+        response = self.client.get(reverse('uni_ticket:manager_category_task_disable',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'task_id': task.code}),
+                                    follow=True)
+
+        assert response.status_code == 200
+
+        task.refresh_from_db()
+        assert not task.is_active
+
+        #Delete
+        response = self.client.get(reverse('uni_ticket:manager_category_task_delete',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'task_id': task.code}),
+                                    follow=True)
+
+        assert response.status_code == 200
+        assert not TicketCategoryTask.objects.filter(ticket_category=self.category_1_str_1,
+                                                           subject=subject)
