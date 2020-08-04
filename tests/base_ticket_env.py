@@ -50,8 +50,36 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
         ticket = Ticket.objects.filter(subject=subject).first()
         return ticket
 
+    def delegate_ticket(self, subject, attachment,
+                        structure_slug, category):
+        # Create new ticket
+        # New ticket preload (select category)
+        response = self.client.get(reverse('uni_ticket:new_ticket_preload',
+                                           kwargs={'structure_slug': structure_slug,}),
+                                   follow=True)
+        assert response.status_code == 200
+        assert category in response.context['categorie']
+
+        # Add ticket (base form with an attachment)
+        params = {'ticket_subject': subject,
+                  'ticket_description': subject,
+                  settings.TICKET_GENERATE_URL_BUTTON_NAME: 'delega'}
+        response = self.client.post(reverse('uni_ticket:add_new_ticket',
+                                            kwargs={'structure_slug': structure_slug,
+                                                    'category_slug': category.slug}),
+                                    params,
+                                    follow=True)
+        assert response.status_code == 200
+        assert response.context['url_to_import']
+
     def setUp(self):
         super().setUp()
+
+        # Generate URL pre-filled ticket
+        self.ticket = self.delegate_ticket(subject='Ticket 1',
+                                           attachment=self.create_fake_file(),
+                                           structure_slug=self.structure_1.slug,
+                                           category=self.category_1_str_1)
 
         # Create new ticket
         self.ticket = self.create_ticket(subject='Ticket 1',

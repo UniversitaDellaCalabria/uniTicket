@@ -233,7 +233,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
 
         # take ticket
         response = self.client.get(reverse('uni_ticket:ticket_taken_by_unassigned_offices',
-                                            kwargs={'structure_slug': self.structure_1.slug,
+                                            kwargs={'structure_slug': self.structure_2.slug,
                                                     'ticket_id': self.ticket.code}),
                                    follow=True)
         assert response.status_code == 200
@@ -248,7 +248,21 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                     follow=True)
         assert response.status_code == 200
         self.ticket.refresh_from_db()
-        assert not self.ticket.priority == -1
+        assert self.ticket.priority == -1
+
+        # Remove competence
+        leave_office = OrganizationalStructureOffice.objects.filter(organizational_structure=self.structure_2,
+                                                                    name="Office 1 Stucture 2").first()
+        params = {'office': leave_office.slug}
+        response = self.client.post(reverse('uni_ticket:leave_ticket_competence',
+                                           kwargs={'structure_slug': self.structure_2.slug,
+                                                   'ticket_id': self.ticket.code}),
+                                    params,
+                                   follow=True)
+        self.ticket.refresh_from_db()
+        assert response.status_code == 200
+        assert self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_1)
+        assert not self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_2)
 
     def test_add_ticket_competence_and_readonly(self):
         # Take ticket

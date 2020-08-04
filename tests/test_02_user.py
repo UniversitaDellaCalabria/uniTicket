@@ -35,6 +35,12 @@ class Test_UserFunctions(BaseTicketEnvironment):
         assert response.status_code == 200
         self.assertEqual(self.ticket.subject, subject)
 
+    def test_ticket_precompile(self):
+        response = self.client.get(reverse('uni_ticket:user_clone_ticket',
+                                            kwargs={'ticket_id': self.ticket.code}),
+                                    follow=True)
+        assert response.status_code == 200
+
     def test_delete_attachment(self):
         # Delete attachment
         assert self.ticket.get_allegati_dict()
@@ -105,5 +111,16 @@ class Test_UserFunctions(BaseTicketEnvironment):
         response = self.client.get(reverse('uni_ticket:download_attachment',
                                             kwargs={'ticket_id': self.ticket.code,
                                                     'attachment': 'file_field_1'}),
+                                   follow=True)
+        assert response.status_code == 200
+
+    # def test_download_ticket_pdf(self):
+        # response = self.client.get(reverse('uni_ticket:ticket_detail_print_pdf',
+                                            # kwargs={'ticket_id': self.ticket.code}),
+                                   # follow=True)
+        # assert response.status_code == 200
+
+    def test_chat_new_preload(self):
+        response = self.client.get(reverse('uni_ticket:new_chat_preload'),
                                    follow=True)
         assert response.status_code == 200

@@ -4,7 +4,7 @@ from django.test import Client, TestCase
 from django.utils.text import slugify
 
 from organizational_area.models import *
-
+from uni_ticket.models import OrganizationalStructureWSArchiPro
 
 class BaseTest(TestCase):
 
@@ -14,6 +14,19 @@ class BaseTest(TestCase):
                                                       slug=slugify(name),
                                                       unique_code=slugify(name),
                                                       structure_type=structure_type)
+
+    def create_protocol_configuration(self, structure):
+        conf = OrganizationalStructureWSArchiPro(organizational_structure=structure,
+                                                 name="Example conf",
+                                                 is_active=True,
+                                                 protocollo_username = "username",
+                                                 protocollo_password = "pw",
+                                                 protocollo_aoo = "aoo000",
+                                                 protocollo_agd = "agd000",
+                                                 protocollo_uo = "uo000",
+                                                 protocollo_email = "testconf@email.email")
+        conf.save()
+        return conf
 
     def create_user(self, name):
         user_model = apps.get_model(settings.AUTH_USER_MODEL)
@@ -41,6 +54,9 @@ class BaseTest(TestCase):
         # Create structures
         self.structure_1 = self.create_structure(name="Structure 1")
         self.structure_2 = self.create_structure(name="Structure 2")
+
+        # Create protocol conf
+        self.structure_1_protocol_conf = self.create_protocol_configuration(structure=self.structure_1)
 
         # Create users
         # Staff users

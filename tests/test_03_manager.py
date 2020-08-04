@@ -103,6 +103,18 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         self.assertFalse(self.category_1_str_1.is_active)
         self.assertFalse(self.category_1_str_1.organizational_office == self.office_1_str_1)
 
+    def test_remove_office_from_category(self):
+        # Remove category from office competences
+        response = self.client.get(reverse('uni_ticket:manager_remove_category_office',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'office_slug': self.office_1_str_1.slug}),
+                                    follow=True)
+        assert response.status_code == 200
+        self.category_1_str_1.refresh_from_db()
+        self.assertFalse(self.category_1_str_1.is_active)
+        self.assertFalse(self.category_1_str_1.organizational_office == self.office_1_str_1)
+
     def test_disable_input_module(self):
         # Disable input module and category
         response = self.client.get(reverse('uni_ticket:manager_category_input_module_disable',
@@ -118,7 +130,7 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
 
     def test_edit_input_module(self):
         # Edit
-        new_name = 'new module name'
+        new_name = 'edited input module'
         new_params = {'name': new_name,}
         response = self.client.post(reverse('uni_ticket:manager_category_input_module_edit',
                                             kwargs={'structure_slug': self.structure_1.slug,
@@ -129,6 +141,28 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         assert response.status_code == 200
         self.module_2.refresh_from_db()
         assert self.module_2.name == new_name
+
+    def test_clone_input_module_preload(self):
+        # Edit
+        response = self.client.get(reverse('uni_ticket:manager_category_input_module_clone_preload',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'module_id': self.module_2.pk,
+                                                    'selected_structure_slug': self.structure_1.slug,
+                                                    'selected_category_slug': self.category_1_str_1.slug}),
+                                    follow=True)
+        assert response.status_code == 200
+
+    def test_clone_input_module(self):
+        # Edit
+        response = self.client.get(reverse('uni_ticket:manager_category_input_module_clone',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'module_id': self.module_2.pk,
+                                                    'selected_structure_slug': self.structure_1.slug,
+                                                    'selected_category_slug': self.category_1_str_1.slug}),
+                                    follow=True)
+        assert response.status_code == 200
 
     def test_delete_input_module(self):
         # Delete
@@ -506,5 +540,29 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
                                     follow=True)
 
         assert response.status_code == 200
-        assert not TicketCategoryTask.objects.filter(ticket_category=self.category_1_str_1,
-                                                           subject=subject)
+        assert not TicketCategoryTask.objects.filter(category=self.category_1_str_1,
+                                                     subject=subject)
+
+    def test_structure_protocol_configuration_detail(self):
+        response = self.client.get(reverse('uni_ticket:manager_structure_protocol_configuration_detail',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'configuration_id': self.structure_1_protocol_conf.pk}),
+                                   follow=True)
+        assert response.status_code == 200
+
+    def test_category_module_preview(self):
+        params = {'ticket_subject': "subject",
+                  'ticket_description': "description"}
+        response = self.client.post(reverse('uni_ticket:manager_category_input_module_preview',
+                                            kwargs={'structure_slug': self.structure_1.slug,
+                                                    'category_slug': self.category_1_str_1.slug,
+                                                    'module_id': self.module_2.pk,}),
+                                    params,
+                                   follow=True)
+        assert response.status_code == 200
+
+    def test_manager_settings(self):
+        response = self.client.get(reverse('uni_ticket:manager_user_settings',
+                                            kwargs={'structure_slug': self.structure_1.slug}),
+                                   follow=True)
+        assert response.status_code == 200

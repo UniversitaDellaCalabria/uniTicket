@@ -1178,9 +1178,9 @@ def ticket_clone(request, ticket_id):
                                       code=ticket_id,
                                       created_by=request.user)
     # if ticket is not closed and owner has closed it
-    if not main_ticket.is_closed:
-       return custom_message(request, _("Operazione non permessa. "
-                                        "La richiesta è ancora attiva"))
+    # if not main_ticket.is_closed:
+       # return custom_message(request, _("Operazione non permessa. "
+                                        # "La richiesta è ancora attiva"))
 
     # if ticket module is out of date
     if not main_ticket.input_module.is_active:
@@ -1229,7 +1229,6 @@ def download_ticket_pdf(request, ticket_id, ticket):
 
     # file names
     pdf_fname = '{}.pdf'.format(ticket.code)
-    pdf_path = settings.TMP_DIR + os.path.sep + pdf_fname
 
     # get PDF
 
@@ -1244,54 +1243,57 @@ def download_ticket_pdf(request, ticket_id, ticket):
     #
     #
     #
-    main_pdf_file = response_as_pdf(response, pdf_fname).content
-    merger = PdfFileMerger(strict=False)
-    main_pdf_file = BytesIO(main_pdf_file)
-    merger.append(main_pdf_file)
 
-    try:
-        # append attachments
+    # pdf_path = settings.TMP_DIR + os.path.sep + pdf_fname
+    # main_pdf_file = response_as_pdf(response, pdf_fname).content
+    # merger = PdfFileMerger(strict=False)
+    # main_pdf_file = BytesIO(main_pdf_file)
+    # merger.append(main_pdf_file)
 
-        # not PDF files raise Exception!
+    # try:
+        # #append attachments
 
-        for k,v in ticket.get_allegati_dict().items():
-            path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
-                                     ticket.get_folder(),
-                                     v)
-            merger.append(path)
-        # end append attachments
-        merger.write(pdf_path)
+        # #not PDF files raise Exception!
 
-        # put all in response
-        f = open(pdf_path, 'rb')
-        response = HttpResponse(f.read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'inline; filename=' + pdf_fname
-    except Exception as e:
-        logger.error('[{}] user {} tried to download pdf version '
-                     ' of ticket {} but got an error'
-                     ''.format(timezone.now(),
-                               request.user,
-                               ticket))
+        # for k,v in ticket.get_allegati_dict().items():
+            # path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
+                                     # ticket.get_folder(),
+                                     # v)
+            # merger.append(path)
 
-        # if attachments!
-        # json_dict = json.loads(ticket.modulo_compilato)
-        # ticket_dict = get_as_dict(json_dict)
+        # #end append attachments
+        # merger.write(pdf_path)
+
+        # #put all in response
+        # f = open(pdf_path, 'rb')
+        # response = HttpResponse(f.read(), content_type='application/pdf')
+        # response['Content-Disposition'] = 'inline; filename=' + pdf_fname
+    # except Exception as e:
+        # logger.error('[{}] user {} tried to download pdf version '
+                     # ' of ticket {} but got an error'
+                     # ''.format(timezone.now(),
+                               # request.user,
+                               # ticket))
+
+        # #if attachments!
+        # #json_dict = json.loads(ticket.modulo_compilato)
+        # #ticket_dict = get_as_dict(json_dict)
+        # #return custom_message(request,
+                              ## _("Sei incorso in un errore relativo alla interpretazione "
+                                ## "dei file PDF da te immessi come allegato. "
+                                ## "Nello specifico: '{}' presenta delle anomalie di formato. "
+                                ## "Questo è dovuto al processo di produzione "
+                                ## "del PDF. E' necessario ricreare il PDF "
+                                ## "con una procedura differente da quella "
+                                ## "precedenemente utilizzata oppure, più "
+                                ## "semplicemente, ristampare il PDF come file, "
+                                ## "rimuovere il vecchio allegato dal modulo inserito "
+                                ## "e caricare il nuovo appena ristampato/riconvertito."
+                                ## ).format(ticket_dict.get('allegati')))
         # return custom_message(request,
-                              # _("Sei incorso in un errore relativo alla interpretazione "
-                                # "dei file PDF da te immessi come allegato. "
-                                # "Nello specifico: '{}' presenta delle anomalie di formato. "
-                                # "Questo è dovuto al processo di produzione "
-                                # "del PDF. E' necessario ricreare il PDF "
-                                # "con una procedura differente da quella "
-                                # "precedenemente utilizzata oppure, più "
-                                # "semplicemente, ristampare il PDF come file, "
-                                # "rimuovere il vecchio allegato dal modulo inserito "
-                                # "e caricare il nuovo appena ristampato/riconvertito."
-                                # ).format(ticket_dict.get('allegati')))
-        return custom_message(request,
-                              _("Errore nella generazione del file PDF"))
-    # clean
-    f.close()
-    main_pdf_file.close()
-    os.remove(pdf_path)
-    return response
+                              # _("Errore nella generazione del file PDF"))
+    ## clean
+    # f.close()
+    # main_pdf_file.close()
+    # os.remove(pdf_path)
+    # return response
