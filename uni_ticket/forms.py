@@ -72,6 +72,8 @@ class CategoryInputListForm(ModelForm):
                   'pre_text': _('Testo statico (Pre-text)'),
                   'valore': _('Definizione delle scelte'),
                   'is_required': _('Obbligatorio'),
+                  'aiuto': _('Aiuto'),
+                  'ordinamento': _('Ordinamento')
                   }
         help_texts = {'name': _("Il nome che comparirà nel form"),
                       'pre_text': _("Da visualizzare prima del campo "

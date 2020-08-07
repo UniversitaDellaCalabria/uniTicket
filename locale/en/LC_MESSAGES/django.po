@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-30 12:30+0200\n"
+"POT-Creation-Date: 2020-08-07 08:47+0200\n"
 "PO-Revision-Date: 2020-07-16 21:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -57,7 +57,7 @@ msgid "Matricola Studente"
 msgstr ""
 
 #: accounts/models.py:29 uni_ticket/forms.py:34 uni_ticket/forms.py:62
-#: uni_ticket/forms.py:170
+#: uni_ticket/forms.py:172
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:79
 #: uni_ticket_bootstrap_italia_template/templates/user_data.html:14
 msgid "Nome"
@@ -850,7 +850,7 @@ msgstr "The ticket has not been assigned to this facility"
 msgid "Il ticket deve essere prima preso in carico per poter essere gestito"
 msgstr "The ticket must first be taken in charge in order to be managed"
 
-#: uni_ticket/forms.py:35 uni_ticket/forms.py:171 uni_ticket/settings.py:44
+#: uni_ticket/forms.py:35 uni_ticket/forms.py:173 uni_ticket/settings.py:44
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:125
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:86
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:93
@@ -892,23 +892,33 @@ msgstr "Definition of choices"
 msgid "Obbligatorio"
 msgstr "Required"
 
-#: uni_ticket/forms.py:76
+#: uni_ticket/forms.py:75
+#: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:84
+msgid "Aiuto"
+msgstr "Help"
+
+#: uni_ticket/forms.py:76 uni_ticket/forms.py:358
+#: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:126
+msgid "Ordinamento"
+msgstr "Sorting"
+
+#: uni_ticket/forms.py:78
 msgid "Il nome che comparirà nel form"
 msgstr "The name that will appear on the form"
 
-#: uni_ticket/forms.py:77
+#: uni_ticket/forms.py:79
 msgid "Da visualizzare prima del campo (accetta formattazione Markdown)"
 msgstr "To be displayed before the field (accepts Markdown formatting)"
 
-#: uni_ticket/forms.py:79
+#: uni_ticket/forms.py:81
 msgid "Testo per guidare nella fase di compilazione"
 msgstr "Text to guide you in the compilation phase"
 
-#: uni_ticket/forms.py:80
+#: uni_ticket/forms.py:82
 msgid "Posizione nel form rispetto agli altri campi"
 msgstr "Position in the form with respect to the other fields"
 
-#: uni_ticket/forms.py:81
+#: uni_ticket/forms.py:83
 msgid ""
 "<li>La compilazione di quest'area di testo non avrà effetti sui campi che "
 "non accettano una serie di opzioni.</li><li>Se il campo prevede una serie di "
@@ -934,15 +944,15 @@ msgid ""
 "dynamic_fields.py'>qui</a>.</li>"
 msgstr ""
 
-#: uni_ticket/forms.py:135 uni_ticket/forms.py:150
+#: uni_ticket/forms.py:137 uni_ticket/forms.py:152
 msgid "Stato chiusura"
 msgstr "Closing state"
 
-#: uni_ticket/forms.py:138 uni_ticket/forms.py:153
+#: uni_ticket/forms.py:140 uni_ticket/forms.py:155
 msgid "Motivazione"
 msgstr "Grounds"
 
-#: uni_ticket/forms.py:154 uni_ticket/forms.py:373
+#: uni_ticket/forms.py:156 uni_ticket/forms.py:375
 #, python-brace-format
 msgid ""
 "Inserisci il tag {user} per inserire automaticamente il nome e cognome "
@@ -951,17 +961,17 @@ msgstr ""
 "Enter the {user} tag to automatically insert the name and surname of the "
 "user who created the request"
 
-#: uni_ticket/forms.py:179
+#: uni_ticket/forms.py:181
 msgid "Assegna operatore"
 msgstr "Assign operator"
 
-#: uni_ticket/forms.py:182 uni_ticket/forms.py:296
+#: uni_ticket/forms.py:184 uni_ticket/forms.py:298
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:237
 msgid "Note"
 msgstr "Notes"
 
-#: uni_ticket/forms.py:218 uni_ticket/forms.py:227 uni_ticket/forms.py:340
-#: uni_ticket/forms.py:408 uni_ticket/forms.py:422
+#: uni_ticket/forms.py:220 uni_ticket/forms.py:229 uni_ticket/forms.py:342
+#: uni_ticket/forms.py:410 uni_ticket/forms.py:424
 #: uni_ticket_bootstrap_italia_template/templates/datatables/table_header.html:19
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:74
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:23
@@ -969,7 +979,7 @@ msgstr "Notes"
 msgid "Priorità"
 msgstr "Priority"
 
-#: uni_ticket/forms.py:244 uni_ticket/forms.py:338 uni_ticket/forms.py:406
+#: uni_ticket/forms.py:246 uni_ticket/forms.py:340 uni_ticket/forms.py:408
 #: uni_ticket_bootstrap_italia_template/templates/datatables/table_header.html:12
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:82
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:35
@@ -977,57 +987,52 @@ msgstr "Priority"
 msgid "Oggetto"
 msgstr "Subject"
 
-#: uni_ticket/forms.py:245 uni_ticket/forms.py:339 uni_ticket/forms.py:355
-#: uni_ticket/forms.py:372 uni_ticket/forms.py:407
+#: uni_ticket/forms.py:247 uni_ticket/forms.py:341 uni_ticket/forms.py:357
+#: uni_ticket/forms.py:374 uni_ticket/forms.py:409
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:94
 msgid "Testo"
 msgstr "Text"
 
-#: uni_ticket/forms.py:246 uni_ticket/forms.py:341 uni_ticket/forms.py:357
-#: uni_ticket/forms.py:409
+#: uni_ticket/forms.py:248 uni_ticket/forms.py:343 uni_ticket/forms.py:359
+#: uni_ticket/forms.py:411
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:103
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:92
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:45
 msgid "Allegato"
 msgstr "Attachment"
 
-#: uni_ticket/forms.py:285
+#: uni_ticket/forms.py:287
 #: uni_ticket_bootstrap_italia_template/templates/management/add_ticket_competence.html:42
 msgid "Categoria"
 msgstr "Category"
 
-#: uni_ticket/forms.py:286
+#: uni_ticket/forms.py:288
 msgid "Continua a seguire"
 msgstr "Keep following"
 
-#: uni_ticket/forms.py:287
+#: uni_ticket/forms.py:289
 msgid "Sola lettura"
 msgstr "Read only"
 
-#: uni_ticket/forms.py:288
+#: uni_ticket/forms.py:290
 msgid "Ufficio selezionato"
 msgstr "Selected office"
 
-#: uni_ticket/forms.py:354
+#: uni_ticket/forms.py:356
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:60
 msgid "Titolo"
 msgstr "Title"
 
-#: uni_ticket/forms.py:356
-#: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:126
-msgid "Ordinamento"
-msgstr "Sorting"
-
-#: uni_ticket/forms.py:358
+#: uni_ticket/forms.py:360
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:114
 msgid "Collassabile (in nuova richiesta)"
 msgstr "Collapsible (in new request)"
 
-#: uni_ticket/forms.py:359
+#: uni_ticket/forms.py:361
 msgid "Visibile nel documento di stampa"
 msgstr "Visible in the print document"
 
-#: uni_ticket/forms.py:360 uni_ticket/forms.py:410
+#: uni_ticket/forms.py:362 uni_ticket/forms.py:412
 #: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:25
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:42
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:68
@@ -1049,35 +1054,35 @@ msgstr "Visible in the print document"
 msgid "Attiva"
 msgstr "Active"
 
-#: uni_ticket/forms.py:385
+#: uni_ticket/forms.py:387
 msgid "Assegna tipologia di richiesta"
 msgstr "Assign type of request"
 
-#: uni_ticket/forms.py:425
+#: uni_ticket/forms.py:427
 msgid "Seleziona operatore"
 msgstr "Select operator"
 
-#: uni_ticket/forms.py:446
+#: uni_ticket/forms.py:448
 msgid "Seleziona l'ufficio"
 msgstr "Select the office"
 
-#: uni_ticket/forms.py:510 uni_ticket/models.py:1203
+#: uni_ticket/forms.py:512 uni_ticket/models.py:1203
 msgid "Denominazione configurazione"
 msgstr "Configuration name"
 
-#: uni_ticket/forms.py:511
+#: uni_ticket/forms.py:513
 msgid "Titolario"
 msgstr ""
 
-#: uni_ticket/forms.py:512
+#: uni_ticket/forms.py:514
 msgid "Numero Fascicolo"
 msgstr "Issue number"
 
-#: uni_ticket/forms.py:513
+#: uni_ticket/forms.py:515
 msgid "Anno Fascicolo"
 msgstr "Issue year"
 
-#: uni_ticket/forms.py:514
+#: uni_ticket/forms.py:516
 msgid "A discrezione dell'utente. Es: \"Configurazione anno 2020\""
 msgstr "At the user's discretion. Ex: \"Configuration year 2020\""
 
@@ -1665,7 +1670,7 @@ msgstr "File size too large: {} bytes. Max {} bytes"
 
 #: uni_ticket/views/generic.py:149
 #: uni_ticket_bootstrap_italia_template/templates/manager/offices_list.html:43
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:80
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:73
 msgid "Richieste assegnate"
 msgstr "Assigned requests"
 
@@ -1674,7 +1679,7 @@ msgid "Richieste assegnate a me"
 msgstr "Assigned to me"
 
 #: uni_ticket/views/generic.py:197
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:87
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:80
 msgid "Richieste aperte"
 msgstr "Open requests"
 
@@ -1936,7 +1941,7 @@ msgstr "New competence: {} - {} - Category: {}"
 #: uni_ticket_bootstrap_italia_template/templates/user/dashboard.html:36
 #: uni_ticket_bootstrap_italia_template/templates/user/dashboard.html:75
 #: uni_ticket_bootstrap_italia_template/templates/user/main_menu.html:37
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:100
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:101
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_messages.html:40
 msgid "Messaggi"
 msgstr "Messages"
@@ -2740,17 +2745,9 @@ msgstr "Request {} closed successfully"
 msgid "Avvia chat con un operatore"
 msgstr "Start chat with an operator"
 
-#: uni_ticket/views/user.py:1182
-msgid "Operazione non permessa. La richiesta è ancora attiva"
-msgstr "Operation not permitted. The request is still active"
-
 #: uni_ticket/views/user.py:1187
 msgid "Il modulo che stai cercando di usare non è più attivo."
 msgstr "The module you are trying to use is no longer active."
-
-#: uni_ticket/views/user.py:1292
-msgid "Errore nella generazione del file PDF"
-msgstr "Error generating PDF file"
 
 #: uni_ticket_bootstrap_italia_template/templates/404.html:9
 msgid "Errore 404"
@@ -3126,7 +3123,7 @@ msgid "Si, chiudi l\\"
 msgstr "Yes, close the task"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:21
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:127
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:39
 msgid "Riapri attività"
 msgstr "Reopen the task"
 
@@ -3153,7 +3150,7 @@ msgstr "Yes, reopen the task"
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_protocol_configurations.html:48
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:23
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:30
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:108
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:109
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_edit.html:122
 msgid "Modifica"
 msgstr "Edit"
@@ -3172,30 +3169,30 @@ msgstr "Edit"
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_protocol_configurations.html:27
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:51
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:58
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:126
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:127
 msgid "Elimina"
 msgstr "Delete"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:72
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:337
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:117
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:118
 msgid "Chiudi"
 msgstr "Close"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:95
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:154
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:66
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_default_tasks.html:113
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:170
 msgid "Eliminazione attività"
 msgstr "Deleting task"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:106
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:165
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:77
 msgid "Vuoi davvero eliminare l'attività dalla richiesta"
 msgstr "Do you really want to delete the request task"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:114
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:173
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:85
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_default_tasks.html:130
 msgid "Si, elimina l'attività"
 msgstr "Yes, delete the task"
@@ -3256,7 +3253,7 @@ msgstr "Do you really want to delete the attachment"
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_edit.html:99
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:419
 #: uni_ticket_bootstrap_italia_template/templates/ticket_assistance.html:85
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:154
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:155
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_edit.html:106
 msgid "Si, elimina"
 msgstr "Yes, delete"
@@ -3401,86 +3398,76 @@ msgstr "Leave competence"
 msgid "Aggiungi dipendenza"
 msgstr "Add dependency"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:15
-#: uni_ticket_bootstrap_italia_template/templates/ticket_dependences.html:12
-msgid "Chiuso"
-msgstr "Closed"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:19
-msgid "Aperto"
-msgstr "Open"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:35
-msgid "Rimuovi dipendenza"
-msgstr "Remove dependency"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:46
-msgid "Eliminazione dipendenza"
-msgstr "Removing dependency"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:57
-msgid "Vuoi davvero eliminare la dipendenza dalla richiesta"
-msgstr "Do you really want to delete the dependency from the request"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:65
-msgid "Si, elimina la dipendenza"
-msgstr "Yes, delete dependency"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:75
-#: uni_ticket_bootstrap_italia_template/templates/ticket_dependences.html:26
-msgid "Vai alla richiesta"
-msgstr "Go to the request"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:82
-#: uni_ticket_bootstrap_italia_template/templates/ticket_dependences.html:33
-msgid "Nessuna dipendenza"
-msgstr "No dependency"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:89
-msgid "Aggiungi nuova dipendenza"
-msgstr "Add new dependency"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:111
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:118
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:23
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:30
 msgid "Elimina attività"
 msgstr "Delete task"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:116
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:28
 msgid "Questa attività non può essere eliminata"
 msgstr "This task cannot be deleted"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:133
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:45
 msgid "Chiudi attività"
 msgstr "Close task"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:140
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:52
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:175
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:131
 #: uni_ticket_bootstrap_italia_template/templates/ticket_task.html:18
 msgid "Dettagli"
 msgstr "Details"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:187
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:99
 msgid "Riapertura task"
 msgstr "Reopening task"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:197
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:109
 msgid "Vuoi davvero riaprire il task"
 msgstr "Do you really want to reopen the task"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:205
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:117
 msgid "Si, riapri il task"
 msgstr "Yes, reopen the task"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:218
-#: uni_ticket_bootstrap_italia_template/templates/ticket_task.html:27
-msgid "Nessuna attività"
-msgstr "No tasks"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:225
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:134
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_options.html:57
 msgid "Aggiungi nuova attività"
 msgstr "Add new task"
+
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:147
+#: uni_ticket_bootstrap_italia_template/templates/ticket_dependences.html:12
+msgid "Chiuso"
+msgstr "Closed"
+
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:151
+msgid "Aperto"
+msgstr "Open"
+
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:167
+msgid "Rimuovi dipendenza"
+msgstr "Remove dependency"
+
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:178
+msgid "Eliminazione dipendenza"
+msgstr "Removing dependency"
+
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:189
+msgid "Vuoi davvero eliminare la dipendenza dalla richiesta"
+msgstr "Do you really want to delete the dependency from the request"
+
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:197
+msgid "Si, elimina la dipendenza"
+msgstr "Yes, delete dependency"
+
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:207
+#: uni_ticket_bootstrap_italia_template/templates/ticket_dependences.html:26
+msgid "Vai alla richiesta"
+msgstr "Go to the request"
+
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_options.html:218
+msgid "Aggiungi nuova dipendenza"
+msgstr "Add new dependency"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:12
 msgid "Aggiungi nuova tipologia di richiesta"
@@ -3975,10 +3962,6 @@ msgstr "Choices"
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:83
 msgid "Pre-text"
 msgstr ""
-
-#: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:84
-msgid "Aiuto"
-msgstr "Help"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:85
 msgid "Ord."
@@ -4588,6 +4571,10 @@ msgstr "Yes, close the request"
 msgid "Assegnato"
 msgstr "Assigned"
 
+#: uni_ticket_bootstrap_italia_template/templates/ticket_dependences.html:33
+msgid "Nessuna dipendenza"
+msgstr "No dependency"
+
 #: uni_ticket_bootstrap_italia_template/templates/ticket_detail.html:9
 msgid "C'è un problema"
 msgstr "There is a problem"
@@ -4667,7 +4654,7 @@ msgstr "No message"
 msgid "Attività della richiesta"
 msgstr "Request tasks"
 
-#: uni_ticket_bootstrap_italia_template/templates/ticket_options.html:34
+#: uni_ticket_bootstrap_italia_template/templates/ticket_options.html:37
 msgid "Dipendenze da altre richieste"
 msgstr "Dependencies on other requests"
 
@@ -4678,6 +4665,10 @@ msgid ""
 msgstr ""
 "<b>Warning</b>: this type of request requires the mandatory protocol number, "
 "which is absent."
+
+#: uni_ticket_bootstrap_italia_template/templates/ticket_task.html:27
+msgid "Nessuna attività"
+msgstr "No tasks"
 
 #: uni_ticket_bootstrap_italia_template/templates/tickets_messages_pagination.html:11
 msgid "Pagina"
@@ -4780,15 +4771,15 @@ msgstr ""
 "It is possible to <b>edit</b> or <b>delete</b> the request until it has been "
 "assigned to an operator"
 
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:73
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:88
 msgid "Effettua richiesta simile"
 msgstr "Make a similar request"
 
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:133
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:134
 msgid "Richiesta conferma eliminazione"
 msgstr "Request to confirm deletion"
 
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:145
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:146
 msgid "Vuoi davvero eliminare la richiesta"
 msgstr "You really want to drop the request"
 
@@ -4808,7 +4799,15 @@ msgstr ""
 msgid "Inglese"
 msgstr ""
 
+#~ msgid "Operazione non permessa. La richiesta è ancora attiva"
+#~ msgstr "Operation not permitted. The request is still active"
+
+#~ msgid "Errore nella generazione del file PDF"
+#~ msgstr "Error generating PDF file"
+
 # django-form-builder
+# en
+
 #msgid "Testo"
 #msgstr "Text"
 
