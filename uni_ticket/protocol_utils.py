@@ -1,4 +1,5 @@
 import logging
+import magic
 
 from django.conf import settings
 from io import BytesIO
