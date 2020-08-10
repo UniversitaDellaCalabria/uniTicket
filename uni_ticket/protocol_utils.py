@@ -2,6 +2,7 @@ import logging
 import magic
 
 from django.conf import settings
+from django.http import HttpResponse
 from io import BytesIO
 
 logger = logging.getLogger(__name__)
