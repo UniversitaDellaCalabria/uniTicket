@@ -89,7 +89,6 @@ def ticket_protocol(user,
                                     template_xml_flusso=prot_template,
                                     strictly_required=True,
                                     **protocol_data)
-
     logger.info('Protocollazione richiesta {}'.format(subject))
     docPrinc = BytesIO()
     docPrinc.write(response)
