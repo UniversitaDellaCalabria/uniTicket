@@ -11,9 +11,19 @@
             </svg> {% trans "Aggiungi nuovo ufficio" %}
         </a>
     </div>
-    <div class="row">
+
+    <div class="form-group">
+        <input type="text" id="officesFilter" placeholder="{% trans 'Filtra per parole chiave...' %}">
+        <span class="autocomplete-icon" aria-hidden="true">
+            <svg class="icon icon-sm">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-search"></use>
+            </svg>
+        </span>
+    </div>
+
+    <div class="row" id="offices-grid">
       {% for office in offices %}
-      <div class="col-12 col-lg-4">
+      <div class="col-12 col-lg-4 office-box">
         <!--start card-->
         <div class="card-wrapper card-space">
           <div class="card card-bg no-after">

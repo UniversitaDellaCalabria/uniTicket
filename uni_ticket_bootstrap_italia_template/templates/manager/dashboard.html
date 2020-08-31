@@ -77,3 +77,7 @@
 <h5 class="pt-3 float-left" id="uffici">{% trans "Uffici" %}</h5>
 {% include 'manager/offices_list.html' %}
 {% endblock container_inner %}
+
+{% block extra_scripts %}
+{% include "manager/columns_filters_scripts.html" %}
+{% endblock extra_scripts %}

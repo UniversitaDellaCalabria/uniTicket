@@ -1,0 +1,17 @@
+<script>
+$(document).ready(function(){
+    $("#categoriesFilter").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#categories-grid .category-box").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+    $("#officesFilter").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#offices-grid .office-box").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+});
+</script>
