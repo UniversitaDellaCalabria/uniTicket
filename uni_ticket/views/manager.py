@@ -854,12 +854,23 @@ def category_edit(request, structure_slug, category_slug, structure):
 
             # check if protocol can be activated
             protocol_required = form.cleaned_data['protocol_required']
-            if protocol_required and not category.get_active_protocol_configuration():
-                protocol_required = False
-                messages.add_message(request, messages.ERROR,
-                                     _("Il protocollo non può essere attivato. "
-                                       "Controlla che ci sia una configurazione valida "
-                                       "sia per la tipologia e che per la struttura"))
+            if protocol_required:
+                # denied to anonymous users
+                if form.cleaned_data['allow_anonymous']:
+                    messages.add_message(request, messages.ERROR,
+                                         _("Il protocollo non può essere attivato se "
+                                           "la tipologia di richiesta è "
+                                           "accessibile a utenti anonimi"))
+                    return redirect('uni_ticket:manager_category_edit',
+                                    structure_slug=structure_slug,
+                                    category_slug=category.slug)
+                # no active category protocol configuration
+                if not category.get_active_protocol_configuration():
+                    protocol_required = False
+                    messages.add_message(request, messages.ERROR,
+                                         _("Il protocollo non può essere attivato. "
+                                           "Controlla che ci sia una configurazione valida "
+                                           "sia per la tipologia e che per la struttura"))
 
             slug = slugify(name)
             slug_name_exist = TicketCategory.objects.filter(Q(name=name) | Q(slug=slug),
