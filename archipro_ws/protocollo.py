@@ -227,7 +227,7 @@ class WSArchiPROClient(object):
                raise Exception('tipo_doc e nome_doc devono essere configurati insieme')
 
         if nome_doc and tipo_doc:
-            self.nome_doc = clean_string(nome_doc)
+            self.nome_doc = clean_string(nome_doc, save_extension=True)
             self.tipo_doc = clean_string(tipo_doc)
         # altrimenti utilizza quelle definite nel costruttore
 
@@ -288,17 +288,16 @@ class WSArchiPROClient(object):
 
         allegato_dict = self._get_allegato_dict()
         allegato_dict['allegato_id'] = len(self.allegati) + allegato_idsum
-        allegato_dict['nome']        = clean_string(nome)
+        allegato_dict['nome']        = clean_string(nome, save_extension=True)
         allegato_dict['descrizione'] = clean_string(descrizione)
         allegato_dict['tipo']        = clean_string(tipo)
 
         allegato = self.client.wsdl.types.get_type(qname='ns0:attach')()
         allegato.id = len(self.allegati) + allegato_idsum
-        allegato.fileName = clean_string(nome)
+        allegato.fileName = clean_string(nome, save_extension=True)
+
         allegato.fileContent = self._encode_filestream(fopen)
         allegato_dict['ns0:attach']  = allegato
-
-
 
         self.allegati.append(allegato_dict)
         return self.render_AllegatoXML(allegato_dict)
