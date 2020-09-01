@@ -188,6 +188,13 @@ Testo: {message_text}
 
 Clicca qui {url} per aprire il pannello dei messaggi.""")
 
+NEW_TICKET_ASSIGNED_TO_OPERATOR_BODY = _("""Ti è stata assegnata una nuova richiesta da {manager}.
+
+Utente: {ticket_user}
+Oggetto: {ticket_subject}
+Descrizione: {ticket_description}
+
+URL: {ticket_url}""")
 
 # Old english version
 NEW_TICKET_UPDATE_OLD_EN = _("Dear {user},"

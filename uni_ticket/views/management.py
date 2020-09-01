@@ -277,6 +277,25 @@ def ticket_detail(request, structure_slug, ticket_id,
                                  _("Richiesta <b>{}</b> assegnata"
                                    " con successo a {}".format(ticket.code,
                                                                operator)))
+
+                # Send mail to operator
+                mail_params = {'hostname': settings.HOSTNAME,
+                               'user': operator,
+                               'manager': request.user,
+                               'ticket_user': ticket.created_by,
+                               'ticket_subject': ticket.subject,
+                               'ticket_description': ticket.description,
+                               'ticket_url': request.build_absolute_uri(reverse('uni_ticket:manage_ticket_url_detail',
+                                                                        kwargs={'structure_slug': structure.slug,
+                                                                                'ticket_id': ticket.code}))
+                              }
+                m_subject = _('{} - richiesta {} assegnata'.format(settings.HOSTNAME,
+                                                                   ticket))
+                send_custom_mail(subject=m_subject,
+                                 recipients=[operator],
+                                 body=settings.NEW_TICKET_ASSIGNED_TO_OPERATOR_BODY,
+                                 params=mail_params)
+
                 return redirect('uni_ticket:manage_ticket_url_detail',
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
