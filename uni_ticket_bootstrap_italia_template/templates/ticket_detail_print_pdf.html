@@ -20,7 +20,7 @@
     {% endif %}
 
     {% block ticket_data %}
-        {% include "ticket_detail_table.html" %}
+        {% include "ticket_detail_table.html" with print_version=1 %}
     {% endblock ticket_data %}
 </div>
 {% endblock clean_content %}

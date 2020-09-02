@@ -3,6 +3,7 @@ import inspect
 import locale
 import markdown as md
 import os
+import re
 
 from django import template
 from django.conf import settings
@@ -96,7 +97,20 @@ def get_usertype(user, structure, label_value_tuple=False):
 @register.simple_tag
 def get_label_from_form(form, field_name):
     field = form.fields.get(field_name)
-    if field: return field.label
+    if field:
+        return (field.label, getattr(field, 'pre_text', False))
+    # formset (we need the parent field label)
+    formset_field_name_parts = field_name.rsplit("-0-", 1)
+    # parent formset field
+    field = form.fields.get(formset_field_name_parts[0])
+    if field:
+        # toDo: better reference to django_form_builder for regex and methods
+        _regexp = '(?P<colname>[a-zA-Z0-9_]*)\((?P<coldict>[\{\}\.0-9a-zA-Z\'\"\:\;\_\,\s\-]*)\)'
+        content = re.search(_regexp, field.choices[0])
+        ###
+        if content.groupdict()['colname'] == formset_field_name_parts[1]:
+            # get formset field pre_text
+            return (False, getattr(field, 'pre_text', False))
     return False
 
 @register.filter

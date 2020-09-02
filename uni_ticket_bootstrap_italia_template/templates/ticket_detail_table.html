@@ -152,11 +152,19 @@
             <td>{{ ticket.description | linebreaks }}</td>
         </tr>
         {% for k,v in details.items %}
-        {% get_label_from_form ticket_form k as field_label %}
+        {% get_label_from_form ticket_form k as field_data %}
+        {% if field_data.1 and print_version %}
+            <tr>
+                <td colspan="5">
+                    {{ field_data.1 | markdown | safe }}
+                </td>
+            </tr>
+        {% endif %}
         <tr>
+
             <th scope="row">
-                {% if field_label %}
-                    {{ field_label }}
+                {% if field_data.0 %}
+                    {{ field_data.0 }}
                 {% else %}
                     {{ k|no_slugged }}
                 {% endif %}

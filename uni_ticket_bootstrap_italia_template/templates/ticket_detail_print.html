@@ -40,7 +40,7 @@
     {% endblock user_ticket_head %}
 
     {% block ticket_data %}
-        {% include 'ticket_detail.html' %}
+        {% include 'ticket_detail.html' with print_version=1 %}
     {% endblock ticket_data %}
 {% endblock page_content %}
 
