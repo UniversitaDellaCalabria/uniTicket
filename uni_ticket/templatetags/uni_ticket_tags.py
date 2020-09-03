@@ -99,6 +99,8 @@ def get_label_from_form(form, field_name):
     field = form.fields.get(field_name)
     if field:
         return (field.label, getattr(field, 'pre_text', False))
+    return False
+
     # formset (we need the parent field label)
     formset_field_name_parts = field_name.rsplit("-0-", 1)
     # parent formset field
