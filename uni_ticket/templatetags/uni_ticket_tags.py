@@ -99,7 +99,7 @@ def get_label_from_form(form, field_name):
     field = form.fields.get(field_name)
     if field:
         return (field.label, getattr(field, 'pre_text', False))
-    return False
+    # return False
 
     # formset (we need the parent field label)
     formset_field_name_parts = field_name.rsplit("-0-", 1)
@@ -107,7 +107,7 @@ def get_label_from_form(form, field_name):
     field = form.fields.get(formset_field_name_parts[0])
     if field:
         # toDo: better reference to django_form_builder for regex and methods
-        _regexp = '(?P<colname>[a-zA-Z0-9_]*)\((?P<coldict>[\{\}\.0-9a-zA-Z\'\"\:\;\_\,\s\-]*)\)'
+        _regexp = '(?P<colname>[a-zA-Z0-9_ ]*)'
         content = re.search(_regexp, field.choices[0])
         ###
         if content.groupdict()['colname'] == formset_field_name_parts[1]:

@@ -4,6 +4,8 @@
 *__pycache__*
 */.~lock*
 
+run.sh
+
 data/media/*
 data/static/*
 !data/static/README.md
