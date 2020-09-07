@@ -108,9 +108,9 @@ def get_label_from_form(form, field_name):
     if field:
         # toDo: better reference to django_form_builder for regex and methods
         _regexp = '(?P<colname>[a-zA-Z0-9_ ]*)'
-        content = re.search(_regexp, field.choices[0])
+        content = re.search(_regexp, field.choices[0]) if field.choices else False
         ###
-        if content.groupdict()['colname'] == formset_field_name_parts[1]:
+        if content and content.groupdict()['colname'] == formset_field_name_parts[1]:
             # get formset field pre_text
             return (False, getattr(field, 'pre_text', False))
     return False
