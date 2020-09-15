@@ -2847,10 +2847,9 @@ def category_protocol_configuration_delete(request, structure_slug,
     configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
                                                             pk=configuration_id).first()
 
-    # effettuare tutti i controlli sui moduli che
-    # hanno il protocollo obbligatorio e che ereditano questa
-    # configurazione del protocollo!
     if not category.get_active_protocol_configuration():
+        category.protocol_required = False
+        category.save(update_fields=['protocol_required', 'modified'])
         messages.add_message(request, messages.INFO,
                              _("Nessuna configurazione di protocollo "
                                "valida per la tipologia. "
@@ -2890,10 +2889,12 @@ def category_protocol_configuration_disable(request, structure_slug,
                                  slug=category_slug)
     configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
                                                             pk=configuration_id).first()
-
     if configuration.is_active:
         configuration.is_active = False
         configuration.save(update_fields=['is_active', 'modified'])
+
+        category.protocol_required = False
+        category.save(update_fields=['protocol_required', 'modified'])
 
         # signal active here to disable category protocol flag
 

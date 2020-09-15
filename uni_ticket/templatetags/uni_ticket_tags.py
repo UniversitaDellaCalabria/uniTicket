@@ -1,4 +1,3 @@
-import datetime
 import inspect
 import locale
 import markdown as md
@@ -61,16 +60,7 @@ def categories_list(structure, user):
 
 @register.simple_tag
 def current_date():
-    tz = timezone.get_current_timezone()
-    now = datetime.datetime.now(tz)
-    return now.strftime('%A, %d %B %Y')
-
-# @register.simple_tag
-# def ticket_in_category(category):
-    # result = 0
-    # office = category.organizational_office
-    # tickets = TicketAssignment.get_ticket_in_office_list(office_list=[office,])
-    # return len(tickets)
+    return timezone.now()
 
 @register.simple_tag
 def conditions_in_category(category):
