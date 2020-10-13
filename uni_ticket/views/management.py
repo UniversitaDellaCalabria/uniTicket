@@ -1076,7 +1076,7 @@ def ticket_message(request, structure_slug, ticket_id,
     :return: render
     """
 
-    title = _("Messaggi")
+    title = "{} - {}".format(_("Messaggi"), ticket.created_by)
     sub_title = ticket
     user = request.user
     user_type = get_user_type(request.user, structure)

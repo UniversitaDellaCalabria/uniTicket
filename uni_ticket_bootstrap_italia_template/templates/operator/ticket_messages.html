@@ -23,6 +23,7 @@
         <thead>
             <tr role="row">
                 <th>{% trans "Richiesta" %}</th>
+                <th>{% trans "Utente" %}</th>
 <!--
                 <th>Oggetto</th>
 -->
@@ -46,6 +47,7 @@
                             {{ tm.0.subject }}
                         </a>
                     </td>
+                    <td>{{ tm.0.created_by }}</td>
 <!--
                     <td>{{ tm.0.subject }}</td>
 -->
