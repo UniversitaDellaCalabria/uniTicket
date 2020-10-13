@@ -60,7 +60,7 @@ def categories_list(structure, user):
 
 @register.simple_tag
 def current_date():
-    return timezone.now()
+    return timezone.localtime().date()
 
 @register.simple_tag
 def conditions_in_category(category):
