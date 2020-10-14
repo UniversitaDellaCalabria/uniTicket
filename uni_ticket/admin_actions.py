@@ -58,7 +58,7 @@ def _download_report_csv(modeladmin,
 
                 writer.writerow(head)
 
-                richieste = Ticket.objects.filter(input_module__ticket_category=cat)
+                richieste = Ticket.objects.filter(input_module=module)
 
                 if not richieste: continue
 
