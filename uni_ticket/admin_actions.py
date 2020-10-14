@@ -37,8 +37,9 @@ def _download_report_csv(modeladmin,
 
             for module in input_modules:
 
-                file_name = "{}_MOD_{}.csv".format(cat.name.replace('/','_'),
-                                                   module.name.replace('/','_'))
+                file_name = "{}_MOD_{}_{}.csv".format(cat.name.replace('/','_'),
+                                                      module.name.replace('/','_'),
+                                                      module.created.strftime('%d-%m-%Y'))
 
                 head = ['created',
                         'user',
