@@ -73,8 +73,8 @@ def _download_report_csv(modeladmin,
                            status,
                            richiesta.subject,
                            richiesta.description]
-                    for label in fields_list:
-                        row.append(content.get(label, '')
+                    # for label in fields_list:
+                        # row.append(content.get(label, '')
                     writer.writerow(row)
                 f.writestr(file_name,
                            csv_file.content)
