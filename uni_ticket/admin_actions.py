@@ -48,9 +48,7 @@ def _download_report_csv(modeladmin,
                         'description']
 
                 fields = TicketCategoryInputList.objects.filter(category_module=module)
-                fields_list = []
                 for field in fields:
-                    fields_list.append(field.name)
                     head.append(field.name)
 
                 csv_file = HttpResponse(content_type='text/csv')
@@ -73,8 +71,8 @@ def _download_report_csv(modeladmin,
                            status,
                            richiesta.subject,
                            richiesta.description]
-                    # for label in fields_list:
-                        # row.append(content.get(label, '')
+                    for k,v in content.items():
+                        row.append(v)
                     writer.writerow(row)
                 f.writestr(file_name,
                            csv_file.content)
