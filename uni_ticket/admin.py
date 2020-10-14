@@ -3,8 +3,9 @@ import nested_admin
 from admin_adv_search_builder.filters import AdvancedSearchBuilder
 from django.contrib import admin
 
-from .admin_nested_inlines import *
-from .models import *
+from . admin_actions import *
+from . admin_nested_inlines import *
+from . models import *
 
 
 @admin.register(TicketCategory)
@@ -21,6 +22,8 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
                TicketCategoryTaskNestedInline,
                TicketCategoryWSArchiProNestedInline,]
                # TicketCategoryOfficeNestedInline,]
+
+    actions = [download_report_csv]
 
     list_display = ('name', 'created',
                     'allow_guest', 'allow_user', 'allow_employee',
