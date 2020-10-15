@@ -636,15 +636,14 @@ def dashboard(request):
     # chiusi = tickets.filter(is_closed=True)
     chiusi = tickets.filter(is_closed=True).count()
 
-    messages = 0
-    for ticket in tickets:
-        messages += ticket.get_messages_count(by_operator=True)[1]
+    messages = TicketReply.get_unread_messages_count(tickets=tickets,
+                                                     by_operator=True)
 
-    d = {'ticket_messages': messages,
-         'priority_levels': settings.PRIORITY_LEVELS,
+    d = {'priority_levels': settings.PRIORITY_LEVELS,
          'sub_title': sub_title,
          'ticket_aperti': opened,
          'ticket_chiusi': chiusi,
+         'ticket_messages': messages,
          'ticket_non_gestiti': unassigned,
          'title': title,}
 

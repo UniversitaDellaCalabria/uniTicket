@@ -943,6 +943,16 @@ class TicketReply(models.Model):
         verbose_name = _("Domande/Risposte Ticket")
         verbose_name_plural = _("Domande/Risposte Ticket")
 
+    @staticmethod
+    def get_unread_messages_count(tickets, by_operator=False):
+        unread_messages = TicketReply.objects.filter(ticket__in=tickets,
+                                                     read_date=None)
+        # show messages sent by operator
+        if by_operator:
+           return unread_messages.exclude(structure=None).count()
+        # show messages sent by user
+        return unread_messages.filter(structure=None).count()
+
     def get_folder(self):
         """
         Returns ticket attachments folder path
@@ -973,11 +983,11 @@ class Ticket2Ticket(models.Model):
         verbose_name = _("Dipendenza Ticket")
         verbose_name_plural = _("Dipendenze Ticket")
 
-    @classmethod
-    def main_is_already_used(cls, ticket):
+    @staticmethod
+    def main_is_already_used(ticket):
         """
         """
-        relations = cls.objects.filter(subordinate_ticket=ticket)
+        relations = Ticket2Ticket.objects.filter(subordinate_ticket=ticket)
         if not relations: return False
         for relation in relations:
             main = relation.main_ticket
@@ -1230,10 +1240,11 @@ class OrganizationalStructureWSArchiPro(models.Model):
             other.is_active = False
             other.save(update_fields = ['is_active', 'modified'])
 
-    @classmethod
-    def get_active_protocol_configuration(cls, organizational_structure):
-        conf = cls.objects.filter(organizational_structure=organizational_structure,
-                                  is_active=True).first()
+    @staticmethod
+    def get_active_protocol_configuration(organizational_structure):
+        oswsap = OrganizationalStructureWSArchiPro
+        conf = oswsap.objects.filter(organizational_structure=organizational_structure,
+                                     is_active=True).first()
         return conf if conf else False
 
     def __str__(self):

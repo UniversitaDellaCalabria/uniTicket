@@ -55,19 +55,16 @@ def dashboard(request, structure_slug, structure, office_employee):
             unassigned += 1
     # chiusi = tickets.filter(is_closed=True)
     chiusi = tickets.filter(is_closed=True).count()
-    messages = 0
-    for ticket in tickets:
-        # if not ticket.is_followed_by_one_of_offices(offices):
-            # continue
-        messages += ticket.get_messages_count()[1]
 
-    d = {'ticket_messages': messages,
-         'offices': offices,
+    messages = TicketReply.get_unread_messages_count(tickets=tickets)
+
+    d = {'offices': offices,
          'structure': structure,
          'sub_title': sub_title,
          'title': title,
          'ticket_aperti': opened,
          'ticket_assegnati_a_me': my_opened,
          'ticket_chiusi': chiusi,
+         'ticket_messages': messages,
          'ticket_non_gestiti': unassigned,}
     return render(request, template, d)

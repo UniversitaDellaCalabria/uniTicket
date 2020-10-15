@@ -79,20 +79,16 @@ def dashboard(request, structure_slug, structure):
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)
 
-    messages = 0
-    for ticket in tickets:
-        # if not ticket.is_followed_in_structure(structure=structure):
-            # continue
-        messages += ticket.get_messages_count()[1]
+    messages = TicketReply.get_unread_messages_count(tickets=tickets)
 
-    d = {'ticket_messages': messages,
-         'categories': categories,
+    d = {'categories': categories,
          'offices': offices,
          'structure': structure,
          'sub_title': sub_title,
          'ticket_aperti': opened,
          'ticket_assegnati_a_me': my_opened,
          'ticket_chiusi': chiusi,
+         'ticket_messages': messages,
          'ticket_non_gestiti': unassigned,
          'title': title,}
     return render(request, template, d)
