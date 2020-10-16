@@ -984,9 +984,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
             ticket.add_competence(office=new_office,
                                   user=request.user)
             ticket.update_log(user=request.user,
-                              note= _("Nuova competenza: {} - {}"
-                                      "").format(new_structure,
-                                                 new_office))
+                              note=_("Nuova competenza: {}").format(new_office))
 
             # log action
             logger.info('[{}] {} added new competence to'
