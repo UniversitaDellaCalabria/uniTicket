@@ -13,7 +13,7 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
-    {% if categorie %}
+    {% if offices %}
     <form method="post" enctype="multipart/form-data">
     {% endif %}
 
@@ -38,14 +38,14 @@
     </div>
 
     <div style="padding: 1.5rem 0 1rem">
-        <b><label for="category_slug">{% trans "Categoria" %}</label></b>
+        <b><label for="office_slug">{% trans "Ufficio" %}</label></b>
         {% if not structure_slug %}
         <div class="alert alert-warning" role="alert">
-          {% trans "Seleziona la struttura a cui inoltrare la richiesta" %}
+          {% trans "Seleziona l'ufficio a cui inoltrare la richiesta" %}
         </div>
-        {% elif not categorie %}
+        {% elif not offices %}
         <div class="alert alert-danger" role="alert">
-          {% trans "Nessuna tipologia di richiesta disponibile per questa struttura" %}
+          {% trans "Nessun ufficio disponibile per questa struttura" %}
         </div>
         {% else %}
         {% comment %}
@@ -55,12 +55,12 @@
         <div class="bootstrap-select-wrapper">
             <select required
                 {% if not structure_slug %}disabled{% endif %}
-                name="category_slug"
+                name="office_slug"
                 title="{% trans 'A chi è indirizzata la richiesta?' %}"
                 data-live-search="true">
                 <option value="">{% trans "Seleziona un'opzione" %}</option>
-                {% for categoria in categorie %}
-                <option value="{{ categoria.slug }}">{{ categoria }}</option>
+                {% for office in offices %}
+                <option value="{{ office.slug }}">{{ office.name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -95,7 +95,7 @@
         {% endif %}
     </div>
 
-    {% if categorie %}
+    {% if offices %}
 
     <div style="padding: 0 0 1.5rem">
         <b>

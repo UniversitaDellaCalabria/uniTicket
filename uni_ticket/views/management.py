@@ -900,26 +900,33 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     new_structure = get_object_or_404(OrganizationalStructure,
                                       slug=new_structure_slug,
                                       is_active=True)
-    categorie = TicketCategory.objects.filter(organizational_structure=new_structure.pk,
-                                              is_active=True)
+    offices = OrganizationalStructureOffice.objects.filter(organizational_structure=new_structure,
+                                                           is_active=True)
+
+    # exclude private offices if not in same structure
+    if new_structure != structure:
+        offices = offices.exclude(is_private=True)
+
     if request.method == 'POST':
         form = TicketCompetenceSchemeForm(data=request.POST)
         if form.is_valid():
-            category_slug = form.cleaned_data['category_slug']
+            office_slug = form.cleaned_data['office_slug']
             follow = form.cleaned_data['follow']
             readonly = form.cleaned_data['readonly']
             selected_office_slug = form.cleaned_data['selected_office']
-            # Refactor
-            # follow_value = form.cleaned_data['follow']
-            # readonly_value = form.cleaned_data['readonly']
-            # follow = True if follow_value == 'on' else False
-            # readonly = True if readonly_value == 'on' else False
 
-            # La categoria passata in POST esiste?
-            categoria = get_object_or_404(TicketCategory,
-                                          slug=category_slug,
-                                          organizational_structure=new_structure,
-                                          is_active=True)
+            # L'ufficio passato in POST esiste?
+            new_office = get_object_or_404(OrganizationalStructureOffice,
+                                           slug=office_slug,
+                                           organizational_structure=new_structure,
+                                           is_active=True)
+
+            # se viene forzato il POST con un ufficio privato!
+            if new_structure != structure and new_office.is_private:
+                return custom_message(request,
+                                      _("Impossibile assegnare la richiesta "
+                                       "all'ufficio selezionato"),
+                                      structure_slug=structure.slug)
 
             selected_office = None
             if selected_office_slug:
@@ -928,28 +935,11 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                                     organizational_structure=structure,
                                                     is_active=True)
 
-            # Se alla categoria non è associato alcun ufficio,
-            # all'utente viene mostrato il messaggio di errore
-            # Perchè l'ufficio speciale Help-Desk è già competente sul ticket
-            if not categoria.organizational_office:
-                messages.add_message(request, messages.ERROR,
-                                     _("La richiesta è già di competenza"
-                                       " dell'ufficio speciale <b>{}</b>,"
-                                       " responsabile della tipologia di richiesta "
-                                       "<b>{}</b>").format(settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
-                                                           categoria))
-                return redirect('uni_ticket:manage_ticket_url_detail',
-                                structure_slug=structure_slug,
-                                ticket_id=ticket_id)
-
-            new_office = categoria.organizational_office
-
             if new_office in ticket_offices:
                 messages.add_message(request, messages.ERROR,
                                      _("La richiesta è già di competenza"
-                                       " dell'ufficio <b>{}</b>, responsabile"
-                                       " della tipologia di richiesta <b>{}</b>"
-                                       "").format(new_office, categoria))
+                                       " dell'ufficio <b>{}</b>"
+                                       "").format(new_office))
                 return redirect('uni_ticket:manage_ticket_url_detail',
                                 structure_slug=structure_slug,
                                 ticket_id=ticket_id)
@@ -995,9 +985,8 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
                                   user=request.user)
             ticket.update_log(user=request.user,
                               note= _("Nuova competenza: {} - {}"
-                                      " - Categoria: {}".format(new_structure,
-                                                                new_office,
-                                                                categoria)))
+                                      "").format(new_structure,
+                                                 new_office))
 
             # log action
             logger.info('[{}] {} added new competence to'
@@ -1020,7 +1009,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     title = _('Trasferisci competenza richiesta')
     sub_title = '{} ({})'.format(ticket.subject, ticket_id)
     d = {'can_manage': can_manage,
-         'categorie': categorie,
+         'offices': offices,
          'operator_offices': operator_offices_list,
          'structure': structure,
          'structure_slug': new_structure_slug,

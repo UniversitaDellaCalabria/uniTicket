@@ -179,9 +179,9 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         self.ticket.refresh_from_db()
         assert response.status_code == 200
 
-        # Assign ticket to Category_3 (Structure 2)
+        # Assign ticket to Office (Structure 2)
         # Follow and continue to manage ticket (staff_1, manager of Structure 1)
-        params = {'category_slug': self.category_1_str_2.slug,
+        params = {'office_slug': self.office_1_str_2.slug,
                   'follow': 'on',
                   # 'readonly': False,
         }
@@ -290,7 +290,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
 
         # Assign ticket to Category_3 (Structure 2)
         # Follow and continue to manage ticket (staff_1, manager of Structure 1)
-        params = {'category_slug': self.category_1_str_2.slug,
+        params = {'office_slug': self.office_1_str_2.slug,
                   'follow': 'on',
                   'readonly': True,
         }

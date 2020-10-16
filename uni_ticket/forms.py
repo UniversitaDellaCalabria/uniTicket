@@ -168,9 +168,13 @@ class OfficeForm(ModelForm):
     """
     class Meta:
         model = OrganizationalStructureOffice
-        fields = ['name', 'description']
+        fields = ['name', 'description', 'is_private']
         labels = {'name': _('Nome'),
-                  'description': _('Descrizione'),}
+                  'description': _('Descrizione'),
+                  'is_private': _('Ad uso interno')}
+        help_texts = {'is_private': _("Visibile esclusivamente all'interno "
+                                      "della struttura quando si effettua "
+                                      "un trasferimento di competenza")}
         widgets = {'description': forms.Textarea(attrs={'rows':2})}
 
     class Media:
@@ -284,7 +288,8 @@ class TicketCompetenceSchemeForm(forms.Form):
     (rendered manually to have js behaviour)
     """
     # structure_slug = forms.CharField(label=_('Struttura'), required=True)
-    category_slug = forms.CharField(label=_('Categoria'), required=True)
+    # category_slug = forms.CharField(label=_('Categoria'), required=True)
+    office_slug = forms.CharField(label=_('Ufficio'), required=True)
     follow = forms.BooleanField(label=_('Continua a seguire'), required=False)
     readonly = forms.BooleanField(label=_('Sola lettura'), required=False)
     selected_office = forms.CharField(label=_('Ufficio selezionato'), required=False)

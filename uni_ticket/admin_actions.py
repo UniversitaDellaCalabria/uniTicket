@@ -12,6 +12,8 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.html import strip_tags
 
+from django_form_builder.utils import format_field_name
+
 from . models import *
 
 
@@ -29,6 +31,7 @@ def _download_report_csv(modeladmin,
 
     delimiter='$'
     quotechar='"'
+    dialect='excel'
 
     for cat in queryset:
 
@@ -39,21 +42,23 @@ def _download_report_csv(modeladmin,
 
                 file_name = "{}_MOD_{}_{}.csv".format(cat.name.replace('/','_'),
                                                       module.name.replace('/','_'),
-                                                      module.created.strftime('%d-%m-%Y'))
+                                                      module.created.strftime('%d-%m-%Y_%H-%M-%S'))
 
                 head = ['created',
                         'user',
                         'status',
                         'subject',
                         'description']
-
+                custom_head = []
                 fields = TicketCategoryInputList.objects.filter(category_module=module)
                 for field in fields:
+                    custom_head.append(field.name)
                     head.append(field.name)
 
                 csv_file = HttpResponse(content_type='text/csv')
                 csv_file['Content-Disposition'] = 'attachment; filename="{}"'.format(file_name)
                 writer = csv.writer(csv_file,
+                                    dialect=dialect,
                                     delimiter = delimiter,
                                     quotechar = quotechar)
 
@@ -71,8 +76,9 @@ def _download_report_csv(modeladmin,
                            status,
                            richiesta.subject,
                            richiesta.description]
-                    for k,v in content.items():
-                        row.append(v)
+                    # for k,v in content.items():
+                    for column in custom_head:
+                        row.append(content.get(format_field_name(column), ''))
                     writer.writerow(row)
                 f.writestr(file_name,
                            csv_file.content)

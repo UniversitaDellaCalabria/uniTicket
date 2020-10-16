@@ -28,6 +28,15 @@
               <p class="card-text">
                   <b>{% trans 'Operatori' %}:</b>
                   {{ office.organizationalstructureofficeemployee_set.all|length }}
+                  <br>
+                  <b>{% trans 'Ad uso interno' %}:</b>
+                  <svg class="icon icon-sm icon-secondary">
+                        {% if office.is_private %}
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        {% else %}
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        {% endif %}
+                    </svg>
               <br>
                   <b>{% trans 'Categorie di competenza' %}:</b>
                     {% if office.ticketcategory_set.all %}

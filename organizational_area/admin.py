@@ -33,12 +33,14 @@ class OrganizationalStructureAdmin(AbstractAdmin):
 @admin.register(OrganizationalStructureOffice)
 class OrganizationalStructureOfficeAdmin(AbstractAdmin):
     prepopulated_fields = {'slug': ('name',)}
-    list_display = ('name', 'organizational_structure', 'is_active')
+    list_display = ('name', 'organizational_structure',
+                    'is_default', 'is_private', 'is_active')
 
     list_filter = ('organizational_structure',
-                   'is_active')
+                   'is_active',
+                   'is_private')
 
-    list_editable = ('is_active',)
+    list_editable = ('is_active', 'is_private')
 
     inlines = [OrganizationalStructureOfficeEmployeeInline,
                OrganizationalStructureOfficeLocationInline,]

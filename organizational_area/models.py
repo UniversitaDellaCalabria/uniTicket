@@ -183,6 +183,7 @@ class OrganizationalStructureOffice(models.Model):
                                                  on_delete=models.CASCADE)
     description = models.TextField(max_length=1024, null=True,blank=True)
     is_default = models.BooleanField(default=False)
+    is_private = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
 
     class Meta:
