@@ -686,7 +686,7 @@ def ticket_close(request, structure_slug, ticket_id,
             messages.add_message(request, messages.SUCCESS,
                                  _("Richiesta {} chiusa correttamente"
                                    "<br>"
-                                   "<a href='{}'><b>"
+                                   "<a class='text-success' href='{}'><b>"
                                    "Clicca qui per tornare alle richieste assegnate"
                                    "</b></a>").format(ticket,
                                                       opened_ticket_url))
