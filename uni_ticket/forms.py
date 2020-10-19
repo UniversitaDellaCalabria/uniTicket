@@ -165,6 +165,8 @@ class TicketCloseForm(BaseTicketCloseForm):
                                     coerce=int,
                                     widget=BootstrapItaliaSelectWidget)
 
+    field_order = ['status', 'note']
+
 
 class OfficeForm(ModelForm):
     """
