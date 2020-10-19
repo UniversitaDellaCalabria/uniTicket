@@ -283,6 +283,7 @@ urlpatterns += [
     path('{}/edit/remove-attachment/<str:attachment>/'.format(ticket_id), user.delete_my_attachment, name='delete_my_attachment'),
     path('{}/delete/'.format(ticket_id), user.ticket_delete, name='ticket_delete'),
     path('{}/close/'.format(ticket_id), user.ticket_close, name='user_close_ticket'),
+    path('{}/reopen/'.format(ticket_id), user.ticket_reopen, name='user_reopen_ticket'),
     path('{}/clone/'.format(ticket_id), user.ticket_clone, name='user_clone_ticket'),
     path('{}/tasks/<str:task_id>/'.format(ticket_id), user.task_detail, name='task_detail'),
     path('{}/'.format(ticket_id), login_required(is_the_owner(user.ticket_detail)), name='ticket_detail'),

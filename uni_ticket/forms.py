@@ -145,13 +145,7 @@ class TaskCloseForm(forms.Form):
         js = ('js/textarea-autosize.js',)
 
 
-class TicketCloseForm(forms.Form):
-    status = forms.TypedChoiceField(choices=settings.CLOSING_LEVELS,
-                                    required=True,
-                                    initial=1,
-                                    label=_('Stato chiusura'),
-                                    coerce=int,
-                                    widget=BootstrapItaliaSelectWidget)
+class BaseTicketCloseForm(forms.Form):
     note = forms.CharField(label=_('Motivazione'),
                            help_text=_('Inserisci il tag {user} per inserire '
                                        'automaticamente il nome e cognome '
@@ -161,6 +155,15 @@ class TicketCloseForm(forms.Form):
 
     class Media:
         js = ('js/textarea-autosize.js',)
+
+
+class TicketCloseForm(BaseTicketCloseForm):
+    status = forms.TypedChoiceField(choices=settings.CLOSING_LEVELS,
+                                    required=True,
+                                    initial=1,
+                                    label=_('Stato chiusura'),
+                                    coerce=int,
+                                    widget=BootstrapItaliaSelectWidget)
 
 
 class OfficeForm(ModelForm):

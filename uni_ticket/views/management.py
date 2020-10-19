@@ -751,12 +751,13 @@ def ticket_reopen(request, structure_slug, ticket_id,
                               _("La richiesta {} non può essere riaperta").format(ticket),
                               structure_slug=structure.slug)
 
-    if not ticket.has_been_taken():
+    if not ticket.closed_by:
         # log action
         logger.error('[{}] {} tried to reopen'
-                     ' not taken ticket {}'.format(timezone.now(),
-                                                   request.user,
-                                                   ticket))
+                     ' a ticket closed by owner user{}'
+                     ''.format(timezone.now(),
+                               request.user,
+                               ticket))
         return custom_message(request,
                               _("La richiesta {} è stata chiusa dall'utente, "
                                 " pertanto non può essere riaperta").format(ticket),

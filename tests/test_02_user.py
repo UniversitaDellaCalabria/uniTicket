@@ -52,7 +52,7 @@ class Test_UserFunctions(BaseTicketEnvironment):
         assert response.status_code == 200
         self.assertFalse(self.ticket.get_allegati_dict())
 
-    def test_close_ticket(self):
+    def test_close_reopen_ticket(self):
         # Close ticket
         params = {'note': 'My notes',
                   'status': 1}
@@ -71,6 +71,15 @@ class Test_UserFunctions(BaseTicketEnvironment):
         self.ticket.refresh_from_db()
         assert response.status_code == 200
         assert self.ticket
+
+        # Reopen ticket
+        response = self.client.get(reverse('uni_ticket:user_reopen_ticket',
+                                           kwargs={'ticket_id': self.ticket.code}),
+                                   follow=True)
+        self.ticket.refresh_from_db()
+        assert response.status_code == 200
+        assert not self.ticket.is_closed
+        assert not self.ticket.closed_by
 
     def test_ticket_deletion(self):
         # Delete ticket

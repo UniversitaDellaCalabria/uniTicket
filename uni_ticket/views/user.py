@@ -71,24 +71,24 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
                                        source))
 
 # close ticket as soon as opened if it's a notification ticket
-def _close_notification_ticket(ticket, user, operator, ticket_assignment):
+def _close_notification_ticket(ticket, user): # operator, ticket_assignment):
     # close ticket
     ticket.is_notification = True
     ticket.is_closed = True
     ticket.closed_date = timezone.now()
-    ticket.closed_by = user
+    # ticket.closed_by = user
     # default closing status: success
     ticket.closing_status = 1
     ticket.save(update_fields=['is_notification',
                                'is_closed',
                                'closed_date',
-                               'closing_status',
-                               'closed_by'])
+                               'closing_status'])
+                               # 'closed_by'])
 
     # assign to an operator
-    ticket_assignment.taken_date = timezone.now()
-    ticket_assignment.taken_by = operator
-    ticket_assignment.save(update_fields=['taken_date', 'taken_by'])
+    # ticket_assignment.taken_date = timezone.now()
+    # ticket_assignment.taken_by = operator
+    # ticket_assignment.save(update_fields=['taken_date', 'taken_by'])
 
 # save attachments of new ticket
 def _save_new_ticket_attachments(ticket,
@@ -469,23 +469,24 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                      office=office)
                 ticket_assignment.save()
 
-                # if it's a notification ticket, take and close the ticket
-                if category.is_notification:
-                    _close_notification_ticket(ticket=ticket,
-                                               user=current_user,
-                                               operator=random_office_operator,
-                                               ticket_assignment=ticket_assignment)
-
                 # log action
                 logger.info('[{}] ticket {} assigned to '
                             '{} office'.format(timezone.now(),
                                                ticket,
                                                office))
 
-                # category default tasks assigned to ticket (if present)
-                _assign_default_tasks_to_new_ticket(ticket=ticket,
-                                                    category=category,
-                                                    log_user=log_user)
+                # if it's a notification ticket, take and close the ticket
+                if category.is_notification:
+                    _close_notification_ticket(ticket=ticket,
+                                               user=current_user)
+                                               # operator=random_office_operator,
+                                               # ticket_assignment=ticket_assignment)
+
+                else:
+                    # category default tasks assigned to ticket (if present)
+                    _assign_default_tasks_to_new_ticket(ticket=ticket,
+                                                        category=category,
+                                                        log_user=log_user)
 
                 # send success message to user
                 ticket_message = ticket.input_module.ticket_category.confirm_message_text or \
@@ -1104,25 +1105,23 @@ def ticket_close(request, ticket_id):
 
     title = _('Chiusura della richiesta')
     sub_title = ticket
-    form = TicketCloseForm()
+    form = BaseTicketCloseForm()
     if request.method=='POST':
-        form = TicketCloseForm(request.POST)
+        form = BaseTicketCloseForm(request.POST)
         if form.is_valid():
             motivazione = form.cleaned_data['note']
-            closing_status = form.cleaned_data['status']
+            # closing_status = form.cleaned_data['status']
             ticket.is_closed = True
             ticket.closing_reason = motivazione
-            ticket.closing_status = closing_status
+            # ticket.closing_status = closing_status
             ticket.closed_date = timezone.now()
             ticket.save(update_fields = ['is_closed',
                                          'closing_reason',
-                                         'closing_status',
+                                         # 'closing_status',
                                          'closed_date'])
             ticket.update_log(user=request.user,
-                              note=_("Chiusura richiesta {} da utente "
-                                     "proprietario: {}"
-                                     "").format(dict(settings.CLOSING_LEVELS).get(closing_status),
-                                                motivazione))
+                              note=_("Chiusura richiesta da utente "
+                                     "proprietario: {}").format(motivazione))
             messages.add_message(request, messages.SUCCESS,
                                  _("Richiesta {} chiusa correttamente"
                                    "").format(ticket))
@@ -1144,6 +1143,56 @@ def ticket_close(request, ticket_id):
          'ticket': ticket,
          'title': title,}
     return render(request, template, d)
+
+@login_required
+@is_the_owner
+def ticket_reopen(request, ticket_id):
+    """
+    Reopen ticket
+
+    :type ticket_id: String
+
+    :param ticket_id: ticket code
+
+    :return: redirect
+    """
+    ticket = get_object_or_404(Ticket, code=ticket_id)
+
+    # Se il ticket non è chiuso blocca
+    if not ticket.is_closed:
+        logger.error('[{}] {} tried to reopen not closed ticket {} '
+                     ''.format(timezone.now(), request.user, ticket))
+        return custom_message(request, _("La richiesta non è stata chiusa"))
+
+    if ticket.closed_by:
+        logger.error('[{}] {} tried to reopen ticket {} '
+                     ' closed by operator'.format(timezone.now(),
+                                                  request.user,
+                                                  ticket))
+        return custom_message(request, _("La richiesta è stata chiusa "
+                                         "da un operatore e non può "
+                                         "essere riaperta"))
+
+    if ticket.is_notification:
+        logger.error('[{}] {} tried to reopen notification ticket {} '
+                     ''.format(timezone.now(), request.user, ticket))
+        return custom_message(request, _("La richiesta è di tipo "
+                                         "notifica e non può essere "
+                                         "riaperta"))
+
+    ticket.is_closed = False
+    ticket.save(update_fields = ['is_closed'])
+
+    msg = _("Riapertura richiesta {} da utente proprietario").format(ticket)
+    # log action
+    logger.error('[{}] {} reopened ticket {}'.format(timezone.now(),
+                                                     request.user,
+                                                     ticket))
+
+    ticket.update_log(user=request.user, note=msg)
+    messages.add_message(request, messages.SUCCESS,
+                         _("Richiesta {} riaperta correttamente".format(ticket)))
+    return redirect('uni_ticket:ticket_detail',ticket_id=ticket_id)
 
 @login_required
 def chat_new_preload(request, structure_slug=None):
