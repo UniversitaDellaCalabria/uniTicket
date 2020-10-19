@@ -13,7 +13,7 @@ from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOfficeEmployee)
 from uni_ticket.decorators import is_manager, is_operator
 from uni_ticket.models import Ticket, TicketAssignment
-from uni_ticket.utils import visible_tickets_to_user
+from uni_ticket.utils import get_datetime_delta, visible_tickets_to_user
 
 
 _ticket_columns = ['pk','code','subject','get_category',
@@ -36,7 +36,12 @@ class TicketDTD(DjangoDatatablesServerProc):
             category = params['category']
             structure = params['structure']
             if year:
-                self.aqs = self.aqs.filter(created__year=year)
+                if year.isnumeric():
+                    self.aqs = self.aqs.filter(created__year=year)
+                else:
+                    days = 7 if year == 'last_week' else 30
+                    delta_day = get_datetime_delta(days=days)
+                    self.aqs = self.aqs.filter(created__gte=delta_day)
             if category:
                 self.aqs = self.aqs.filter(input_module__ticket_category__slug=category,
                                            input_module__ticket_category__organizational_structure__slug=structure)

@@ -1,4 +1,5 @@
 import base64
+import datetime
 import json
 import logging
 import magic
@@ -16,6 +17,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from django_form_builder.utils import get_POST_as_json
@@ -400,3 +402,7 @@ def get_text_with_hrefs(text):
         a_value = href_tmpl.format(target, ele, ele)
         new_text = new_text.replace(ele, a_value)
     return new_text
+
+def get_datetime_delta(days):
+    delta_date = timezone.now() - datetime.timedelta(days=days)
+    return delta_date.replace(hour=0, minute=0, second=0)

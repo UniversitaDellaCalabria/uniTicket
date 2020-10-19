@@ -2,12 +2,18 @@
 {% load uni_ticket_tags %}
 
 <div class="row">
-    <div class="col-lg-2">
+    <div class="col-lg-3">
         <div class="bootstrap-select-wrapper">
             <select id="search_year"
                     name="search_year"
                     data-live-search="true" data-live-search-placeholder="{% trans 'Cerca...' %}">
-                <option value="" selected>- {% trans "Tutti gli anni" %} -</option>
+                <option value="" selected>- {% trans "Intervallo di tempo" %} -</option>
+                <option value="last_week">
+                    {% trans "Ultima settimana" %}
+                </option>
+                <option value="last_month">
+                    {% trans "Ultimo mese" %}
+                </option>
                 {% year_list as year_list %}
                 {% for year in year_list %}
                 <option value="{{ year }}">
@@ -35,7 +41,7 @@
     </div>
     <input type="hidden" id="search_structure" name="search_structure" value="{{ structure.slug }}" />
     {% endif %}
-    <div class="col-lg-5">
+    <div class="col-lg-4">
         <div class="form-group">
             <input type="text" id="search_box" placeholder="{% trans 'Cerca...' %}">
         </div>
