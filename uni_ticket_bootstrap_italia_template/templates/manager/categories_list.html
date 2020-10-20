@@ -52,6 +52,12 @@
                     {% trans "Nessuno" %}
                   {% endif %}
                   <br>
+                  <b>{% trans 'Attiva dal' %}:</b>
+                  {{ category.date_start | default:"-" }}
+                  <br>
+                  <b>{% trans 'Attiva fino al' %}:</b>
+                  {{ category.date_end | default:"-" }}
+                  <br>
                   <b>{% trans 'Clausole attive' %}:</b>
                   {% conditions_in_category category as conditions_in_category %}
                   {{ conditions_in_category }}

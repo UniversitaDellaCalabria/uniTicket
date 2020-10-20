@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 @login_required
-def manage_opened_ticket_url(request, structure_slug):
+def manage_opened_ticket_url(request, structure_slug): # pragma: no cover
     """
     Makes URL redirect to opened ticket page depending of user role
 
@@ -47,7 +47,7 @@ def manage_opened_ticket_url(request, structure_slug):
                     structure_slug)
 
 @login_required
-def manage_unassigned_ticket_url(request, structure_slug):
+def manage_unassigned_ticket_url(request, structure_slug): # pragma: no cover
     """
     Makes URL redirect to unassigned ticket page depending of user role
 
@@ -64,7 +64,7 @@ def manage_unassigned_ticket_url(request, structure_slug):
                     structure_slug)
 
 @login_required
-def manage_closed_ticket_url(request, structure_slug):
+def manage_closed_ticket_url(request, structure_slug): # pragma: no cover
     """
     Makes URL redirect to closed ticket page depending of user role
 
@@ -81,7 +81,7 @@ def manage_closed_ticket_url(request, structure_slug):
                     structure_slug)
 
 @login_required
-def manage_not_closed_ticket_url(request, structure_slug):
+def manage_not_closed_ticket_url(request, structure_slug): # pragma: no cover
     """
     Makes URL redirect to not closed ticket page depending of user role
 
@@ -98,7 +98,7 @@ def manage_not_closed_ticket_url(request, structure_slug):
                     structure_slug)
 
 @login_required
-def manage_ticket_url(request, structure_slug):
+def manage_ticket_url(request, structure_slug): # pragma: no cover
     """
     Builds a fake URL to ticket detail page for datatables <href> tags
 
@@ -114,7 +114,7 @@ def manage_ticket_url(request, structure_slug):
 @has_admin_privileges
 @ticket_assigned_to_structure
 def manage_ticket_url_detail(request, structure_slug, ticket_id,
-                             structure, can_manage, ticket):
+                             structure, can_manage, ticket): # pragma: no cover
     """
     Redirects URL ticket detail page depending of user role
 
@@ -325,7 +325,7 @@ def ticket_detail(request, structure_slug, ticket_id,
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -523,7 +523,7 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id = ticket_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -591,7 +591,7 @@ def ticket_dependence_remove(request, structure_slug,
                     ticket_id = ticket_id)
 
 @login_required
-def ticket_close_url(request, structure_slug, ticket_id):
+def ticket_close_url(request, structure_slug, ticket_id): # pragma: no cover
     """
     Makes URL redirect to closing ticket page depending of user role
 
@@ -693,7 +693,7 @@ def ticket_close(request, structure_slug, ticket_id,
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -791,7 +791,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                     ticket_id=ticket_id)
 
 @login_required
-def ticket_competence_add_url(request, structure_slug, ticket_id):
+def ticket_competence_add_url(request, structure_slug, ticket_id): # pragma: no cover
     """
     Makes URL redirect to adding ticket competence page depending of user role
 
@@ -999,7 +999,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1019,7 +1019,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
     return render(request, template, d)
 
 @login_required
-def ticket_message_url(request, structure_slug, ticket_id):
+def ticket_message_url(request, structure_slug, ticket_id): # pragma: no cover
     """
     Makes URL redirect to add ticket message by user role
 
@@ -1147,7 +1147,7 @@ def ticket_message(request, structure_slug, ticket_id,
             return redirect('uni_ticket:manage_ticket_message_url',
                             structure_slug=structure_slug,
                             ticket_id = ticket_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1161,7 +1161,7 @@ def ticket_message(request, structure_slug, ticket_id,
     return render(request, template, d)
 
 @login_required
-def task_add_new_url(request, structure_slug, ticket_id):
+def task_add_new_url(request, structure_slug, ticket_id): # pragma: no cover
     """
     Makes URL redirect to add new ticket task according to user role
 
@@ -1231,7 +1231,7 @@ def task_add_new(request, structure_slug, ticket_id,
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket.code)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1290,7 +1290,7 @@ def task_remove(request, structure_slug,
                     ticket_id = ticket_id)
 
 @login_required
-def task_detail_url(request, structure_slug, ticket_id, task_id):
+def task_detail_url(request, structure_slug, ticket_id, task_id): # pragma: no cover
     """
     Makes URL redirect to view ticket task details according to user role
 
@@ -1400,7 +1400,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
                             structure_slug=structure_slug,
                             ticket_id=ticket_id,
                             task_id=task_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1416,7 +1416,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
     return render(request, template, d)
 
 @login_required
-def task_close_url(request, structure_slug, ticket_id, task_id):
+def task_close_url(request, structure_slug, ticket_id, task_id): # pragma: no cover
     """
     Makes URL redirect to close ticket task details according to user role
 
@@ -1509,7 +1509,7 @@ def task_close(request, structure_slug, ticket_id, task_id,
             return redirect('uni_ticket:manage_ticket_url_detail',
                             structure_slug=structure_slug,
                             ticket_id=ticket_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1586,7 +1586,7 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
                     ticket_id=ticket_id)
 
 @login_required
-def task_edit_url(request, structure_slug, ticket_id, task_id):
+def task_edit_url(request, structure_slug, ticket_id, task_id): # pragma: no cover
     """
     Makes URL redirect to edit ticket task according to user role
 
@@ -1690,7 +1690,7 @@ def task_edit(request, structure_slug, ticket_id, task_id,
                             structure_slug=structure_slug,
                             ticket_id=ticket_id,
                             task_id=task_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))

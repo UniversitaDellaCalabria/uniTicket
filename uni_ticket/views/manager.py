@@ -78,6 +78,7 @@ def dashboard(request, structure_slug, structure):
 
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)
+    disable_not_in_progress_categories(categories)
 
     messages = TicketReply.get_unread_messages_count(tickets=tickets)
 
@@ -164,7 +165,7 @@ def office_add_new(request, structure_slug, structure):
                 return redirect('uni_ticket:manager_office_detail',
                                 structure_slug=structure_slug,
                                 office_slug=new_office.slug)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "{}: {}".format(k, strip_tags(v)))
@@ -228,7 +229,7 @@ def office_edit(request, structure_slug, office_slug, structure):
                 return redirect('uni_ticket:manager_office_detail',
                                 structure_slug=structure_slug,
                                 office_slug=edited_office.slug)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -294,7 +295,7 @@ def office_detail(request, structure_slug, office_slug, structure):
             return redirect('uni_ticket:manager_office_detail',
                             structure_slug=structure_slug,
                             office_slug=office_slug)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -359,7 +360,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
                                                  category,
                                                  office))
 
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -649,6 +650,10 @@ def category_detail(request, structure_slug, category_slug, structure):
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
+    if category.is_active and not category.is_in_progress():
+        category.is_active = False
+        category.save(update_fields=['is_active'])
+
     title = _('Gestione tipologia di richiesta')
     template = 'manager/category_detail.html'
     sub_title = category
@@ -671,7 +676,7 @@ def category_detail(request, structure_slug, category_slug, structure):
             return redirect('uni_ticket:manager_category_detail',
                             structure_slug=structure_slug,
                             category_slug=category_slug)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -812,7 +817,7 @@ def category_add_new(request, structure_slug, structure):
                 return redirect('uni_ticket:manager_category_detail',
                                 structure_slug=structure_slug,
                                 category_slug=new_category.slug)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -846,6 +851,7 @@ def category_edit(request, structure_slug, category_slug, structure):
     if request.method == 'POST':
         form = CategoryForm(instance=category, data=request.POST)
         if form.is_valid():
+
             name = form.cleaned_data['name']
 
             # check if protocol can be activated
@@ -885,6 +891,8 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                       'is_notification',
                                                       'confirm_message_text',
                                                       'not_available_message',
+                                                      'date_start',
+                                                      'date_end',
                                                       'allow_anonymous',
                                                       'allow_guest',
                                                       'allow_user',
@@ -905,7 +913,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                 return redirect('uni_ticket:manager_category_detail',
                                 structure_slug=structure_slug,
                                 category_slug=edited_category.slug)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1093,7 +1101,7 @@ def category_input_module_new(request, structure_slug,
                             structure_slug=structure_slug,
                             category_slug=category_slug,
                             module_id=new_module.pk)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1153,7 +1161,7 @@ def category_input_module_edit(request, structure_slug,
                             structure_slug=structure_slug,
                             category_slug=category_slug,
                             module_id=module_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1394,7 +1402,7 @@ def category_input_module_details(request, structure_slug,
                             structure_slug=structure_slug,
                             category_slug=category_slug,
                             module_id=module.pk)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1516,7 +1524,7 @@ def category_input_module_preview(request, structure_slug,
         if form.is_valid():
             messages.add_message(request, messages.SUCCESS,
                                  _("Dati inseriti nel modulo formalmente corretti"))
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1594,7 +1602,7 @@ def category_input_field_edit(request, structure_slug,
                             structure_slug=structure_slug,
                             category_slug=category_slug,
                             module_id=module.pk)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1655,7 +1663,7 @@ def category_condition_new(request, structure_slug,
             return redirect('uni_ticket:manager_category_detail',
                             structure_slug=structure_slug,
                             category_slug=category_slug)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1717,7 +1725,7 @@ def category_condition_edit(request, structure_slug, category_slug,
                             structure_slug=structure_slug,
                             category_slug=category_slug,
                             condition_id=condition_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1913,6 +1921,7 @@ def categories(request, structure_slug, structure):
     template = 'manager/categories.html'
     # sub_title = _("gestione ufficio livello manager")
     categories = TicketCategory.objects.filter(organizational_structure=structure)
+    disable_not_in_progress_categories(categories)
 
     d = {'categories': categories,
          'structure': structure,
@@ -2078,7 +2087,7 @@ def category_task_new(request, structure_slug,
             return redirect('uni_ticket:manager_category_detail',
                             structure_slug=structure_slug,
                             category_slug=category_slug)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -2218,7 +2227,7 @@ def category_task_edit(request, structure_slug, category_slug,
 
             messages.add_message(request, messages.SUCCESS,
                                  _("Attività modificata con successo"))
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -2743,7 +2752,7 @@ def category_protocol_configuration_detail(request, structure_slug,
                             structure_slug=structure_slug,
                             category_slug=category_slug,
                             configuration_id=configuration.pk)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -2804,7 +2813,7 @@ def category_protocol_configuration_new(request, structure_slug,
                             structure_slug=structure_slug,
                             category_slug=category_slug,
                             configuration_id=configuration.pk)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -3049,7 +3058,7 @@ def category_default_reply_new(request, structure_slug,
             return redirect('uni_ticket:manager_category_detail',
                             structure_slug=structure_slug,
                             category_slug=category_slug)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -3242,7 +3251,7 @@ def category_default_reply_detail(request, structure_slug, category_slug,
                             structure_slug=structure_slug,
                             category_slug=category_slug,
                             default_reply_id=default_reply_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))

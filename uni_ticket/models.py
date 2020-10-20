@@ -62,6 +62,8 @@ class TicketCategory(models.Model):
     is_active = models.BooleanField(default=False,
                                     help_text=_("Se disabilitato, non sarà "
                                                 "visibile in Aggiungi Richiesta"))
+    date_start = models.DateTimeField(_("Attiva dal"), null=True, blank=True)
+    date_end = models.DateTimeField(_("Attiva fino al"), null=True, blank=True)
     not_available_message = models.CharField(_("Messaggio se non attiva"),
                                              max_length=255,
                                              null=True, blank=True,
@@ -128,14 +130,21 @@ class TicketCategory(models.Model):
                                                               is_active=True)
         if not self.organizational_office:
             return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
-                    " assegnare un ufficio di competenza".format(self))
+                    " assegnare un ufficio di competenza").format(self)
         elif not self.organizational_office.is_active:
             return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
-                     " attivare l'ufficio <b>{}</b>".format(self,
-                                                            self.organizational_office))
+                     " attivare l'ufficio <b>{}</b>").format(self,
+                                                             self.organizational_office)
         elif not category_module:
             return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
-                     " attivare un modulo di input".format(self))
+                     " attivare un modulo di input").format(self)
+
+        elif not self.is_started():
+            return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
+                     " rimuovere o attendere la data di inizio").format(self)
+        elif self.is_expired():
+            return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
+                     " rimuovere o prolungare la data di scadenza").format(self)
         return False
 
     def get_folder(self):
@@ -186,6 +195,17 @@ class TicketCategory(models.Model):
                                     is_active=True).first()
 
         return conf if conf else False
+
+    def is_expired(self):
+        if not self.date_end: return False
+        return timezone.localtime() >= self.date_end
+
+    def is_started(self):
+        if not self.date_start: return True
+        return timezone.localtime() >= self.date_start
+
+    def is_in_progress(self):
+        return self.is_started() and not self.is_expired()
 
     def __str__(self):
         return '{}'.format(self.name)

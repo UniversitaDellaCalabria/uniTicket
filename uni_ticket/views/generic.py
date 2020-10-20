@@ -76,7 +76,7 @@ def download_attachment(request, ticket_id, attachment, ticket):
 
 @login_required
 @has_access_to_ticket
-def download_message_attachment(request, ticket_id, reply_id, ticket):
+def download_message_attachment(request, ticket_id, reply_id, ticket): # pragma: no cover
     """
     Downloads ticket message attachment
 
@@ -247,7 +247,7 @@ def email_notify_change(request):
 
 @login_required
 def user_settings(request, structure_slug=None,
-                  structure=None, office_employee=None):
+                  structure=None, office_employee=None): # pragma: no cover
     """
     Gets user settings
 

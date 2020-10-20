@@ -9,7 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from bootstrap_italia_template.widgets import (BootstrapItaliaSelectWidget,
                                                BootstrapItaliaSelectMultipleWidget)
-# from django_form_builder.dynamic_fields import CustomFileField
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,)
@@ -23,6 +22,8 @@ class CategoryForm(ModelForm):
         model = TicketCategory
         fields = ['name', 'description',
                   'confirm_message_text',
+                  'date_start',
+                  'date_end',
                   'not_available_message',
                   'is_notification',
                   'show_heading_text',
@@ -37,6 +38,8 @@ class CategoryForm(ModelForm):
         widgets = {'description': forms.Textarea(attrs={'rows':2}),
                    'confirm_message_text': forms.Textarea(attrs={'rows':2}),
                    'allowed_users': BootstrapItaliaSelectMultipleWidget,}
+        help_texts = {'date_start': _("Formato dd/mm/YYY HH:mm. Lasciare vuoto per non impostare"),
+                      'date_end': _("Formato dd/mm/YYY HH:mm. Lasciare vuoto per non impostare")}
 
     class Media:
         js = ('js/textarea-autosize.js',)

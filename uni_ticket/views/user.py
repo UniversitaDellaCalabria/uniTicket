@@ -193,6 +193,9 @@ def ticket_new_preload(request, structure_slug=None):
                                           is_active=True)
         categorie = TicketCategory.objects.filter(organizational_structure=structure,
                                                   is_active=True)
+
+        disable_not_in_progress_categories(categorie)
+
         # User roles
         is_employee = user_is_employee(request.user)
         is_user = user_is_in_organization(request.user)
@@ -249,6 +252,10 @@ def ticket_add_new(request, structure_slug, category_slug):
         category = get_object_or_404(TicketCategory,
                                      slug=category_slug,
                                      organizational_structure=struttura)
+
+    if category.is_active and not category.is_in_progress():
+        category.is_active = False
+        category.save(update_fields=['is_active'])
 
     # if category is not active, return an error message
     if not category.is_active:
@@ -602,7 +609,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                     return redirect('uni_ticket:add_new_ticket',
                                     structure_slug=structure_slug,
                                     category_slug=category_slug)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -748,7 +755,7 @@ def ticket_edit(request, ticket_id):
             messages.add_message(request, messages.SUCCESS,
                                  _("Modifica effettuata con successo"))
             return redirect('uni_ticket:ticket_edit', ticket_id=ticket_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1036,7 +1043,7 @@ def ticket_message(request, ticket_id):
                                  _("Messaggio inviato con successo"))
             return redirect('uni_ticket:ticket_message',
                             ticket_id=ticket_id)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1050,7 +1057,7 @@ def ticket_message(request, ticket_id):
 
 @login_required
 @is_the_owner
-def task_detail(request, ticket_id, task_id):
+def task_detail(request, ticket_id, task_id): # pragma: no cover
     """
     Task details page
 
@@ -1132,7 +1139,7 @@ def ticket_close(request, ticket_id):
                                                                ticket))
 
             return redirect('uni_ticket:ticket_detail', ticket.code)
-        else:
+        else: # pragma: no cover
             for k,v in get_labeled_errors(form).items():
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
@@ -1195,7 +1202,7 @@ def ticket_reopen(request, ticket_id):
     return redirect('uni_ticket:ticket_detail',ticket_id=ticket_id)
 
 @login_required
-def chat_new_preload(request, structure_slug=None):
+def chat_new_preload(request, structure_slug=None): # pragma: no cover
     """
     Choose the OrganizationalStructure and the category of the ticket
 
@@ -1251,7 +1258,7 @@ def ticket_clone(request, ticket_id):
 
 @login_required
 @has_access_to_ticket
-def ticket_detail_print(request, ticket_id, ticket):
+def ticket_detail_print(request, ticket_id, ticket): # pragma: no cover
     """
     Displays ticket print version
 
@@ -1270,7 +1277,7 @@ def ticket_detail_print(request, ticket_id, ticket):
 
 @login_required
 @has_access_to_ticket
-def download_ticket_pdf(request, ticket_id, ticket):
+def download_ticket_pdf(request, ticket_id, ticket): # pragma: no cover
     response = ticket_detail(request,
                              ticket_id=ticket_id,
                              template='ticket_detail_print_pdf.html')

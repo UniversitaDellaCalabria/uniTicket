@@ -110,6 +110,14 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">{% trans 'Attiva dal' %}</th>
+                <td>{{ category.date_start | default:"-" }}</td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans 'Attiva fino al' %}</th>
+                <td>{{ category.date_end | default:"-" }}</td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans 'Messaggio se non attiva' %}</th>
                 <td>
                     {% if category.not_available_message %}
@@ -123,11 +131,7 @@
             </tr>
             <tr>
                 <th scope="row">{% trans 'Descrizione' %}</th>
-                <td>
-                    {% if category.description %}
-                        {{ category.description | linebreaks }}
-                    {% else %}-{% endif %}
-                </td>
+                <td>{{ category.description | default:"-" | linebreaks }}</td>
             </tr>
             <tr>
                 <th scope="row">{% trans 'URL nuova richiesta' %}</th>
