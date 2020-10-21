@@ -265,12 +265,12 @@ def office_detail(request, structure_slug, office_slug, structure):
     sub_title = office.name
     form = OfficeAddOperatorForm(structure=structure,
                                  office_slug=office_slug)
-                                 # current_user=request.user)
     category_form = OfficeAddCategoryForm(structure=structure,
                                           office=office)
     if request.method == 'POST':
         form = OfficeAddOperatorForm(request.POST,
-                                     structure=structure)
+                                     structure=structure,
+                                     office_slug=office_slug)
 
         if form.is_valid():
             employee = form.cleaned_data['operatore']
@@ -285,7 +285,7 @@ def office_detail(request, structure_slug, office_slug, structure):
 
             # log action
             logger.info('[{}] manager of structure {}'
-                        ' {} added employe {}'
+                        ' {} added employee {}'
                         ' to office {}'.format(timezone.now(),
                                                structure,
                                                request.user,
@@ -2441,8 +2441,52 @@ def manager_settings(request, structure_slug, structure):
     title = _("Configurazione impostazioni")
     sub_title = _("dati personali e della struttura")
 
+    manager_users = structure.get_structure_managers()
+
+    form = OrganizationalStructureAddManagerForm(structure=structure,
+                                                 manager_users=manager_users)
     protocol_configurations = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure)
-    d = {'protocol_configurations': protocol_configurations,
+
+    if request.method == 'POST':
+        form = OrganizationalStructureAddManagerForm(request.POST,
+                                                     structure=structure,
+                                                     manager_users=manager_users)
+        if form.is_valid():
+            manager = form.cleaned_data['manager']
+            osoe = OrganizationalStructureOfficeEmployee
+            default_office = OrganizationalStructureOffice.objects.get(organizational_structure=structure,
+                                                                       is_default=True)
+            # add user to default office
+            new_officeemployee = osoe(employee=manager,
+                                      office=default_office)
+            new_officeemployee.save()
+
+            # add user to structure managers
+            new_manager = UserManageOrganizationalStructure(user=manager,
+                                                            organizational_structure=structure)
+            new_manager.save()
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Manager creato con successo"))
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} added new manager {}'.format(timezone.now(),
+                                                          structure,
+                                                          request.user,
+                                                          manager))
+
+            return redirect('uni_ticket:manager_user_settings',
+                            structure_slug=structure_slug)
+        else: # pragma: no cover
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+
+
+    d = {'form': form,
+         'manager_users': manager_users,
+         'protocol_configurations': protocol_configurations,
          'structure': structure,
          'sub_title': sub_title,
          'title': title,}

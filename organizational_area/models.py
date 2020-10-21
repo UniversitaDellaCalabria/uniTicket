@@ -91,6 +91,16 @@ class OrganizationalStructure(models.Model):
         folder = '{}/{}'.format(LOGOS_FOLDER, self.slug)
         return folder
 
+    def get_structure_managers(self):
+        osoe = OrganizationalStructureOfficeEmployee
+        default_office_users = osoe.objects.filter(office__organizational_structure=self,
+                                                   office__is_default=True).values_list('employee', flat=True)
+        umos = UserManageOrganizationalStructure
+        manager_users = umos.objects.filter(organizational_structure=self,
+                                            user__in=default_office_users)
+        return manager_users
+
+
     def __str__(self):
         if not self.structure_type:
             return self.name

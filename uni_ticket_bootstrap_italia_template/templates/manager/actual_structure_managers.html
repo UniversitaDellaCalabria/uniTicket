@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load static %}
+
+
+<div class="row">
+    <div class="col">
+        <div class="card-wrapper card-space pb-3">
+            <div class="card card-bg no-after">
+                <div class="card-body">
+                    <h5 class="card-title">{% trans "Utenti manager" %}</h5>
+
+                    <p class="card-text">
+                        <ul>
+                        {% for manager in manager_users %}
+                            <li>{{ manager.user }}</li>
+                        {% endfor %}
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </div>
+   </div>
+</div>

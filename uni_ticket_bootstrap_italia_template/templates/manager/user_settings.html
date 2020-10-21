@@ -25,8 +25,26 @@
         </div>
     </div>
 
+
     <div class="collapse-header" id="heading2-lft">
         <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
+            <svg class="icon icon-sm">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-tool"></use>
+            </svg>
+            {% trans "Manager di struttura" %}
+            ({{ manager_users.count }})
+        </button>
+    </div>
+    <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
+        <div class="collapse-body">
+            {% include 'manager/actual_structure_managers.html' %}
+            {% include 'manager/add_structure_manager.html' %}
+        </div>
+    </div>
+
+
+    <div class="collapse-header" id="heading3-lft">
+        <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
             <svg class="icon icon-sm">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-file"></use>
             </svg>
@@ -35,7 +53,7 @@
         </button>
     </div>
 
-    <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
+    <div id="collapse3-lft" class="collapse" role="tabpanel" aria-labelledby="heading3-lft">
         <div class="collapse-body">
 
             <div class="row">
