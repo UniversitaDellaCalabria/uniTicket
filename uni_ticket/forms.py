@@ -38,8 +38,10 @@ class CategoryForm(ModelForm):
         widgets = {'description': forms.Textarea(attrs={'rows':2}),
                    'confirm_message_text': forms.Textarea(attrs={'rows':2}),
                    'allowed_users': BootstrapItaliaSelectMultipleWidget,}
-        help_texts = {'date_start': _("Formato dd/mm/YYY HH:mm. Lasciare vuoto per non impostare"),
-                      'date_end': _("Formato dd/mm/YYY HH:mm. Lasciare vuoto per non impostare")}
+        help_texts = {'date_start': _("Formato {}. Lasciare vuoto  per non impostare"
+                                      "").format(settings.DEFAULT_DATETIME_FORMAT.replace('%','')),
+                      'date_end': _("Formato {}. Lasciare vuoto  per non impostare"
+                                    "").format(settings.DEFAULT_DATETIME_FORMAT.replace('%',''))}
 
     class Media:
         js = ('js/textarea-autosize.js',)
