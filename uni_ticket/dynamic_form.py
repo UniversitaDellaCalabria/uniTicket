@@ -75,4 +75,4 @@ class DynamicForm(BaseDynamicForm):
                          *args, **kwargs)
 
     class Media:
-        js = ('js/textarea-autosize.js')
+        js = ('js/textarea-autosize.js',)

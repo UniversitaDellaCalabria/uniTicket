@@ -3,7 +3,7 @@ import copy
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.forms import ModelForm
+from django.forms import ModelChoiceField, ModelForm
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import ugettext_lazy as _
 
@@ -191,8 +191,14 @@ class OfficeForm(ModelForm):
         js = ('js/textarea-autosize.js',)
 
 
+class MyOperatorChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return "{} - {} {}".format(obj.taxpayer_id,
+                                   obj.last_name,
+                                   obj.first_name)
+
 class OfficeAddOperatorForm(forms.Form):
-    operatore = forms.ModelChoiceField(label=_('Assegna operatore'),
+    operatore = MyOperatorChoiceField(label=_('Assegna operatore'),
                                        queryset=None, required=True,
                                        widget=BootstrapItaliaSelectWidget)
     description = forms.CharField(label=_('Note'),
@@ -211,17 +217,23 @@ class OfficeAddOperatorForm(forms.Form):
         # all employees in a structure
         # DISTINCT ON (.distinct(field_name) is not supported by all datablase backends)
         # all_employees = osoe.objects.filter(office__organizational_structure=structure).distinct('employee')
-        all_employees = osoe.objects.filter(office__organizational_structure=structure)
+
+        # all_employees = osoe.objects.filter(office__organizational_structure=structure)
+        employees_list = get_user_model().objects.all().exclude(pk__in=actual)
+
         # exclude employees already assigned to office
-        clean_list = all_employees.exclude(employee__pk__in=actual)
-        operators_ids = []
-        for operator_office in clean_list:
-            key = operator_office.employee.pk
-            if key not in operators_ids:
-                operators_ids.append(key)
-        operators = get_user_model().objects.filter(pk__in=operators_ids)
+        # clean_list = all_employees.exclude(employee__pk__in=actual)
+        # clean_list = all_employees.exclude(pk__in=actual)
+
+
+        # operators_ids = []
+        # for operator_office in clean_list:
+            # key = operator_office.employee.pk
+            # if key not in operators_ids:
+                # operators_ids.append(key)
+        # operators = get_user_model().objects.filter(pk__in=operators_ids)
         super().__init__(*args, **kwargs)
-        self.fields['operatore'].queryset = operators
+        self.fields['operatore'].queryset = employees_list
 
     class Media:
         js = ('js/textarea-autosize.js',)
