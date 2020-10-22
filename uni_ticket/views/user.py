@@ -970,11 +970,11 @@ def ticket_message(request, ticket_id):
     if request.method == 'POST':
 
         # deny action if user is not the owner but has compiled only
-        if not request.user == ticket.created_by:
-            messages.add_message(request, messages.ERROR,
-                                 settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by))
-            return redirect('uni_ticket:ticket_message',
-                            ticket_id=ticket_id)
+        # if not request.user == ticket.created_by:
+            # messages.add_message(request, messages.ERROR,
+                                 # settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by))
+            # return redirect('uni_ticket:ticket_message',
+                            # ticket_id=ticket_id)
 
         if not ticket.is_open():
             # log action
