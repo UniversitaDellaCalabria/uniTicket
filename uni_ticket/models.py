@@ -1170,6 +1170,7 @@ class TicketCategoryTask(AbstractTask):
     a un Ticket (il Ticket non può essere chiuso se il task non è chiuso)
     """
     category = models.ForeignKey(TicketCategory, on_delete=models.CASCADE)
+    is_public = models.BooleanField(default=True)
     is_active = models.BooleanField(_('Visibile nei ticket'),
                                     default=False)
 

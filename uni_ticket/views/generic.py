@@ -103,18 +103,15 @@ def download_message_attachment(request, ticket_id, reply_id, ticket): # pragma:
     raise Http404
 
 @login_required
-# @has_access_to_ticket
-def download_task_attachment(request, ticket_id, task_id): # ticket):
+def download_task_attachment(request, ticket_id, task_id):
     """
     Downloads ticket message attachment
 
     :type ticket_id: String
     :type task_id: String
-    # :type ticket: Ticket (from @has_access_to_ticket)
 
     :param ticket_id: ticket code
     :param task_id: task code
-    # :param ticket: ticket object (from @has_access_to_ticket)
 
     :return: file
     """

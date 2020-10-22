@@ -434,12 +434,13 @@ class CategoryTaskForm(ModelForm):
     class Meta:
         model = TicketCategoryTask
         fields = ['subject', 'description', 'priority',
-                  'attachment', 'is_active']
+                  'attachment', 'is_public', 'is_active']
         labels = {'subject': _('Oggetto'),
                   'description': _('Testo'),
                   'priority': _('Priorità'),
                   'attachment': _('Allegato'),
-                  'is_active': _('Attiva')}
+                  'is_active': _('Attiva'),
+                  'is_public': _("Visibile all'utente")}
         widgets = {'priority': BootstrapItaliaSelectWidget,
                    'description': forms.Textarea(attrs={'rows':2})}
 

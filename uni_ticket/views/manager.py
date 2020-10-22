@@ -2198,6 +2198,7 @@ def category_task_edit(request, structure_slug, category_slug,
     data = {'subject': task.subject,
             'description': task.description,
             'priority': task.priority,
+            'is_public': task.is_public,
             'is_active': task.is_active}
     form = CategoryTaskForm(instance=task)
 

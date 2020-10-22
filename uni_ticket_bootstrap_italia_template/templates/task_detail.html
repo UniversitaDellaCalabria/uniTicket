@@ -8,10 +8,12 @@
             <tr>
                 <th scope="row">{% trans 'Stato' %}</th>
                 <td>
-                    {{ task.get_status|safe }}
+                    {% if not task.is_public %}
                     <span class="badge badge-secondary">
                         {% trans "Riservata agli operatori" %}
                     </span>
+                    {% endif %}
+                    {{ task.get_status|safe }}
                 </td>
             </tr>
             {% if task.is_closed %}

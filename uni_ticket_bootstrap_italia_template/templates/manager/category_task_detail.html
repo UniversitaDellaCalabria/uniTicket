@@ -71,6 +71,18 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">{% trans "Visibile all'utente" %}</th>
+                <td>
+                    <svg class="icon icon-sm icon-secondary">
+                    {% if task.is_public %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans 'Priorità' %}</th>
                 <td>{{ task.get_priority }}</td>
             </tr>

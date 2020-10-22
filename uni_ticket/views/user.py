@@ -50,6 +50,7 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
         ticket_task.subject = task.subject
         ticket_task.description = task.description
         ticket_task.priority = task.priority
+        ticket_task.is_public = task.is_public
         ticket_task.created_by = task.created_by
         ticket_task.code = uuid_code()
         ticket_task.attachment = task.attachment
@@ -1071,7 +1072,6 @@ def task_detail(request, ticket_id, task_id): # pragma: no cover
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
-
     if not task.is_public:
         return custom_message(request, _("Attività riservata agli operatori"))
 
