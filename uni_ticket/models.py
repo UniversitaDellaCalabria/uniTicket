@@ -1026,6 +1026,7 @@ class AbstractTask(models.Model):
     # priority = models.IntegerField(default=0)
     priority = models.IntegerField(choices=settings.PRIORITY_LEVELS,
                                    default=0)
+    is_public = models.BooleanField(default=True)
     attachment = models.FileField(upload_to=_attachment_upload,
                                   null=True, blank=True,
                                   max_length=255,
@@ -1049,7 +1050,6 @@ class Task(AbstractTask):
     a un Ticket (il Ticket non può essere chiuso se il task non è chiuso)
     """
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    is_public = models.BooleanField(default=True)
     is_closed = models.BooleanField(default=False)
     closed_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   on_delete=models.SET_NULL,
@@ -1170,7 +1170,6 @@ class TicketCategoryTask(AbstractTask):
     a un Ticket (il Ticket non può essere chiuso se il task non è chiuso)
     """
     category = models.ForeignKey(TicketCategory, on_delete=models.CASCADE)
-    is_public = models.BooleanField(default=True)
     is_active = models.BooleanField(_('Visibile nei ticket'),
                                     default=False)
 
