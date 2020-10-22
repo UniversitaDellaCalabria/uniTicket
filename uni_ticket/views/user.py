@@ -1071,6 +1071,10 @@ def task_detail(request, ticket_id, task_id): # pragma: no cover
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
+
+    if not task.is_public:
+        return custom_message(request, _("Attività riservata agli operatori"))
+
     priority = task.get_priority()
     title = _("Dettaglio task")
     d={'priority': priority,

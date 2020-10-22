@@ -10,6 +10,11 @@
             <br>
             <small>{{ task.created }}</small>
             <br>
+            {% if not task.is_public %}
+            <span class="badge badge-secondary">
+                {% trans "Riservata agli operatori" %}
+            </span>
+            {% endif %}
             {{ task.get_status|safe }}
             <div>
                 <a role="button"

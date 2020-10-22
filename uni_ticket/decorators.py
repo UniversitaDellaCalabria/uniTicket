@@ -127,16 +127,10 @@ def has_access_to_ticket(func_to_decorate):
         ticket = get_object_or_404(Ticket, code=ticket_id)
         user = request.user
         original_kwargs['ticket'] = ticket
+
         # Se il ticket è stato creato da me, ok!
         if ticket.check_if_owner(user):
             return func_to_decorate(*original_args, **original_kwargs)
-
-        # structures = ticket.get_assigned_to_structures(ignore_follow=False)
-        #Check if user is manager of the ticket structure
-        # for struct in structures:
-            #if user_is_manager(user, struct):
-            # if user_is_in_default_office(user, struct):
-                # return func_to_decorate(*original_args, **original_kwargs)
 
         # Select all offices that follow the ticket (readonly too)
         offices = ticket.get_assigned_to_offices(ignore_follow=False)

@@ -103,26 +103,47 @@ def download_message_attachment(request, ticket_id, reply_id, ticket): # pragma:
     raise Http404
 
 @login_required
-@has_access_to_ticket
-def download_task_attachment(request, ticket_id, task_id, ticket):
+# @has_access_to_ticket
+def download_task_attachment(request, ticket_id, task_id): # ticket):
     """
     Downloads ticket message attachment
 
     :type ticket_id: String
     :type task_id: String
-    :type ticket: Ticket (from @has_access_to_ticket)
+    # :type ticket: Ticket (from @has_access_to_ticket)
 
     :param ticket_id: ticket code
     :param task_id: task code
-    :param ticket: ticket object (from @has_access_to_ticket)
+    # :param ticket: ticket object (from @has_access_to_ticket)
 
     :return: file
     """
+    # get ticket
+    ticket = get_object_or_404(Ticket, code=ticket_id)
     # get task
     task = get_object_or_404(Task, code=task_id)
+
+    # current user is ticket owner?
+    is_owner = ticket.check_if_owner(request.user)
+
+    # current user is a valid ticket operator?
+    is_operator = False
+    # Select all offices that follow the ticket (readonly too)
+    offices = ticket.get_assigned_to_offices(ignore_follow=False)
+    # Check if user is operator of the ticket office
+    for office in offices:
+        if user_manage_office(request.user, office):
+            is_operator = True
+            break
+
+    if not is_owner and not is_operator:
+        return custom_message(request, _("Accesso al ticket negato."))
+    elif not task.is_public and not is_operator:
+        return custom_message(request, _("Attività riservata agli operatori"))
+
     # if task has attachment
     if task.attachment:
-        # get ticket folder path
+        # get ticket task folder path
         path_allegato = get_path(task.get_folder())
         # get file
         result = download_file(path_allegato,

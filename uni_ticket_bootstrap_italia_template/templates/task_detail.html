@@ -7,7 +7,12 @@
         <tbody>
             <tr>
                 <th scope="row">{% trans 'Stato' %}</th>
-                <td>{{ task.get_status|safe }}</td>
+                <td>
+                    {{ task.get_status|safe }}
+                    <span class="badge badge-secondary">
+                        {% trans "Riservata agli operatori" %}
+                    </span>
+                </td>
             </tr>
             {% if task.is_closed %}
             <tr>

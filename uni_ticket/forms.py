@@ -364,11 +364,13 @@ class TaskForm(ModelForm):
     """
     class Meta:
         model = Task
-        fields = ['subject', 'description', 'priority', 'attachment']
+        fields = ['subject', 'description', 'priority',
+                  'is_public', 'attachment']
         labels = {'subject': _('Oggetto'),
                   'description': _('Testo'),
                   'priority': _('Priorità'),
-                  'attachment': _('Allegato')}
+                  'attachment': _('Allegato'),
+                  'is_public': _("Visibile all'utente")}
         widgets = {'priority': BootstrapItaliaSelectWidget,
                    'description': forms.Textarea(attrs={'rows':2})}
 

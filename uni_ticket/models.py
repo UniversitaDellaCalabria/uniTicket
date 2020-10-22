@@ -317,11 +317,6 @@ class Ticket(SavedFormContent):
                                     related_name='compiled_by_user')
     input_module = models.ForeignKey(TicketCategoryModule,
                                      on_delete=models.PROTECT)
-    # is_taken = models.BooleanField(default=False)
-    # taken_by = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 # on_delete=models.SET_NULL,
-                                 # null=True, blank=True,
-                                 # related_name='taken_by_user')
     is_closed = models.BooleanField(default=False)
     closed_date = models.DateTimeField(blank=True, null=True)
     closed_by = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -1054,6 +1049,7 @@ class Task(AbstractTask):
     a un Ticket (il Ticket non può essere chiuso se il task non è chiuso)
     """
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    is_public = models.BooleanField(default=True)
     is_closed = models.BooleanField(default=False)
     closed_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                   on_delete=models.SET_NULL,
