@@ -70,6 +70,9 @@ task = '{}/tasks'.format(ticket_id)
 task_id = '{}/<str:task_id>'.format(task)
 
 urlpatterns += [
+    # Export CSV
+    # path('{}/export-csv/'.format(tickets), management.export_category_csv, name='export_category_csv'),
+
     # Ticket
     path('{}/opened/'.format(tickets), management.manage_opened_ticket_url, name='manage_opened_ticket_url'),
     path('{}/unassigned/'.format(tickets), management.manage_unassigned_ticket_url, name='manage_unassigned_ticket_url'),
@@ -95,6 +98,8 @@ urlpatterns += [
     path('{}/riapri/'.format(task_id), management.task_reopen, name='reopen_task'),
     path('{}/edit/remove-attachment/'.format(task_id), management.task_attachment_delete, name='manage_elimina_allegato_task'),
     path('{}/edit/'.format(task_id), management.task_edit_url, name='edit_task'),
+
+
 ]
 
 # Manager URLs

@@ -507,7 +507,7 @@ class Ticket(SavedFormContent):
         if self.is_closed:
             # if is a notification ticket
             if self.is_notification or not self.closed_by:
-                return _('<span class="badge badge-success">Chiusa</span')
+                return _('<span class="badge badge-success">Chiusa</span>')
             # normal ticket
             status_literal = dict(settings.CLOSING_LEVELS).get(self.closing_status)
 

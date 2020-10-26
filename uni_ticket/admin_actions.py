@@ -15,85 +15,28 @@ from django.utils.html import strip_tags
 from django_form_builder.utils import format_field_name
 
 from . models import *
+from . utils import export_category_zip
 
 
 def _download_report_csv(modeladmin,
                          request,
                          queryset):
 
-    num = 0
-    failed = 0
-    msg_err = 'Sono incorsi errori nell\'esportare {}: {}'
-    msg_ok = '{} ESPORTATA'
-
     output = io.BytesIO()
     f = zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED)
 
-    delimiter='$'
-    quotechar='"'
-    dialect='excel'
-
     for cat in queryset:
-
         try:
-            input_modules = TicketCategoryModule.objects.filter(ticket_category=cat)
-
-            for module in input_modules:
-
-                file_name = "{}_MOD_{}_{}.csv".format(cat.name.replace('/','_'),
-                                                      module.name.replace('/','_'),
-                                                      module.created.strftime('%d-%m-%Y_%H-%M-%S'))
-
-                head = ['created',
-                        'user',
-                        'status',
-                        'subject',
-                        'description']
-                custom_head = []
-                fields = TicketCategoryInputList.objects.filter(category_module=module)
-                for field in fields:
-                    custom_head.append(field.name)
-                    head.append(field.name)
-
-                csv_file = HttpResponse(content_type='text/csv')
-                csv_file['Content-Disposition'] = 'attachment; filename="{}"'.format(file_name)
-                writer = csv.writer(csv_file,
-                                    dialect=dialect,
-                                    delimiter = delimiter,
-                                    quotechar = quotechar)
-
-                writer.writerow(head)
-
-                richieste = Ticket.objects.filter(input_module=module)
-
-                if not richieste: continue
-
-                for richiesta in richieste:
-                    content = richiesta.get_modulo_compilato()
-                    status = strip_tags(richiesta.get_status())
-                    row = [richiesta.created,
-                           richiesta.created_by,
-                           status,
-                           richiesta.subject,
-                           richiesta.description]
-                    # for k,v in content.items():
-                    for column in custom_head:
-                        row.append(content.get(format_field_name(column), ''))
-                    writer.writerow(row)
-                f.writestr(file_name,
-                           csv_file.content)
-            num += 1
-            # messages.add_message(request, messages.SUCCESS, msg_ok.format(cat))
-        except:
-            # messages.add_message(request,
-                                 # messages.ERROR,
-                                 # msg_err.format(cat.__str__(), e.__str__()))
-            failed += 1
-
+            cat_zip = export_category_zip(cat)
+            if queryset.count() == 1:
+                return cat_zip
+            f.writestr(cat.name.replace('/','_') + '.zip', cat_zip.content)
+        except: continue
     f.close()
     response = HttpResponse(output.getvalue(), content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename="uniticket_{}.zip"'.format(timezone.localtime())
     return response
+
 
 def download_report_csv(modeladmin, request, queryset):
     """

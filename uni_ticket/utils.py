@@ -1,5 +1,7 @@
 import base64
 import datetime
+import csv
+import io
 import json
 import logging
 import magic
@@ -9,6 +11,7 @@ import random
 import re
 import shutil
 import shortuuid
+import zipfile
 import zlib
 
 from django.apps import apps
@@ -18,9 +21,10 @@ from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
+from django.utils.html import strip_tags
 from django.utils.translation import gettext as _
 
-from django_form_builder.utils import get_POST_as_json
+from django_form_builder.utils import get_POST_as_json, format_field_name
 
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
@@ -412,3 +416,79 @@ def disable_not_in_progress_categories(categories):
         if not category.is_in_progress():
             category.is_active = False
             category.save(update_fields=['is_active'])
+
+def export_category_zip(category):
+    formset_re = "^{}-(?P<index>[0-9]+)-(?P<name>[a-zA-Z0-9_\-]+)$"
+
+    output = io.BytesIO()
+    f = zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED)
+
+    delimiter='$'
+    quotechar='"'
+    dialect='excel'
+
+    try:
+        input_modules = apps.get_model('uni_ticket', 'TicketCategoryModule').objects.filter(ticket_category=category)
+        for module in input_modules:
+            file_name = "{}_MOD_{}_{}.csv".format(category.name.replace('/','_'),
+                                                  module.created.strftime('%Y-%m-%d_%H-%M-%S'),
+                                                  module.name.replace('/','_'))
+            head = ['created',
+                    'user',
+                    'status',
+                    'subject',
+                    'description']
+            custom_head = []
+            fields = apps.get_model('uni_ticket', 'TicketCategoryInputList').objects.filter(category_module=module)
+            for field in fields:
+                custom_head.append(field.name)
+                head.append(field.name)
+            csv_file = HttpResponse(content_type='text/csv')
+            csv_file['Content-Disposition'] = 'attachment; filename="{}"'.format(file_name)
+            writer = csv.writer(csv_file,
+                                dialect=dialect,
+                                delimiter = delimiter,
+                                quotechar = quotechar)
+
+            writer.writerow(head)
+            richieste = apps.get_model('uni_ticket', 'Ticket').objects.filter(input_module=module)
+            if not richieste: continue
+
+            for richiesta in richieste:
+                content = richiesta.get_modulo_compilato()
+
+                status = strip_tags(richiesta.get_status())
+                row = [richiesta.created,
+                       richiesta.created_by,
+                       status,
+                       richiesta.subject,
+                       richiesta.description]
+                for column in custom_head:
+                    name = format_field_name(column)
+                    match_list = ''
+                    for_index = 0
+                    formset_index = 0
+                    for k,v in content.items():
+                        found = re.search(formset_re.format(name), k)
+                        if found:
+                            if for_index != 0:
+                                match_list += '\n'
+                            if int(found.group('index')) > formset_index:
+                                match_list += '\n'
+                                formset_index += 1
+                            for_index += 1
+                            match_list += '{}: {}'.format(found.group('name'), v)
+                    if match_list:
+                        row.append(match_list)
+                    else:
+                        row.append(content.get(name, ''))
+                writer.writerow(row)
+            f.writestr(file_name,
+                       csv_file.content)
+    except Exception as e:
+        logger.error('Error export category {}: {}'.format(category, e))
+
+    f.close()
+    response = HttpResponse(output.getvalue(), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename="{}.zip"'.format(category.name.replace('/','_'))
+    return response

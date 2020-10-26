@@ -1219,8 +1219,8 @@ msgid "Ticket"
 msgstr ""
 
 #: uni_ticket/models.py:471 uni_ticket/models.py:495
-msgid "<span class=\"badge badge-success\">Chiusa</span"
-msgstr "<span class=\"badge badge-success\">Closed</span"
+msgid "<span class=\"badge badge-success\">Chiusa</span>"
+msgstr "<span class=\"badge badge-success\">Closed</span>"
 
 #: uni_ticket/models.py:474 uni_ticket/models.py:1065
 msgid ""
