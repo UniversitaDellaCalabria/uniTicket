@@ -318,11 +318,15 @@ class TicketCompetenceSchemeForm(forms.Form):
     selected_office = forms.CharField(label=_('Ufficio selezionato'), required=False)
 
 
+class MyDependenceChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return "{} - {}".format(obj.created_by, obj)
+
 class TicketDependenceForm(forms.Form):
     """
     """
-    ticket = forms.ModelChoiceField(queryset=None, required=True,
-                                    widget=BootstrapItaliaSelectWidget)
+    ticket = MyDependenceChoiceField(queryset=None, required=True,
+                                     widget=BootstrapItaliaSelectWidget)
     note = forms.CharField(label=_('Note'),
                            widget=forms.Textarea(attrs={'rows':2}),
                            required=True)
