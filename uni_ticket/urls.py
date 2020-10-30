@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.urls import include, path, re_path
 from django.utils.text import slugify
 from django.views.generic import RedirectView
@@ -12,6 +13,11 @@ from . views import (datatables, generic, management,
 
 app_name="uni_ticket"
 
+
+def my_test_500_view(request):
+    # Return an "Internal Server Error" 500 response code.
+    return HttpResponse(status=500)
+
 _dashboard_name = 'dashboard'
 
 # System/Generic URLs
@@ -19,7 +25,7 @@ _dashboard_name = 'dashboard'
 ticket = 'tickets/<str:ticket_id>'
 urlpatterns = [
     path('', RedirectView.as_view(url='/{}/'.format(_dashboard_name))),
-
+    path('500/', my_test_500_view),
     # Router url di responsabilità su struttura (manager/operator/user)
     re_path(r'^manage/(?:(?P<structure_slug>[-\w]+))?$', generic.manage, name='manage'),
 
@@ -73,7 +79,10 @@ urlpatterns += [
     # Export CSV
     # path('{}/export-csv/'.format(tickets), management.export_category_csv, name='export_category_csv'),
 
-    # Ticket
+    # Export csv/zip
+    path('{}/export_detailed_report/'.format(tickets), management.export_detailed_report, name='manage_export_detailed_report'),
+
+    # Tickets
     path('{}/opened/'.format(tickets), management.manage_opened_ticket_url, name='manage_opened_ticket_url'),
     path('{}/unassigned/'.format(tickets), management.manage_unassigned_ticket_url, name='manage_unassigned_ticket_url'),
     path('{}/closed/'.format(tickets), management.manage_closed_ticket_url, name='manage_closed_ticket_url'),
@@ -98,8 +107,6 @@ urlpatterns += [
     path('{}/riapri/'.format(task_id), management.task_reopen, name='reopen_task'),
     path('{}/edit/remove-attachment/'.format(task_id), management.task_attachment_delete, name='manage_elimina_allegato_task'),
     path('{}/edit/'.format(task_id), management.task_edit_url, name='edit_task'),
-
-
 ]
 
 # Manager URLs

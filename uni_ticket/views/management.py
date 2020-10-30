@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import zipfile
 
 from django.conf import settings
 from django.contrib import messages
@@ -1878,3 +1879,53 @@ def ticket_competence_leave(request, structure_slug, ticket_id,
          'ticket': ticket,
          'title': title,}
     return render(request, template, d)
+
+@login_required
+def export_detailed_report(request, structure_slug):
+    if request.POST:
+        # get structure
+        structure = get_object_or_404(OrganizationalStructure,
+                                      slug=structure_slug,
+                                      is_active=True)
+        # get and check user privileges on structure
+        user_type = get_user_type(user=request.user, structure=structure)
+        if user_type=='user':
+            return custom_message(request, _("Forbidden"), 403)
+        office_employee_list = user_is_operator(request.user, structure)
+        offices = user_offices_list(office_employee_list)
+
+        # ticket codes from post
+        ticket_codes = request.POST.getlist('ticket_code[]')
+        ticket_list = []
+        categories = []
+
+        # check if user can access to these tickets (avoid force POST)
+        for ticket_code in ticket_codes:
+
+            ticket = Ticket.objects.filter(code=ticket_code).first()
+            if not ticket: continue
+            access_ok = (user_type=='manager' and ticket.is_followed_in_structure(structure)) or \
+                        (user_type=='operator' and ticket.is_followed_by_one_of_offices(offices=offices))
+            if not access_ok: continue
+            ticket_list.append(ticket)
+            if ticket.input_module.ticket_category not in categories:
+                categories.append(ticket.input_module.ticket_category)
+
+        # export categories zip files
+        if categories:
+            output = io.BytesIO()
+            f = zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED)
+
+            for cat in categories:
+                try:
+                    cat_zip = export_category_zip(cat, ticket_codes)
+                    if len(categories) == 1:
+                        return cat_zip
+                    f.writestr(cat.name.replace('/','_') + '.zip', cat_zip.content)
+                except: continue
+            f.close()
+            response = HttpResponse(output.getvalue(), content_type='application/zip')
+            response['Content-Disposition'] = 'attachment; filename="uniticket_{}.zip"'.format(timezone.localtime())
+            return response
+        return custom_message(request, _("Nessun record da esportare"))
+    return custom_message(request, _("Forbidden"), 403)

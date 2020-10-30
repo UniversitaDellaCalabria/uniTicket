@@ -16,9 +16,9 @@ from uni_ticket.models import Ticket, TicketAssignment
 from uni_ticket.utils import get_datetime_delta, visible_tickets_to_user
 
 
-_ticket_columns = ['pk','code','subject','get_category',
+_ticket_columns = ['pk','subject','code','get_category',
                    'created','get_owners_html','get_priority','get_status_table']
-_no_priority = ['pk','code','subject','get_category',
+_no_priority = ['pk','subject','code','get_category',
                 'created','get_owners_html','get_status_table']
 
 

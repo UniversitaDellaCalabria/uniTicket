@@ -417,74 +417,85 @@ def disable_not_in_progress_categories(categories):
             category.is_active = False
             category.save(update_fields=['is_active'])
 
-def export_category_zip(category):
-    formset_re = "^{}-(?P<index>[0-9]+)-(?P<name>[a-zA-Z0-9_\-]+)$"
+def export_input_module_csv(module,
+                            delimiter='$', quotechar='"', dialect='excel',
+                            ticket_codes_list=[],
+                            file_name="export.csv"):
 
+    formset_regex = "^{}-(?P<index>[0-9]+)-(?P<name>[a-zA-Z0-9_\-]+)$"
+
+    category = module.ticket_category
+
+    head = ['created',
+            'user',
+            'status',
+            'subject',
+            'description']
+    custom_head = []
+    fields = apps.get_model('uni_ticket', 'TicketCategoryInputList').objects.filter(category_module=module)
+    for field in fields:
+        custom_head.append(field.name)
+        head.append(field.name)
+    csv_file = HttpResponse(content_type='text/csv')
+    csv_file['Content-Disposition'] = 'attachment; filename="{}"'.format(file_name)
+    writer = csv.writer(csv_file,
+                        dialect=dialect,
+                        delimiter = delimiter,
+                        quotechar = quotechar)
+
+    writer.writerow(head)
+    richieste = apps.get_model('uni_ticket', 'Ticket').objects.filter(input_module=module)
+
+    if ticket_codes_list:
+        richieste = richieste.filter(code__in=ticket_codes_list)
+
+    if not richieste: return False
+
+    for richiesta in richieste:
+        content = richiesta.get_modulo_compilato()
+
+        status = strip_tags(richiesta.get_status())
+        row = [richiesta.created,
+               richiesta.created_by,
+               status,
+               richiesta.subject,
+               richiesta.description]
+        for column in custom_head:
+            name = format_field_name(column)
+            match_list = ''
+            for_index = 0
+            formset_index = 0
+            for k,v in content.items():
+                found = re.search(formset_regex.format(name), k)
+                if found:
+                    if for_index != 0:
+                        match_list += '\n'
+                    if int(found.group('index')) > formset_index:
+                        match_list += '\n'
+                        formset_index += 1
+                    for_index += 1
+                    match_list += '{}: {}'.format(found.group('name'), v)
+            if match_list:
+                row.append(match_list)
+            else:
+                row.append(content.get(name, ''))
+        writer.writerow(row)
+    return csv_file
+
+def export_category_zip(category, ticket_codes_list=[]):
     output = io.BytesIO()
     f = zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED)
-
-    delimiter='$'
-    quotechar='"'
-    dialect='excel'
 
     try:
         input_modules = apps.get_model('uni_ticket', 'TicketCategoryModule').objects.filter(ticket_category=category)
         for module in input_modules:
-            file_name = "{}_MOD_{}_{}.csv".format(category.name.replace('/','_'),
-                                                  module.created.strftime('%Y-%m-%d_%H-%M-%S'),
-                                                  module.name.replace('/','_'))
-            head = ['created',
-                    'user',
-                    'status',
-                    'subject',
-                    'description']
-            custom_head = []
-            fields = apps.get_model('uni_ticket', 'TicketCategoryInputList').objects.filter(category_module=module)
-            for field in fields:
-                custom_head.append(field.name)
-                head.append(field.name)
-            csv_file = HttpResponse(content_type='text/csv')
-            csv_file['Content-Disposition'] = 'attachment; filename="{}"'.format(file_name)
-            writer = csv.writer(csv_file,
-                                dialect=dialect,
-                                delimiter = delimiter,
-                                quotechar = quotechar)
-
-            writer.writerow(head)
-            richieste = apps.get_model('uni_ticket', 'Ticket').objects.filter(input_module=module)
-            if not richieste: continue
-
-            for richiesta in richieste:
-                content = richiesta.get_modulo_compilato()
-
-                status = strip_tags(richiesta.get_status())
-                row = [richiesta.created,
-                       richiesta.created_by,
-                       status,
-                       richiesta.subject,
-                       richiesta.description]
-                for column in custom_head:
-                    name = format_field_name(column)
-                    match_list = ''
-                    for_index = 0
-                    formset_index = 0
-                    for k,v in content.items():
-                        found = re.search(formset_re.format(name), k)
-                        if found:
-                            if for_index != 0:
-                                match_list += '\n'
-                            if int(found.group('index')) > formset_index:
-                                match_list += '\n'
-                                formset_index += 1
-                            for_index += 1
-                            match_list += '{}: {}'.format(found.group('name'), v)
-                    if match_list:
-                        row.append(match_list)
-                    else:
-                        row.append(content.get(name, ''))
-                writer.writerow(row)
-            f.writestr(file_name,
-                       csv_file.content)
+            csv_file = export_input_module_csv(module=module,
+                                               ticket_codes_list=ticket_codes_list)
+            if csv_file:
+                file_name = "{}_MOD_{}_{}.csv".format(category.name.replace('/','_'),
+                                                      module.created.strftime('%Y-%m-%d_%H-%M-%S'),
+                                                      module.name.replace('/','_'))
+                f.writestr(file_name, csv_file.content)
     except Exception as e:
         logger.error('Error export category {}: {}'.format(category, e))
 

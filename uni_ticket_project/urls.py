@@ -34,7 +34,7 @@ def test500(request):
 
 urlpatterns = [
     path('{}/'.format(getattr(settings, 'ADMIN_PATH', 'admin')), admin.site.urls),
-    path('500/', test500, name='test500'),
+    path('test500/', test500, name='test500'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

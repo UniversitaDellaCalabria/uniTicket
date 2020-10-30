@@ -1,15 +1,24 @@
 {% load i18n %}
 {% load static %}
 
-<form method="post" id="ticket_mass_update">
+{% if structure %}
+<form method="post" action="{% url 'uni_ticket:manage_export_detailed_report' structure_slug=structure.slug %}">
+    <button type="submit" class="mb-4 pull-right btn btn-outline-secondary">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static '/svg/sprite.svg' %}#it-download"></use>
+        </svg> {% trans "Export dettaglio CSV" %}
+    </button>
+{% endif %}
     <div class="table-responsive">
         <table class="table table-striped table-hover datatable-responsive-serverside">
                 <!--id="ticketTable"-->
                 <thead>
                 <tr>
                     <th></th>
-                    <th>{% trans "Codice" %}</th>
+
                     <th>{% trans "Oggetto" %}</th>
+                    <th>{% trans "Codice" %}</th>
+
                     <th>{% trans "Tipologia" %}</th>
                     <th>{% trans "Creato il" %}</th>
                     <th>{% trans "Creato da" %}</th>
@@ -23,5 +32,7 @@
             </thead>
         </table>
     </div>
+{% if structure %}
     {% csrf_token %}
 </form>
+{% endif %}
