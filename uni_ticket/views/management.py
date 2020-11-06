@@ -231,7 +231,7 @@ def ticket_detail(request, structure_slug, ticket_id,
                                                          taken_date__isnull=True).first()
             # if user has taken ticket
             if office_priority_form.is_valid() and assignment:
-                assignment.taken_date = timezone.now()
+                assignment.taken_date = timezone.localtime()
                 assignment.taken_by = request.user
                 assignment.save(update_fields=['taken_date',
                                                'taken_by'])
@@ -258,7 +258,7 @@ def ticket_detail(request, structure_slug, ticket_id,
                 priority = office_op_form.cleaned_data['priorita']
                 ticket.priority = priority
                 ticket.save(update_fields = ['priority'])
-                assignment.taken_date = timezone.now()
+                assignment.taken_date = timezone.localtime()
                 assignment.taken_by = operator
                 assignment.assigned_by = request.user
                 assignment.save(update_fields=['assigned_by',
@@ -510,7 +510,7 @@ def ticket_dependence_add_new(request, structure_slug, ticket_id,
 
             # log action
             logger.info('[{}] {} added new dependence to'
-                        ' ticket {} from ticket {}'.format(timezone.now(),
+                        ' ticket {} from ticket {}'.format(timezone.localtime(),
                                                             request.user,
                                                             ticket,
                                                             main_ticket))
@@ -577,7 +577,7 @@ def ticket_dependence_remove(request, structure_slug,
     else:
         # log action
         logger.info('[{}] {} removed dependence to'
-                    ' ticket {} from ticket {}'.format(timezone.now(),
+                    ' ticket {} from ticket {}'.format(timezone.localtime(),
                                                         request.user,
                                                         ticket,
                                                         main_ticket))
@@ -640,7 +640,7 @@ def ticket_close(request, structure_slug, ticket_id,
     if not ticket.is_closable():
         # log action
         logger.error('[{}] {} tried to'
-                     ' close not closable ticket {}'.format(timezone.now(),
+                     ' close not closable ticket {}'.format(timezone.localtime(),
                                                             request.user,
                                                             ticket))
         return custom_message(request,
@@ -664,7 +664,7 @@ def ticket_close(request, structure_slug, ticket_id,
             ticket.closed_by = request.user
             ticket.closing_reason = motivazione.format(user=ticket.created_by)
             ticket.closing_status = closing_status
-            ticket.closed_date = timezone.now()
+            ticket.closed_date = timezone.localtime()
             ticket.save(update_fields = ['is_closed',
                                          'closed_by',
                                          'closing_reason',
@@ -672,7 +672,7 @@ def ticket_close(request, structure_slug, ticket_id,
                                          'closed_date'])
 
             # log action
-            logger.info('[{}] {} closed ticket {}'.format(timezone.now(),
+            logger.info('[{}] {} closed ticket {}'.format(timezone.localtime(),
                                                           request.user,
                                                           ticket))
 
@@ -735,7 +735,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
     if not ticket.is_closed:
         # log action
         logger.error('[{}] {} tried to reopen'
-                     ' not closed ticket {}'.format(timezone.now(),
+                     ' not closed ticket {}'.format(timezone.localtime(),
                                                     request.user,
                                                     ticket))
         return custom_message(request,
@@ -745,7 +745,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
     if ticket.is_notification:
         # log action
         logger.error('[{}] {} tried to reopen'
-                     ' a notification ticket {}'.format(timezone.now(),
+                     ' a notification ticket {}'.format(timezone.localtime(),
                                                         request.user,
                                                         ticket))
         return custom_message(request,
@@ -756,7 +756,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
         # log action
         logger.error('[{}] {} tried to reopen'
                      ' a ticket closed by owner user{}'
-                     ''.format(timezone.now(),
+                     ''.format(timezone.localtime(),
                                request.user,
                                ticket))
         return custom_message(request,
@@ -781,7 +781,7 @@ def ticket_reopen(request, structure_slug, ticket_id,
                       note= _("Riapertura richiesta"))
 
     # log action
-    logger.info('[{}] {} reopened ticket {}'.format(timezone.now(),
+    logger.info('[{}] {} reopened ticket {}'.format(timezone.localtime(),
                                                     request.user,
                                                     ticket))
 
@@ -991,7 +991,7 @@ def ticket_competence_add_final(request, structure_slug, ticket_id,
             # log action
             logger.info('[{}] {} added new competence to'
                         ' ticket {}'
-                        ' (follow: {}) (readonly: {})'.format(timezone.now(),
+                        ' (follow: {}) (readonly: {})'.format(timezone.localtime(),
                                                              request.user,
                                                              ticket,
                                                              follow,
@@ -1084,7 +1084,7 @@ def ticket_message(request, structure_slug, ticket_id,
         if not can_manage['readonly'] and ticket_taken:
             for reply in user_replies:
                 reply.read_by = request.user
-                reply.read_date = timezone.now()
+                reply.read_date = timezone.localtime()
                 reply.save(update_fields = ['read_by', 'read_date'])
 
     if request.method == 'POST':
@@ -1114,7 +1114,7 @@ def ticket_message(request, structure_slug, ticket_id,
 
             # log action
             logger.info('[{}] {} added new message in'
-                        ' ticket {}'.format(timezone.now(),
+                        ' ticket {}'.format(timezone.localtime(),
                                             request.user,
                                             ticket))
 
@@ -1221,7 +1221,7 @@ def task_add_new(request, structure_slug, ticket_id,
             new_task.save()
 
             # log action
-            logger.info('[{}] {} created new task {}'.format(timezone.now(),
+            logger.info('[{}] {} created new task {}'.format(timezone.localtime(),
                                                              request.user,
                                                              new_task))
 
@@ -1276,7 +1276,7 @@ def task_remove(request, structure_slug,
     # log action
     logger.error('[{}] {} tried to'
                  ' removed task {}'
-                 ' in ticket {}'.format(timezone.now(),
+                 ' in ticket {}'.format(timezone.localtime(),
                                         request.user,
                                         task,
                                         ticket))
@@ -1352,7 +1352,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
             # log action
             logger.error('[{}] {} tried to'
                          ' edit task {}'
-                         ' in readonly ticket {}'.format(timezone.now(),
+                         ' in readonly ticket {}'.format(timezone.localtime(),
                                                          request.user,
                                                          task,
                                                          ticket))
@@ -1365,7 +1365,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
 
             # log action
             logger.error('[{}] {} tried to'
-                         ' edit closed task {}'.format(timezone.now(),
+                         ' edit closed task {}'.format(timezone.localtime(),
                                                        request.user,
                                                        task))
 
@@ -1390,7 +1390,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
             # log action
             logger.error('[{}] {} tried to'
                          ' edited task {}'
-                         ' priority to {}'.format(timezone.now(),
+                         ' priority to {}'.format(timezone.localtime(),
                                                   request.user,
                                                   task,
                                                   priority_text))
@@ -1488,7 +1488,7 @@ def task_close(request, structure_slug, ticket_id, task_id,
             task.closed_by = request.user
             task.closing_reason = motivazione
             task.closing_status = closing_status
-            task.closed_date = timezone.now()
+            task.closed_date = timezone.localtime()
             task.save(update_fields = ['is_closed',
                                        'closing_reason',
                                        'closing_status',
@@ -1496,7 +1496,7 @@ def task_close(request, structure_slug, ticket_id, task_id,
                                        'closed_by'])
 
             # log action
-            logger.info('[{}] {} closed task {}'.format(timezone.now(),
+            logger.info('[{}] {} closed task {}'.format(timezone.localtime(),
                                                         request.user,
                                                         task))
 
@@ -1558,7 +1558,7 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
         # log action
         logger.error('[{}] {} tried to'
                      ' remove task {}'
-                     ' in closed ticket {}'.format(timezone.now(),
+                     ' in closed ticket {}'.format(timezone.localtime(),
                                                    request.user,
                                                    task,
                                                    ticket))
@@ -1574,7 +1574,7 @@ def task_reopen(request, structure_slug, ticket_id, task_id,
     # log action
     logger.error('[{}] {} tried to'
                  ' reopened task {}'
-                 ' in closed ticket {}'.format(timezone.now(),
+                 ' in closed ticket {}'.format(timezone.localtime(),
                                                request.user,
                                                task,
                                                ticket))
@@ -1656,7 +1656,7 @@ def task_edit(request, structure_slug, ticket_id, task_id,
         if task.is_closed:
             # log action
             logger.error('[{}] {} tried to'
-                         ' edit closed task {}'.format(timezone.now(),
+                         ' edit closed task {}'.format(timezone.localtime(),
                                                        request.user,
                                                        task))
 
@@ -1679,7 +1679,7 @@ def task_edit(request, structure_slug, ticket_id, task_id,
             form.save()
 
             # log action
-            logger.info('[{}] {} edited task {}'.format(timezone.now(),
+            logger.info('[{}] {} edited task {}'.format(timezone.localtime(),
                                                         request.user,
                                                         task))
 
@@ -1750,7 +1750,7 @@ def task_attachment_delete(request, structure_slug,
 
     # log action
     logger.info('[{}] {} deleted attachment'
-                ' from task {}'.format(timezone.now(),
+                ' from task {}'.format(timezone.localtime(),
                                        request.user,
                                        task))
 
@@ -1772,7 +1772,7 @@ def ticket_taken_by_unassigned_offices(request, structure_slug, ticket_id,
                                                      office=office,
                                                      taken_date__isnull=True).first()
         assignment.taken_by = request.user
-        assignment.taken_date = timezone.now()
+        assignment.taken_date = timezone.localtime()
         assignment.save(update_fields=['modified',
                                        'taken_date',
                                        'taken_by'])
@@ -1844,7 +1844,7 @@ def ticket_competence_leave(request, structure_slug, ticket_id,
                                                           'readonly'])
 
                 logger.info('[{}] {} removed competence of office {}'
-                            ' for ticket {}'.format(timezone.now(),
+                            ' for ticket {}'.format(timezone.localtime(),
                                                     request.user,
                                                     office,
                                                     ticket))

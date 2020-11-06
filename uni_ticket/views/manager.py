@@ -155,7 +155,7 @@ def office_add_new(request, structure_slug, structure):
 
                 # log action
                 logger.info('[{}] manager of structure {}'
-                            ' {} created new office {}'.format(timezone.now(),
+                            ' {} created new office {}'.format(timezone.localtime(),
                                                                structure,
                                                                request.user,
                                                                new_office))
@@ -221,7 +221,7 @@ def office_edit(request, structure_slug, office_slug, structure):
 
                 # log action
                 logger.info('[{}] manager of structure {}'
-                            ' {} edited office {}'.format(timezone.now(),
+                            ' {} edited office {}'.format(timezone.localtime(),
                                                           structure,
                                                           request.user,
                                                           edited_office))
@@ -286,7 +286,7 @@ def office_detail(request, structure_slug, office_slug, structure):
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} added employee {}'
-                        ' to office {}'.format(timezone.now(),
+                        ' to office {}'.format(timezone.localtime(),
                                                structure,
                                                request.user,
                                                employee,
@@ -354,7 +354,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} added category {}'
-                        ' to office {}'.format(timezone.now(),
+                        ' to office {}'.format(timezone.localtime(),
                                                  structure,
                                                  request.user,
                                                  category,
@@ -413,7 +413,7 @@ def office_remove_category(request, structure_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} removed category {}'
-                    ' from office {}'.format(timezone.now(),
+                    ' from office {}'.format(timezone.localtime(),
                                              structure,
                                              request.user,
                                              category,
@@ -468,7 +468,7 @@ def office_remove_operator(request, structure_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} removed employee {}'
-                    ' from office {}'.format(timezone.now(),
+                    ' from office {}'.format(timezone.localtime(),
                                              structure,
                                              request.user,
                                              employee,
@@ -534,7 +534,7 @@ def office_disable(request, structure_slug, office_slug, structure):
 
         # log action
         logger.info('[{}] manager of structure {}'
-                    ' {} disabled office {}'.format(timezone.now(),
+                    ' {} disabled office {}'.format(timezone.localtime(),
                                                     structure,
                                                     request.user,
                                                     office))
@@ -576,7 +576,7 @@ def office_enable(request, structure_slug, office_slug, structure):
 
         # log action
         logger.info('[{}] manager of structure {}'
-                    ' {} enabled office {}'.format(timezone.now(),
+                    ' {} enabled office {}'.format(timezone.localtime(),
                                                   structure,
                                                   request.user,
                                                   office))
@@ -616,7 +616,7 @@ def office_delete(request, structure_slug, office_slug, structure):
 
         # log action
         logger.info('[{}] manager of structure {}'
-                    ' {} deleted office {}'.format(timezone.now(),
+                    ' {} deleted office {}'.format(timezone.localtime(),
                                                    structure,
                                                    request.user,
                                                    office))
@@ -738,7 +738,7 @@ def category_remove_office(request, structure_slug,
         logger.info('[{}] manager of structure {}'
                     ' {} removed office {}'
                     ' from category {}'
-                    ' (now disabled)'.format(timezone.now(),
+                    ' (now disabled)'.format(timezone.localtime(),
                                              structure,
                                              request.user,
                                              office,
@@ -777,7 +777,7 @@ def category_add_new(request, structure_slug, structure):
                 # log action
                 logger.error('[{}] manager of structure {}'
                              ' {} tried to add a new category'
-                             ' with existent name {} or slug {}'.format(timezone.now(),
+                             ' with existent name {} or slug {}'.format(timezone.localtime(),
                                                                         structure,
                                                                         request.user,
                                                                         name,
@@ -808,7 +808,7 @@ def category_add_new(request, structure_slug, structure):
                 # log action
                 logger.info('[{}] manager of structure {}'
                             ' {} added a new category'
-                            ' with name {} and slug {}'.format(timezone.now(),
+                            ' with name {} and slug {}'.format(timezone.localtime(),
                                                                structure,
                                                                request.user,
                                                                name,
@@ -903,7 +903,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                 form.save_m2m()
                 # log action
                 logger.info('[{}] manager of structure {}'
-                            ' {} edited the category {}'.format(timezone.now(),
+                            ' {} edited the category {}'.format(timezone.localtime(),
                                                                 structure,
                                                                 request.user,
                                                                 category))
@@ -955,7 +955,7 @@ def category_disable(request, structure_slug, category_slug, structure):
 
         # log action
         logger.info('[{}] manager of structure {}'
-                    ' {} disabled the category {}'.format(timezone.now(),
+                    ' {} disabled the category {}'.format(timezone.localtime(),
                                                           structure,
                                                           request.user,
                                                           category))
@@ -1004,7 +1004,7 @@ def category_enable(request, structure_slug, category_slug, structure):
 
         # log action
         logger.info('[{}] manager of structure {}'
-                    ' {} enabled the category {}'.format(timezone.now(),
+                    ' {} enabled the category {}'.format(timezone.localtime(),
                                                          structure,
                                                          request.user,
                                                          category))
@@ -1036,7 +1036,7 @@ def category_delete(request, structure_slug, category_slug, structure):
 
         # log action
         logger.info('[{}] manager of structure {}'
-                    ' {} deleted the category {}'.format(timezone.now(),
+                    ' {} deleted the category {}'.format(timezone.localtime(),
                                                          structure,
                                                          request.user,
                                                          category))
@@ -1088,7 +1088,7 @@ def category_input_module_new(request, structure_slug,
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} created the module {}'
-                        ' in the category {}'.format(timezone.now(),
+                        ' in the category {}'.format(timezone.localtime(),
                                                      structure,
                                                      request.user,
                                                      new_module,
@@ -1149,7 +1149,7 @@ def category_input_module_edit(request, structure_slug,
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} edited the module {}'
-                        ' of the category {}'.format(timezone.now(),
+                        ' of the category {}'.format(timezone.localtime(),
                                                      structure,
                                                      request.user,
                                                      module,
@@ -1214,7 +1214,7 @@ def category_input_module_enable(request, structure_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} enabled the module {}'
-                    ' of the category {}'.format(timezone.now(),
+                    ' of the category {}'.format(timezone.localtime(),
                                                  structure,
                                                  request.user,
                                                  module,
@@ -1263,7 +1263,7 @@ def category_input_module_disable(request, structure_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} disabled the module {}'
-                    ' and the category {}'.format(timezone.now(),
+                    ' and the category {}'.format(timezone.localtime(),
                                                   structure,
                                                   request.user,
                                                   module,
@@ -1303,7 +1303,7 @@ def category_input_module_delete(request, structure_slug,
         # log action
         logger.error('[{}] manager of structure {}'
                      ' {} tried to delete'
-                     ' the module {} of category {}'.format(timezone.now(),
+                     ' the module {} of category {}'.format(timezone.localtime(),
                                                             structure,
                                                             request.user,
                                                             module,
@@ -1327,7 +1327,7 @@ def category_input_module_delete(request, structure_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} deleted'
-                    ' the module {} of category {}'.format(timezone.now(),
+                    ' the module {} of category {}'.format(timezone.localtime(),
                                                            structure,
                                                            request.user,
                                                            module,
@@ -1391,7 +1391,7 @@ def category_input_module_details(request, structure_slug,
                 # log action
                 logger.info('[{}] manager of structure {}'
                             ' {} inserted the field {}'
-                            ' in the module {} of category {}'.format(timezone.now(),
+                            ' in the module {} of category {}'.format(timezone.localtime(),
                                                                    structure,
                                                                    request.user,
                                                                    name,
@@ -1450,7 +1450,7 @@ def category_input_field_delete(request, structure_slug,
         # log action
         logger.error('[{}] manager of structure {}'
                      ' {} tried to delete a field'
-                     ' from module {} of category {}'.format(timezone.now(),
+                     ' from module {} of category {}'.format(timezone.localtime(),
                                                              structure,
                                                              request.user,
                                                              module,
@@ -1466,7 +1466,7 @@ def category_input_field_delete(request, structure_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} deleted the field {}'
-                    ' from module {} of category {}'.format(timezone.now(),
+                    ' from module {} of category {}'.format(timezone.localtime(),
                                                             structure,
                                                             request.user,
                                                             field,
@@ -1568,7 +1568,7 @@ def category_input_field_edit(request, structure_slug,
             # log action
             logger.error('[{}] manager of structure {}'
                          ' {} tried to edit a field'
-                         ' from module {} of category {}'.format(timezone.now(),
+                         ' from module {} of category {}'.format(timezone.localtime(),
                                                                  structure,
                                                                  request.user,
                                                                  module,
@@ -1589,7 +1589,7 @@ def category_input_field_edit(request, structure_slug,
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} edited the field {}'
-                        ' from module {} of category {}'.format(timezone.now(),
+                        ' from module {} of category {}'.format(timezone.localtime(),
                                                                 structure,
                                                                 request.user,
                                                                 field,
@@ -1652,7 +1652,7 @@ def category_condition_new(request, structure_slug,
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} created the new condition {}'
-                        ' for category {}'.format(timezone.now(),
+                        ' for category {}'.format(timezone.localtime(),
                                                   structure,
                                                   request.user,
                                                   condition,
@@ -1714,7 +1714,7 @@ def category_condition_edit(request, structure_slug, category_slug,
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} edited a condition'
-                        ' for category {}'.format(timezone.now(),
+                        ' for category {}'.format(timezone.localtime(),
                                                   structure,
                                                   request.user,
                                                   category))
@@ -1770,7 +1770,7 @@ def category_condition_delete(request, structure_slug, category_slug,
     # log action
     logger.info('[{}] manager of structure {}'
                 ' {} deleted a condition'
-                ' for category {}'.format(timezone.now(),
+                ' for category {}'.format(timezone.localtime(),
                                           structure,
                                           request.user,
                                           category))
@@ -1813,7 +1813,7 @@ def category_condition_disable(request, structure_slug, category_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} disabled a condition'
-                    ' for category {}'.format(timezone.now(),
+                    ' for category {}'.format(timezone.localtime(),
                                               structure,
                                               request.user,
                                               category))
@@ -1860,7 +1860,7 @@ def category_condition_enable(request, structure_slug, category_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} enabled a condition'
-                    ' for category {}'.format(timezone.now(),
+                    ' for category {}'.format(timezone.localtime(),
                                               structure,
                                               request.user,
                                               category))
@@ -2024,7 +2024,7 @@ def category_input_module_clone(request, structure_slug,
     # log action
     logger.info('[{}] manager of structure {}'
                 ' {} cloned the module {} of category {}'
-                ' in the category {} ({})'.format(timezone.now(),
+                ' in the category {} ({})'.format(timezone.localtime(),
                                              structure,
                                              request.user,
                                              module,
@@ -2076,7 +2076,7 @@ def category_task_new(request, structure_slug,
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} created the new task {}'
-                        ' for category {}'.format(timezone.now(),
+                        ' for category {}'.format(timezone.localtime(),
                                                   structure,
                                                   request.user,
                                                   new_task,
@@ -2221,7 +2221,7 @@ def category_task_edit(request, structure_slug, category_slug,
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} edited a task'
-                        ' for category {}'.format(timezone.now(),
+                        ' for category {}'.format(timezone.localtime(),
                                                   structure,
                                                   request.user,
                                                   category))
@@ -2278,7 +2278,7 @@ def category_task_attachment_delete(request, structure_slug, category_slug,
 
     # log action
     logger.info('[{}] {} deleted attachment'
-                ' from task {} of category {}'.format(timezone.now(),
+                ' from task {} of category {}'.format(timezone.localtime(),
                                                       request.user,
                                                       task,
                                                       category))
@@ -2325,7 +2325,7 @@ def category_task_enable(request, structure_slug, category_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} enabled a task'
-                    ' for category {}'.format(timezone.now(),
+                    ' for category {}'.format(timezone.localtime(),
                                               structure,
                                               request.user,
                                               category))
@@ -2367,7 +2367,7 @@ def category_task_disable(request, structure_slug, category_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} disabled a task'
-                    ' for category {}'.format(timezone.now(),
+                    ' for category {}'.format(timezone.localtime(),
                                               structure,
                                               request.user,
                                               category))
@@ -2410,7 +2410,7 @@ def category_task_delete(request, structure_slug, category_slug,
     # log action
     logger.info('[{}] manager of structure {}'
                 ' {} deleted a task'
-                ' for category {}'.format(timezone.now(),
+                ' for category {}'.format(timezone.localtime(),
                                           structure,
                                           request.user,
                                           category))
@@ -2472,7 +2472,7 @@ def manager_settings(request, structure_slug, structure):
 
             # log action
             logger.info('[{}] manager of structure {}'
-                        ' {} added new manager {}'.format(timezone.now(),
+                        ' {} added new manager {}'.format(timezone.localtime(),
                                                           structure,
                                                           request.user,
                                                           manager))
@@ -2685,7 +2685,7 @@ def structure_protocol_configuration_detail(request, structure_slug,
         # #log action
         # logger.info('[{}] manager of structure {}'
                     # ' {} disabled the protocol configuration {}'
-                    # ''.format(timezone.now(),
+                    # ''.format(timezone.localtime(),
                               # structure,
                               # request.user,
                               # configuration))
@@ -2738,7 +2738,7 @@ def structure_protocol_configuration_detail(request, structure_slug,
         # #log action
         # logger.info('[{}] manager of structure {}'
                     # ' {} enabled the protocol configuration {}'
-                    # ''.format(timezone.now(),
+                    # ''.format(timezone.localtime(),
                               # structure,
                               # request.user,
                               # configuration))
@@ -2845,7 +2845,7 @@ def category_protocol_configuration_new(request, structure_slug,
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} created the new protocol configuration {}'
-                        ' for category {}'.format(timezone.now(),
+                        ' for category {}'.format(timezone.localtime(),
                                                   structure,
                                                   request.user,
                                                   configuration,
@@ -2960,7 +2960,7 @@ def category_protocol_configuration_disable(request, structure_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} disabled the category {} protocol configuration {}'
-                    ''.format(timezone.now(),
+                    ''.format(timezone.localtime(),
                               structure,
                               request.user,
                               category,
@@ -3021,7 +3021,7 @@ def category_protocol_configuration_enable(request, structure_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} enabled the category {} protocol configuration {}'
-                    ''.format(timezone.now(),
+                    ''.format(timezone.localtime(),
                               structure,
                               request.user,
                               category,
@@ -3092,7 +3092,7 @@ def category_default_reply_new(request, structure_slug,
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} created the new default reply {}'
-                        ' for category {}'.format(timezone.now(),
+                        ' for category {}'.format(timezone.localtime(),
                                                   structure,
                                                   request.user,
                                                   default_reply,
@@ -3147,7 +3147,7 @@ def category_default_reply_delete(request, structure_slug, category_slug,
     # log action
     logger.info('[{}] manager of structure {}'
                 ' {} deleted a default reply'
-                ' for category {}'.format(timezone.now(),
+                ' for category {}'.format(timezone.localtime(),
                                           structure,
                                           request.user,
                                           category))
@@ -3190,7 +3190,7 @@ def category_default_reply_disable(request, structure_slug, category_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} disabled a default reply'
-                    ' for category {}'.format(timezone.now(),
+                    ' for category {}'.format(timezone.localtime(),
                                               structure,
                                               request.user,
                                               category))
@@ -3237,7 +3237,7 @@ def category_default_reply_enable(request, structure_slug, category_slug,
         # log action
         logger.info('[{}] manager of structure {}'
                     ' {} enabled a default reply'
-                    ' for category {}'.format(timezone.now(),
+                    ' for category {}'.format(timezone.localtime(),
                                               structure,
                                               request.user,
                                               category))
@@ -3285,7 +3285,7 @@ def category_default_reply_detail(request, structure_slug, category_slug,
             # log action
             logger.info('[{}] manager of structure {}'
                         ' {} edited a default_reply'
-                        ' for category {}'.format(timezone.now(),
+                        ' for category {}'.format(timezone.localtime(),
                                                   structure,
                                                   request.user,
                                                   category))

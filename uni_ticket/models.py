@@ -612,7 +612,7 @@ class Ticket(SavedFormContent):
         # he takes competence in destination office
         if OrganizationalStructureOfficeEmployee.objects.filter(employee=user, office=office):
             new_competence.taken_by = user
-            new_competence.taken_date = timezone.now()
+            new_competence.taken_date = timezone.localtime()
 
         new_competence.save()
         return new_competence
@@ -830,11 +830,11 @@ class Ticket(SavedFormContent):
             if user_manage_office(user=user,
                                   office=assignment.office,
                                   strictly_assigned=strictly_assigned) and not assignment.taken_date:
-                assignment.taken_date = timezone.now()
+                assignment.taken_date = timezone.localtime()
                 assignment.taken_by = user
                 if assigned_by:
                     assignment.assigned_by = assigned_by
-                    assignment.created = timezone.now()
+                    assignment.created = timezone.localtime()
                 assignment.save()
 
     def is_untaken_by_user_offices(self, user, structure):

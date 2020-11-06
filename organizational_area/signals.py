@@ -30,6 +30,6 @@ def create_manager_office(sender, instance, created, **kwargs):
                                                      is_active=True)
         # log action
         logger.info('[{}] default office {}'
-                    ' created in structure {}'.format(timezone.now(),
+                    ' created in structure {}'.format(timezone.localtime(),
                                                       settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
                                                       instance))

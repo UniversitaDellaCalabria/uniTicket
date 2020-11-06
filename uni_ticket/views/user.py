@@ -68,7 +68,7 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
                     shutil.copytree(source, destination)
             except:
                 logger.error('[{}] {} try to copy not existent folder {}'
-                             ''.format(timezone.now(),
+                             ''.format(timezone.localtime(),
                                        log_user,
                                        source))
 
@@ -77,7 +77,7 @@ def _close_notification_ticket(ticket, user): # operator, ticket_assignment):
     # close ticket
     ticket.is_notification = True
     ticket.is_closed = True
-    ticket.closed_date = timezone.now()
+    ticket.closed_date = timezone.localtime()
     # ticket.closed_by = user
     # default closing status: success
     ticket.closing_status = 1
@@ -88,7 +88,7 @@ def _close_notification_ticket(ticket, user): # operator, ticket_assignment):
                                # 'closed_by'])
 
     # assign to an operator
-    # ticket_assignment.taken_date = timezone.now()
+    # ticket_assignment.taken_date = timezone.localtime()
     # ticket_assignment.taken_by = operator
     # ticket_assignment.save(update_fields=['taken_date', 'taken_by'])
 
@@ -124,7 +124,7 @@ def _save_new_ticket_attachments(ticket,
             json_stored[settings.ATTACHMENTS_DICT_PREFIX][key] = attach_value
 
             # log action
-            logger.info('[{}] attachment {} saved in {}'.format(timezone.now(),
+            logger.info('[{}] attachment {} saved in {}'.format(timezone.localtime(),
                                                                 attach_key,
                                                                 path_allegati))
 
@@ -172,7 +172,7 @@ def _send_new_ticket_mail_to_operators(request,
                        fail_silently=True)
     logger.info('[{}] sent mail (result: {}) '
                 'to operators for ticket {}'
-                ''.format(timezone.now(),
+                ''.format(timezone.localtime(),
                           result,
                           ticket))
 
@@ -331,7 +331,7 @@ def ticket_add_new(request, structure_slug, category_slug):
             compiled_by_user = get_user_model().objects.filter(pk=compiled_by_user_id).first()
             compiled_date = parse_datetime(imported_data.get(settings.TICKET_COMPILED_CREATION_DATE)) \
                             if imported_data.get(settings.TICKET_COMPILED_CREATION_DATE) \
-                            else timezone.now()
+                            else timezone.localtime()
         # get compiled form
         form = modulo.get_form(data=imported_data,
                                show_conditions=True,
@@ -374,7 +374,7 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 # log action
                 logger.info('[{}] user {} generated a new ticket URL "{}" '
-                            'for submission'.format(timezone.now(),
+                            'for submission'.format(timezone.localtime(),
                                                     request.user,
                                                     category))
 
@@ -391,7 +391,7 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 if request.POST.get(settings.TICKET_COMPILED_BY_USER_NAME):
                     form_data.update({settings.TICKET_COMPILED_BY_USER_NAME: request.user.pk})
-                    form_data.update({settings.TICKET_COMPILED_CREATION_DATE: timezone.now().isoformat()})
+                    form_data.update({settings.TICKET_COMPILED_CREATION_DATE: timezone.localtime().isoformat()})
 
                 # build encrypted url param with form data
                 encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
@@ -476,7 +476,7 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 # log action
                 logger.info('[{}] user {} created new ticket {}'
-                            ' in category {}'.format(timezone.now(),
+                            ' in category {}'.format(timezone.localtime(),
                                                      log_user,
                                                      ticket,
                                                      category))
@@ -496,7 +496,7 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 # log action
                 logger.info('[{}] ticket {} assigned to '
-                            '{} office'.format(timezone.now(),
+                            '{} office'.format(timezone.localtime(),
                                                ticket,
                                                office))
 
@@ -538,21 +538,21 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                           attachments_dict=ticket.get_allegati_dict())
                         # set protocol data in ticket
                         ticket.protocol_number = protocol_number
-                        ticket.protocol_date = timezone.now()
+                        ticket.protocol_date = timezone.localtime()
                         ticket.save(update_fields=['protocol_number',
                                                    'protocol_date'])
                         messages.add_message(request, messages.SUCCESS,
                                              _("Richiesta protocollata "
                                                "correttamente: n. <b>{}/{}</b>"
                                                "").format(protocol_number,
-                                                          timezone.now().year))
+                                                          timezone.localtime().year))
                     # if protocol fails
                     # raise Exception and do some operations
                     except Exception as e:
                         # log protocol fails
                         logger.error('[{}] user {} protocol for ticket {} '
                                      'failed: {}'
-                                     ''.format(timezone.now(),
+                                     ''.format(timezone.localtime(),
                                                log_user,
                                                ticket,
                                                e))
@@ -762,7 +762,7 @@ def ticket_edit(request, ticket_id):
                               note=_("Ticket modificato"))
 
             # log action
-            logger.info('[{}] user {} edited ticket {}'.format(timezone.now(),
+            logger.info('[{}] user {} edited ticket {}'.format(timezone.localtime(),
                                                                request.user,
                                                                ticket))
 
@@ -806,7 +806,7 @@ def delete_my_attachment(request, ticket_id, attachment):
     delete_file(file_name=nome_file, path=path_allegato)
 
     # log action
-    logger.info('[{}] user {} deleted file {}'.format(timezone.now(),
+    logger.info('[{}] user {} deleted file {}'.format(timezone.localtime(),
                                                       request.user.username,
                                                       path_allegato))
 
@@ -817,7 +817,7 @@ def delete_my_attachment(request, ticket_id, attachment):
 
     # log action
     logger.info('[{}] user {} deleted attachment '
-                '{} for ticket {}'.format(timezone.now(),
+                '{} for ticket {}'.format(timezone.localtime(),
                                           request.user.username,
                                           nome_file,
                                           ticket))
@@ -861,7 +861,7 @@ def ticket_delete(request, ticket_id):
     logger.info('[{}] ticket {} assignment'
                 ' to office {}'
                 ' has been deleted'
-                ' by user {}'.format(timezone.now(),
+                ' by user {}'.format(timezone.localtime(),
                                      ticket,
                                      ticket_assignment.office,
                                      request.user))
@@ -886,7 +886,7 @@ def ticket_delete(request, ticket_id):
     ticket.delete()
 
     # log action
-    logger.info('[{}] user {} deleted ticket {}'.format(timezone.now(),
+    logger.info('[{}] user {} deleted ticket {}'.format(timezone.localtime(),
                                                         request.user,
                                                         ticket))
 
@@ -978,7 +978,7 @@ def ticket_message(request, ticket_id):
     if request.user == ticket.created_by:
         for reply in agent_replies:
             reply.read_by = request.user
-            reply.read_date = timezone.now()
+            reply.read_date = timezone.localtime()
             reply.save(update_fields = ['read_by', 'read_date'])
 
     if request.method == 'POST':
@@ -993,7 +993,7 @@ def ticket_message(request, ticket_id):
         if not ticket.is_open():
             # log action
             logger.error('[{}] user {} tried to submit'
-                         ' a message for the not opened ticket {}'.format(timezone.now(),
+                         ' a message for the not opened ticket {}'.format(timezone.localtime(),
                                                                          request.user,
                                                                          ticket))
             return custom_message(request, _("La richiesta non è modificabile"))
@@ -1006,7 +1006,7 @@ def ticket_message(request, ticket_id):
 
             # log action
             logger.info('[{}] user {} submitted a message'
-                        ' for ticket {}'.format(timezone.now(),
+                        ' for ticket {}'.format(timezone.localtime(),
                                                 request.user,
                                                 ticket))
 
@@ -1115,7 +1115,7 @@ def ticket_close(request, ticket_id):
     if ticket.is_closed:
         # log action
         logger.error('[{}] user {} tried to close '
-                     ' the already closed ticket {}'.format(timezone.now(),
+                     ' the already closed ticket {}'.format(timezone.localtime(),
                                                             request.user,
                                                             ticket))
 
@@ -1139,7 +1139,7 @@ def ticket_close(request, ticket_id):
             ticket.is_closed = True
             ticket.closing_reason = motivazione
             # ticket.closing_status = closing_status
-            ticket.closed_date = timezone.now()
+            ticket.closed_date = timezone.localtime()
             ticket.save(update_fields = ['is_closed',
                                          'closing_reason',
                                          # 'closing_status',
@@ -1152,7 +1152,7 @@ def ticket_close(request, ticket_id):
                                    "").format(ticket))
 
             # log action
-            logger.info('[{}] user {} closed ticket {}'.format(timezone.now(),
+            logger.info('[{}] user {} closed ticket {}'.format(timezone.localtime(),
                                                                request.user,
                                                                ticket))
 
@@ -1186,12 +1186,12 @@ def ticket_reopen(request, ticket_id):
     # Se il ticket non è chiuso blocca
     if not ticket.is_closed:
         logger.error('[{}] {} tried to reopen not closed ticket {} '
-                     ''.format(timezone.now(), request.user, ticket))
+                     ''.format(timezone.localtime(), request.user, ticket))
         return custom_message(request, _("La richiesta non è stata chiusa"))
 
     if ticket.closed_by:
         logger.error('[{}] {} tried to reopen ticket {} '
-                     ' closed by operator'.format(timezone.now(),
+                     ' closed by operator'.format(timezone.localtime(),
                                                   request.user,
                                                   ticket))
         return custom_message(request, _("La richiesta è stata chiusa "
@@ -1200,7 +1200,7 @@ def ticket_reopen(request, ticket_id):
 
     if ticket.is_notification:
         logger.error('[{}] {} tried to reopen notification ticket {} '
-                     ''.format(timezone.now(), request.user, ticket))
+                     ''.format(timezone.localtime(), request.user, ticket))
         return custom_message(request, _("La richiesta è di tipo "
                                          "notifica e non può essere "
                                          "riaperta"))
@@ -1210,7 +1210,7 @@ def ticket_reopen(request, ticket_id):
 
     msg = _("Riapertura richiesta {} da utente proprietario").format(ticket)
     # log action
-    logger.error('[{}] {} reopened ticket {}'.format(timezone.now(),
+    logger.error('[{}] {} reopened ticket {}'.format(timezone.localtime(),
                                                      request.user,
                                                      ticket))
 
@@ -1344,7 +1344,7 @@ def download_ticket_pdf(request, ticket_id, ticket): # pragma: no cover
     # except Exception as e:
         # logger.error('[{}] user {} tried to download pdf version '
                      # ' of ticket {} but got an error'
-                     # ''.format(timezone.now(),
+                     # ''.format(timezone.localtime(),
                                # request.user,
                                # ticket))
 
