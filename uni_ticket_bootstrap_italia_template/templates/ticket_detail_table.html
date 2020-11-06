@@ -178,7 +178,7 @@
                 {% endfor %}
                 </ul>
                 {% else %}
-                    {{ v }}
+                    {{ v|default:"-" }}
                 {% endif %}
             </td>
         </tr>

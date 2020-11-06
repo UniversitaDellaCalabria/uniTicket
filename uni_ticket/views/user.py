@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import re
 import shutil
 
 from django.conf import settings
@@ -97,18 +98,34 @@ def _save_new_ticket_attachments(ticket,
                                  form,
                                  request_files):
     if request_files:
-        json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
+        if not json_stored.get(settings.ATTACHMENTS_DICT_PREFIX):
+            json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
         path_allegati = get_path(ticket.get_folder())
+        attach_key = ''
+        attach_value = ''
+
         for key, value in request_files.items():
-            save_file(form.cleaned_data[key],
+            formset_regex = re.match(settings.FORMSET_FULL_REGEX, key)
+            if formset_regex:
+                formset_field = form.fields[formset_regex['field_name']]
+                if formset_field.is_formset:
+                    sub_field_name = formset_regex['name']
+                    index = formset_regex['index']
+                    formset_data = formset_field.widget.formset.forms[int(index)].cleaned_data
+                    attach_key = formset_data[sub_field_name]
+                    attach_value = attach_key._name
+            else:
+                attach_key = form.cleaned_data[key]
+                attach_value = attach_key._name
+
+            save_file(attach_key,
                       path_allegati,
-                      form.cleaned_data[key]._name)
-            value = form.cleaned_data[key]._name
-            json_stored[settings.ATTACHMENTS_DICT_PREFIX][key] = value
+                      attach_value)
+            json_stored[settings.ATTACHMENTS_DICT_PREFIX][key] = attach_value
 
             # log action
             logger.info('[{}] attachment {} saved in {}'.format(timezone.now(),
-                                                                form.cleaned_data[key],
+                                                                attach_key,
                                                                 path_allegati))
 
         set_as_dict(ticket, json_stored)
@@ -723,14 +740,11 @@ def ticket_edit(request, ticket_id):
         if form.is_valid():
             if request.FILES:
                 json_response[settings.ATTACHMENTS_DICT_PREFIX] = allegati
-                path_allegati = get_path(ticket.get_folder())
-                for key, value in request.FILES.items():
-                    nome_allegato = form.cleaned_data[key]._name
-                    # form.validate_attachment(request.FILES.get(key))
-                    save_file(form.cleaned_data[key],
-                              path_allegati,
-                              nome_allegato)
-                    json_response[settings.ATTACHMENTS_DICT_PREFIX]["{}".format(key)] = "{}".format(nome_allegato)
+                json_stored = get_as_dict(compiled_module_json=json_response)
+                _save_new_ticket_attachments(ticket=ticket,
+                                             json_stored=json_stored,
+                                             form=form,
+                                             request_files=request.FILES)
             elif allegati:
                 # If data aren't updated (the same as the original)
                 json_response[settings.ATTACHMENTS_DICT_PREFIX] = allegati

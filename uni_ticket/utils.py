@@ -422,8 +422,6 @@ def export_input_module_csv(module,
                             ticket_codes_list=[],
                             file_name="export.csv"):
 
-    formset_regex = "^{}-(?P<index>[0-9]+)-(?P<name>[a-zA-Z0-9_\-]+)$"
-
     category = module.ticket_category
 
     head = ['created',
@@ -466,7 +464,7 @@ def export_input_module_csv(module,
             for_index = 0
             formset_index = 0
             for k,v in content.items():
-                found = re.search(formset_regex.format(name), k)
+                found = re.search(settings.FORMSET_REGEX.format(name), k)
                 if found:
                     if for_index != 0:
                         match_list += '\n'
