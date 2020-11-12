@@ -2458,9 +2458,12 @@ def manager_settings(request, structure_slug, structure):
             default_office = OrganizationalStructureOffice.objects.get(organizational_structure=structure,
                                                                        is_default=True)
             # add user to default office
-            new_officeemployee = osoe(employee=manager,
-                                      office=default_office)
-            new_officeemployee.save()
+            operator_exists = osoe.objects.filter(employee=manager,
+                                                  office=default_office).first()
+            if not operator_exists:
+                new_officeemployee = osoe(employee=manager,
+                                          office=default_office)
+                new_officeemployee.save()
 
             # add user to structure managers
             new_manager = UserManageOrganizationalStructure(user=manager,
