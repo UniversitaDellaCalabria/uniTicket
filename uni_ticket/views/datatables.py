@@ -49,6 +49,7 @@ class TicketDTD(DjangoDatatablesServerProc):
                 self.aqs = self.aqs.filter(
                     Q(code__icontains=text) | \
                     Q(subject__icontains=text) | \
+                    Q(description__icontains=text) | \
                     Q(created_by__first_name__icontains=text) | \
                     Q(created_by__last_name__icontains=text) | \
                     Q(compiled_by__first_name__icontains=text) | \
