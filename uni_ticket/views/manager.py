@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from django.conf import settings
@@ -78,7 +79,7 @@ def dashboard(request, structure_slug, structure):
 
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)
-    disable_not_in_progress_categories(categories)
+    disabled_expired_categories(categories)
 
     messages = TicketReply.get_unread_messages_count(tickets=tickets)
 
@@ -650,9 +651,7 @@ def category_detail(request, structure_slug, category_slug, structure):
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    if category.is_active and not category.is_in_progress():
-        category.is_active = False
-        category.save(update_fields=['is_active'])
+    category.disable_if_expired()
 
     title = _('Gestione tipologia di richiesta')
     template = 'manager/category_detail.html'
@@ -998,9 +997,17 @@ def category_enable(request, structure_slug, category_slug, structure):
     else:
         category.is_active = True
         category.save(update_fields = ['is_active'])
-        messages.add_message(request, messages.SUCCESS,
-                             _("Tipo di richieste {} attivato con successo"
-                               "").format(category))
+        if category.is_started():
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Tipo di richieste {} attivato con successo"
+                                   "").format(category))
+        else:
+            start = timezone.localtime(category.date_start)
+            start_string = start.strftime(settings.DEFAULT_DATETIME_FORMAT)
+            messages.add_message(request, messages.WARNING,
+                                 _("Tipo di richieste {} attivato con successo. "
+                                   "Data di inizio {}").format(category,
+                                                               start_string))
 
         # log action
         logger.info('[{}] manager of structure {}'
@@ -1921,7 +1928,7 @@ def categories(request, structure_slug, structure):
     template = 'manager/categories.html'
     # sub_title = _("gestione ufficio livello manager")
     categories = TicketCategory.objects.filter(organizational_structure=structure)
-    disable_not_in_progress_categories(categories)
+    disabled_expired_categories(categories)
 
     d = {'categories': categories,
          'structure': structure,

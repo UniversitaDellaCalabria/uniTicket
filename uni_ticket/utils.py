@@ -411,11 +411,9 @@ def get_datetime_delta(days):
     delta_date = timezone.now() - datetime.timedelta(days=days)
     return delta_date.replace(hour=0, minute=0, second=0)
 
-def disable_not_in_progress_categories(categories):
+def disabled_expired_categories(categories):
     for category in categories:
-        if not category.is_in_progress():
-            category.is_active = False
-            category.save(update_fields=['is_active'])
+        category.disable_if_expired()
 
 def export_input_module_csv(module,
                             delimiter='$', quotechar='"', dialect='excel',

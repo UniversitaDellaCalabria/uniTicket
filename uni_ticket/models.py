@@ -138,10 +138,9 @@ class TicketCategory(models.Model):
         elif not category_module:
             return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
                      " attivare un modulo di input").format(self)
-
-        elif not self.is_started():
-            return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
-                     " rimuovere o attendere la data di inizio").format(self)
+        # elif not self.is_started():
+            # return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
+                     # " rimuovere o attendere la data di inizio").format(self)
         elif self.is_expired():
             return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
                      " rimuovere o prolungare la data di scadenza").format(self)
@@ -206,6 +205,14 @@ class TicketCategory(models.Model):
 
     def is_in_progress(self):
         return self.is_started() and not self.is_expired()
+
+    def is_published(self):
+        return self.is_active and self.is_in_progress()
+
+    def disable_if_expired(self):
+        if self.is_active and self.is_expired():
+            self.is_active = False
+            self.save(update_fields=['is_active'])
 
     def __str__(self):
         return '{}'.format(self.name)

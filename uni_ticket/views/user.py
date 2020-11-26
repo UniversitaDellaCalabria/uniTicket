@@ -212,7 +212,13 @@ def ticket_new_preload(request, structure_slug=None):
         categorie = TicketCategory.objects.filter(organizational_structure=structure,
                                                   is_active=True)
 
-        disable_not_in_progress_categories(categorie)
+        # disabled_expired_categories(categorie)
+        to_be_excluded = []
+        for category in categorie:
+            if not category.is_published():
+                to_be_excluded.append(category)
+        for tbe in to_be_excluded:
+            categorie = categorie.exclude(pk=tbe.pk)
 
         # User roles
         is_employee = user_is_employee(request.user)
@@ -271,12 +277,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                                      slug=category_slug,
                                      organizational_structure=struttura)
 
-    if category.is_active and not category.is_in_progress():
-        category.is_active = False
-        category.save(update_fields=['is_active'])
-
     # if category is not active, return an error message
-    if not category.is_active:
+    if not category.is_published():
         unavailable_msg = category.not_available_message or settings.UNAVAILABLE_TICKET_CATEGORY
         return custom_message(request, unavailable_msg, status=404)
 

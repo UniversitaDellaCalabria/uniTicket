@@ -97,17 +97,7 @@
             </tr>
             <tr>
                 <th scope="row">{% trans 'Stato' %}</th>
-                <td>
-                    {% if category.is_active %}
-                    <span class="text-success">
-                        <b>{% trans "Attiva" %}</b>
-                    </span>
-                    {% else %}
-                    <span class="text-danger">
-                        <b>{% trans "Non attiva" %}</b>
-                    </span>
-                    {% endif %}
-                </td>
+                <td>{% include "manager/category_status.html" %}</td>
             </tr>
             <tr>
                 <th scope="row">{% trans 'Attiva dal' %}</th>

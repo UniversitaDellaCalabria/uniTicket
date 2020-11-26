@@ -1,0 +1,20 @@
+{% load i18n %}
+{% load static %}
+
+
+{% if category.is_published %}
+    <span class="badge badge-success mb-2">
+        {% trans "Attiva" %}
+    </span>
+{% elif category.is_active %}
+    <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use>
+    </svg>
+    <span class="badge badge-warning mb-2">
+         {% trans "Attiva da" %} {{ category.date_start }}
+    </span>
+{% else %}
+    <span class="badge badge-danger mb-2">
+        {% trans "Non attiva" %}
+    </span>
+{% endif %}
