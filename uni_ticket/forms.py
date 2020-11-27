@@ -37,7 +37,7 @@ class CategoryForm(ModelForm):
                   'allowed_users': _('Solo i seguenti utenti possono effettuare richieste')}
         widgets = {'description': forms.Textarea(attrs={'rows':2}),
                    'confirm_message_text': forms.Textarea(attrs={'rows':2}),
-                   'allowed_users': BootstrapItaliaSelectMultipleWidget,}
+                   'allowed_users': BootstrapItaliaSelectMultipleWidget}
         help_texts = {'date_start': _("Formato {}. Lasciare vuoto  per non impostare"
                                       "").format(settings.DEFAULT_DATETIME_FORMAT.replace('%','')),
                       'date_end': _("Formato {}. Lasciare vuoto  per non impostare"

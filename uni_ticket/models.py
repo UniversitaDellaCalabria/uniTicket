@@ -868,7 +868,7 @@ class TicketCategoryDefaultReply(models.Model):
 
     class Meta:
         ordering = ["-created"]
-        verbose_name = _("Risposta prefefinita")
+        verbose_name = _("Risposta predefinita")
         verbose_name_plural = _("Risposte predefinite")
 
     def __str__(self):

@@ -1255,7 +1255,7 @@ msgid "Da assegnare"
 msgstr "To assign"
 
 #: uni_ticket/models.py:849
-msgid "Risposta prefefinita"
+msgid "Risposta predefinita"
 msgstr "Default response"
 
 #: uni_ticket/models.py:850
@@ -4101,7 +4101,7 @@ msgid "Aggiungi nuova configurazione"
 msgstr "Add new configuration"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_options.html:84
-msgid "Risposte prefefinite"
+msgid "Risposte predefinite"
 msgstr "Default replies"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_options.html:95
