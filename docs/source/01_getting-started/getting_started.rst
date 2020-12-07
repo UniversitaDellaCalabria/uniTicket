@@ -58,6 +58,16 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     DEFAULT_DATETIME_FORMAT = '{} %H:%M'.format(DEFAULT_DATE_FORMAT)
     DATE_INPUT_FORMATS = [DEFAULT_DATE_FORMAT, '%d/%m/%Y']
 
+    # override globals
+    DATE_INPUT_FORMATS = [DEFAULT_DATE_FORMAT, '%Y-%m-%d']
+    DATETIME_INPUT_FORMATS = [DEFAULT_DATETIME_FORMAT, f'%Y-%m-%d {DEFAULT_TIME_FORMAT}']
+
+    # for javascript datepickers
+    # BootstrapItalia datepicker
+    JS_DEFAULT_DATE_FORMAT = "dd/MM/yyyy"
+    # Cutstom datetimepicker
+    JS_DEFAULT_DATETIME_FORMAT = 'DD/MM/Y hh:mm'
+
 - Definire l'ADMIN_PATH
 - Definire i database e l'hostname
 - Le app installate (INSTALLED_APPS)
@@ -212,15 +222,23 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
 
 .. code-block:: python
 
+    # Internationalization
+    # Set to False to avoid problems with javascript datepickers
+    # (that use the DATE_INPUT_FORMATS and DATETIME_INPUT_FORMATS)
+    # The template uses {% localize on %} tag to localize dates
+    USE_L10N = False
+
     # localization
     LANGUAGES = (
       ('it', _('Italiano')),
       ('en', _('Inglese')),
     )
+
     LANGUAGE_CODE = 'it'
     LOCALE_PATHS = (
         os.path.join(BASE_DIR, "locale"),
     )
+
     TIME_ZONE = 'Europe/Rome'
 
 Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (ed eventualmente sovrascrivere in *settingslocal.py*):

@@ -2,6 +2,8 @@
 
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
+
 
 {% block top_buttons %}
 <a role="button" class="btn btn-outline-secondary"
@@ -36,6 +38,19 @@ $(document).on('keyup keypress', 'form input', function(e) {
         e.preventDefault();
         return false;
     }
+});
+</script>
+<!-- datetime picker -->
+<script>
+{% settings_value "JS_DEFAULT_DATETIME_FORMAT" as js_default_datetime_value %}
+{% settings_value "LANGUAGE_CODE" as language_code %}
+
+$(function () {
+    $('.uniticket-datetimepicker').datetimepicker({
+        format:"{{ js_default_datetime_value }}",
+        showTodayButton:true,
+        locale: "{{ language_code }}"
+    });
 });
 </script>
 {% endblock extra_scripts %}

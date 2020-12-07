@@ -19,6 +19,7 @@ from archipro_ws.settings import *
 from django_form_builder.settings import *
 from organizational_area.settings import *
 from uni_ticket.settings import *
+from uni_ticket_bootstrap_italia_template.settings import *
 
 from . settingslocal import *
 
@@ -100,5 +101,4 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True

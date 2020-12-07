@@ -6,6 +6,7 @@ bootstrap-italia-base.html
 {% extends 'base-setup.html' %}
 
 {% load i18n %}
+{% load l10n %}
 <!-- From app django-sass-processor -->
 {% if debug %}{% load sass_tags %}{% endif %}
 {% load static %}
@@ -52,7 +53,7 @@ dell'Università della Calabria.
 {{ request.user }} -
 {% endif %}
 {% current_date as current_date %}
-{{ current_date }}
+{{ current_date|localize }}
 {% endblock header_slim_org_name %}
 
 {% block header_slim_sub_menu %}{% endblock header_slim_sub_menu %}
@@ -78,7 +79,7 @@ dell'Università della Calabria.
 
 <!-- Container -->
 {% block container %}
-
+{% localize on %}
 <div class="container">
     {% block content_title %}
     <div class="py-md-5 bd-content clearfix">
@@ -121,6 +122,7 @@ dell'Università della Calabria.
     </div>
 </div>
 -->
+{% endlocalize %}
 {% endblock container %}
 
 {% block footer_menu_section %}

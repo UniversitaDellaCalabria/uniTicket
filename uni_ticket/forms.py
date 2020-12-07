@@ -12,6 +12,7 @@ from bootstrap_italia_template.widgets import (BootstrapItaliaSelectWidget,
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,)
+from uni_ticket_bootstrap_italia_template.widgets import UniTicketDateTimeWidget
 
 from . models import *
 from . utils import *
@@ -37,7 +38,9 @@ class CategoryForm(ModelForm):
                   'allowed_users': _('Solo i seguenti utenti possono effettuare richieste')}
         widgets = {'description': forms.Textarea(attrs={'rows':2}),
                    'confirm_message_text': forms.Textarea(attrs={'rows':2}),
-                   'allowed_users': BootstrapItaliaSelectMultipleWidget}
+                   'allowed_users': BootstrapItaliaSelectMultipleWidget,
+                   'date_start': UniTicketDateTimeWidget,
+                   'date_end': UniTicketDateTimeWidget}
         help_texts = {'date_start': _("Formato {}. Lasciare vuoto  per non impostare"
                                       "").format(settings.DEFAULT_DATETIME_FORMAT.replace('%','')),
                       'date_end': _("Formato {}. Lasciare vuoto  per non impostare"
