@@ -971,7 +971,6 @@ def ticket_message(request, ticket_id):
     """
     ticket = get_object_or_404(Ticket, code=ticket_id)
     title = _("Messaggi")
-    sub_title = ticket
     # Conversazione utente-operatori
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
     form = ReplyForm()
@@ -1065,7 +1064,8 @@ def ticket_message(request, ticket_id):
                 messages.add_message(request, messages.ERROR,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
     d={'form': form,
-       'sub_title': sub_title,
+       'sub_title': ticket.__str__(),
+       'sub_title_2': ticket.description,
        'ticket': ticket,
        'ticket_replies': ticket_replies,
        'title': title,}

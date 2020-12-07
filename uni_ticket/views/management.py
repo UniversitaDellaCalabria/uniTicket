@@ -1066,7 +1066,6 @@ def ticket_message(request, structure_slug, ticket_id,
     """
 
     title = "{} - {}".format(_("Messaggi"), ticket.created_by)
-    sub_title = ticket
     user = request.user
     user_type = get_user_type(request.user, structure)
     # Conversazione utente-operatori
@@ -1154,7 +1153,8 @@ def ticket_message(request, structure_slug, ticket_id,
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
     d = {'form': form,
          'structure': structure,
-         'sub_title': sub_title,
+         'sub_title': ticket.__str__(),
+         'sub_title_2': ticket.description,
          'ticket': ticket,
          'ticket_replies': ticket_replies,
          'title': title,}
