@@ -17,8 +17,26 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
-{% if chosen_structure and chosen_structure.banner %}
-<div class="mb-3"><img class="structure_banner" src="{{ chosen_structure.banner.url }}" /></div>
+{% if chosen_structure %}
+    {% if chosen_structure.banner %}
+    <div class="mb-3">
+        <img class="structure_banner" src="{{ chosen_structure.banner.url }}" />
+    </div>
+    {% endif %}
+    {% if alerts %}
+    <div class="alert alert-info my-3" role="alert">
+        {% for alert in alerts %}
+            {% if forloop.counter0 %}<hr>{% endif %}
+            <div class="row">
+                <div class="col">
+                    <b>{{ alert.name }}</b>
+                    <br>
+                    {{ alert.text }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 {% endif %}
 <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
 <div class="bootstrap-select-wrapper">

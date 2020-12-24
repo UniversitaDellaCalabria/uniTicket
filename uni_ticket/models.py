@@ -36,7 +36,42 @@ def _attachment_upload(instance, filename):
     return os.path.join('{}/{}'.format(folder, filename))
 
 
-class TicketCategory(models.Model):
+class ExpirableModel(models.Model):
+    date_start = models.DateTimeField(_("Attiva dal"), null=True, blank=True)
+    date_end = models.DateTimeField(_("Attiva fino al"), null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def is_expired(self):
+        if not self.date_end: return False
+        return timezone.localtime() >= self.date_end
+
+    def is_started(self):
+        if not self.date_start: return True
+        return timezone.localtime() >= self.date_start
+
+    def is_in_progress(self):
+        return self.is_started() and not self.is_expired()
+
+    def is_published(self):
+        return self.is_active and self.is_in_progress()
+
+    def disable_if_expired(self):
+        if self.is_active and self.is_expired():
+            self.is_active = False
+            self.save(update_fields=['is_active'])
+
+
+class TimeStampedModel(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    modified =  models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class TicketCategory(ExpirableModel, TimeStampedModel):
     """
     Categoria di appartenenza dei Ticket
     Definisce un particolare ambito
@@ -52,8 +87,6 @@ class TicketCategory(models.Model):
     slug = models.SlugField(max_length=255,
                             blank=False, null=False)
     description = models.TextField(max_length=500, null=True, blank=True)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
     organizational_structure = models.ForeignKey(OrganizationalStructure,
                                                  on_delete=models.PROTECT)
     organizational_office = models.ForeignKey(OrganizationalStructureOffice,
@@ -62,8 +95,6 @@ class TicketCategory(models.Model):
     is_active = models.BooleanField(default=False,
                                     help_text=_("Se disabilitato, non sarà "
                                                 "visibile in Aggiungi Richiesta"))
-    date_start = models.DateTimeField(_("Attiva dal"), null=True, blank=True)
-    date_end = models.DateTimeField(_("Attiva fino al"), null=True, blank=True)
     not_available_message = models.CharField(_("Messaggio se non attiva"),
                                              max_length=255,
                                              null=True, blank=True,
@@ -194,25 +225,6 @@ class TicketCategory(models.Model):
                                     is_active=True).first()
 
         return conf if conf else False
-
-    def is_expired(self):
-        if not self.date_end: return False
-        return timezone.localtime() >= self.date_end
-
-    def is_started(self):
-        if not self.date_start: return True
-        return timezone.localtime() >= self.date_start
-
-    def is_in_progress(self):
-        return self.is_started() and not self.is_expired()
-
-    def is_published(self):
-        return self.is_active and self.is_in_progress()
-
-    def disable_if_expired(self):
-        if self.is_active and self.is_expired():
-            self.is_active = False
-            self.save(update_fields=['is_active'])
 
     def __str__(self):
         return '{}'.format(self.name)
@@ -875,15 +887,13 @@ class TicketCategoryDefaultReply(models.Model):
         return (self.text[:80] + '..')
 
 
-class TicketAssignment(models.Model):
+class TicketAssignment(TimeStampedModel):
     """
     Ufficio di competenza per la gestione Ticket
     """
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     office = models.ForeignKey(OrganizationalStructureOffice,
                                on_delete=models.PROTECT)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
     note = models.TextField(blank=True, null=True)
     assigned_by = models.ForeignKey(settings.AUTH_USER_MODEL,
                                     on_delete=models.PROTECT,
@@ -1274,12 +1284,10 @@ class OrganizationalStructureWSArchiPro(models.Model):
         return '{} - {}'.format(self.name, self.organizational_structure)
 
 
-class TicketCategoryWSArchiPro(models.Model):
+class TicketCategoryWSArchiPro(TimeStampedModel):
     ticket_category = models.ForeignKey(TicketCategory,
                                         on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=False)
     protocollo_cod_titolario = models.CharField(_('Codice titolario'),
                                                 max_length=12,
@@ -1300,3 +1308,19 @@ class TicketCategoryWSArchiPro(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.ticket_category)
+
+
+class OrganizationalStructureAlert(ExpirableModel, TimeStampedModel):
+    organizational_structure = models.ForeignKey(OrganizationalStructure,
+                                                 on_delete=models.CASCADE)
+    name = name = models.CharField(max_length=255)
+    text = models.TextField(max_length=500)
+    ordinamento = models.PositiveIntegerField(blank=True, default=0)
+    is_active = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["ordinamento", "created"]
+        verbose_name = _("Alert di struttura agli utenti")
+
+    def __str__(self):
+        return '{} - {}'.format(self.name, self.organizational_structure)

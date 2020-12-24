@@ -411,9 +411,9 @@ def get_datetime_delta(days):
     delta_date = timezone.now() - datetime.timedelta(days=days)
     return delta_date.replace(hour=0, minute=0, second=0)
 
-def disabled_expired_categories(categories):
-    for category in categories:
-        category.disable_if_expired()
+def disabled_expired_items(items):
+    for item in items:
+        item.disable_if_expired()
 
 def export_input_module_csv(module,
                             delimiter='$', quotechar='"', dialect='excel',

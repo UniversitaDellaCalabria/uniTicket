@@ -79,7 +79,7 @@ def dashboard(request, structure_slug, structure):
 
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)
-    disabled_expired_categories(categories)
+    disabled_expired_items(categories)
 
     messages = TicketReply.get_unread_messages_count(tickets=tickets)
 
@@ -1928,7 +1928,7 @@ def categories(request, structure_slug, structure):
     template = 'manager/categories.html'
     # sub_title = _("gestione ufficio livello manager")
     categories = TicketCategory.objects.filter(organizational_structure=structure)
-    disabled_expired_categories(categories)
+    disabled_expired_items(categories)
 
     d = {'categories': categories,
          'structure': structure,
@@ -2455,6 +2455,9 @@ def manager_settings(request, structure_slug, structure):
                                                  manager_users=manager_users)
     protocol_configurations = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure)
 
+    alerts = OrganizationalStructureAlert.objects.filter(organizational_structure=structure)
+    disabled_expired_items(alerts)
+
     if request.method == 'POST':
         form = OrganizationalStructureAddManagerForm(request.POST,
                                                      structure=structure,
@@ -2495,7 +2498,8 @@ def manager_settings(request, structure_slug, structure):
                                      "<b>{}</b>: {}".format(k, strip_tags(v)))
 
 
-    d = {'form': form,
+    d = {'alerts': alerts,
+         'form': form,
          'manager_users': manager_users,
          'protocol_configurations': protocol_configurations,
          'structure': structure,
@@ -3314,5 +3318,141 @@ def category_default_reply_detail(request, structure_slug, category_slug,
          'default_reply': default_reply,
          'form': form,
          'structure': structure,
+         'title': title,}
+    return render(request, template, d)
+
+
+@login_required
+@is_manager
+def structure_alert_new(request, structure_slug, structure):
+    """
+    Creates a new alert for organizational structure
+
+    :type structure_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    title = _('Nuovo alert per gli utenti')
+    form = OrganizationalStructureAlertForm()
+    if request.method == 'POST':
+        form = OrganizationalStructureAlertForm(request.POST)
+        if form.is_valid():
+            alert = form.save(commit=False)
+            alert.organizational_structure = structure
+            alert.save()
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} created the new alert {}'
+                        ''.format(timezone.localtime(),
+                                  structure,
+                                  request.user,
+                                  alert))
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Alert creato con successo"))
+            return redirect('uni_ticket:manager_user_settings',
+                            structure_slug=structure_slug)
+        else: # pragma: no cover
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+
+    template = 'manager/structure_alert_add_new.html'
+    d = {'form': form,
+         'structure': structure,
+         'sub_title': structure,
+         'title': title,}
+    return render(request, template, d)
+
+
+@login_required
+@is_manager
+def structure_alert_delete(request, structure_slug, alert_id, structure):
+    """
+    Deletes alert from a structure
+
+    :type structure_slug: String
+    :type alert_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param alert_id: alert id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    alert = get_object_or_404(OrganizationalStructureAlert,
+                              pk=alert_id,
+                              organizational_structure=structure)
+    messages.add_message(request, messages.SUCCESS,
+                         _("Alert {} eliminato correttamente").format(alert))
+
+    # log action
+    logger.info('[{}] manager of structure {}'
+                ' {} deleted alert {}'.format(timezone.localtime(),
+                                              structure,
+                                              request.user,
+                                              alert))
+
+    alert.delete()
+    return redirect('uni_ticket:manager_user_settings',
+                    structure_slug=structure_slug)
+
+
+@login_required
+@is_manager
+def structure_alert_edit(request, structure_slug, alert_id, structure):
+    """
+    Edits alert details
+
+    :type structure_slug: String
+    :type alert_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param alert_id: alert id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    alert = get_object_or_404(OrganizationalStructureAlert,
+                              pk=alert_id,
+                              organizational_structure=structure)
+    alert.disable_if_expired()
+    form = OrganizationalStructureAlertForm(instance=alert)
+    if request.method == 'POST':
+        form = OrganizationalStructureAlertForm(instance=alert,
+                                                data=request.POST)
+        if form.is_valid():
+            alert_condition = form.save(commit=False)
+            alert_condition.text = strip_tags(form.cleaned_data['text'])
+            alert_condition.save()
+
+            # log action
+            logger.info('[{}] manager of structure {}'
+                        ' {} edited alert {}'.format(timezone.localtime(),
+                                                     structure,
+                                                     request.user,
+                                                     alert))
+
+            messages.add_message(request, messages.SUCCESS,
+                                 _("Alert modificato con successo"))
+            return redirect('uni_ticket:manager_user_settings',
+                            structure_slug=structure_slug)
+        else: # pragma: no cover
+            for k,v in get_labeled_errors(form).items():
+                messages.add_message(request, messages.ERROR,
+                                     "<b>{}</b>: {}".format(k, strip_tags(v)))
+    template = 'manager/structure_alert_edit.html'
+    title = _('Modifica alert')
+    sub_title = alert
+    d = {'form': form,
+         'structure': structure,
+         'sub_title': sub_title,
          'title': title,}
     return render(request, template, d)

@@ -238,6 +238,9 @@ urlpatterns += [
     # Settings
     path('{}/settings/'.format(base), manager.manager_settings, name='manager_user_settings'),
     path('{}/settings/check-protocol'.format(base), manager.manager_settings_check_protocol, name='manager_user_settings_check_protocol'),
+    path('{}/settings/alerts/new'.format(base), manager.structure_alert_new, name='manager_structure_alert_new'),
+    path('{}/settings/alerts/<int:alert_id>/edit'.format(base), manager.structure_alert_edit, name='manager_structure_alert_edit'),
+    path('{}/settings/alerts/<int:alert_id>/delete'.format(base), manager.structure_alert_delete, name='manager_structure_alert_delete'),
 
     # Others generic
     path('{}/messages/'.format(base), login_required(is_manager(generic.ticket_messages)), name='manager_messages'),

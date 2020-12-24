@@ -1,0 +1,96 @@
+{% load i18n %}
+{% load static %}
+
+{% if alerts %}
+<div class="it-list-wrapper">
+    <ul class="it-list">
+        {% for alert in alerts %}
+        {% if forloop.counter0 %}<hr>{% endif %}
+        <li class="py-2 clearfix">
+            <b>
+                {{ alert.name }}
+            </b>
+            <br>
+            <small>{{ alert.created }}</small>
+            <br>
+            {% if alert.is_published %}
+                <span class="badge badge-success mb-2">
+                    {% trans "Attivo" %}
+                </span>
+            {% elif alert.is_active %}
+                <svg class="icon icon-xs">
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use>
+                </svg>
+                <span class="badge badge-warning mb-2">
+                     {% trans "Attiva da" %} {{ alert.date_start }}
+                </span>
+            {% else %}
+                <span class="badge badge-danger mb-2">
+                    {% trans "Non attivo" %}
+                </span>
+            {% endif %}
+
+            <div>
+                <button type="button"
+                    class="mx-1 btn btn-outline-danger btn-xs float-right"
+                    data-toggle="modal"
+                    data-target="#deleteAlert{{ forloop.counter0 }}">
+                    {% trans "Elimina" %}
+                </button>
+                <a role="button"
+                   class="mx-1 btn btn-outline-secondary btn-xs float-right"
+                   href="{% url 'uni_ticket:manager_structure_alert_edit' structure_slug=structure.slug alert_id=alert.pk %}">
+                    {% trans "Modifica" %}
+                </a>
+            </div>
+
+            <div class="modal fade"
+                 tabindex="-1"
+                 role="dialog"
+                 id="deleteAlert{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered"
+                     role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Eliminazione alert" %}
+                            </h5>
+                            <button class="close" type="button"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero eliminare l'alert" %}
+                               <b>{{ alert.name }}</b>
+                               {% trans "della struttura" %}
+                               <br>
+                               <b>{{ structure }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-danger"
+                               href="{% url 'uni_ticket:manager_structure_alert_delete' structure_slug=structure.slug alert_id=alert.pk %}">
+                                {% trans "Si, elimina l'alert" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+{% trans "Nessun alert" %}
+{% endif %}
+<a role="button"
+   class="mt-3 btn btn-outline-success btn-block"
+   href="{% url 'uni_ticket:manager_structure_alert_new' structure_slug=structure.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+    </svg> {% trans "Crea nuovo alert" %}
+</a>

@@ -195,6 +195,7 @@ def ticket_new_preload(request, structure_slug=None):
         return redirect(reverse('uni_ticket:user_dashboard'))
 
     strutture = OrganizationalStructure.objects.filter(is_active=True)
+    alerts = None
     categorie = None
     template = "user/new_ticket_preload.html"
     title = _("Effettua una nuova richiesta")
@@ -209,10 +210,16 @@ def ticket_new_preload(request, structure_slug=None):
             structure = get_object_or_404(OrganizationalStructure,
                                           slug=structure_slug,
                                           is_active=True)
+
+        alerts = OrganizationalStructureAlert.objects.filter(organizational_structure=structure,
+                                                             is_active=True)
+        disabled_expired_items(alerts)
+        active_alerts = [i for i in alerts if i.is_published()]
+
         categorie = TicketCategory.objects.filter(organizational_structure=structure,
                                                   is_active=True)
 
-        # disabled_expired_categories(categorie)
+        # disabled_expired_items(categorie)
         to_be_excluded = []
         for category in categorie:
             if not category.is_published():
@@ -238,7 +245,8 @@ def ticket_new_preload(request, structure_slug=None):
             categorie = categorie.filter(allow_guest=True)
 
         sub_title = _("Seleziona la Categoria")
-    d = {'categorie': categorie,
+    d = {'alerts': active_alerts,
+         'categorie': categorie,
          'chosen_structure': structure,
          'strutture': strutture,
          'sub_title': sub_title,

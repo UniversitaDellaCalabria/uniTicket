@@ -556,3 +556,27 @@ class CategoryWSArchiProModelForm(forms.ModelForm):
 
     class Media:
         js = ('js/textarea-autosize.js',)
+
+
+class OrganizationalStructureAlertForm(ModelForm):
+    class Meta:
+        model = OrganizationalStructureAlert
+        fields = ['name', 'text',
+                  'ordinamento',
+                  'date_start',
+                  'date_end',
+                  'is_active']
+        labels = {'name': _('Nome'),
+                  'text': _('Testo'),
+                  'is_active': _('Attiva'),
+                  }
+        widgets = {'text': forms.Textarea(attrs={'rows':2}),
+                   'date_start': UniTicketDateTimeWidget,
+                   'date_end': UniTicketDateTimeWidget}
+        help_texts = {'date_start': _("Formato {}. Lasciare vuoto  per non impostare"
+                                      "").format(settings.DEFAULT_DATETIME_FORMAT.replace('%','')),
+                      'date_end': _("Formato {}. Lasciare vuoto  per non impostare"
+                                    "").format(settings.DEFAULT_DATETIME_FORMAT.replace('%',''))}
+
+    class Media:
+        js = ('js/textarea-autosize.js',)
