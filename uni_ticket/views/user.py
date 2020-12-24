@@ -195,7 +195,7 @@ def ticket_new_preload(request, structure_slug=None):
         return redirect(reverse('uni_ticket:user_dashboard'))
 
     strutture = OrganizationalStructure.objects.filter(is_active=True)
-    alerts = None
+    active_alerts = []
     categorie = None
     template = "user/new_ticket_preload.html"
     title = _("Effettua una nuova richiesta")
