@@ -31,14 +31,16 @@
                 <div class="col">
                     <b>{{ alert.name }}</b>
                     <br>
-                    {{ alert.text }}
+                    {{ alert.text | linebreaks }}
                 </div>
             </div>
         {% endfor %}
     </div>
     {% endif %}
 {% endif %}
-<b><label for="structure_slug">{% trans "Struttura" %}</label></b>
+<b>
+    <label for="structure_slug">{% trans "Struttura" %}</label>
+</b>
 <div class="bootstrap-select-wrapper">
     <select id="structure_slug"
             name="structure_slug"
