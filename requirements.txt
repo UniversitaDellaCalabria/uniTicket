@@ -13,6 +13,8 @@ pytz
 shortuuid
 simplejson
 six
+xmlschema
+importlib_resources
 
 # datatables ajax
 git+https://github.com/peppelinux/django-datatables-ajax.git
@@ -34,8 +36,9 @@ git+https://github.com/peppelinux/FileSignatureValidator.git
 django-nested-admin
 
 # SAML2
-git+https://github.com/peppelinux/pysaml2.git@pplnx-v5
-git+https://github.com/peppelinux/djangosaml2.git@pplnx-dev
+git+https://github.com/peppelinux/pysaml2.git@pplnx-v6.5.1
+# git+https://github.com/peppelinux/djangosaml2.git@pplnx-dev
+djangosaml2
 
 # SASS dynamic compiler
 libsass
