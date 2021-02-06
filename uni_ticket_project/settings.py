@@ -57,6 +57,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if 'djangosaml2' in INSTALLED_APPS:
+    MIDDLEWARE.append('djangosaml2.middleware.SamlSessionMiddleware')
+
 ROOT_URLCONF = 'uni_ticket_project.urls'
 
 TEMPLATES = [

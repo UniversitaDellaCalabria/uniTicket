@@ -62,18 +62,20 @@ if 'saml2_sp' in settings.INSTALLED_APPS:
     saml2_url_prefix = 'saml2'
 
     urlpatterns += path('', include((saml2_sp.urls, 'sp',))),
+
     urlpatterns += path('{}/login/'.format(saml2_url_prefix),
-                        views.login, name='login'),
+                           views.LoginView.as_view(), name='login'),
     urlpatterns += path('{}/acs/'.format(saml2_url_prefix),
-                        views.assertion_consumer_service, name='saml2_acs'),
+                           views.AssertionConsumerServiceView.as_view(), name='saml2_acs'),
     urlpatterns += path('{}/logout/'.format(saml2_url_prefix),
-                        views.logout, name='logout'),
+                           views.LogoutInitView.as_view(), name='logout'),
     urlpatterns += path('{}/ls/'.format(saml2_url_prefix),
-                        views.logout_service, name='saml2_ls'),
+                           views.LogoutView.as_view(), name='saml2_ls'),
     urlpatterns += path('{}/ls/post/'.format(saml2_url_prefix),
-                        views.logout_service_post, name='saml2_ls_post'),
+                           views.LogoutView.as_view(), name='saml2_ls_post'),
     urlpatterns += path('{}/metadata/'.format(saml2_url_prefix),
-                        views.metadata, name='saml2_metadata'),
+                           views.MetadataView.as_view(), name='saml2_metadata'),
+
 else:
     urlpatterns += path('local{}/'.format(settings.LOGIN_URL),
                         auth_views.LoginView.as_view(template_name='login.html'),
