@@ -26,9 +26,9 @@ class User(AbstractUser):
                                             max_length=6,
                                             blank=True, null=True,
                                             help_text="fonte Esse3")
-    first_name = models.CharField(_('Nome'), max_length=30,
+    first_name = models.CharField(_('Nome'), max_length=40,
                                   blank=True, null=True)
-    last_name = models.CharField(_('Cognome'), max_length=30,
+    last_name = models.CharField(_('Cognome'), max_length=40,
                                  blank=True, null=True)
     taxpayer_id = models.CharField(_('TaxPayer ID - codice fiscale'),
                                       max_length=50,
