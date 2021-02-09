@@ -1,5 +1,4 @@
-dist: buster
-sudo: false
+#dist: buster
 
 language: python
 python:
