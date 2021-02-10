@@ -12,7 +12,8 @@ def chat_operator(user, structure_slug):
     if not structure: return False
 
     # return user_is_in_default_office(user, structure)
-    return user_is_operator(user, structure)
+    if user_is_operator(user, structure): return True
+    return False
 
 def chat_operator_online(user, structure_slug):
     structure = OrganizationalStructure.objects.filter(slug=structure_slug,
