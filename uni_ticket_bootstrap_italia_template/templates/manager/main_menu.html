@@ -32,11 +32,15 @@
         <span>{% trans "Messaggi" %}</span>
     </a>
 </li>
+
+{% if is_chat_active %}
 <li class="nav-item">
     <a class="nav-link" href="{% url 'chat:room' room_name=structure.slug %}">
         <span>{% trans "Chat" %}</span>
     </a>
 </li>
+{% endif %}
+
 <li class="nav-item">
     <a class="nav-link" href="{% url 'uni_ticket:manager_user_settings' structure_slug=structure.slug %}">
         <span>{% trans "Configurazione" %}</span>

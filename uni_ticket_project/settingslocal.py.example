@@ -42,8 +42,6 @@ if not DEBUG:
 HOSTNAME = 'uniticket.hostname.url'
 ALLOWED_HOSTS = ['*']
 
-ADMIN_PATH = 'admin_path'
-
 EMAIL_SENDER = f'ticket.no-reply@{HOSTNAME}'
 
 DATABASES = {
@@ -83,8 +81,8 @@ INSTALLED_APPS = [
     'rest_framework',
 
     # Django channels and chat
-    'channels',
-    'chat',
+    # 'channels',
+    # 'chat',
 
     # Libreria per la generazione dei PDF
     'wkhtmltopdf',
