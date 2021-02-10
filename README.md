@@ -162,6 +162,7 @@ cd uniticket
 cat uni_ticket_project/settingslocal.py.example > uni_ticket_project/settingslocal.py
 
 # edit settings ...
+# set DEBUG=False
 
 # create your MysqlDB
 export USER='thatuser'
@@ -202,3 +203,14 @@ sudo apt install supervisor
 
 # if everything works, the big part is done!
 ````
+
+
+Load example data
+-----------------
+
+````
+./manage.py loaddata dumps/example_conf.json
+````
+
+- Manager user (username: user1 / password: secret1!)
+- Operator user (username: user2 / password: secret2!)

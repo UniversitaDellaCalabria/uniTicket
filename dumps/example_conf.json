@@ -1,211 +1,220 @@
 [
 {
-    "model": "uni_ticket.ticketcategory",
-    "pk": 3,
-    "fields": {
-        "name": "Category 1",
-        "slug": "category-1",
-        "description": "Category 1 description",
-        "created": "2020-05-08T07:30:02.759Z",
-        "modified": "2020-05-08T07:30:02.759Z",
-        "organizational_structure": 10,
-        "organizational_office": 37,
-        "is_active": true,
-        "not_available_message": null,
-        "show_heading_text": true,
-        "allow_anonymous": false,
-        "allow_guest": true,
-        "allow_user": true,
-        "allow_employee": true,
-        "is_notification": false,
-        "confirm_message_text": "",
-        "receive_email": false
-    }
+  "model": "accounts.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$216000$XCXvx5XAelC1$kfp8opeg3CI96FrD9F4KXRKqavbfPcmS06k47kYM5aI=",
+    "last_login": "2021-02-10T14:38:44.031Z",
+    "is_superuser": true,
+    "username": "user1",
+    "is_staff": true,
+    "date_joined": "2020-05-08T07:27:32.776Z",
+    "is_active": true,
+    "email": "manager@uniticket.it",
+    "matricola_dipendente": "999999",
+    "matricola_studente": "111111",
+    "first_name": "Manager",
+    "last_name": "Test",
+    "taxpayer_id": "AAABBB11C22D333E",
+    "email_notify": true,
+    "groups": [],
+    "user_permissions": []
+  }
 },
 {
-    "model": "uni_ticket.ticketcategorymodule",
-    "pk": 3,
-    "fields": {
-        "name": "Module 1",
-        "ticket_category": 3,
-        "created": "2020-05-08T07:30:10.034Z",
-        "is_active": true
-    }
+  "model": "accounts.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$216000$sYQMxffPUS78$3o0sfiG+RilEgn/8mmgtS7bXh88DZjREQEQaNX729FI=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "user2",
+    "is_staff": false,
+    "date_joined": "2020-05-08T07:27:44.081Z",
+    "is_active": true,
+    "email": "operator@uniticket.it",
+    "matricola_dipendente": "1111",
+    "matricola_studente": "2222",
+    "first_name": "Operator",
+    "last_name": "Test",
+    "taxpayer_id": "AAABBB11C22D444E",
+    "email_notify": true,
+    "groups": [],
+    "user_permissions": []
+  }
 },
 {
-    "model": "uni_ticket.ticketcategoryinputlist",
-    "pk": 1,
-    "fields": {
-        "name": "Custom field multi-choice",
-        "field_type": "MultiCheckBoxField",
-        "valore": "value1;value2;value3",
-        "is_required": true,
-        "aiuto": "Help-test field",
-        "pre_text": "",
-        "ordinamento": 0,
-        "category_module": 3
-    }
+  "model": "uni_ticket.ticketcategory",
+  "pk": 3,
+  "fields": {
+    "date_start": null,
+    "date_end": null,
+    "created": "2020-05-08T07:30:02.759Z",
+    "modified": "2020-05-08T07:30:02.759Z",
+    "name": "Category 1",
+    "slug": "category-1",
+    "description": "Category 1 description",
+    "organizational_structure": 10,
+    "organizational_office": 37,
+    "is_active": true,
+    "not_available_message": null,
+    "show_heading_text": true,
+    "allow_anonymous": false,
+    "allow_guest": true,
+    "allow_user": true,
+    "allow_employee": true,
+    "is_notification": false,
+    "confirm_message_text": "",
+    "receive_email": false,
+    "protocol_required": false,
+    "allowed_users": []
+  }
 },
 {
-    "model": "uni_ticket.ticketcategorycondition",
-    "pk": 1,
-    "fields": {
-        "category": 3,
-        "title": "Privacy policy",
-        "text": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
-        "ordinamento": 0,
-        "attachment": "",
-        "is_printable": false,
-        "is_collapsable": true,
-        "is_active": true
-    }
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 3,
+  "fields": {
+    "name": "Module 1",
+    "ticket_category": 3,
+    "created": "2020-05-08T07:30:10.034Z",
+    "is_active": true
+  }
 },
 {
-    "model": "organizational_area.organizationalstructure",
-    "pk": 10,
-    "fields": {
-        "name": "Structure 1",
-        "slug": "structure-1",
-        "unique_code": "structure-1",
-        "structure_type": null,
-        "description": "",
-        "create_date": "2020-05-08T07:29:06.139Z",
-        "banner": "",
-        "url": null,
-        "is_active": true
-    }
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 1,
+  "fields": {
+    "name": "Custom field multi-choice",
+    "field_type": "MultiCheckBoxField",
+    "valore": "value1;value2;value3",
+    "is_required": true,
+    "aiuto": "Help-test field",
+    "pre_text": "",
+    "ordinamento": 0,
+    "category_module": 3
+  }
 },
 {
-    "model": "organizational_area.organizationalstructureoffice",
-    "pk": 36,
-    "fields": {
-        "name": "Help-Desk",
-        "slug": "help-desk",
-        "organizational_structure": 10,
-        "description": "Help-Desk Office",
-        "is_default": true,
-        "is_active": true
-    }
+  "model": "uni_ticket.ticket",
+  "pk": 5,
+  "fields": {
+    "modulo_compilato": "{\"custom_field_multi-choice\": [\"value1\", \"value3\"]}",
+    "code": "btnEfzEVbSjCqTVNirkDu2",
+    "subject": "Category 1",
+    "description": "Category 1 description",
+    "created": "2020-05-08T07:39:05.190Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 3,
+    "is_closed": false,
+    "closed_date": null,
+    "closed_by": null,
+    "closing_reason": null,
+    "closing_status": null,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
 },
 {
-    "model": "organizational_area.organizationalstructureoffice",
-    "pk": 37,
-    "fields": {
-        "name": "Office 1",
-        "slug": "office-1",
-        "organizational_structure": 10,
-        "description": "Office for test purpose",
-        "is_default": false,
-        "is_active": true
-    }
+  "model": "uni_ticket.ticketassignment",
+  "pk": 5,
+  "fields": {
+    "created": "2020-05-08T07:39:05.208Z",
+    "modified": "2020-05-08T07:39:05.208Z",
+    "ticket": 5,
+    "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": null,
+    "taken_by": null,
+    "follow": true,
+    "readonly": false
+  }
 },
 {
-    "model": "accounts.user",
-    "pk": 3,
-    "fields": {
-        "password": "pbkdf2_sha256$180000$L0i1CYuhqldE$D6OhnqST6L8V00dU+nMVkDygs6yu2gzrKQEOCSra3Vs=",
-        "last_login": "2020-05-08T07:36:26.084Z",
-        "is_superuser": true,
-        "username": "utente1",
-        "is_staff": true,
-        "date_joined": "2020-05-08T07:27:32.776Z",
-        "is_active": true,
-        "email": "manager@uniticket.it",
-        "matricola_dipendente": "999999",
-        "matricola_studente": "111111",
-        "first_name": "Manager",
-        "last_name": "Test",
-        "taxpayer_id": "AAABBB11C22D333E",
-        "email_notify": true,
-        "groups": [],
-        "user_permissions": []
-    }
+  "model": "uni_ticket.ticketcategorycondition",
+  "pk": 1,
+  "fields": {
+    "category": 3,
+    "title": "Privacy policy",
+    "text": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
+    "ordinamento": 0,
+    "attachment": "",
+    "is_printable": false,
+    "is_collapsable": true,
+    "is_active": true
+  }
 },
 {
-    "model": "accounts.user",
-    "pk": 4,
-    "fields": {
-        "password": "pbkdf2_sha256$180000$CKKu5ytIcK2o$OPA7f63Kky1mUuJDWqF4XKxC/WqTurLkKUOZ2uSZFtk=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "utente2",
-        "is_staff": false,
-        "date_joined": "2020-05-08T07:27:44.081Z",
-        "is_active": true,
-        "email": "operator@uniticket.it",
-        "matricola_dipendente": "1111",
-        "matricola_studente": "2222",
-        "first_name": "Operator",
-        "last_name": "Test",
-        "taxpayer_id": "AAABBB11C22D444E",
-        "email_notify": true,
-        "groups": [],
-        "user_permissions": []
-    }
+  "model": "organizational_area.organizationalstructure",
+  "pk": 10,
+  "fields": {
+    "name": "Structure 1",
+    "slug": "structure-1",
+    "unique_code": "structure-1",
+    "structure_type": null,
+    "description": "",
+    "create_date": "2020-05-08T07:29:06.139Z",
+    "banner": "",
+    "url": null,
+    "is_active": true
+  }
 },
 {
-    "model": "uni_ticket.ticket",
-    "pk": 5,
-    "fields": {
-        "modulo_compilato": "{\"custom_field_multi-choice\": [\"value1\", \"value3\"]}",
-        "code": "btnEfzEVbSjCqTVNirkDu2",
-        "subject": "Category 1",
-        "description": "Category 1 description",
-        "created": "2020-05-08T07:39:05.190Z",
-        "created_by": 3,
-        "compiled": null,
-        "compiled_by": null,
-        "input_module": 3,
-        "is_closed": false,
-        "closed_date": null,
-        "closed_by": null,
-        "closing_reason": null,
-        "is_notification": false,
-        "priority": 0
-    }
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 36,
+  "fields": {
+    "name": "Help-Desk",
+    "slug": "help-desk",
+    "organizational_structure": 10,
+    "description": "Help-Desk Office",
+    "is_default": true,
+    "is_private": false,
+    "is_active": true
+  }
 },
 {
-    "model": "uni_ticket.ticketassignment",
-    "pk": 5,
-    "fields": {
-        "ticket": 5,
-        "office": 37,
-        "created": "2020-05-08T07:39:05.208Z",
-        "modified": "2020-05-08T07:39:05.208Z",
-        "note": null,
-        "assigned_by": null,
-        "taken_date": null,
-        "taken_by": null,
-        "follow": true,
-        "readonly": false
-    }
+  "model": "organizational_area.organizationalstructureoffice",
+  "pk": 37,
+  "fields": {
+    "name": "Office 1",
+    "slug": "office-1",
+    "organizational_structure": 10,
+    "description": "Office for test purpose",
+    "is_default": false,
+    "is_private": false,
+    "is_active": true
+  }
 },
 {
-    "model": "organizational_area.organizationalstructureofficeemployee",
-    "pk": 4,
-    "fields": {
-        "employee": 3,
-        "office": 36,
-        "create_date": "2020-05-08T07:29:15.326Z",
-        "description": ""
-    }
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 4,
+  "fields": {
+    "employee": 3,
+    "office": 36,
+    "create_date": "2020-05-08T07:29:15.326Z",
+    "description": ""
+  }
 },
 {
-    "model": "organizational_area.organizationalstructureofficeemployee",
-    "pk": 5,
-    "fields": {
-        "employee": 4,
-        "office": 37,
-        "create_date": "2020-05-08T07:30:53.695Z",
-        "description": ""
-    }
+  "model": "organizational_area.organizationalstructureofficeemployee",
+  "pk": 5,
+  "fields": {
+    "employee": 4,
+    "office": 37,
+    "create_date": "2020-05-08T07:30:53.695Z",
+    "description": ""
+  }
 },
 {
-    "model": "organizational_area.usermanageorganizationalstructure",
-    "pk": 3,
-    "fields": {
-        "user": 3,
-        "organizational_structure": 10
-    }
+  "model": "organizational_area.usermanageorganizationalstructure",
+  "pk": 3,
+  "fields": {
+    "user": 3,
+    "organizational_structure": 10
+  }
 }
 ]

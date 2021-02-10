@@ -31,7 +31,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'rz82a_!%$&&56£$56565645645!"SDFXbg"£$5£"$5a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 if not DEBUG:
     SESSION_EXPIRE_AT_BROWSER_CLOSE=True
     SESSION_COOKIE_AGE=(60*60)*9
