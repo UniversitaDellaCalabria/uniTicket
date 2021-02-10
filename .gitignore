@@ -14,8 +14,9 @@ data/static/*
 !data/media/README.md
 
 db.sqlite3
-
 docs/build/*
+
+templates/base-setup.html
 
 saml2_sp/settings.py
 saml2_sp/saml2_config/certificates/*pem

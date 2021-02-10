@@ -156,12 +156,12 @@ virtualenv -ppython3 uniticket.env
 source uniticket.env/bin/activate
 git clone https://github.com/UniversitaDellaCalabria/uniTicket.git uniticket
 cd uniticket
-pip3 install -r requirements.txt
-pip3 install uwsgi
 
-sudo apt install mariadb-server libmariadbclient-dev
-sudo apt install poppler-utils xmlsec1
-sudo apt install supervisor
+# CONFIGURATION
+# create your project settings
+cat uni_ticket_project/settingslocal.py.example > uni_ticket_project/settingslocal.py
+
+# edit settings ...
 
 # create your MysqlDB
 export USER='thatuser'
@@ -174,6 +174,20 @@ sudo mysql -u root -e "\
 CREATE USER IF NOT EXISTS '${USER}'@'${HOST}' IDENTIFIED BY '${PASS}';\
 CREATE DATABASE IF NOT EXISTS ${DB} CHARACTER SET = 'utf8' COLLATE = 'utf8_general_ci';\
 GRANT ALL PRIVILEGES ON ${DB}.* TO '${USER}'@'${HOST}';"
+
+# that's for saml2 (not mandatory, can even disable djangosaml2 in settings.INSTALLED_APPS)
+cat saml2_sp/settings.py.example > saml2_sp/settings.py
+
+# if you don't use unical templates or derivates create a symbolic link to a default base template
+ln -s /absolute/path/DEV/uniTicket/env/lib/python3.8/site-packages/bootstrap_italia_template/templates/bootstrap-italia-base.html  templates/base-setup.html
+# END CONFIGURATION
+
+pip3 install -r requirements.txt
+pip3 install uwsgi
+
+sudo apt install mariadb-server libmariadbclient-dev
+sudo apt install poppler-utils xmlsec1
+sudo apt install supervisor
 
 ./manage.py migrate
 ./manage.py compilemessages
