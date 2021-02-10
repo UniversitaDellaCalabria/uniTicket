@@ -21,7 +21,7 @@
     </a>
 </li>
 {% user_operator_chat request.user structure as user_operator_chat %}
-{% if user_operator_chat %}
+{% if user_operator_chat and is_chat_active %}
 <li class="nav-item">
     <a class="nav-link" href="{% url 'chat:room' room_name=structure.slug %}">
         <span>{% trans "Chat" %}</span>

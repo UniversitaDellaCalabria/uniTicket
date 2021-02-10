@@ -180,6 +180,11 @@ cat saml2_sp/settings.py.example > saml2_sp/settings.py
 
 # if you don't use unical templates or derivates create a symbolic link to a default base template
 ln -s /absolute/path/DEV/uniTicket/env/lib/python3.8/site-packages/bootstrap_italia_template/templates/bootstrap-italia-base.html  templates/base-setup.html
+
+# create generic certificates
+pushd saml2_sp/saml2_config/certificates
+openssl req -nodes -new -x509 -newkey rsa:2048  -days 3650 -keyout key.pem -out cert.pem
+popd
 # END CONFIGURATION
 
 pip3 install -r requirements.txt

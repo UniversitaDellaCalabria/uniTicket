@@ -27,7 +27,7 @@
         </svg>
         {% trans 'Messaggi' %}
     </a>
-    {% if chat_installed and channels_installed and user_operator_chat %}
+    {% if chat_installed and channels_installed and user_operator_chat and is_chat_active %}
     <div class="pull-right">
         <a role="button"
           class="btn btn-outline-success"
