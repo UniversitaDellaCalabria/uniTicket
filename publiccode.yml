@@ -164,7 +164,7 @@ name: uniTicket
 platforms:
   - linux
   - web
-releaseDate: '2020-12-24'
+releaseDate: '2021-02-06'
 roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
 softwareType: standalone/web
 softwareVersion: v1.7.0
