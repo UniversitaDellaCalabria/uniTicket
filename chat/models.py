@@ -69,7 +69,7 @@ class ChatMessageModel(Model):
             'operator_status': sender_channel.status if sender_channel else True
         }
 
-        print(notification)
+        # print(notification)
 
         if sender_channel and sender_channel.channel:
             async_to_sync(channel_layer.send)(sender_channel.channel,
