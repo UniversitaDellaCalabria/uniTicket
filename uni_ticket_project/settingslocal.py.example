@@ -146,7 +146,7 @@ if 'djangosaml2'  in INSTALLED_APPS:
         'djangosaml2.backends.Saml2Backend',
     )
 else:
-    LOGIN_URL = '/login'
+    LOGIN_URL = 'login'
     LOGOUT_URL = 'logout'
 
 # This parameters define the roles of users to open ticket
