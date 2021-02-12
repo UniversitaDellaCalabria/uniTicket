@@ -59,28 +59,29 @@ if 'nested_admin' in settings.INSTALLED_APPS:
 
 if 'saml2_sp' in settings.INSTALLED_APPS:
     import saml2_sp.urls
-    saml2_url_prefix = 'saml2'
+    # saml2_url_prefix = 'saml2'
 
     urlpatterns += path('', include((saml2_sp.urls, 'sp',))),
 
-    urlpatterns += path('{}/login/'.format(saml2_url_prefix),
+    urlpatterns += path('{}/login/'.format(settings.SAML2_URL_PREFIX),
                            views.LoginView.as_view(), name='login'),
-    urlpatterns += path('{}/acs/'.format(saml2_url_prefix),
+    urlpatterns += path('{}/acs/'.format(settings.SAML2_URL_PREFIX),
                            views.AssertionConsumerServiceView.as_view(), name='saml2_acs'),
-    urlpatterns += path('{}/logout/'.format(saml2_url_prefix),
+    urlpatterns += path('{}/logout/'.format(settings.SAML2_URL_PREFIX),
                            views.LogoutInitView.as_view(), name='logout'),
-    urlpatterns += path('{}/ls/'.format(saml2_url_prefix),
+    urlpatterns += path('{}/ls/'.format(settings.SAML2_URL_PREFIX),
                            views.LogoutView.as_view(), name='saml2_ls'),
-    urlpatterns += path('{}/ls/post/'.format(saml2_url_prefix),
+    urlpatterns += path('{}/ls/post/'.format(settings.SAML2_URL_PREFIX),
                            views.LogoutView.as_view(), name='saml2_ls_post'),
-    urlpatterns += path('{}/metadata/'.format(saml2_url_prefix),
+    urlpatterns += path('{}/metadata/'.format(settings.SAML2_URL_PREFIX),
                            views.MetadataView.as_view(), name='saml2_metadata'),
 
 else:
-    urlpatterns += path('{}/'.format(settings.LOGIN_URL),
+    # local_url_prefix = 'local'
+    urlpatterns += path('{}/login/'.format(settings.LOCAL_URL_PREFIX),
                         auth_views.LoginView.as_view(template_name='login.html'),
                         name='login'),
-    urlpatterns += path('{}/'.format(settings.LOGOUT_URL),
+    urlpatterns += path('{}/logout/'.format(settings.LOCAL_URL_PREFIX),
                         auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'),
                         name='logout'),
 

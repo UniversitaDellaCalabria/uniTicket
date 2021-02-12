@@ -138,16 +138,18 @@ if 'djangosaml2'  in INSTALLED_APPS:
     # pySAML2 SP mandatory
     SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 
-    LOGIN_URL = '/saml2/login'
-    LOGOUT_URL = '/saml2/logout'
+    SAML2_URL_PREFIX = 'saml2'
+    LOGIN_URL = f'/{SAML2_URL_PREFIX}/login'
+    LOGOUT_URL = f'/{SAML2_URL_PREFIX}/logout'
 
     AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
         'djangosaml2.backends.Saml2Backend',
     )
 else:
-    LOGIN_URL = 'login'
-    LOGOUT_URL = 'logout'
+    LOCAL_URL_PREFIX = 'local'
+    LOGIN_URL = f'/{LOCAL_URL_PREFIX}/login/'
+    LOGOUT_URL = f'/{LOCAL_URL_PREFIX}/logout/'
 
 # This parameters define the roles of users to open ticket
 # If True, an employee is a user that has this parameter filled (in user model)
