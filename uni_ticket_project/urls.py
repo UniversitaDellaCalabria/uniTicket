@@ -82,7 +82,7 @@ else:
                         auth_views.LoginView.as_view(template_name='login.html'),
                         name='login'),
     urlpatterns += path('{}/logout/'.format(settings.LOCAL_URL_PREFIX),
-                        auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'),
+                        auth_views.LogoutView.as_view(template_name='logout.html', next_page='/'),
                         name='logout'),
 
 
