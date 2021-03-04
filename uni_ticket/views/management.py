@@ -405,9 +405,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
     chiusi = tickets.filter(is_closed=True).count()
 
     # unread messages
-    messages = 0
-    for ticket in tickets:
-        messages += ticket.get_messages_count()[1]
+    messages = TicketReply.get_unread_messages_count(tickets=tickets)
 
     d = {'ticket_aperti': opened,
          'ticket_assegnati_a_me': my_opened,
