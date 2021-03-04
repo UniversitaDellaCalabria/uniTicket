@@ -45,7 +45,7 @@
         </nav>
     </div>
     <div class="pull-right">
-        {% if chat_installed and channels_installed and is_chat_active %}
+        {% if chat_installed and channels_installed %}
         <a role="button"
           class="btn btn-outline-success"
           href="{% url 'chat:room' room_name=structure.slug %}">

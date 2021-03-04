@@ -3,6 +3,7 @@
 {% load chat_tags %}
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 {% block menu_links %}
 {% include 'user/main_menu.html' %}
@@ -41,7 +42,9 @@
         </div>
     {% else %}
         {% structure_operator_online request.user structure_slug as operator_online %}
-        {% if operator_online and is_chat_active %}
+        {% app_is_installed "chat" as chat_installed %}
+        {% app_is_installed "channels" as channels_installed %}
+        {% if chat_installed and channels_installed and operator_online %}
             <a role="button" class="btn btn-success" href="{% url 'chat:room' room_name=structure_slug %}">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
