@@ -917,8 +917,10 @@ class TicketAssignment(TimeStampedModel):
         """
         """
         offices = OrganizationalStructureOffice.objects.filter(organizational_structure=structure,
-                                                               is_active = True)
-        ticket_assignments = TicketAssignment.objects.filter(office__in=offices)
+                                                               is_active = True)\
+                                                        .values_list('pk', flat=True)
+        ticket_assignments = TicketAssignment.objects.select_related('ticket')\
+                                                     .filter(office__pk__in=offices)
         ticket_list = []
         for assignment in ticket_assignments:
             if follow_check and not assignment.follow: continue
@@ -931,7 +933,8 @@ class TicketAssignment(TimeStampedModel):
     def get_ticket_in_office_list(office_list, follow_check=True):
         """
         """
-        ticket_assignments = TicketAssignment.objects.filter(office__in=office_list,
+        ticket_assignments = TicketAssignment.objects.select_related('ticket')\
+                                                     .filter(office__in=office_list,
                                                              office__is_active=True)
         ticket_list = []
         for assignment in ticket_assignments:
