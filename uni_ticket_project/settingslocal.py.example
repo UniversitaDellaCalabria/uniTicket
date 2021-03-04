@@ -151,6 +151,8 @@ else:
     LOGIN_URL = f'/{LOCAL_URL_PREFIX}/login/'
     LOGOUT_URL = f'/{LOCAL_URL_PREFIX}/logout/'
 
+LOGOUT_REDIRECT_URL='/'
+
 # This parameters define the roles of users to open ticket
 # If True, an employee is a user that has this parameter filled (in user model)
 # If False, an employee is a user that is mapped as OrganizationalStructureOfficeEmployee
