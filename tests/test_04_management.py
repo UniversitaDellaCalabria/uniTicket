@@ -68,7 +68,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         response = self.client.get(reverse('uni_ticket:messages'),
                                    follow=True)
         assert response.status_code == 200
-        assert response.context['tickets_with_messages']
+        assert response.context['ticket_messages']
 
         # Submit message (fails until ticket is not taken)
         response = self.client.get(reverse('uni_ticket:message_delete',

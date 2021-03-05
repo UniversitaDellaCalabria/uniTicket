@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Count, Min, Q
 from django.http import (HttpResponse,
                          HttpResponseRedirect,
                          Http404,
@@ -309,38 +309,44 @@ def ticket_messages(request, structure_slug=None,
     by_operator = False
     if user_type=='user':
         tickets = Ticket.objects.filter(Q(created_by=request.user) | \
-                                        Q(compiled_by=request.user))
+                                        Q(compiled_by=request.user))\
+                                .values('code')
         # if user_type is 'user', retrieve messages leaved by a manager/operator
         # (linked to a structure)
         by_operator = True
     elif user_type=='operator':
         # if user is an operator, retrieve his tickets
-        user_tickets = visible_tickets_to_user(user=request.user,
+        tickets = visible_tickets_to_user(user=request.user,
                                                structure=structure,
                                                office_employee=office_employee)
-        tickets = Ticket.objects.filter(code__in=user_tickets)
     else:
         # if user is a manager, get structure tickets
         ta = TicketAssignment
-        structure_tickets = ta.get_ticket_per_structure(structure=structure)
-        tickets = Ticket.objects.filter(code__in=structure_tickets)
-    tickets_with_messages = []
-    for ticket in tickets:
-        messages = ticket.get_messages_count(by_operator=by_operator)
-        # fill the messages list (of tuples)
-        if messages[0] > 0:
-            # Tuple with messages infos
-            # ticket, all_ticket_messages, ticket_unread_messages, first_ticket_creation_date
-            tm = (ticket, messages[0], messages[1], messages[2])
-            tickets_with_messages.append(tm)
-    tickets_with_messages.sort(key=lambda e: (e[2], e[3]), reverse=True)
-    paginator = Paginator(tickets_with_messages, 10)
+        tickets = ta.get_ticket_per_structure(structure=structure)
+
+    if by_operator:
+        not_read = Count('id', filter=Q(read_date__isnull=True, structure__isnull=False))
+    else:
+        not_read = Count('id', filter=Q(read_date__isnull=True, structure__isnull=True))
+
+    started = Min('created')
+    ticket_messages = TicketReply.objects.filter(ticket__code__in=tickets)\
+                                 .values('ticket__code',
+                                         'ticket__subject',
+                                         'ticket__input_module__ticket_category__name',
+                                         'ticket__created_by__first_name',
+                                         'ticket__created_by__last_name')\
+                                 .annotate(total=Count('id'))\
+                                 .annotate(not_read=not_read)\
+                                 .annotate(started=started)\
+                                 .order_by('-not_read','-started')
+    paginator = Paginator(ticket_messages, 10)
     page = request.GET.get('page')
-    tickets_with_messages = paginator.get_page(page)
+    ticket_messages = paginator.get_page(page)
     template = "{}/ticket_messages.html".format(user_type)
     title = _("Tutti i messaggi")
     d = {'structure': structure,
-         'tickets_with_messages': tickets_with_messages,
+         'ticket_messages': ticket_messages,
          'title': title,}
     response = render(request, template, d)
     return response
