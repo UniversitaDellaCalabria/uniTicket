@@ -320,7 +320,7 @@ class Ticket(SavedFormContent):
     """
     Ticket
     """
-    code = models.CharField(max_length=255, unique=True)
+    code = models.CharField(max_length=255, unique=True, db_index=True)
     subject = models.CharField(max_length=255)
     description = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
@@ -916,33 +916,29 @@ class TicketAssignment(TimeStampedModel):
     def get_ticket_per_structure(structure, follow_check=True):
         """
         """
-        offices = OrganizationalStructureOffice.objects.filter(organizational_structure=structure,
-                                                               is_active = True)\
-                                                        .values_list('pk', flat=True)
-        ticket_assignments = TicketAssignment.objects.select_related('ticket')\
-                                                     .filter(office__pk__in=offices)
-        ticket_list = []
+        ticket_assignments = TicketAssignment.objects.filter(office__organizational_structure=structure,
+                                                             office__is_active=True)\
+                                                     .values('ticket__code',
+                                                             'follow')
+        ticket_set = set()
         for assignment in ticket_assignments:
-            if follow_check and not assignment.follow: continue
-            ticket = assignment.ticket
-            if ticket.code not in ticket_list:
-                ticket_list.append(ticket.code)
-        return ticket_list
+            if follow_check and not assignment['follow']: continue
+            ticket_set.add(assignment['ticket__code'])
+        return ticket_set
 
     @staticmethod
     def get_ticket_in_office_list(office_list, follow_check=True):
         """
         """
-        ticket_assignments = TicketAssignment.objects.select_related('ticket')\
-                                                     .filter(office__in=office_list,
-                                                             office__is_active=True)
-        ticket_list = []
+        ticket_assignments = TicketAssignment.objects.filter(office__in=office_list,
+                                                             office__is_active=True)\
+                                                     .values('ticket__code',
+                                                             'follow')
+        ticket_set = set()
         for assignment in ticket_assignments:
-            if follow_check and not assignment.follow: continue
-            ticket = assignment.ticket
-            if ticket.code not in ticket_list:
-                ticket_list.append(ticket.code)
-        return ticket_list
+            if follow_check and not assignment['follow']: continue
+            ticket_set.add(assignment['ticket__code'])
+        return ticket_set
 
     def __str__(self):
         return '{} - {}'.format(self.ticket, self.office)

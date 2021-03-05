@@ -55,9 +55,6 @@ def dashboard(request, structure_slug, structure):
     structure_tickets = ta.get_ticket_per_structure(structure=structure)
     tickets = Ticket.objects.filter(code__in=structure_tickets)
     not_closed = tickets.filter(is_closed=False)
-    # unassigned = []
-    # opened = []
-    # my_opened = []
     unassigned = 0
     opened = 0
     my_opened = 0
