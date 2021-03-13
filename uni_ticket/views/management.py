@@ -1893,7 +1893,7 @@ def export_detailed_report(request, structure_slug):
         offices = user_offices_list(office_employee_list)
 
         # ticket codes from post
-        ticket_codes = request.POST.getlist('ticket_code[]')
+        ticket_codes = request.POST.getlist('ticket_code')
         ticket_list = []
         categories = []
 

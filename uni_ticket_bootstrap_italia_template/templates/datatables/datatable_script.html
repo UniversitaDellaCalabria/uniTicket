@@ -79,7 +79,10 @@ $(function() {
             {
                 targets: [ 2 ],
                 visible: true,
-                className: "d-none ticket_code",
+                className: "d-none",
+                render: function (data, type, row ) {
+                    return "<input type='text' name='ticket_code' value='"+data+"'/>";
+                }
             },
 
 
