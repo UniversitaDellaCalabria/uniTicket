@@ -424,9 +424,14 @@ def export_input_module_csv(module,
 
     head = ['created',
             'user',
-            'status',
-            'subject',
-            'description']
+            'taxpayer_id']
+    if hasattr(settings, 'EMPLOYEE_ATTRIBUTE_NAME'):
+        head.append(getattr(settings, "EMPLOYEE_ATTRIBUTE_LABEL", settings.EMPLOYEE_ATTRIBUTE_NAME))
+    if hasattr(settings, 'USER_ATTRIBUTE_NAME'):
+        head.append(getattr(settings, "USER_ATTRIBUTE_LABEL", settings.USER_ATTRIBUTE_NAME))
+    head.extend(['status',
+                 'subject',
+                 'description'])
     custom_head = []
     fields = apps.get_model('uni_ticket', 'TicketCategoryInputList').objects.filter(category_module=module)
     for field in fields:
@@ -453,9 +458,15 @@ def export_input_module_csv(module,
         status = strip_tags(richiesta.get_status())
         row = [richiesta.created,
                richiesta.created_by,
-               status,
-               richiesta.subject,
-               richiesta.description]
+               richiesta.created_by.taxpayer_id]
+        if hasattr(settings, 'EMPLOYEE_ATTRIBUTE_NAME'):
+            row.append(getattr(richiesta.created_by, settings.EMPLOYEE_ATTRIBUTE_NAME))
+        if hasattr(settings, 'USER_ATTRIBUTE_NAME'):
+            row.append(getattr(richiesta.created_by, settings.USER_ATTRIBUTE_NAME))
+        row.extend([status,
+                    richiesta.subject,
+                    richiesta.description])
+        print(row)
         for column in custom_head:
             name = format_field_name(column)
             match_list = ''
