@@ -171,3 +171,4 @@ softwareVersion: v1.7.0
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
   - 'https://www.unical.it'
+  - AgID codiceIPA:agid 'https://www.agid.gov.it'
