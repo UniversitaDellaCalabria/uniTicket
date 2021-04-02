@@ -76,6 +76,16 @@ if 'saml2_sp' in settings.INSTALLED_APPS:
     urlpatterns += path('{}/metadata/'.format(settings.SAML2_URL_PREFIX),
                            views.MetadataView.as_view(), name='saml2_metadata'),
 
+elif 'spid_oidc_rp' in settings.INSTALLED_APPS:
+    from django.views.generic.base import RedirectView
+    urlpatterns += path('',
+                        include(('spid_oidc_rp.urls', 'spid_oidc_rp'), namespace="spid_oidc_rp"),
+                        name="spid_oidc_rp"),
+    urlpatterns += path(f'oidc/login',
+                        RedirectView.as_view(url=f'{settings.LOGIN_URL}'), name='login'),
+    urlpatterns += path(f'oidc/logout',
+                        RedirectView.as_view(url=f'{settings.LOGOUT_URL}'), name='logout'),
+
 else:
     # local_url_prefix = 'local'
     urlpatterns += path('{}/login/'.format(settings.LOCAL_URL_PREFIX),

@@ -170,4 +170,5 @@ softwareType: standalone/web
 softwareVersion: v1.7.0
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
-  - 'https://www.unical.it'
+  - Università della Calabria - https://www.unical.it
+  - Agenzia per l'Italia digitale - https://www.agid.gov.it

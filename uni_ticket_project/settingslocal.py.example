@@ -146,6 +146,9 @@ if 'djangosaml2'  in INSTALLED_APPS:
         'django.contrib.auth.backends.ModelBackend',
         'djangosaml2.backends.Saml2Backend',
     )
+elif 'spid_oidc_rp' in INSTALLED_APPS:
+    LOGIN_URL = f'/oidc/rp/begin?issuer_id=agid_login'
+    LOGOUT_URL = f'/oidc/rpinitiated_logout'
 else:
     LOCAL_URL_PREFIX = 'local'
     LOGIN_URL = f'/{LOCAL_URL_PREFIX}/login/'
@@ -160,6 +163,7 @@ EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
 # If True, an internal user (not guest) is a user that has this filled (in user model)
 # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
 USER_ATTRIBUTE_NAME = 'matricola_studente'
+USER_ATTRIBUTE_LABEL = 'utente'
 
 DEFAULT_FROM_EMAIL = 'uniticket-noreply@server.it'
 SERVER_EMAIL = 'uniticket-error@server.it'
