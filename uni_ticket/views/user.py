@@ -1258,8 +1258,8 @@ def chat_new_preload(request, structure_slug=None): # pragma: no cover
 @login_required
 def ticket_clone(request, ticket_id):
     main_ticket = get_object_or_404(Ticket,
-                                      code=ticket_id,
-                                      created_by=request.user)
+                                    code=ticket_id,
+                                    created_by=request.user)
     # if ticket is not closed and owner has closed it
     # if not main_ticket.is_closed:
        # return custom_message(request, _("Operazione non permessa. "
