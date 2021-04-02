@@ -67,4 +67,4 @@ jobs:
         # verbose: true    
     - name: Bandit Security Scan
       run: |
-        bandit -r -x docs,tests *
+        bandit -r -x docs,tests uni_ticket/*,organizational_area/*,uni_ticket_bootstrap_italia_template/*,chat/*,archipro_ws/*
