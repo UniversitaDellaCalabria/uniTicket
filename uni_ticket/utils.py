@@ -146,7 +146,6 @@ def get_path(folder):
     Builds a MEDIA_ROOT path
     """
     return '{}/{}'.format(settings.MEDIA_ROOT, folder)
-    return path
 
 def delete_file(file_name, path=settings.MEDIA_ROOT):
     """

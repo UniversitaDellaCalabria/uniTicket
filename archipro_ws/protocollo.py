@@ -6,6 +6,8 @@ import datetime
 import io
 import os
 
+from django.conf import settings
+
 from zeep import Client
 
 from archipro_ws.utils import clean_string
@@ -126,7 +128,7 @@ class WSArchiPROClient(object):
         """
         Crea un fascicolo usando il template self._FASCICOLO_XML
         """
-        conf_fasciolo = {'id_titolario': self.id_titolario,
+        conf_fascicolo = {'id_titolario': self.id_titolario,
                          'oggetto': self.oggetto,
                          'soggetto': self.soggetto if hasattr(self, 'soggetto') \
                                      else self.oggetto,
@@ -134,7 +136,7 @@ class WSArchiPROClient(object):
                          'parametri_rows': ''.join([PROT_PARAMETRI_TMPL_ROW.format(**par) \
                                                     for par in PROT_PARAMETRI])}
         if isinstance(template, str):
-            template = template.format(**conf_fasciolo)
+            template = template.format(**conf_fascicolo)
         else:
             template = template.decode(PROT_DOC_ENCODING).format(**conf_fascicolo)
         print("Creating {}".format(template))
