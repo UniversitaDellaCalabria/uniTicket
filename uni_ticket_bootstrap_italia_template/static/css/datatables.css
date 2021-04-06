@@ -290,7 +290,8 @@ table.dataTable td {
 .dataTables_wrapper .dataTables_info {
   clear: both;
   float: left;
-  padding-top: 0.755em;
+  padding: 1.255rem .75rem;
+  font-size: 16px;
 }
 .dataTables_wrapper .dataTables_paginate {
   padding-top: 0.755em;

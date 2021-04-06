@@ -274,10 +274,8 @@ select {
 /*
  * DataTables pagination current page
  */
-.dataTables_paginate .paginate_button.current {
-    background: #383838;
-    color: #fff;
-    font-weight: bold;
+.dataTables_paginate .pagination .page-item.active {
+    text-decoration: underline;
 }
 
 /*
