@@ -91,3 +91,4 @@ zeep
 
 # advanced filter in admin
 django-admin-search-builder
+markdown2>=2.4.0 # not directly required, pinned by Snyk to avoid a vulnerability
