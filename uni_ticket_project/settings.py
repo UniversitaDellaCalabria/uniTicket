@@ -89,3 +89,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 USE_I18N = True
 USE_TZ = True
+
+# from django 3.2
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

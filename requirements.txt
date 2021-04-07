@@ -35,7 +35,7 @@ django-nested-admin
 # SAML2
 # git+https://github.com/peppelinux/pysaml2.git@pplnx-v6.5.1
 # git+https://github.com/peppelinux/djangosaml2.git@pplnx-dev
-pysaml2
+pysaml2>=6.5.0
 djangosaml2
 
 # SASS dynamic compiler
@@ -55,9 +55,9 @@ design-django-theme
 django-unical-bootstrap-italia
 
 # Django REST
-djangorestframework
+djangorestframework>=3.11.2
 markdown
-django-filter
+django-filter>=2.4.0
 
 # Django channels
 channels
