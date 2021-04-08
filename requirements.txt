@@ -78,3 +78,4 @@ pypdf2>=1.26.0
 
 # SOAP Client protocollazione
 zeep>=3.4.0
+markdown2>=2.4.0 # not directly required, pinned by Snyk to avoid a vulnerability
