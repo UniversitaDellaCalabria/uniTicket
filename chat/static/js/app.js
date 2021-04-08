@@ -101,7 +101,7 @@ function addClickEvent(){
     // add click event
     $(userList).children('.item').last().children('.user').first().on("click",
         function () {
-            var target = $.find(event.target);
+            var target = $(event.target);
             userList.children('.item').children('.active').removeClass('active');
             target.addClass('active');
             setCurrentRecipient(username=target.attr('user'),
