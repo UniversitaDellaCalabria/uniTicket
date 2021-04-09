@@ -72,9 +72,10 @@ cryptojwt>=0.7.16
 #   sudo apt install -f
 # ]
 
-django-wkhtmltopdf>=3.3.0
-pdfkit>=0.6.1
-pypdf2>=1.26.0
+WeasyPrint>=52.4
+# django-wkhtmltopdf>=3.3.0
+# pdfkit>=0.6.1
+# pypdf2>=1.26.0
 
 # SOAP Client protocollazione
 zeep>=3.4.0

@@ -81,7 +81,7 @@ la digitalizzazione dei flussi di richieste e documentali.
 {% localize on %}
 <div class="container">
     {% block content_title %}
-    <div class="py-md-5 bd-content clearfix">
+    <div class="py-md-5 bd-content clearfix title-div">
         {% include 'title_display.html' %}
         {% block right_button %}
         {% endblock right_button %}
@@ -90,7 +90,7 @@ la digitalizzazione dei flussi di richieste e documentali.
 
     {% block under_content_title %}{% endblock under_content_title %}
 
-    <div class="row">
+    <div {% block main_div_class %}class="row"{% endblock %}>
         {% block content_rows %}
         <main class="col mb-5">
         {% block container_inner %}{% endblock container_inner %}

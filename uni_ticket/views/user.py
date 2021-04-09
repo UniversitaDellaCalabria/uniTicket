@@ -28,7 +28,7 @@ from django_form_builder.utils import (get_as_dict,
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,)
-from PyPDF2 import PdfFileMerger
+# from PyPDF2 import PdfFileMerger
 
 from uni_ticket.decorators import *
 from uni_ticket.forms import *
