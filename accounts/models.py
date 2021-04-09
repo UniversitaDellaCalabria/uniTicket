@@ -19,11 +19,11 @@ class User(AbstractUser):
     is_active = models.BooleanField(_('attivo'), default=True)
     email = models.EmailField('email address', blank=True, null=True)
     matricola_dipendente = models.CharField(_('Matricola Dipendente'),
-                                            max_length=6,
+                                            max_length=10,
                                             blank=True, null=True,
                                             help_text="fonte CSA")
     matricola_studente = models.CharField(_('Matricola Studente'),
-                                            max_length=6,
+                                            max_length=10,
                                             blank=True, null=True,
                                             help_text="fonte Esse3")
     first_name = models.CharField(_('Nome'), max_length=40,
