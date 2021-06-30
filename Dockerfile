@@ -13,7 +13,7 @@ RUN apt-get update \
     && apt-get install -y poppler-utils git locales xmlsec1 gcc \
                           libmagic-dev libmariadbclient-dev libssl-dev \
                           libsasl2-dev libldap2-dev net-tools tcpdump \
-                          curl iproute2\
+                          curl iproute2 libgtk2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install virtualenv
@@ -32,6 +32,8 @@ COPY . /uniTicket
 WORKDIR /uniTicket
 RUN pip3 install -r requirements.txt
 RUN cp uni_ticket_project/settingslocal.py.example uni_ticket_project/settingslocal.py
+# use bootstrap_italia as default template 
+RUN cp /usr/local/lib/python3.9/site-packages/bootstrap_italia_template/templates/bootstrap-italia-base.html templates/base-setup.html
 
 ## Add the wait script to the image
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.2/wait /wait
@@ -44,5 +46,9 @@ HEALTHCHECK --interval=3s --timeout=2s --retries=1 CMD curl --fail http://localh
 RUN python manage.py migrate
 # ADMIN as USERNAME, ADMINPASS as PASSWORD
 RUN python manage.py shell -c "from django.contrib.auth import get_user_model; get_user_model().objects.filter(username='admin').exists() or get_user_model().objects.create_superuser('admin', 'admin@example.com', 'adminpass')"
+
+# uncomment the following line to fill the database with the default users
+# RUN python manage.py loaddata dumps/example_conf.json
+
 EXPOSE 8000
 CMD /wait && python manage.py runserver 0.0.0.0:8000
