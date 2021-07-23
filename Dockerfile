@@ -1,5 +1,5 @@
 # DOCKER-VERSION 17.10.0-ce
-FROM python:slim
+FROM python:3.9.6-slim-buster
 MAINTAINER Giuseppe De Marco <giuseppe.demarco@unical.it>
 
 # set environment variables
