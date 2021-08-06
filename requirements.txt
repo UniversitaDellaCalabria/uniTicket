@@ -79,3 +79,4 @@ WeasyPrint>=52.4
 
 # SOAP Client protocollazione
 zeep>=3.4.0
+markdown2>=2.4.0 # not directly required, pinned by Snyk to avoid a vulnerability
