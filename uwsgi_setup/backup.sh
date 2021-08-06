@@ -41,4 +41,12 @@ mysqldump -u $USERNAME --password=$PASSWORD $DB | 7z a $BACKUP_DIR_SQL/$FNAME.sq
 
 # media files
 # [ -d "$PROJ_PATH/data/media" ] && rsync -avu --delete $PROJ_PATH/data/media $BACKUP_DIR_MEDIA
-[ -d "$PROJ_PATH/data/media" ] && rsync -avu $PROJ_PATH/data/media $BACKUP_DIR_MEDIA
+#[ -d "$PROJ_PATH/data/media" ] && rsync -avu $PROJ_PATH/data/media $BACKUP_DIR_MEDIA
+
+7z u $BACKUP_DIR_MEDIA/structures.7z $PROJ_PATH/data/media/structures -p$PASSWORD
+7z u $BACKUP_DIR_MEDIA/logos.7z $PROJ_PATH/data/media/logos -p$PASSWORD
+for f in $PROJ_PATH/data/media/ticket; do
+    if [ -d "$f" ]; then
+        7z u $BACKUP_DIR_MEDIA/ticket/$f.7z $f -p$PASSWORD
+    fi
+done

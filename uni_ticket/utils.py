@@ -465,7 +465,7 @@ def export_input_module_csv(module,
         row.extend([status,
                     richiesta.subject,
                     richiesta.description])
-        print(row)
+
         for column in custom_head:
             name = format_field_name(column)
             match_list = ''
