@@ -217,31 +217,27 @@
 
 {% ticket_has_been_taken ticket=ticket as ticket_taken %}
 <div class="pb-md-4">
-    {% if ticket.is_closed %}
-    <a role="button"
-           class="btn btn-outline-secondary"
-           href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
-            <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-            </svg> {% trans "Torna alle richieste chiuse" %}
-        </a>
-    {% elif ticket_taken %}
-    <a role="button"
-           class="btn btn-outline-secondary"
-           href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
-            <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-            </svg> {% trans "Torna alle richieste assegnate" %}
-        </a>
-    {% else %}
     <a role="button"
        class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
         </svg> {% trans "Torna alle richieste aperte" %}
     </a>
-    {% endif %}
+    <a role="button"
+       class="btn btn-outline-secondary"
+       href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use>
+        </svg> {% trans "Torna alle richieste assegnate" %}
+    </a>
+    <a role="button"
+       class="btn btn-outline-secondary"
+       href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
+        <svg class="icon icon-xs">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+        </svg> {% trans "Torna alle richieste chiuse" %}
+    </a>
 </div>
 
 {% if ticket_taken %}

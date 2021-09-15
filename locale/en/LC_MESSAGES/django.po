@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-15 08:27+0200\n"
-"PO-Revision-Date: 2021-09-15 08:28+0200\n"
+"POT-Creation-Date: 2021-09-15 11:20+0200\n"
+"PO-Revision-Date: 2021-09-15 11:22+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -1768,7 +1768,6 @@ msgstr "Task reserved to operators"
 
 #: uni_ticket/views/generic.py:167
 #: uni_ticket_bootstrap_italia_template/templates/manager/offices_list.html:62
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:116
 msgid "Richieste assegnate"
 msgstr "Assigned requests"
 
@@ -1777,12 +1776,10 @@ msgid "Richieste assegnate a me"
 msgstr "Assigned to me"
 
 #: uni_ticket/views/generic.py:215
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:123
 msgid "Richieste aperte"
 msgstr "Open requests"
 
 #: uni_ticket/views/generic.py:239
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:66
 msgid "Richieste chiuse"
 msgstr "Closed requests"
 
@@ -1981,8 +1978,8 @@ msgstr ""
 "therefore it cannot be reopened"
 
 #: uni_ticket/views/management.py:779
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:276
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:83
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:272
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:96
 msgid "Riapertura richiesta"
 msgstr "Reopening request"
 
@@ -2025,7 +2022,7 @@ msgid "Nuova competenza: {}"
 msgstr "New competence: {}"
 
 #: uni_ticket/views/management.py:1066 uni_ticket/views/user.py:981
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:258
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:254
 #: uni_ticket_bootstrap_italia_template/templates/manager/dashboard.html:28
 #: uni_ticket_bootstrap_italia_template/templates/manager/dashboard.html:41
 #: uni_ticket_bootstrap_italia_template/templates/manager/main_menu.html:34
@@ -2040,7 +2037,7 @@ msgstr "New competence: {}"
 #: uni_ticket_bootstrap_italia_template/templates/user/dashboard.html:36
 #: uni_ticket_bootstrap_italia_template/templates/user/dashboard.html:75
 #: uni_ticket_bootstrap_italia_template/templates/user/main_menu.html:37
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:144
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:142
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_messages.html:40
 msgid "Messaggi"
 msgstr "Messages"
@@ -3103,7 +3100,7 @@ msgstr "Contact technical support to resolve the issue."
 #: uni_ticket_bootstrap_italia_template/templates/user/closed_ticket.html:16
 #: uni_ticket_bootstrap_italia_template/templates/user/main_menu.html:16
 #: uni_ticket_bootstrap_italia_template/templates/user/opened_ticket.html:16
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:59
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:60
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_messages.html:15
 #: uni_ticket_bootstrap_italia_template/templates/user/unassigned_ticket.html:16
 #: uni_ticket_bootstrap_italia_template/templates/user_settings.html:16
@@ -3237,7 +3234,7 @@ msgstr ""
 "competence ...)"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/add_ticket_competence.html:132
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:315
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:311
 msgid "Trasferisci competenza"
 msgstr "Transfer competence"
 
@@ -3325,7 +3322,7 @@ msgstr "Yes, reopen the task"
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:23
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:30
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alerts.html:43
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:152
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:150
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_edit.html:122
 msgid "Modifica"
 msgstr "Edit"
@@ -3345,13 +3342,13 @@ msgstr "Edit"
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:51
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:58
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alerts.html:38
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:170
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:168
 msgid "Elimina"
 msgstr "Delete"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:72
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:337
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:161
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:333
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:159
 msgid "Chiudi"
 msgstr "Close"
 
@@ -3374,7 +3371,7 @@ msgid "Si, elimina l'attività"
 msgstr "Yes, delete the task"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:133
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:365
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:361
 msgid "Modifica la priorità"
 msgstr "Change the priority"
 
@@ -3385,7 +3382,7 @@ msgstr "Do you really want to edit the task"
 #: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:158
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:115
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:195
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:397
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:393
 #: uni_ticket_bootstrap_italia_template/templates/manager/add_structure_manager.html:43
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:378
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:173
@@ -3430,7 +3427,7 @@ msgstr "Do you really want to delete the attachment"
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_edit.html:99
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:431
 #: uni_ticket_bootstrap_italia_template/templates/ticket_assistance.html:85
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:198
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:196
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_edit.html:106
 msgid "Si, elimina"
 msgstr "Yes, delete"
@@ -3507,13 +3504,13 @@ msgstr "Take the request"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:95
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:175
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:377
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:373
 msgid "Modifica richiesta"
 msgstr "Edit the request"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:107
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:187
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:389
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:385
 msgid "Vuoi davvero procedere modificando la richiesta"
 msgstr "Do you really want to edit the request"
 
@@ -3537,45 +3534,48 @@ msgstr "of the office"
 msgid "degli uffici sopra elencati"
 msgstr "of the offices listed above"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:226
-msgid "Torna alle richieste chiuse"
-msgstr "Back to closed requests"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:234
-#: uni_ticket_bootstrap_italia_template/templates/manager/my_opened_ticket.html:11
-#: uni_ticket_bootstrap_italia_template/templates/operator/my_opened_ticket.html:11
-msgid "Torna alle richieste assegnate"
-msgstr "Back to assigned requests"
-
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:242
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:225
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:66
 msgid "Torna alle richieste aperte"
 msgstr "Back to open requests"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:269
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:76
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:232
+#: uni_ticket_bootstrap_italia_template/templates/manager/my_opened_ticket.html:11
+#: uni_ticket_bootstrap_italia_template/templates/operator/my_opened_ticket.html:11
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:72
+msgid "Torna alle richieste assegnate"
+msgstr "Back to assigned requests"
+
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:239
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:78
+msgid "Torna alle richieste chiuse"
+msgstr "Back to closed requests"
+
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:265
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:89
 msgid "Riapri richiesta"
 msgstr "Reopen request"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:288
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:95
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:284
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:108
 msgid "Vuoi davvero riaprire la richiesta"
 msgstr "Do you really want to reopen the request"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:296
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:103
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:292
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:116
 msgid "Si, riapri la richiesta"
 msgstr "Yes, reopen the request"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:308
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:304
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_add_new.html:24
 msgid "Aggiungi attività"
 msgstr "Add task"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:322
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:318
 msgid "Abbandona competenza"
 msgstr "Leave competence"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:329
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:325
 msgid "Aggiungi dipendenza"
 msgstr "Add dependency"
 
@@ -4619,52 +4619,36 @@ msgstr "See requests assigned to me"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alert_add_new.html:15
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alert_edit.html:15
-#, fuzzy
-#| msgid "Salva configurazione"
 msgid "Torna alla configurazione"
-msgstr "Save configuration"
+msgstr "Back to configuration"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alert_add_new.html:24
-#, fuzzy
-#| msgid "Aggiungi clausola"
 msgid "Aggiungi alert"
-msgstr "Add clause"
+msgstr "Add alert"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alerts.html:56
-#, fuzzy
-#| msgid "Eliminazione allegato"
 msgid "Eliminazione alert"
-msgstr "Deleting attachment"
+msgstr "Deleting alert"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alerts.html:67
-#, fuzzy
-#| msgid "Vuoi davvero eliminare l'allegato"
 msgid "Vuoi davvero eliminare l'alert"
-msgstr "Do you really want to delete the attachment"
+msgstr "Do you really want to delete the alert"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alerts.html:69
-#, fuzzy
-#| msgid "Seleziona la struttura"
 msgid "della struttura"
-msgstr "Select the structure"
+msgstr "of structure"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alerts.html:77
-#, fuzzy
-#| msgid "Si, elimina l'attività"
 msgid "Si, elimina l'alert"
-msgstr "Yes, delete the task"
+msgstr "Yes, delete alert"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alerts.html:88
-#, fuzzy
-#| msgid "Nessuna"
 msgid "Nessun alert"
-msgstr "None"
+msgstr "No alerts"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alerts.html:95
-#, fuzzy
-#| msgid "Crea nuovo ufficio"
 msgid "Crea nuovo alert"
-msgstr "New office"
+msgstr "New alert"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_protocol_configuration.html:21
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_protocol_configuration_new.html:21
@@ -4759,10 +4743,8 @@ msgid "Modificata il"
 msgstr "Modified on"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/user_settings.html:136
-#, fuzzy
-#| msgid "Visibile agli utenti"
 msgid "Alert agli utenti"
-msgstr "Visible to users"
+msgstr "Alert users"
 
 #: uni_ticket_bootstrap_italia_template/templates/operator/closed_ticket.html:21
 #: uni_ticket_bootstrap_italia_template/templates/operator/unassigned_ticket.html:21
@@ -5055,15 +5037,15 @@ msgstr ""
 "It is possible to <b>edit</b> or <b>delete</b> the request until it has been "
 "assigned to an operator"
 
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:131
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:129
 msgid "Effettua richiesta simile"
 msgstr "Make a similar request"
 
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:177
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:175
 msgid "Richiesta conferma eliminazione"
 msgstr "Request to confirm deletion"
 
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:189
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:187
 msgid "Vuoi davvero eliminare la richiesta"
 msgstr "You really want to drop the request"
 
