@@ -7,6 +7,17 @@
 {% include 'user/main_menu.html' %}
 {% endblock menu_links %}
 
+{% block top_content %}
+<div class="mb-4">
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">{% trans "Attenzione" %}</h4>
+        <p>{% trans "Se contrassegnata come <i>Chiusa</i>, la tua richiesta non verrà più gestita da nessun operatore!" %}</p>
+        <hr>
+        <p class="mb-0">{% trans "Esegui questa operazione solo se non necessiti di ulteriore supporto o assistenza" %}</p>
+    </div>
+</div>
+{% endblock top_content %}
+
 {% block top_buttons %}
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:ticket_detail' ticket_id=ticket.code %}">
