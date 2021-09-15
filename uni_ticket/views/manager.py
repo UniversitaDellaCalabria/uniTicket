@@ -895,6 +895,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                       'allow_employee',
                                                       'receive_email',
                                                       'protocol_required',
+                                                      'user_multiple_open_tickets',
                                                       'modified'])
                 form.save_m2m()
                 # log action

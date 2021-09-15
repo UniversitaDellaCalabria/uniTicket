@@ -289,6 +289,20 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">
+                    {% trans 'Gli utenti possono aprire più richieste contemporaneamente' %}
+                </th>
+                <td>
+                    <svg class="icon icon-sm icon-secondary">
+                    {% if category.user_multiple_open_tickets %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans "Solo i seguenti utenti possono effettuare richieste" %}</th>
                 <td>
                     {% if category.allowed_users.all %}

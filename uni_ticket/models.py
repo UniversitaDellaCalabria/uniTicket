@@ -140,6 +140,10 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
     protocol_required = models.BooleanField(_("Protocollo obbligatorio"),
                                             default=False)
 
+    # user can open multiple ticket of this category
+    user_multiple_open_tickets = models.BooleanField(_("Gli utenti possono aprire più richieste contemporaneamente"),
+                                                     default=True)
+
     class Meta:
         unique_together = ("slug", "organizational_structure")
         ordering = ["name"]
@@ -423,6 +427,14 @@ class Ticket(SavedFormContent):
         if today_tickets < settings.MAX_DAILY_TICKET_PER_USER: return False
         return True
 
+    @staticmethod
+    def existent_open_ticket(user, ticket_category):
+        """
+        """
+        open_tickets = Ticket.objects.filter(created_by=user,
+                                             input_module__ticket_category=ticket_category,
+                                             is_closed=False)
+        return True if open_tickets else False
 
     def get_year(self):
         """

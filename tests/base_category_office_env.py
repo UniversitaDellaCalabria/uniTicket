@@ -22,7 +22,8 @@ class BaseCategoryOfficeEnvironment(BaseTest):
                   'description': cat_name,
                   'allow_employee': allow_employee,
                   'allow_user': allow_user,
-                  'allow_guest': allow_guest}
+                  'allow_guest': allow_guest,
+                  'user_multiple_open_tickets': True}
         response = self.client.post(reverse('uni_ticket:manager_category_add_new',
                                             kwargs={'structure_slug': structure_slug}),
                                     params,

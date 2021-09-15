@@ -16,7 +16,8 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
                        'organizational_office', 'is_active',
                        'show_heading_text',
                        'allow_guest', 'allow_user', 'allow_employee',
-                       'is_notification', 'confirm_message_text')
+                       'is_notification', 'confirm_message_text',
+                       'user_multiple_open_tickets')
     inlines = [TicketCategoryModuleNestedInline,
                TicketCategoryConditionNestedInline,
                TicketCategoryTaskNestedInline,
@@ -27,7 +28,7 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
 
     list_display = ('name', 'created',
                     'allow_guest', 'allow_user', 'allow_employee',
-                    'confirm_message_text',
+                    'user_multiple_open_tickets',
                     'is_notification',
                     'is_active')
     list_filter = ('created', 'organizational_structure',

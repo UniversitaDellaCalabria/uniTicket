@@ -87,8 +87,24 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
                                          structure_slug=self.structure_1.slug,
                                          category=self.category_1_str_1)
         assert self.ticket
+
+        # Add ticket 2(base form)
+        # Raise error because category_1_str_1 doesn't allow multiple
+        # open tickets for same user
+        self.category_1_str_1.user_multiple_open_tickets = False
+        self.category_1_str_1.save()
+        self.category_1_str_1.refresh_from_db()
+        self.ticket_2 = self.create_ticket(subject='Ticket 2',
+                                           attachment=None,
+                                           structure_slug=self.structure_1.slug,
+                                           category=self.category_1_str_1)
+        assert not self.ticket_2
+
         # Add ticket 2(base form)
         # Create new ticket
+        self.category_1_str_1.user_multiple_open_tickets = True
+        self.category_1_str_1.save()
+        self.category_1_str_1.refresh_from_db()
         self.ticket_2 = self.create_ticket(subject='Ticket 2',
                                            attachment=None,
                                            structure_slug=self.structure_1.slug,

@@ -30,6 +30,7 @@ class CategoryForm(ModelForm):
                   'show_heading_text',
                   'allow_anonymous', 'allow_guest',
                   'allow_user', 'allow_employee',
+                  'user_multiple_open_tickets',
                   'allowed_users',
                   'receive_email',
                   'protocol_required']

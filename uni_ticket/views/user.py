@@ -298,6 +298,7 @@ def ticket_add_new(request, structure_slug, category_slug):
 
     # is user is authenticated
     if request.user.is_authenticated:
+
         # check ticket number limit
         if Ticket.number_limit_reached_by_user(request.user):
             messages.add_message(request, messages.ERROR,
@@ -305,9 +306,18 @@ def ticket_add_new(request, structure_slug, category_slug):
                                    " di richieste: <b>{}</b>"
                                    "".format(settings.MAX_DAILY_TICKET_PER_USER)))
             return redirect('uni_ticket:user_dashboard')
+
         # check if user is allowed to access this category
         if not category.allowed_to_user(request.user):
             return custom_message(request, _("Permesso negato a questa tipologia di utente."))
+
+        # check if user has already open a ticket of this category
+        if not category.user_multiple_open_tickets and Ticket.existent_open_ticket(request.user,
+                                                                                   category):
+            return custom_message(request, _("Esistono già tue richieste aperte"
+                                             " di questa tipologia."
+                                             " Non puoi effettuarne di nuove"
+                                             " fino a quando queste non verranno chiuse"))
 
     title = category
     template = 'user/ticket_add_new.html'
@@ -1214,6 +1224,15 @@ def ticket_reopen(request, ticket_id):
         return custom_message(request, _("La richiesta è di tipo "
                                          "notifica e non può essere "
                                          "riaperta"))
+
+    # check if user has already open a ticket of this category
+    category = ticket.input_module.ticket_category
+    if not category.user_multiple_open_tickets and Ticket.existent_open_ticket(request.user,
+                                                                               category):
+        return custom_message(request, _("Esistono già tue richieste aperte"
+                                         " di questa tipologia."
+                                         " Non puoi riaprire questa"
+                                         " fino a quando le altre non verranno chiuse"))
 
     ticket.is_closed = False
     ticket.save(update_fields = ['is_closed'])
