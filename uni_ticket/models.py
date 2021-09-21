@@ -1014,10 +1014,12 @@ class Ticket2Ticket(models.Model):
     Dipendenza Ticket da altri Ticket
     Lo Subordinate non può essere chiuso se ci sono Main da risolvere
     """
-    main_ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE,
-                                      related_name="main")
-    subordinate_ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE,
-                                     related_name="subordinate")
+    main_ticket = models.ForeignKey(Ticket,
+                                    on_delete=models.CASCADE,
+                                    related_name="main")
+    subordinate_ticket = models.ForeignKey(Ticket,
+                                           on_delete=models.CASCADE,
+                                           related_name="subordinate")
     note = models.TextField(blank=True, null=True)
 
     class Meta:
