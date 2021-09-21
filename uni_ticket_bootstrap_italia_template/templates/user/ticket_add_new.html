@@ -111,7 +111,7 @@
                                             <div class="collapse-body pb-0">
                                                 <p class="card-text">{{ condition.text | markdown | safe }}</p>
                                                 {% if condition.attachment %}
-                                                    <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=condition.category.slug condition_id=condition.pk %}">
+                                                    <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
                                                         <svg class="icon">
                                                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
                                                         </svg>{{ condition.attachment|filename }}
@@ -124,7 +124,7 @@
                                     <h6>{{ condition.title }}</h6>
                                     <p class="card-text">{{ condition.text | markdown | safe }}</p>
                                     {% if condition.attachment %}
-                                        <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=condition.category.slug condition_id=condition.pk %}">
+                                        <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
                                             <svg class="icon">
                                                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
                                             </svg>{{ condition.attachment|filename }}

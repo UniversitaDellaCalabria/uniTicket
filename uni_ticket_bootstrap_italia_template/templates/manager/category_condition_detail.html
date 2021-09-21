@@ -102,7 +102,7 @@
             <tr>
                 <th scope="row">{% trans 'Allegato' %}</th>
                 <td>
-                    <a href="{% url 'uni_ticket:download_condition_attachment' category_slug=category.slug condition_id=condition.pk %}">
+                    <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=structure.slug category_slug=category.slug condition_id=condition.pk %}">
                         <svg class="icon">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
                         </svg> {{ condition.attachment|filename }}

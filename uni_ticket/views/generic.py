@@ -434,21 +434,26 @@ def ticket_message_delete(request, ticket_message_id):
                     ticket_id=ticket.code)
 
 @login_required
-def download_condition_attachment(request, category_slug, condition_id):
+def download_condition_attachment(request, structure_slug,
+                                  category_slug, condition_id):
     """
     Downloads ticket attachment
 
-    :type ticket_id:String
-    :type attachment: String
-    :type ticket: Ticket (from @has_access_to_ticket)
+    :type structure_slug:String
+    :type category_slug:String
+    :type condition_id: Integer
 
-    :param ticket_id: ticket code
-    :param attachment: attachment name
-    :param ticket: ticket object (from @has_access_to_ticket)
+    :param structure_slug: Organizational Structure slug
+    :param category_slug: Ticket Category slug
+    :param condition_id: Condition pk
 
     :return: file
     """
-    category = get_object_or_404(TicketCategory, slug=category_slug)
+    category = get_object_or_404(TicketCategory,
+                                 slug=category_slug,
+                                 is_active=True,
+                                 organizational_structure__slug=structure_slug,
+                                 organizational_structure__is_active=True)
     condition = get_object_or_404(TicketCategoryCondition,
                                   category=category,
                                   pk=condition_id)
