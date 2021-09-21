@@ -9,6 +9,7 @@ from django.contrib.admin.models import LogEntry, ADDITION, CHANGE
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -1075,7 +1076,8 @@ def ticket_message(request, structure_slug, ticket_id,
 
     # if ticket.is_open() and can_manage:
     if can_manage:
-        user_replies = ticket_replies.filter(owner=ticket.created_by,
+        user_replies = ticket_replies.filter(Q(owner=ticket.created_by) |
+                                             Q(owner=ticket.compiled_by),
                                              structure=None,
                                              read_by=None)
         if not can_manage['readonly'] and ticket_taken:

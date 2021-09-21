@@ -368,16 +368,16 @@ def ticket_message_delete(request, ticket_message_id):
     # if message doesn't exist
     if not ticket_message:
         return custom_message(request, _("Impossibile recuperare il messaggio"),
-                              structure_slug=structure.slug)
+                              structure_slug=structure.slug if structure else '')
     # if user isn't the owner of message
     if ticket_message.owner!=request.user:
         return custom_message(request, _("Permesso negato"),
-                              structure_slug=structure.slug)
+                              structure_slug=structure.slug if structure else '')
     # if message has already been read
     if ticket_message.read_date:
         return custom_message(request, _("Impossibile eliminare il"
                                          " messaggio dopo che è stato letto"),
-                              structure_slug=structure.slug)
+                              structure_slug=structure.slug if structure else '')
     user_type = get_user_type(request.user, structure)
     # if message is not the last in chat
     # if ticket_message != last_message:
