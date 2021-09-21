@@ -1,6 +1,6 @@
 # these minimum versions are definitely working
 
-Django>=3.1.6,<4
+Django>=3.2.4,<4
 
 beautifulsoup4>=4.8.2
 
@@ -44,8 +44,8 @@ django-sass-processor>=1.0.0
 mysqlclient>=1.4.6
 
 #Bootstrap Italia + Unical template
-design-django-theme>=1.4.5
-django-unical-bootstrap-italia>=1.0.2
+design-django-theme
+django-unical-bootstrap-italia
 
 # Django REST
 djangorestframework>=3.11.2
@@ -54,12 +54,12 @@ django-filter>=2.4.0
 # Django channels
 channels>=2.4.0
 channels_redis>=2.4.2
-daphne>=2.4.1
+daphne>=3
 
 # markdown
 markdown>=3.2.1
 
-cryptojwt>=0.7.16
+cryptojwt>=1.5.0
 
 # pyWSArchiPRO
 # (app folder included in project, not installed via pip)
