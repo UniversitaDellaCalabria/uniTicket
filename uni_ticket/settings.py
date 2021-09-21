@@ -124,7 +124,7 @@ TICKET_SHARING_USER_ERROR_MESSAGE = _("Impossibile effettuare l'operazione."
                                       "Nonostante tu abbia precompilato la richiesta, "
                                        "è l'utente <b>{}</b> che l'ha sottomessa")
 # E-mail messages
-MSG_HEADER = _("""Gentile {user},
+MSG_HEADER = _("""Gentile utente,
 questo messaggio è stato inviato da {hostname}.
 Per favore non rispondere a questa email.
 
@@ -197,7 +197,7 @@ Descrizione: {ticket_description}
 URL: {ticket_url}""")
 
 # Old english version
-NEW_TICKET_UPDATE_OLD_EN = _("Dear {user},"
+NEW_TICKET_UPDATE_OLD_EN = _("Dear user,"
                       "you have successfully {status} the ticket:"
                       ""
                       "{ticket}"
