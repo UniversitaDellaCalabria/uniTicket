@@ -43,6 +43,7 @@ Setup parametri
 
 Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è possibile:
 
+- Aggiungere/disabilitare applicationi django in `INSTALLED_APPS`
 - Definire il model da utilizzare per la gestione degli utenti
 
 .. code-block:: python
@@ -69,8 +70,21 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     JS_DEFAULT_DATETIME_FORMAT = 'DD/MM/Y hh:mm'
 
 - Definire l'ADMIN_PATH
-- Definire i database e l'hostname
-- Le app installate (INSTALLED_APPS)
+- Definire i database
+
+.. code-block:: python
+
+    DATABASES = {
+      'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'uniauth',
+        'HOST': 'localhost',
+        'USER': 'that-user',
+        'PASSWORD': 'that-password',
+        'PORT': '',
+        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"}
+      },
+    }
 
 - Selezionare i widget da applicare ai campi dei form
 
@@ -368,6 +382,8 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (
     ORGANIZATION_USER_LABEL = 'Studenti'
 
 - I testi delle email che il sistema invia agli utenti
+- Disabilitare la modalità `DEBUG` per la messa in produzione (Attenzione: il servizio in produzione richiede HTTPS)
+
 
 Creazione Database
 ==================
