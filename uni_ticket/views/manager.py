@@ -1518,7 +1518,7 @@ def category_input_module_preview(request, structure_slug,
     d = {'categoria': category,
          'category_conditions': clausole_categoria,
          'form': form,
-         'structure': structure,
+         'struttura': structure,
          'sub_title': sub_title,
          'title': title,}
     if request.POST:
