@@ -1,0 +1,15 @@
+{% load i18n %}
+{% load static %}
+
+{% if not ticket.is_valid %}
+<div class="callout danger">
+	<div class="callout-title">
+        <svg class="icon icon-danger">
+            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+        </svg> {% trans "C'è un problema" %}</div>
+	<p>{% trans "Uno o più allegati obbligatori risultano mancanti" %}</p>
+</div>
+{% endif %}
+<div class="table-responsive">
+    {% include "ticket_detail_table_simplified.html" with print_version=print_version %}
+</div>

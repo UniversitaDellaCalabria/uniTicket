@@ -546,7 +546,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                         protocol_configuration = category.get_active_protocol_configuration()
 
                         response = download_ticket_pdf(request=request,
-                                                       ticket_id=ticket.code).content
+                                                       ticket_id=ticket.code,
+                                                       template='ticket_detail_print_pdf_simplified.html').content
 
                         protocol_response = ticket_protocol(structure_configuration=protocol_struct_configuration,
                                                           configuration=protocol_configuration,
@@ -1331,10 +1332,11 @@ def ticket_detail_print(request, ticket_id, ticket): # pragma: no cover
 
 @login_required
 @has_access_to_ticket
-def download_ticket_pdf(request, ticket_id, ticket): # pragma: no cover
+def download_ticket_pdf(request, ticket_id,
+                        ticket, template='ticket_detail_print_pdf.html'): # pragma: no cover
     response = ticket_detail(request,
                              ticket_id=ticket_id,
-                             template='ticket_detail_print_pdf.html')
+                             template=template)
 
     # file names
     pdf_fname = '{}.pdf'.format(ticket.code)

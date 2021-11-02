@@ -7,6 +7,7 @@
 
 <table class="table table-striped table-hover ticket_detail">
     <tbody>
+        {% block ticket_status_infos %}
         <tr>
             <th scope="row">{% trans 'Stato' %}</th>
             <td>{{ ticket.get_status|safe }}</td>
@@ -140,6 +141,7 @@
                 </ul>
             </td>
         </tr>
+        {% endblock ticket_status_infos %}
         <tr>
             <th scope="row">{% trans 'Tipo di richiesta' %}</th>
             <td>{{ ticket.input_module.ticket_category }}</td>
@@ -185,6 +187,7 @@
         </tr>
         {% endfor %}
 
+        {% block ticket_attachments_row %}
         {% if allegati %}
         <tr>
             <th scope="row">{% trans 'Allegati' %}</th>
@@ -211,5 +214,6 @@
             </td>
         </tr>
         {% endif %}
+        {% endblock ticket_attachments_row %}
     </tbody>
 </table>
