@@ -4,7 +4,7 @@ from django.test import Client, TestCase
 from django.utils.text import slugify
 
 from organizational_area.models import *
-from uni_ticket.models import OrganizationalStructureWSArchiPro
+from uni_ticket.models import OrganizationalStructureWSProtocollo
 
 class BaseTest(TestCase):
 
@@ -16,7 +16,7 @@ class BaseTest(TestCase):
                                                       structure_type=structure_type)
 
     def create_protocol_configuration(self, structure):
-        conf = OrganizationalStructureWSArchiPro(organizational_structure=structure,
+        conf = OrganizationalStructureWSProtocollo(organizational_structure=structure,
                                                  name="Example conf",
                                                  is_active=True,
                                                  protocollo_username = "username",

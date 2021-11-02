@@ -42,8 +42,8 @@ def delete_single_attachment(sender, instance, *args, **kwargs):
 
 # Protocol configurations events manager
 
-@receiver(pre_save, sender=OrganizationalStructureWSArchiPro)
-@receiver(pre_save, sender=TicketCategoryWSArchiPro)
+@receiver(pre_save, sender=OrganizationalStructureWSProtocollo)
+@receiver(pre_save, sender=TicketCategoryWSProtocollo)
 def disable_others_active_protocol_configurations(sender, instance, **kwargs):
     """
     If a configuration (structure or category) is enabled
@@ -52,7 +52,7 @@ def disable_others_active_protocol_configurations(sender, instance, **kwargs):
     if instance.is_active:
         instance.disable_other_configurations()
 
-@receiver(pre_save, sender=OrganizationalStructureWSArchiPro)
+@receiver(pre_save, sender=OrganizationalStructureWSProtocollo)
 def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
     """
     If an active structure configuration is disabled,
@@ -68,7 +68,7 @@ def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
                 cat.protocol_required = False
                 cat.save(update_fields=['protocol_required',])
 
-@receiver(pre_delete, sender=OrganizationalStructureWSArchiPro)
+@receiver(pre_delete, sender=OrganizationalStructureWSProtocollo)
 def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
     """
     If an active structure configuration is deleted,
@@ -82,7 +82,7 @@ def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
             cat.protocol_required = False
             cat.save(update_fields=['protocol_required',])
 
-@receiver(pre_save, sender=TicketCategoryWSArchiPro)
+@receiver(pre_save, sender=TicketCategoryWSProtocollo)
 def category_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
     """
     If an active category configuration is disabled,
@@ -94,7 +94,7 @@ def category_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
             instance.ticket_category.protocol_required = False
             instance.ticket_category.save(update_fields=['protocol_required',])
 
-@receiver(pre_delete, sender=TicketCategoryWSArchiPro)
+@receiver(pre_delete, sender=TicketCategoryWSProtocollo)
 def category_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
     """
     If an active category configuration is deleted,

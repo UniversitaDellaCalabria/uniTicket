@@ -21,7 +21,7 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
     inlines = [TicketCategoryModuleNestedInline,
                TicketCategoryConditionNestedInline,
                TicketCategoryTaskNestedInline,
-               TicketCategoryWSArchiProNestedInline,]
+               TicketCategoryWSProtocolloNestedInline,]
                # TicketCategoryOfficeNestedInline,]
 
     actions = [download_report_csv]
@@ -95,8 +95,8 @@ class TaskAdmin(nested_admin.NestedModelAdmin):
     # get_status.short_description = 'Status'
 
 
-@admin.register(OrganizationalStructureWSArchiPro)
-class OrganizationalStructureWSArchiProAdmin(admin.ModelAdmin):
+@admin.register(OrganizationalStructureWSProtocollo)
+class OrganizationalStructureWSProtocolloAdmin(admin.ModelAdmin):
     list_display = ('organizational_structure',
                     'name',
                     'created',

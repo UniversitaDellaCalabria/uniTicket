@@ -1,0 +1,8 @@
+<fascicolo physdoc="{fascicolo_physdoc}"
+           nrecord="{fascicolo_nrecord}"
+           numero="{fascicolo_numero}">
+    <doc physdoc="{doc_physdoc}"
+         nrecord="{doc_nrecord}"
+         num_prot="{doc_num_prot}"
+         minuta="{doc_minuta}"/>
+</fascicolo>

@@ -542,13 +542,13 @@ def ticket_add_new(request, structure_slug, category_slug):
                 # Protocol
                 if category.protocol_required:
                     try:
-                        protocol_struct_configuration = OrganizationalStructureWSArchiPro.get_active_protocol_configuration(struttura)
+                        protocol_struct_configuration = OrganizationalStructureWSProtocollo.get_active_protocol_configuration(struttura)
                         protocol_configuration = category.get_active_protocol_configuration()
 
                         response = download_ticket_pdf(request=request,
                                                        ticket_id=ticket.code).content
 
-                        protocol_number = ticket_protocol(structure_configuration=protocol_struct_configuration,
+                        protocol_response = ticket_protocol(structure_configuration=protocol_struct_configuration,
                                                           configuration=protocol_configuration,
                                                           user=current_user,
                                                           subject=ticket.subject,
@@ -556,6 +556,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                           response=response,
                                                           attachments_folder=ticket.get_folder(),
                                                           attachments_dict=ticket.get_allegati_dict())
+                        protocol_number = protocol_response['numero']
+
                         # set protocol data in ticket
                         ticket.protocol_number = protocol_number
                         ticket.protocol_date = timezone.localtime()
@@ -566,6 +568,9 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                "correttamente: n. <b>{}/{}</b>"
                                                "").format(protocol_number,
                                                           timezone.localtime().year))
+                        if protocol_response['message']:
+                            messages.add_message(request, messages.INFO,
+                                                 protocol_response['message'])
                     # if protocol fails
                     # raise Exception and do some operations
                     except Exception as e:

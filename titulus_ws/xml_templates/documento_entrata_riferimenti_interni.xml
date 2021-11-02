@@ -1,0 +1,17 @@
+<rif_interno 
+	diritto={diritto} 
+	nome_persona={nome_persona}
+	nome_uff={nome_uff}
+	cod_persona={cod_persona}
+	cod_uff={cod_uff}
+	tipo_uff={tipo_uff}
+	scartato={scartato}
+	intervento={intervento}>
+	{rif_interno}
+</rif_interno>
+<voce_indice>1</voce_indice>
+<originale>originale</originale>
+	 <extra>extra</extra>
+	 <postit>postit</postit>
+<link_interno href=link_interno>link_interno</link_interno>
+	 <info_conservazione>info_conservazione</info_conservazione>

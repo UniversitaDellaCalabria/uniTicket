@@ -219,12 +219,12 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
 
     def get_active_protocol_configuration(self):
         # if structure hasn't an active configuration returns False
-        oswap = OrganizationalStructureWSArchiPro
+        oswap = OrganizationalStructureWSProtocollo
         str_conf = oswap.get_active_protocol_configuration(self.organizational_structure)
         if not str_conf: return False
 
         # returns category active configuration or False
-        tcwap = TicketCategoryWSArchiPro
+        tcwap = TicketCategoryWSProtocollo
         conf = tcwap.objects.filter(ticket_category=self,
                                     is_active=True).first()
 
@@ -1222,7 +1222,7 @@ class TicketCategoryTask(AbstractTask):
         return '{} - {}'.format(self.subject, self.category)
 
 
-# class AbstractWSArchiPro(models.Model):
+# class AbstractWSProtocollo(models.Model):
     # """
     # """
     # name = models.CharField(max_length=255)
@@ -1253,7 +1253,7 @@ class TicketCategoryTask(AbstractTask):
         # abstract = True
 
 
-class OrganizationalStructureWSArchiPro(models.Model):
+class OrganizationalStructureWSProtocollo(models.Model):
     organizational_structure = models.ForeignKey(OrganizationalStructure,
                                                  on_delete=models.CASCADE)
     name = models.CharField(_('Denominazione configurazione'),
@@ -1265,30 +1265,27 @@ class OrganizationalStructureWSArchiPro(models.Model):
     protocollo_username = models.CharField('Username', max_length=255)
     protocollo_password = models.CharField('Password', max_length=255)
     protocollo_aoo = models.CharField('AOO', max_length=12)
-    protocollo_agd = models.CharField('AGD', max_length=12)
-    protocollo_uo = models.CharField('UO', max_length=12,)
-    protocollo_email = models.EmailField('E-mail',
-                                         max_length=255,
-                                         blank=True, null=True,
-                                         help_text = 'Se vuoto: {}'.format(settings.PROT_EMAIL_DEFAULT))
+    protocollo_agd = models.CharField('AGD', max_length=12,
+                                      default='', blank=True)
+
     # protocollo_template = models.TextField('XML template',
                                            # help_text=_('Template XML che '
                                                       # 'descrive il flusso'))
 
     class Meta:
         ordering = ["-created"]
-        verbose_name = _("Configurazione WSArchiPro Struttura")
-        verbose_name_plural = _("Configurazioni WSArchiPro Strutture")
+        verbose_name = _("Configurazione WS Protocollo Struttura")
+        verbose_name_plural = _("Configurazioni WS Protocollo Strutture")
 
     def disable_other_configurations(self):
-        others = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=self.organizational_structure).exclude(pk=self.pk)
+        others = OrganizationalStructureWSProtocollo.objects.filter(organizational_structure=self.organizational_structure).exclude(pk=self.pk)
         for other in others:
             other.is_active = False
             other.save(update_fields = ['is_active', 'modified'])
 
     @staticmethod
     def get_active_protocol_configuration(organizational_structure):
-        oswsap = OrganizationalStructureWSArchiPro
+        oswsap = OrganizationalStructureWSProtocollo
         conf = oswsap.objects.filter(organizational_structure=organizational_structure,
                                      is_active=True).first()
         return conf if conf else False
@@ -1297,24 +1294,35 @@ class OrganizationalStructureWSArchiPro(models.Model):
         return '{} - {}'.format(self.name, self.organizational_structure)
 
 
-class TicketCategoryWSArchiPro(TimeStampedModel):
+class TicketCategoryWSProtocollo(TimeStampedModel):
     ticket_category = models.ForeignKey(TicketCategory,
                                         on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
+    protocollo_uo = models.CharField('UO', max_length=12,
+                                     choices=settings.UO_DICT)
+    protocollo_uo_rpa = models.CharField('RPA', max_length=255,
+                                         default='', blank=True)
+    protocollo_email = models.EmailField('E-mail',
+                                         max_length=255,
+                                         blank=True, null=True,
+                                         help_text = 'Se vuoto: {}'.format(settings.PROTOCOL_EMAIL_DEFAULT))
     protocollo_cod_titolario = models.CharField(_('Codice titolario'),
                                                 max_length=12,
                                                 choices=settings.TITOLARIO_DICT)
-    protocollo_fascicolo_numero = models.IntegerField(_('Fascicolo numero'))
-    protocollo_fascicolo_anno = models.IntegerField(_('Fascicolo anno'))
+    protocollo_fascicolo_numero = models.CharField(_('Fascicolo numero'),
+                                                   max_length=255,
+                                                   default='', blank=True)
+    protocollo_fascicolo_anno = models.IntegerField(_('Fascicolo anno'),
+                                                    null=True, blank=True)
 
     class Meta:
         ordering = ["-created"]
-        verbose_name = _("Configurazione WSArchiPro Categoria")
-        verbose_name_plural = _("Configurazioni WSArchiPro Categorie")
+        verbose_name = _("Configurazione WS Protocollo Categoria")
+        verbose_name_plural = _("Configurazioni WS Protocollo Categorie")
 
     def disable_other_configurations(self):
-        others = TicketCategoryWSArchiPro.objects.filter(ticket_category=self.ticket_category).exclude(pk=self.pk)
+        others = TicketCategoryWSProtocollo.objects.filter(ticket_category=self.ticket_category).exclude(pk=self.pk)
         for other in others:
             other.is_active = False
             other.save(update_fields = ['is_active', 'modified'])

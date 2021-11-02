@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from io import BytesIO
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -14,40 +15,45 @@ def ticket_protocol(user,
                     subject,
                     structure_configuration=None,
                     configuration=None,
-                    file_name='test_name',
+                    file_name='',
                     response=b'',
                     attachments_folder=settings.MEDIA_ROOT,
                     attachments_dict={},
                     test=False):
+
+    # protocol class and settings from settings file
+    prot_class = __import__(settings.PROTOCOL_CLASS, globals(), locals(), ['*'])
+    prot_utils = __import__(settings.PROTOCOL_UTILS, globals(), locals(), ['*'])
 
     valid_conf = structure_configuration and configuration
 
     # Check only if protocol system works
     # if test and not configuration:
     if test:
-        prot_url = settings.PROT_URL
-        prot_login = settings.PROT_TEST_LOGIN
-        prot_passw = settings.PROT_TEST_PASSW
-        prot_aoo = settings.PROT_TEST_AOO
-        prot_agd = settings.PROT_AGD_DEFAULT
-        prot_uo = settings.PROT_UO_DEFAULT
-        prot_email = settings.PROT_EMAIL_DEFAULT
-        # prot_id_uo = settings.PROT_UO_ID_DEFAULT
-        prot_titolario = settings.PROT_TITOLARIO_DEFAULT
-        prot_fascicolo_num = settings.PROT_FASCICOLO_DEFAULT
-        prot_fascicolo_anno = settings.PROT_FASCICOLO_ANNO_DEFAULT
+        prot_url = settings.PROTOCOL_TEST_URL
+        prot_login = settings.PROTOCOL_TEST_LOGIN
+        prot_passw = settings.PROTOCOL_TEST_PASSW
+        prot_aoo = settings.PROTOCOL_TEST_AOO
+        prot_agd = settings.PROTOCOL_TEST_AGD
+        prot_uo = settings.PROTOCOL_TEST_UO
+        prot_uo_rpa = settings.PROTOCOL_TEST_UO_RPA
+        prot_email = settings.PROTOCOL_EMAIL_DEFAULT
+        prot_titolario = settings.PROTOCOL_TEST_TITOLARIO
+        prot_fascicolo_num = settings.PROTOCOL_TEST_FASCICOLO
+        prot_fascicolo_anno = settings.PROTOCOL_TEST_FASCICOLO_ANNO
         prot_template = settings.PROTOCOL_XML
+        response=b'Test'
+        file_name='test name'
     # for production
-    # elif not test and configuration:
     elif not test and valid_conf:
-        prot_url = settings.PROT_URL
+        prot_url = settings.PROTOCOL_URL
         prot_login = structure_configuration.protocollo_username
         prot_passw = structure_configuration.protocollo_password
         prot_aoo = structure_configuration.protocollo_aoo
         prot_agd = structure_configuration.protocollo_agd
-        prot_uo = structure_configuration.protocollo_uo
-        prot_email = structure_configuration.protocollo_email or settings.PROT_EMAIL_DEFAULT
-        # prot_id_uo = configuration.protocollo_id_uo
+        prot_uo = configuration.protocollo_uo
+        prot_uo_rpa = configuration.protocollo_uo_rpa
+        prot_email = configuration.protocollo_email or settings.PROTOCOL_EMAIL_DEFAULT
         prot_titolario = configuration.protocollo_cod_titolario
         prot_fascicolo_num = configuration.protocollo_fascicolo_numero
         prot_fascicolo_anno = configuration.protocollo_fascicolo_anno
@@ -56,49 +62,41 @@ def ticket_protocol(user,
     elif not test and not valid_conf:
         raise Exception(_('Missing XML configuration for production'))
 
-    protocol_data = {
-                     # 'wsdl_url' : prot_url,
-                     # 'username' : prot_login,
-                     # 'password' : prot_passw,
-                     # 'template_xml_flusso': prot_template,
+    protocol_data = prot_utils.protocol_entrata_dict(
+        oggetto=subject,
+        autore='uniTicket (ticket.unical.it)',
+        aoo=prot_aoo,
+        agd=prot_agd,
+        destinatario=prot_uo_rpa,
+        uo_nome=dict(settings.UO_DICT)[prot_uo],
+        uo=prot_uo,
+        email_ufficio=prot_template,
+        nome_mittente=user.first_name,
+        cognome_mittente=user.last_name,
+        cod_fis_mittente=user.taxpayer_id,
+        cod_mittente=user.taxpayer_id,
+        email_mittente=user.email,
+        titolario='',
+        cod_titolario=prot_titolario,
+        num_allegati=1 + len(attachments_dict),
+        fascicolo_num=prot_fascicolo_num,
+        fascicolo_anno=prot_fascicolo_anno
+    )
 
-                      # Variabili
-                     'oggetto':'{}'.format(subject),
-                     # 'matricola_dipendente': user.matricola_dipendente,
-                     'id_persona': user.taxpayer_id,
-                     'nome_persona': user.first_name,
-                     'cognome_persona': user.last_name,
-                     # 'denominazione_persona': ' '.join((user.first_name,
-                                                        # user.last_name,)),
+    wsclient = prot_class.Protocollo(wsdl_url=prot_url,
+                                     username=prot_login,
+                                     password=prot_passw,
+                                     template_xml_flusso=prot_template,
+                                     **protocol_data)
 
-                     # attributi creazione protocollo
-                     'aoo': prot_aoo,
-                     'agd': prot_agd,
-                     'uo': prot_uo,
-                     'email': prot_email,
-                     # 'uo_id': prot_id_uo,
-                     'id_titolario': prot_titolario,
-                     'fascicolo_numero': prot_fascicolo_num,
-                     'fascicolo_anno': prot_fascicolo_anno
-                    }
-
-    protclass = __import__(settings.CLASSE_PROTOCOLLO, globals(), locals(), ['*'])
-
-    # wsclient = protclass.Protocollo(**protocol_data)
-    wsclient = protclass.Protocollo(wsdl_url=prot_url,
-                                    username=prot_login,
-                                    password=prot_passw,
-                                    template_xml_flusso=prot_template,
-                                    strictly_required=True,
-                                    **protocol_data)
-    logger.info('Protocollazione richiesta {}'.format(subject))
+    logger.info(f'Protocollazione richiesta {subject}')
     docPrinc = BytesIO()
     docPrinc.write(response)
     docPrinc.seek(0)
 
-    wsclient.aggiungi_docPrinc(docPrinc,
-                               nome_doc="{}.pdf".format(file_name),
-                               tipo_doc='uniTicket request')
+    wsclient.aggiungi_docPrinc(fopen=docPrinc,
+                               nome_doc=f"{file_name}.pdf",
+                               tipo_doc=file_name)
 
     # attachments
     if attachments_dict:
@@ -109,7 +107,8 @@ def ticket_protocol(user,
             mime = magic.Magic(mime=True)
             content_type = mime.from_file(file_path)
             f = open(file_path, 'rb')
-            attachment_response = HttpResponse(f.read(), content_type=content_type)
+            attachment_response = HttpResponse(f.read(),
+                                               content_type=content_type)
             attachment_response['Content-Disposition'] = 'inline; filename=' + v
             f.close()
             allegato = BytesIO()
@@ -120,12 +119,41 @@ def ticket_protocol(user,
                                        fopen=allegato)
 
     # print(wsclient.is_valid())
-    logger.debug(wsclient.render_dataXML())
+    # logger.debug(wsclient.render_dataXML())
     # print(wsclient.render_dataXML())
-    prot_resp = wsclient.protocolla()
 
-    # logger.info('Avvenuta Protocollazione Richiesta {} numero: {}'.format(form.cleaned_data['subject'],
-                                                                          # domanda_bando.numero_protocollo))
+    wsclient.protocolla()
+
+    response = {'numero': wsclient.numero}
+
+    if settings.FASCICOLAZIONE_SEPARATA and prot_fascicolo_num:
+        try:
+            fascicolo_physdoc = ''
+            fascicolo_nrecord = ''
+            fascicolo_numero = prot_fascicolo_num
+            doc_physdoc = ''
+            doc_nrecord = ''
+            doc_num_prot = wsclient.numero
+            doc_minuta='no' #si/no
+
+            fasc = open(settings.FASCICOLO_PATH, "r").read()
+            fasc = fasc.format(fascicolo_physdoc=fascicolo_physdoc,
+                               fascicolo_nrecord=fascicolo_nrecord,
+                               fascicolo_numero=fascicolo_numero,
+                               doc_physdoc=doc_physdoc,
+                               doc_nrecord=doc_nrecord,
+                               doc_num_prot=doc_num_prot,
+                               doc_minuta=doc_minuta)
+            wsclient.fascicolaDocumento(fasc)
+            msg = 'Fascicolazione avvenuta: {} in {}'.format(fascicolo_numero,
+                                                             wsclient.numero)
+
+        except Exception as e:
+            msg = 'Fascicolazione fallita: {} in {}'.format(fascicolo_numero,
+                                                            wsclient.numero)
+        response['message'] = msg
+        logger.info(msg)
+
     # raise exception if wsclient hasn't a protocol number
     assert wsclient.numero
-    return wsclient.numero
+    return response

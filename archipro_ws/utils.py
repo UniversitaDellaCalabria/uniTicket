@@ -20,3 +20,27 @@ def clean_string(word, save_extension=False):
     # oppure, ancora meglio sarebbe
     # word = re.escape(word)
     return word
+
+
+def protocol_entrata_dict(**kwargs):
+
+    protocol_data = {
+                      # Variabili
+                     'oggetto': kwargs.get('oggetto'),
+                     # 'matricola_dipendente': user.matricola_dipendente,
+                     'id_persona': kwargs.get('cod_fis_mittente'),
+                     'nome_persona': kwargs.get('nome_mittente'),
+                     'cognome_persona': kwargs.get('cognome_mittente'),
+                     # 'denominazione_persona': ' '.join((user.first_name,
+                                                        # user.last_name,)),
+
+                     # attributi creazione protocollo
+                     'aoo': kwargs.get('aoo'),
+                     'agd': kwargs.get('agd'),
+                     'uo': kwargs.get('uo'),
+                     'email': kwargs.get('email_ufficio'),
+                     'id_titolario': kwargs.get('titolario'),
+                     'fascicolo_numero': kwargs.get('fascicolo_num'),
+                     'fascicolo_anno': kwargs.get('fascicolo_anno')
+                    }
+    return protocol_data

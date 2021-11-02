@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file://TitulusXsd.xsd" 
+		tipo="test attribute" 
+		nrecord="test attribute" 
+		agli_atti="test attribute" 
+		sensibile="test attribute" 
+		personale="test attribute" 
+		annullato="test attribute" 
+		scarto="test attribute" 
+		data_valutazione_scarto="test attribute" 
+		bozza="test attribute" 
+		data_seduta="test attribute" 
+		applicativo_produttore_docid="test attribute">
+         <visibilita cod="test attribute" tipo="test attribute" fino_al="test attribute">{}</visibilita>
+         <prot_differito>{prot_differito}</prot_differito>
+         <repertorio>{repertorio}</repertorio>
+         <autore>{autore}</autore>
+         <minuta scarto="test attribute">
+               <classif>{}</classif>
+               <mittente nome_uff="test attribute" nome_persona="test attribute" cod_uff="test attribute" cod_persona="test attribute">{mittente}</mittente>
+         </minuta>
+         <minuta scarto="test attribute">
+               <classif>{}</classif>
+               <mittente nome_uff="test attribute" nome_persona="test attribute" cod_uff="test attribute" cod_persona="test attribute">{mittente}</mittente>
+         </minuta>
+         <oggetto>{oggetto}</oggetto>
+         <tipologia>{tipologia}</tipologia>
+         <conservazione tipo="test attribute">{conservazione}</conservazione>
+         <mezzo_trasmissione>{mezzo_trasmissione}</mezzo_trasmissione>
+         <classif>{classif}</classif>
+         <note>{note}</note>
+         <riferimenti>{riferimenti}</riferimenti>
+         <xlink>{xlink}</xlink>
+         <keywords>{keywords}</keywords>
+         <allegato>{allegato}</allegato>
+         <voce_indice>{voce_indice}</voce_indice>
+         <rif_interni>{rif_interni}</rif_interni>
+         <rif_esterni>{rif_esterni}</rif_esterni>
+         <originale>{originale}</originale>
+         <extra>{extra}</extra>
+         <link_interno href={href_link_interno}>{link_interno}</link_interno>
+         <info_conservazione>{info_conservazione}</info_conservazione>
+         <postit>{postit}</postit>
+   </doc>

@@ -508,52 +508,59 @@ class TicketOperatorOfficesForm(forms.Form):
         self.fields['office'].to_field_name = 'slug'
 
 
-class OrganizationalStructureWSArchiProModelForm(ModelForm):
+class OrganizationalStructureWSProtocolloModelForm(ModelForm):
     """
     """
     class Meta:
-        model = OrganizationalStructureWSArchiPro
+        model = OrganizationalStructureWSProtocollo
         fields = ['name',
                   'protocollo_username',
                   # 'protocollo_password',
                   'protocollo_aoo',
-                  'protocollo_agd',
-                  'protocollo_uo',
-                  'protocollo_email',]
+                  'protocollo_agd',]
+                  # 'protocollo_uo',
+                  # 'protocollo_email',]
                   # 'protocollo_id_uo',
                   # 'protocollo_cod_titolario',
                   # 'protocollo_fascicolo_numero',
                   # 'protocollo_fascicolo_anno',
                   # 'protocollo_template']
-        # help_texts = {'protocollo_email': _('Se vuoto: {}').format(settings.PROT_EMAIL_DEFAULT)}
+        # help_texts = {'protocollo_email': _('Se vuoto: {}').format(settings.PROTOCOL_EMAIL_DEFAULT)}
         # labels = {'protocollo_cod_titolario': _('Codice titolario')}
         widgets = {'name': forms.TextInput(attrs={'disabled': True}),
                    'protocollo_username': forms.TextInput(attrs={'disabled': True}),
                    'protocollo_password': forms.TextInput(attrs={'disabled': True}),
                    'protocollo_aoo': forms.TextInput(attrs={'disabled': True}),
-                   'protocollo_agd': forms.TextInput(attrs={'disabled': True}),
-                   'protocollo_uo': forms.TextInput(attrs={'disabled': True}),
-                   'protocollo_email': forms.TextInput(attrs={'disabled': True}),}
+                   'protocollo_agd': forms.TextInput(attrs={'disabled': True}),}
+                   # 'protocollo_uo': forms.TextInput(attrs={'disabled': True}),
+                   # 'protocollo_email': forms.TextInput(attrs={'disabled': True}),}
                    # 'protocollo_template': forms.Textarea(attrs={'disabled': True})}
 
     class Media:
         js = ('js/textarea-autosize.js',)
 
 
-class CategoryWSArchiProModelForm(forms.ModelForm):
+class CategoryWSProtocolloModelForm(forms.ModelForm):
 
     class Meta:
-        model = TicketCategoryWSArchiPro
+        model = TicketCategoryWSProtocollo
         fields = ('name',
+                  'protocollo_uo',
+                  'protocollo_uo_rpa',
+                  'protocollo_email',
                   'protocollo_cod_titolario',
                   'protocollo_fascicolo_numero',
                   'protocollo_fascicolo_anno',)
         labels = {'name': _('Denominazione configurazione'),
+                  'protocollo_uo': _('Unità Organizzativa'),
+                  'protocollo_uo_rpa': _('RPA Unità Organizzativa'),
+                  'protocollo_email': _('Email riferimento'),
                   'protocollo_cod_titolario': _('Titolario'),
                   'protocollo_fascicolo_numero': _('Numero Fascicolo'),
                   'protocollo_fascicolo_anno': _('Anno Fascicolo')}
         help_texts = {'name': _('A discrezione dell\'utente. Es: "Configurazione anno 2020"'),}
-        widgets = {'protocollo_cod_titolario': BootstrapItaliaSelectWidget}
+        widgets = {'protocollo_cod_titolario': BootstrapItaliaSelectWidget,
+                   'protocollo_uo': BootstrapItaliaSelectWidget}
 
     class Media:
         js = ('js/textarea-autosize.js',)

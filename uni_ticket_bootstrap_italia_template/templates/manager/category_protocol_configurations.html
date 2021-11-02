@@ -3,9 +3,9 @@
 {% load uni_ticket_tags %}
 
 <div class="it-list-wrapper">
-    {% if category.ticketcategorywsarchipro_set.all %}
+    {% if category.ticketcategorywsprotocollo_set.all %}
     <ul class="it-list">
-        {% for configuration in category.ticketcategorywsarchipro_set.all %}
+        {% for configuration in category.ticketcategorywsprotocollo_set.all %}
         <li class="py-2 clearfix">
             <b>{{ configuration.name }}</b>
             <br>

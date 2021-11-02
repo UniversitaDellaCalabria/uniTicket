@@ -15,7 +15,7 @@ import pathlib
 
 # load applications settings file, overload what needed if needed
 from api_rest.settings import *
-from archipro_ws.settings import *
+
 from django_form_builder.settings import *
 from organizational_area.settings import *
 from uni_ticket.settings import *

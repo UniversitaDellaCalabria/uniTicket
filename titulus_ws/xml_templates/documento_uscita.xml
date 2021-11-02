@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Intestazione>
+    <Oggetto>{oggetto}</Oggetto>
+    
+    <Identificatore>
+        <CodiceAmministrazione>{codice_amministrazione}</CodiceAmministrazione>
+        <CodiceAOO>{codice_aoo}</CodiceAOO>
+        <Flusso>{flusso}</Flusso>
+    </Identificatore>
+    
+    <Mittente>
+        <Amministrazione>
+            <Denominazione>{id_amm}</Denominazione>
+            <CodiceAmministrazione>{cod_aoo}</CodiceAmministrazione>
+            <IndirizzoTelematico tipo="smtp">{email}</IndirizzoTelematico>
+            <UnitaOrganizzativa id="{uo_id}" />
+        </Amministrazione>
+    </Mittente>
+    
+    <Destinatario>
+        <Persona id="{identificativo_persona}">
+            <Denominazione>{denominazione_persona}</Denominazione>
+        </Persona>
+    </Destinatario>
+    
+    <Classifica>
+        <CodiceTitolario>{cod_titolario}</CodiceTitolario>
+    </Classifica>
+    <!-- Informazioni sul fascicolo -->
+    <Fascicolo numero="{fascicolo_numero}" anno="{fascicolo_anno}"/>
+</Intestazione>
+
+<Descrizione>
+    <Documento id="{documento_id}" nome="{nome_doc}">
+        <DescrizioneDocumento>{nome_doc}</DescrizioneDocumento>
+        <TipoDocumento>{tipo_doc}</TipoDocumento>
+    </Documento>
+</Descrizione>
+
+<ApplicativoProtocollo nome="ArchiPRO">
+    {parametri}
+</ApplicativoProtocollo>
+</Segnatura>

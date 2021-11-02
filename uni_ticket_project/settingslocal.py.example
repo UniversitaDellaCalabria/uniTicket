@@ -303,12 +303,64 @@ CAPTCHA_SALT = b'salt'
 CAPTCHA_EXPIRATION_TIME = 45000 # milliseconds
 CAPTCHA_DEFAULT_LANG = 'it'
 
+# superusers view all
+SUPER_USER_VIEW_ALL = True
+
+# Internationalization
+# Set to False to avoid problems with javascript datepickers
+# (that use the DATE_INPUT_FORMATS and DATETIME_INPUT_FORMATS)
+# The template uses {% localize on %} tag to localize dates
+USE_L10N = False
+
+# localization
+LANGUAGES = (
+  ('it', _('Italiano')),
+  ('en', _('Inglese')),
+)
+
+LANGUAGE_CODE = 'it'
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, "locale"),
+)
+
+TIME_ZONE = 'Europe/Rome'
+
+# Ticket categories CSV export
+# additional user fields to export
+ADDITIONAL_USER_FIELDS = [uni_ticket_settings.EMPLOYEE_ATTRIBUTE_NAME,
+                          uni_ticket_settings.USER_ATTRIBUTE_NAME]
+
 # PROTOCOLLO, questi valori possono variare sulla base di come
 # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
 
-CLASSE_PROTOCOLLO = 'archipro_ws.protocollo'
+# from archipro_ws.settings import *
+from titulus_ws.settings import *
 
-# XML flusso
+PROTOCOL_PACKAGE = 'titulus_ws' # archipro_ws
+PROTOCOL_CLASS = f'{PROTOCOL_PACKAGE}.protocollo'
+PROTOCOL_UTILS = f'{PROTOCOL_PACKAGE}.utils'
+
+# DEFAULT EMAIL
+PROTOCOL_EMAIL_DEFAULT = 'default@example.pec.it'
+
+# TEST PARAMS
+PROTOCOL_TEST_AOO = 'test_aoo_value'
+PROTOCOL_TEST_FASCICOLO = 'test_fascicolo_value'
+PROTOCOL_TEST_FASCICOLO_ANNO = 'test_fascicolo_anno_value'
+PROTOCOL_TEST_AGD = 'test_agd_value'
+PROTOCOL_TEST_UO = 'test_uo_value'
+PROTOCOL_TEST_UO_RPA = 'test_uo_rpa_value'
+PROTOCOL_TEST_TITOLARIO = 'test_titolario_value'
+
+# ENDPOINTS (TEST AND PRODUCTION)
+PROTOCOL_TEST_URL = 'URL_TEST' # test
+PROTOCOL_URL = 'URL_PROD' # production
+
+# TEST CREDENTIALS
+PROTOCOL_TEST_LOGIN = 'TEST_LOGIN'
+PROTOCOL_TEST_PASSW = 'TEST_PASSWORD'
+
+# XML flusso ArchiPRO
 PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 <Intestazione>
 <Oggetto>{oggetto}</Oggetto>
@@ -363,41 +415,33 @@ PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instanc
 </Segnatura>
 """
 
+# XML flusso Titulus
+PROTOCOL_XML = """
+<doc tipo="arrivo" cod_amm_aoo="{cod_amm_aoo}">
+    <autore>{autore}</autore>
+    <oggetto>{oggetto}</oggetto>
+    <classif cod="{cod_classif}">{classif}</classif>
+    <allegato>{allegato}</allegato>
+    <rif_interni>
+		<rif_interno diritto="RPA"
+                     nome_persona="{nome_persona_rif_interno}"
+                     nome_uff="{nome_uff_rif_interno}"
+                     cod_uff="{cod_uff_rif_interno}"/>
+    </rif_interni>
+    <rif_esterni>
+        <rif_esterno codice_fiscale="{codice_fiscale_rif_esterno}">
+            <nome cod="{cod_nome_rif_esterno}">
+                {nome_rif_esterno}
+            </nome>
+            <indirizzo email="{email_rif_esterno}"
+                       fax="{fax_rif_esterno}"
+                       tel="{tel_rif_esterno}"
+                       xml:space="preserve">
+                {indirizzo}
+            </indirizzo>
+        </rif_esterno>
+    </rif_esterni>
+</doc>
 
-# DEFAULT EMAIL
-PROT_EMAIL_DEFAULT = 'default@email.com'
-
-# TEST
-PROT_TEST_AOO = 'default_aoo'
-PROT_FASCICOLO_DEFAULT = 'default_fascicolo'
-PROT_FASCICOLO_ANNO_DEFAULT = 'default_year'
-PROT_AGD_DEFAULT = 'default_agd'
-PROT_UO_DEFAULT = 'default_uo'
-# PROT_UO_ID_DEFAULT = 'default_uo_id'
-PROT_TITOLARIO_DEFAULT = 'default_titolario'
-
-PROT_URL = 'url_test'
-PROT_TEST_LOGIN = 'test_login'
-PROT_TEST_PASSW = 'test_passw'
-
-# superusers view all
-SUPER_USER_VIEW_ALL = True
-
-# Internationalization
-# Set to False to avoid problems with javascript datepickers
-# (that use the DATE_INPUT_FORMATS and DATETIME_INPUT_FORMATS)
-# The template uses {% localize on %} tag to localize dates
-USE_L10N = False
-
-# localization
-LANGUAGES = (
-  ('it', _('Italiano')),
-  ('en', _('Inglese')),
-)
-
-LANGUAGE_CODE = 'it'
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, "locale"),
-)
-
-TIME_ZONE = 'Europe/Rome'
+"""
+# END PROTOCOLLO

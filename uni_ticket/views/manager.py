@@ -786,7 +786,7 @@ def category_add_new(request, structure_slug, structure):
 
                 # check if protocol can be activated
                 protocol_required = form.cleaned_data['protocol_required']
-                # if protocol_required and not OrganizationalStructureWSArchiPro.get_active_protocol_configuration(organizational_structure=structure):
+                # if protocol_required and not OrganizationalStructureWSProtocollo.get_active_protocol_configuration(organizational_structure=structure):
                 if protocol_required:
                     protocol_required = False
                     messages.add_message(request, messages.INFO,
@@ -2451,7 +2451,7 @@ def manager_settings(request, structure_slug, structure):
 
     form = OrganizationalStructureAddManagerForm(structure=structure,
                                                  manager_users=manager_users)
-    protocol_configurations = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure)
+    protocol_configurations = OrganizationalStructureWSProtocollo.objects.filter(organizational_structure=structure)
 
     alerts = OrganizationalStructureAlert.objects.filter(organizational_structure=structure)
     disabled_expired_items(alerts)
@@ -2523,24 +2523,24 @@ def structure_protocol_configuration_detail(request, structure_slug,
 
     :return: response
     """
-    configuration = get_object_or_404(OrganizationalStructureWSArchiPro,
+    configuration = get_object_or_404(OrganizationalStructureWSProtocollo,
                                       organizational_structure=structure,
                                       pk=configuration_id)
 
     template = "manager/structure_protocol_configuration.html"
     title = _("Configurazione protocollo informatico")
 
-    form = OrganizationalStructureWSArchiProModelForm(instance=configuration)
+    form = OrganizationalStructureWSProtocolloModelForm(instance=configuration)
 
     # POST ACTION DISABLED
     # FORM FIELDS DISABLED
     # if request.method == 'POST':
-        # form = OrganizationalStructureWSArchiProModelForm(instance=configuration,
+        # form = OrganizationalStructureWSProtocolloModelForm(instance=configuration,
                                                           # data=request.POST)
         # if form.is_valid():
             # configuration = form.save(commit=False)
             # if not configuration.protocollo_email:
-                # configuration.protocollo_email = settings.PROT_EMAIL_DEFAULT
+                # configuration.protocollo_email = settings.PROTOCOL_EMAIL_DEFAULT
             # configuration.save()
 
             # messages.add_message(request, messages.SUCCESS,
@@ -2580,14 +2580,14 @@ def structure_protocol_configuration_detail(request, structure_slug,
     # title = _("Nuova configurazione protocollo informatico")
 
     # initial_data = {'protocollo_template': settings.PROTOCOL_XML, }
-    # form = OrganizationalStructureWSArchiProModelForm(initial_data)
+    # form = OrganizationalStructureWSProtocolloModelForm(initial_data)
 
     # if request.method == 'POST':
-        # form = OrganizationalStructureWSArchiProModelForm(data=request.POST)
+        # form = OrganizationalStructureWSProtocolloModelForm(data=request.POST)
         # if form.is_valid():
             # configuration = form.save(commit=False)
             # if not configuration.protocollo_email:
-                # configuration.protocollo_email = settings.PROT_EMAIL_DEFAULT
+                # configuration.protocollo_email = settings.PROTOCOL_EMAIL_DEFAULT
             # configuration.organizational_structure=structure
             # configuration.save()
 
@@ -2624,7 +2624,7 @@ def structure_protocol_configuration_detail(request, structure_slug,
 
     # :return: redirect
     # """
-    # configuration = get_object_or_404(OrganizationalStructureWSArchiPro,
+    # configuration = get_object_or_404(OrganizationalStructureWSProtocollo,
                                       # organizational_structure=structure,
                                       # pk=configuration_id)
 
@@ -2668,7 +2668,7 @@ def structure_protocol_configuration_detail(request, structure_slug,
 
     # :return: redirect
     # """
-    # configuration = get_object_or_404(OrganizationalStructureWSArchiPro,
+    # configuration = get_object_or_404(OrganizationalStructureWSProtocollo,
                                       # organizational_structure=structure,
                                       # pk=configuration_id)
 
@@ -2727,7 +2727,7 @@ def structure_protocol_configuration_detail(request, structure_slug,
 
     # :return: redirect
     # """
-    # configuration = get_object_or_404(OrganizationalStructureWSArchiPro,
+    # configuration = get_object_or_404(OrganizationalStructureWSProtocollo,
                                       # organizational_structure=structure,
                                       # pk=configuration_id)
     # if configuration.is_active:
@@ -2781,25 +2781,31 @@ def category_protocol_configuration_detail(request, structure_slug,
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
+    configuration = TicketCategoryWSProtocollo.objects.filter(ticket_category=category,
                                                             pk=configuration_id).first()
 
     template = "manager/category_protocol_configuration_detail.html"
     title = _("Configurazione protocollo informatico")
 
-    form = CategoryWSArchiProModelForm(instance=configuration)
+    form = CategoryWSProtocolloModelForm(instance=configuration)
 
     if request.method == 'POST':
-        form = CategoryWSArchiProModelForm(instance=configuration,
+        form = CategoryWSProtocolloModelForm(instance=configuration,
                                            data=request.POST)
         if form.is_valid():
             configuration.name = form.cleaned_data['name']
             configuration.protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario']
+            configuration.protocollo_uo = form.cleaned_data['protocollo_uo']
+            configuration.protocollo_uo_rpa = form.cleaned_data['protocollo_uo_rpa']
+            configuration.protocollo_email = form.cleaned_data['protocollo_email']
             configuration.protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero']
             configuration.protocollo_fascicolo_anno = form.cleaned_data['protocollo_fascicolo_anno']
             configuration.save(update_fields=['name',
                                               'modified',
                                               'protocollo_cod_titolario',
+                                              'protocollo_uo',
+                                              'protocollo_uo_rpa',
+                                              'protocollo_email',
                                               'protocollo_fascicolo_numero',
                                               'protocollo_fascicolo_anno'])
 
@@ -2843,12 +2849,12 @@ def category_protocol_configuration_new(request, structure_slug,
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    structure_protocol = OrganizationalStructureWSArchiPro.objects.filter(organizational_structure=structure,
+    structure_protocol = OrganizationalStructureWSProtocollo.objects.filter(organizational_structure=structure,
                                                                           is_active=True).first()
-    form = CategoryWSArchiProModelForm()
+    form = CategoryWSProtocolloModelForm()
 
     if request.method == 'POST':
-        form = CategoryWSArchiProModelForm(data=request.POST)
+        form = CategoryWSProtocolloModelForm(data=request.POST)
         if form.is_valid():
             configuration = form.save(commit=False)
             configuration.ticket_category=category
@@ -2906,7 +2912,7 @@ def category_protocol_configuration_delete(request, structure_slug,
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
+    configuration = TicketCategoryWSProtocollo.objects.filter(ticket_category=category,
                                                             pk=configuration_id).first()
 
     if not category.get_active_protocol_configuration():
@@ -2949,7 +2955,7 @@ def category_protocol_configuration_disable(request, structure_slug,
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
+    configuration = TicketCategoryWSProtocollo.objects.filter(ticket_category=category,
                                                             pk=configuration_id).first()
     if configuration.is_active:
         configuration.is_active = False
@@ -3009,7 +3015,7 @@ def category_protocol_configuration_enable(request, structure_slug,
     category = get_object_or_404(TicketCategory,
                                  organizational_structure=structure,
                                  slug=category_slug)
-    configuration = TicketCategoryWSArchiPro.objects.filter(ticket_category=category,
+    configuration = TicketCategoryWSProtocollo.objects.filter(ticket_category=category,
                                                             pk=configuration_id).first()
 
     if configuration.is_active:

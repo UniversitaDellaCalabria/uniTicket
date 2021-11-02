@@ -336,7 +336,7 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
                                                     'category_slug': self.category_1_str_1.slug}),
                                     params,
                                     follow=True)
-        configuration = TicketCategoryWSArchiPro.objects.get(ticket_category=self.category_1_str_1,
+        configuration = TicketCategoryWSProtocollo.objects.get(ticket_category=self.category_1_str_1,
                                                              name=name)
         assert response.status_code == 200
         assert configuration
@@ -395,7 +395,7 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
                                     follow=True)
 
         assert response.status_code == 200
-        assert not TicketCategoryWSArchiPro.objects.filter(ticket_category=self.category_1_str_1,
+        assert not TicketCategoryWSProtocollo.objects.filter(ticket_category=self.category_1_str_1,
                                                            name=new_name)
 
     def test_category_default_reply(self):

@@ -1,0 +1,10 @@
+<rif_esterno n_prot="test attribute" data_prot="test attribute" copia_conoscenza="test attribute" codice_fiscale="test attribute">
+    <nome>test string</nome>
+	<indirizzo email="email"
+                 fax="fax"
+                 tel="tel"
+                 xml:space="preserve">
+         indirizzo
+      </indirizzo>
+    <referente nominativo="test attribute" ruolo="test attribute" cod="test attribute">test string</referente>
+</rif_esterno>

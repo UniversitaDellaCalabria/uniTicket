@@ -1,6 +1,8 @@
 from django.utils.translation import gettext_lazy as _
 
 
+FASCICOLAZIONE_SEPARATA = False
+
 # win-chrk4d7tc85 must be resolved in /etc/hosts or DNS
 PROT_DOC_ENCODING = 'utf-8'
 PROT_MAX_LABEL_LENGTH = 50

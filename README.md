@@ -150,7 +150,7 @@ Production Setup
 After the following actions being made, copy and adapt the production configurations that you found in `uwsgi_setup/` folder.
 
 ````
-apt install python3-dev python3-pip
+apt install python3-dev python3-pip libmagic-dev
 pip3 install virtualenv
 virtualenv -ppython3 uniticket.env
 source uniticket.env/bin/activate
@@ -192,7 +192,7 @@ pip3 install -r requirements.txt
 pip3 install uwsgi
 
 sudo apt install mariadb-server libmariadbclient-dev
-sudo apt install poppler-utils xmlsec1
+sudo apt install poppler-utils xmlsec1 gobject-introspection
 sudo apt install supervisor
 
 ./manage.py migrate
