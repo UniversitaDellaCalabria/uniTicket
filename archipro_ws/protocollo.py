@@ -12,10 +12,7 @@ from zeep import Client
 
 from archipro_ws.utils import clean_string
 from archipro_ws.settings import (PROT_TEMPLATE_FLUSSO_ENTRATA_DIPENDENTE_PATH,
-                                  PROT_DOC_ENCODING,
-                                  PROT_ALLEGATO_EXAMPLE_FILE,
-                                  PROT_PARAMETRI_TMPL_ROW,
-                                  PROT_PARAMETRI)
+                                  PROT_DOC_ENCODING)
 
 class WSArchiPROClient(object):
     _ALLEGATO_XML = """
@@ -123,25 +120,6 @@ class WSArchiPROClient(object):
         # chek if it is connected and authn
         if not self.is_connected():
             self.connect()
-
-    def crea_fascicolo(self, template):
-        """
-        Crea un fascicolo usando il template self._FASCICOLO_XML
-        """
-        conf_fascicolo = {'id_titolario': self.id_titolario,
-                         'oggetto': self.oggetto,
-                         'soggetto': self.soggetto if hasattr(self, 'soggetto') \
-                                     else self.oggetto,
-                         'note': self.note if hasattr(self, 'note') else '',
-                         'parametri_rows': ''.join([PROT_PARAMETRI_TMPL_ROW.format(**par) \
-                                                    for par in PROT_PARAMETRI])}
-        if isinstance(template, str):
-            template = template.format(**conf_fascicolo)
-        else:
-            template = template.decode(PROT_DOC_ENCODING).format(**conf_fascicolo)
-        print("Creating {}".format(template))
-        template = template.encode(PROT_DOC_ENCODING)
-        return self.client.service.creazioneFascicolo(self.login.DST, arg1=template)
 
     def get(self):
         """
@@ -362,60 +340,3 @@ class WSArchiPROClient(object):
 
 class Protocollo(WSArchiPROClient):
     pass
-
-
-def test(allegati=True):
-    """
-    Procedura di esempio per esemplificare una sessione tipica di protocollo
-    """
-    allegati=1
-    peo_dict = { 'aoo': settings.PROT_AOO,
-                 'oggetto':'Partecipazione Bando PEO',
-
-                 # Variabili
-                 'matricola_dipendente':'XXXYYYY',
-                 'denominazione_persona':'Giuseppe De Marco',
-                 # Variabili
-                 # Documento id è sempre 1
-                 # 'documento_id':'1',
-
-                 # attributi creazione protocollo
-                 'id_titolario': settings.PROT_TITOLARIO_DEFAULT,
-                 'fascicolo_numero': settings.PROT_FASCICOLO_DEFAULT,
-                 'fascicolo_anno': datetime.date.today().year,
-                  #
-
-                 'nome_doc':'esempio.pdf',
-                 'tipo_doc':'esempio.pdf',
-                 'allegati': [] }
-
-    wsclient = WSArchiPROClient(**peo_dict)
-    # test attributi
-    wsclient.render_dataXML()
-    # print(wsclient.render_dataXML().decode(PROT_DOC_ENCODING))
-
-    # aggiungi binario documento principale
-    f = open('TODO', 'rb')
-    wsclient.aggiungi_docPrinc(f)
-    wsclient.is_valid()
-
-    # aggiungi 3 allegati
-    #
-    if allegati:
-        ad1 = wsclient.aggiungi_allegato('test1.pdf', 'documento di &% test1', open(PROT_ALLEGATO_EXAMPLE_FILE, 'rb'))
-        ad2 = wsclient.aggiungi_allegato('test2.pdf', 'documento di -:;\\test2', open(PROT_ALLEGATO_EXAMPLE_FILE, 'rb'))
-        ad3 = wsclient.aggiungi_allegato('test3.pdf', 'documento di test3', open(PROT_ALLEGATO_EXAMPLE_FILE, 'rb'))
-
-    wsclient.is_valid()
-    print(wsclient.render_dataXML()) #.decode(PROT_DOC_ENCODING))
-
-    # protocollo quindi
-    prot = wsclient.protocolla()
-
-    print(prot)
-    return wsclient
-
-
-if __name__ == '__main__':
-    test()
-    # qui aggiungere argparse per fare protocollazioni command line
