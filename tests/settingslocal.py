@@ -134,6 +134,120 @@ UNITICKET_JWE_ALG = "RSA1_5"
 UNITICKET_JWE_ENC = "A128CBC-HS256"
 # end JWE support
 
-# TEST
-PROT_TEST_LOGIN = 'prot_login'
-PROT_TEST_PASSW = 'prot_passw'
+# PROTOCOLLO, questi valori possono variare sulla base di come
+# vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
+
+# from archipro_ws.settings import *
+from titulus_ws.settings import *
+
+PROTOCOL_PACKAGE = 'titulus_ws' # archipro_ws
+PROTOCOL_CLASS = f'{PROTOCOL_PACKAGE}.protocollo'
+PROTOCOL_UTILS = f'{PROTOCOL_PACKAGE}.utils'
+
+# DEFAULT EMAIL
+PROTOCOL_EMAIL_DEFAULT = 'default@example.pec.it'
+
+# TEST PARAMS
+PROTOCOL_TEST_AOO = 'test_aoo_value'
+PROTOCOL_TEST_FASCICOLO = 'test_fascicolo_value'
+PROTOCOL_TEST_FASCICOLO_ANNO = 'test_fascicolo_anno_value'
+PROTOCOL_TEST_AGD = 'test_agd_value'
+PROTOCOL_TEST_UO = 'test_uo_value'
+PROTOCOL_TEST_UO_RPA = 'test_uo_rpa_value'
+PROTOCOL_TEST_TITOLARIO = 'test_titolario_value'
+
+# ENDPOINTS (TEST AND PRODUCTION)
+PROTOCOL_TEST_URL = 'URL_TEST' # test
+PROTOCOL_URL = 'URL_PROD' # production
+
+# TEST CREDENTIALS
+PROTOCOL_TEST_LOGIN = 'TEST_LOGIN'
+PROTOCOL_TEST_PASSW = 'TEST_PASSWORD'
+
+# XML flusso ArchiPRO
+PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<Intestazione>
+<Oggetto>{oggetto}</Oggetto>
+<Identificatore>
+<CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+<CodiceAOO>{aoo}</CodiceAOO>
+<Flusso>E</Flusso>
+</Identificatore>
+<Mittente>
+
+<Dipendente id="{matricola_dipendente}">
+<Denominazione>{denominazione_persona}</Denominazione>
+</Dipendente>
+
+<Studente id="{matricola_studente}">
+<Denominazione>{denominazione_persona}</Denominazione>
+</Studente>
+
+<Persona id="{id_persona}">
+<Nome>{nome_persona}</Nome>
+<Cognome>{cognome_persona}</Cognome>
+</Persona>
+
+</Mittente>
+<Destinatario>
+<Amministrazione>
+<Denominazione>UNICAL</Denominazione>
+<CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+<IndirizzoTelematico tipo="smtp">{email}</IndirizzoTelematico>
+<UnitaOrganizzativa id=""/>
+</Amministrazione>
+</Destinatario>
+<Classifica>
+<CodiceTitolario>{id_titolario}</CodiceTitolario>
+</Classifica>
+<!--  Informazioni sul fascicolo  -->
+<Fascicolo numero="{fascicolo_numero}" anno="{fascicolo_anno}"/>
+</Intestazione>
+<Descrizione>
+<Documento id="1" nome="{nome_doc}">
+<DescrizioneDocumento>{nome_doc}</DescrizioneDocumento>
+<TipoDocumento>{tipo_doc}</TipoDocumento>
+</Documento>
+<Allegati>
+<!-- Allegati -->
+</Allegati>
+</Descrizione>
+<ApplicativoProtocollo nome="ArchiPRO">
+<Parametro nome="agd" valore="{agd}"/>
+<Parametro nome="uo" valore="{uo}"/>
+</ApplicativoProtocollo>
+</Segnatura>
+"""
+
+# XML flusso Titulus
+PROTOCOL_XML = """
+<doc tipo="arrivo" cod_amm_aoo="{cod_amm_aoo}">
+    <autore>{autore}</autore>
+    <oggetto>{oggetto}</oggetto>
+    <classif cod="{cod_classif}">{classif}</classif>
+    <allegato>{allegato}</allegato>
+    <rif_interni>
+		<rif_interno diritto="RPA"
+                     nome_persona="{nome_persona_rif_interno}"
+                     nome_uff="{nome_uff_rif_interno}"
+                     cod_uff="{cod_uff_rif_interno}"/>
+    </rif_interni>
+    <rif_esterni>
+        <rif_esterno codice_fiscale="{codice_fiscale_rif_esterno}">
+            <nome cod="{cod_nome_rif_esterno}">
+                {nome_rif_esterno}
+            </nome>
+            <indirizzo email="{email_rif_esterno}"
+                       fax="{fax_rif_esterno}"
+                       tel="{tel_rif_esterno}"
+                       xml:space="preserve">
+                {indirizzo}
+            </indirizzo>
+        </rif_esterno>
+    </rif_esterni>
+</doc>
+
+"""
+# END PROTOCOLLO
+
+

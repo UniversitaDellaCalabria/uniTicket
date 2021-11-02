@@ -14,7 +14,6 @@ import os
 import pathlib
 
 # load applications settings file, overload what needed if needed
-from archipro_ws.settings import *
 from django_form_builder.settings import *
 from organizational_area.settings import *
 from uni_ticket.settings import *
@@ -133,3 +132,6 @@ EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
 USER_ATTRIBUTE_NAME = 'matricola_studente'
 
 SIMPLE_USER_SHOW_PRIORITY = False
+
+# from django 3.2
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

@@ -1518,7 +1518,7 @@ def category_input_module_preview(request, structure_slug,
     d = {'categoria': category,
          'category_conditions': clausole_categoria,
          'form': form,
-         'structure': structure,
+         'struttura': structure,
          'sub_title': sub_title,
          'title': title,}
     if request.POST:
@@ -2855,6 +2855,7 @@ def category_protocol_configuration_new(request, structure_slug,
 
     if request.method == 'POST':
         form = CategoryWSProtocolloModelForm(data=request.POST)
+
         if form.is_valid():
             configuration = form.save(commit=False)
             configuration.ticket_category=category

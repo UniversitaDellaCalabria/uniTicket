@@ -322,12 +322,16 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
     def test_category_protocol_configuration(self):
         # Create
         name = 'Conf test 1'
+        protocollo_uo = 'test uo'
+        protocollo_uo_rpa = 'test uo rpa'
         protocollo_cod_titolario = '9002'
         protocollo_fascicolo_numero = 1
         protocollo_fascicolo_anno = 2020
 
         params = {'name': name,
-                  'protocollo_cod_titolario': protocollo_cod_titolario,
+                  'protocollo_uo': '0',
+                  'protocollo_uo_rpa': protocollo_uo_rpa,
+                  'protocollo_cod_titolario': '1/1',
                   'protocollo_fascicolo_numero': protocollo_fascicolo_numero,
                   'protocollo_fascicolo_anno': protocollo_fascicolo_anno}
 
@@ -336,8 +340,8 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
                                                     'category_slug': self.category_1_str_1.slug}),
                                     params,
                                     follow=True)
-        configuration = TicketCategoryWSProtocollo.objects.get(ticket_category=self.category_1_str_1,
-                                                             name=name)
+
+        configuration = TicketCategoryWSProtocollo.objects.get(ticket_category=self.category_1_str_1, name=name)
         assert response.status_code == 200
         assert configuration
         assert not configuration.is_active
@@ -346,7 +350,9 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         new_name = 'Conf test 1 - edited'
 
         params = {'name': new_name,
-                  'protocollo_cod_titolario': protocollo_cod_titolario,
+                  'protocollo_uo': '0',
+                  'protocollo_uo_rpa': protocollo_uo_rpa,
+                  'protocollo_cod_titolario': '1/1',
                   'protocollo_fascicolo_numero': protocollo_fascicolo_numero,
                   'protocollo_fascicolo_anno': protocollo_fascicolo_anno}
 

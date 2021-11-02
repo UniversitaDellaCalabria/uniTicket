@@ -22,9 +22,9 @@ class BaseTest(TestCase):
                                                  protocollo_username = "username",
                                                  protocollo_password = "pw",
                                                  protocollo_aoo = "aoo000",
-                                                 protocollo_agd = "agd000",
-                                                 protocollo_uo = "uo000",
-                                                 protocollo_email = "testconf@email.email")
+                                                 protocollo_agd = "agd000")
+                                                 # protocollo_uo = "uo000",
+                                                 # protocollo_email = "testconf@email.email")
         conf.save()
         return conf
 
