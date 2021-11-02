@@ -38,8 +38,8 @@ PROT_AOO = 'AOO55' # test
 
 # TEST USE
 PROT_URL = 'http://PROT_URL?wsdl'
-PROT_LOGIN = 'UT_PROTO_WS55'
-PROT_PASSW = 'UT_PROTO_WS55'
+PROT_LOGIN = 'PROT_LOGIN'
+PROT_PASSW = 'PROT_PASSWORD'
 
 TITOLARIO_DICT = (
     ("9002", _("[9002] Normativa e relativa attuazione")),
