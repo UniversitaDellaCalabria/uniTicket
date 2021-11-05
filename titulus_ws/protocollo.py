@@ -69,8 +69,10 @@ class WSTitulusClient(object):
         if not self.is_connected():
             self.connect()
 
-    def protocolla(self, force=False):
+    def protocolla(self, test=False, force=False):
         self.assure_connection()
+
+        namespaces = settings.NAMESPACES if not test else settings.NAMESPACES_DEBUG
 
         if not force:
             if self.numero or self.anno:
@@ -78,8 +80,8 @@ class WSTitulusClient(object):
                                  'una istanza che ha già un '
                                  'numero e un anno: {}/{}').format(self.numero,
                                                                    self.anno))
-        ns0 = settings.NAMESPACES["ns0"]
-        ns2 = settings.NAMESPACES["ns2"]
+        ns0 = namespaces["ns0"]
+        ns2 = namespaces["ns2"]
 
         attachmentBean_type = self.client.get_type(f'{ns0}AttachmentBean')
         attachmentBeans_type = self.client.get_type(f'{ns2}ArrayOf_tns1_AttachmentBean')
@@ -104,8 +106,15 @@ class WSTitulusClient(object):
                 # force PDF
                 # 'mimeType': "application/pdf"}
 
-    def aggiungi_allegato(self, fopen, nome, descrizione, is_doc_princ=False):
-        ns1 = settings.NAMESPACES["ns1"]
+    def aggiungi_allegato(self,
+                          fopen,
+                          nome,
+                          descrizione,
+                          is_doc_princ=False,
+                          test=False):
+
+        namespaces = settings.NAMESPACES if not test else settings.NAMESPACES_DEBUG
+        ns1 = namespaces["ns1"]
 
         ext = os.path.splitext(nome)[1]
         if not ext:

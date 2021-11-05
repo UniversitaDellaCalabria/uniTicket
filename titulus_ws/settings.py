@@ -13,7 +13,14 @@ NAMESPACES = {
               'xsd': '{http://www.w3.org/2001/XMLSchema}',
               'ns0': '{http://www.kion.it/titulus}',
               'ns1': '{http://schemas.xmlsoap.org/soap/encoding/}',
-              'ns2': '{https://titulus-unical.pp.cineca.it/titulus_ws/services/Titulus4}',
+              'ns2': '{URL}',
+             }
+
+NAMESPACES_DEBUG = {
+              'xsd': '{http://www.w3.org/2001/XMLSchema}',
+              'ns0': '{http://www.kion.it/titulus}',
+              'ns1': '{http://schemas.xmlsoap.org/soap/encoding/}',
+              'ns2': '{URL_PRE_PROD}',
              }
 
 FASCICOLAZIONE_SEPARATA = True

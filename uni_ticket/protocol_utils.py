@@ -116,13 +116,14 @@ def ticket_protocol(user,
             allegato.seek(0)
             wsclient.aggiungi_allegato(nome=v,
                                        descrizione=subject,
-                                       fopen=allegato)
+                                       fopen=allegato,
+                                       test=test)
 
     # print(wsclient.is_valid())
     # logger.debug(wsclient.render_dataXML())
     # print(wsclient.render_dataXML())
 
-    wsclient.protocolla()
+    wsclient.protocolla(test=test)
 
     response = {'numero': wsclient.numero}
 

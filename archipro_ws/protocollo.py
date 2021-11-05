@@ -247,10 +247,12 @@ class WSArchiPROClient(object):
                 'tipo':        None,
                 'file':        None}
 
-    def aggiungi_allegato(self, nome,
-                                descrizione,
-                                fopen,
-                                tipo='Allegato'):
+    def aggiungi_allegato(self,
+                          nome,
+                          descrizione,
+                          fopen,
+                          tipo='Allegato',
+                          test=False):
         """
         nome: deve essere con l'estenzione esempio: .pdf altrimenti errore xml -201!
         il fopen popola la lista degli allegati.
@@ -282,7 +284,7 @@ class WSArchiPROClient(object):
         self.allegati.append(allegato_dict)
         return self.render_AllegatoXML(allegato_dict)
 
-    def protocolla(self, force=False):
+    def protocolla(self, force=False, test=False):
         """
         Se "force" è disabilitato non sarà possibile protocollare un
         documento già protocollato.
