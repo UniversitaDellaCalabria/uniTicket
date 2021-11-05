@@ -150,8 +150,9 @@ def ticket_protocol(user,
                                                              wsclient.numero)
 
         except Exception as e:
-            msg = 'Fascicolazione fallita: {} in {}'.format(fascicolo_numero,
-                                                            wsclient.numero)
+            msg = 'Fascicolazione fallita: {} in {} - {}'.format(fascicolo_numero,
+                                                                 wsclient.numero,
+                                                                 e)
         response['message'] = msg
         logger.info(msg)
 
