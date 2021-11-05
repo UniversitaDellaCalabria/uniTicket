@@ -23,6 +23,7 @@ class CategoryForm(ModelForm):
         model = TicketCategory
         fields = ['name', 'description',
                   'confirm_message_text',
+                  'footer_text',
                   'date_start',
                   'date_end',
                   'not_available_message',
@@ -39,6 +40,7 @@ class CategoryForm(ModelForm):
                   'allowed_users': _('Solo i seguenti utenti possono effettuare richieste')}
         widgets = {'description': forms.Textarea(attrs={'rows':2}),
                    'confirm_message_text': forms.Textarea(attrs={'rows':2}),
+                   'footer_text': forms.Textarea(attrs={'rows':2}),
                    'allowed_users': BootstrapItaliaSelectMultipleWidget,
                    'date_start': UniTicketDateTimeWidget,
                    'date_end': UniTicketDateTimeWidget}

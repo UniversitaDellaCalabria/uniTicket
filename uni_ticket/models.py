@@ -131,6 +131,9 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
                                                         "per inserire l'oggetto della richiesta. "
                                                         "Lascia vuoto per usare il testo predefinito \"{}\""
                                                         "").format(settings.NEW_TICKET_CREATED_ALERT))
+    footer_text = models.TextField(_("Testo in calce per versione stampabile"),
+                                     blank=True,
+                                     null=True)
     # fields to map roles
     receive_email = models.BooleanField(_("Mail ad operatori"),
                                         default=False,

@@ -215,6 +215,16 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">{% trans 'Testo in calce per versione stampabile' %}</th>
+                <td>
+                    {% if category.footer_text %}
+                        {{ category.footer_text }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans 'Ticket di tipo Notifica' %}</th>
                 <td>
                     <svg class="icon icon-sm icon-secondary">

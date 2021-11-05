@@ -886,6 +886,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                                                       'show_heading_text',
                                                       'is_notification',
                                                       'confirm_message_text',
+                                                      'footer_text',
                                                       'not_available_message',
                                                       'date_start',
                                                       'date_end',

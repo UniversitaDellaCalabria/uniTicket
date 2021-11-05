@@ -44,6 +44,9 @@
     {% block ticket_data %}
         {% include 'ticket_detail.html' with print_version=1 %}
     {% endblock ticket_data %}
+
+    {{ ticket.input_module.ticket_category.footer_text | markdown | safe  }}
+
 {% endblock page_content %}
 
 {% block footer %}{% endblock %}
