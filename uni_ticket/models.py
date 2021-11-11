@@ -1306,7 +1306,9 @@ class TicketCategoryWSProtocollo(TimeStampedModel):
                                      choices=settings.UO_DICT)
     protocollo_uo_rpa = models.CharField('RPA', max_length=255,
                                          default='', blank=True)
-    protocollo_email = models.EmailField('E-mail',
+    protocollo_send_email = models.BooleanField(_('Invia e-mail'),
+                                                default=True)
+    protocollo_email = models.EmailField('E-mail a RPA',
                                          max_length=255,
                                          blank=True, null=True,
                                          help_text = 'Se vuoto: {}'.format(settings.PROTOCOL_EMAIL_DEFAULT))

@@ -549,6 +549,7 @@ class CategoryWSProtocolloModelForm(forms.ModelForm):
         fields = ('name',
                   'protocollo_uo',
                   'protocollo_uo_rpa',
+                  'protocollo_send_email',
                   'protocollo_email',
                   'protocollo_cod_titolario',
                   'protocollo_fascicolo_numero',

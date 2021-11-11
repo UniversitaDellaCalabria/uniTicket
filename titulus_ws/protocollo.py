@@ -31,6 +31,9 @@ class WSTitulusClient(object):
 
         self.doc = self.template_xml_flusso.format(**kwargs)
 
+        # send email
+        self.send_email = kwargs.get('send_email', False)
+
         # zeep
         self.client = None
         self.service = None
@@ -89,7 +92,7 @@ class WSTitulusClient(object):
 
         attachmentBeans = attachmentBeans_type(self.allegati)
         saveParams.pdfConversion = True
-        saveParams.sendEMail = settings.PROTOCOL_SEND_MAIL
+        saveParams.sendEMail = self.send_email
         saveDocumentResponse = None
 
         saveDocumentResponse = self.service.saveDocument(self.doc,

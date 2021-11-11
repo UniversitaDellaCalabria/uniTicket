@@ -2806,6 +2806,7 @@ def category_protocol_configuration_detail(request, structure_slug,
                                               'protocollo_cod_titolario',
                                               'protocollo_uo',
                                               'protocollo_uo_rpa',
+                                              'protocollo_send_email',
                                               'protocollo_email',
                                               'protocollo_fascicolo_numero',
                                               'protocollo_fascicolo_anno'])
