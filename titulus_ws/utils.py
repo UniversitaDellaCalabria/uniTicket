@@ -12,6 +12,10 @@ def protocol_entrata_dict(**kwargs):
 
                      # riferimento interno
                      'nome_persona_rif_interno': kwargs.get('destinatario'),
+
+                     'destinatario_username': kwargs.get('destinatario_username'),
+                     'destinatario_code': kwargs.get('destinatario_code'),
+
                      'nome_uff_rif_interno': kwargs.get('uo_nome'),
                      'cod_uff_rif_interno': kwargs.get('uo'),
 

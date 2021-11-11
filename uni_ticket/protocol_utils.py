@@ -37,6 +37,8 @@ def ticket_protocol(user,
         prot_agd = settings.PROTOCOL_TEST_AGD
         prot_uo = settings.PROTOCOL_TEST_UO
         prot_uo_rpa = settings.PROTOCOL_TEST_UO_RPA
+        prot_uo_rpa_username = ''
+        prot_uo_rpa_matricola = ''
         prot_send_email = settings.PROTOCOL_SEND_MAIL_DEBUG
         prot_email = settings.PROTOCOL_EMAIL_DEFAULT
         prot_titolario = settings.PROTOCOL_TEST_TITOLARIO
@@ -54,6 +56,8 @@ def ticket_protocol(user,
         prot_agd = structure_configuration.protocollo_agd
         prot_uo = configuration.protocollo_uo
         prot_uo_rpa = configuration.protocollo_uo_rpa
+        prot_uo_rpa_username = configuration.protocollo_uo_rpa_username
+        prot_uo_rpa_matricola = configuration.protocollo_uo_rpa_matricola
         prot_send_email = configuration.protocollo_send_email
         prot_email = configuration.protocollo_email or settings.PROTOCOL_EMAIL_DEFAULT
         prot_titolario = configuration.protocollo_cod_titolario
@@ -70,6 +74,8 @@ def ticket_protocol(user,
         aoo=prot_aoo,
         agd=prot_agd,
         destinatario=prot_uo_rpa,
+        destinatario_username=prot_uo_rpa_username,
+        destinatario_code=prot_uo_rpa_matricola,
         send_email=prot_send_email,
         uo_nome=dict(settings.UO_DICT)[prot_uo],
         uo=prot_uo,

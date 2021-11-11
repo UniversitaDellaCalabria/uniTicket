@@ -1305,7 +1305,14 @@ class TicketCategoryWSProtocollo(TimeStampedModel):
     protocollo_uo = models.CharField('UO', max_length=12,
                                      choices=settings.UO_DICT)
     protocollo_uo_rpa = models.CharField('RPA', max_length=255,
-                                         default='', blank=True)
+                                         default='', blank=True,
+                                         help_text=_('Nominativo RPA'))
+    protocollo_uo_rpa_username = models.CharField('RPA username', max_length=255,
+                                                  default='', blank=True,
+                                                  help_text=_('Username RPA sul sistema di protocollo'))
+    protocollo_uo_rpa_matricola = models.CharField('RPA matricola', max_length=255,
+                                                   default='', blank=True,
+                                                   help_text=_('Matricola RPA sul sistema di protocollo'))
     protocollo_send_email = models.BooleanField(_('Invia e-mail a RPA'),
                                                 default=True)
     protocollo_email = models.EmailField('E-mail',

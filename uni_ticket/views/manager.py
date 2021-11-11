@@ -2798,6 +2798,9 @@ def category_protocol_configuration_detail(request, structure_slug,
             configuration.protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario']
             configuration.protocollo_uo = form.cleaned_data['protocollo_uo']
             configuration.protocollo_uo_rpa = form.cleaned_data['protocollo_uo_rpa']
+            configuration.protocollo_uo_rpa_username = form.cleaned_data['protocollo_uo_rpa_username']
+            configuration.protocollo_uo_rpa_matricola = form.cleaned_data['protocollo_uo_rpa_matricola']
+            configuration.protocollo_send_email = form.cleaned_data['protocollo_send_email']
             configuration.protocollo_email = form.cleaned_data['protocollo_email']
             configuration.protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero']
             configuration.protocollo_fascicolo_anno = form.cleaned_data['protocollo_fascicolo_anno']
@@ -2806,6 +2809,8 @@ def category_protocol_configuration_detail(request, structure_slug,
                                               'protocollo_cod_titolario',
                                               'protocollo_uo',
                                               'protocollo_uo_rpa',
+                                              'protocollo_uo_rpa_username',
+                                              'protocollo_uo_rpa_matricola',
                                               'protocollo_send_email',
                                               'protocollo_email',
                                               'protocollo_fascicolo_numero',

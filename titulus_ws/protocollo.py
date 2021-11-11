@@ -31,6 +31,11 @@ class WSTitulusClient(object):
 
         self.doc = self.template_xml_flusso.format(**kwargs)
 
+        # RPA username and code
+        # (per impersonificare RPA in fascicolazione!)
+        self.rpa_username = kwargs.get('destinatario_username')
+        self.rpa_code = kwargs.get('destinatario_code', None)
+
         # send email
         self.send_email = kwargs.get('send_email', False)
 
@@ -145,6 +150,10 @@ class WSTitulusClient(object):
 
     def fascicolaDocumento(self, fascicolo):
         self.assure_connection()
+
+        if self.rpa_username:
+            self.service.setWSUser(self.rpa_username, self.rpa_code)
+
         response = self.service.addInFolder(fascicolo)
         if response:
             return True
