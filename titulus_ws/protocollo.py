@@ -72,7 +72,7 @@ class WSTitulusClient(object):
     def protocolla(self, test=False, force=False):
         self.assure_connection()
 
-        namespaces = settings.NAMESPACES if not test else settings.NAMESPACES_DEBUG
+        namespaces = settings.PROTOCOL_NAMESPACES if not test else settings.PROTOCOL_NAMESPACES_DEBUG
 
         if not force:
             if self.numero or self.anno:
@@ -86,9 +86,10 @@ class WSTitulusClient(object):
         attachmentBean_type = self.client.get_type(f'{ns0}AttachmentBean')
         attachmentBeans_type = self.client.get_type(f'{ns2}ArrayOf_tns1_AttachmentBean')
         saveParams = self.client.get_type(f'{ns0}SaveParams')()
+
         attachmentBeans = attachmentBeans_type(self.allegati)
         saveParams.pdfConversion = True
-        saveParams.sendEMail = False
+        saveParams.sendEMail = settings.PROTOCOL_SEND_MAIL
         saveDocumentResponse = None
 
         saveDocumentResponse = self.service.saveDocument(self.doc,
@@ -113,7 +114,7 @@ class WSTitulusClient(object):
                           is_doc_princ=False,
                           test=False):
 
-        namespaces = settings.NAMESPACES if not test else settings.NAMESPACES_DEBUG
+        namespaces = settings.PROTOCOL_NAMESPACES if not test else settings.PROTOCOL_NAMESPACES_DEBUG
         ns1 = namespaces["ns1"]
 
         ext = os.path.splitext(nome)[1]

@@ -9,19 +9,21 @@ PROT_DOC_ENCODING="utf-8"
 
 BASE_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-NAMESPACES = {
+PROTOCOL_NAMESPACES = {
               'xsd': '{http://www.w3.org/2001/XMLSchema}',
               'ns0': '{http://www.kion.it/titulus}',
               'ns1': '{http://schemas.xmlsoap.org/soap/encoding/}',
               'ns2': '{URL}',
              }
 
-NAMESPACES_DEBUG = {
+PROTOCOL_NAMESPACES_DEBUG = {
               'xsd': '{http://www.w3.org/2001/XMLSchema}',
               'ns0': '{http://www.kion.it/titulus}',
               'ns1': '{http://schemas.xmlsoap.org/soap/encoding/}',
               'ns2': '{URL_PRE_PROD}',
              }
+
+PROTOCOL_SEND_MAIL = True
 
 FASCICOLAZIONE_SEPARATA = True
 

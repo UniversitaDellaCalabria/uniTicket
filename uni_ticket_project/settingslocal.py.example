@@ -356,15 +356,15 @@ PROTOCOL_TEST_TITOLARIO = 'test_titolario_value'
 PROTOCOL_TEST_URL = 'URL_TEST' # test
 PROTOCOL_URL = 'URL_PROD' # production
 
-# NAMESPACES
-NAMESPACES = {
+# PROTOCOL_NAMESPACES
+PROTOCOL_NAMESPACES = {
               'xsd': '{http://www.w3.org/2001/XMLSchema}',
               'ns0': '{http://www.kion.it/titulus}',
               'ns1': '{http://schemas.xmlsoap.org/soap/encoding/}',
               'ns2': '{titulus prod URL namespace}',
              }
 
-NAMESPACES_DEBUG = {
+PROTOCOL_NAMESPACES_DEBUG = {
               'xsd': '{http://www.w3.org/2001/XMLSchema}',
               'ns0': '{http://www.kion.it/titulus}',
               'ns1': '{http://schemas.xmlsoap.org/soap/encoding/}',
