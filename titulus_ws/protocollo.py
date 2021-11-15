@@ -96,6 +96,7 @@ class WSTitulusClient(object):
         saveParams = self.client.get_type(f'{ns0}SaveParams')()
 
         attachmentBeans = attachmentBeans_type(self.allegati)
+
         saveParams.pdfConversion = True
         saveParams.sendEMail = self.send_email
         saveDocumentResponse = None

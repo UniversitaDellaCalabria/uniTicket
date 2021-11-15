@@ -19,6 +19,8 @@ def protocol_entrata_dict(**kwargs):
                      'nome_uff_rif_interno': kwargs.get('uo_nome'),
                      'cod_uff_rif_interno': kwargs.get('uo'),
 
+                     'send_email': kwargs.get('send_email'),
+
                      # riferimento esterno
                      'nome_rif_esterno': f'{kwargs.get("nome_mittente")} {kwargs.get("cognome_mittente")}',
                      'codice_fiscale_rif_esterno': kwargs.get('cod_fis_mittente'),
