@@ -569,7 +569,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                                                "correttamente: n. <b>{}/{}</b>"
                                                "").format(protocol_number,
                                                           timezone.localtime().year))
-                        if protocol_response['message']:
+                        if protocol_response.get('message'):
                             messages.add_message(request, messages.INFO,
                                                  protocol_response['message'])
                     # if protocol fails
