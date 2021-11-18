@@ -79,7 +79,6 @@ class WSTitulusClient(object):
 
     def protocolla(self, test=False, force=False):
         self.assure_connection()
-
         namespaces = settings.PROTOCOL_NAMESPACES if not test else settings.PROTOCOL_NAMESPACES_DEBUG
 
         if not force:
@@ -104,6 +103,7 @@ class WSTitulusClient(object):
         saveDocumentResponse = self.service.saveDocument(self.doc,
                                                          attachmentBeans,
                                                          saveParams)
+
         if saveDocumentResponse:
             root = ET.fromstring(saveDocumentResponse._value_1)
             self.numero = root[1][0].attrib['num_prot']

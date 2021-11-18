@@ -27,6 +27,9 @@ def ticket_protocol(user,
 
     valid_conf = structure_configuration and configuration
 
+    # fix zeep key words issue
+    subject = subject.upper()
+
     # Check only if protocol system works
     # if test and not configuration:
     if test:
@@ -133,6 +136,7 @@ def ticket_protocol(user,
     # print(wsclient.render_dataXML())
 
     wsclient.protocolla(test=test)
+    assert wsclient.numero
 
     response = {'numero': wsclient.numero}
 
@@ -166,5 +170,4 @@ def ticket_protocol(user,
         logger.info(msg)
 
     # raise exception if wsclient hasn't a protocol number
-    assert wsclient.numero
     return response
