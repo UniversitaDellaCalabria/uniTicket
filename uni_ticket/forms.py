@@ -544,18 +544,42 @@ class OrganizationalStructureWSProtocolloModelForm(ModelForm):
 
 class CategoryWSProtocolloModelForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # required fields depending on used protocol system
+        fields_required = getattr(self.Meta, 'fields_required', [])
+
+        if fields_required:
+            for key in self.fields:
+                if key in fields_required:
+                    self.fields[key].required = True
+
     class Meta:
         model = TicketCategoryWSProtocollo
-        fields = ('name',
+        fields = ['name',
                   'protocollo_uo',
-                  'protocollo_uo_rpa',
-                  'protocollo_uo_rpa_username',
-                  'protocollo_uo_rpa_matricola',
-                  'protocollo_send_email',
-                  'protocollo_email',
                   'protocollo_cod_titolario',
-                  'protocollo_fascicolo_numero',
-                  'protocollo_fascicolo_anno',)
+                  'protocollo_fascicolo_numero']
+
+        # show condi
+
+        if settings.PROTOCOL_PACKAGE == 'titulus_ws':
+            fields.extend(['protocollo_uo_rpa',
+                           'protocollo_uo_rpa_username',
+                           'protocollo_uo_rpa_matricola',
+                           'protocollo_send_email',])
+            fields_required = ['protocollo_uo_rpa',
+                               'protocollo_uo_rpa_username',
+                               ]
+
+        elif settings.PROTOCOL_PACKAGE == 'archipro_ws':
+            fields.extend(['protocollo_fascicolo_anno',
+                           'protocollo_email'])
+
+            fields_required = ['protocollo_fascicolo_numero',
+                               'protocollo_fascicolo_anno',]
+
         labels = {'name': _('Denominazione configurazione'),
                   'protocollo_uo': _('Unità Organizzativa'),
                   'protocollo_uo_rpa': _('RPA Unità Organizzativa'),

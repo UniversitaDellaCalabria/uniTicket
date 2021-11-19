@@ -324,16 +324,24 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         name = 'Conf test 1'
         protocollo_uo = 'test uo'
         protocollo_uo_rpa = 'test uo rpa'
+        protocollo_uo_rpa_username = '111'
         protocollo_cod_titolario = '9002'
         protocollo_fascicolo_numero = 1
         protocollo_fascicolo_anno = 2020
 
-        params = {'name': name,
-                  'protocollo_uo': '0',
-                  'protocollo_uo_rpa': protocollo_uo_rpa,
-                  'protocollo_cod_titolario': '1/1',
-                  'protocollo_fascicolo_numero': protocollo_fascicolo_numero,
-                  'protocollo_fascicolo_anno': protocollo_fascicolo_anno}
+        if settings.PROTOCOL_PACKAGE == 'titulus_ws':
+            params = {'name': name,
+                      'protocollo_uo': '0',
+                      'protocollo_uo_rpa': protocollo_uo_rpa,
+                      'protocollo_uo_rpa_username': protocollo_uo_rpa_username,
+                      'protocollo_cod_titolario': '1/1',
+                      'protocollo_fascicolo_numero': protocollo_fascicolo_numero}
+        elif settings.PROTOCOL_PACKAGE == 'archi_pro':
+            params = {'name': name,
+                      'protocollo_uo': '0',
+                      'protocollo_cod_titolario': '1/1',
+                      'protocollo_fascicolo_numero': protocollo_fascicolo_numero,
+                      'protocollo_fascicolo_anno': protocollo_fascicolo_anno}
 
         response = self.client.post(reverse('uni_ticket:manager_category_protocol_configuration_new',
                                             kwargs={'structure_slug': self.structure_1.slug,
@@ -349,12 +357,7 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         # Edit
         new_name = 'Conf test 1 - edited'
 
-        params = {'name': new_name,
-                  'protocollo_uo': '0',
-                  'protocollo_uo_rpa': protocollo_uo_rpa,
-                  'protocollo_cod_titolario': '1/1',
-                  'protocollo_fascicolo_numero': protocollo_fascicolo_numero,
-                  'protocollo_fascicolo_anno': protocollo_fascicolo_anno}
+        params['name'] = new_name
 
         response = self.client.post(reverse('uni_ticket:manager_category_protocol_configuration_detail',
                                             kwargs={'structure_slug': self.structure_1.slug,

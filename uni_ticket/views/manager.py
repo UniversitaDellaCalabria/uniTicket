@@ -2794,16 +2794,16 @@ def category_protocol_configuration_detail(request, structure_slug,
         form = CategoryWSProtocolloModelForm(instance=configuration,
                                            data=request.POST)
         if form.is_valid():
-            configuration.name = form.cleaned_data['name']
-            configuration.protocollo_cod_titolario = form.cleaned_data['protocollo_cod_titolario']
-            configuration.protocollo_uo = form.cleaned_data['protocollo_uo']
-            configuration.protocollo_uo_rpa = form.cleaned_data['protocollo_uo_rpa']
-            configuration.protocollo_uo_rpa_username = form.cleaned_data['protocollo_uo_rpa_username']
-            configuration.protocollo_uo_rpa_matricola = form.cleaned_data['protocollo_uo_rpa_matricola']
-            configuration.protocollo_send_email = form.cleaned_data['protocollo_send_email']
-            configuration.protocollo_email = form.cleaned_data['protocollo_email']
-            configuration.protocollo_fascicolo_numero = form.cleaned_data['protocollo_fascicolo_numero']
-            configuration.protocollo_fascicolo_anno = form.cleaned_data['protocollo_fascicolo_anno']
+            configuration.name = form.cleaned_data.get('name')
+            configuration.protocollo_cod_titolario = form.cleaned_data.get('protocollo_cod_titolario')
+            configuration.protocollo_uo = form.cleaned_data.get('protocollo_uo')
+            configuration.protocollo_uo_rpa = form.cleaned_data.get('protocollo_uo_rpa')
+            configuration.protocollo_uo_rpa_username = form.cleaned_data.get('protocollo_uo_rpa_username')
+            configuration.protocollo_uo_rpa_matricola = form.cleaned_data.get('protocollo_uo_rpa_matricola')
+            configuration.protocollo_send_email = form.cleaned_data.get('protocollo_send_email')
+            configuration.protocollo_email = form.cleaned_data.get('protocollo_email')
+            configuration.protocollo_fascicolo_numero = form.cleaned_data.get('protocollo_fascicolo_numero')
+            configuration.protocollo_fascicolo_anno = form.cleaned_data.get('protocollo_fascicolo_anno')
             configuration.save(update_fields=['name',
                                               'modified',
                                               'protocollo_cod_titolario',

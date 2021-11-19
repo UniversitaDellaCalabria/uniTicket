@@ -333,10 +333,11 @@ ADDITIONAL_USER_FIELDS = [uni_ticket_settings.EMPLOYEE_ATTRIBUTE_NAME,
 # PROTOCOLLO, questi valori possono variare sulla base di come
 # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
 
+PROTOCOL_PACKAGE = 'titulus_ws' # archipro_ws
+
 # from archipro_ws.settings import *
 from titulus_ws.settings import *
 
-PROTOCOL_PACKAGE = 'titulus_ws' # archipro_ws
 PROTOCOL_CLASS = f'{PROTOCOL_PACKAGE}.protocollo'
 PROTOCOL_UTILS = f'{PROTOCOL_PACKAGE}.utils'
 
