@@ -24,6 +24,7 @@ saml2_sp/saml2_config/certificates/*key
 saml2_sp/saml2_config/certificates/*src
 saml2_sp/saml2_config/certificates/*crt
 saml2_sp/saml2_config/certificates/*cert
+saml2_sp/saml2_config/certificates/*csr
 saml2_sp/saml2_config/settings.py
 saml2_sp/saml2_config/metadata/
 
