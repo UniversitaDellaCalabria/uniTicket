@@ -1,5 +1,6 @@
 import os
 
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
@@ -228,7 +229,7 @@ class OrganizationalStructureOfficeEmployee(models.Model):
     """
     Employee-office relationship
     """
-    employee = models.ForeignKey(settings.AUTH_USER_MODEL,
+    employee = models.ForeignKey(get_user_model(),
                                  on_delete=models.CASCADE)
     office = models.ForeignKey(OrganizationalStructureOffice,
                                on_delete=models.CASCADE)
@@ -252,7 +253,7 @@ class OrganizationalStructureOfficeEmployee(models.Model):
         office_employees = osoe.objects.filter(office=office,
                                                employee__is_active=True).order_by('?')
         if not office_employees:
-            office_employees = osoe.objects.filter(office__name=settings.DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+            office_employees = osoe.objects.filter(office__name=DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
                                                    office__organizational_structure=office.organizational_structure,
                                                    employee__is_active=True).order_by('?')
         random_office_operator = office_employees.first()
@@ -266,7 +267,7 @@ class UserManageOrganizationalStructure(models.Model):
     """
     Organizational structure manager users
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    user = models.ForeignKey(get_user_model(),
                              on_delete=models.CASCADE)
     organizational_structure = models.ForeignKey(OrganizationalStructure,
                                                  on_delete=models.CASCADE)

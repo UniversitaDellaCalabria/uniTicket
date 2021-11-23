@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0024_auto_20190507_1430'),
+        ("uni_ticket", "0024_auto_20190507_1430"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategorycondition',
-            name='is_printable',
-            field=models.BooleanField(default=False, verbose_name='Visibile nella versione stampabile'),
+            model_name="ticketcategorycondition",
+            name="is_printable",
+            field=models.BooleanField(
+                default=False, verbose_name="Visibile nella versione stampabile"
+            ),
         ),
     ]

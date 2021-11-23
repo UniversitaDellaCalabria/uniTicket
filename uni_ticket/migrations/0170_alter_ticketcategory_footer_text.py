@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0169_alter_ticketcategory_footer_text'),
+        ("uni_ticket", "0169_alter_ticketcategory_footer_text"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='footer_text',
-            field=models.TextField(blank=True, null=True, verbose_name='Testo in calce per versione stampabile'),
+            model_name="ticketcategory",
+            name="footer_text",
+            field=models.TextField(
+                blank=True,
+                null=True,
+                verbose_name="Testo in calce per versione stampabile",
+            ),
         ),
     ]

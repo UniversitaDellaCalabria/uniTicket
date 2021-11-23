@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0159_auto_20210305_1217'),
+        ("uni_ticket", "0159_auto_20210305_1217"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategory',
-            name='user_multiple_open_tickets',
-            field=models.BooleanField(default=True, verbose_name='Gli utenti possono aprire più richieste contemporaneamente'),
+            model_name="ticketcategory",
+            name="user_multiple_open_tickets",
+            field=models.BooleanField(
+                default=True,
+                verbose_name="Gli utenti possono aprire più richieste contemporaneamente",
+            ),
         ),
     ]

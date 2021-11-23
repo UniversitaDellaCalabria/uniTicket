@@ -6,18 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0133_auto_20200626_1013'),
+        ("uni_ticket", "0133_auto_20200626_1013"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='organizationalstructurewsarchipro',
-            name='protocollo_email',
-            field=models.EmailField(default='amministrazione@pec.unical.it', max_length=255, verbose_name='E-mail'),
+            model_name="organizationalstructurewsarchipro",
+            name="protocollo_email",
+            field=models.EmailField(
+                default="amministrazione@pec.unical.it",
+                max_length=255,
+                verbose_name="E-mail",
+            ),
         ),
         migrations.AlterField(
-            model_name='ticketcategorywsarchipro',
-            name='protocollo_email',
-            field=models.EmailField(default='amministrazione@pec.unical.it', max_length=255, verbose_name='E-mail'),
+            model_name="ticketcategorywsarchipro",
+            name="protocollo_email",
+            field=models.EmailField(
+                default="amministrazione@pec.unical.it",
+                max_length=255,
+                verbose_name="E-mail",
+            ),
         ),
     ]

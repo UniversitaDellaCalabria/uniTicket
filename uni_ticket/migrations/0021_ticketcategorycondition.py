@@ -7,24 +7,43 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0020_auto_20190424_1144'),
+        ("uni_ticket", "0020_auto_20190424_1144"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TicketCategoryCondition',
+            name="TicketCategoryCondition",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255)),
-                ('text', models.TextField()),
-                ('ordinamento', models.PositiveIntegerField(blank=True, default=0)),
-                ('is_active', models.BooleanField(default=True, verbose_name='Visibile agli utenti')),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='uni_ticket.TicketCategory')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=255)),
+                ("text", models.TextField()),
+                ("ordinamento", models.PositiveIntegerField(blank=True, default=0)),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True, verbose_name="Visibile agli utenti"
+                    ),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="uni_ticket.TicketCategory",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Clausola categoria ticket',
-                'verbose_name_plural': 'Clausole categoria ticket',
-                'ordering': ('ordinamento',),
+                "verbose_name": "Clausola categoria ticket",
+                "verbose_name_plural": "Clausole categoria ticket",
+                "ordering": ("ordinamento",),
             },
         ),
     ]

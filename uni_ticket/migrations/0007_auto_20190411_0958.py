@@ -6,17 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0006_auto_20190409_0838'),
+        ("uni_ticket", "0006_auto_20190409_0838"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ticketassignment',
-            options={'ordering': ['created'], 'verbose_name': 'Competenza Ticket', 'verbose_name_plural': 'Competenza Ticket'},
+            name="ticketassignment",
+            options={
+                "ordering": ["created"],
+                "verbose_name": "Competenza Ticket",
+                "verbose_name_plural": "Competenza Ticket",
+            },
         ),
         migrations.AlterField(
-            model_name='ticket',
-            name='priority',
+            model_name="ticket",
+            name="priority",
             field=models.IntegerField(default=0),
         ),
     ]

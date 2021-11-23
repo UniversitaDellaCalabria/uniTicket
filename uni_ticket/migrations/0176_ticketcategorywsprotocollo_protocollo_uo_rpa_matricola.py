@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0175_alter_ticketcategorywsprotocollo_protocollo_uo_rpa'),
+        ("uni_ticket", "0175_alter_ticketcategorywsprotocollo_protocollo_uo_rpa"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategorywsprotocollo',
-            name='protocollo_uo_rpa_matricola',
-            field=models.CharField(blank=True, default='', help_text='Matricola RPA sul sistema di protocollo', max_length=255, verbose_name='RPA matricola'),
+            model_name="ticketcategorywsprotocollo",
+            name="protocollo_uo_rpa_matricola",
+            field=models.CharField(
+                blank=True,
+                default="",
+                help_text="Matricola RPA sul sistema di protocollo",
+                max_length=255,
+                verbose_name="RPA matricola",
+            ),
         ),
     ]

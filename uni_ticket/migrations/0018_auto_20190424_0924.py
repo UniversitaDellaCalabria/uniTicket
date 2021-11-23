@@ -7,18 +7,22 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0017_auto_20190424_0914'),
+        ("uni_ticket", "0017_auto_20190424_0914"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='task',
-            name='structure',
+            model_name="task",
+            name="structure",
         ),
         migrations.AddField(
-            model_name='task',
-            name='ticket',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='uni_ticket.Ticket'),
+            model_name="task",
+            name="ticket",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="uni_ticket.Ticket",
+            ),
             preserve_default=False,
         ),
     ]

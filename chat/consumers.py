@@ -10,6 +10,8 @@ from channels.generic.websocket import WebsocketConsumer
 from channels.layers import get_channel_layer
 from datetime import timedelta
 
+from chat.settings import SECONDS_TO_KEEP_ALIVE
+
 from . models import UserChannel
 from . utils import chat_operator
 
@@ -30,7 +32,7 @@ class ChatConsumer(WebsocketConsumer):
     def _purge_inactive_channels(self):
         stored_channels = UserChannel.objects.filter(room=self.room_name).exclude(user=self.user)
         for sc in stored_channels:
-            if sc.last_seen < now() - timedelta(seconds=settings.SECONDS_TO_KEEP_ALIVE):
+            if sc.last_seen < now() - timedelta(seconds=SECONDS_TO_KEEP_ALIVE):
                 UserChannel.objects.get(channel=sc.channel).delete()
 
     def _check_user_is_active(self, user):

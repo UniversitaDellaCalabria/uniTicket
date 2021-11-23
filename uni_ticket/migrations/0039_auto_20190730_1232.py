@@ -9,17 +9,23 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('uni_ticket', '0038_remove_ticketreply_from_owner'),
+        ("uni_ticket", "0038_remove_ticketreply_from_owner"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='ticketreply',
-            name='read',
+            model_name="ticketreply",
+            name="read",
         ),
         migrations.AddField(
-            model_name='ticketreply',
-            name='read_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='ticket_replies_read_by', to=settings.AUTH_USER_MODEL),
+            model_name="ticketreply",
+            name="read_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="ticket_replies_read_by",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

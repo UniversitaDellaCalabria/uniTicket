@@ -13,7 +13,7 @@ RUN apt-get update \
     && apt-get install -y poppler-utils git locales xmlsec1 gcc \
                           libmagic-dev libmariadbclient-dev libssl-dev \
                           libsasl2-dev libldap2-dev net-tools tcpdump \
-                          curl iproute2 libgtk2.0-0 \
+                          curl iproute2 libgtk2.0-0 libpango1.0.0\
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install virtualenv

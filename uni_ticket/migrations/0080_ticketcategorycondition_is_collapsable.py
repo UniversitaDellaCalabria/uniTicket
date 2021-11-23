@@ -6,13 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0079_auto_20200331_1003'),
+        ("uni_ticket", "0079_auto_20200331_1003"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategorycondition',
-            name='is_collapsable',
-            field=models.BooleanField(default=True, verbose_name='Collassabile'),
+            model_name="ticketcategorycondition",
+            name="is_collapsable",
+            field=models.BooleanField(
+                default=True, verbose_name="Collassabile"),
         ),
     ]

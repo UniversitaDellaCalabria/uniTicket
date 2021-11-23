@@ -9,23 +9,38 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('uni_ticket', '0056_auto_20200313_1406'),
+        ("uni_ticket", "0056_auto_20200313_1406"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticket',
-            name='closed_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='closed_by_user', to=settings.AUTH_USER_MODEL),
+            model_name="ticket",
+            name="closed_by",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="closed_by_user",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='ticket',
-            name='taked_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='taken_by_user', to=settings.AUTH_USER_MODEL),
+            model_name="ticket",
+            name="taked_by",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="taken_by_user",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='ticket',
-            name='created_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_by_user', to=settings.AUTH_USER_MODEL),
+            model_name="ticket",
+            name="created_by",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="created_by_user",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

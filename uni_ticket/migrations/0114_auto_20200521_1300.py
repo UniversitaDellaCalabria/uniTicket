@@ -6,23 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0113_auto_20200521_1146'),
+        ("uni_ticket", "0113_auto_20200521_1146"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticket',
-            name='protocol_date',
-            field=models.DateTimeField(blank=True, help_text='Quando la richiesta è stato protocollata', null=True),
+            model_name="ticket",
+            name="protocol_date",
+            field=models.DateTimeField(
+                blank=True,
+                help_text="Quando la richiesta è stato protocollata",
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='ticket',
-            name='protocol_number',
-            field=models.CharField(blank=True, default='', max_length=32),
+            model_name="ticket",
+            name="protocol_number",
+            field=models.CharField(blank=True, default="", max_length=32),
         ),
         migrations.AddField(
-            model_name='ticketcategory',
-            name='protocol_required',
-            field=models.BooleanField(default=False, verbose_name='Protocollo obbligatorio'),
+            model_name="ticketcategory",
+            name="protocol_required",
+            field=models.BooleanField(
+                default=False, verbose_name="Protocollo obbligatorio"
+            ),
         ),
     ]

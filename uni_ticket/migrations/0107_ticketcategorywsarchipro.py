@@ -7,22 +7,52 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0106_auto_20200520_1103'),
+        ("uni_ticket", "0106_auto_20200520_1103"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TicketCategoryWSArchiPro',
+            name="TicketCategoryWSArchiPro",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('protocollo_cod_titolario', models.CharField(blank=True, max_length=12, null=True, verbose_name='Codice titolario')),
-                ('protocollo_fascicolo_numero', models.CharField(max_length=12, verbose_name='Fascicolo numero')),
-                ('protocollo_template', models.TextField(help_text='Template XML che descrive il flusso')),
-                ('is_active', models.BooleanField(default=False)),
-                ('ticket_category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='uni_ticket.TicketCategory')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "protocollo_cod_titolario",
+                    models.CharField(
+                        blank=True,
+                        max_length=12,
+                        null=True,
+                        verbose_name="Codice titolario",
+                    ),
+                ),
+                (
+                    "protocollo_fascicolo_numero",
+                    models.CharField(
+                        max_length=12, verbose_name="Fascicolo numero"),
+                ),
+                (
+                    "protocollo_template",
+                    models.TextField(
+                        help_text="Template XML che descrive il flusso"),
+                ),
+                ("is_active", models.BooleanField(default=False)),
+                (
+                    "ticket_category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="uni_ticket.TicketCategory",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

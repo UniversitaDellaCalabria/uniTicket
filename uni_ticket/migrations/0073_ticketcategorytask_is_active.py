@@ -6,13 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0072_ticketcategorytask'),
+        ("uni_ticket", "0072_ticketcategorytask"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategorytask',
-            name='is_active',
-            field=models.BooleanField(default=True, verbose_name='Visibile nei ticket'),
+            model_name="ticketcategorytask",
+            name="is_active",
+            field=models.BooleanField(
+                default=True, verbose_name="Visibile nei ticket"),
         ),
     ]

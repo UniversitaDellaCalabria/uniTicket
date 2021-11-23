@@ -7,17 +7,23 @@ import uni_ticket.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0061_auto_20200317_1033'),
+        ("uni_ticket", "0061_auto_20200317_1033"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ticketcategorycondition',
-            options={'ordering': ('ordinamento',), 'verbose_name': 'Clausola tipo di richiesta ticket', 'verbose_name_plural': 'Clausole tipo di richiesta ticket'},
+            name="ticketcategorycondition",
+            options={
+                "ordering": ("ordinamento",),
+                "verbose_name": "Clausola tipo di richiesta ticket",
+                "verbose_name_plural": "Clausole tipo di richiesta ticket",
+            },
         ),
         migrations.AddField(
-            model_name='ticketcategorycondition',
-            name='attachment',
-            field=models.FileField(blank=True, null=True, upload_to=uni_ticket.models._attachment_upload),
+            model_name="ticketcategorycondition",
+            name="attachment",
+            field=models.FileField(
+                blank=True, null=True, upload_to=uni_ticket.models._attachment_upload
+            ),
         ),
     ]

@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0016_auto_20190424_0854'),
+        ("uni_ticket", "0016_auto_20190424_0854"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='task',
-            name='data_chiusura',
+            model_name="task",
+            name="data_chiusura",
             field=models.DateTimeField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='task',
-            name='is_chiuso',
+            model_name="task",
+            name="is_chiuso",
             field=models.BooleanField(default=False),
         ),
         migrations.AddField(
-            model_name='task',
-            name='motivazione_chiusura',
+            model_name="task",
+            name="motivazione_chiusura",
             field=models.TextField(blank=True, null=True),
         ),
     ]

@@ -7,28 +7,52 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('organizational_area', '0032_organizationalstructureoffice_is_private'),
-        ('uni_ticket', '0157_auto_20201127_1106'),
+        ("organizational_area", "0032_organizationalstructureoffice_is_private"),
+        ("uni_ticket", "0157_auto_20201127_1106"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='OrganizationalStructureAlert',
+            name="OrganizationalStructureAlert",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_start', models.DateTimeField(blank=True, null=True, verbose_name='Attiva dal')),
-                ('date_end', models.DateTimeField(blank=True, null=True, verbose_name='Attiva fino al')),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('modified', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=255)),
-                ('text', models.TextField(max_length=500)),
-                ('ordinamento', models.PositiveIntegerField(blank=True, default=0)),
-                ('is_active', models.BooleanField(default=False)),
-                ('organizational_structure', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='organizational_area.organizationalstructure')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "date_start",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="Attiva dal"
+                    ),
+                ),
+                (
+                    "date_end",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="Attiva fino al"
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("modified", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=255)),
+                ("text", models.TextField(max_length=500)),
+                ("ordinamento", models.PositiveIntegerField(blank=True, default=0)),
+                ("is_active", models.BooleanField(default=False)),
+                (
+                    "organizational_structure",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="organizational_area.organizationalstructure",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Alert di struttura agli utenti',
-                'ordering': ['ordinamento', 'created'],
+                "verbose_name": "Alert di struttura agli utenti",
+                "ordering": ["ordinamento", "created"],
             },
         ),
     ]

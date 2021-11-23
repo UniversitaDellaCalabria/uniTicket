@@ -6,23 +6,29 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0066_auto_20200319_0859'),
+        ("uni_ticket", "0066_auto_20200319_0859"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='allow_employee',
-            field=models.BooleanField(default=True, verbose_name='Accessibile a Dipendenti'),
+            model_name="ticketcategory",
+            name="allow_employee",
+            field=models.BooleanField(
+                default=True, verbose_name="Accessibile a Dipendenti"
+            ),
         ),
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='allow_guest',
-            field=models.BooleanField(default=True, verbose_name='Accessibile a Ospiti'),
+            model_name="ticketcategory",
+            name="allow_guest",
+            field=models.BooleanField(
+                default=True, verbose_name="Accessibile a Ospiti"
+            ),
         ),
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='allow_user',
-            field=models.BooleanField(default=True, verbose_name='Accessibile a Studenti'),
+            model_name="ticketcategory",
+            name="allow_user",
+            field=models.BooleanField(
+                default=True, verbose_name="Accessibile a Studenti"
+            ),
         ),
     ]

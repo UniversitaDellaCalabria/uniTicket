@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0095_auto_20200428_1303'),
+        ("uni_ticket", "0095_auto_20200428_1303"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ticketcategoryinputlist',
-            options={'ordering': ['ordinamento'], 'verbose_name': 'Modulo di inserimento', 'verbose_name_plural': 'Moduli di inserimento'},
+            name="ticketcategoryinputlist",
+            options={
+                "ordering": ["ordinamento"],
+                "verbose_name": "Modulo di inserimento",
+                "verbose_name_plural": "Moduli di inserimento",
+            },
         ),
     ]

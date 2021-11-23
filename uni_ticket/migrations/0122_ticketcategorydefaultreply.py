@@ -7,23 +7,37 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0121_auto_20200612_0001'),
+        ("uni_ticket", "0121_auto_20200612_0001"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TicketCategoryDefaultReply',
+            name="TicketCategoryDefaultReply",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField()),
-                ('created', models.DateTimeField(auto_now=True)),
-                ('is_active', models.BooleanField(default=False)),
-                ('ticket_category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='uni_ticket.TicketCategory')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.TextField()),
+                ("created", models.DateTimeField(auto_now=True)),
+                ("is_active", models.BooleanField(default=False)),
+                (
+                    "ticket_category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="uni_ticket.TicketCategory",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Risposta prefefinita',
-                'verbose_name_plural': 'Risposte predefinite',
-                'ordering': ['-created'],
+                "verbose_name": "Risposta prefefinita",
+                "verbose_name_plural": "Risposte predefinite",
+                "ordering": ["-created"],
             },
         ),
     ]

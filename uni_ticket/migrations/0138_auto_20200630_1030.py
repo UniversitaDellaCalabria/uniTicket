@@ -6,32 +6,32 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0137_auto_20200630_1024'),
+        ("uni_ticket", "0137_auto_20200630_1024"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='ticketcategorywsarchipro',
-            name='protocollo_agd',
+            model_name="ticketcategorywsarchipro",
+            name="protocollo_agd",
         ),
         migrations.RemoveField(
-            model_name='ticketcategorywsarchipro',
-            name='protocollo_aoo',
+            model_name="ticketcategorywsarchipro",
+            name="protocollo_aoo",
         ),
         migrations.RemoveField(
-            model_name='ticketcategorywsarchipro',
-            name='protocollo_email',
+            model_name="ticketcategorywsarchipro",
+            name="protocollo_email",
         ),
         migrations.RemoveField(
-            model_name='ticketcategorywsarchipro',
-            name='protocollo_id_uo',
+            model_name="ticketcategorywsarchipro",
+            name="protocollo_id_uo",
         ),
         migrations.RemoveField(
-            model_name='ticketcategorywsarchipro',
-            name='protocollo_template',
+            model_name="ticketcategorywsarchipro",
+            name="protocollo_template",
         ),
         migrations.RemoveField(
-            model_name='ticketcategorywsarchipro',
-            name='protocollo_uo',
+            model_name="ticketcategorywsarchipro",
+            name="protocollo_uo",
         ),
     ]

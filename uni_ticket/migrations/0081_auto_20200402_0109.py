@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0080_ticketcategorycondition_is_collapsable'),
+        ("uni_ticket", "0080_ticketcategorycondition_is_collapsable"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='confirm_message_text',
-            field=models.TextField(blank=True, help_text='Es: \'Hai correttamente confermato la tua partecipazione\'. Apri e chiudi le parentesi graffe per inserire il codice del ticket. Lascia vuoto per usare il testo predefinito "Ticket "{}" creato con successo"', max_length=500, null=True, verbose_name='Messaggio di conferma'),
+            model_name="ticketcategory",
+            name="confirm_message_text",
+            field=models.TextField(
+                blank=True,
+                help_text='Es: \'Hai correttamente confermato la tua partecipazione\'. Apri e chiudi le parentesi graffe per inserire il codice del ticket. Lascia vuoto per usare il testo predefinito "Ticket "{}" creato con successo"',
+                max_length=500,
+                null=True,
+                verbose_name="Messaggio di conferma",
+            ),
         ),
     ]

@@ -7,19 +7,53 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('organizational_area', '0028_auto_20200505_1149'),
-        ('uni_ticket', '0103_auto_20200510_1021'),
+        ("organizational_area", "0028_auto_20200505_1149"),
+        ("uni_ticket", "0103_auto_20200510_1021"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='OrganizationalStructureWSArchiPro',
+            name="OrganizationalStructureWSArchiPro",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('protocollo_cod_titolario', models.CharField(blank=True, max_length=12, null=True, verbose_name='Codice titolario')),
-                ('protocollo_fascicolo_numero', models.CharField(max_length=12, verbose_name='Fascicolo numero')),
-                ('protocollo_template', models.TextField(blank=True, default='', help_text='Template XML che descrive il flusso')),
-                ('organizational_structure', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='organizational_area.OrganizationalStructure', unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "protocollo_cod_titolario",
+                    models.CharField(
+                        blank=True,
+                        max_length=12,
+                        null=True,
+                        verbose_name="Codice titolario",
+                    ),
+                ),
+                (
+                    "protocollo_fascicolo_numero",
+                    models.CharField(
+                        max_length=12, verbose_name="Fascicolo numero"),
+                ),
+                (
+                    "protocollo_template",
+                    models.TextField(
+                        blank=True,
+                        default="",
+                        help_text="Template XML che descrive il flusso",
+                    ),
+                ),
+                (
+                    "organizational_structure",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="organizational_area.OrganizationalStructure",
+                        unique=True,
+                    ),
+                ),
             ],
         ),
     ]

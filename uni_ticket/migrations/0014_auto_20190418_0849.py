@@ -7,13 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0013_auto_20190416_0826'),
+        ("uni_ticket", "0013_auto_20190416_0826"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='organizational_office',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='organizational_area.OrganizationalStructureOffice'),
+            model_name="ticketcategory",
+            name="organizational_office",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="organizational_area.OrganizationalStructureOffice",
+            ),
         ),
     ]

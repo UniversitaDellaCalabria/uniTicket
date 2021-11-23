@@ -6,13 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0093_auto_20200424_0834'),
+        ("uni_ticket", "0093_auto_20200424_0834"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='receive_email',
-            field=models.BooleanField(default=False, help_text='Invia email a operatori per ogni ticket aperto', verbose_name='Mail ad operatori'),
+            model_name="ticketcategory",
+            name="receive_email",
+            field=models.BooleanField(
+                default=False,
+                help_text="Invia email a operatori per ogni ticket aperto",
+                verbose_name="Mail ad operatori",
+            ),
         ),
     ]

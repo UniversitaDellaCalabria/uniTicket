@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0089_auto_20200416_1205'),
+        ("uni_ticket", "0089_auto_20200416_1205"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='not_available_message',
-            field=models.CharField(blank=True, help_text='Viene mostrato agli utenti se cercano di accedere al form', max_length=255, null=True, verbose_name='Messaggio se non attiva'),
+            model_name="ticketcategory",
+            name="not_available_message",
+            field=models.CharField(
+                blank=True,
+                help_text="Viene mostrato agli utenti se cercano di accedere al form",
+                max_length=255,
+                null=True,
+                verbose_name="Messaggio se non attiva",
+            ),
         ),
     ]

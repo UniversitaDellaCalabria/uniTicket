@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0070_auto_20200323_0910'),
+        ("uni_ticket", "0070_auto_20200323_0910"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ticketcategorycondition',
-            options={'ordering': ('ordinamento',), 'verbose_name': 'Clausola tipologia di richiesta ticket', 'verbose_name_plural': 'Clausole tipologia di richiesta ticket'},
+            name="ticketcategorycondition",
+            options={
+                "ordering": ("ordinamento",),
+                "verbose_name": "Clausola tipologia di richiesta ticket",
+                "verbose_name_plural": "Clausole tipologia di richiesta ticket",
+            },
         ),
     ]

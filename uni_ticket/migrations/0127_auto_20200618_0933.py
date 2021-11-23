@@ -6,17 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0126_auto_20200618_0927'),
+        ("uni_ticket", "0126_auto_20200618_0927"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='ticket',
-            name='closing_state',
+            model_name="ticket",
+            name="closing_state",
         ),
         migrations.AddField(
-            model_name='ticket',
-            name='closing_status',
-            field=models.IntegerField(blank=True, choices=[(-1, 'Rifiutata'), (0, 'Non risolta'), (1, 'Risolta con successo'), (2, 'Non definita')], null=True),
+            model_name="ticket",
+            name="closing_status",
+            field=models.IntegerField(
+                blank=True,
+                choices=[
+                    (-1, "Rifiutata"),
+                    (0, "Non risolta"),
+                    (1, "Risolta con successo"),
+                    (2, "Non definita"),
+                ],
+                null=True,
+            ),
         ),
     ]

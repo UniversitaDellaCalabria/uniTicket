@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0146_auto_20200716_1051'),
+        ("uni_ticket", "0146_auto_20200716_1051"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticket',
-            name='is_notification',
-            field=models.BooleanField(default=False, verbose_name='Richiesta di tipo Notifica'),
+            model_name="ticket",
+            name="is_notification",
+            field=models.BooleanField(
+                default=False, verbose_name="Richiesta di tipo Notifica"
+            ),
         ),
     ]

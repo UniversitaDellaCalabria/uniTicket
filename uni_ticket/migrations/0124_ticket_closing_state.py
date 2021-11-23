@@ -6,13 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0123_auto_20200616_0912'),
+        ("uni_ticket", "0123_auto_20200616_0912"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticket',
-            name='closing_state',
-            field=models.IntegerField(choices=[(-1, 'Rifiutata'), (0, 'Non risolta'), (1, 'Risolta con successo'), (2, 'Non definia')], default=1),
+            model_name="ticket",
+            name="closing_state",
+            field=models.IntegerField(
+                choices=[
+                    (-1, "Rifiutata"),
+                    (0, "Non risolta"),
+                    (1, "Risolta con successo"),
+                    (2, "Non definia"),
+                ],
+                default=1,
+            ),
         ),
     ]

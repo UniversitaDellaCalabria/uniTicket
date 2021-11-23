@@ -9,13 +9,19 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('uni_ticket', '0124_ticket_closing_state'),
+        ("uni_ticket", "0124_ticket_closing_state"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticket',
-            name='compiled_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='compiled_by_user', to=settings.AUTH_USER_MODEL),
+            model_name="ticket",
+            name="compiled_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="compiled_by_user",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

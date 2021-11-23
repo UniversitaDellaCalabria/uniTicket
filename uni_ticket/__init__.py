@@ -1,1 +1,1 @@
-default_app_config = 'uni_ticket.apps.UniTicketConfig'
+default_app_config = "uni_ticket.apps.UniTicketConfig"

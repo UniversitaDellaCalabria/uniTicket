@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.translation import gettext as _
+from chat.settings import VIDEOCONF_PROVIDERS
 
 from organizational_area.models import OrganizationalStructure
 from uni_ticket.models import TicketCategory
@@ -73,4 +74,4 @@ def room(request, room_name):
 
 # no login is required
 def random_vc_provider(request):
-    return HttpResponse(random.choice(settings.VIDEOCONF_PROVIDERS))
+    return HttpResponse(random.choice(VIDEOCONF_PROVIDERS))

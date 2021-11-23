@@ -1,13 +1,11 @@
-from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db.models.signals import *
 from django.dispatch import receiver
-from django.utils.translation import gettext as _
 
 from organizational_area.decorators import disable_for_loaddata
 
-from . models import *
-from . utils import delete_directory, delete_file
+from .models import *
+from .utils import delete_directory, delete_file
 
 
 @receiver(pre_save, sender=TicketCategory)
@@ -18,7 +16,8 @@ def check_if_can_be_activated(sender, instance, **kwargs):
     """
     if instance.is_active:
         problem = instance.something_stops_activation()
-        if problem: raise ValidationError(problem)
+        if problem:
+            raise ValidationError(problem)
 
 
 @receiver(pre_delete, sender=Task)
@@ -31,6 +30,7 @@ def delete_attachments_folder(sender, instance, *args, **kwargs):
     """
     delete_directory(instance.get_folder())
 
+
 @receiver(pre_delete, sender=TicketCategoryCondition)
 @receiver(pre_delete, sender=TicketReply)
 def delete_single_attachment(sender, instance, *args, **kwargs):
@@ -42,6 +42,7 @@ def delete_single_attachment(sender, instance, *args, **kwargs):
 
 # Protocol configurations events manager
 
+
 @receiver(pre_save, sender=OrganizationalStructureWSProtocollo)
 @receiver(pre_save, sender=TicketCategoryWSProtocollo)
 def disable_others_active_protocol_configurations(sender, instance, **kwargs):
@@ -51,6 +52,7 @@ def disable_others_active_protocol_configurations(sender, instance, **kwargs):
     """
     if instance.is_active:
         instance.disable_other_configurations()
+
 
 @receiver(pre_save, sender=OrganizationalStructureWSProtocollo)
 def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
@@ -62,11 +64,17 @@ def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
         old_instance = sender.objects.get(pk=instance.pk)
         if old_instance.is_active and not instance.is_active:
             structure = instance.organizational_structure
-            categories = TicketCategory.objects.filter(organizational_structure=structure,
-                                                       protocol_required=True)
+            categories = TicketCategory.objects.filter(
+                organizational_structure=structure, protocol_required=True
+            )
             for cat in categories:
                 cat.protocol_required = False
-                cat.save(update_fields=['protocol_required',])
+                cat.save(
+                    update_fields=[
+                        "protocol_required",
+                    ]
+                )
+
 
 @receiver(pre_delete, sender=OrganizationalStructureWSProtocollo)
 def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
@@ -76,11 +84,17 @@ def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
     """
     if instance.is_active:
         structure = instance.organizational_structure
-        categories = TicketCategory.objects.filter(organizational_structure=structure,
-                                                   protocol_required=True)
+        categories = TicketCategory.objects.filter(
+            organizational_structure=structure, protocol_required=True
+        )
         for cat in categories:
             cat.protocol_required = False
-            cat.save(update_fields=['protocol_required',])
+            cat.save(
+                update_fields=[
+                    "protocol_required",
+                ]
+            )
+
 
 @receiver(pre_save, sender=TicketCategoryWSProtocollo)
 def category_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
@@ -92,7 +106,12 @@ def category_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
         old_instance = sender.objects.get(pk=instance.pk)
         if old_instance.is_active and not instance.is_active:
             instance.ticket_category.protocol_required = False
-            instance.ticket_category.save(update_fields=['protocol_required',])
+            instance.ticket_category.save(
+                update_fields=[
+                    "protocol_required",
+                ]
+            )
+
 
 @receiver(pre_delete, sender=TicketCategoryWSProtocollo)
 def category_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
@@ -102,4 +121,8 @@ def category_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
     """
     if instance.is_active:
         instance.ticket_category.protocol_required = False
-        instance.ticket_category.save(update_fields=['protocol_required',])
+        instance.ticket_category.save(
+            update_fields=[
+                "protocol_required",
+            ]
+        )

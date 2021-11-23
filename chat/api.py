@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
+from chat.settings import MESSAGES_TO_LOAD
 
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -29,7 +30,7 @@ class ChatMessagePagination(PageNumberPagination):
     """
     Limit message prefetch to one page.
     """
-    page_size = settings.MESSAGES_TO_LOAD
+    page_size = MESSAGES_TO_LOAD
 
 
 class ChatMessageModelViewSet(ModelViewSet):

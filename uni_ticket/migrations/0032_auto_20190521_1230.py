@@ -7,13 +7,15 @@ import uni_ticket.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0031_auto_20190521_1229'),
+        ("uni_ticket", "0031_auto_20190521_1229"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketreply',
-            name='attachment',
-            field=models.FileField(blank=True, null=True, upload_to=uni_ticket.models._attachment_upload),
+            model_name="ticketreply",
+            name="attachment",
+            field=models.FileField(
+                blank=True, null=True, upload_to=uni_ticket.models._attachment_upload
+            ),
         ),
     ]

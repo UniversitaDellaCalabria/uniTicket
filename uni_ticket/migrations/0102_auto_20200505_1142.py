@@ -7,13 +7,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0101_delete_userstructuremanager'),
+        ("uni_ticket", "0101_delete_userstructuremanager"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='name',
-            field=models.CharField(max_length=255, validators=[django.core.validators.RegexValidator(code='invalid_name', message='Il nome deve contenere almeno un carattere alfabetico', regex='^(?=.*[a-zA-Z])')]),
+            model_name="ticketcategory",
+            name="name",
+            field=models.CharField(
+                max_length=255,
+                validators=[
+                    django.core.validators.RegexValidator(
+                        code="invalid_name",
+                        message="Il nome deve contenere almeno un carattere alfabetico",
+                        regex="^(?=.*[a-zA-Z])",
+                    )
+                ],
+            ),
         ),
     ]

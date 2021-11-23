@@ -29,8 +29,7 @@ class BaseTest(TestCase):
         return conf
 
     def create_user(self, name):
-        user_model = apps.get_model(settings.AUTH_USER_MODEL)
-        return user_model.objects.create_user(username=slugify(name),
+        return get_user_model().objects.create_user(username=slugify(name),
                                               password='passw',
                                               first_name=name,
                                               last_name="Lastname {}".format(name),

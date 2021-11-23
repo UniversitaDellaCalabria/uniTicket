@@ -6,17 +6,21 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('organizational_area', '0021_auto_20190503_1546'),
-        ('uni_ticket', '0022_auto_20190502_1140'),
+        ("organizational_area", "0021_auto_20190503_1546"),
+        ("uni_ticket", "0022_auto_20190502_1140"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ticket',
-            options={'ordering': ['-priority', '-created', 'code'], 'verbose_name': 'Ticket', 'verbose_name_plural': 'Ticket'},
+            name="ticket",
+            options={
+                "ordering": ["-priority", "-created", "code"],
+                "verbose_name": "Ticket",
+                "verbose_name_plural": "Ticket",
+            },
         ),
         migrations.AlterUniqueTogether(
-            name='ticketcategory',
-            unique_together={('slug', 'organizational_structure')},
+            name="ticketcategory",
+            unique_together={("slug", "organizational_structure")},
         ),
     ]

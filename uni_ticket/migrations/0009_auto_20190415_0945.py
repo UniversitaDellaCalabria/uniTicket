@@ -6,18 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('organizational_area', '0020_auto_20190415_0945'),
-        ('uni_ticket', '0008_auto_20190415_0922'),
+        ("organizational_area", "0020_auto_20190415_0945"),
+        ("uni_ticket", "0008_auto_20190415_0922"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='slug',
+            model_name="ticketcategory",
+            name="slug",
             field=models.SlugField(max_length=40),
         ),
         migrations.AlterUniqueTogether(
-            name='ticketcategory',
-            unique_together={('slug', 'organizational_structure'), ('name', 'organizational_structure')},
+            name="ticketcategory",
+            unique_together={
+                ("slug", "organizational_structure"),
+                ("name", "organizational_structure"),
+            },
         ),
     ]

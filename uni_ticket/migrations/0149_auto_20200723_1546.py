@@ -7,18 +7,26 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0148_auto_20200723_1525'),
+        ("uni_ticket", "0148_auto_20200723_1525"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticket2ticket',
-            name='master_ticket',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='main', to='uni_ticket.Ticket'),
+            model_name="ticket2ticket",
+            name="master_ticket",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="main",
+                to="uni_ticket.Ticket",
+            ),
         ),
         migrations.AlterField(
-            model_name='ticket2ticket',
-            name='slave_ticket',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subordinate', to='uni_ticket.Ticket'),
+            model_name="ticket2ticket",
+            name="slave_ticket",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="subordinate",
+                to="uni_ticket.Ticket",
+            ),
         ),
     ]

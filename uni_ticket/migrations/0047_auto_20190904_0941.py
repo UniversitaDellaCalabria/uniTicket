@@ -6,22 +6,32 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0046_ticket2ticket_note'),
+        ("uni_ticket", "0046_ticket2ticket_note"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ticket',
-            options={'ordering': ['is_closed', 'priority', 'is_preso_in_carico', '-created', 'code'], 'verbose_name': 'Ticket', 'verbose_name_plural': 'Ticket'},
+            name="ticket",
+            options={
+                "ordering": [
+                    "is_closed",
+                    "priority",
+                    "is_preso_in_carico",
+                    "-created",
+                    "code",
+                ],
+                "verbose_name": "Ticket",
+                "verbose_name_plural": "Ticket",
+            },
         ),
         migrations.RenameField(
-            model_name='task',
-            old_name='is_chiuso',
-            new_name='is_closed',
+            model_name="task",
+            old_name="is_chiuso",
+            new_name="is_closed",
         ),
         migrations.RenameField(
-            model_name='ticket',
-            old_name='is_chiuso',
-            new_name='is_closed',
+            model_name="ticket",
+            old_name="is_chiuso",
+            new_name="is_closed",
         ),
     ]

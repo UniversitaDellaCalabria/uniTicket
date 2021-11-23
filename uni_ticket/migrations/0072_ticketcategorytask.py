@@ -11,27 +11,60 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('uni_ticket', '0071_auto_20200325_0803'),
+        ("uni_ticket", "0071_auto_20200325_0803"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TicketCategoryTask',
+            name="TicketCategoryTask",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(max_length=255)),
-                ('code', models.CharField(max_length=255, unique=True)),
-                ('description', models.TextField()),
-                ('created', models.DateTimeField(auto_now=True)),
-                ('priority', models.IntegerField(default=0)),
-                ('attachment', models.FileField(blank=True, null=True, upload_to=uni_ticket.models._attachment_upload, validators=[uni_ticket.validators.validate_file_extension, uni_ticket.validators.validate_file_size, uni_ticket.validators.validate_file_length])),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='uni_ticket.TicketCategory')),
-                ('created_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("subject", models.CharField(max_length=255)),
+                ("code", models.CharField(max_length=255, unique=True)),
+                ("description", models.TextField()),
+                ("created", models.DateTimeField(auto_now=True)),
+                ("priority", models.IntegerField(default=0)),
+                (
+                    "attachment",
+                    models.FileField(
+                        blank=True,
+                        null=True,
+                        upload_to=uni_ticket.models._attachment_upload,
+                        validators=[
+                            uni_ticket.validators.validate_file_extension,
+                            uni_ticket.validators.validate_file_size,
+                            uni_ticket.validators.validate_file_length,
+                        ],
+                    ),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="uni_ticket.TicketCategory",
+                    ),
+                ),
+                (
+                    "created_by",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Task predefinito',
-                'verbose_name_plural': 'Task predefiniti',
-                'ordering': ['created'],
+                "verbose_name": "Task predefinito",
+                "verbose_name_plural": "Task predefiniti",
+                "ordering": ["created"],
             },
         ),
     ]

@@ -6,13 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0082_task_closed_by'),
+        ("uni_ticket", "0082_task_closed_by"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategory',
-            name='allow_anonymous',
-            field=models.BooleanField(default=False, verbose_name='Accessibile a Utenti anonimi'),
+            model_name="ticketcategory",
+            name="allow_anonymous",
+            field=models.BooleanField(
+                default=False, verbose_name="Accessibile a Utenti anonimi"
+            ),
         ),
     ]

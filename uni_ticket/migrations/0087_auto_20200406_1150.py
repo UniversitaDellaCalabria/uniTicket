@@ -8,18 +8,38 @@ import uni_ticket.validators
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0086_auto_20200406_1149'),
+        ("uni_ticket", "0086_auto_20200406_1149"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='task',
-            name='attachment',
-            field=models.FileField(blank=True, max_length=255, null=True, upload_to=uni_ticket.models._attachment_upload, validators=[uni_ticket.validators.validate_file_extension, uni_ticket.validators.validate_file_size, uni_ticket.validators.validate_file_length]),
+            model_name="task",
+            name="attachment",
+            field=models.FileField(
+                blank=True,
+                max_length=255,
+                null=True,
+                upload_to=uni_ticket.models._attachment_upload,
+                validators=[
+                    uni_ticket.validators.validate_file_extension,
+                    uni_ticket.validators.validate_file_size,
+                    uni_ticket.validators.validate_file_length,
+                ],
+            ),
         ),
         migrations.AlterField(
-            model_name='ticketcategorytask',
-            name='attachment',
-            field=models.FileField(blank=True, max_length=255, null=True, upload_to=uni_ticket.models._attachment_upload, validators=[uni_ticket.validators.validate_file_extension, uni_ticket.validators.validate_file_size, uni_ticket.validators.validate_file_length]),
+            model_name="ticketcategorytask",
+            name="attachment",
+            field=models.FileField(
+                blank=True,
+                max_length=255,
+                null=True,
+                upload_to=uni_ticket.models._attachment_upload,
+                validators=[
+                    uni_ticket.validators.validate_file_extension,
+                    uni_ticket.validators.validate_file_size,
+                    uni_ticket.validators.validate_file_length,
+                ],
+            ),
         ),
     ]

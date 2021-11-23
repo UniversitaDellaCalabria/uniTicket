@@ -6,18 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0075_auto_20200330_1155'),
+        ("uni_ticket", "0075_auto_20200330_1155"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='confirm_message_text',
-            field=models.CharField(blank=True, help_text="Es: 'Hai correttamente confermato la tua partecipazione'. Lascia vuoto per usare testo predefinito", max_length=255, null=True, verbose_name='Messaggio di conferma'),
+            model_name="ticketcategory",
+            name="confirm_message_text",
+            field=models.CharField(
+                blank=True,
+                help_text="Es: 'Hai correttamente confermato la tua partecipazione'. Lascia vuoto per usare testo predefinito",
+                max_length=255,
+                null=True,
+                verbose_name="Messaggio di conferma",
+            ),
         ),
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='is_notify',
-            field=models.BooleanField(default=False, help_text='Ticket che viene automaticamente preso in carico', verbose_name='Ticket di tipo Notifica'),
+            model_name="ticketcategory",
+            name="is_notify",
+            field=models.BooleanField(
+                default=False,
+                help_text="Ticket che viene automaticamente preso in carico",
+                verbose_name="Ticket di tipo Notifica",
+            ),
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0122_ticketcategorydefaultreply'),
+        ("uni_ticket", "0122_ticketcategorydefaultreply"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategorydefaultreply',
-            name='is_active',
+            model_name="ticketcategorydefaultreply",
+            name="is_active",
             field=models.BooleanField(default=True),
         ),
     ]

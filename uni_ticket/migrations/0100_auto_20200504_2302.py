@@ -8,22 +8,22 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('organizational_area', '0025_auto_20200406_1150'),
-        ('uni_ticket', '0099_userstructuremanager'),
+        ("organizational_area", "0025_auto_20200406_1150"),
+        ("uni_ticket", "0099_userstructuremanager"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='userstructuremanager',
-            options={'ordering': ['user']},
+            name="userstructuremanager",
+            options={"ordering": ["user"]},
         ),
         migrations.RenameField(
-            model_name='userstructuremanager',
-            old_name='employee',
-            new_name='user',
+            model_name="userstructuremanager",
+            old_name="employee",
+            new_name="user",
         ),
         migrations.AlterUniqueTogether(
-            name='userstructuremanager',
-            unique_together={('user', 'organizational_structure')},
+            name="userstructuremanager",
+            unique_together={("user", "organizational_structure")},
         ),
     ]

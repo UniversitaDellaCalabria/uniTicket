@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0176_ticketcategorywsprotocollo_protocollo_uo_rpa_matricola'),
+        ("uni_ticket", "0176_ticketcategorywsprotocollo_protocollo_uo_rpa_matricola"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategorywsprotocollo',
-            name='protocollo_email',
-            field=models.EmailField(blank=True, help_text='Se vuoto: default@example.pec.it', max_length=255, null=True, verbose_name='E-mail'),
+            model_name="ticketcategorywsprotocollo",
+            name="protocollo_email",
+            field=models.EmailField(
+                blank=True,
+                help_text="Se vuoto: default@example.pec.it",
+                max_length=255,
+                null=True,
+                verbose_name="E-mail",
+            ),
         ),
     ]

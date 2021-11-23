@@ -9,21 +9,29 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('uni_ticket', '0019_task_priority'),
+        ("uni_ticket", "0019_task_priority"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='tickethistory',
-            options={'ordering': ['ticket', '-modified'], 'verbose_name': 'Cronologia Stati Ticket', 'verbose_name_plural': 'Cronologia Stati Ticket'},
+            name="tickethistory",
+            options={
+                "ordering": ["ticket", "-modified"],
+                "verbose_name": "Cronologia Stati Ticket",
+                "verbose_name_plural": "Cronologia Stati Ticket",
+            },
         ),
         migrations.RemoveField(
-            model_name='taskhistory',
-            name='employee',
+            model_name="taskhistory",
+            name="employee",
         ),
         migrations.AddField(
-            model_name='taskhistory',
-            name='modified_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL),
+            model_name="taskhistory",
+            name="modified_by",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

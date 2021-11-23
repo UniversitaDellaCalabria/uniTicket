@@ -6,20 +6,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0116_auto_20200522_1227'),
+        ("uni_ticket", "0116_auto_20200522_1227"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='organizationalstructurewsarchipro',
-            name='protollo_id_uo',
-            field=models.CharField(default=1, max_length=12, verbose_name='ID Unità Organizzativa'),
+            model_name="organizationalstructurewsarchipro",
+            name="protollo_id_uo",
+            field=models.CharField(
+                default=1, max_length=12, verbose_name="ID Unità Organizzativa"
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='ticketcategorywsarchipro',
-            name='protollo_id_uo',
-            field=models.CharField(default=1, max_length=12, verbose_name='ID Unità Organizzativa'),
+            model_name="ticketcategorywsarchipro",
+            name="protollo_id_uo",
+            field=models.CharField(
+                default=1, max_length=12, verbose_name="ID Unità Organizzativa"
+            ),
             preserve_default=False,
         ),
     ]

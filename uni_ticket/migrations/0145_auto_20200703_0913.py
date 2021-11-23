@@ -6,13 +6,41 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0144_auto_20200702_1244'),
+        ("uni_ticket", "0144_auto_20200702_1244"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategoryinputlist',
-            name='field_type',
-            field=models.CharField(choices=[('CustomFileField', 'Allegato (generico)'), ('CustomImageField', 'Allegato Immagine'), ('CustomSignedP7MField', 'Allegato P7M firmato'), ('CustomPDFField', 'Allegato PDF'), ('CustomSignedPdfField', 'Allegato PDF firmato'), ('CustomDataField', 'Allegato file dati (JSON, CSV, Excel)'), ('CustomHiddenField', 'Campo nascosto'), ('CustomCaptchaComplexField', 'Captcha'), ('CheckBoxField', 'Checkbox'), ('MultiCheckBoxField', 'Checkbox multi-valore'), ('BaseDateField', 'Data'), ('BaseDateTimeField', 'Data e Ora'), ('DateStartEndComplexField', 'Data inizio e Data fine'), ('CustomEmailField', 'E-mail'), ('CustomIPField', 'Indirizzo IP'), ('CustomComplexTableField', 'Inserimenti multipli'), ('CustomRadioBoxField', 'Lista di opzioni (checkbox)'), ('CustomSelectBoxField', 'Lista di opzioni (tendina)'), ('CustomMACField', 'MAC Address'), ('PositiveFloatField', 'Numero con virgola positivo'), ('PositiveIntegerField', 'Numero intero positivo'), ('ProtocolloField', 'Protocollo (tipo/numero/data)'), ('CustomCharField', 'Testo'), ('TextAreaField', 'Testo lungo')], max_length=100),
+            model_name="ticketcategoryinputlist",
+            name="field_type",
+            field=models.CharField(
+                choices=[
+                    ("CustomFileField", "Allegato (generico)"),
+                    ("CustomImageField", "Allegato Immagine"),
+                    ("CustomSignedP7MField", "Allegato P7M firmato"),
+                    ("CustomPDFField", "Allegato PDF"),
+                    ("CustomSignedPdfField", "Allegato PDF firmato"),
+                    ("CustomDataField", "Allegato file dati (JSON, CSV, Excel)"),
+                    ("CustomHiddenField", "Campo nascosto"),
+                    ("CustomCaptchaComplexField", "Captcha"),
+                    ("CheckBoxField", "Checkbox"),
+                    ("MultiCheckBoxField", "Checkbox multi-valore"),
+                    ("BaseDateField", "Data"),
+                    ("BaseDateTimeField", "Data e Ora"),
+                    ("DateStartEndComplexField", "Data inizio e Data fine"),
+                    ("CustomEmailField", "E-mail"),
+                    ("CustomIPField", "Indirizzo IP"),
+                    ("CustomComplexTableField", "Inserimenti multipli"),
+                    ("CustomRadioBoxField", "Lista di opzioni (checkbox)"),
+                    ("CustomSelectBoxField", "Lista di opzioni (tendina)"),
+                    ("CustomMACField", "MAC Address"),
+                    ("PositiveFloatField", "Numero con virgola positivo"),
+                    ("PositiveIntegerField", "Numero intero positivo"),
+                    ("ProtocolloField", "Protocollo (tipo/numero/data)"),
+                    ("CustomCharField", "Testo"),
+                    ("TextAreaField", "Testo lungo"),
+                ],
+                max_length=100,
+            ),
         ),
     ]

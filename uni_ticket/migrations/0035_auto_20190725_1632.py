@@ -6,12 +6,22 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0034_auto_20190704_0821'),
+        ("uni_ticket", "0034_auto_20190704_0821"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ticket',
-            options={'ordering': ['is_chiuso', 'priority', 'is_preso_in_carico', '-created', 'code'], 'verbose_name': 'Ticket', 'verbose_name_plural': 'Ticket'},
+            name="ticket",
+            options={
+                "ordering": [
+                    "is_chiuso",
+                    "priority",
+                    "is_preso_in_carico",
+                    "-created",
+                    "code",
+                ],
+                "verbose_name": "Ticket",
+                "verbose_name_plural": "Ticket",
+            },
         ),
     ]

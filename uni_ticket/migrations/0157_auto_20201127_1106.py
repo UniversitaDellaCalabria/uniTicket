@@ -6,12 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0156_auto_20201127_0855'),
+        ("uni_ticket", "0156_auto_20201127_0855"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ticketcategorydefaultreply',
-            options={'ordering': ['-created'], 'verbose_name': 'Risposta predefinita', 'verbose_name_plural': 'Risposte predefinite'},
+            name="ticketcategorydefaultreply",
+            options={
+                "ordering": ["-created"],
+                "verbose_name": "Risposta predefinita",
+                "verbose_name_plural": "Risposte predefinite",
+            },
         ),
     ]

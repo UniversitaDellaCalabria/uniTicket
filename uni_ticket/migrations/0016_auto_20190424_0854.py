@@ -6,23 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0015_auto_20190419_0926'),
+        ("uni_ticket", "0015_auto_20190419_0926"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='task',
-            options={'ordering': ['created'], 'verbose_name': 'Task', 'verbose_name_plural': 'Task'},
+            name="task",
+            options={
+                "ordering": ["created"],
+                "verbose_name": "Task",
+                "verbose_name_plural": "Task",
+            },
         ),
         migrations.AddField(
-            model_name='task',
-            name='code',
-            field=models.CharField(default='1default4', max_length=255, unique=True),
+            model_name="task",
+            name="code",
+            field=models.CharField(default="1default4",
+                                   max_length=255, unique=True),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='taskhistory',
-            name='modified',
+            model_name="taskhistory",
+            name="modified",
             field=models.DateTimeField(auto_now=True),
         ),
     ]

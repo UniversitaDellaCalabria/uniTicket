@@ -9,23 +9,35 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('uni_ticket', '0078_auto_20200330_1301'),
+        ("uni_ticket", "0078_auto_20200330_1301"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategoryinputlist',
-            name='pre_text',
-            field=models.TextField(blank=True, default=''),
+            model_name="ticketcategoryinputlist",
+            name="pre_text",
+            field=models.TextField(blank=True, default=""),
         ),
         migrations.AlterField(
-            model_name='ticketassignment',
-            name='taken_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='taken_by_operator', to=settings.AUTH_USER_MODEL),
+            model_name="ticketassignment",
+            name="taken_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="taken_by_operator",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='confirm_message_text',
-            field=models.CharField(blank=True, help_text='Es: \'Hai correttamente confermato la tua partecipazione\'. Apri e chiudi le parentesi graffe per inserire il codice del ticket. Lascia vuoto per usare il testo predefinito "Ticket "{}" creato con successo"', max_length=255, null=True, verbose_name='Messaggio di conferma'),
+            model_name="ticketcategory",
+            name="confirm_message_text",
+            field=models.CharField(
+                blank=True,
+                help_text='Es: \'Hai correttamente confermato la tua partecipazione\'. Apri e chiudi le parentesi graffe per inserire il codice del ticket. Lascia vuoto per usare il testo predefinito "Ticket "{}" creato con successo"',
+                max_length=255,
+                null=True,
+                verbose_name="Messaggio di conferma",
+            ),
         ),
     ]

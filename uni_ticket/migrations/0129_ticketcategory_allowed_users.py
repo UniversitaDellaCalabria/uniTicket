@@ -8,13 +8,13 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('uni_ticket', '0128_auto_20200618_1003'),
+        ("uni_ticket", "0128_auto_20200618_1003"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategory',
-            name='allowed_users',
+            model_name="ticketcategory",
+            name="allowed_users",
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL),
         ),
     ]

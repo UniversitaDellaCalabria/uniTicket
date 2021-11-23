@@ -9,13 +9,18 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('uni_ticket', '0081_auto_20200402_0109'),
+        ("uni_ticket", "0081_auto_20200402_0109"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='task',
-            name='closed_by',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='task_closed_by_user', to=settings.AUTH_USER_MODEL),
+            model_name="task",
+            name="closed_by",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="task_closed_by_user",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

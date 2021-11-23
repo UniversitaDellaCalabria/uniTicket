@@ -7,18 +7,25 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0007_auto_20190411_0958'),
+        ("uni_ticket", "0007_auto_20190411_0958"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='is_active',
-            field=models.BooleanField(default=False, help_text='Se disabilitato, non sarà visibile in Aggiungi Ticket'),
+            model_name="ticketcategory",
+            name="is_active",
+            field=models.BooleanField(
+                default=False,
+                help_text="Se disabilitato, non sarà visibile in Aggiungi Ticket",
+            ),
         ),
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='organizational_office',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='organizational_area.OrganizationalStructureOffice'),
+            model_name="ticketcategory",
+            name="organizational_office",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="organizational_area.OrganizationalStructureOffice",
+            ),
         ),
     ]

@@ -6,18 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0166_alter_ticketcategorywsprotocollo_protocollo_uo'),
+        ("uni_ticket", "0166_alter_ticketcategorywsprotocollo_protocollo_uo"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategorywsprotocollo',
-            name='protocollo_fascicolo_anno',
-            field=models.IntegerField(blank=True, null=True, verbose_name='Fascicolo anno'),
+            model_name="ticketcategorywsprotocollo",
+            name="protocollo_fascicolo_anno",
+            field=models.IntegerField(
+                blank=True, null=True, verbose_name="Fascicolo anno"
+            ),
         ),
         migrations.AlterField(
-            model_name='ticketcategorywsprotocollo',
-            name='protocollo_fascicolo_numero',
-            field=models.CharField(blank=True, default='', max_length=255, verbose_name='Fascicolo numero'),
+            model_name="ticketcategorywsprotocollo",
+            name="protocollo_fascicolo_numero",
+            field=models.CharField(
+                blank=True, default="", max_length=255, verbose_name="Fascicolo numero"
+            ),
         ),
     ]

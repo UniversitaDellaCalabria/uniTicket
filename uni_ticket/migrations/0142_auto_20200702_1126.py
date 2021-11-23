@@ -6,53 +6,53 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0141_auto_20200702_1124'),
+        ("uni_ticket", "0141_auto_20200702_1124"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='task',
-            name='created',
+            model_name="task",
+            name="created",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='ticket',
-            name='created',
+            model_name="ticket",
+            name="created",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='ticketassignment',
-            name='created',
+            model_name="ticketassignment",
+            name="created",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='ticketcategory',
-            name='created',
+            model_name="ticketcategory",
+            name="created",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='ticketcategorydefaultreply',
-            name='created',
+            model_name="ticketcategorydefaultreply",
+            name="created",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='ticketcategorymodule',
-            name='created',
+            model_name="ticketcategorymodule",
+            name="created",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='ticketcategorytask',
-            name='created',
+            model_name="ticketcategorytask",
+            name="created",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='ticketcategorywsarchipro',
-            name='created',
+            model_name="ticketcategorywsarchipro",
+            name="created",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='ticketreply',
-            name='created',
+            model_name="ticketreply",
+            name="created",
             field=models.DateTimeField(auto_now_add=True),
         ),
     ]

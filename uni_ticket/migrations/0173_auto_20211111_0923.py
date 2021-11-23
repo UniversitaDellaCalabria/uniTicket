@@ -6,18 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0172_alter_ticketcategorywsprotocollo_protocollo_email'),
+        ("uni_ticket", "0172_alter_ticketcategorywsprotocollo_protocollo_email"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ticketcategorywsprotocollo',
-            name='protocollo_email',
-            field=models.EmailField(blank=True, help_text='Se vuoto: amministrazione@pec.unical.it', max_length=255, null=True, verbose_name='E-mail'),
+            model_name="ticketcategorywsprotocollo",
+            name="protocollo_email",
+            field=models.EmailField(
+                blank=True,
+                help_text="Se vuoto: amministrazione@pec.unical.it",
+                max_length=255,
+                null=True,
+                verbose_name="E-mail",
+            ),
         ),
         migrations.AlterField(
-            model_name='ticketcategorywsprotocollo',
-            name='protocollo_send_email',
-            field=models.BooleanField(default=True, verbose_name='Invia e-mail a RPA'),
+            model_name="ticketcategorywsprotocollo",
+            name="protocollo_send_email",
+            field=models.BooleanField(
+                default=True, verbose_name="Invia e-mail a RPA"),
         ),
     ]

@@ -5,6 +5,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
 from uni_ticket.models import *
+from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME, TICKET_GENERATE_URL_BUTTON_NAME
 from uni_ticket.urls import *
 from uni_ticket.utils import *
 
@@ -38,7 +39,7 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
         # Add ticket (base form with an attachment)
         params = {'ticket_subject': subject,
                   'ticket_description': subject,
-                  settings.TICKET_CREATE_BUTTON_NAME: 'conferma'}
+                  TICKET_CREATE_BUTTON_NAME: 'conferma'}
         if attachment:
             params['file_field_1'] = attachment
         response = self.client.post(reverse('uni_ticket:add_new_ticket',
@@ -63,7 +64,7 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
         # Add ticket (base form with an attachment)
         params = {'ticket_subject': subject,
                   'ticket_description': subject,
-                  settings.TICKET_GENERATE_URL_BUTTON_NAME: 'delega'}
+                  TICKET_GENERATE_URL_BUTTON_NAME: 'delega'}
         response = self.client.post(reverse('uni_ticket:add_new_ticket',
                                             kwargs={'structure_slug': structure_slug,
                                                     'category_slug': category.slug}),

@@ -1,4 +1,3 @@
-import json
 import os
 
 from django.conf import settings
@@ -6,13 +5,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Count, Min, Q
-from django.http import (HttpResponse,
-                         HttpResponseRedirect,
-                         Http404,
-                         JsonResponse)
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from django_form_builder.utils import get_as_dict
@@ -20,8 +15,8 @@ from organizational_area.models import OrganizationalStructure
 
 from uni_ticket.decorators import *
 from uni_ticket.models import *
+from uni_ticket.settings import USER_TICKET_MESSAGE
 from uni_ticket.utils import *
-from uni_ticket.views import user
 
 
 @login_required
@@ -35,13 +30,16 @@ def manage(request, structure_slug=None):
 
     :return: redirect
     """
-    if not structure_slug: return redirect('uni_ticket:user_dashboard')
-    structure = get_object_or_404(OrganizationalStructure,
-                                  slug=structure_slug)
+    if not structure_slug:
+        return redirect("uni_ticket:user_dashboard")
+    structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
-    if user_type == 'user': return redirect('uni_ticket:user_dashboard')
-    return redirect('uni_ticket:{}_dashboard'.format(user_type),
-                    structure_slug=structure_slug)
+    if user_type == "user":
+        return redirect("uni_ticket:user_dashboard")
+    return redirect(
+        "uni_ticket:{}_dashboard".format(user_type), structure_slug=structure_slug
+    )
+
 
 @login_required
 @has_access_to_ticket
@@ -74,9 +72,12 @@ def download_attachment(request, ticket_id, attachment, ticket):
         return result
     raise Http404
 
+
 @login_required
 @has_access_to_ticket
-def download_message_attachment(request, ticket_id, reply_id, ticket): # pragma: no cover
+def download_message_attachment(
+    request, ticket_id, reply_id, ticket
+):  # pragma: no cover
     """
     Downloads ticket message attachment
 
@@ -97,10 +98,11 @@ def download_message_attachment(request, ticket_id, reply_id, ticket): # pragma:
         # get ticket folder path
         path_allegato = get_path(message.get_folder())
         # get file
-        result = download_file(path_allegato,
-                               os.path.basename(message.attachment.name))
+        result = download_file(
+            path_allegato, os.path.basename(message.attachment.name))
         return result
     raise Http404
+
 
 @login_required
 def download_task_attachment(request, ticket_id, task_id):
@@ -143,14 +145,14 @@ def download_task_attachment(request, ticket_id, task_id):
         # get ticket task folder path
         path_allegato = get_path(task.get_folder())
         # get file
-        result = download_file(path_allegato,
-                               os.path.basename(task.attachment.name))
+        result = download_file(
+            path_allegato, os.path.basename(task.attachment.name))
         return result
     raise Http404
 
+
 @login_required
-def opened_ticket(request, structure_slug=None,
-                  structure=None, office_employee=None):
+def opened_ticket(request, structure_slug=None, structure=None, office_employee=None):
     """
     Gets opened tickets list (requires HTML datatable in template)
 
@@ -167,14 +169,18 @@ def opened_ticket(request, structure_slug=None,
     title = _("Richieste assegnate")
     user_type = get_user_type(request.user, structure)
     template = "{}/opened_ticket.html".format(user_type)
-    d = {'structure': structure,
-         'sub_title': structure,
-         'title': title,}
+    d = {
+        "structure": structure,
+        "sub_title": structure,
+        "title": title,
+    }
     return render(request, template, d)
 
+
 @login_required
-def my_opened_ticket(request, structure_slug=None,
-                     structure=None, office_employee=None):
+def my_opened_ticket(
+    request, structure_slug=None, structure=None, office_employee=None
+):
     """
     Gets opened tickets list (requires HTML datatable in template)
 
@@ -191,14 +197,18 @@ def my_opened_ticket(request, structure_slug=None,
     title = _("Richieste assegnate a me")
     user_type = get_user_type(request.user, structure)
     template = "{}/my_opened_ticket.html".format(user_type)
-    d = {'structure': structure,
-         'sub_title': structure,
-         'title': title,}
+    d = {
+        "structure": structure,
+        "sub_title": structure,
+        "title": title,
+    }
     return render(request, template, d)
 
+
 @login_required
-def unassigned_ticket(request, structure_slug=None,
-                      structure=None, office_employee=None):
+def unassigned_ticket(
+    request, structure_slug=None, structure=None, office_employee=None
+):
     """
     Gets unassigned tickets list (requires HTML datatable in template)
 
@@ -215,14 +225,16 @@ def unassigned_ticket(request, structure_slug=None,
     title = _("Richieste aperte")
     user_type = get_user_type(request.user, structure)
     template = "{}/unassigned_ticket.html".format(user_type)
-    d = {'structure': structure,
-         'sub_title': structure,
-         'title': title,}
+    d = {
+        "structure": structure,
+        "sub_title": structure,
+        "title": title,
+    }
     return render(request, template, d)
 
+
 @login_required
-def closed_ticket(request, structure_slug=None,
-                  structure=None, office_employee=None):
+def closed_ticket(request, structure_slug=None, structure=None, office_employee=None):
     """
     Gets closed tickets list (requires HTML datatable in template)
 
@@ -239,33 +251,38 @@ def closed_ticket(request, structure_slug=None,
     title = _("Richieste chiuse")
     user_type = get_user_type(request.user, structure)
     template = "{}/closed_ticket.html".format(user_type)
-    d = {'structure': structure,
-         'sub_title': structure,
-         'title': title,}
+    d = {
+        "structure": structure,
+        "sub_title": structure,
+        "title": title,
+    }
     return render(request, template, d)
+
 
 @login_required
 def email_notify_change(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         data = {}
         user = request.user
         email = user.email
         if not email:
-            data['error'] = _("Nessuna e-mail impostata per l'utente")
+            data["error"] = _("Nessuna e-mail impostata per l'utente")
         else:
-            data['email'] = email
+            data["email"] = email
             email_notify = user.email_notify
             user.email_notify = not email_notify
-            data['notify_status'] = user.email_notify
-            data['error'] = None
-            user.save(update_fields=['email_notify'])
-        d = {'data': data}
-        return render(request, 'intercooler-notify.html', context=d)
+            data["notify_status"] = user.email_notify
+            data["error"] = None
+            user.save(update_fields=["email_notify"])
+        d = {"data": data}
+        return render(request, "intercooler-notify.html", context=d)
     raise Http404
 
+
 @login_required
-def user_settings(request, structure_slug=None,
-                  structure=None, office_employee=None): # pragma: no cover
+def user_settings(
+    request, structure_slug=None, structure=None, office_employee=None
+):  # pragma: no cover
     """
     Gets user settings
 
@@ -283,15 +300,17 @@ def user_settings(request, structure_slug=None,
     template = "{}/user_settings.html".format(user_type)
     title = _("Configurazione impostazioni")
     sub_title = _("e riepilogo dati personali")
-    d = {'structure': structure,
-         'sub_title': sub_title,
-         'title': title,}
+    d = {
+        "structure": structure,
+        "sub_title": sub_title,
+        "title": title,
+    }
     response = render(request, template, d)
     return response
 
+
 @login_required
-def ticket_messages(request, structure_slug=None,
-                    structure=None, office_employee=None):
+def ticket_messages(request, structure_slug=None, structure=None, office_employee=None):
     """
     Gets ticket messages
 
@@ -307,49 +326,59 @@ def ticket_messages(request, structure_slug=None,
     """
     user_type = get_user_type(request.user, structure)
     by_operator = False
-    if user_type=='user':
-        tickets = Ticket.objects.filter(Q(created_by=request.user) | \
-                                        Q(compiled_by=request.user))\
-                                .values('code')
+    if user_type == "user":
+        tickets = Ticket.objects.filter(
+            Q(created_by=request.user) | Q(compiled_by=request.user)
+        ).values("code")
         # if user_type is 'user', retrieve messages leaved by a manager/operator
         # (linked to a structure)
         by_operator = True
-    elif user_type=='operator':
+    elif user_type == "operator":
         # if user is an operator, retrieve his tickets
-        tickets = visible_tickets_to_user(user=request.user,
-                                               structure=structure,
-                                               office_employee=office_employee)
+        tickets = visible_tickets_to_user(
+            user=request.user, structure=structure, office_employee=office_employee
+        )
     else:
         # if user is a manager, get structure tickets
         ta = TicketAssignment
         tickets = ta.get_ticket_per_structure(structure=structure)
 
     if by_operator:
-        not_read = Count('id', filter=Q(read_date__isnull=True, structure__isnull=False))
+        not_read = Count(
+            "id", filter=Q(read_date__isnull=True, structure__isnull=False)
+        )
     else:
-        not_read = Count('id', filter=Q(read_date__isnull=True, structure__isnull=True))
+        not_read = Count("id", filter=Q(
+            read_date__isnull=True, structure__isnull=True))
 
-    started = Min('created')
-    ticket_messages = TicketReply.objects.filter(ticket__code__in=tickets)\
-                                 .values('ticket__code',
-                                         'ticket__subject',
-                                         'ticket__input_module__ticket_category__name',
-                                         'ticket__created_by__first_name',
-                                         'ticket__created_by__last_name')\
-                                 .annotate(total=Count('id'))\
-                                 .annotate(not_read=not_read)\
-                                 .annotate(started=started)\
-                                 .order_by('-not_read','-started')
+    started = Min("created")
+    ticket_messages = (
+        TicketReply.objects.filter(ticket__code__in=tickets)
+        .values(
+            "ticket__code",
+            "ticket__subject",
+            "ticket__input_module__ticket_category__name",
+            "ticket__created_by__first_name",
+            "ticket__created_by__last_name",
+        )
+        .annotate(total=Count("id"))
+        .annotate(not_read=not_read)
+        .annotate(started=started)
+        .order_by("-not_read", "-started")
+    )
     paginator = Paginator(ticket_messages, 10)
-    page = request.GET.get('page')
+    page = request.GET.get("page")
     ticket_messages = paginator.get_page(page)
     template = "{}/ticket_messages.html".format(user_type)
     title = _("Tutti i messaggi")
-    d = {'structure': structure,
-         'ticket_messages': ticket_messages,
-         'title': title,}
+    d = {
+        "structure": structure,
+        "ticket_messages": ticket_messages,
+        "title": title,
+    }
     response = render(request, template, d)
     return response
+
 
 @login_required
 def ticket_message_delete(request, ticket_message_id):
@@ -363,37 +392,49 @@ def ticket_message_delete(request, ticket_message_id):
     :return: redirect
     """
     ticket_message = get_object_or_404(TicketReply, pk=ticket_message_id)
-    last_message = TicketReply.objects.filter(ticket=ticket_message.ticket).last()
+    last_message = TicketReply.objects.filter(
+        ticket=ticket_message.ticket).last()
     structure = ticket_message.structure
     # if message doesn't exist
     if not ticket_message:
-        return custom_message(request, _("Impossibile recuperare il messaggio"),
-                              structure_slug=structure.slug if structure else '')
+        return custom_message(
+            request,
+            _("Impossibile recuperare il messaggio"),
+            structure_slug=structure.slug if structure else "",
+        )
     # if user isn't the owner of message
-    if ticket_message.owner!=request.user:
-        return custom_message(request, _("Permesso negato"),
-                              structure_slug=structure.slug if structure else '')
+    if ticket_message.owner != request.user:
+        return custom_message(
+            request,
+            _("Permesso negato"),
+            structure_slug=structure.slug if structure else "",
+        )
     # if message has already been read
     if ticket_message.read_date:
-        return custom_message(request, _("Impossibile eliminare il"
-                                         " messaggio dopo che è stato letto"),
-                              structure_slug=structure.slug if structure else '')
+        return custom_message(
+            request,
+            _("Impossibile eliminare il" " messaggio dopo che è stato letto"),
+            structure_slug=structure.slug if structure else "",
+        )
     user_type = get_user_type(request.user, structure)
     # if message is not the last in chat
     # if ticket_message != last_message:
-        # return custom_message(request, _("Impossibile eliminare il"
-                                         # " messaggio dopo che è stato letto"
-                                         # " da altri operatori"),
-                              # structure_slug=structure.slug)
+    # return custom_message(request, _("Impossibile eliminare il"
+    # " messaggio dopo che è stato letto"
+    # " da altri operatori"),
+    # structure_slug=structure.slug)
     user_type = get_user_type(request.user, structure)
     # if message is from a manager/operator and user_type is 'user'
-    if structure and user_type=='user':
-        return custom_message(request, _("Permesso negato"),
-                              structure_slug=structure.slug)
+    if structure and user_type == "user":
+        return custom_message(
+            request, _("Permesso negato"), structure_slug=structure.slug
+        )
     ticket = ticket_message.ticket
-    messages.add_message(request, messages.SUCCESS,
-                         _("Messaggio <b>{}</b> eliminato con successo."
-                           "").format(ticket_message))
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        _("Messaggio <b>{}</b> eliminato con successo." "").format(ticket_message),
+    )
 
     # delete message
     msg_subject = ticket_message.subject
@@ -402,40 +443,45 @@ def ticket_message_delete(request, ticket_message_id):
     ticket_message.delete()
 
     # add to ticket log history
-    log_msg = _("Messaggio eliminato. Oggetto: {}"
-                "").format(msg_subject)
+    log_msg = _("Messaggio eliminato. Oggetto: {}" "").format(msg_subject)
     ticket.update_log(request.user, note=log_msg, send_mail=False)
 
-    if user_type=='user':
+    if user_type == "user":
 
         # Send mail to ticket owner
-        mail_params = {'hostname': settings.HOSTNAME,
-                       'status': _("eliminato"),
-                       'message_subject': msg_subject,
-                       'message_text': msg_text,
-                       'ticket': ticket,
-                       'user': request.user,
-                       'url': request.build_absolute_uri(reverse('uni_ticket:ticket_message',
-                                                                 kwargs={'ticket_id': ticket.code}))
-                      }
-        m_subject = _("{} - richiesta {} messaggio eliminato"
-                      "").format(settings.HOSTNAME,
-                                 ticket)
-        send_custom_mail(subject=m_subject,
-                         recipients=[request.user],
-                         body=settings.USER_TICKET_MESSAGE,
-                         params=mail_params)
+        mail_params = {
+            "hostname": settings.HOSTNAME,
+            "status": _("eliminato"),
+            "message_subject": msg_subject,
+            "message_text": msg_text,
+            "ticket": ticket,
+            "user": request.user,
+            "url": request.build_absolute_uri(
+                reverse("uni_ticket:ticket_message",
+                        kwargs={"ticket_id": ticket.code})
+            ),
+        }
+        m_subject = _("{} - richiesta {} messaggio eliminato" "").format(
+            settings.HOSTNAME, ticket
+        )
+        send_custom_mail(
+            subject=m_subject,
+            recipients=[request.user],
+            body=USER_TICKET_MESSAGE,
+            params=mail_params,
+        )
         # END Send mail to ticket owner
 
-        return redirect('uni_ticket:ticket_message',
-                        ticket_id=ticket.code)
-    return redirect('uni_ticket:manage_ticket_message_url',
-                    structure_slug=structure.slug,
-                    ticket_id=ticket.code)
+        return redirect("uni_ticket:ticket_message", ticket_id=ticket.code)
+    return redirect(
+        "uni_ticket:manage_ticket_message_url",
+        structure_slug=structure.slug,
+        ticket_id=ticket.code,
+    )
+
 
 @login_required
-def download_condition_attachment(request, structure_slug,
-                                  category_slug, condition_id):
+def download_condition_attachment(request, structure_slug, category_slug, condition_id):
     """
     Downloads ticket attachment
 
@@ -449,19 +495,22 @@ def download_condition_attachment(request, structure_slug,
 
     :return: file
     """
-    category = get_object_or_404(TicketCategory,
-                                 slug=category_slug,
-                                 is_active=True,
-                                 organizational_structure__slug=structure_slug,
-                                 organizational_structure__is_active=True)
-    condition = get_object_or_404(TicketCategoryCondition,
-                                  category=category,
-                                  pk=condition_id)
+    category = get_object_or_404(
+        TicketCategory,
+        slug=category_slug,
+        is_active=True,
+        organizational_structure__slug=structure_slug,
+        organizational_structure__is_active=True,
+    )
+    condition = get_object_or_404(
+        TicketCategoryCondition, category=category, pk=condition_id
+    )
     if condition.attachment:
         # get ticket folder path
         path_allegato = get_path(condition.get_folder())
         # get file
-        result = download_file(path_allegato,
-                               os.path.basename(condition.attachment.name))
+        result = download_file(
+            path_allegato, os.path.basename(condition.attachment.name)
+        )
         return result
     raise Http404

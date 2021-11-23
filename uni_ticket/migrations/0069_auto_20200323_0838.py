@@ -9,18 +9,24 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('uni_ticket', '0068_auto_20200320_1902'),
+        ("uni_ticket", "0068_auto_20200320_1902"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketassignment',
-            name='taken_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='taken_by_operator', to=settings.AUTH_USER_MODEL),
+            model_name="ticketassignment",
+            name="taken_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="taken_by_operator",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='ticketassignment',
-            name='taken_date',
+            model_name="ticketassignment",
+            name="taken_date",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

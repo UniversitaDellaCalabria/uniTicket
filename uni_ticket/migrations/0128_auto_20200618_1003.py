@@ -6,18 +6,36 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0127_auto_20200618_0933'),
+        ("uni_ticket", "0127_auto_20200618_0933"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='task',
-            name='closing_status',
-            field=models.IntegerField(blank=True, choices=[(-1, 'Rifiutata'), (0, 'Non risolta'), (1, 'Risolta con successo'), (2, 'Non definita')], null=True),
+            model_name="task",
+            name="closing_status",
+            field=models.IntegerField(
+                blank=True,
+                choices=[
+                    (-1, "Rifiutata"),
+                    (0, "Non risolta"),
+                    (1, "Risolta con successo"),
+                    (2, "Non definita"),
+                ],
+                null=True,
+            ),
         ),
         migrations.AlterField(
-            model_name='ticket',
-            name='priority',
-            field=models.IntegerField(choices=[(-2, 'Molto alta'), (-1, 'Alta'), (0, 'Normale'), (1, 'Bassa'), (2, 'Molto bassa')], default=0),
+            model_name="ticket",
+            name="priority",
+            field=models.IntegerField(
+                choices=[
+                    (-2, "Molto alta"),
+                    (-1, "Alta"),
+                    (0, "Normale"),
+                    (1, "Bassa"),
+                    (2, "Molto bassa"),
+                ],
+                default=0,
+            ),
         ),
     ]

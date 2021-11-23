@@ -6,23 +6,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0040_ticketreply_read_date'),
+        ("uni_ticket", "0040_ticketreply_read_date"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategory',
-            name='allow_guest',
-            field=models.BooleanField(default=False, verbose_name='Accessibile agli ospiti'),
+            model_name="ticketcategory",
+            name="allow_guest",
+            field=models.BooleanField(
+                default=False, verbose_name="Accessibile agli ospiti"
+            ),
         ),
         migrations.AddField(
-            model_name='ticketcategory',
-            name='allow_operator',
-            field=models.BooleanField(default=False, verbose_name='Accessibile agli operatori interni'),
+            model_name="ticketcategory",
+            name="allow_operator",
+            field=models.BooleanField(
+                default=False, verbose_name="Accessibile agli operatori interni"
+            ),
         ),
         migrations.AddField(
-            model_name='ticketcategory',
-            name='allow_utente',
-            field=models.BooleanField(default=False, verbose_name="Accessibile agli utenti dell'organizzazione"),
+            model_name="ticketcategory",
+            name="allow_utente",
+            field=models.BooleanField(
+                default=False,
+                verbose_name="Accessibile agli utenti dell'organizzazione",
+            ),
         ),
     ]

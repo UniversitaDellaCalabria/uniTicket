@@ -7,26 +7,38 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0005_remove_taskhistory_status'),
+        ("uni_ticket", "0005_remove_taskhistory_status"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ticket2ticket',
-            options={'ordering': ['slave_ticket', 'master_ticket'], 'verbose_name': 'Dipendenza Ticket', 'verbose_name_plural': 'Dipendenze Ticket'},
+            name="ticket2ticket",
+            options={
+                "ordering": ["slave_ticket", "master_ticket"],
+                "verbose_name": "Dipendenza Ticket",
+                "verbose_name_plural": "Dipendenze Ticket",
+            },
         ),
         migrations.AlterField(
-            model_name='ticket2ticket',
-            name='master_ticket',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='slave', to='uni_ticket.Ticket'),
+            model_name="ticket2ticket",
+            name="master_ticket",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="slave",
+                to="uni_ticket.Ticket",
+            ),
         ),
         migrations.AlterField(
-            model_name='ticket2ticket',
-            name='slave_ticket',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='master', to='uni_ticket.Ticket'),
+            model_name="ticket2ticket",
+            name="slave_ticket",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="master",
+                to="uni_ticket.Ticket",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='ticket2ticket',
-            unique_together={('slave_ticket', 'master_ticket')},
+            name="ticket2ticket",
+            unique_together={("slave_ticket", "master_ticket")},
         ),
     ]

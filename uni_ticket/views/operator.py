@@ -1,15 +1,14 @@
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import render
 from django.utils.translation import gettext as _
 
 from organizational_area.models import *
 
 from uni_ticket.decorators import is_operator
 from uni_ticket.models import *
-from uni_ticket.utils import (user_is_operator,
-                              user_offices_list,
-                              visible_tickets_to_user)
+from uni_ticket.settings import OPERATOR_PREFIX
+from uni_ticket.utils import user_offices_list, visible_tickets_to_user
+
 
 @login_required
 @is_operator
@@ -28,12 +27,14 @@ def dashboard(request, structure_slug, structure, office_employee):
     :return: render
     """
     title = _("Pannello di Controllo")
-    sub_title = _("Gestisci le richieste in modalità {}").format(settings.OPERATOR_PREFIX)
+    sub_title = _("Gestisci le richieste in modalità {}").format(
+        OPERATOR_PREFIX
+    )
     template = "operator/dashboard.html"
     offices = user_offices_list(office_employee)
-    user_tickets = visible_tickets_to_user(user=request.user,
-                                           structure=structure,
-                                           office_employee=office_employee)
+    user_tickets = visible_tickets_to_user(
+        user=request.user, structure=structure, office_employee=office_employee
+    )
     tickets = Ticket.objects.filter(code__in=user_tickets)
     not_closed = tickets.filter(is_closed=False)
     # unassigned = []
@@ -46,8 +47,7 @@ def dashboard(request, structure_slug, structure, office_employee):
         if nc.has_been_taken():
             # opened.append(nc)
             opened += 1
-            if nc.has_been_taken_by_user(structure=structure,
-                                         user=request.user):
+            if nc.has_been_taken_by_user(structure=structure, user=request.user):
                 # my_opened.append(nc)
                 my_opened += 1
         else:
@@ -58,13 +58,15 @@ def dashboard(request, structure_slug, structure, office_employee):
 
     messages = TicketReply.get_unread_messages_count(tickets=tickets)
 
-    d = {'offices': offices,
-         'structure': structure,
-         'sub_title': sub_title,
-         'title': title,
-         'ticket_aperti': opened,
-         'ticket_assegnati_a_me': my_opened,
-         'ticket_chiusi': chiusi,
-         'ticket_messages': messages,
-         'ticket_non_gestiti': unassigned,}
+    d = {
+        "offices": offices,
+        "structure": structure,
+        "sub_title": sub_title,
+        "title": title,
+        "ticket_aperti": opened,
+        "ticket_assegnati_a_me": my_opened,
+        "ticket_chiusi": chiusi,
+        "ticket_messages": messages,
+        "ticket_non_gestiti": unassigned,
+    }
     return render(request, template, d)

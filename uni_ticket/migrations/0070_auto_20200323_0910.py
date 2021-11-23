@@ -6,20 +6,24 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0069_auto_20200323_0838'),
+        ("uni_ticket", "0069_auto_20200323_0838"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ticket',
-            options={'ordering': ['is_closed', 'priority', '-created', 'code'], 'verbose_name': 'Ticket', 'verbose_name_plural': 'Ticket'},
+            name="ticket",
+            options={
+                "ordering": ["is_closed", "priority", "-created", "code"],
+                "verbose_name": "Ticket",
+                "verbose_name_plural": "Ticket",
+            },
         ),
         migrations.RemoveField(
-            model_name='ticket',
-            name='is_taken',
+            model_name="ticket",
+            name="is_taken",
         ),
         migrations.RemoveField(
-            model_name='ticket',
-            name='taken_by',
+            model_name="ticket",
+            name="taken_by",
         ),
     ]

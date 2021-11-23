@@ -6,13 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0105_auto_20200520_1059'),
+        ("uni_ticket", "0105_auto_20200520_1059"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='organizationalstructurewsarchipro',
-            name='protocollo_template',
-            field=models.TextField(help_text='Template XML che descrive il flusso'),
+            model_name="organizationalstructurewsarchipro",
+            name="protocollo_template",
+            field=models.TextField(
+                help_text="Template XML che descrive il flusso"),
         ),
     ]

@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0107_ticketcategorywsarchipro'),
+        ("uni_ticket", "0107_ticketcategorywsarchipro"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategorywsarchipro',
-            name='name',
-            field=models.CharField(default='name', max_length=255),
+            model_name="ticketcategorywsarchipro",
+            name="name",
+            field=models.CharField(default="name", max_length=255),
             preserve_default=False,
         ),
     ]

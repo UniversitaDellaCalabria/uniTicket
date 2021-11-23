@@ -6,13 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uni_ticket', '0064_auto_20200317_1229'),
+        ("uni_ticket", "0064_auto_20200317_1229"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticketcategory',
-            name='show_heading_text',
-            field=models.BooleanField(default=True, verbose_name='Mostra agli utenti un testo di accettazione in fase di apertura nuovo ticket'),
+            model_name="ticketcategory",
+            name="show_heading_text",
+            field=models.BooleanField(
+                default=True,
+                verbose_name="Mostra agli utenti un testo di accettazione in fase di apertura nuovo ticket",
+            ),
         ),
     ]
