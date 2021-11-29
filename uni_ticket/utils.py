@@ -24,6 +24,7 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext as _
 
+from django_form_builder import dynamic_fields
 from django_form_builder.utils import get_POST_as_json, format_field_name
 
 from organizational_area.models import (OrganizationalStructure,
@@ -433,9 +434,23 @@ def export_input_module_csv(module,
                  'description'])
     custom_head = []
     fields = apps.get_model('uni_ticket', 'TicketCategoryInputList').objects.filter(category_module=module)
+
     for field in fields:
-        custom_head.append(field.name)
-        head.append(field.name)
+        # need to include in export sub_fields of complex fields
+        # (django form builder)
+        # get django form builder field calss
+        form_field = getattr(dynamic_fields, field.field_type)
+        # if field is complex and is not a formset
+        if form_field.is_complex and not field.field_type == 'CustomComplexTableField':
+            # get sub_fields and use it's label
+            sub_fields = form_field(label=field.name).get_fields()
+            # append every sub_field in CSV columns
+            for sub_field in sub_fields:
+                custom_head.append(sub_field.name)
+                head.append(sub_field.name)
+        else:
+            custom_head.append(field.name)
+            head.append(field.name)
     csv_file = HttpResponse(content_type='text/csv')
     csv_file['Content-Disposition'] = 'attachment; filename="{}"'.format(file_name)
     writer = csv.writer(csv_file,
