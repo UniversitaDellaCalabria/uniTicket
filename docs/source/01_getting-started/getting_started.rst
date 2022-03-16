@@ -125,7 +125,7 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
 
     # UNITICKET JWE support
     UNITICKET_JWE_RSA_KEY_PATH = 'saml2_sp/saml2_config/certificates/key.pem'
-    UNITICKET_JWE_ALG = "RSA1_5"
+    UNITICKET_JWE_ALG = "RSA-OAEP"
     UNITICKET_JWE_ENC = "A128CBC-HS256"
     # end JWE support
 

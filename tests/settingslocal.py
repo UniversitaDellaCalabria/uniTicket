@@ -130,7 +130,7 @@ LOGGING = {
 
 # UNITICKET JWE support
 UNITICKET_JWE_RSA_KEY_PATH = 'tests/certificates/private.key'
-UNITICKET_JWE_ALG = "RSA1_5"
+UNITICKET_JWE_ALG = "RSA-OAEP"
 UNITICKET_JWE_ENC = "A128CBC-HS256"
 # end JWE support
 
