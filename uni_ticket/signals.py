@@ -55,7 +55,7 @@ def disable_others_active_protocol_configurations(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=OrganizationalStructureWSProtocollo)
-def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
+def structure_conf_disable_categories_protocol_flag_pre_save(sender, instance, **kwargs):
     """
     If an active structure configuration is disabled,
     all categories with flag checked must be updated
@@ -77,7 +77,7 @@ def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
 
 
 @receiver(pre_delete, sender=OrganizationalStructureWSProtocollo)
-def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
+def structure_conf_disable_categories_protocol_flag_pre_delete(sender, instance, **kwargs):
     """
     If an active structure configuration is deleted,
     all categories with flag checked must be updated
@@ -97,7 +97,7 @@ def structure_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=TicketCategoryWSProtocollo)
-def category_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
+def category_conf_disable_categories_protocol_flag_save(sender, instance, **kwargs):
     """
     If an active category configuration is disabled,
     category must be updated with false check
@@ -114,7 +114,7 @@ def category_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
 
 
 @receiver(pre_delete, sender=TicketCategoryWSProtocollo)
-def category_conf_disable_categories_protocol_flag(sender, instance, **kwargs):
+def category_conf_disable_categories_protocol_flag_delete(sender, instance, **kwargs):
     """
     If an active category configuration is deleted,
     category must be updated with false check

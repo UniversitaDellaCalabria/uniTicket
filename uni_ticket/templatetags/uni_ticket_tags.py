@@ -108,7 +108,8 @@ def get_label_from_form(form, field_name):
     if field:
         # toDo: better reference to django_form_builder for regex and methods
         _regexp = "(?P<colname>[a-zA-Z0-9_ ]*)"
-        content = re.search(_regexp, field.choices[0]) if field.choices else False
+        content = re.search(
+            _regexp, field.choices[0]) if field.choices else False
         ###
         if content and content.groupdict()["colname"] == formset_field_name_parts[1]:
             # get formset field pre_text
@@ -147,7 +148,8 @@ def user_operator_chat(user, structure):
 
 @register.simple_tag
 def settings_value(name, **kwargs):
-    value = getattr(settings, name, None) or getattr(uni_ticket_settings, name, None)
+    value = getattr(settings, name, None) or getattr(
+        uni_ticket_settings, name, None)
     if value and kwargs:
         return value.format(**kwargs)
     return value

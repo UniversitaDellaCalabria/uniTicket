@@ -79,7 +79,8 @@ def user_manage_something(user):
         structures = OrganizationalStructure.objects.filter(is_active=True)
     else:
         osoe = OrganizationalStructureOfficeEmployee
-        employee_offices = osoe.objects.filter(employee=user, office__is_active=True)
+        employee_offices = osoe.objects.filter(
+            employee=user, office__is_active=True)
         if not employee_offices:
             return False
         structures = []
@@ -196,7 +197,7 @@ def delete_file(file_name, path=settings.MEDIA_ROOT):
     try:
         os.remove(file_path)
         return path
-    except:
+    except Exception:
         return False
 
 
@@ -208,7 +209,7 @@ def delete_directory(path):
     try:
         shutil.rmtree(path)
         return path
-    except:
+    except Exception:
         logger.error("Error removing folder{}".format(path))
         return False
 
@@ -329,9 +330,10 @@ def ticket_user_summary_dict(user):
     for structure in structures:
         d[structure] = {}
         user_type = get_user_type(user, structure)
-        offices = oso.objects.filter(organizational_structure=structure, is_active=True)
+        offices = oso.objects.filter(
+            organizational_structure=structure, is_active=True)
         for office in offices:
-            if user_type == "operator" and not office in office_employee:
+            if user_type == "operator" and office not in office_employee:
                 continue
             assignments = assign_model.objects.filter(
                 office=office, follow=True, readonly=False, ticket__is_closed=False
@@ -431,7 +433,8 @@ def send_custom_mail(subject, recipients, body, params={}, force=False):
 
     if recipients_list:
         msg_body_list = [MSG_HEADER, body, MSG_FOOTER]
-        msg_body = "".join([i.__str__() for i in msg_body_list]).format(**params)
+        msg_body = "".join([i.__str__()
+                            for i in msg_body_list]).format(**params)
         result = send_mail(
             subject=subject,
             message=msg_body,
@@ -488,7 +491,7 @@ def get_text_with_hrefs(text):
     """
     new_text = "".join([ch for ch in text])
     href_tmpl = '<a target="{}" href="{}">{}</a>'
-    regexp = re.compile("https?://[\.A-Za-z0-9\-\_\:\/\?\&\=\+\%]*", re.I)
+    regexp = re.compile(r"https?://[\.A-Za-z0-9\-\_\:\/\?\&\=\+\%]*", re.I)
     for ele in re.findall(regexp, text):
         target = str(random.random())[2:]
         a_value = href_tmpl.format(target, ele, ele)
@@ -520,10 +523,12 @@ def export_input_module_csv(
     head = ["created", "user", "taxpayer_id"]
     if hasattr(settings, "EMPLOYEE_ATTRIBUTE_NAME"):
         head.append(
-            getattr(settings, "EMPLOYEE_ATTRIBUTE_LABEL", EMPLOYEE_ATTRIBUTE_LABEL)
+            getattr(settings, "EMPLOYEE_ATTRIBUTE_LABEL",
+                    EMPLOYEE_ATTRIBUTE_LABEL)
         )
     if hasattr(settings, "USER_ATTRIBUTE_NAME"):
-        head.append(getattr(settings, "USER_ATTRIBUTE_LABEL", USER_ATTRIBUTE_NAME))
+        head.append(
+            getattr(settings, "USER_ATTRIBUTE_LABEL", USER_ATTRIBUTE_NAME))
     head.extend(["status", "subject", "description"])
     custom_head = []
     fields = apps.get_model("uni_ticket", "TicketCategoryInputList").objects.filter(
@@ -547,7 +552,8 @@ def export_input_module_csv(
             custom_head.append(field.name)
             head.append(field.name)
     csv_file = HttpResponse(content_type="text/csv")
-    csv_file["Content-Disposition"] = 'attachment; filename="{}"'.format(file_name)
+    csv_file["Content-Disposition"] = 'attachment; filename="{}"'.format(
+        file_name)
     writer = csv.writer(
         csv_file, dialect=dialect, delimiter=delimiter, quotechar=quotechar
     )

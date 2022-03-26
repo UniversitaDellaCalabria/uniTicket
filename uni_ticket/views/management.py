@@ -188,7 +188,8 @@ def ticket_detail(
     priority = ticket.get_priority()
     allegati = ticket.get_allegati_dict()
     path_allegati = get_path(ticket.get_folder())
-    ticket_form = ticket.input_module.get_form(files=allegati, remove_filefields=False)
+    ticket_form = ticket.input_module.get_form(
+        files=allegati, remove_filefields=False)
     ticket_logs = LogEntry.objects.filter(
         content_type_id=ContentType.objects.get_for_model(ticket).pk,
         object_id=ticket.pk,
@@ -219,7 +220,8 @@ def ticket_detail(
                 current_user=user,
             )
             # assign forms to every untaken office
-            offices_forms[u_office] = (office_priority_form, office_operators_form)
+            offices_forms[u_office] = (
+                office_priority_form, office_operators_form)
 
     if request.method == "POST":
         if can_manage["readonly"]:
@@ -233,7 +235,8 @@ def ticket_detail(
             )
         if ticket.is_closed:
             messages.add_message(
-                request, messages.ERROR, _("Impossibile modificare un ticket chiuso")
+                request, messages.ERROR, _(
+                    "Impossibile modificare un ticket chiuso")
             )
             return redirect(
                 "uni_ticket:manage_ticket_url_detail",
@@ -243,7 +246,8 @@ def ticket_detail(
 
         # check if user has taken or assigned competence
         for o in offices_forms:
-            office_priority_form = TakeTicketForm(request.POST, office_referred=o)
+            office_priority_form = TakeTicketForm(
+                request.POST, office_referred=o)
             office_op_form = AssignTicketToOperatorForm(
                 request.POST,
                 structure=o.organizational_structure,
@@ -264,7 +268,8 @@ def ticket_detail(
                 priority_text = dict(PRIORITY_LEVELS).get(priority)
                 msg = _(
                     "Ticket preso in carico da {}. "
-                    "Priorità assegnata: {}".format(request.user, priority_text)
+                    "Priorità assegnata: {}".format(
+                        request.user, priority_text)
                 )
                 if not SIMPLE_USER_SHOW_PRIORITY:
                     msg = _("Ticket preso in carico da {}.".format(request.user))
@@ -292,7 +297,8 @@ def ticket_detail(
                 assignment.taken_by = operator
                 assignment.assigned_by = request.user
                 assignment.save(
-                    update_fields=["assigned_by", "taken_date", "taken_by", "modified"]
+                    update_fields=["assigned_by",
+                                   "taken_date", "taken_by", "modified"]
                 )
                 priority_text = dict(PRIORITY_LEVELS).get(priority)
                 msg = _(
@@ -303,7 +309,8 @@ def ticket_detail(
                 )
                 if not SIMPLE_USER_SHOW_PRIORITY:
                     msg = _(
-                        "Richiesta assegnata a {} da {}.".format(operator, request.user)
+                        "Richiesta assegnata a {} da {}.".format(
+                            operator, request.user)
                     )
                 ticket.update_log(user=request.user, note=msg)
                 messages.add_message(
@@ -334,7 +341,8 @@ def ticket_detail(
                     ),
                 }
                 m_subject = _(
-                    "{} - richiesta {} assegnata".format(settings.HOSTNAME, ticket)
+                    "{} - richiesta {} assegnata".format(
+                        settings.HOSTNAME, ticket)
                 )
                 send_custom_mail(
                     subject=m_subject,
@@ -384,7 +392,8 @@ def ticket_detail(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
 
     d = {
@@ -605,7 +614,8 @@ def ticket_dependence_add_new(
             ticket.update_log(
                 user=request.user,
                 note=_(
-                    "Aggiunta dipendenza dalla richiesta:" " {}".format(main_ticket)
+                    "Aggiunta dipendenza dalla richiesta:" " {}".format(
+                        main_ticket)
                 ),
             )
             messages.add_message(
@@ -623,7 +633,8 @@ def ticket_dependence_add_new(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
     d = {
         "form": form,
@@ -717,7 +728,8 @@ def ticket_close_url(request, structure_slug, ticket_id):  # pragma: no cover
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
     return redirect(
-        "uni_ticket:{}_close_ticket".format(user_type), structure_slug, ticket_id
+        "uni_ticket:{}_close_ticket".format(
+            user_type), structure_slug, ticket_id
     )
 
 
@@ -835,7 +847,8 @@ def ticket_close(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
 
     user_type = get_user_type(request.user, structure)
@@ -877,7 +890,8 @@ def ticket_reopen(request, structure_slug, ticket_id, structure, can_manage, tic
         # log action
         logger.error(
             "[{}] {} tried to reopen"
-            " not closed ticket {}".format(timezone.localtime(), request.user, ticket)
+            " not closed ticket {}".format(
+                timezone.localtime(), request.user, ticket)
         )
         return custom_message(
             request,
@@ -935,7 +949,8 @@ def ticket_reopen(request, structure_slug, ticket_id, structure, can_manage, tic
 
     # log action
     logger.info(
-        "[{}] {} reopened ticket {}".format(timezone.localtime(), request.user, ticket)
+        "[{}] {} reopened ticket {}".format(
+            timezone.localtime(), request.user, ticket)
     )
 
     messages.add_message(
@@ -1006,7 +1021,8 @@ def ticket_competence_add_new(
     :return: render
     """
     if can_manage["readonly"]:
-        messages.add_message(request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET)
+        messages.add_message(request, messages.ERROR,
+                             READONLY_COMPETENCE_OVER_TICKET)
         return redirect(
             "uni_ticket:manage_ticket_url_detail",
             structure_slug=structure_slug,
@@ -1160,7 +1176,8 @@ def ticket_competence_add_final(
                     # else:
                     ticket.update_log(
                         user=request.user,
-                        note=_("Competenza abbandonata da" " Ufficio: {}".format(off)),
+                        note=_(
+                            "Competenza abbandonata da" " Ufficio: {}".format(off)),
                     )
 
             # If follow but readonly
@@ -1193,7 +1210,8 @@ def ticket_competence_add_final(
             # If follow and want to manage
             ticket.add_competence(office=new_office, user=request.user)
             ticket.update_log(
-                user=request.user, note=_("Nuova competenza: {}").format(new_office)
+                user=request.user, note=_(
+                    "Nuova competenza: {}").format(new_office)
             )
 
             # log action
@@ -1213,7 +1231,8 @@ def ticket_competence_add_final(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
     user_type = get_user_type(request.user, structure)
     template = "{}/add_ticket_competence.html".format(user_type)
@@ -1249,7 +1268,8 @@ def ticket_message_url(request, structure_slug, ticket_id):  # pragma: no cover
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
     return redirect(
-        "uni_ticket:{}_ticket_message".format(user_type), structure_slug, ticket_id
+        "uni_ticket:{}_ticket_message".format(
+            user_type), structure_slug, ticket_id
     )
 
 
@@ -1294,7 +1314,8 @@ def ticket_message(
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
     form = ReplyForm()
 
-    ticket_taken = ticket.has_been_taken(structure=structure, exclude_readonly=True)
+    ticket_taken = ticket.has_been_taken(
+        structure=structure, exclude_readonly=True)
 
     # if ticket.is_open() and can_manage:
     if can_manage:
@@ -1369,7 +1390,8 @@ def ticket_message(
                 ),
             }
             m_subject = _(
-                "{} - richiesta {} nuovo messaggio".format(settings.HOSTNAME, ticket)
+                "{} - richiesta {} nuovo messaggio".format(
+                    settings.HOSTNAME, ticket)
             )
             send_custom_mail(
                 subject=m_subject,
@@ -1390,7 +1412,8 @@ def ticket_message(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
     d = {
         "form": form,
@@ -1421,7 +1444,8 @@ def task_add_new_url(request, structure_slug, ticket_id):  # pragma: no cover
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
     return redirect(
-        "uni_ticket:{}_add_ticket_task".format(user_type), structure_slug, ticket_id
+        "uni_ticket:{}_add_ticket_task".format(
+            user_type), structure_slug, ticket_id
     )
 
 
@@ -1480,7 +1504,8 @@ def task_add_new(
             )
 
             ticket.update_log(
-                user=request.user, note=_("Aggiunta attività: {}".format(new_task))
+                user=request.user, note=_(
+                    "Aggiunta attività: {}".format(new_task))
             )
             messages.add_message(
                 request,
@@ -1495,7 +1520,8 @@ def task_add_new(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
     d = {
         "form": form,
@@ -1541,13 +1567,16 @@ def task_remove(
     logger.error(
         "[{}] {} tried to"
         " removed task {}"
-        " in ticket {}".format(timezone.localtime(), request.user, task, ticket)
+        " in ticket {}".format(timezone.localtime(),
+                               request.user, task, ticket)
     )
 
     task.delete()
-    ticket.update_log(user=request.user, note=_("Rimossa attività: {}".format(task)))
+    ticket.update_log(user=request.user, note=_(
+        "Rimossa attività: {}".format(task)))
     messages.add_message(
-        request, messages.SUCCESS, _("Attività {} rimossa correttamente".format(task))
+        request, messages.SUCCESS, _(
+            "Attività {} rimossa correttamente".format(task))
     )
     return redirect(
         "uni_ticket:manage_ticket_url_detail",
@@ -1620,7 +1649,8 @@ def task_detail(
     priority = task.get_priority()
     # allegati = ticket.get_allegati_dict()
     task_logs = LogEntry.objects.filter(
-        content_type_id=ContentType.objects.get_for_model(task).pk, object_id=task.pk
+        content_type_id=ContentType.objects.get_for_model(
+            task).pk, object_id=task.pk
     )
     form = PriorityForm(data={"priorita": task.priority})
     if request.method == "POST":
@@ -1648,11 +1678,13 @@ def task_detail(
             # log action
             logger.error(
                 "[{}] {} tried to"
-                " edit closed task {}".format(timezone.localtime(), request.user, task)
+                " edit closed task {}".format(
+                    timezone.localtime(), request.user, task)
             )
 
             messages.add_message(
-                request, messages.ERROR, _("Impossibile modificare un'attività chiusa")
+                request, messages.ERROR, _(
+                    "Impossibile modificare un'attività chiusa")
             )
             return redirect(
                 "uni_ticket:manage_task_detail_url",
@@ -1681,7 +1713,8 @@ def task_detail(
             )
 
             messages.add_message(
-                request, messages.SUCCESS, _("Attività aggiornata con successo")
+                request, messages.SUCCESS, _(
+                    "Attività aggiornata con successo")
             )
             return redirect(
                 "uni_ticket:manage_task_detail_url",
@@ -1692,7 +1725,8 @@ def task_detail(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
     d = {
         "form": form,
@@ -1832,7 +1866,8 @@ def task_close(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
     user_type = get_user_type(request.user, structure)
     template = "{}/task_close.html".format(user_type)
@@ -1903,12 +1938,14 @@ def task_reopen(
     logger.error(
         "[{}] {} tried to"
         " reopened task {}"
-        " in closed ticket {}".format(timezone.localtime(), request.user, task, ticket)
+        " in closed ticket {}".format(
+            timezone.localtime(), request.user, task, ticket)
     )
 
     ticket.update_log(user=request.user, note=msg)
     messages.add_message(
-        request, messages.SUCCESS, _("Attività {} riaperta correttamente".format(task))
+        request, messages.SUCCESS, _(
+            "Attività {} riaperta correttamente".format(task))
     )
     return redirect(
         "uni_ticket:manage_ticket_url_detail",
@@ -2002,11 +2039,13 @@ def task_edit(
             # log action
             logger.error(
                 "[{}] {} tried to"
-                " edit closed task {}".format(timezone.localtime(), request.user, task)
+                " edit closed task {}".format(
+                    timezone.localtime(), request.user, task)
             )
 
             messages.add_message(
-                request, messages.ERROR, _("Impossibile modificare un'attività chiusa")
+                request, messages.ERROR, _(
+                    "Impossibile modificare un'attività chiusa")
             )
             return redirect(
                 "uni_ticket:manage_task_detail_url",
@@ -2022,7 +2061,8 @@ def task_edit(
             if task.priority != form.cleaned_data["priority"]:
                 msg = msg + _(
                     " e Priorità assegnata: {}"
-                    "".format(dict(PRIORITY_LEVELS).get(form.cleaned_data["priority"]))
+                    "".format(dict(PRIORITY_LEVELS).get(
+                        form.cleaned_data["priority"]))
                 )
             form.save()
 
@@ -2036,7 +2076,8 @@ def task_edit(
             task.update_log(user=request.user, note=msg)
             ticket.update_log(user=request.user, note=msg)
             messages.add_message(
-                request, messages.SUCCESS, _("Attività aggiornata con successo")
+                request, messages.SUCCESS, _(
+                    "Attività aggiornata con successo")
             )
             return redirect(
                 "uni_ticket:edit_task",
@@ -2047,7 +2088,8 @@ def task_edit(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
 
     d = {
@@ -2136,7 +2178,8 @@ def task_attachment_delete(
 def ticket_taken_by_unassigned_offices(
     request, structure_slug, ticket_id, structure, can_manage, ticket
 ):
-    offices = ticket.is_untaken_by_user_offices(user=request.user, structure=structure)
+    offices = ticket.is_untaken_by_user_offices(
+        user=request.user, structure=structure)
     for office in offices:
         assignment = TicketAssignment.objects.filter(
             ticket=ticket, office=office, taken_date__isnull=True
@@ -2221,7 +2264,8 @@ def ticket_competence_leave(
                 )
                 assignment_to_disable.follow = False
                 assignment_to_disable.readonly = False
-                assignment_to_disable.save(update_fields=["follow", "readonly"])
+                assignment_to_disable.save(
+                    update_fields=["follow", "readonly"])
 
                 logger.info(
                     "[{}] {} removed competence of office {}"
@@ -2301,7 +2345,8 @@ def export_detailed_report(request, structure_slug):
             if not ticket:
                 continue
             access_ok = (
-                user_type == "manager" and ticket.is_followed_in_structure(structure)
+                user_type == "manager" and ticket.is_followed_in_structure(
+                    structure)
             ) or (
                 user_type == "operator"
                 and ticket.is_followed_by_one_of_offices(offices=offices)
@@ -2322,11 +2367,13 @@ def export_detailed_report(request, structure_slug):
                     cat_zip = export_category_zip(cat, ticket_codes)
                     if len(categories) == 1:
                         return cat_zip
-                    f.writestr(cat.name.replace("/", "_") + ".zip", cat_zip.content)
+                    f.writestr(cat.name.replace("/", "_") +
+                               ".zip", cat_zip.content)
                 except:
                     continue
             f.close()
-            response = HttpResponse(output.getvalue(), content_type="application/zip")
+            response = HttpResponse(
+                output.getvalue(), content_type="application/zip")
             response[
                 "Content-Disposition"
             ] = 'attachment; filename="uniticket_{}.zip"'.format(timezone.localtime())

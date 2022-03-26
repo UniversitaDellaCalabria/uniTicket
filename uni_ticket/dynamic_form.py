@@ -34,7 +34,8 @@ class DynamicForm(BaseDynamicForm):
         # If conditions to accept, generate checkbox field
         # and put it in initial fields
         if conditions and show_conditions:
-            conditions_id = dynamic_fields.format_field_name(TICKET_CONDITIONS_FIELD_ID)
+            conditions_id = dynamic_fields.format_field_name(
+                TICKET_CONDITIONS_FIELD_ID)
             conditions_data = {
                 "required": True,
                 "label": TICKET_CONDITIONS_TEXT,
@@ -53,21 +54,25 @@ class DynamicForm(BaseDynamicForm):
             "help_text": TICKET_SUBJECT_HELP_TEXT,
             "initial": subject_initial,
         }
-        subject_field = getattr(dynamic_fields, "CustomCharField")(**subject_data)
+        subject_field = getattr(
+            dynamic_fields, "CustomCharField")(**subject_data)
         self.initial_fields[subject_id] = subject_field
 
         # Generate DESCRIZIONE TICKET field
         # and put it in initial fields
-        description_id = dynamic_fields.format_field_name(TICKET_DESCRIPTION_ID)
+        description_id = dynamic_fields.format_field_name(
+            TICKET_DESCRIPTION_ID)
         description_data = {
             "required": True,
             "label": TICKET_DESCRIPTION_LABEL,
             "help_text": TICKET_DESCRIPTION_HELP_TEXT,
             "initial": description_initial,
         }
-        description_field = getattr(dynamic_fields, "TextAreaField")(**description_data)
+        description_field = getattr(
+            dynamic_fields, "TextAreaField")(**description_data)
         self.initial_fields[description_id] = description_field
-        self.initial_fields[description_id].widget = forms.Textarea(attrs={"rows": 2})
+        self.initial_fields[description_id].widget = forms.Textarea(attrs={
+                                                                    "rows": 2})
 
         # if current_user is anonymous, generate CAPTCHA field
         # and put it in final_fields

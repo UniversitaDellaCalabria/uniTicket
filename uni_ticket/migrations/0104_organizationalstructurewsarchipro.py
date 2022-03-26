@@ -35,7 +35,8 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "protocollo_fascicolo_numero",
-                    models.CharField(max_length=12, verbose_name="Fascicolo numero"),
+                    models.CharField(
+                        max_length=12, verbose_name="Fascicolo numero"),
                 ),
                 (
                     "protocollo_template",

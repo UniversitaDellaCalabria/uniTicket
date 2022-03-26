@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="organizationalstructurewsarchipro",
             name="protocollo_template",
-            field=models.TextField(help_text="Template XML che descrive il flusso"),
+            field=models.TextField(
+                help_text="Template XML che descrive il flusso"),
         ),
     ]

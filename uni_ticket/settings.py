@@ -4,8 +4,10 @@ from django.utils.translation import gettext_lazy as _
 # system attachments folders
 LOGOS_FOLDER = getattr(settings, "LOGOS_FOLDER", "logos")
 STRUCTURES_FOLDER = getattr(settings, "STRUCTURES_FOLDER", "structures")
-TICKET_ATTACHMENT_FOLDER = getattr(settings, "TICKET_ATTACHMENT_FOLDER", "ticket")
-TICKET_CATEGORIES_FOLDER = getattr(settings, "TICKET_CATEGORIES_FOLDER", "categories")
+TICKET_ATTACHMENT_FOLDER = getattr(
+    settings, "TICKET_ATTACHMENT_FOLDER", "ticket")
+TICKET_CATEGORIES_FOLDER = getattr(
+    settings, "TICKET_CATEGORIES_FOLDER", "categories")
 TICKET_MESSAGES_ATTACHMENT_SUBFOLDER = getattr(
     settings, "TICKET_MESSAGES_ATTACHMENT_SUBFOLDER", "messages"
 )
@@ -26,7 +28,8 @@ UNITICKET_JWE_ENC = getattr(settings, "UNITICKET_JWE_ENC", "A128CBC-HS256")
 SUPER_USER_VIEW_ALL = getattr(settings, "SUPER_USER_VIEW_ALL", True)
 
 # show ticket priority to simple userse
-SIMPLE_USER_SHOW_PRIORITY = getattr(settings, "SIMPLE_USER_SHOW_PRIORITY", False)
+SIMPLE_USER_SHOW_PRIORITY = getattr(
+    settings, "SIMPLE_USER_SHOW_PRIORITY", False)
 
 # category conditions form field
 TICKET_CONDITIONS_FIELD_ID = getattr(
@@ -79,7 +82,8 @@ TICKET_SUBJECT_HELP_TEXT = getattr(
 )
 
 # ticket description
-TICKET_DESCRIPTION_ID = getattr(settings, "TICKET_DESCRIPTION_ID", "ticket_description")
+TICKET_DESCRIPTION_ID = getattr(
+    settings, "TICKET_DESCRIPTION_ID", "ticket_description")
 TICKET_DESCRIPTION_LABEL = getattr(
     settings, "TICKET_DESCRIPTION_LABEL", _("Descrizione")
 )
@@ -164,7 +168,8 @@ MANAGEMENT_URL_PREFIX = {
 
 # ticket competence abandoned
 NO_MORE_COMPETENCE_OVER_TICKET = getattr(
-    settings, "NO_MORE_COMPETENCE_OVER_TICKET", _("Nessuna competenza sulla richiesta")
+    settings, "NO_MORE_COMPETENCE_OVER_TICKET", _(
+        "Nessuna competenza sulla richiesta")
 )
 # ticket readonly access
 READONLY_COMPETENCE_OVER_TICKET = getattr(
@@ -174,7 +179,8 @@ READONLY_COMPETENCE_OVER_TICKET = getattr(
 )
 
 # min ticket content length (digits) to compress
-TICKET_MIN_DIGITS_TO_COMPRESS = getattr(settings, "TICKET_MIN_DIGITS_TO_COMPRESS", 90)
+TICKET_MIN_DIGITS_TO_COMPRESS = getattr(
+    settings, "TICKET_MIN_DIGITS_TO_COMPRESS", 90)
 
 # Access level to categories
 # Override for your own context
@@ -195,13 +201,16 @@ ORGANIZATION_EMPLOYEE_LABEL = getattr(
 )
 # If True, an internal user (not guest) is a user that has this filled (in user model)
 # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
-USER_ATTRIBUTE_NAME = getattr(settings, "USER_ATTRIBUTE_NAME", "matricola_studente")
-USER_ATTRIBUTE_LABEL = getattr(settings, "USER_ATTRIBUTE_LABEL", "Matricola studente")
+USER_ATTRIBUTE_NAME = getattr(
+    settings, "USER_ATTRIBUTE_NAME", "matricola_studente")
+USER_ATTRIBUTE_LABEL = getattr(
+    settings, "USER_ATTRIBUTE_LABEL", "Matricola studente")
 
 # Ticket categories CSV export
 # additional user fields to export
 ADDITIONAL_USER_FIELDS = getattr(
-    settings, "ADDITIONAL_USER_FIELDS", [EMPLOYEE_ATTRIBUTE_NAME, USER_ATTRIBUTE_NAME]
+    settings, "ADDITIONAL_USER_FIELDS", [
+        EMPLOYEE_ATTRIBUTE_NAME, USER_ATTRIBUTE_NAME]
 )
 
 # REQUIRED
@@ -434,7 +443,8 @@ TITOLARIO_DICT = (
 # END REQUIRED
 
 # Label
-ORGANIZATION_USER_LABEL = getattr(settings, "ORGANIZATION_USER_LABEL", "Studenti")
+ORGANIZATION_USER_LABEL = getattr(
+    settings, "ORGANIZATION_USER_LABEL", "Studenti")
 
 # error message for user that has compiled a request but it's not the owner
 TICKET_SHARING_USER_ERROR_MESSAGE = getattr(
@@ -484,7 +494,8 @@ UNAVAILABLE_TICKET_CATEGORY = getattr(
 )
 
 NEW_TICKET_CREATED_ALERT = getattr(
-    settings, "NEW_TICKET_CREATED_ALERT", _("""Richiesta "{}" creata con successo""")
+    settings, "NEW_TICKET_CREATED_ALERT", _(
+        """Richiesta "{}" creata con successo""")
 )
 
 NEW_TICKET_CREATED = getattr(

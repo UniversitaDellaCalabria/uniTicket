@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="ticketcategorywsprotocollo",
             name="protocollo_fascicolo_numero",
-            field=models.CharField(max_length=255, verbose_name="Fascicolo numero"),
+            field=models.CharField(
+                max_length=255, verbose_name="Fascicolo numero"),
         ),
     ]

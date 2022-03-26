@@ -79,7 +79,8 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
         # copy category task attachments in ticket task folder
         if task.attachment:
             source = "{}/{}".format(settings.MEDIA_ROOT, task.get_folder())
-            destination = "{}/{}".format(settings.MEDIA_ROOT, ticket_task.get_folder())
+            destination = "{}/{}".format(settings.MEDIA_ROOT,
+                                         ticket_task.get_folder())
             try:
                 if os.path.exists(source):
                     shutil.copytree(source, destination)
@@ -102,7 +103,8 @@ def _close_notification_ticket(ticket, user):  # operator, ticket_assignment):
     # default closing status: success
     ticket.closing_status = 1
     ticket.save(
-        update_fields=["is_notification", "is_closed", "closed_date", "closing_status"]
+        update_fields=["is_notification", "is_closed",
+                       "closed_date", "closing_status"]
     )
     # 'closed_by'])
 
@@ -187,7 +189,8 @@ def _send_new_ticket_mail_to_operators(
 
     mail_params["user"] = OPERATOR_PREFIX
     msg_body_list = [MSG_HEADER, message_template, MSG_FOOTER]
-    msg_body = "".join([i.__str__() for i in msg_body_list]).format(**mail_params)
+    msg_body = "".join([i.__str__()
+                        for i in msg_body_list]).format(**mail_params)
     result = send_mail(
         subject=m_subject,
         message=msg_body,
@@ -266,12 +269,15 @@ def ticket_new_preload(request, structure_slug=None):
 
         if is_employee and is_user:
             categorie = categorie.filter(
-                Q(allow_employee=True) | Q(allow_user=True) | Q(allow_guest=True)
+                Q(allow_employee=True) | Q(
+                    allow_user=True) | Q(allow_guest=True)
             )
         elif is_employee:
-            categorie = categorie.filter(Q(allow_employee=True) | Q(allow_guest=True))
+            categorie = categorie.filter(
+                Q(allow_employee=True) | Q(allow_guest=True))
         elif is_user:
-            categorie = categorie.filter(Q(allow_user=True) | Q(allow_guest=True))
+            categorie = categorie.filter(
+                Q(allow_user=True) | Q(allow_guest=True))
         else:
             categorie = categorie.filter(allow_guest=True)
 
@@ -328,7 +334,8 @@ def ticket_add_new(request, structure_slug, category_slug):
 
     # if anonymous user and category only for logged users
     if not category.allow_anonymous and not request.user.is_authenticated:
-        redirect_url = "{}?next={}".format(settings.LOGIN_URL, request.get_full_path())
+        redirect_url = "{}?next={}".format(
+            settings.LOGIN_URL, request.get_full_path())
         return redirect(redirect_url)
 
     # is user is authenticated
@@ -370,7 +377,8 @@ def ticket_add_new(request, structure_slug, category_slug):
     title = category
     template = "user/ticket_add_new.html"
     sub_title = (
-        category.description if category.description else _("Compila i campi richiesti")
+        category.description if category.description else _(
+            "Compila i campi richiesti")
     )
 
     # user that compiled ticket
@@ -402,7 +410,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                 get_user_model().objects.filter(pk=compiled_by_user_id).first()
             )
             compiled_date = (
-                parse_datetime(imported_data.get(TICKET_COMPILED_CREATION_DATE))
+                parse_datetime(imported_data.get(
+                    TICKET_COMPILED_CREATION_DATE))
                 if imported_data.get(TICKET_COMPILED_CREATION_DATE)
                 else timezone.localtime()
             )
@@ -472,7 +481,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                 form_data.update({TICKET_INPUT_MODULE_NAME: modulo.pk})
 
                 if request.POST.get(TICKET_COMPILED_BY_USER_NAME):
-                    form_data.update({TICKET_COMPILED_BY_USER_NAME: request.user.pk})
+                    form_data.update(
+                        {TICKET_COMPILED_BY_USER_NAME: request.user.pk})
                     form_data.update(
                         {
                             TICKET_COMPILED_CREATION_DATE: timezone.localtime().isoformat()
@@ -614,7 +624,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                 )
 
                 # assign ticket to the office
-                ticket_assignment = TicketAssignment(ticket=ticket, office=office)
+                ticket_assignment = TicketAssignment(
+                    ticket=ticket, office=office)
                 ticket_assignment.save()
 
                 # log action
@@ -625,7 +636,8 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 # if it's a notification ticket, take and close the ticket
                 if category.is_notification:
-                    _close_notification_ticket(ticket=ticket, user=current_user)
+                    _close_notification_ticket(
+                        ticket=ticket, user=current_user)
                     # operator=random_office_operator,
                     # ticket_assignment=ticket_assignment)
 
@@ -674,7 +686,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                         # set protocol data in ticket
                         ticket.protocol_number = protocol_number
                         ticket.protocol_date = timezone.localtime()
-                        ticket.save(update_fields=["protocol_number", "protocol_date"])
+                        ticket.save(update_fields=[
+                                    "protocol_number", "protocol_date"])
                         messages.add_message(
                             request,
                             messages.SUCCESS,
@@ -695,7 +708,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                         logger.error(
                             "[{}] user {} protocol for ticket {} "
                             "failed: {}"
-                            "".format(timezone.localtime(), log_user, ticket, e)
+                            "".format(timezone.localtime(),
+                                      log_user, ticket, e)
                         )
                         # delete attachments
                         # delete_directory(ticket.get_folder())
@@ -727,7 +741,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                     and ticket.protocol_number
                     or not category.protocol_required
                 ):
-                    messages.add_message(request, messages.SUCCESS, compiled_message)
+                    messages.add_message(
+                        request, messages.SUCCESS, compiled_message)
 
                 # if office operators must receive notification email
                 if category.receive_email:
@@ -799,7 +814,8 @@ def ticket_add_new(request, structure_slug, category_slug):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
     return render(request, template, d)
 
@@ -834,7 +850,8 @@ def dashboard(request):
     # chiusi = tickets.filter(is_closed=True)
     chiusi = tickets.filter(is_closed=True).count()
 
-    messages = TicketReply.get_unread_messages_count(tickets=tickets, by_operator=True)
+    messages = TicketReply.get_unread_messages_count(
+        tickets=tickets, by_operator=True)
 
     d = {
         "priority_levels": PRIORITY_LEVELS,
@@ -878,7 +895,8 @@ def ticket_edit(request, ticket_id):
         messages.add_message(
             request,
             messages.ERROR,
-            settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by),
+            settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(
+                ticket.created_by),
         )
         return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
 
@@ -904,7 +922,8 @@ def ticket_edit(request, ticket_id):
     }
     if request.method == "POST":
         fields_to_pop = [TICKET_CONDITIONS_FIELD_ID]
-        json_post = get_POST_as_json(request=request, fields_to_pop=fields_to_pop)
+        json_post = get_POST_as_json(
+            request=request, fields_to_pop=fields_to_pop)
         json_response = json.loads(json_post)
         # Costruisco il form con il json dei dati inviati e tutti gli allegati
         # json_response[settings.ATTACHMENTS_DICT_PREFIX]=allegati
@@ -952,13 +971,15 @@ def ticket_edit(request, ticket_id):
 
             # Attach a message to redirect action
             messages.add_message(
-                request, messages.SUCCESS, _("Modifica effettuata con successo")
+                request, messages.SUCCESS, _(
+                    "Modifica effettuata con successo")
             )
             return redirect("uni_ticket:ticket_edit", ticket_id=ticket_id)
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
 
     return render(request, template, d)
@@ -1046,7 +1067,8 @@ def ticket_delete(request, ticket_id):
         messages.add_message(
             request,
             messages.ERROR,
-            settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by),
+            settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(
+                ticket.created_by),
         )
         return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
 
@@ -1071,7 +1093,8 @@ def ticket_delete(request, ticket_id):
         "status": _("eliminato"),
         "ticket": ticket,
     }
-    m_subject = _("{} - richiesta {} eliminata".format(settings.HOSTNAME, ticket))
+    m_subject = _(
+        "{} - richiesta {} eliminata".format(settings.HOSTNAME, ticket))
 
     send_custom_mail(
         subject=m_subject,
@@ -1122,7 +1145,8 @@ def ticket_detail(request, ticket_id, template="user/ticket_detail.html"):
     )
     allegati = ticket.get_allegati_dict()
     path_allegati = get_path(ticket.get_folder())
-    ticket_form = ticket.input_module.get_form(files=allegati, remove_filefields=False)
+    ticket_form = ticket.input_module.get_form(
+        files=allegati, remove_filefields=False)
     priority = ticket.get_priority()
 
     ticket_logs = LogEntry.objects.filter(
@@ -1220,7 +1244,8 @@ def ticket_message(request, ticket_id):
             # log action
             logger.info(
                 "[{}] user {} submitted a message"
-                " for ticket {}".format(timezone.localtime(), request.user, ticket)
+                " for ticket {}".format(
+                    timezone.localtime(), request.user, ticket)
             )
 
             # add to ticket log history
@@ -1244,7 +1269,8 @@ def ticket_message(request, ticket_id):
                 ),
             }
             m_subject = _(
-                "{} - richiesta {} messaggio inviato".format(settings.HOSTNAME, ticket)
+                "{} - richiesta {} messaggio inviato".format(
+                    settings.HOSTNAME, ticket)
             )
             send_custom_mail(
                 subject=m_subject,
@@ -1290,7 +1316,8 @@ def ticket_message(request, ticket_id):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
     d = {
         "form": form,
@@ -1360,7 +1387,8 @@ def ticket_close(request, ticket_id):
         messages.add_message(
             request,
             messages.ERROR,
-            settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by),
+            settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(
+                ticket.created_by),
         )
         return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
 
@@ -1407,7 +1435,8 @@ def ticket_close(request, ticket_id):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
                 )
 
     template = "user/ticket_close.html"
@@ -1445,7 +1474,8 @@ def ticket_reopen(request, ticket_id):
     if ticket.closed_by:
         logger.error(
             "[{}] {} tried to reopen ticket {} "
-            " closed by operator".format(timezone.localtime(), request.user, ticket)
+            " closed by operator".format(
+                timezone.localtime(), request.user, ticket)
         )
         return custom_message(
             request,
@@ -1487,7 +1517,8 @@ def ticket_reopen(request, ticket_id):
     msg = _("Riapertura richiesta {} da utente proprietario").format(ticket)
     # log action
     logger.error(
-        "[{}] {} reopened ticket {}".format(timezone.localtime(), request.user, ticket)
+        "[{}] {} reopened ticket {}".format(
+            timezone.localtime(), request.user, ticket)
     )
 
     ticket.update_log(user=request.user, note=msg)
@@ -1541,7 +1572,8 @@ def ticket_clone(request, ticket_id):
     # if ticket module is out of date
     if not main_ticket.input_module.is_active:
         return custom_message(
-            request, _("Il modulo che stai cercando " "di usare non è più attivo.")
+            request, _(
+                "Il modulo che stai cercando " "di usare non è più attivo.")
         )
 
     category = main_ticket.input_module.ticket_category
@@ -1597,66 +1629,3 @@ def download_ticket_pdf(
 
     # no need to merge if not attachments to manage :)
     return response_as_pdf(response, pdf_fname)
-
-    #
-    #
-    #
-    # if we want to manage attachments
-    # we have to merge them in the main file (but only pdf!)
-    #
-    #
-    #
-
-    # pdf_path = settings.TMP_DIR + os.path.sep + pdf_fname
-    # main_pdf_file = response_as_pdf(response, pdf_fname).content
-    # merger = PdfFileMerger(strict=False)
-    # main_pdf_file = BytesIO(main_pdf_file)
-    # merger.append(main_pdf_file)
-
-    # try:
-    # #append attachments
-
-    # #not PDF files raise Exception!
-
-    # for k,v in ticket.get_allegati_dict().items():
-    # path = '{}/{}/{}'.format(settings.MEDIA_ROOT,
-    # ticket.get_folder(),
-    # v)
-    # merger.append(path)
-
-    # #end append attachments
-    # merger.write(pdf_path)
-
-    # #put all in response
-    # f = open(pdf_path, 'rb')
-    # response = HttpResponse(f.read(), content_type='application/pdf')
-    # response['Content-Disposition'] = 'inline; filename=' + pdf_fname
-    # except Exception as e:
-    # logger.error('[{}] user {} tried to download pdf version '
-    # ' of ticket {} but got an error'
-    # ''.format(timezone.localtime(),
-    # request.user,
-    # ticket))
-
-    # #if attachments!
-    # #json_dict = json.loads(ticket.modulo_compilato)
-    # #ticket_dict = get_as_dict(json_dict)
-    # #return custom_message(request,
-    # _("Sei incorso in un errore relativo alla interpretazione "
-    ## "dei file PDF da te immessi come allegato. "
-    ## "Nello specifico: '{}' presenta delle anomalie di formato. "
-    ## "Questo è dovuto al processo di produzione "
-    ## "del PDF. E' necessario ricreare il PDF "
-    ## "con una procedura differente da quella "
-    ## "precedenemente utilizzata oppure, più "
-    ## "semplicemente, ristampare il PDF come file, "
-    ## "rimuovere il vecchio allegato dal modulo inserito "
-    ## "e caricare il nuovo appena ristampato/riconvertito."
-    # ).format(ticket_dict.get('allegati')))
-    # return custom_message(request,
-    # _("Errore nella generazione del file PDF"))
-    # clean
-    # f.close()
-    # main_pdf_file.close()
-    # os.remove(pdf_path)
-    # return response

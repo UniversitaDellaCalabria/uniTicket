@@ -171,7 +171,8 @@ def ticket_is_not_taken_and_not_closed(func_to_decorate):
         request = original_args[0]
         ticket_id = original_kwargs["ticket_id"]
         ticket = get_object_or_404(Ticket, code=ticket_id)
-        assignments_count = TicketAssignment.objects.filter(ticket=ticket).count()
+        assignments_count = TicketAssignment.objects.filter(
+            ticket=ticket).count()
         if ticket.has_been_taken() or assignments_count > 1:
             return custom_message(request, _("Il ticket è stato assegnato"))
         if ticket.is_closed:

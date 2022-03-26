@@ -21,7 +21,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="task",
             name="code",
-            field=models.CharField(default="1default4", max_length=255, unique=True),
+            field=models.CharField(default="1default4",
+                                   max_length=255, unique=True),
             preserve_default=False,
         ),
         migrations.AlterField(

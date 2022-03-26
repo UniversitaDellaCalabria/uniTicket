@@ -13,7 +13,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="organizationalstructurewsarchipro",
             name="protocollo_agd",
-            field=models.CharField(default=1, max_length=12, verbose_name="AGD"),
+            field=models.CharField(
+                default=1, max_length=12, verbose_name="AGD"),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -27,13 +28,15 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="organizationalstructurewsarchipro",
             name="protocollo_uo",
-            field=models.CharField(default=1, max_length=12, verbose_name="UO"),
+            field=models.CharField(
+                default=1, max_length=12, verbose_name="UO"),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name="ticketcategorywsarchipro",
             name="protocollo_agd",
-            field=models.CharField(default=1, max_length=12, verbose_name="AGD"),
+            field=models.CharField(
+                default=1, max_length=12, verbose_name="AGD"),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -47,7 +50,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="ticketcategorywsarchipro",
             name="protocollo_uo",
-            field=models.CharField(default=1, max_length=12, verbose_name="UO"),
+            field=models.CharField(
+                default=1, max_length=12, verbose_name="UO"),
             preserve_default=False,
         ),
     ]

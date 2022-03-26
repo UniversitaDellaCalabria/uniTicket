@@ -13,7 +13,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
-from django.conf import settings
 from django_form_builder.forms import BaseDynamicForm
 from django_form_builder.models import DynamicFieldMap, SavedFormContent
 from django_form_builder.utils import get_as_dict, set_as_dict
@@ -108,7 +107,8 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         validators=[
             RegexValidator(
                 regex="^(?=.*[a-zA-Z])",
-                message=_("Il nome deve contenere almeno un carattere alfabetico"),
+                message=_(
+                    "Il nome deve contenere almeno un carattere alfabetico"),
                 code="invalid_name",
             ),
         ],
@@ -123,14 +123,16 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
     )
     is_active = models.BooleanField(
         default=False,
-        help_text=_("Se disabilitato, non sarà " "visibile in Aggiungi Richiesta"),
+        help_text=_(
+            "Se disabilitato, non sarà " "visibile in Aggiungi Richiesta"),
     )
     not_available_message = models.CharField(
         _("Messaggio se non attiva"),
         max_length=255,
         null=True,
         blank=True,
-        help_text=_("Viene mostrato agli utenti " "se cercano di accedere al form"),
+        help_text=_(
+            "Viene mostrato agli utenti " "se cercano di accedere al form"),
     )
     show_heading_text = models.BooleanField(
         _(
@@ -159,7 +161,8 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
     is_notification = models.BooleanField(
         _("Richiesta di tipo Notifica"),
         default=False,
-        help_text=_("Richiesta che viene " "automaticamente presa " "in carico"),
+        help_text=_(
+            "Richiesta che viene " "automaticamente presa " "in carico"),
     )
     confirm_message_text = models.TextField(
         _("Messaggio di conferma"),
@@ -186,7 +189,8 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
     )
 
     # protocol action required
-    protocol_required = models.BooleanField(_("Protocollo obbligatorio"), default=False)
+    protocol_required = models.BooleanField(
+        _("Protocollo obbligatorio"), default=False)
 
     # user can open multiple ticket of this category
     user_multiple_open_tickets = models.BooleanField(
@@ -291,7 +295,8 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
 
         # returns category active configuration or False
         tcwap = TicketCategoryWSProtocollo
-        conf = tcwap.objects.filter(ticket_category=self, is_active=True).first()
+        conf = tcwap.objects.filter(
+            ticket_category=self, is_active=True).first()
 
         return conf if conf else False
 
@@ -305,7 +310,8 @@ class TicketCategoryModule(models.Model):
     """
 
     name = models.CharField(max_length=255)
-    ticket_category = models.ForeignKey(TicketCategory, on_delete=models.CASCADE)
+    ticket_category = models.ForeignKey(
+        TicketCategory, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=False)
 
@@ -344,7 +350,8 @@ class TicketCategoryModule(models.Model):
         )
 
         # Static method of BaseDynamicForm
-        constructor_dict = BaseDynamicForm.build_constructor_dict(ticket_input_list)
+        constructor_dict = BaseDynamicForm.build_constructor_dict(
+            ticket_input_list)
 
         custom_params = {}
         custom_params["show_conditions"] = show_conditions
@@ -378,7 +385,8 @@ class TicketCategoryInputList(DynamicFieldMap):
     Classe per la generazione dinamica di forms di inserimento ticket
     """
 
-    category_module = models.ForeignKey(TicketCategoryModule, on_delete=models.CASCADE)
+    category_module = models.ForeignKey(
+        TicketCategoryModule, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _("Modulo di inserimento")
@@ -418,7 +426,8 @@ class Ticket(SavedFormContent):
         blank=True,
         related_name="compiled_by_user",
     )
-    input_module = models.ForeignKey(TicketCategoryModule, on_delete=models.PROTECT)
+    input_module = models.ForeignKey(
+        TicketCategoryModule, on_delete=models.PROTECT)
     is_closed = models.BooleanField(default=False)
     closed_date = models.DateTimeField(blank=True, null=True)
     closed_by = models.ForeignKey(
@@ -429,7 +438,8 @@ class Ticket(SavedFormContent):
         related_name="closed_by_user",
     )
     closing_reason = models.TextField(blank=True, null=True)
-    closing_status = models.IntegerField(choices=CLOSING_LEVELS, null=True, blank=True)
+    closing_status = models.IntegerField(
+        choices=CLOSING_LEVELS, null=True, blank=True)
     priority = models.IntegerField(choices=PRIORITY_LEVELS, default=0)
 
     # ticket type = notification
@@ -461,7 +471,8 @@ class Ticket(SavedFormContent):
         """
         Returns ticket attachments folder path
         """
-        folder = "{}/{}/{}".format(TICKET_ATTACHMENT_FOLDER, self.get_year(), self.code)
+        folder = "{}/{}/{}".format(TICKET_ATTACHMENT_FOLDER,
+                                   self.get_year(), self.code)
         return folder
 
     def compress_modulo_compilato(self, check_length=True):
@@ -471,7 +482,8 @@ class Ticket(SavedFormContent):
             and not len(self.modulo_compilato) > TICKET_MIN_DIGITS_TO_COMPRESS
         ):
             return
-        self.modulo_compilato = compress_text_to_b64(self.modulo_compilato).decode()
+        self.modulo_compilato = compress_text_to_b64(
+            self.modulo_compilato).decode()
         self.save(update_fields=["modulo_compilato"])
 
     def get_modulo_compilato(self):
@@ -496,7 +508,8 @@ class Ticket(SavedFormContent):
         if structure:
             return reverse(
                 "uni_ticket:manage_ticket_url_detail",
-                kwargs={"ticket_id": self.code, "structure_slug": structure.slug},
+                kwargs={"ticket_id": self.code,
+                        "structure_slug": structure.slug},
             )
 
         return reverse("uni_ticket:ticket_detail", kwargs={"ticket_id": self.code})
@@ -748,7 +761,8 @@ class Ticket(SavedFormContent):
         Aggiunge un nuovo ufficio di competenza per la gestione
         del ticket
         """
-        competence = TicketAssignment.objects.filter(ticket=self, office=office).first()
+        competence = TicketAssignment.objects.filter(
+            ticket=self, office=office).first()
         if competence:
             return False
         new_competence = TicketAssignment(
@@ -861,7 +875,7 @@ class Ticket(SavedFormContent):
         """ """
         json_dict = self.get_modulo_compilato()
         ticket_dict = get_as_dict(json_dict)
-        if not settings.ATTACHMENTS_DICT_PREFIX in ticket_dict:
+        if settings.ATTACHMENTS_DICT_PREFIX not in ticket_dict:
             return True
         allegati = ticket_dict.get(settings.ATTACHMENTS_DICT_PREFIX)
         # valido solo i campi File vuoti del form
@@ -947,7 +961,8 @@ class Ticket(SavedFormContent):
             if exclude_readonly:
                 assignments = assignments.filter(readonly=False)
         if structure:
-            assignments = assignments.filter(office__organizational_structure=structure)
+            assignments = assignments.filter(
+                office__organizational_structure=structure)
         if user:
             assignments = assignments.filter(taken_by=user)
         return True if assignments else False
@@ -957,9 +972,11 @@ class Ticket(SavedFormContent):
     ):
         if not user:
             return False
-        assignments = TicketAssignment.objects.filter(ticket=self, taken_by=user)
+        assignments = TicketAssignment.objects.filter(
+            ticket=self, taken_by=user)
         if structure:
-            assignments = assignments.filter(office__organizational_structure=structure)
+            assignments = assignments.filter(
+                office__organizational_structure=structure)
         if follow:
             assignments = assignments.filter(follow=True)
             if exclude_readonly:
@@ -971,7 +988,8 @@ class Ticket(SavedFormContent):
         elements = ""
         for assignment in assignments:
             assignment.taken_by or _("Da assegnare")
-            element = "<li><small><b>{}</b></small>: ".format(assignment.office)
+            element = "<li><small><b>{}</b></small>: ".format(
+                assignment.office)
             if assignment.taken_by:
                 element += "<small>{}</small></li>".format(assignment.taken_by)
             else:
@@ -1021,7 +1039,8 @@ class Ticket(SavedFormContent):
 class TicketCategoryDefaultReply(models.Model):
     """ """
 
-    ticket_category = models.ForeignKey(TicketCategory, on_delete=models.CASCADE)
+    ticket_category = models.ForeignKey(
+        TicketCategory, on_delete=models.CASCADE)
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
@@ -1041,7 +1060,8 @@ class TicketAssignment(TimeStampedModel):
     """
 
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    office = models.ForeignKey(OrganizationalStructureOffice, on_delete=models.PROTECT)
+    office = models.ForeignKey(
+        OrganizationalStructureOffice, on_delete=models.PROTECT)
     note = models.TextField(blank=True, null=True)
     assigned_by = models.ForeignKey(
         get_user_model(), on_delete=models.PROTECT, null=True
@@ -1099,7 +1119,8 @@ class TicketReply(models.Model):
     """
 
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL,
+                              on_delete=models.PROTECT)
     structure = models.ForeignKey(
         OrganizationalStructure, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -1110,7 +1131,8 @@ class TicketReply(models.Model):
         null=True,
         blank=True,
         max_length=255,
-        validators=[validate_file_extension, validate_file_size, validate_file_length],
+        validators=[validate_file_extension,
+                    validate_file_size, validate_file_length],
     )
     created = models.DateTimeField(auto_now_add=True)
     read_by = models.ForeignKey(
@@ -1129,7 +1151,8 @@ class TicketReply(models.Model):
 
     @staticmethod
     def get_unread_messages_count(tickets, by_operator=False):
-        unread_messages = TicketReply.objects.filter(ticket__in=tickets, read_date=None)
+        unread_messages = TicketReply.objects.filter(
+            ticket__in=tickets, read_date=None)
         # show messages sent by operator
         if by_operator:
             return unread_messages.exclude(structure=None).count()
@@ -1204,7 +1227,8 @@ class AbstractTask(models.Model):
         null=True,
         blank=True,
         max_length=255,
-        validators=[validate_file_extension, validate_file_size, validate_file_length],
+        validators=[validate_file_extension,
+                    validate_file_size, validate_file_length],
     )
 
     class Meta:
@@ -1231,7 +1255,8 @@ class Task(AbstractTask):
     )
     closed_date = models.DateTimeField(blank=True, null=True)
     closing_reason = models.TextField(blank=True, null=True)
-    closing_status = models.IntegerField(choices=CLOSING_LEVELS, null=True, blank=True)
+    closing_status = models.IntegerField(
+        choices=CLOSING_LEVELS, null=True, blank=True)
 
     class Meta:
         ordering = ["created"]
@@ -1315,7 +1340,8 @@ class TicketCategoryCondition(models.Model):
         null=True,
         blank=True,
         max_length=255,
-        validators=[validate_file_extension, validate_file_size, validate_file_length],
+        validators=[validate_file_extension,
+                    validate_file_size, validate_file_length],
     )
     is_printable = models.BooleanField(
         _("Visibile nella versione stampabile"), default=False
@@ -1410,7 +1436,8 @@ class OrganizationalStructureWSProtocollo(models.Model):
     protocollo_username = models.CharField("Username", max_length=255)
     protocollo_password = models.CharField("Password", max_length=255)
     protocollo_aoo = models.CharField("AOO", max_length=12)
-    protocollo_agd = models.CharField("AGD", max_length=12, default="", blank=True)
+    protocollo_agd = models.CharField(
+        "AGD", max_length=12, default="", blank=True)
 
     # protocollo_template = models.TextField('XML template',
     # help_text=_('Template XML che '
@@ -1442,7 +1469,8 @@ class OrganizationalStructureWSProtocollo(models.Model):
 
 
 class TicketCategoryWSProtocollo(TimeStampedModel):
-    ticket_category = models.ForeignKey(TicketCategory, on_delete=models.CASCADE)
+    ticket_category = models.ForeignKey(
+        TicketCategory, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
     protocollo_uo = models.CharField("UO", max_length=12, choices=UO_DICT)
@@ -1463,7 +1491,8 @@ class TicketCategoryWSProtocollo(TimeStampedModel):
         blank=True,
         help_text=_("Matricola RPA sul sistema di protocollo"),
     )
-    protocollo_send_email = models.BooleanField(_("Invia e-mail a RPA"), default=True)
+    protocollo_send_email = models.BooleanField(
+        _("Invia e-mail a RPA"), default=True)
     protocollo_email = models.EmailField(
         "E-mail",
         max_length=255,

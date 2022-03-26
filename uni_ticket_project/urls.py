@@ -125,7 +125,8 @@ elif "spid_oidc_rp" in settings.INSTALLED_APPS:
     urlpatterns += (
         path(
             "",
-            include(("spid_oidc_rp.urls", "spid_oidc_rp"), namespace="spid_oidc_rp"),
+            include(("spid_oidc_rp.urls", "spid_oidc_rp"),
+                    namespace="spid_oidc_rp"),
             name="spid_oidc_rp",
         ),
     )
@@ -156,7 +157,8 @@ else:
     urlpatterns += (
         path(
             "{}/logout/".format(settings.LOCAL_URL_PREFIX),
-            auth_views.LogoutView.as_view(template_name="logout.html", next_page="/"),
+            auth_views.LogoutView.as_view(
+                template_name="logout.html", next_page="/"),
             name="logout",
         ),
     )
