@@ -1,8 +1,7 @@
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'rz82a_#y1#s=l+loeqgn_4xslwchu%yxtpdf)h7b$6kn+p+=+^'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -130,8 +129,6 @@ LOGGING = {
 
 # UNITICKET JWE support
 UNITICKET_JWE_RSA_KEY_PATH = 'tests/certificates/private.key'
-UNITICKET_JWE_ALG = "RSA-OAEP"
-UNITICKET_JWE_ENC = "A128CBC-HS256"
 # end JWE support
 
 # PROTOCOLLO, questi valori possono variare sulla base di come

@@ -52,10 +52,10 @@ Consult the [Official Documentation](https://uniticket.readthedocs.io/it/latest/
 Gallery
 -------
 
-![Home](data/gallery/user_dashboard.png)
+![Home](gallery/user_dashboard.png)
 _**Image 1:** Example of user dashboard_
 
-![Home](data/gallery/manager_dashboard.png)
+![Home](gallery/manager_dashboard.png)
 _**Image 2:** Example of manager dashboard_
 
 

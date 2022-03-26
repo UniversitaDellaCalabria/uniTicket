@@ -529,6 +529,7 @@ class TicketAddNew(View):
         if deny_response:
             return deny_response
         self.get_modulo_and_form()
+
         self.context_data = {
             "categoria": self.category,
             "category_conditions": self.clausole_categoria,
