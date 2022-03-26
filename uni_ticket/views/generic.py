@@ -98,8 +98,7 @@ def download_message_attachment(
         # get ticket folder path
         path_allegato = get_path(message.get_folder())
         # get file
-        result = download_file(
-            path_allegato, os.path.basename(message.attachment.name))
+        result = download_file(path_allegato, os.path.basename(message.attachment.name))
         return result
     raise Http404
 
@@ -145,8 +144,7 @@ def download_task_attachment(request, ticket_id, task_id):
         # get ticket task folder path
         path_allegato = get_path(task.get_folder())
         # get file
-        result = download_file(
-            path_allegato, os.path.basename(task.attachment.name))
+        result = download_file(path_allegato, os.path.basename(task.attachment.name))
         return result
     raise Http404
 
@@ -348,8 +346,7 @@ def ticket_messages(request, structure_slug=None, structure=None, office_employe
             "id", filter=Q(read_date__isnull=True, structure__isnull=False)
         )
     else:
-        not_read = Count("id", filter=Q(
-            read_date__isnull=True, structure__isnull=True))
+        not_read = Count("id", filter=Q(read_date__isnull=True, structure__isnull=True))
 
     started = Min("created")
     ticket_messages = (
@@ -392,8 +389,7 @@ def ticket_message_delete(request, ticket_message_id):
     :return: redirect
     """
     ticket_message = get_object_or_404(TicketReply, pk=ticket_message_id)
-    last_message = TicketReply.objects.filter(
-        ticket=ticket_message.ticket).last()
+    last_message = TicketReply.objects.filter(ticket=ticket_message.ticket).last()
     structure = ticket_message.structure
     # if message doesn't exist
     if not ticket_message:
@@ -457,8 +453,7 @@ def ticket_message_delete(request, ticket_message_id):
             "ticket": ticket,
             "user": request.user,
             "url": request.build_absolute_uri(
-                reverse("uni_ticket:ticket_message",
-                        kwargs={"ticket_id": ticket.code})
+                reverse("uni_ticket:ticket_message", kwargs={"ticket_id": ticket.code})
             ),
         }
         m_subject = _("{} - richiesta {} messaggio eliminato" "").format(

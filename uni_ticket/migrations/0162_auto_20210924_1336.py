@@ -41,8 +41,7 @@ class Migration(migrations.Migration):
                     "protocollo_password",
                     models.CharField(max_length=255, verbose_name="Password"),
                 ),
-                ("protocollo_aoo", models.CharField(
-                    max_length=12, verbose_name="AOO")),
+                ("protocollo_aoo", models.CharField(max_length=12, verbose_name="AOO")),
                 (
                     "protocollo_agd",
                     models.CharField(

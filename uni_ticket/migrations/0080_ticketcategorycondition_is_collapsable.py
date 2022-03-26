@@ -13,7 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="ticketcategorycondition",
             name="is_collapsable",
-            field=models.BooleanField(
-                default=True, verbose_name="Collassabile"),
+            field=models.BooleanField(default=True, verbose_name="Collassabile"),
         ),
     ]

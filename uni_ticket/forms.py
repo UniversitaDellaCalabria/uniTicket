@@ -325,8 +325,7 @@ class TakeTicketForm(forms.Form):
     def __init__(self, *args, **kwargs):
         office_arg = kwargs.pop("office_referred", None)
         super().__init__(*args, **kwargs)
-        self.fields["office"].widget = forms.HiddenInput(
-            attrs={"value": office_arg})
+        self.fields["office"].widget = forms.HiddenInput(attrs={"value": office_arg})
 
 
 class ReplyForm(ModelForm):
@@ -388,8 +387,7 @@ class TicketCompetenceSchemeForm(forms.Form):
     office_slug = forms.CharField(label=_("Ufficio"), required=True)
     follow = forms.BooleanField(label=_("Continua a seguire"), required=False)
     readonly = forms.BooleanField(label=_("Sola lettura"), required=False)
-    selected_office = forms.CharField(
-        label=_("Ufficio selezionato"), required=False)
+    selected_office = forms.CharField(label=_("Ufficio selezionato"), required=False)
 
 
 class MyDependenceChoiceField(ModelChoiceField):
@@ -418,21 +416,18 @@ class TicketDependenceForm(forms.Form):
         if user_is_manager(user, structure) or user_is_in_default_office(
             user, structure
         ):
-            ticket_id_list = TicketAssignment.get_ticket_per_structure(
-                structure)
+            ticket_id_list = TicketAssignment.get_ticket_per_structure(structure)
         # if user is operator:
         # he views all tickets followed in his offices
         else:
             user_offices = user_is_operator(user, structure)
             offices_list = user_offices_list(user_offices)
-            ticket_id_list = TicketAssignment.get_ticket_in_office_list(
-                offices_list)
+            ticket_id_list = TicketAssignment.get_ticket_in_office_list(offices_list)
         ticket_id_list.remove(current_ticket_id)
         cleaned_list = [
             code for code in ticket_id_list if code not in ticket_dependences_code_list
         ]
-        ticket_list = Ticket.objects.filter(
-            code__in=cleaned_list, is_closed=False)
+        ticket_list = Ticket.objects.filter(code__in=cleaned_list, is_closed=False)
         result_list = ticket_list
         for ticket in ticket_list:
             if not ticket.has_been_taken():
@@ -450,8 +445,7 @@ class TaskForm(ModelForm):
 
     class Meta:
         model = Task
-        fields = ["subject", "description",
-                  "priority", "is_public", "attachment"]
+        fields = ["subject", "description", "priority", "is_public", "attachment"]
         labels = {
             "subject": _("Oggetto"),
             "description": _("Testo"),
@@ -627,8 +621,7 @@ class TicketOperatorOfficesForm(forms.Form):
             if user_manage_office(user=operator, office=assignment.office):
                 offices_list.append(assignment.office.pk)
 
-        offices = OrganizationalStructureOffice.objects.filter(
-            pk__in=offices_list)
+        offices = OrganizationalStructureOffice.objects.filter(pk__in=offices_list)
         super().__init__(*args, **kwargs)
         self.fields["office"].queryset = offices
         self.fields["office"].to_field_name = "slug"
@@ -742,8 +735,7 @@ class CategoryWSProtocolloModelForm(forms.ModelForm):
 class OrganizationalStructureAlertForm(ModelForm):
     class Meta:
         model = OrganizationalStructureAlert
-        fields = ["name", "text", "ordinamento",
-                  "date_start", "date_end", "is_active"]
+        fields = ["name", "text", "ordinamento", "date_start", "date_end", "is_active"]
         labels = {
             "name": _("Nome"),
             "text": _("Testo"),

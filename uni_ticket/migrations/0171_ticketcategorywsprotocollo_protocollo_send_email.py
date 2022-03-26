@@ -13,7 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="ticketcategorywsprotocollo",
             name="protocollo_send_email",
-            field=models.BooleanField(
-                default=True, verbose_name="Invia e-mail"),
+            field=models.BooleanField(default=True, verbose_name="Invia e-mail"),
         ),
     ]

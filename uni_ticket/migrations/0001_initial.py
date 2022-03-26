@@ -358,8 +358,7 @@ class Migration(migrations.Migration):
                             ("CheckBoxField", "Checkbox"),
                             ("BaseDateField", "Data"),
                             ("BaseDateTimeField", "Data e Ora"),
-                            ("DateStartEndComplexField",
-                             "Data inizio e Data fine"),
+                            ("DateStartEndComplexField", "Data inizio e Data fine"),
                             (
                                 "DurataComeInteroField",
                                 "Durata come numero intero (anni,mesi,ore)",
@@ -480,8 +479,7 @@ class Migration(migrations.Migration):
                 ),
                 ("subject", models.CharField(max_length=255)),
                 ("text", models.TextField()),
-                ("attachment", models.FileField(
-                    blank=True, null=True, upload_to="")),
+                ("attachment", models.FileField(blank=True, null=True, upload_to="")),
                 ("created", models.DateTimeField(auto_now=True)),
                 (
                     "structure",

@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
 
 from io import BytesIO
-from . models import UO_DICT
+from .models import UO_DICT
 
 logger = logging.getLogger(__name__)
 
@@ -24,10 +24,8 @@ def ticket_protocol(
 ):
 
     # protocol class and settings from settings file
-    prot_class = __import__(settings.PROTOCOL_CLASS,
-                            globals(), locals(), ["*"])
-    prot_utils = __import__(settings.PROTOCOL_UTILS,
-                            globals(), locals(), ["*"])
+    prot_class = __import__(settings.PROTOCOL_CLASS, globals(), locals(), ["*"])
+    prot_utils = __import__(settings.PROTOCOL_UTILS, globals(), locals(), ["*"])
 
     valid_conf = structure_configuration and configuration
 
@@ -119,13 +117,11 @@ def ticket_protocol(
     # attachments
     if attachments_dict:
         for k, v in attachments_dict.items():
-            file_path = "{}/{}/{}".format(settings.MEDIA_ROOT,
-                                          attachments_folder, v)
+            file_path = "{}/{}/{}".format(settings.MEDIA_ROOT, attachments_folder, v)
             mime = magic.Magic(mime=True)
             content_type = mime.from_file(file_path)
             f = open(file_path, "rb")
-            attachment_response = HttpResponse(
-                f.read(), content_type=content_type)
+            attachment_response = HttpResponse(f.read(), content_type=content_type)
             attachment_response["Content-Disposition"] = "inline; filename=" + v
             f.close()
             allegato = BytesIO()

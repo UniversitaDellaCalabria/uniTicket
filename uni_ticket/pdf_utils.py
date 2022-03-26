@@ -26,8 +26,7 @@ def response_as_pdf(response, pdf_fname):
         protocol = "http://" if settings.DEBUG else "https://"
         production_static_url = protocol + settings.HOSTNAME + settings.STATIC_URL
         # set full path to static files
-        html_page = re.sub(settings.STATIC_URL,
-                           production_static_url, html_page)
+        html_page = re.sub(settings.STATIC_URL, production_static_url, html_page)
     html = HTML(string=html_page)
 
     pdf_path = settings.TMP_DIR + os.path.sep + pdf_fname

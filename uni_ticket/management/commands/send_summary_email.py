@@ -20,8 +20,7 @@ class Command(BaseCommand):
             employee__is_active=True, employee__email_notify=True
         ).values_list("employee")
         status = send_summary_email(
-            users=[get_user_model().objects.get(pk=user[0])
-                   for user in set(users)]
+            users=[get_user_model().objects.get(pk=user[0]) for user in set(users)]
         )
         msg = "Successfully sent {} email".format(len(status["success"]))
         self.stdout.write(self.style.SUCCESS(msg))

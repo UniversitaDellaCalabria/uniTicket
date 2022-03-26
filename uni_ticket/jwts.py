@@ -3,7 +3,6 @@ import json
 from cryptojwt.jwk.rsa import import_private_rsa_key_from_file, RSAKey
 from cryptojwt.jwe.jwe import factory
 from cryptojwt.jwe.jwe_rsa import JWE_RSA
-from django.conf import settings
 
 from uni_ticket.settings import (
     UNITICKET_JWE_ALG,

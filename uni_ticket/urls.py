@@ -27,8 +27,7 @@ urlpatterns = [
     path("", RedirectView.as_view(url="/{}/".format(_dashboard_name))),
     path("500/", my_test_500_view),
     # Router url di responsabilità su struttura (manager/operator/user)
-    re_path(
-        r"^manage/(?:(?P<structure_slug>[-\w]+))?$", generic.manage, name="manage"),
+    re_path(r"^manage/(?:(?P<structure_slug>[-\w]+))?$", generic.manage, name="manage"),
     # Attachments download
     path(
         "{}/download/attachment/<str:attachment>/".format(ticket),
@@ -187,8 +186,7 @@ urlpatterns += [
         management.manage_not_closed_ticket_url,
         name="manage_not_closed_ticket_url",
     ),
-    path("{}/".format(tickets), management.manage_ticket_url,
-         name="manage_ticket_url"),
+    path("{}/".format(tickets), management.manage_ticket_url, name="manage_ticket_url"),
     path(
         "{}/".format(ticket_id),
         management.manage_ticket_url_detail,
@@ -238,12 +236,9 @@ urlpatterns += [
     path(
         "{}/".format(task_id), management.task_detail_url, name="manage_task_detail_url"
     ),
-    path("{}/close/".format(task_id),
-         management.task_close_url, name="close_task"),
-    path("{}/delete/".format(task_id),
-         management.task_remove, name="task_remove"),
-    path("{}/riapri/".format(task_id),
-         management.task_reopen, name="reopen_task"),
+    path("{}/close/".format(task_id), management.task_close_url, name="close_task"),
+    path("{}/delete/".format(task_id), management.task_remove, name="task_remove"),
+    path("{}/riapri/".format(task_id), management.task_reopen, name="reopen_task"),
     path(
         "{}/edit/remove-attachment/".format(task_id),
         management.task_attachment_delete,
@@ -253,8 +248,7 @@ urlpatterns += [
 ]
 
 # Manager URLs
-base = "{}/<str:structure_slug>".format(
-    slugify(MANAGEMENT_URL_PREFIX["manager"]))
+base = "{}/<str:structure_slug>".format(slugify(MANAGEMENT_URL_PREFIX["manager"]))
 tickets = "{}/tickets".format(base)
 ticket_id = "{}/<str:ticket_id>".format(tickets)
 task = "{}/tasks".format(ticket_id)
@@ -274,14 +268,12 @@ default_reply_id = "{}/<int:default_reply_id>".format(default_reply)
 category_task = "{}/default-tasks".format(category_id)
 category_task_id = "{}/<str:task_id>".format(category_task)
 
-structure_protocol_configurations = "{}/settings/protocol-configurations".format(
-    base)
+structure_protocol_configurations = "{}/settings/protocol-configurations".format(base)
 structure_protocol_configuration = "{}/<int:configuration_id>".format(
     structure_protocol_configurations
 )
 
-category_protocol_configurations = "{}/protocol-configurations".format(
-    category_id)
+category_protocol_configurations = "{}/protocol-configurations".format(category_id)
 category_protocol_configuration = "{}/<int:configuration_id>".format(
     category_protocol_configurations
 )
@@ -373,10 +365,8 @@ urlpatterns += [
     path(
         "{}/new/".format(office), manager.office_add_new, name="manager_office_add_new"
     ),
-    path("{}/".format(office_id), manager.office_detail,
-         name="manager_office_detail"),
-    path("{}/edit/".format(office_id),
-         manager.office_edit, name="manager_office_edit"),
+    path("{}/".format(office_id), manager.office_detail, name="manager_office_detail"),
+    path("{}/edit/".format(office_id), manager.office_edit, name="manager_office_edit"),
     path(
         "{}/remove-operator/<int:employee_id>/".format(office_id),
         manager.office_remove_operator,
@@ -685,8 +675,7 @@ urlpatterns += [
 ]
 
 # Operator URLs
-base = "{}/<str:structure_slug>".format(
-    slugify(MANAGEMENT_URL_PREFIX["operator"]))
+base = "{}/<str:structure_slug>".format(slugify(MANAGEMENT_URL_PREFIX["operator"]))
 tickets = "{}/tickets".format(base)
 ticket_id = "{}/<str:ticket_id>".format(tickets)
 task = "{}/tasks".format(ticket_id)
@@ -806,8 +795,7 @@ urlpatterns += [
         "{}/closed/".format(tickets), generic.closed_ticket, name="user_closed_ticket"
     ),
     path("{}/".format(tickets), user.ticket_url, name="user_ticket_url"),
-    path("{}/new/".format(tickets), user.ticket_new_preload,
-         name="new_ticket_preload"),
+    path("{}/new/".format(tickets), user.ticket_new_preload, name="new_ticket_preload"),
     path(
         "{}/new/<str:structure_slug>/".format(tickets),
         user.ticket_new_preload,
@@ -818,22 +806,17 @@ urlpatterns += [
         user.ticket_add_new,
         name="add_new_ticket",
     ),
-    path("{}/messages/".format(ticket_id),
-         user.ticket_message, name="ticket_message"),
+    path("{}/messages/".format(ticket_id), user.ticket_message, name="ticket_message"),
     path("{}/edit/".format(ticket_id), user.ticket_edit, name="ticket_edit"),
     path(
         "{}/edit/remove-attachment/<str:attachment>/".format(ticket_id),
         user.delete_my_attachment,
         name="delete_my_attachment",
     ),
-    path("{}/delete/".format(ticket_id),
-         user.ticket_delete, name="ticket_delete"),
-    path("{}/close/".format(ticket_id),
-         user.ticket_close, name="user_close_ticket"),
-    path("{}/reopen/".format(ticket_id),
-         user.ticket_reopen, name="user_reopen_ticket"),
-    path("{}/clone/".format(ticket_id),
-         user.ticket_clone, name="user_clone_ticket"),
+    path("{}/delete/".format(ticket_id), user.ticket_delete, name="ticket_delete"),
+    path("{}/close/".format(ticket_id), user.ticket_close, name="user_close_ticket"),
+    path("{}/reopen/".format(ticket_id), user.ticket_reopen, name="user_reopen_ticket"),
+    path("{}/clone/".format(ticket_id), user.ticket_clone, name="user_clone_ticket"),
     path(
         "{}/tasks/<str:task_id>/".format(ticket_id),
         user.task_detail,

@@ -13,15 +13,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="organizationalstructurewsarchipro",
             name="protocollo_aoo",
-            field=models.CharField(
-                default=1, max_length=12, verbose_name="AOO"),
+            field=models.CharField(default=1, max_length=12, verbose_name="AOO"),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name="ticketcategorywsarchipro",
             name="protocollo_aoo",
-            field=models.CharField(
-                default=1, max_length=12, verbose_name="AOO"),
+            field=models.CharField(default=1, max_length=12, verbose_name="AOO"),
             preserve_default=False,
         ),
         migrations.AlterField(
