@@ -41,15 +41,14 @@ jobs:
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 uniticket/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 uniticket/ --count --exit-zero --statistics
+        flake8 . --count --exit-zero --statistics
 
     - name: Test with Django tests
       working-directory: .
       run: |
         DJANGO_SETTINGS_MODULE=tests.settings 
-        cd uniticket/
         coverage erase
         coverage run ./manage.py test --settings=tests.settings
         coverage report -m
@@ -68,5 +67,4 @@ jobs:
         # verbose: true    
     - name: Bandit Security Scan
       run: |
-        cd uniticket/
         bandit -r -x docs,tests uni_ticket/*,organizational_area/*,uni_ticket_bootstrap_italia_template/*,chat/*,archipro_ws/*
