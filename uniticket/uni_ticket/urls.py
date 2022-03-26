@@ -815,7 +815,7 @@ urlpatterns += [
     ),
     path(
         "{}/new/<str:structure_slug>/<str:category_slug>/".format(tickets),
-        user.ticket_add_new,
+        user.TicketAddNew.as_view(),
         name="add_new_ticket",
     ),
     path("{}/messages/".format(ticket_id),
@@ -836,7 +836,7 @@ urlpatterns += [
          user.ticket_clone, name="user_clone_ticket"),
     path(
         "{}/tasks/<str:task_id>/".format(ticket_id),
-        user.task_detail,
+        user.TaskDetail.as_view(),
         name="task_detail",
     ),
     path(

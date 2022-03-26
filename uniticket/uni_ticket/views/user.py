@@ -281,160 +281,273 @@ def ticket_new_preload(request, structure_slug=None):
     return render(request, template, d)
 
 
-# @login_required
-
-
 def ticket_add_new(request, structure_slug, category_slug):
     """
-    Create the ticket
-
-    :type structure_slug: String
-    :type category_slug: String
-
-    :param structure_slug: slug of structure
-    :param category_slug: slug of category
-
-    :return: render
+        move all the code that may be shared between view and api view
     """
-    # get structure by pk or by slug
-    try:
-        struttura = get_object_or_404(
-            OrganizationalStructure, pk=structure_slug, is_active=True
-        )
-    except:
-        struttura = get_object_or_404(
-            OrganizationalStructure, slug=structure_slug, is_active=True
-        )
-    # get category by pk or by slug
-    try:
-        category = get_object_or_404(
-            TicketCategory, pk=category_slug, organizational_structure=struttura
-        )
-    except:
-        category = get_object_or_404(
-            TicketCategory, slug=category_slug, organizational_structure=struttura
-        )
+    pass
 
-    # if category is not active, return an error message
-    if not category.is_published():
-        unavailable_msg = category.not_available_message or UNAVAILABLE_TICKET_CATEGORY
-        return custom_message(request, unavailable_msg, status=404)
 
-    # if anonymous user and category only for logged users
-    if not category.allow_anonymous and not request.user.is_authenticated:
-        redirect_url = "{}?next={}".format(
-            settings.LOGIN_URL, request.get_full_path())
-        return redirect(redirect_url)
-
-    # is user is authenticated
-    if request.user.is_authenticated:
-
-        # check ticket number limit
-        if Ticket.number_limit_reached_by_user(request.user):
-            messages.add_message(
-                request,
-                messages.ERROR,
-                _(
-                    "Hai raggiunto il limite massimo giornaliero"
-                    " di richieste: <b>{}</b>"
-                    "".format(MAX_DAILY_TICKET_PER_USER)
-                ),
-            )
-            return redirect("uni_ticket:user_dashboard")
-
-        # check if user is allowed to access this category
-        if not category.allowed_to_user(request.user):
-            return custom_message(
-                request, _("Permesso negato a questa tipologia di utente.")
-            )
-
-        # check if user has already open a ticket of this category
-        if not category.user_multiple_open_tickets and Ticket.existent_open_ticket(
-            request.user, category
-        ):
-            return custom_message(
-                request,
-                _(
-                    "Esistono già tue richieste aperte"
-                    " di questa tipologia."
-                    " Non puoi effettuarne di nuove"
-                    " fino a quando queste non verranno chiuse"
-                ),
-            )
-
-    title = category
-    template = "user/ticket_add_new.html"
-    sub_title = (
-        category.description if category.description else _(
-            "Compila i campi richiesti")
-    )
-
-    # user that compiled ticket
+class TicketAddNew(View):
+    
     compiled_by_user = None
     compiled_date = None
+    
+    template = "user/ticket_add_new.html"
 
-    # if there is an encrypted token with ticket params in URL
-    if request.GET.get("import"):
-        encoded_data = request.GET["import"]
+    def get_assets(self, structure_slug, category_slug) -> None:
+        # get structure by pk or by slug
         try:
-            # decrypt and get imported form content
-            imported_data = json.loads(decrypt_from_jwe(encoded_data))
-        except Exception:
-            return custom_message(request, _("Dati da importare non consistenti."))
-        # get input_module id from imported data
-        module_id = imported_data.get(TICKET_INPUT_MODULE_NAME)
-        if not module_id:
-            return custom_message(
-                request,
-                _("Dati da importare non consistenti. " "Modulo di input mancante"),
+            self.struttura = get_object_or_404(
+                OrganizationalStructure, pk=structure_slug, is_active=True
             )
-        modulo = get_object_or_404(
-            TicketCategoryModule, ticket_category=category, pk=module_id
-        )
-        # get user that compiled module (if exists)
-        compiled_by_user_id = imported_data.get(TICKET_COMPILED_BY_USER_NAME)
-        if compiled_by_user_id:
-            compiled_by_user = (
-                get_user_model().objects.filter(pk=compiled_by_user_id).first()
+        except:
+            self.struttura = get_object_or_404(
+                OrganizationalStructure, slug=structure_slug, is_active=True
             )
-            compiled_date = (
-                parse_datetime(imported_data.get(
-                    TICKET_COMPILED_CREATION_DATE))
-                if imported_data.get(TICKET_COMPILED_CREATION_DATE)
-                else timezone.localtime()
+        # get category by pk or by slug
+        try:
+            self.category = get_object_or_404(
+                TicketCategory, pk=category_slug, organizational_structure=self.struttura
             )
-        # get compiled form
-        form = modulo.get_form(
-            data=imported_data, show_conditions=True, current_user=request.user
+        except:
+            self.category = get_object_or_404(
+                TicketCategory, slug=category_slug, organizational_structure=self.struttura
+            )
+        self.sub_title = (
+            self.category.description if self.category.description else _(
+                "Compila i campi richiesti")
         )
-    else:
-        modulo = get_object_or_404(
-            TicketCategoryModule, ticket_category=category, is_active=True
-        )
-        form = modulo.get_form(show_conditions=True, current_user=request.user)
+        self.title = self.category
 
-    clausole_categoria = category.get_conditions()
-    d = {
-        "categoria": category,
-        "category_conditions": clausole_categoria,
-        "compiled_by": compiled_by_user,
-        "form": form,
-        "struttura": struttura,
-        "sub_title": "{} - {}".format(struttura, sub_title),
-        "title": title,
-    }
+    def get_modulo_and_form(self) -> None:
+        # if there is an encrypted token with ticket params in URL
+        if self.request.GET.get("import"):
+            encoded_data = self.request.GET["import"]
+            try:
+                # decrypt and get imported form content
+                imported_data = json.loads(decrypt_from_jwe(encoded_data))
+            except Exception:
+                return custom_message(self.request, _("Dati da importare non consistenti."))
+            # get input_module id from imported data
+            module_id = imported_data.get(TICKET_INPUT_MODULE_NAME)
+            if not module_id:
+                return custom_message(
+                    self.request,
+                    _("Dati da importare non consistenti. Modulo di input mancante"),
+                )
+            modulo = get_object_or_404(
+                TicketCategoryModule, ticket_category=self.category, pk=module_id
+            )
+            # get user that compiled module (if exists)
+            compiled_by_user_id = imported_data.get(TICKET_COMPILED_BY_USER_NAME)
+            if compiled_by_user_id:
+                self.compiled_by_user = (
+                    get_user_model().objects.filter(pk=compiled_by_user_id).first()
+                )
+                self.compiled_date = (
+                    parse_datetime(imported_data.get(
+                        TICKET_COMPILED_CREATION_DATE))
+                    if imported_data.get(TICKET_COMPILED_CREATION_DATE)
+                    else timezone.localtime()
+                )
+            # get compiled form
+            self.form = modulo.get_form(
+                data=imported_data, show_conditions=True, current_user=self.request.user
+            )
+        else:
+            self.modulo = get_object_or_404(
+                TicketCategoryModule, ticket_category=self.category, is_active=True
+            )
+            self.form = self.modulo.get_form(
+                show_conditions=True, current_user=self.request.user
+            )
+        self.clausole_categoria = self.category.get_conditions()
 
-    # after form submit
-    if request.POST:
-        form = modulo.get_form(
+    def protocolla_ticket(self):
+        try:
+            protocol_struct_configuration = OrganizationalStructureWSProtocollo.get_active_protocol_configuration(
+                self.struttura
+            )
+            protocol_configuration = (
+                self.category.get_active_protocol_configuration()
+            )
+
+            response = download_ticket_pdf(
+                request=self.request,
+                ticket_id=self.ticket.code,
+                # TODO - get from settings and not hardcode constants in the code
+                template="ticket_detail_print_pdf_simplified.html",
+            ).content
+
+            protocol_response = ticket_protocol(
+                structure_configuration=protocol_struct_configuration,
+                configuration=protocol_configuration,
+                user=self.current_user,
+                subject=self.ticket.subject,
+                file_name=self.ticket.code,
+                response=response,
+                attachments_folder=self.ticket.get_folder(),
+                attachments_dict=self.ticket.get_allegati_dict(),
+            )
+            protocol_number = protocol_response["numero"]
+
+            # set protocol data in ticket
+            self.ticket.protocol_number = protocol_number
+            self.ticket.protocol_date = timezone.localtime()
+            self.ticket.save(update_fields=[
+                        "protocol_number", "protocol_date"])
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                _(
+                    "Richiesta protocollata "
+                    "correttamente: n. <b>{}/{}</b>"
+                    ""
+                ).format(protocol_number, timezone.localtime().year),
+            )
+            if protocol_response.get("message"):
+                messages.add_message(
+                    self.request, messages.INFO, protocol_response["message"]
+                )
+        # if protocol fails
+        # raise Exception and do some operations
+        except Exception as e:
+            # log protocol fails
+            logger.error(
+                "[{}] user {} protocol for ticket {} "
+                "failed: {}"
+                "".format(timezone.localtime(),
+                        self.log_user, self.ticket, e)
+            )
+            # delete attachments
+            # delete_directory(ticket.get_folder())
+
+            # delete assignment
+            # ticket_assignment.delete()
+            # delete ticket
+            # ticket.delete()
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                _("<b>Errore protocollo</b>: {}").format(e),
+            )
+            messages.add_message(
+                self.request,
+                messages.INFO,
+                _(
+                    "<b>Attenzione</b>: la tua richiesta è stata "
+                    "comunque creata, nonostante "
+                    "la protocollazione sia fallita."
+                ),
+            )
+            # stop all other operations and come back to form
+            # return render(request, template, d)
+
+    def deny_response(self):
+        # if category is not active, return an error message
+        if not self.category.is_published():
+            unavailable_msg = self.category.not_available_message or UNAVAILABLE_TICKET_CATEGORY
+            return custom_message(self.request, unavailable_msg, status=404)
+
+        # if anonymous user and category only for logged users
+        if not self.category.allow_anonymous and not self.request.user.is_authenticated:
+            redirect_url = "{}?next={}".format(
+                settings.LOGIN_URL, request.get_full_path())
+            return redirect(redirect_url)
+
+        # is user is authenticated
+        if self.request.user.is_authenticated:
+
+            # check ticket number limit
+            if Ticket.number_limit_reached_by_user(self.request.user):
+                messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    _(
+                        "Hai raggiunto il limite massimo giornaliero"
+                        " di richieste: <b>{}</b>"
+                        "".format(MAX_DAILY_TICKET_PER_USER)
+                    ),
+                )
+                return redirect("uni_ticket:user_dashboard")
+
+            # check if user is allowed to access this category
+            if not self.category.allowed_to_user(self.request.user):
+                return custom_message(
+                    self.request, _("Permesso negato a questa tipologia di utente.")
+                )
+
+            # check if user has already open a ticket of this category
+            if not self.category.user_multiple_open_tickets and Ticket.existent_open_ticket(
+                self.request.user, self.category
+            ):
+                return custom_message(
+                    self.request,
+                    _(
+                        "Esistono già tue richieste aperte"
+                        " di questa tipologia."
+                        " Non puoi effettuarne di nuove"
+                        " fino a quando queste non verranno chiuse"
+                    ),
+                )
+
+    def get(self, request, structure_slug, category_slug):
+        """
+        Create the ticket
+
+        :type structure_slug: String
+        :type category_slug: String
+
+        :param structure_slug: slug of structure
+        :param category_slug: slug of category
+
+        :return: render
+        """
+        self.get_assets(structure_slug, category_slug)
+        deny_response = self.deny_response()
+        if deny_response:
+            return deny_response()
+
+        # user that compiled ticket
+        self.get_modulo_and_form()
+
+        self.context_data = {
+            "categoria": self.category,
+            "category_conditions": self.clausole_categoria,
+            "compiled_by": self.compiled_by_user,
+            "form": self.form,
+            "struttura": self.struttura,
+            "sub_title": "{} - {}".format(self.struttura, self.sub_title),
+            "title": self.title,
+        }
+        return render(request, self.template, self.context_data)
+
+    def post(self, request, structure_slug, category_slug):
+        self.get_assets(structure_slug, category_slug)
+        deny_response = self.deny_response()
+        if deny_response:
+            return deny_response
+        self.get_modulo_and_form()
+        self.context_data = {
+            "categoria": self.category,
+            "category_conditions": self.clausole_categoria,
+            "compiled_by": self.compiled_by_user,
+            "form": self.form,
+            "struttura": self.struttura,
+            "sub_title": "{} - {}".format(self.struttura, self.sub_title),
+            "title": self.title,
+        }
+
+        self.form = self.modulo.get_form(
             data=request.POST,
             files=request.FILES,
             show_conditions=True,
             current_user=request.user,
         )
-        d["form"] = form
+        self.context_data["form"] = self.form
 
-        if form.is_valid():
+        if self.form.is_valid():
             # add static static fields to fields to pop
             # these fields are useful only in frontend
             fields_to_pop = [
@@ -452,7 +565,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                 logger.info(
                     '[{}] user {} generated a new ticket URL "{}" '
                     "for submission".format(
-                        timezone.localtime(), request.user, category
+                        timezone.localtime(), request.user, self.category
                     )
                 )
 
@@ -466,11 +579,12 @@ def ticket_add_new(request, structure_slug, category_slug):
                 form_data = json.loads(json_data)
 
                 # insert input module pk to json data
-                form_data.update({TICKET_INPUT_MODULE_NAME: modulo.pk})
+                form_data.update({TICKET_INPUT_MODULE_NAME: self.modulo.pk})
 
                 if request.POST.get(TICKET_COMPILED_BY_USER_NAME):
                     form_data.update(
-                        {TICKET_COMPILED_BY_USER_NAME: request.user.pk})
+                        {TICKET_COMPILED_BY_USER_NAME: request.user.pk}
+                    )
                     form_data.update(
                         {
                             TICKET_COMPILED_CREATION_DATE: timezone.localtime().isoformat()
@@ -483,8 +597,8 @@ def ticket_add_new(request, structure_slug, category_slug):
                     reverse(
                         "uni_ticket:add_new_ticket",
                         kwargs={
-                            "structure_slug": struttura.slug,
-                            "category_slug": category.slug,
+                            "structure_slug": self.struttura.slug,
+                            "category_slug": self.category.slug,
                         },
                     )
                 )
@@ -503,7 +617,7 @@ def ticket_add_new(request, structure_slug, category_slug):
                         ""
                     ).format(url=url),
                 )
-                d["url_to_import"] = True
+                self.context_data["url_to_import"] = True
             #
             # if user creates the ticket
             #
@@ -511,8 +625,8 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 # if user is not allowed (category allowed users list)
                 if (
-                    category.allowed_users.all()
-                    and request.user not in category.allowed_users.all()
+                    self.category.allowed_users.all()
+                    and self.request.user not in self.category.allowed_users.all()
                 ):
                     return custom_message(
                         request,
@@ -544,16 +658,16 @@ def ticket_add_new(request, structure_slug, category_slug):
                 code = uuid_code()
 
                 # get ticket subject and description
-                subject = form.cleaned_data[TICKET_SUBJECT_ID]
-                description = form.cleaned_data[TICKET_DESCRIPTION_ID]
+                subject = self.form.cleaned_data[TICKET_SUBJECT_ID]
+                description = self.form.cleaned_data[TICKET_DESCRIPTION_ID]
 
                 # destination office
-                office = category.organizational_office
+                office = self.category.organizational_office
 
                 # take a random operator (or manager)
                 # only if category is_notification or user is anonymous
                 random_office_operator = None
-                if category.is_notification or not request.user.is_authenticated:
+                if self.category.is_notification or not request.user.is_authenticated:
                     # get random operator from the office
                     random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(
                         office
@@ -561,43 +675,46 @@ def ticket_add_new(request, structure_slug, category_slug):
 
                 # set users for current operations and for log
                 # if current_user isn't authenticated, for logging we use 'anonymous'
-                current_user = (
-                    request.user
+                self.current_user = (
+                    self.request.user
                     if request.user.is_authenticated
                     else random_office_operator
                 )
-                log_user = (
-                    request.user.username
+                self.log_user = (
+                    self.request.user.username
                     if request.user.is_authenticated
                     else "anonymous"
                 )
 
                 # create ticket
-                ticket = Ticket(
+                self.ticket = Ticket(
                     code=code,
                     subject=subject,
                     description=description,
                     modulo_compilato=json_data,
-                    created_by=current_user,
-                    input_module=modulo,
+                    created_by=self.current_user,
+                    input_module=self.modulo,
                 )
 
                 # if ticket has been compiled by another user
-                if compiled_by_user:
-                    ticket.compiled_by = compiled_by_user
-                    ticket.compiled = compiled_date
+                if self.compiled_by_user:
+                    self.ticket.compiled_by = self.compiled_by_user
+                    self.ticket.compiled = self.compiled_date
 
                 # save ticket
-                ticket.save()
+                self.ticket.save()
 
                 # compress content (default makes a check on length)
-                ticket.compress_modulo_compilato()
+                self.ticket.compress_modulo_compilato()
 
                 # log action
                 logger.info(
                     "[{}] user {} created new ticket {}"
                     " in category {}".format(
-                        timezone.localtime(), log_user, ticket, category
+                        timezone.localtime(), 
+                        self.log_user, 
+                        self.ticket, 
+                        self.category
                     )
                 )
 
@@ -605,157 +722,91 @@ def ticket_add_new(request, structure_slug, category_slug):
                 json_dict = json.loads(json_data)
                 json_stored = get_as_dict(compiled_module_json=json_dict)
                 _save_new_ticket_attachments(
-                    ticket=ticket,
+                    ticket=self.ticket,
                     json_stored=json_stored,
-                    form=form,
+                    form=self.form,
                     request_files=request.FILES,
                 )
 
                 # assign ticket to the office
                 ticket_assignment = TicketAssignment(
-                    ticket=ticket, office=office)
+                    ticket=self.ticket, 
+                    office=office
+                )
                 ticket_assignment.save()
 
                 # log action
                 logger.info(
                     "[{}] ticket {} assigned to "
-                    "{} office".format(timezone.localtime(), ticket, office)
+                    "{} office".format(
+                        timezone.localtime(), 
+                        self.ticket, 
+                        office
+                    )
                 )
 
                 # if it's a notification ticket, take and close the ticket
-                if category.is_notification:
+                if self.category.is_notification:
                     _close_notification_ticket(
-                        ticket=ticket, user=current_user)
+                        ticket=self.ticket, 
+                        user=self.current_user
+                    )
                     # operator=random_office_operator,
                     # ticket_assignment=ticket_assignment)
 
                 else:
                     # category default tasks assigned to ticket (if present)
                     _assign_default_tasks_to_new_ticket(
-                        ticket=ticket, category=category, log_user=log_user
+                        ticket=self.ticket, 
+                        category=self.category, 
+                        log_user=self.log_user
                     )
 
                 # send success message to user
                 ticket_message = (
-                    ticket.input_module.ticket_category.confirm_message_text
+                    self.ticket.input_module.ticket_category.confirm_message_text
                     or NEW_TICKET_CREATED_ALERT
                 )
 
-                compiled_message = ticket_message.format(ticket.subject)
+                compiled_message = ticket_message.format(self.ticket.subject)
 
                 # Protocol
-                if category.protocol_required:
-                    try:
-                        protocol_struct_configuration = OrganizationalStructureWSProtocollo.get_active_protocol_configuration(
-                            struttura
-                        )
-                        protocol_configuration = (
-                            category.get_active_protocol_configuration()
-                        )
-
-                        response = download_ticket_pdf(
-                            request=request,
-                            ticket_id=ticket.code,
-                            template="ticket_detail_print_pdf_simplified.html",
-                        ).content
-
-                        protocol_response = ticket_protocol(
-                            structure_configuration=protocol_struct_configuration,
-                            configuration=protocol_configuration,
-                            user=current_user,
-                            subject=ticket.subject,
-                            file_name=ticket.code,
-                            response=response,
-                            attachments_folder=ticket.get_folder(),
-                            attachments_dict=ticket.get_allegati_dict(),
-                        )
-                        protocol_number = protocol_response["numero"]
-
-                        # set protocol data in ticket
-                        ticket.protocol_number = protocol_number
-                        ticket.protocol_date = timezone.localtime()
-                        ticket.save(update_fields=[
-                                    "protocol_number", "protocol_date"])
-                        messages.add_message(
-                            request,
-                            messages.SUCCESS,
-                            _(
-                                "Richiesta protocollata "
-                                "correttamente: n. <b>{}/{}</b>"
-                                ""
-                            ).format(protocol_number, timezone.localtime().year),
-                        )
-                        if protocol_response.get("message"):
-                            messages.add_message(
-                                request, messages.INFO, protocol_response["message"]
-                            )
-                    # if protocol fails
-                    # raise Exception and do some operations
-                    except Exception as e:
-                        # log protocol fails
-                        logger.error(
-                            "[{}] user {} protocol for ticket {} "
-                            "failed: {}"
-                            "".format(timezone.localtime(),
-                                      log_user, ticket, e)
-                        )
-                        # delete attachments
-                        # delete_directory(ticket.get_folder())
-
-                        # delete assignment
-                        # ticket_assignment.delete()
-                        # delete ticket
-                        # ticket.delete()
-                        messages.add_message(
-                            request,
-                            messages.ERROR,
-                            _("<b>Errore protocollo</b>: {}").format(e),
-                        )
-                        messages.add_message(
-                            request,
-                            messages.INFO,
-                            _(
-                                "<b>Attenzione</b>: la tua richiesta è stata "
-                                "comunque creata, nonostante "
-                                "la protocollazione sia fallita."
-                            ),
-                        )
-                        # stop all other operations and come back to form
-                        # return render(request, template, d)
+                if self.category.protocol_required:
+                    self.protocolla_ticket()
                 # end Protocol
 
                 if (
-                    category.protocol_required
-                    and ticket.protocol_number
-                    or not category.protocol_required
+                    self.category.protocol_required
+                    and self.ticket.protocol_number
+                    or not self.category.protocol_required
                 ):
                     messages.add_message(
                         request, messages.SUCCESS, compiled_message)
 
                 # if office operators must receive notification email
-                if category.receive_email:
+                if self.category.receive_email:
                     # Send mail to ticket
-                    structure = category.organizational_structure
+                    structure = self.category.organizational_structure
                     mail_params = {
                         "hostname": settings.HOSTNAME,
                         "ticket_url": request.build_absolute_uri(
                             reverse(
                                 "uni_ticket:manage_ticket_url_detail",
                                 kwargs={
-                                    "ticket_id": ticket.code,
+                                    "ticket_id": self.ticket.code,
                                     "structure_slug": structure.slug,
                                 },
                             )
                         ),
-                        "ticket_subject": ticket.subject,
-                        "ticket_description": ticket.description,
-                        "ticket_user": ticket.created_by,
-                        "destination_office": category.organizational_office,
+                        "ticket_subject": self.ticket.subject,
+                        "ticket_description": self.ticket.description,
+                        "ticket_user": self.ticket.created_by,
+                        "destination_office": self.category.organizational_office,
                     }
                     _send_new_ticket_mail_to_operators(
                         request=request,
-                        ticket=ticket,
-                        category=category,
+                        ticket=self.ticket,
+                        category=self.category,
                         message_template=NEW_TICKET_CREATED_EMPLOYEE_BODY,
                         mail_params=mail_params,
                     )
@@ -765,13 +816,13 @@ def ticket_add_new(request, structure_slug, category_slug):
                     # Send mail to ticket owner
                     mail_params = {
                         "hostname": settings.HOSTNAME,
-                        "user": request.user,
-                        "ticket": ticket.code,
+                        "user": self.request.user,
+                        "ticket": self.ticket.code,
                         "ticket_subject": subject,
                         "url": request.build_absolute_uri(
                             reverse(
                                 "uni_ticket:ticket_detail",
-                                kwargs={"ticket_id": ticket.code},
+                                kwargs={"ticket_id": self.ticket.code},
                             )
                         ),
                         "added_text": compiled_message,
@@ -781,18 +832,20 @@ def ticket_add_new(request, structure_slug, category_slug):
                     # compiled_message))
                     # m_subject = m_subject[:80] + (m_subject[80:] and '...')
                     m_subject = _("{} - richiesta {} " "creata con successo" "").format(
-                        settings.HOSTNAME, ticket
+                        settings.HOSTNAME, self.ticket
                     )
 
                     send_custom_mail(
                         subject=m_subject,
-                        recipients=ticket.get_owners(),
+                        recipients=self.ticket.get_owners(),
                         body=NEW_TICKET_CREATED,
                         params=mail_params,
                     )
                     # END Send mail to ticket owner
 
-                    return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
+                    return redirect(
+                        "uni_ticket:ticket_detail", ticket_id=self.ticket.code
+                    )
                 else:
                     return redirect(
                         "uni_ticket:add_new_ticket",
@@ -800,12 +853,12 @@ def ticket_add_new(request, structure_slug, category_slug):
                         category_slug=category_slug,
                     )
         else:  # pragma: no cover
-            for k, v in get_labeled_errors(form).items():
+            for k, v in get_labeled_errors(self.form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(
                         k, strip_tags(v))
                 )
-    return render(request, template, d)
+        return render(self.request, self.template, self.context_data)
 
 
 @login_required
@@ -1315,7 +1368,7 @@ def ticket_message(request, ticket_id):
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(is_the_owner, name="dispatch")
-class task_detail(View):  # pragma: no cover
+class TaskDetail(View):  # pragma: no cover
     """
     Task details page
 

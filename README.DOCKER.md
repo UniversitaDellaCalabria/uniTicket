@@ -81,6 +81,6 @@ sudo docker network inspect uniticket_default
 
 # connect your browser to http://172.18.0.1:8000 ...
 
-# update a service with a new image (HA failed, 5 seconds od downtime registered here... still need to implement an health check)
+# update a service with a new image (HA failed, 5 seconds of downtime registered here... still need to implement an health check)
 sudo docker service update --image uniticket:v1.2 --health-cmd "curl --fail http://localhost:8000/ || exit 1" --health-interval=5s --health-timeout=3s --health-retries=2 uniticket
 ````
