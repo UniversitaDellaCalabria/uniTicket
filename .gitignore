@@ -8,30 +8,30 @@
 
 run.sh
 
-data/media/*
-data/static/*
-!data/static/README.md
-!data/media/README.md
+uniticket/data/media/*
+uniticket/data/static/*
+!uniticket/data/static/README.md
+!uniticket/data/media/README.md
 
-db.sqlite3
+uniticket/db.sqlite3
 docs/build/*
 
-templates/base-setup.html
+uniticket/templates/base-setup.html
 
-saml2_sp/settings.py
-saml2_sp/saml2_config/certificates/*pem
-saml2_sp/saml2_config/certificates/*key
-saml2_sp/saml2_config/certificates/*src
-saml2_sp/saml2_config/certificates/*crt
-saml2_sp/saml2_config/certificates/*cert
-saml2_sp/saml2_config/certificates/*csr
-saml2_sp/saml2_config/settings.py
-saml2_sp/saml2_config/metadata/
+uniticket/saml2_sp/settings.py
+uniticket/saml2_sp/saml2_config/certificates/*pem
+uniticket/saml2_sp/saml2_config/certificates/*key
+uniticket/saml2_sp/saml2_config/certificates/*src
+uniticket/saml2_sp/saml2_config/certificates/*crt
+uniticket/saml2_sp/saml2_config/certificates/*cert
+uniticket/saml2_sp/saml2_config/certificates/*csr
+uniticket/saml2_sp/saml2_config/settings.py
+uniticket/saml2_sp/saml2_config/metadata/
 
-static/*
+uniticket/static/*
 
-tmp/*
-!tmp/README.md
+uniticket/tmp/*
+!uniticket/tmp/README.md
 
-uni_ticket_project/settingslocal.py
-uni_ticket_project_cache/*
+uniticket/uni_ticket_project/settingslocal.py
+uniticket/uni_ticket_project_cache/*

@@ -1,5 +1,5 @@
 # DOCKER-VERSION 17.10.0-ce
-FROM python:3.10-slim-buster
+FROM python:slim-bullseye
 MAINTAINER Giuseppe De Marco <giuseppe.demarco@unical.it>
 
 # set environment variables
@@ -9,11 +9,11 @@ ENV PYTHONUNBUFFERED 1
 RUN pip install --upgrade pip
 
 # install dependencies
-RUN apt-get update \
-    && apt-get install -y poppler-utils git locales xmlsec1 gcc \
-                          libmagic-dev libmariadbclient-dev libssl-dev \
+RUN apt update \
+    && apt install -y poppler-utils git locales xmlsec1 gcc \
+                          libmagic-dev libmariadb-dev-compat libssl-dev \
                           libsasl2-dev libldap2-dev net-tools tcpdump \
-                          curl iproute2 libgtk2.0-0 libpango1.0.0\
+                          curl iproute2 libgtk2.0-0 libpango-1.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install virtualenv
@@ -31,9 +31,12 @@ ENV LC_ALL it_IT.UTF-8
 COPY . /uniTicket
 WORKDIR /uniTicket
 RUN pip3 install -r requirements.txt
+WORKDIR uniticket
 RUN cp uni_ticket_project/settingslocal.py.example uni_ticket_project/settingslocal.py
-# use bootstrap_italia as default template 
-RUN cp /usr/local/lib/python3.9/site-packages/bootstrap_italia_template/templates/bootstrap-italia-base.html templates/base-setup.html
+
+# use bootstrap_italia as default template
+# RUN ls ./templates
+# RUN curl https://raw.githubusercontent.com/italia/design-django-theme/master/bootstrap_italia_template/templates/bootstrap-italia-base.html --output templates/base-setup.html
 
 ## Add the wait script to the image
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.2/wait /wait
@@ -48,7 +51,7 @@ RUN python manage.py migrate
 RUN python manage.py shell -c "from django.contrib.auth import get_user_model; get_user_model().objects.filter(username='admin').exists() or get_user_model().objects.create_superuser('admin', 'admin@example.com', 'adminpass')"
 
 # uncomment the following line to fill the database with the default users
-# RUN python manage.py loaddata dumps/example_conf.json
+RUN python manage.py loaddata ../dumps/example_conf.json
 
 EXPOSE 8000
 CMD /wait && python manage.py runserver 0.0.0.0:8000

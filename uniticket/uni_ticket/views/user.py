@@ -14,7 +14,9 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views import View
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.html import strip_tags
@@ -30,8 +32,6 @@ from organizational_area.models import (
     OrganizationalStructure,
     OrganizationalStructureOfficeEmployee,
 )
-
-# from PyPDF2 import PdfFileMerger
 
 from uni_ticket.decorators import *
 from uni_ticket.forms import *
@@ -160,16 +160,6 @@ def _send_new_ticket_mail_to_operators(
 ):
     office = category.organizational_office
     structure = category.organizational_structure
-    # mail_params = {'hostname': settings.HOSTNAME,
-    # 'ticket_url': request.build_absolute_uri(reverse('uni_ticket:manage_ticket_url_detail',
-    # kwargs={'ticket_id': ticket.code,
-    # 'structure_slug': structure.slug})),
-    # 'ticket_subject': ticket.subject,
-    # 'ticket_description': ticket.description,
-    # 'ticket_user': ticket.created_by,
-    # 'destination_office': office,
-    # }
-
     m_subject = _("{} - {}".format(settings.HOSTNAME, category))
     operators = OrganizationalStructureOfficeEmployee.objects.filter(
         office=office, employee__is_active=True
@@ -1206,7 +1196,7 @@ def ticket_message(request, ticket_id):
     # Conversazione utente-operatori
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
     form = ReplyForm()
-    # if ticket.is_open():
+
     agent_replies = ticket_replies.filter(read_by=None).exclude(structure=None)
     if request.user == ticket.created_by:
         for reply in agent_replies:
@@ -1215,13 +1205,6 @@ def ticket_message(request, ticket_id):
             reply.save(update_fields=["read_by", "read_date"])
 
     if request.method == "POST":
-
-        # deny action if user is not the owner but has compiled only
-        # if not request.user == ticket.created_by:
-        # messages.add_message(request, messages.ERROR,
-        # settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by))
-        # return redirect('uni_ticket:ticket_message',
-        # ticket_id=ticket_id)
 
         if not ticket.is_open():
             # log action
@@ -1232,6 +1215,7 @@ def ticket_message(request, ticket_id):
                 )
             )
             return custom_message(request, _("La richiesta non è modificabile"))
+
         form = ReplyForm(request.POST, request.FILES)
         if form.is_valid():
             ticket_reply = form.save(commit=False)
@@ -1329,9 +1313,9 @@ def ticket_message(request, ticket_id):
     return render(request, template, d)
 
 
-@login_required
-@is_the_owner
-def task_detail(request, ticket_id, task_id):  # pragma: no cover
+@method_decorator(login_required, name="dispatch")
+@method_decorator(is_the_owner, name="dispatch")
+class task_detail(View):  # pragma: no cover
     """
     Task details page
 
@@ -1343,16 +1327,17 @@ def task_detail(request, ticket_id, task_id):  # pragma: no cover
 
     :return: render
     """
-    ticket = get_object_or_404(Ticket, code=ticket_id)
-    task = get_object_or_404(Task, code=task_id, ticket=ticket)
-    if not task.is_public:
-        return custom_message(request, _("Attività riservata agli operatori"))
-
-    priority = task.get_priority()
-    title = _("Dettaglio task")
-    d = {"priority": priority, "sub_title": task, "task": task, "title": title}
-    template = "user/task_detail.html"
-    return render(request, template, d)
+    def get(self, request, ticket_id:str, task_id:str):
+        ticket = get_object_or_404(Ticket, code=ticket_id)
+        task = get_object_or_404(Task, code=task_id, ticket=ticket)
+        if not task.is_public:
+            return custom_message(request, _("Attività riservata agli operatori"))
+    
+        priority = task.get_priority()
+        title = _("Dettaglio task")
+        d = {"priority": priority, "sub_title": task, "task": task, "title": title}
+        template = "user/task_detail.html"
+        return render(request, template, d)
 
 
 @login_required

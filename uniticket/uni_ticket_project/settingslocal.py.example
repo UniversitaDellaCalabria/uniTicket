@@ -85,7 +85,7 @@ INSTALLED_APPS = [
     # 'chat',
 
     # Libreria per la generazione dei PDF
-    'wkhtmltopdf',
+    # 'wkhtmltopdf',
 
     # SAML2 SP
     # 'djangosaml2',
