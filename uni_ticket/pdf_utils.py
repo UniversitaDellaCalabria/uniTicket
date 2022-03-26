@@ -1,10 +1,19 @@
+import logging
 import os
 import re
 
 from django.conf import settings
 from django.http import HttpResponse
 
-from weasyprint import HTML
+logger = logging.getLogger(__name__)
+
+try:
+    from weasyprint import HTML
+except ModuleNotFoundError as e:
+    logger.warning(
+        "weasyprint not found - please install it top enable PDF exports. "
+        "pip install WeasyPrint"
+    )
 
 
 def response_as_pdf(response, pdf_fname):

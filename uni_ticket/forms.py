@@ -12,6 +12,7 @@ from bootstrap_italia_template.widgets import (BootstrapItaliaSelectWidget,
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,)
+from uni_ticket.settings import CLOSING_LEVELS
 from uni_ticket_bootstrap_italia_template.widgets import UniTicketDateTimeWidget
 
 from . models import *
@@ -142,7 +143,7 @@ class CategoryInputListForm(ModelForm):
 
 
 class TaskCloseForm(forms.Form):
-    status = forms.TypedChoiceField(choices=settings.CLOSING_LEVELS,
+    status = forms.TypedChoiceField(choices=CLOSING_LEVELS,
                                     required=True,
                                     initial=1,
                                     label=_('Stato chiusura'),
@@ -169,7 +170,7 @@ class BaseTicketCloseForm(forms.Form):
 
 
 class TicketCloseForm(BaseTicketCloseForm):
-    status = forms.TypedChoiceField(choices=settings.CLOSING_LEVELS,
+    status = forms.TypedChoiceField(choices=CLOSING_LEVELS,
                                     required=True,
                                     initial=1,
                                     label=_('Stato chiusura'),
@@ -247,7 +248,7 @@ class OrganizationalStructureAddManagerForm(forms.Form):
 
 
 class PriorityForm(forms.Form):
-    priorita = forms.TypedChoiceField(choices=settings.PRIORITY_LEVELS,
+    priorita = forms.TypedChoiceField(choices=PRIORITY_LEVELS,
                                       required=True,
                                       initial=0,
                                       label=_('Priorità'),
@@ -256,7 +257,7 @@ class PriorityForm(forms.Form):
 
 
 class TakeTicketForm(forms.Form):
-    priority = forms.TypedChoiceField(choices=settings.PRIORITY_LEVELS,
+    priority = forms.TypedChoiceField(choices=PRIORITY_LEVELS,
                                       required=True,
                                       initial=0,
                                       label=_('Priorità'),
@@ -459,7 +460,7 @@ class CategoryTaskForm(ModelForm):
 
 
 class AssignTicketToOperatorForm(forms.Form):
-    priorita = forms.TypedChoiceField(choices=settings.PRIORITY_LEVELS,
+    priorita = forms.TypedChoiceField(choices=PRIORITY_LEVELS,
                                       required=True,
                                       initial=0,
                                       label=_('Priorità'),

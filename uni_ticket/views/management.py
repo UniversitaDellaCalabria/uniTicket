@@ -25,6 +25,7 @@ from uni_ticket.decorators import (has_admin_privileges,
                                    ticket_is_taken_for_employee)
 from uni_ticket.forms import *
 from uni_ticket.models import *
+from uni_ticket.settings import SIMPLE_USER_SHOW_PRIORITY
 from uni_ticket.utils import *
 
 
@@ -239,7 +240,7 @@ def ticket_detail(request, structure_slug, ticket_id,
                 priority = office_priority_form.cleaned_data['priority']
                 ticket.priority = priority
                 ticket.save(update_fields = ['priority'])
-                priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
+                priority_text = dict(PRIORITY_LEVELS).get(priority)
                 msg = _("Ticket preso in carico da {}. "
                         "Priorità assegnata: {}".format(request.user,
                                                         priority_text))
@@ -266,12 +267,12 @@ def ticket_detail(request, structure_slug, ticket_id,
                                                'taken_date',
                                                'taken_by',
                                                'modified'])
-                priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
+                priority_text = dict(PRIORITY_LEVELS).get(priority)
                 msg = _("Richiesta assegnata a {} da {}. "
                         "Priorità assegnata: {}".format(operator,
                                                         request.user,
                                                         priority_text))
-                if not settings.SIMPLE_USER_SHOW_PRIORITY:
+                if not SIMPLE_USER_SHOW_PRIORITY:
                     msg = _("Richiesta assegnata a {} da {}.".format(operator,
                                                                   request.user))
                 ticket.update_log(user=request.user, note=msg)
@@ -307,7 +308,7 @@ def ticket_detail(request, structure_slug, ticket_id,
         if ticket.has_been_taken(structure=structure,
                                  exclude_readonly=True) and form.is_valid():
             priority = form.cleaned_data['priorita']
-            priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
+            priority_text = dict(PRIORITY_LEVELS).get(priority)
             mail_params = {'hostname': settings.HOSTNAME,
                            'status': _("aggiornato"),
                            'ticket': ticket,
@@ -677,7 +678,7 @@ def ticket_close(request, structure_slug, ticket_id,
 
             ticket.update_log(user=request.user,
                               note=_("Chiusura richiesta ({}): {}"
-                                     "").format(dict(settings.CLOSING_LEVELS).get(closing_status),
+                                     "").format(dict(CLOSING_LEVELS).get(closing_status),
                                                 motivazione))
 
             opened_ticket_url = reverse('uni_ticket:manage_opened_ticket_url',
@@ -1379,7 +1380,7 @@ def task_detail(request, structure_slug, ticket_id, task_id,
         form = PriorityForm(request.POST)
         if form.is_valid():
             priority = form.cleaned_data['priorita']
-            priority_text = dict(settings.PRIORITY_LEVELS).get(priority)
+            priority_text = dict(PRIORITY_LEVELS).get(priority)
             msg = _("Task {} - Priorità assegnata: {}".format(task,
                                                               priority_text))
             task.priority = priority
@@ -1501,7 +1502,7 @@ def task_close(request, structure_slug, ticket_id, task_id,
                                                         task))
 
             msg = _("Chiusura attività ({}): {} - {}".format(task,
-                                                             dict(settings.CLOSING_LEVELS).get(closing_status),
+                                                             dict(CLOSING_LEVELS).get(closing_status),
                                                              motivazione))
             task.update_log(user=request.user,note=msg)
             ticket.update_log(user=request.user,note=msg)
@@ -1675,7 +1676,7 @@ def task_edit(request, structure_slug, ticket_id, task_id,
             msg = _("Modifica attività {}".format(task))
             if task.priority != form.cleaned_data['priority']:
                 msg = msg + _(" e Priorità assegnata: {}"
-                              "".format(dict(settings.PRIORITY_LEVELS).get(form.cleaned_data['priority'])))
+                              "".format(dict(PRIORITY_LEVELS).get(form.cleaned_data['priority'])))
             form.save()
 
             # log action

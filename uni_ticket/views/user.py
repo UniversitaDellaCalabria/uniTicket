@@ -691,7 +691,7 @@ def dashboard(request):
     messages = TicketReply.get_unread_messages_count(tickets=tickets,
                                                      by_operator=True)
 
-    d = {'priority_levels': settings.PRIORITY_LEVELS,
+    d = {'priority_levels': PRIORITY_LEVELS,
          'sub_title': sub_title,
          'ticket_aperti': opened,
          'ticket_chiusi': chiusi,

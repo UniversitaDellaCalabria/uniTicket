@@ -5,10 +5,12 @@ from cryptojwt.jwe.jwe import factory
 from cryptojwt.jwe.jwe_rsa import JWE_RSA
 from django.conf import settings
 
+from uni_ticket.settings import UNITICKET_JWE_ALG, UNITICKET_JWE_ENC, UNITICKET_JWE_RSA_KEY_PATH
 
-RSA_KEY = settings.UNITICKET_JWE_RSA_KEY_PATH
-JWE_ALG = settings.UNITICKET_JWE_ALG
-JWE_ENC = settings.UNITICKET_JWE_ENC
+
+RSA_KEY = UNITICKET_JWE_RSA_KEY_PATH
+JWE_ALG = UNITICKET_JWE_ALG
+JWE_ENC = UNITICKET_JWE_ENC
 
 
 def encrypt_to_jwe(content):

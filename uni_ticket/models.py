@@ -22,6 +22,7 @@ from django_form_builder.utils import get_as_dict, set_as_dict
 from organizational_area.models import (OrganizationalStructure,
                                         OrganizationalStructureOffice,
                                         OrganizationalStructureOfficeEmployee,)
+from uni_ticket.settings import CLOSING_LEVELS, NEW_TICKET_CREATED_ALERT, ORGANIZATION_EMPLOYEE_LABEL, ORGANIZATION_USER_LABEL, PRIORITY_LEVELS, SHOW_HEADING_TEXT
 
 from . dynamic_form import DynamicForm
 from . utils import *
@@ -103,13 +104,13 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
     show_heading_text = models.BooleanField(_("Mostra agli utenti un testo "
                                               "di accettazione in fase di "
                                               "apertura nuova richiesta"),
-                                            default=settings.SHOW_HEADING_TEXT)
+                                            default=SHOW_HEADING_TEXT)
     # fields to map roles
     allow_anonymous = models.BooleanField(_("Accessibile a Utenti anonimi"),
                                           default=False)
     allow_guest = models.BooleanField(_("Accessibile a Ospiti"), default=True)
-    allow_user = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_USER_LABEL), default=True)
-    allow_employee = models.BooleanField(_("Accessibile a {}").format(settings.ORGANIZATION_EMPLOYEE_LABEL), default=True)
+    allow_user = models.BooleanField(_("Accessibile a {}").format(ORGANIZATION_USER_LABEL), default=True)
+    allow_employee = models.BooleanField(_("Accessibile a {}").format(ORGANIZATION_EMPLOYEE_LABEL), default=True)
 
     # allowed users
     allowed_users = models.ManyToManyField(settings.AUTH_USER_MODEL,
@@ -130,7 +131,7 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
                                                         "Apri e chiudi le parentesi graffe "
                                                         "per inserire l'oggetto della richiesta. "
                                                         "Lascia vuoto per usare il testo predefinito \"{}\""
-                                                        "").format(settings.NEW_TICKET_CREATED_ALERT))
+                                                        "").format(NEW_TICKET_CREATED_ALERT))
     footer_text = models.TextField(_("Testo in calce per versione stampabile"),
                                      blank=True,
                                      null=True)
@@ -144,8 +145,10 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
                                             default=False)
 
     # user can open multiple ticket of this category
-    user_multiple_open_tickets = models.BooleanField(_("Gli utenti possono aprire più richieste contemporaneamente"),
-                                                     default=True)
+    user_multiple_open_tickets = models.BooleanField(
+        _("Gli utenti possono aprire più richieste contemporaneamente"),
+        default=True
+    )
 
     class Meta:
         unique_together = ("slug", "organizational_structure")
@@ -164,8 +167,10 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         return True
 
     def something_stops_activation(self):
-        category_module = TicketCategoryModule.objects.filter(ticket_category=self,
-                                                              is_active=True)
+        category_module = TicketCategoryModule.objects.filter(
+            ticket_category=self,
+            is_active=True
+        )
         if not self.organizational_office:
             return _("Per attivare la tipologia di richiesta <b>{}</b> è necessario"
                     " assegnare un ufficio di competenza").format(self)
@@ -350,10 +355,10 @@ class Ticket(SavedFormContent):
                                   null=True, blank=True,
                                   related_name='closed_by_user')
     closing_reason = models.TextField(blank=True, null=True)
-    closing_status = models.IntegerField(choices=settings.CLOSING_LEVELS,
+    closing_status = models.IntegerField(choices=CLOSING_LEVELS,
                                          null=True,
                                          blank=True)
-    priority = models.IntegerField(choices=settings.PRIORITY_LEVELS,
+    priority = models.IntegerField(choices=PRIORITY_LEVELS,
                                    default=0)
 
     # ticket type = notification
@@ -519,7 +524,7 @@ class Ticket(SavedFormContent):
             if self.is_notification or not self.closed_by:
                 return _('<span class="badge badge-success">Chiusa</span>')
             # normal ticket
-            status_literal = dict(settings.CLOSING_LEVELS).get(self.closing_status)
+            status_literal = dict(CLOSING_LEVELS).get(self.closing_status)
             html = _('<span class="badge badge-success">Chiusa</span> '
                       '<span class="badge badge-{}">{}</span>')
             if self.closing_status == -1:
@@ -543,7 +548,7 @@ class Ticket(SavedFormContent):
             if self.is_notification or not self.closed_by:
                 return _('<span class="badge badge-success">Chiusa</span>')
             # normal ticket
-            status_literal = dict(settings.CLOSING_LEVELS).get(self.closing_status)
+            status_literal = dict(CLOSING_LEVELS).get(self.closing_status)
 
             # get svg file from static
             static_icon = static('svg/sprite.svg')
@@ -756,7 +761,7 @@ class Ticket(SavedFormContent):
         """
         """
         # return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
-        return dict(settings.PRIORITY_LEVELS).get(self.priority)
+        return dict(PRIORITY_LEVELS).get(self.priority)
 
     def get_messages_count(self, by_operator=False):
         all_messages = TicketReply.objects.filter(ticket=self)
@@ -1057,7 +1062,7 @@ class AbstractTask(models.Model):
                                    on_delete=models.SET_NULL,
                                    null=True)
     # priority = models.IntegerField(default=0)
-    priority = models.IntegerField(choices=settings.PRIORITY_LEVELS,
+    priority = models.IntegerField(choices=PRIORITY_LEVELS,
                                    default=0)
     is_public = models.BooleanField(default=True)
     attachment = models.FileField(upload_to=_attachment_upload,
@@ -1073,8 +1078,7 @@ class AbstractTask(models.Model):
     def get_priority(self):
         """
         """
-        # return dict(settings.PRIORITY_LEVELS).get(str(self.priority))
-        return dict(settings.PRIORITY_LEVELS).get(self.priority)
+        return dict(PRIORITY_LEVELS).get(self.priority)
 
 
 class Task(AbstractTask):
@@ -1090,7 +1094,7 @@ class Task(AbstractTask):
                                   related_name='task_closed_by_user')
     closed_date = models.DateTimeField(blank=True, null=True)
     closing_reason = models.TextField(blank=True, null=True)
-    closing_status = models.IntegerField(choices=settings.CLOSING_LEVELS,
+    closing_status = models.IntegerField(choices=CLOSING_LEVELS,
                                          null=True,
                                          blank=True)
 
@@ -1119,7 +1123,7 @@ class Task(AbstractTask):
 
     def get_status(self):
         if self.is_closed:
-            status_literal = dict(settings.CLOSING_LEVELS).get(self.closing_status)
+            status_literal = dict(CLOSING_LEVELS).get(self.closing_status)
 
             html = _('<span class="badge badge-success">Chiusa</span> '
                       '<span class="badge badge-{}">{}</span>')
@@ -1189,9 +1193,6 @@ class TicketCategoryCondition(models.Model):
         category_folder = self.category.get_folder()
         return '{}/{}'.format(category_folder,
                               settings.CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER)
-
-    def corpo_as_html(self):
-        return text_as_html(self.text)
 
     def __str__(self):
         return '({}) {}'.format(self.category, self.title)

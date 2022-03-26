@@ -13,15 +13,9 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 import pathlib
 
-# load applications settings file, overload what needed if needed
-from api_rest.settings import *
-
-from django_form_builder.settings import *
-from organizational_area.settings import *
-from uni_ticket.settings import *
-from uni_ticket_bootstrap_italia_template.settings import *
-
 from . settingslocal import *
+from django_form_builder.settings import *
+from uni_ticket_bootstrap_italia_template.settings import *
 
 
 HOME_PAGE = '/'

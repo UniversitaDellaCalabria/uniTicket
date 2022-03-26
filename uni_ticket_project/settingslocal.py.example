@@ -28,16 +28,16 @@ JS_DEFAULT_DATETIME_FORMAT = 'DD/MM/Y hh:mm'
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'rz82a_!%$&&56£$56565645645!"SDFXbg"£$5£"$5a'
+SECRET_KEY = 'rasd89f7sd98f7s98_£$%£$%£$%GDFGSDgfsdgdfg---'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 if not DEBUG:
-    SESSION_EXPIRE_AT_BROWSER_CLOSE=True
-    SESSION_COOKIE_AGE=(60*60)*9
-    CSRF_COOKIE_HTTPONLY=True
-    CSRF_COOKIE_SECURE=True
-    SESSION_COOKIE_SECURE=True
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+    SESSION_COOKIE_AGE = (60*60)*9
+    CSRF_COOKIE_HTTPONLY = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
 
 HOSTNAME = 'uniticket.hostname.url'
 ALLOWED_HOSTS = ['*']
@@ -85,7 +85,7 @@ INSTALLED_APPS = [
     # 'chat',
 
     # Libreria per la generazione dei PDF
-    # 'wkhtmltopdf',
+    'wkhtmltopdf',
 
     # SAML2 SP
     # 'djangosaml2',
@@ -136,7 +136,7 @@ CUSTOM_WIDGETS = {
 if 'djangosaml2'  in INSTALLED_APPS:
     from saml2_sp.settings import *
     # pySAML2 SP mandatory
-    SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+    SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
     SAML2_URL_PREFIX = 'saml2'
     LOGIN_URL = f'/{SAML2_URL_PREFIX}/login'
@@ -205,59 +205,59 @@ ADMINS = [('Giuseppe De Marco', 'giuseppe.demarco@server.it'),
           ('Francesco Filicetti', 'francesco.filicetti@server.it'),]
 
 LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-        'verbose': {
-            'format': '%(levelname)s [%(asctime)s] %(module)s %(message)s'
-            },
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+    'verbose': {
+        'format': '%(levelname)s [%(asctime)s] %(module)s %(message)s'
         },
-        'filters': {
-            'require_debug_false': {
-                '()': 'django.utils.log.RequireDebugFalse'
-            }
+    },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
         },
-        'handlers': {
-            'mail_admins': {
-                'level': 'ERROR',
-                'filters': ['require_debug_false'],
-                'class': 'django.utils.log.AdminEmailHandler'
-            },
-            'console': {
-                'level': 'INFO',
-                'class': 'logging.StreamHandler',
-            },
-            # 'file': {
-                # 'class': 'logging.handlers.RotatingFileHandler',
-                # 'formatter': 'verbose',
-                # 'filename': '/tmp/peo.unical.it-error-handler.log',
-                # 'maxBytes': 1024000,
-                # 'backupCount': 3,
-                # },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
         },
-        'loggers': {
-            # disables Invalid HTTP_HOST header emails
-            'django.security.DisallowedHost': {
-                    'handlers': ['mail_admins'],
-                    'level': 'CRITICAL',
-                    'propagate': False,
-            },
-            # 'django.request': {
-                # 'handlers': ['mail_admins'],
-                # 'level': 'ERROR',
-                # 'propagate': True,
+        # 'file': {
+            # 'class': 'logging.handlers.RotatingFileHandler',
+            # 'formatter': 'verbose',
+            # 'filename': '/tmp/peo.unical.it-error-handler.log',
+            # 'maxBytes': 1024000,
+            # 'backupCount': 3,
             # },
-            # 'djangosaml2': {
-                # 'handlers': ['console'],
-                # 'level': 'DEBUG',
-            # },
-            'django': {
-                'handlers': ['console','mail_admins'],
-                'propagate': True,
-                'level': 'ERROR',
-            },
+    },
+    'loggers': {
+        # disables Invalid HTTP_HOST header emails
+        'django.security.DisallowedHost': {
+                'handlers': ['mail_admins'],
+                'level': 'CRITICAL',
+                'propagate': False,
+        },
+        # 'django.request': {
+            # 'handlers': ['mail_admins'],
+            # 'level': 'ERROR',
+            # 'propagate': True,
+        # },
+        # 'djangosaml2': {
+            # 'handlers': ['console'],
+            # 'level': 'DEBUG',
+        # },
+        'django': {
+            'handlers': ['console','mail_admins'],
+            'propagate': True,
+            'level': 'ERROR',
         }
     }
+}
 
 # file validation
 PDF_FILETYPE = ('application/pdf',)
@@ -292,8 +292,6 @@ MAX_UPLOAD_SIZE = 10485760
 
 # UNITICKET JWE support
 UNITICKET_JWE_RSA_KEY_PATH = 'saml2_sp/saml2_config/certificates/key.pem'
-UNITICKET_JWE_ALG = "RSA-OAEP"
-UNITICKET_JWE_ENC = "A128CBC-HS256"
 # end JWE support
 
 # CAPTCHA encryption
@@ -302,9 +300,6 @@ CAPTCHA_SALT = b'salt'
 
 CAPTCHA_EXPIRATION_TIME = 45000 # milliseconds
 CAPTCHA_DEFAULT_LANG = 'it'
-
-# superusers view all
-SUPER_USER_VIEW_ALL = True
 
 # Internationalization
 # Set to False to avoid problems with javascript datepickers
@@ -324,11 +319,6 @@ LOCALE_PATHS = (
 )
 
 TIME_ZONE = 'Europe/Rome'
-
-# Ticket categories CSV export
-# additional user fields to export
-ADDITIONAL_USER_FIELDS = [uni_ticket_settings.EMPLOYEE_ATTRIBUTE_NAME,
-                          uni_ticket_settings.USER_ATTRIBUTE_NAME]
 
 # PROTOCOLLO, questi valori possono variare sulla base di come
 # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
@@ -376,61 +366,6 @@ PROTOCOL_NAMESPACES_DEBUG = {
 PROTOCOL_TEST_LOGIN = 'TEST_LOGIN'
 PROTOCOL_TEST_PASSW = 'TEST_PASSWORD'
 
-# XML flusso ArchiPRO
-PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-<Intestazione>
-<Oggetto>{oggetto}</Oggetto>
-<Identificatore>
-<CodiceAmministrazione>UNICAL</CodiceAmministrazione>
-<CodiceAOO>{aoo}</CodiceAOO>
-<Flusso>E</Flusso>
-</Identificatore>
-<Mittente>
-
-<Dipendente id="{matricola_dipendente}">
-<Denominazione>{denominazione_persona}</Denominazione>
-</Dipendente>
-
-<Studente id="{matricola_studente}">
-<Denominazione>{denominazione_persona}</Denominazione>
-</Studente>
-
-<Persona id="{id_persona}">
-<Nome>{nome_persona}</Nome>
-<Cognome>{cognome_persona}</Cognome>
-</Persona>
-
-</Mittente>
-<Destinatario>
-<Amministrazione>
-<Denominazione>UNICAL</Denominazione>
-<CodiceAmministrazione>UNICAL</CodiceAmministrazione>
-<IndirizzoTelematico tipo="smtp">{email}</IndirizzoTelematico>
-<UnitaOrganizzativa id=""/>
-</Amministrazione>
-</Destinatario>
-<Classifica>
-<CodiceTitolario>{id_titolario}</CodiceTitolario>
-</Classifica>
-<!--  Informazioni sul fascicolo  -->
-<Fascicolo numero="{fascicolo_numero}" anno="{fascicolo_anno}"/>
-</Intestazione>
-<Descrizione>
-<Documento id="1" nome="{nome_doc}">
-<DescrizioneDocumento>{nome_doc}</DescrizioneDocumento>
-<TipoDocumento>{tipo_doc}</TipoDocumento>
-</Documento>
-<Allegati>
-<!-- Allegati -->
-</Allegati>
-</Descrizione>
-<ApplicativoProtocollo nome="ArchiPRO">
-<Parametro nome="agd" valore="{agd}"/>
-<Parametro nome="uo" valore="{uo}"/>
-</ApplicativoProtocollo>
-</Segnatura>
-"""
-
 # XML flusso Titulus
 PROTOCOL_XML = """
 <doc tipo="arrivo" cod_amm_aoo="{cod_amm_aoo}">
@@ -460,4 +395,60 @@ PROTOCOL_XML = """
 </doc>
 
 """
+
+# XML flusso ArchiPRO
+# PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+# <Intestazione>
+# <Oggetto>{oggetto}</Oggetto>
+# <Identificatore>
+# <CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+# <CodiceAOO>{aoo}</CodiceAOO>
+# <Flusso>E</Flusso>
+# </Identificatore>
+# <Mittente>
+
+# <Dipendente id="{matricola_dipendente}">
+# <Denominazione>{denominazione_persona}</Denominazione>
+# </Dipendente>
+
+# <Studente id="{matricola_studente}">
+# <Denominazione>{denominazione_persona}</Denominazione>
+# </Studente>
+
+# <Persona id="{id_persona}">
+# <Nome>{nome_persona}</Nome>
+# <Cognome>{cognome_persona}</Cognome>
+# </Persona>
+
+# </Mittente>
+# <Destinatario>
+# <Amministrazione>
+# <Denominazione>UNICAL</Denominazione>
+# <CodiceAmministrazione>UNICAL</CodiceAmministrazione>
+# <IndirizzoTelematico tipo="smtp">{email}</IndirizzoTelematico>
+# <UnitaOrganizzativa id=""/>
+# </Amministrazione>
+# </Destinatario>
+# <Classifica>
+# <CodiceTitolario>{id_titolario}</CodiceTitolario>
+# </Classifica>
+# <!--  Informazioni sul fascicolo  -->
+# <Fascicolo numero="{fascicolo_numero}" anno="{fascicolo_anno}"/>
+# </Intestazione>
+# <Descrizione>
+# <Documento id="1" nome="{nome_doc}">
+# <DescrizioneDocumento>{nome_doc}</DescrizioneDocumento>
+# <TipoDocumento>{tipo_doc}</TipoDocumento>
+# </Documento>
+# <Allegati>
+# <!-- Allegati -->
+# </Allegati>
+# </Descrizione>
+# <ApplicativoProtocollo nome="ArchiPRO">
+# <Parametro nome="agd" valore="{agd}"/>
+# <Parametro nome="uo" valore="{uo}"/>
+# </ApplicativoProtocollo>
+# </Segnatura>
+# """
+
 # END PROTOCOLLO
