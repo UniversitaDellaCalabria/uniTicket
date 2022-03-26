@@ -453,7 +453,7 @@ class TicketAddNew(View):
         # if anonymous user and category only for logged users
         if not self.category.allow_anonymous and not self.request.user.is_authenticated:
             redirect_url = "{}?next={}".format(
-                settings.LOGIN_URL, request.get_full_path())
+                settings.LOGIN_URL, self.request.get_full_path())
             return redirect(redirect_url)
 
         # is user is authenticated
