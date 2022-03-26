@@ -155,8 +155,6 @@ def _save_new_ticket_attachments(ticket, json_stored, form, request_files):
 
 
 # send email to operators when new ticket is opened
-
-
 def _send_new_ticket_mail_to_operators(
     request, ticket, category, message_template, mail_params
 ):
