@@ -13,7 +13,7 @@ PROT_UNALLOWED_CHARS = ['&', '(', ')', ',', '?', '!', '{', '}', '\\', '[', ']',
                         ';', '"', "'"]
 
 PROT_TEMPLATE_PATH = 'archipro_ws/xml_templates'
-PROT_TEMPLATE_FLUSSO_ENTRATA_DIPENDENTE_PATH='{}/unical/flusso_entrata.xml_standard.j2'.format(PROT_TEMPLATE_PATH)
+PROT_TEMPLATE_FLUSSO_ENTRATA_DIPENDENTE_PATH = '{}/unical/flusso_entrata.xml_standard.j2'.format(PROT_TEMPLATE_PATH)
 
 TITOLARIO_DICT = (
     ("9002", _("[9002] Normativa e relativa attuazione")),

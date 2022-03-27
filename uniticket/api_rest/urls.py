@@ -1,7 +1,6 @@
-from django.conf import settings
 from django.urls import path, include
 
-from api_rest.views import *
+from api_rest.views import GroupViewSet, UserViewSet
 from rest_framework import routers
 
 import rest_framework.urls

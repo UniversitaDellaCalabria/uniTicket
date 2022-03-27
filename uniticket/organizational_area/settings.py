@@ -20,6 +20,6 @@ LOGOS_FOLDER = getattr(
 )
 STRUCTURES_FOLDER = getattr(
     settings,
-    "STRUCTURES_FOLDER",   
+    "STRUCTURES_FOLDER",
     'structures'
 )

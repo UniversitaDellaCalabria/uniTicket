@@ -1,10 +1,9 @@
-from titulus_ws.settings import *
 
 
 def protocol_entrata_dict(**kwargs):
 
     protocol_data = {
-                     #Variabili
+                     # Variabili
                      'oggetto': '{:<20}'.format(kwargs.get('oggetto')),
                      'autore': kwargs.get('autore'),
 

@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib import admin
-from django.urls import reverse
 
 from .models import *
 
@@ -47,6 +46,8 @@ class OrganizationalStructureOfficeEmployeeInline(admin.TabularInline):
     autocomplete_fields = ('employee',)
 
 # Structure Location
+
+
 class OrganizationalStructureOfficeLocationModelForm(forms.ModelForm):
 
     class Meta:

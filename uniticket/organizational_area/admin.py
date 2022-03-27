@@ -46,13 +46,13 @@ class OrganizationalStructureOfficeAdmin(AbstractAdmin):
                OrganizationalStructureOfficeLocationInline,]
 
 
-#@admin.register(TipoDotazione)
-#class TipoDotazioneAdmin(admin.ModelAdmin):
+# @admin.register(TipoDotazione)
+# class TipoDotazioneAdmin(admin.ModelAdmin):
     #list_display = ('nome', 'descrizione')
 
 
-#@admin.register(Locazione)
-#class LocazioneAdmin(admin.ModelAdmin):
+# @admin.register(Locazione)
+# class LocazioneAdmin(admin.ModelAdmin):
     #list_display = ('nome', 'indirizzo', 'descrizione_breve',)
 
 

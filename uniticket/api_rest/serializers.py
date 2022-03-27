@@ -14,6 +14,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                   'is_active',
                   'is_staff']
 
+
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group

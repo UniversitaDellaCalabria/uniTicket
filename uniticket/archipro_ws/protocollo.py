@@ -2,17 +2,16 @@
 
 # SPDX-License-Identifier: GPL-3.0
 
-import datetime
 import io
 import os
 
-from django.conf import settings
 
 from zeep import Client
 
 from archipro_ws.utils import clean_string
 from archipro_ws.settings import (PROT_TEMPLATE_FLUSSO_ENTRATA_DIPENDENTE_PATH,
                                   PROT_DOC_ENCODING)
+
 
 class WSArchiPROClient(object):
     _ALLEGATO_XML = """
@@ -47,9 +46,9 @@ class WSArchiPROClient(object):
                            'id_persona',
                            'nome_persona',
                            'cognome_persona',]
-                           # 'denominazione_persona',
-                           # 'nome_doc',
-                           # 'tipo_doc']
+    # 'denominazione_persona',
+    # 'nome_doc',
+    # 'tipo_doc']
 
     def __init__(self,
                  wsdl_url,
@@ -76,7 +75,7 @@ class WSArchiPROClient(object):
         # numero viene popolato a seguito di una protocollazione
         if kwargs.get('numero') and kwargs.get('anno'):
             self.numero = kwargs.get('numero')
-            self.anno   = kwargs.get('anno')
+            self.anno = kwargs.get('anno')
         else:
             self.numero = None
             self.anno = None
@@ -94,7 +93,7 @@ class WSArchiPROClient(object):
         #       tipo,
         #       fopen }
         #
-        self.allegati  = []
+        self.allegati = []
         self.template_xml_flusso = template_xml_flusso
 
         # to be filled by connect() method
@@ -102,7 +101,7 @@ class WSArchiPROClient(object):
         self.password = password
         self.wsdl_url = wsdl_url
         self.client = None
-        self.login  = None
+        self.login = None
 
     def connect(self):
         self.client = Client('{}'.format(self.wsdl_url))
@@ -136,13 +135,13 @@ class WSArchiPROClient(object):
 
         if not self.anno or \
            not self.numero:
-               raise Exception(('anno e numero sono necessari.'
-                                'Attualmente: anno={}, '
-                                'numero={}.').format(self.anno,
-                                                     self.numero))
-        #rec = self.client.service.recuperoDocumento(DST=self.login.DST,
-                                                    #lngAnnoPG=self.anno,
-                                                    #lngNumPG=self.numero)
+            raise Exception(('anno e numero sono necessari.'
+                             'Attualmente: anno={}, '
+                             'numero={}.').format(self.anno,
+                                                  self.numero))
+        # rec = self.client.service.recuperoDocumento(DST=self.login.DST,
+            # lngAnnoPG=self.anno,
+            # lngNumPG=self.numero)
         rec = self.client.service.recuperoDocsProtocollo(DST=self.login.DST,
                                                          lngAnnoPG=self.anno,
                                                          lngNumPG=self.numero)
@@ -204,7 +203,7 @@ class WSArchiPROClient(object):
                           tipo_doc=None):
         if (nome_doc and not tipo_doc) or \
            (tipo_doc and not nome_doc):
-               raise Exception('tipo_doc e nome_doc devono essere configurati insieme')
+            raise Exception('tipo_doc e nome_doc devono essere configurati insieme')
 
         if nome_doc and tipo_doc:
             self.nome_doc = clean_string(nome_doc, save_extension=True)
@@ -242,10 +241,10 @@ class WSArchiPROClient(object):
 
     def _get_allegato_dict(self):
         return {'allegato_id': None,
-                'nome':        None,
+                'nome': None,
                 'descrizione': None,
-                'tipo':        None,
-                'file':        None}
+                'tipo': None,
+                'file': None}
 
     def aggiungi_allegato(self,
                           nome,
@@ -270,16 +269,16 @@ class WSArchiPROClient(object):
 
         allegato_dict = self._get_allegato_dict()
         allegato_dict['allegato_id'] = len(self.allegati) + allegato_idsum
-        allegato_dict['nome']        = clean_string(nome, save_extension=True)
+        allegato_dict['nome'] = clean_string(nome, save_extension=True)
         allegato_dict['descrizione'] = clean_string(descrizione)
-        allegato_dict['tipo']        = clean_string(tipo)
+        allegato_dict['tipo'] = clean_string(tipo)
 
         allegato = self.client.wsdl.types.get_type(qname='ns0:attach')()
         allegato.id = len(self.allegati) + allegato_idsum
         allegato.fileName = clean_string(nome, save_extension=True)
 
         allegato.fileContent = self._encode_filestream(fopen)
-        allegato_dict['ns0:attach']  = allegato
+        allegato_dict['ns0:attach'] = allegato
 
         self.allegati.append(allegato_dict)
         return self.render_AllegatoXML(allegato_dict)

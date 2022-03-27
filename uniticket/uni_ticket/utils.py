@@ -9,7 +9,7 @@ import os
 import random
 import re
 import shutil
-import shortuuid
+import uuid
 import zipfile
 import zlib
 
@@ -292,8 +292,7 @@ def uuid_code():
     """
     Returns a short uuid code
     """
-    return shortuuid.uuid()
-
+    return uuid.uuid4().hex
 
 # Not used!
 # def ticket_summary_dict():

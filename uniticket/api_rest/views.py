@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from accounts.models import User
 from django.contrib.auth.models import Group
 
-from . serializers import *
+from . serializers import GroupSerializer, UserSerializer
 
 
 # ViewSets define the view behavior.

@@ -1,6 +1,4 @@
-from django.conf import settings
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from chat.settings import MESSAGES_TO_LOAD
@@ -45,7 +43,7 @@ class ChatMessageModelViewSet(ModelViewSet):
                                              Q(user=request.user))
         target = self.request.query_params.get('target', None)
         room_name = self.request.query_params.get('room', None)
-        broadcast = self.request.query_params.get('broadcast', False)
+        self.request.query_params.get('broadcast', False)
 
         if room_name:
             self.queryset = self.queryset.filter(room=room_name)
@@ -54,7 +52,7 @@ class ChatMessageModelViewSet(ModelViewSet):
             if channel:
                 channel.save(update_fields=['last_seen'])
         try:
-            if target and int(target)==request.user.pk:
+            if target and int(target) == request.user.pk:
                 self.queryset = self.queryset.filter(user=request.user,
                                                      broadcast=True)
             elif target:
@@ -63,7 +61,7 @@ class ChatMessageModelViewSet(ModelViewSet):
                     Q(recipient__pk=int(target), user=request.user))
 
             return super(ChatMessageModelViewSet, self).list(request, *args, **kwargs)
-        except ValueError as verr:
+        except ValueError:
             return Response(_("Argomenti errati"))
 
     def retrieve(self, request, *args, **kwargs):
@@ -90,7 +88,7 @@ class UserModelViewSet(ModelViewSet):
         try:
             if not request.user.is_superuser and int(kwargs.get('pk')) != request.user.pk:
                 return Response(_("Non hai accesso a questa risorsa"))
-        except ValueError as verr:
+        except ValueError:
             return Response(_("Argomenti errati"))
         user = self.queryset.filter(pk=kwargs.get('pk')).first()
         serializer = self.get_serializer(user)

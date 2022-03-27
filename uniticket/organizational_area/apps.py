@@ -7,4 +7,5 @@ class OrganizationalAreaConfig(AppConfig):
 
     def ready(self):
         # Signals
-        import organizational_area.signals
+        import organizational_area.signals # noqa: F401
+        pass

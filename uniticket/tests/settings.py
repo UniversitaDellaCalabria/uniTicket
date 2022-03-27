@@ -16,11 +16,11 @@ import pathlib
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'rz82a_#y1#s=l+loeqgn_4xslwchu%yxtpdf)h7b$6kn+p+=+^'
 
-from . settingslocal import *
+from . settingslocal import * # noqa: F401
 
 # load applications settings file, overload what needed if needed
-from django_form_builder.settings import *
-from organizational_area.settings import *
+from django_form_builder.settings import * # noqa: F401
+from organizational_area.settings import * # noqa: F401
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

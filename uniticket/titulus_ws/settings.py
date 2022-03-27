@@ -5,7 +5,7 @@
 import os
 
 
-PROT_DOC_ENCODING="utf-8"
+PROT_DOC_ENCODING = "utf-8"
 
 BASE_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -30,8 +30,8 @@ FASCICOLAZIONE_SEPARATA = True
 PATH_ROOT = 'titulus_ws'
 PATH_XML_TEMPLATES = f'{BASE_ROOT}/xml_templates'
 
-DOCUMENTO_ENTRATA_XML ="documento_entrata.xml"
-FASCICOLO_XML ="fascicolo.xml"
+DOCUMENTO_ENTRATA_XML = "documento_entrata.xml"
+FASCICOLO_XML = "fascicolo.xml"
 
 DOCUMENTO_ENTRATA_PATH = f'{PATH_XML_TEMPLATES}/{DOCUMENTO_ENTRATA_XML}'
 FASCICOLO_PATH = f'{PATH_XML_TEMPLATES}/{FASCICOLO_XML}'

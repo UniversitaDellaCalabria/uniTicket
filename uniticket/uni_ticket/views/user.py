@@ -281,18 +281,11 @@ def ticket_new_preload(request, structure_slug=None):
     return render(request, template, d)
 
 
-def ticket_add_new(request, structure_slug, category_slug):
-    """
-        move all the code that may be shared between view and api view
-    """
-    pass
-
-
 class TicketAddNew(View):
-    
+
     compiled_by_user = None
     compiled_date = None
-    
+
     template = "user/ticket_add_new.html"
 
     def get_assets(self, structure_slug, category_slug) -> None:
@@ -418,7 +411,7 @@ class TicketAddNew(View):
                 "[{}] user {} protocol for ticket {} "
                 "failed: {}"
                 "".format(timezone.localtime(),
-                        self.log_user, self.ticket, e)
+                          self.log_user, self.ticket, e)
             )
             # delete attachments
             # delete_directory(ticket.get_folder())
@@ -712,9 +705,9 @@ class TicketAddNew(View):
                 logger.info(
                     "[{}] user {} created new ticket {}"
                     " in category {}".format(
-                        timezone.localtime(), 
-                        self.log_user, 
-                        self.ticket, 
+                        timezone.localtime(),
+                        self.log_user,
+                        self.ticket,
                         self.category
                     )
                 )
@@ -731,7 +724,7 @@ class TicketAddNew(View):
 
                 # assign ticket to the office
                 ticket_assignment = TicketAssignment(
-                    ticket=self.ticket, 
+                    ticket=self.ticket,
                     office=office
                 )
                 ticket_assignment.save()
@@ -740,8 +733,8 @@ class TicketAddNew(View):
                 logger.info(
                     "[{}] ticket {} assigned to "
                     "{} office".format(
-                        timezone.localtime(), 
-                        self.ticket, 
+                        timezone.localtime(),
+                        self.ticket,
                         office
                     )
                 )
@@ -749,7 +742,7 @@ class TicketAddNew(View):
                 # if it's a notification ticket, take and close the ticket
                 if self.category.is_notification:
                     _close_notification_ticket(
-                        ticket=self.ticket, 
+                        ticket=self.ticket,
                         user=self.current_user
                     )
                     # operator=random_office_operator,
@@ -758,8 +751,8 @@ class TicketAddNew(View):
                 else:
                     # category default tasks assigned to ticket (if present)
                     _assign_default_tasks_to_new_ticket(
-                        ticket=self.ticket, 
-                        category=self.category, 
+                        ticket=self.ticket,
+                        category=self.category,
                         log_user=self.log_user
                     )
 
@@ -1381,12 +1374,13 @@ class TaskDetail(View):  # pragma: no cover
 
     :return: render
     """
+
     def get(self, request, ticket_id:str, task_id:str):
         ticket = get_object_or_404(Ticket, code=ticket_id)
         task = get_object_or_404(Task, code=task_id, ticket=ticket)
         if not task.is_public:
             return custom_message(request, _("Attività riservata agli operatori"))
-    
+
         priority = task.get_priority()
         title = _("Dettaglio task")
         d = {"priority": priority, "sub_title": task, "task": task, "title": title}

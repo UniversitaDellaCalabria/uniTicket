@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export APPNAME="uni_ticket*"
+export APPNAME="uniticket*"
 
 autopep8 -r --in-place $APPNAME
 autoflake -r --in-place  --remove-unused-variables --expand-star-imports --remove-all-unused-imports $APPNAME

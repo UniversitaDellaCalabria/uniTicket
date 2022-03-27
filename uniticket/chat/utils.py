@@ -1,7 +1,7 @@
 from django.apps import apps
 
 from organizational_area.models import OrganizationalStructure
-from uni_ticket.utils import user_is_operator #, user_is_in_default_office
+from uni_ticket.utils import user_is_operator  # , user_is_in_default_office
 
 
 def chat_operator(user, structure_slug):
@@ -14,6 +14,7 @@ def chat_operator(user, structure_slug):
     # return user_is_in_default_office(user, structure)
     if user_is_operator(user, structure): return True
     return False
+
 
 def chat_operator_online(user, structure_slug):
     structure = OrganizationalStructure.objects.filter(slug=structure_slug,

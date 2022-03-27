@@ -11,8 +11,8 @@ def index(request):
     if request.user.is_authenticated:
         out = "LOGGED IN: <a href={0}>LOGOUT</a><br>".format(settings.LOGOUT_URL)
         out += "".join(['%s: %s</br>' % (field.name, getattr(request.user, field.name))
-                    for field in request.user._meta.get_fields()
-                    if field.concrete])
+                        for field in request.user._meta.get_fields()
+                        if field.concrete])
         return HttpResponse(out)
     else:
         return HttpResponse("LOGGED OUT: <a href={0}>LOGIN</a>".format(settings.LOGIN_URL))

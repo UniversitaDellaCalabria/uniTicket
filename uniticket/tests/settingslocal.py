@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'django_unical_bootstrap_italia',
     'bootstrap_italia_template',
 
-    'bootstrapform',
+    #'bootstrapform',
     'uni_ticket',
     'django_form_builder',
     'nested_admin',

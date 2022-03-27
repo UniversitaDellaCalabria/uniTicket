@@ -163,8 +163,8 @@ class UserChannel(Model):
         async_to_sync(channel_layer.group_send)(self.room,
                                                 notification)
 
-
     # Meta
+
     class Meta:
         verbose_name = 'Canale Utente'
         verbose_name_plural = 'Canali Utenti'

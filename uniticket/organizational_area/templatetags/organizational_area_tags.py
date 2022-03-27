@@ -5,6 +5,7 @@ from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 register = template.Library()
 
+
 @register.simple_tag
 def employee_offices(user, structure=None):
     """

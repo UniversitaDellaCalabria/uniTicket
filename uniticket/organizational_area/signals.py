@@ -1,6 +1,5 @@
 import logging
 
-from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -35,7 +34,7 @@ def create_manager_office(sender, instance, created, **kwargs):
         # log action
         logger.info('[{}] default office {}'
                     ' created in structure {}'.format(
-            timezone.localtime(),
-            DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
-            instance)
+                        timezone.localtime(),
+                        DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+                        instance)
         )
