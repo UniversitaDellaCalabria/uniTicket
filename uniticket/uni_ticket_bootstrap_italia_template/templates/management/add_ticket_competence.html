@@ -106,7 +106,7 @@
         <div class="bootstrap-select-wrapper">
             <select id="selected_office"
                     name="selected_office"
-                    data-live-search="true" data-live-search-placeholder="Cerca...">
+                    data-live-search="true" data-live-search-placeholder={% trans "Cerca" %}...">
                 <option value="">{% trans "Tutti quelli a cui afferisco in questa struttura" %}</option>
                 {% for operator_office in operator_offices %}
                 <option value="{{ operator_office.slug }}">

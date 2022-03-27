@@ -15,6 +15,11 @@
 {% endblock top_buttons %}
 
 {% block clean_content %}
+<div class="row">
+    <div class="col">
+        <div class="card-space card-wrapper">
+            <div class="card card-bg no-after">
+                <div class="card-body">
     {% block page_content %}
         {% block pre_form %}
         {% endblock pre_form %}
@@ -26,6 +31,11 @@
         {% block post_form %}
         {% endblock post_form %}
     {% endblock page_content %}
+    </div>
+</div>
+</div>
+</div>
+</div>
 {% endblock clean_content %}
 
 {% block extra_scripts %}

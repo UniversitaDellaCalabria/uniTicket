@@ -192,6 +192,59 @@ def _send_new_ticket_mail_to_operators(
         "".format(timezone.localtime(), result, ticket)
     )
 
+def get_structures_by_request(request, structure_slug):
+    try:
+        structure = get_object_or_404(
+            OrganizationalStructure, pk=structure_slug, is_active=True
+        )
+    except:
+        structure = get_object_or_404(
+            OrganizationalStructure, slug=structure_slug, is_active=True
+        )
+
+    alerts = OrganizationalStructureAlert.objects.filter(
+        organizational_structure=structure, is_active=True
+    )
+    disabled_expired_items(alerts)
+    active_alerts = [i for i in alerts if i.is_published()]
+
+    categorie = TicketCategory.objects.filter(
+        organizational_structure=structure, is_active=True
+    )
+
+    # disabled_expired_items(categorie)
+    to_be_excluded = []
+    for category in categorie:
+        if not category.is_published():
+            to_be_excluded.append(category)
+    for tbe in to_be_excluded:
+        categorie = categorie.exclude(pk=tbe.pk)
+
+    # User roles
+    is_employee = user_is_employee(request.user)
+    is_user = user_is_in_organization(request.user)
+
+    if is_employee and is_user:
+        categorie = categorie.filter(
+            Q(allow_employee=True) | Q(
+                allow_user=True) | Q(allow_guest=True)
+        )
+    elif is_employee:
+        categorie = categorie.filter(
+            Q(allow_employee=True) | Q(allow_guest=True))
+    elif is_user:
+        categorie = categorie.filter(
+            Q(allow_user=True) | Q(allow_guest=True))
+    else:
+        categorie = categorie.filter(allow_guest=True)
+
+    sub_title = _("Seleziona la Categoria")
+    return {
+        "alerts": active_alerts,
+        "categorie": categorie,
+        "chosen_structure": structure,
+        "sub_title": sub_title,
+    }
 
 @login_required
 def ticket_new_preload(request, structure_slug=None):
@@ -204,6 +257,8 @@ def ticket_new_preload(request, structure_slug=None):
 
     :return: render
     """
+    template = "user/new_ticket_preload.html"
+
     if Ticket.number_limit_reached_by_user(request.user):
         messages.add_message(
             request,
@@ -216,68 +271,19 @@ def ticket_new_preload(request, structure_slug=None):
         )
         return redirect(reverse("uni_ticket:user_dashboard"))
 
-    strutture = OrganizationalStructure.objects.filter(is_active=True)
-    active_alerts = []
-    categorie = None
-    template = "user/new_ticket_preload.html"
-    title = _("Effettua una nuova richiesta")
-    sub_title = _("Seleziona la struttura")
-    structure = None
-    if structure_slug:
-        try:
-            structure = get_object_or_404(
-                OrganizationalStructure, pk=structure_slug, is_active=True
-            )
-        except:
-            structure = get_object_or_404(
-                OrganizationalStructure, slug=structure_slug, is_active=True
-            )
-
-        alerts = OrganizationalStructureAlert.objects.filter(
-            organizational_structure=structure, is_active=True
-        )
-        disabled_expired_items(alerts)
-        active_alerts = [i for i in alerts if i.is_published()]
-
-        categorie = TicketCategory.objects.filter(
-            organizational_structure=structure, is_active=True
-        )
-
-        # disabled_expired_items(categorie)
-        to_be_excluded = []
-        for category in categorie:
-            if not category.is_published():
-                to_be_excluded.append(category)
-        for tbe in to_be_excluded:
-            categorie = categorie.exclude(pk=tbe.pk)
-
-        # User roles
-        is_employee = user_is_employee(request.user)
-        is_user = user_is_in_organization(request.user)
-
-        if is_employee and is_user:
-            categorie = categorie.filter(
-                Q(allow_employee=True) | Q(
-                    allow_user=True) | Q(allow_guest=True)
-            )
-        elif is_employee:
-            categorie = categorie.filter(
-                Q(allow_employee=True) | Q(allow_guest=True))
-        elif is_user:
-            categorie = categorie.filter(
-                Q(allow_user=True) | Q(allow_guest=True))
-        else:
-            categorie = categorie.filter(allow_guest=True)
-
-        sub_title = _("Seleziona la Categoria")
     d = {
-        "alerts": active_alerts,
-        "categorie": categorie,
-        "chosen_structure": structure,
-        "strutture": strutture,
-        "sub_title": sub_title,
-        "title": title,
+        "alerts": [],
+        "categorie": None,
+        "chosen_structure": None,
+        "strutture": OrganizationalStructure.objects.filter(is_active=True),
+        "sub_title": _("Seleziona la struttura"),
+        "title": _("Effettua una nuova richiesta"),
     }
+
+    if structure_slug:
+        _d = get_structures_by_request(request, structure_slug)
+        d.update(_d)
+
     return render(request, template, d)
 
 
