@@ -75,7 +75,7 @@ SAML_CONFIG = {
                                      'schacPersonalUniqueID',
                                      'schacPersonalUniqueCode',
                                      'eduPersonAffiliation',
-                                     'matricola_dipendente',
+                                     'identificativo_dipendente',
                                      'codice_fiscale'],
 
             # Indicates if the Authentication Requests sent by this SP should be signed by default.

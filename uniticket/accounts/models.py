@@ -5,7 +5,6 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext as _
 
 
-
 class User(AbstractUser):
     GENDER = (
                 ('male', _('Maschio')),
@@ -15,14 +14,18 @@ class User(AbstractUser):
 
     is_active = models.BooleanField(_('attivo'), default=True)
     email = models.EmailField('email address', blank=True, null=True)
-    matricola_dipendente = models.CharField(_('Matricola Dipendente'),
-                                            max_length=10,
-                                            blank=True, null=True,
-                                            help_text="fonte CSA")
-    matricola_studente = models.CharField(_('Matricola Studente'),
-                                          max_length=10,
-                                          blank=True, null=True,
-                                          help_text="fonte Esse3")
+    identificativo_dipendente = models.CharField(
+        _('Identificativo Dipendente'),
+        max_length=10,
+        blank=True, null=True,
+        help_text=_("employee unique id")
+    )
+    identificativo_utente = models.CharField(
+        _('Identificativo utente'),
+        max_length=10,
+        blank=True, null=True,
+        help_text=_("eg: tax payer's identification number")
+    )
     first_name = models.CharField(_('Nome'), max_length=70,
                                   blank=True, null=True)
     last_name = models.CharField(_('Cognome'), max_length=70,
@@ -37,5 +40,4 @@ class User(AbstractUser):
         verbose_name_plural = _("Utenti")
 
     def __str__(self):
-        return '{} {}'.format(self.last_name,
-                              self.first_name)
+        return '{} {}'.format(self.last_name, self.first_name)

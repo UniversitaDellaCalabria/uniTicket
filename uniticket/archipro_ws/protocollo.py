@@ -42,7 +42,7 @@ class WSArchiPROClient(object):
                            'id_titolario',
 
                            'oggetto',
-                           # 'matricola_dipendente',
+                           # 'identificativo_dipendente',
                            'id_persona',
                            'nome_persona',
                            'cognome_persona',]

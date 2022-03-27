@@ -164,11 +164,11 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
     </Identificatore>
     <Mittente>
 
-    <Dipendente id="{matricola_dipendente}">
+    <Dipendente id="{identificativo_dipendente}">
     <Denominazione>{denominazione_persona}</Denominazione>
     </Dipendente>
 
-    <Studente id="{matricola_studente}">
+    <Studente id="{identificativo_utente}">
     <Denominazione>{denominazione_persona}</Denominazione>
     </Studente>
 
@@ -370,13 +370,13 @@ Nel file di configurazione **uni_ticket/settings.py** è possibile individuare (
     # This parameters define the roles of users to open ticket
     # If True, an employee is a user that has this parameter filled (in user model)
     # If False, an employee is a user that is mapped as OrganizationalStructureOfficeEmployee
-    EMPLOYEE_ATTRIBUTE_NAME = 'matricola_dipendente'
+    EMPLOYEE_ATTRIBUTE_NAME = 'identificativo_dipendente'
     EMPLOYEE_ATTRIBUTE_LABEL = 'Matricola dipendente'
     # Label
     ORGANIZATION_EMPLOYEE_LABEL = 'Dipendenti'
     # If True, an internal user (not guest) is a user that has this filled (in user model)
     # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
-    USER_ATTRIBUTE_NAME = 'matricola_studente'
+    USER_ATTRIBUTE_NAME = 'identificativo_utente'
     USER_ATTRIBUTE_LABEL = 'Matricola studente'
     # Label
     ORGANIZATION_USER_LABEL = 'Studenti'

@@ -189,10 +189,10 @@ TICKET_MIN_DIGITS_TO_COMPRESS = getattr(
 # If True, an employee is a user that has this parameter filled (in user model)
 # If False, an employee is a user that is mapped as OrganizationalStructureOfficeEmployee
 EMPLOYEE_ATTRIBUTE_NAME = getattr(
-    settings, "EMPLOYEE_ATTRIBUTE_NAME", "matricola_dipendente"
+    settings, "EMPLOYEE_ATTRIBUTE_NAME", "identificativo_dipendente"
 )
 EMPLOYEE_ATTRIBUTE_LABEL = getattr(
-    settings, "EMPLOYEE_ATTRIBUTE_LABEL", "Matricola dipendente"
+    settings, "EMPLOYEE_ATTRIBUTE_LABEL", "Matricola Dipendente"
 )
 
 # Label
@@ -202,7 +202,7 @@ ORGANIZATION_EMPLOYEE_LABEL = getattr(
 # If True, an internal user (not guest) is a user that has this filled (in user model)
 # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
 USER_ATTRIBUTE_NAME = getattr(
-    settings, "USER_ATTRIBUTE_NAME", "matricola_studente")
+    settings, "USER_ATTRIBUTE_NAME", "identificativo_utente")
 USER_ATTRIBUTE_LABEL = getattr(
     settings, "USER_ATTRIBUTE_LABEL", "Matricola studente")
 

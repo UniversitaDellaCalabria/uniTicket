@@ -9,7 +9,7 @@ from .models import User
 class CustomUserAdmin(UserAdmin):
     readonly_fields = ('date_joined', 'last_login',)
     list_display = ('username', 'last_name', 'first_name',
-                    'matricola_dipendente', 'matricola_studente',
+                    'identificativo_dipendente', 'identificativo_utente',
                     'email', 'email_notify',
                     'is_active', 'is_staff', 'is_superuser', )
     list_editable = ('is_active', 'is_staff', 'is_superuser',)
@@ -19,8 +19,8 @@ class CustomUserAdmin(UserAdmin):
                            )
                 }),
         (_('Angrafica'), {'fields': (('first_name', 'last_name'),
-                                     ('matricola_dipendente',
-                                      'matricola_studente'),
+                                     ('identificativo_dipendente',
+                                      'identificativo_utente'),
                                      ('email', 'email_notify'),
                                      ('taxpayer_id',),
                                      # ('gender',

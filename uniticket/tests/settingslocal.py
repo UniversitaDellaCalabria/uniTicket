@@ -172,11 +172,11 @@ PROTOCOL_XML = """<Segnatura xmlns:xsi="http://www.w3.org/2001/XMLSchema-instanc
 </Identificatore>
 <Mittente>
 
-<Dipendente id="{matricola_dipendente}">
+<Dipendente id="{identificativo_dipendente}">
 <Denominazione>{denominazione_persona}</Denominazione>
 </Dipendente>
 
-<Studente id="{matricola_studente}">
+<Studente id="{identificativo_utente}">
 <Denominazione>{denominazione_persona}</Denominazione>
 </Studente>
 

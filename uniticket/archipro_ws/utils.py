@@ -27,7 +27,7 @@ def protocol_entrata_dict(**kwargs):
     protocol_data = {
                       # Variabili
                      'oggetto': kwargs.get('oggetto'),
-                     # 'matricola_dipendente': user.matricola_dipendente,
+                     # 'identificativo_dipendente': user.identificativo_dipendente,
                      'id_persona': kwargs.get('cod_fis_mittente'),
                      'nome_persona': kwargs.get('nome_mittente'),
                      'cognome_persona': kwargs.get('cognome_mittente'),

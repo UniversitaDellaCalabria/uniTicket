@@ -212,8 +212,8 @@ _MAP = {
 
         # unical legacy related
         'codice_fiscale': 'codice_fiscale',
-        'matricola_dipendente': 'matricola_dipendente',
-        'matricola_studente': 'matricola_studente'
+        'identificativo_dipendente': 'identificativo_dipendente',
+        'identificativo_utente': 'identificativo_utente'
 }
 
 
