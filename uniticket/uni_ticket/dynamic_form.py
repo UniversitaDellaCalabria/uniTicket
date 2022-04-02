@@ -102,3 +102,58 @@ class DynamicForm(BaseDynamicForm):
 
     class Media:
         js = ("js/textarea-autosize.js",)
+
+
+def _get_choices(choices):
+        elements = []
+        for choice in choices:
+            if (type(choice[1]) == tuple):
+                elements.extend(_get_choices(choice[1]))
+            else:
+                elements.append(
+                    {"text": choice[1],
+                     "value": choice[0]}
+                )
+        return elements
+
+
+def serialize_form(form, api_source = 'api_source'):
+    
+    form_fields = []
+
+    for field_name in form.fields:
+        field = form.fields[field_name]
+        field_type = getattr(field.widget.__class__,
+                                'input_type',
+                                'textarea')
+
+        field_dict = {}
+        field_dict['id'] = field_name
+        field_dict['label'] = field.label
+        field_dict['required'] = 1 if field.required else 0
+        field_dict['help_text'] = field.help_text
+        field_dict['api_source'] = getattr(field, api_source, '')
+        field_dict['options'] = []
+        field_dict['multiple'] = 0
+
+        class_name = field.widget.__class__.__name__
+
+        if class_name == 'DateInput':
+            field_dict['type'] = 'date'
+        elif class_name == 'DateTimeInput':
+            field_dict['type'] = 'datetime'
+        elif class_name in ('Select', 'SelectMultiple', 'CheckboxSelectMultiple'):
+            field_dict['type'] = 'select'
+            if field.widget.__class__.__dict__.get('allow_multiple_selected'):
+                field_dict['multiple'] = 1
+
+            if hasattr(field, '_queryset') and not getattr(field, api_source, ''):
+                for item in field._queryset:
+                    field_dict['options'].append({"text": item.__str__(),
+                                                    "value": item.pk})
+            elif hasattr(field, '_choices'):
+                field_dict['options'].extend(_get_choices(field._choices))
+        else:
+            field_dict['type'] = field_type
+        form_fields.append(field_dict)
+    return form_fields

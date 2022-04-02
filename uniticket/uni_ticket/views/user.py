@@ -527,8 +527,8 @@ class TicketAddNew(View):
         deny_response = self.deny_response()
         if deny_response:
             return deny_response
-        self.get_modulo_and_form()
 
+        self.get_modulo_and_form()
         self.context_data = {
             "categoria": self.category,
             "category_conditions": self.clausole_categoria,
@@ -775,14 +775,8 @@ class TicketAddNew(View):
                     self.protocolla_ticket()
                 # end Protocol
 
-                if (
-                    self.category.protocol_required
-                    and self.ticket.protocol_number
-                    or not self.category.protocol_required
-                ):
-                    messages.add_message(
-                        request, messages.SUCCESS, compiled_message)
-
+                messages.add_message(request, messages.SUCCESS, compiled_message)
+                
                 # if office operators must receive notification email
                 if self.category.receive_email:
                     # Send mail to ticket
@@ -831,7 +825,7 @@ class TicketAddNew(View):
                     # m_subject = _('{} - {}'.format(settings.HOSTNAME,
                     # compiled_message))
                     # m_subject = m_subject[:80] + (m_subject[80:] and '...')
-                    m_subject = _("{} - richiesta {} " "creata con successo" "").format(
+                    m_subject = _("{} - richiesta {} creata con successo").format(
                         settings.HOSTNAME, self.ticket
                     )
 
