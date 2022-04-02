@@ -322,10 +322,8 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
     def test_category_protocol_configuration(self):
         # Create
         name = 'Conf test 1'
-        protocollo_uo = 'test uo'
         protocollo_uo_rpa = 'test uo rpa'
         protocollo_uo_rpa_username = '111'
-        protocollo_cod_titolario = '9002'
         protocollo_fascicolo_numero = 1
         protocollo_fascicolo_anno = 2020
 

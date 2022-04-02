@@ -1,6 +1,5 @@
 
 
-
 urlpatterns = [
     #    path('', views.index),
     #    path('logout/', logout),

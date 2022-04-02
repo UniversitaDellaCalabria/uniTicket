@@ -1,7 +1,5 @@
 
 
-
-
 # from dal import autocomplete
 #
 # class UserAutocomplete(autocomplete.Select2QuerySetView):

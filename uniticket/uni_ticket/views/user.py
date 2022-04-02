@@ -1,8 +1,10 @@
+from copy import deepcopy
 import os
 import json
 import logging
 import re
 import shutil
+
 
 from django.conf import settings
 from django.contrib import messages
@@ -21,6 +23,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.html import strip_tags
 from django.utils.translation import gettext as _
+
 
 from django_form_builder.utils import (
     get_as_dict,
@@ -192,6 +195,7 @@ def _send_new_ticket_mail_to_operators(
         "".format(timezone.localtime(), result, ticket)
     )
 
+
 def get_structures_by_request(request, structure_slug):
     try:
         structure = get_object_or_404(
@@ -245,6 +249,7 @@ def get_structures_by_request(request, structure_slug):
         "chosen_structure": structure,
         "sub_title": sub_title,
     }
+
 
 @login_required
 def ticket_new_preload(request, structure_slug=None):
@@ -506,7 +511,7 @@ class TicketAddNew(View):
         self.get_assets(structure_slug, category_slug)
         deny_response = self.deny_response()
         if deny_response:
-            return deny_response()
+            return deny_response
 
         # user that compiled ticket
         self.get_modulo_and_form()
@@ -540,7 +545,7 @@ class TicketAddNew(View):
         }
 
         self.form = self.modulo.get_form(
-            data=request.POST,
+            data=request.POST or request.api_data, # csrf except workaround for API integration
             files=request.FILES,
             show_conditions=True,
             current_user=request.user,
@@ -559,7 +564,7 @@ class TicketAddNew(View):
             # if user generates an encrypted token in URL
             # no ticket is saved. compiled form is serialized
             #
-            if request.POST.get(TICKET_GENERATE_URL_BUTTON_NAME):
+            if self.form.data.get(TICKET_GENERATE_URL_BUTTON_NAME):
 
                 # log action
                 logger.info(
@@ -581,7 +586,7 @@ class TicketAddNew(View):
                 # insert input module pk to json data
                 form_data.update({TICKET_INPUT_MODULE_NAME: self.modulo.pk})
 
-                if request.POST.get(TICKET_COMPILED_BY_USER_NAME):
+                if self.form.data.get(TICKET_COMPILED_BY_USER_NAME):
                     form_data.update(
                         {TICKET_COMPILED_BY_USER_NAME: request.user.pk}
                     )
@@ -621,7 +626,7 @@ class TicketAddNew(View):
             #
             # if user creates the ticket
             #
-            elif request.POST.get(TICKET_CREATE_BUTTON_NAME):
+            elif self.form.data.get(TICKET_CREATE_BUTTON_NAME):
 
                 # if user is not allowed (category allowed users list)
                 if (
@@ -650,10 +655,10 @@ class TicketAddNew(View):
                 )
 
                 # get form data in json
-                json_data = get_POST_as_json(
-                    request=request, fields_to_pop=fields_to_pop
-                )
-
+                form_data = deepcopy(self.form.data)
+                for i in fields_to_pop:
+                    if i in form_data:
+                        form_data.pop(i)
                 # make a UUID based on the host ID and current time
                 code = uuid_code()
 
@@ -691,9 +696,9 @@ class TicketAddNew(View):
                     code=code,
                     subject=subject,
                     description=description,
-                    modulo_compilato=json_data,
+                    modulo_compilato=json.dumps(form_data),
                     created_by=self.current_user,
-                    input_module=self.modulo,
+                    input_module=self.modulo
                 )
 
                 # if ticket has been compiled by another user
@@ -719,8 +724,7 @@ class TicketAddNew(View):
                 )
 
                 # save ticket attachments in ticket folder
-                json_dict = json.loads(json_data)
-                json_stored = get_as_dict(compiled_module_json=json_dict)
+                json_stored = get_as_dict(compiled_module_json=form_data)
                 _save_new_ticket_attachments(
                     ticket=self.ticket,
                     json_stored=json_stored,
@@ -729,11 +733,11 @@ class TicketAddNew(View):
                 )
 
                 # assign ticket to the office
-                ticket_assignment = TicketAssignment(
+                self.ticket_assignment = TicketAssignment(
                     ticket=self.ticket,
                     office=office
                 )
-                ticket_assignment.save()
+                self.ticket_assignment.save()
 
                 # log action
                 logger.info(
@@ -776,7 +780,7 @@ class TicketAddNew(View):
                 # end Protocol
 
                 messages.add_message(request, messages.SUCCESS, compiled_message)
-                
+
                 # if office operators must receive notification email
                 if self.category.receive_email:
                     # Send mail to ticket

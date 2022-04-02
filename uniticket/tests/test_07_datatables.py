@@ -31,28 +31,28 @@ class Test_DatatablesFunctions(BaseTicketEnvironment):
         response = self.client.post(reverse('uni_ticket:user_all_tickets_json'),
                                     {"args": self.post_data})
         response_string = response.content.decode("utf-8")
-        response_json = json.loads(response_string)
+        json.loads(response_string)
         assert response.status_code == 200
 
         # user_opened_ticket_json
         response = self.client.post(reverse('uni_ticket:user_opened_ticket_json'),
                                     {"args": self.post_data})
         response_string = response.content.decode("utf-8")
-        response_json = json.loads(response_string)
+        json.loads(response_string)
         assert response.status_code == 200
 
         # user_opened_ticket_json
         response = self.client.post(reverse('uni_ticket:user_closed_ticket_json'),
                                     {"args": self.post_data})
         response_string = response.content.decode("utf-8")
-        response_json = json.loads(response_string)
+        json.loads(response_string)
         assert response.status_code == 200
 
         # user_unassigned_ticket_json
         response = self.client.post(reverse('uni_ticket:user_unassigned_ticket_json'),
                                     {"args": self.post_data})
         response_string = response.content.decode("utf-8")
-        response_json = json.loads(response_string)
+        json.loads(response_string)
         # data = response_json['data']
         # assert data
         assert response.status_code == 200
@@ -65,7 +65,7 @@ class Test_DatatablesFunctions(BaseTicketEnvironment):
                                             kwargs={'structure_slug': self.structure_1.slug}),
                                     {"args": self.post_data})
         response_string = response.content.decode("utf-8")
-        response_json = json.loads(response_string)
+        json.loads(response_string)
         assert response.status_code == 200
 
         # operator_opened_ticket_json
@@ -73,7 +73,7 @@ class Test_DatatablesFunctions(BaseTicketEnvironment):
                                             kwargs={'structure_slug': self.structure_1.slug}),
                                     {"args": self.post_data})
         response_string = response.content.decode("utf-8")
-        response_json = json.loads(response_string)
+        json.loads(response_string)
         assert response.status_code == 200
 
         # operator_opened_ticket_json
@@ -81,7 +81,7 @@ class Test_DatatablesFunctions(BaseTicketEnvironment):
                                             kwargs={'structure_slug': self.structure_1.slug}),
                                     {"args": self.post_data})
         response_string = response.content.decode("utf-8")
-        response_json = json.loads(response_string)
+        json.loads(response_string)
         assert response.status_code == 200
 
         # operator_opened_ticket_json
@@ -89,7 +89,7 @@ class Test_DatatablesFunctions(BaseTicketEnvironment):
                                             kwargs={'structure_slug': self.structure_1.slug}),
                                     {"args": self.post_data})
         response_string = response.content.decode("utf-8")
-        response_json = json.loads(response_string)
+        json.loads(response_string)
         assert response.status_code == 200
 
         # operator_unassigned_ticket_json
@@ -97,7 +97,7 @@ class Test_DatatablesFunctions(BaseTicketEnvironment):
                                             kwargs={'structure_slug': self.structure_1.slug}),
                                     {"args": self.post_data})
         response_string = response.content.decode("utf-8")
-        response_json = json.loads(response_string)
+        json.loads(response_string)
         # data = response_json['data']
         # assert data
         assert response.status_code == 200

@@ -17,7 +17,6 @@ from uni_ticket.utils import (custom_message,
                               user_is_in_default_office)
 
 
-
 @login_required
 def room(request, room_name):
     structure = get_object_or_404(OrganizationalStructure,

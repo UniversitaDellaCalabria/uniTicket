@@ -1,6 +1,5 @@
 import logging
 
-from organizational_area.models import *
 
 from . base import BaseTest
 

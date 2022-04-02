@@ -1,9 +1,7 @@
-from django.apps import apps
-from django.conf import settings
 from django.test import Client, TestCase
 from django.utils.text import slugify
 
-from organizational_area.models import *
+from organizational_area.models import OrganizationalStructure, OrganizationalStructureOfficeEmployee, OrganizationalStructureType, UserManageOrganizationalStructure, get_user_model
 from uni_ticket.models import OrganizationalStructureWSProtocollo
 
 class BaseTest(TestCase):

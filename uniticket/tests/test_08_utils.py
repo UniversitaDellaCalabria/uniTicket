@@ -1,7 +1,5 @@
-import json
 import logging
 
-from django.urls import reverse
 
 from uni_ticket.models import *
 from uni_ticket.urls import *

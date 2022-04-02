@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 
 # chat app settings
 if 'chat' in INSTALLED_APPS:
-    from chat.settings import *
+    pass
 
 CUSTOM_WIDGETS = {
     'BaseDateField': 'bootstrap_italia_template.widgets.BootstrapItaliaDateWidget',
@@ -135,7 +135,6 @@ UNITICKET_JWE_RSA_KEY_PATH = 'tests/certificates/private.key'
 # vengono istruite le pratiche all'interno del sistema di protocollo di riferimento
 
 # from archipro_ws.settings import *
-from titulus_ws.settings import *
 
 PROTOCOL_PACKAGE = 'titulus_ws' # archipro_ws
 PROTOCOL_CLASS = f'{PROTOCOL_PACKAGE}.protocollo'

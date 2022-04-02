@@ -105,36 +105,40 @@ class DynamicForm(BaseDynamicForm):
 
 
 def _get_choices(choices):
-        elements = []
-        for choice in choices:
-            if (type(choice[1]) == tuple):
-                elements.extend(_get_choices(choice[1]))
-            else:
-                elements.append(
-                    {"text": choice[1],
-                     "value": choice[0]}
-                )
-        return elements
+    elements = []
+    for choice in choices:
+        if (type(choice[1]) == tuple):
+            elements.extend(_get_choices(choice[1]))
+        else:
+            elements.append(
+                {"text": choice[1],
+                 "value": choice[0]}
+            )
+    return elements
 
 
 def serialize_form(form, api_source = 'api_source'):
-    
+
     form_fields = []
 
     for field_name in form.fields:
         field = form.fields[field_name]
         field_type = getattr(field.widget.__class__,
-                                'input_type',
-                                'textarea')
+                             'input_type',
+                             'textarea')
 
         field_dict = {}
         field_dict['id'] = field_name
         field_dict['label'] = field.label
+        field_dict['initial'] = field.initial
+        field_dict['disabled'] = field.disabled
         field_dict['required'] = 1 if field.required else 0
+        field_dict['error_messages'] = field.error_messages
         field_dict['help_text'] = field.help_text
         field_dict['api_source'] = getattr(field, api_source, '')
         field_dict['options'] = []
         field_dict['multiple'] = 0
+        field_dict['html'] = field.widget.render(field_name, field.initial)
 
         class_name = field.widget.__class__.__name__
 
@@ -150,7 +154,7 @@ def serialize_form(form, api_source = 'api_source'):
             if hasattr(field, '_queryset') and not getattr(field, api_source, ''):
                 for item in field._queryset:
                     field_dict['options'].append({"text": item.__str__(),
-                                                    "value": item.pk})
+                                                  "value": item.pk})
             elif hasattr(field, '_choices'):
                 field_dict['options'].extend(_get_choices(field._choices))
         else:

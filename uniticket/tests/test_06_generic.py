@@ -2,9 +2,6 @@ import logging
 
 from django.urls import reverse
 
-from uni_ticket.models import *
-from uni_ticket.urls import *
-from uni_ticket.utils import *
 
 from . base_ticket_env import BaseTicketEnvironment
 

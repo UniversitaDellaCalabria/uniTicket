@@ -124,7 +124,7 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
     is_active = models.BooleanField(
         default=False,
         help_text=_(
-            "Se disabilitato, non sarà " "visibile in Aggiungi Richiesta"),
+            "Se disabilitato, non sarà visibile in Aggiungi Richiesta"),
     )
     not_available_message = models.CharField(
         _("Messaggio se non attiva"),
