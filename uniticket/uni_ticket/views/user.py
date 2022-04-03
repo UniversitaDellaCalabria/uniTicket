@@ -1165,7 +1165,7 @@ def ticket_delete(request, ticket_id):
 # decorators in urls.py (print view call this view but with different decorators)
 
 
-def ticket_detail(request, ticket_id, template="user/ticket_detail.html"):
+class TicketDetail(View):
     """
     Shows ticket details
 
@@ -1177,49 +1177,55 @@ def ticket_detail(request, ticket_id, template="user/ticket_detail.html"):
 
     :return: render
     """
-    ticket = get_object_or_404(Ticket, code=ticket_id)
-    modulo_compilato = ticket.get_modulo_compilato()
-    ticket_details = get_as_dict(
-        compiled_module_json=modulo_compilato, allegati=False, formset_management=False
-    )
-    allegati = ticket.get_allegati_dict()
-    path_allegati = get_path(ticket.get_folder())
-    ticket_form = ticket.input_module.get_form(
-        files=allegati, remove_filefields=False)
-    priority = ticket.get_priority()
+    template = "user/ticket_detail.html"
 
-    ticket_logs = LogEntry.objects.filter(
-        content_type_id=ContentType.objects.get_for_model(ticket).pk,
-        object_id=ticket.pk,
-    )
-    ticket_replies = TicketReply.objects.filter(ticket=ticket)
-    ticket_task = Task.objects.filter(ticket=ticket)
-    ticket_dependences = ticket.get_dependences()
-    title = ticket.subject
-    sub_title = ticket.code
-    ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
+    def get(self, request, ticket_id:str, api:bool=False):
 
-    category_conditions = ticket.input_module.ticket_category.get_conditions(
-        is_printable=True
-    )
+        ticket = get_object_or_404(Ticket, code=ticket_id)
+        modulo_compilato = ticket.get_modulo_compilato()
+        ticket_details = get_as_dict(
+            compiled_module_json=modulo_compilato, allegati=False, formset_management=False
+        )
+        allegati = ticket.get_allegati_dict()
+        path_allegati = get_path(ticket.get_folder())
+        ticket_form = ticket.input_module.get_form(
+            files=allegati, remove_filefields=False)
+        priority = ticket.get_priority()
 
-    d = {
-        "allegati": allegati,
-        "category_conditions": category_conditions,
-        "dependences": ticket_dependences,
-        "details": ticket_details,
-        "path_allegati": path_allegati,
-        "priority": priority,
-        "sub_title": sub_title,
-        "ticket": ticket,
-        "ticket_assignments": ticket_assignments,
-        "ticket_form": ticket_form,
-        "logs": ticket_logs,
-        "ticket_task": ticket_task,
-        "title": title,
-    }
-    template = template
-    return render(request, template, d)
+        ticket_logs = LogEntry.objects.filter(
+            content_type_id=ContentType.objects.get_for_model(ticket).pk,
+            object_id=ticket.pk,
+        )
+        # ticket_replies = TicketReply.objects.filter(ticket=ticket)
+        ticket_task = Task.objects.filter(ticket=ticket)
+        ticket_dependences = ticket.get_dependences()
+        title = ticket.subject
+        sub_title = ticket.code
+        ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
+
+        category_conditions = ticket.input_module.ticket_category.get_conditions(
+            is_printable=True
+        )
+
+        self.data = {
+            "title": title,
+            "allegati": allegati,
+            "category_conditions": category_conditions,
+            "dependences": ticket_dependences,
+            "details": ticket_details,
+            "path_allegati": path_allegati,
+            "priority": priority,
+            "sub_title": sub_title,
+            "ticket": ticket,
+            "ticket_assignments": ticket_assignments,
+            "ticket_form": ticket_form,
+            "logs": ticket_logs,
+            "ticket_task": ticket_task,
+        }
+        if api:
+            return self.data
+        else:
+            return render(request, self.template, self.data)
 
 
 @login_required

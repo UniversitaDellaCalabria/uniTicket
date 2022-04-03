@@ -789,7 +789,6 @@ urlpatterns += [
 
 # User URLs
 tickets = "tickets"
-# ticket = '{}'.format(tickets)
 ticket_id = "{}/<str:ticket_id>".format(tickets)
 
 urlpatterns += [
@@ -841,7 +840,11 @@ urlpatterns += [
     ),
     path(
         "{}/".format(ticket_id),
-        login_required(is_the_owner(user.ticket_detail)),
+        login_required(
+            is_the_owner(
+                user.TicketDetail.as_view()
+            )
+        ),
         name="ticket_detail",
     ),
     path("settings/", generic.user_settings, name="user_settings"),

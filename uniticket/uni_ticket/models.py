@@ -464,6 +464,36 @@ class Ticket(SavedFormContent):
         verbose_name = _("Ticket")
         verbose_name_plural = _("Ticket")
 
+    def serialize(self):
+        _offices = [{
+                "name": i.name
+            } for i in self.get_assigned_to_offices()
+        ]
+        data = dict(
+            code = self.code,
+            subject = self.subject,
+            description = self.description,
+            created = self.created.timestamp() if self.created else "",
+            created_by = self.created_by.__str__(),
+            compiled = self.compiled.timestamp() if self.compiled else "",
+            compiled_by = self.compiled_by.__str__(),
+            is_closed = self.is_closed,
+            closed_date = self.closed_date.timestamp() if self.closed_date else "",
+            closed_by = self.closed_by.__str__(),
+            closing_reason = self.closing_reason,
+            closing_status = self.closing_status,
+            protocol_number = self.protocol_number,
+            protocol_date = self.protocol_date,
+            category = self.get_category().name,
+            form = self.get_modulo_compilato(),
+            url = self.get_url(),
+            attachments = self.get_allegati_dict(),
+            assigned_office = _offices,
+            is_closable = self.is_closable(),
+            has_been_taken = self.has_been_taken()
+        )
+        return data
+
     def get_category(self):
         return self.input_module.ticket_category
 
@@ -471,8 +501,7 @@ class Ticket(SavedFormContent):
         """
         Returns ticket attachments folder path
         """
-        folder = "{}/{}/{}".format(TICKET_ATTACHMENT_FOLDER,
-                                   self.get_year(), self.code)
+        folder = f"{TICKET_ATTACHMENT_FOLDER}/{self.get_year()}/{self.code}"
         return folder
 
     def compress_modulo_compilato(self, check_length=True):
@@ -620,6 +649,7 @@ class Ticket(SavedFormContent):
             fields_to_pop=[TICKET_SUBJECT_ID, TICKET_DESCRIPTION_ID],
         )
 
+    # TODO: please do not nest HTML code in the model ...
     # HTML representation of status
     def get_status(self):
         if self.is_closed:
@@ -647,6 +677,7 @@ class Ticket(SavedFormContent):
             self.taken_by_html_list()
         )
 
+    # TODO: please do not nest HTML code in the model ...
     # for datatables (show icons)
     def get_status_table(self):
         if self.is_closed:

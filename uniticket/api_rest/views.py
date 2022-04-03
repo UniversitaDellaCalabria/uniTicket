@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core import serializers
 from django.core.exceptions import BadRequest
+from django.http import Http404
 
 from rest_framework.exceptions import PermissionDenied
 from rest_framework import generics
@@ -15,7 +16,7 @@ from rest_framework import permissions, viewsets
 
 from uni_ticket.dynamic_form import serialize_form
 from uni_ticket.models import TicketCategory
-from uni_ticket.views.user import TicketAddNew
+from uni_ticket.views.user import TicketAddNew, TicketDetail
 from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME
 from organizational_area.models import OrganizationalStructure
 
@@ -55,7 +56,6 @@ class TicketAPIBaseView(APIView):
 
     # authentication_classes = [authentication.TokenAuthentication]
     # permission_classes = [permissions.IsAdminUser]
-
 
 
 class TicketAPIView(TicketAPIBaseView):
@@ -168,3 +168,40 @@ class TicketAPITicketCategoryList(generics.ListAPIView):
     queryset = TicketCategory.objects.filter(is_active=True)
     lookup_field = 'pk'
     serializer_class = TicketCategorySerializer
+
+
+class TicketAPIDetail(TicketAPIBaseView):
+    """
+    Shows the status of a Ticket
+    """
+    def dispatch(self, request, *args, **kwargs):
+        self.legacy_view = TicketDetail()
+        self.legacy_view.request = request
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, ticket_uid):
+        """
+        Return a ticket by structure_slug, category_slug
+        """
+        legacy_response = self.legacy_view.get(request, ticket_uid, api=1)
+        if isinstance(legacy_response, dict):
+            data = self.legacy_view.data
+            for i in (
+                "ticket_assignments", 
+                'path_allegati', 
+                'details',
+                "ticket_form",
+                "logs",
+                "ticket_task"
+            ):
+                data.pop(i)
+            
+            ticket = data.pop("ticket")
+            data["ticket"] = ticket.serialize()
+            return Response(data)
+        if legacy_response.status_code == 404:
+            raise Http404()
+        if legacy_response.status_code != 200:
+            raise PermissionDenied()
+        else:
+            raise BadRequest()
