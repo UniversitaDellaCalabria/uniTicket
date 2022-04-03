@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework import permissions, viewsets
 
 from uni_ticket.dynamic_form import serialize_form
-from uni_ticket.models import TicketCategory
+from uni_ticket.models import TicketCategory, TicketReply
 from uni_ticket.views.user import TicketAddNew, TicketDetail
 from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME
 from organizational_area.models import OrganizationalStructure
@@ -197,7 +197,9 @@ class TicketAPIDetail(TicketAPIBaseView):
                 data.pop(i)
             
             ticket = data.pop("ticket")
+            _messages = TicketReply.objects.filter(ticket=ticket)
             data["ticket"] = ticket.serialize()
+            data["messages"] = [i.serialize() for i in _messages if i]
             return Response(data)
         if legacy_response.status_code == 404:
             raise Http404()

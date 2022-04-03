@@ -4,6 +4,7 @@ import json
 import logging
 import re
 import shutil
+from typing import Union
 
 
 from django.conf import settings
@@ -163,7 +164,7 @@ def _send_new_ticket_mail_to_operators(
 ):
     office = category.organizational_office
     structure = category.organizational_structure
-    m_subject = _("{} - {}".format(settings.HOSTNAME, category))
+    m_subject = f"{settings.HOSTNAME} - {category}"
     operators = OrganizationalStructureOfficeEmployee.objects.filter(
         office=office, employee__is_active=True
     )
@@ -180,8 +181,9 @@ def _send_new_ticket_mail_to_operators(
 
     mail_params["user"] = OPERATOR_PREFIX
     msg_body_list = [MSG_HEADER, message_template, MSG_FOOTER]
-    msg_body = "".join([i.__str__()
-                        for i in msg_body_list]).format(**mail_params)
+    msg_body = "".join(
+        [i.__str__() for i in msg_body_list]
+    ).format(**mail_params)
     result = send_mail(
         subject=m_subject,
         message=msg_body,
@@ -190,9 +192,8 @@ def _send_new_ticket_mail_to_operators(
         fail_silently=True,
     )
     logger.info(
-        "[{}] sent mail (result: {}) "
-        "to operators for ticket {}"
-        "".format(timezone.localtime(), result, ticket)
+        f"[{timezone.localtime()}] sent mail (result: {result}) "
+        f"to operators for ticket {ticket}"
     )
 
 
@@ -252,7 +253,7 @@ def get_structures_by_request(request, structure_slug):
 
 
 @login_required
-def ticket_new_preload(request, structure_slug=None):
+def ticket_new_preload(request, structure_slug:str=None):
     """
     Choose the OrganizationalStructure and the category of the ticket
 
@@ -368,7 +369,7 @@ class TicketAddNew(View):
             )
         self.clausole_categoria = self.category.get_conditions()
 
-    def protocolla_ticket(self):
+    def protocolla_ticket(self) -> None:
         try:
             protocol_struct_configuration = OrganizationalStructureWSProtocollo.get_active_protocol_configuration(
                 self.struttura
@@ -424,13 +425,15 @@ class TicketAddNew(View):
                 "".format(timezone.localtime(),
                           self.log_user, self.ticket, e)
             )
+
+            # TODO: @francesco what to do with the following comments/legacy code?
             # delete attachments
             # delete_directory(ticket.get_folder())
-
             # delete assignment
             # ticket_assignment.delete()
             # delete ticket
             # ticket.delete()
+
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -445,8 +448,6 @@ class TicketAddNew(View):
                     "la protocollazione sia fallita."
                 ),
             )
-            # stop all other operations and come back to form
-            # return render(request, template, d)
 
     def deny_response(self):
         # if category is not active, return an error message
@@ -496,7 +497,7 @@ class TicketAddNew(View):
                     ),
                 )
 
-    def get(self, request, structure_slug, category_slug):
+    def get(self, request, structure_slug, category_slug, api:bool=False):
         """
         Create the ticket
 
@@ -525,9 +526,12 @@ class TicketAddNew(View):
             "sub_title": "{} - {}".format(self.struttura, self.sub_title),
             "title": self.title,
         }
-        return render(request, self.template, self.context_data)
+        if api:
+            return self.context_data
+        else:
+            return render(request, self.template, self.context_data)
 
-    def post(self, request, structure_slug, category_slug):
+    def post(self, request, structure_slug, category_slug, api=False):
         self.get_assets(structure_slug, category_slug)
         deny_response = self.deny_response()
         if deny_response:
@@ -568,10 +572,9 @@ class TicketAddNew(View):
 
                 # log action
                 logger.info(
-                    '[{}] user {} generated a new ticket URL "{}" '
-                    "for submission".format(
-                        timezone.localtime(), request.user, self.category
-                    )
+                    f'[{timezone.localtime()}] user {request.user} '
+                    f"generated a new ticket URL '{self.category}' "
+                    "for submission"
                 )
 
                 # add the "generate url" button to fields to pop
@@ -612,6 +615,7 @@ class TicketAddNew(View):
                 messages.add_message(
                     request,
                     messages.SUCCESS,
+                    # TODO - please no ... html in localized messages ...
                     _(
                         "<b>Di seguito l'URL della richiesta precompilata</b>"
                         "<input type='text' value='{url}' id='encrypted_ticket_url' />"
@@ -826,9 +830,6 @@ class TicketAddNew(View):
                         "added_text": compiled_message,
                     }
 
-                    # m_subject = _('{} - {}'.format(settings.HOSTNAME,
-                    # compiled_message))
-                    # m_subject = m_subject[:80] + (m_subject[80:] and '...')
                     m_subject = _("{} - richiesta {} creata con successo").format(
                         settings.HOSTNAME, self.ticket
                     )
@@ -853,10 +854,13 @@ class TicketAddNew(View):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(self.form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, f"<b>{k}</b>: {strip_tags(v)}"
                 )
-        return render(self.request, self.template, self.context_data)
+
+        if api:
+            return self.context_data
+        else:
+            return render(request, self.template, self.context_data)
 
 
 @login_required
@@ -1398,62 +1402,78 @@ class TaskDetail(View):  # pragma: no cover
         return render(request, template, d)
 
 
-@login_required
-@is_the_owner
-def ticket_close(request, ticket_id):
-    """
-    Ticket closing by owner user
+@method_decorator(login_required, 'dispatch')
+@method_decorator(is_the_owner, 'dispatch')
+class TicketClose(View):
+    template = "user/ticket_close.html"
 
-    :param ticket_id: String
+    def dispatch(self, request, ticket_id:str, *args, **kwargs) -> Union[HttpResponse, HttpResponseRedirect]:
+        self.ticket = get_object_or_404(Ticket, code=ticket_id)
 
-    :type ticket_id: ticket code
-
-    :return: render
-    """
-    ticket = get_object_or_404(Ticket, code=ticket_id)
-
-    if ticket.is_closed:
-        # log action
-        logger.error(
-            "[{}] user {} tried to close "
-            " the already closed ticket {}".format(
-                timezone.localtime(), request.user, ticket
+        if self.ticket.is_closed:
+            # log action
+            logger.error(
+                "[{}] user {} tried to close "
+                " the already closed ticket {}".format(
+                    timezone.localtime(), request.user, self.ticket
+                )
             )
-        )
 
-        return custom_message(request, _("La richiesta è già chiusa!"))
+            return custom_message(request, _("La richiesta è già chiusa!"))
 
-    # deny action if user is not the owner but has compiled only
-    if not request.user == ticket.created_by:
-        messages.add_message(
-            request,
-            messages.ERROR,
-            settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(
-                ticket.created_by),
-        )
-        return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
+        # deny action if user is not the owner but has compiled only
+        if not request.user == self.ticket.created_by:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(
+                    self.ticket.created_by),
+            )
+            return redirect(
+                "uni_ticket:ticket_detail", ticket_id=self.ticket.code
+            )
+        
+        self.title = _("Chiusura della richiesta")
+        self.sub_title = self.ticket
+        return super().dispatch(request, *args, **kwargs)
 
-    title = _("Chiusura della richiesta")
-    sub_title = ticket
-    form = BaseTicketCloseForm()
-    if request.method == "POST":
+    def get(self, request, api:bool = False):
+        """
+        Ticket closing by owner user
+
+        :param ticket_id: String
+
+        :type ticket_id: ticket code
+
+        :return: render
+        """
+        form = BaseTicketCloseForm()
+        self.context_data = {
+            "form": form,
+            "sub_title": self.sub_title,
+            "ticket": self.ticket,
+            "title": self.title,
+        }
+        if api:
+            return self.contenxt_data
+        else:
+            return render(request, self.template, self.context_data)
+
+    def post(self, request, api:bool=False):
         form = BaseTicketCloseForm(request.POST)
         if form.is_valid():
             motivazione = form.cleaned_data["note"]
-            # closing_status = form.cleaned_data['status']
-            ticket.is_closed = True
-            ticket.closing_reason = motivazione
-            # ticket.closing_status = closing_status
-            ticket.closed_date = timezone.localtime()
-            ticket.save(
+            self.ticket.is_closed = True
+            self.ticket.closing_reason = motivazione
+            self.ticket.closed_date = timezone.localtime()
+            self.ticket.save(
                 update_fields=[
                     "is_closed",
                     "closing_reason",
-                    # 'closing_status',
                     "closed_date",
                 ]
             )
-            ticket.update_log(
+            self.ticket.update_log(
                 user=request.user,
                 note=_("Chiusura richiesta da utente " "proprietario: {}").format(
                     motivazione
@@ -1462,32 +1482,22 @@ def ticket_close(request, ticket_id):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _("Richiesta {} chiusa correttamente" "").format(ticket),
+                _("Richiesta {} chiusa correttamente" "").format(self.ticket),
             )
 
             # log action
             logger.info(
-                "[{}] user {} closed ticket {}".format(
-                    timezone.localtime(), request.user, ticket
-                )
+                f"[{timezone.localtime()}] user {request.user} "
+                f"closed ticket {self.ticket}"
             )
 
-            return redirect("uni_ticket:ticket_detail", ticket.code)
+            return redirect("uni_ticket:ticket_detail", self.ticket.code)
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(
                         k, strip_tags(v))
                 )
-
-    template = "user/ticket_close.html"
-    d = {
-        "form": form,
-        "sub_title": sub_title,
-        "ticket": ticket,
-        "title": title,
-    }
-    return render(request, template, d)
 
 
 @login_required

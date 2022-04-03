@@ -827,8 +827,11 @@ urlpatterns += [
     ),
     path("{}/delete/".format(ticket_id),
          user.ticket_delete, name="ticket_delete"),
-    path("{}/close/".format(ticket_id),
-         user.ticket_close, name="user_close_ticket"),
+    path(
+        "{}/close/".format(ticket_id),
+         user.TicketClose.as_view(), 
+         name="user_close_ticket"
+    ),
     path("{}/reopen/".format(ticket_id),
          user.ticket_reopen, name="user_reopen_ticket"),
     path("{}/clone/".format(ticket_id),

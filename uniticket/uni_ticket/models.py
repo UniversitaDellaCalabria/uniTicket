@@ -1180,6 +1180,14 @@ class TicketReply(models.Model):
         verbose_name = _("Domande/Risposte Ticket")
         verbose_name_plural = _("Domande/Risposte Ticket")
 
+    def serialize(self):
+        return dict(
+            subject = self.subject,
+            text = self.text,
+            attachment = self.attachment,
+            created = self.created.timestamp
+        )
+
     @staticmethod
     def get_unread_messages_count(tickets, by_operator=False):
         unread_messages = TicketReply.objects.filter(
