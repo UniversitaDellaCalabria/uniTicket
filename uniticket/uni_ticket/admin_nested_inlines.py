@@ -129,6 +129,8 @@ class TicketAssignmentNestedInline(nested_admin.NestedTabularInline):
     )
 
 # Ticket Reply
+
+
 class TicketReplyModelForm(forms.ModelForm):
     class Meta:
         model = TicketReply
@@ -144,6 +146,8 @@ class TicketReplyNestedInline(nested_admin.NestedTabularInline):
     )
 
 # Ticket dependency from other Ticket
+
+
 class Ticket2TicketModelForm(forms.ModelForm):
     class Meta:
         model = Ticket2Ticket

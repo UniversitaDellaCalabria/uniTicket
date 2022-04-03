@@ -60,6 +60,7 @@ from uni_ticket.settings import (
     USER_TICKET_MESSAGE,
 )
 from uni_ticket.utils import *
+from uni_ticket.views.management import ticket_detail
 
 
 logger = logging.getLogger(__name__)
@@ -88,7 +89,7 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
             try:
                 if os.path.exists(source):
                     shutil.copytree(source, destination)
-            except:
+            except Exception:
                 logger.error(
                     "[{}] {} try to copy not existent folder {}"
                     "".format(timezone.localtime(), log_user, source)
@@ -202,7 +203,7 @@ def get_structures_by_request(request, structure_slug):
         structure = get_object_or_404(
             OrganizationalStructure, pk=structure_slug, is_active=True
         )
-    except:
+    except Exception:
         structure = get_object_or_404(
             OrganizationalStructure, slug=structure_slug, is_active=True
         )
@@ -253,7 +254,7 @@ def get_structures_by_request(request, structure_slug):
 
 
 @login_required
-def ticket_new_preload(request, structure_slug:str=None):
+def ticket_new_preload(request, structure_slug:str = None):
     """
     Choose the OrganizationalStructure and the category of the ticket
 
@@ -306,7 +307,7 @@ class TicketAddNew(View):
             self.struttura = get_object_or_404(
                 OrganizationalStructure, pk=structure_slug, is_active=True
             )
-        except:
+        except Exception:
             self.struttura = get_object_or_404(
                 OrganizationalStructure, slug=structure_slug, is_active=True
             )
@@ -315,7 +316,7 @@ class TicketAddNew(View):
             self.category = get_object_or_404(
                 TicketCategory, pk=category_slug, organizational_structure=self.struttura
             )
-        except:
+        except Exception:
             self.category = get_object_or_404(
                 TicketCategory, slug=category_slug, organizational_structure=self.struttura
             )
@@ -497,7 +498,7 @@ class TicketAddNew(View):
                     ),
                 )
 
-    def get(self, request, structure_slug, category_slug, api:bool=False):
+    def get(self, request, structure_slug, category_slug, api:bool = False):
         """
         Create the ticket
 
@@ -772,8 +773,8 @@ class TicketAddNew(View):
 
                 # send success message to user
                 ticket_message = (
-                    self.ticket.input_module.ticket_category.confirm_message_text
-                    or NEW_TICKET_CREATED_ALERT
+                    self.ticket.input_module.ticket_category.confirm_message_text or
+                    NEW_TICKET_CREATED_ALERT
                 )
 
                 compiled_message = ticket_message.format(self.ticket.subject)
@@ -1064,7 +1065,6 @@ def delete_my_attachment(request, ticket_id, attachment):
     )
 
     set_as_dict(ticket, ticket_details)
-    allegati = ticket.get_allegati_dict(ticket_dict=ticket_details)
     ticket.update_log(user=request.user, note=_("Elimina allegato"))
 
     # log action
@@ -1183,7 +1183,7 @@ class TicketDetail(View):
     """
     template = "user/ticket_detail.html"
 
-    def get(self, request, ticket_id:str, api:bool=False):
+    def get(self, request, ticket_id:str, api:bool = False):
 
         ticket = get_object_or_404(Ticket, code=ticket_id)
         modulo_compilato = ticket.get_modulo_compilato()
@@ -1432,7 +1432,7 @@ class TicketClose(View):
             return redirect(
                 "uni_ticket:ticket_detail", ticket_id=self.ticket.code
             )
-        
+
         self.title = _("Chiusura della richiesta")
         self.sub_title = self.ticket
         return super().dispatch(request, *args, **kwargs)
@@ -1459,7 +1459,7 @@ class TicketClose(View):
         else:
             return render(request, self.template, self.context_data)
 
-    def post(self, request, api:bool=False):
+    def post(self, request, api:bool = False):
         form = BaseTicketCloseForm(request.POST)
         if form.is_valid():
             motivazione = form.cleaned_data["note"]

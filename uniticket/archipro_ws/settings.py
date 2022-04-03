@@ -132,7 +132,10 @@ TITOLARIO_DICT = (
     ("9124", _("[9124] Acquisizione e gestione di beni immobili e relativi servizi")),
     ("9125", _("[9125] Locazione di beni immobili, di beni mobili e relativi servizi")),
     ("9126", _("[9126] Alienazione di beni immobili e di beni mobili")),
-    ("9127", _("[9127] Acquisizione e fornitura di beni mobili, di materiali e attrezzature non tecniche e di servizi")),
+    (
+        "9127",
+        _("[9127] Acquisizione e fornitura di beni mobili, di materiali e attrezzature non tecniche e di servizi")
+    ),
     ("9128", _("[9128] Manutenzione di beni mobili")),
     ("9129", _("[9129] Materiali, attrezzature, impiantistica e adempimenti tecnico-normativi")),
     ("9130", _("[9130] Partecipazioni e investimenti finanziari")),

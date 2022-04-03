@@ -392,8 +392,6 @@ def ticket_message_delete(request, ticket_message_id):
     :return: redirect
     """
     ticket_message = get_object_or_404(TicketReply, pk=ticket_message_id)
-    last_message = TicketReply.objects.filter(
-        ticket=ticket_message.ticket).last()
     structure = ticket_message.structure
     # if message doesn't exist
     if not ticket_message:

@@ -133,17 +133,17 @@ urlpatterns += [
         name="operator_opened_ticket_json",
     ),
     path(
-        "{}/my/operator_opened_ticket.json".format(structure),
+        f"{structure}/my/operator_opened_ticket.json",
         datatables.operator_my_opened_ticket,
         name="operator_my_opened_ticket_json",
     ),
     path(
-        "{}/operator_closed_ticket.json".format(structure),
+        f"{structure}/operator_closed_ticket.json",
         datatables.operator_closed_ticket,
         name="operator_closed_ticket_json",
     ),
     path(
-        "{}/operator_all_tickets.json".format(structure),
+        f"{structure}/operator_all_tickets.json",
         datatables.operator_all_tickets,
         name="operator_all_tickets_json",
     ),
@@ -829,8 +829,8 @@ urlpatterns += [
          user.ticket_delete, name="ticket_delete"),
     path(
         "{}/close/".format(ticket_id),
-         user.TicketClose.as_view(), 
-         name="user_close_ticket"
+        user.TicketClose.as_view(),
+        name="user_close_ticket"
     ),
     path("{}/reopen/".format(ticket_id),
          user.ticket_reopen, name="user_reopen_ticket"),

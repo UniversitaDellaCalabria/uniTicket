@@ -2017,11 +2017,6 @@ def task_edit(
     """
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
     usertype = get_user_type(request.user, structure)
-    data = {
-        "subject": task.subject,
-        "description": task.description,
-        "priority": task.priority,
-    }
     form = TaskForm(instance=task)
 
     template = "{}/task_edit.html".format(usertype)

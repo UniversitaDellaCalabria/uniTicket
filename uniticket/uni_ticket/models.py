@@ -467,7 +467,7 @@ class Ticket(SavedFormContent):
     def serialize(self):
         _offices = [{
                 "name": i.name
-            } for i in self.get_assigned_to_offices()
+        } for i in self.get_assigned_to_offices()
         ]
         data = dict(
             code = self.code,

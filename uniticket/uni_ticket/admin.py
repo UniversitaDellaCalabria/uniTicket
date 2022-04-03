@@ -58,7 +58,7 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
     )
     search_fields = ("name", "description")
     raw_id_fields = ("allowed_users",)
-    
+
     # def has_add_permission(self, request):
     # return False
 

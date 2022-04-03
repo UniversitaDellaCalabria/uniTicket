@@ -966,7 +966,8 @@ def category_add_new(request, structure_slug, structure):
 
                 # check if protocol can be activated
                 protocol_required = form.cleaned_data["protocol_required"]
-                # if protocol_required and not OrganizationalStructureWSProtocollo.get_active_protocol_configuration(organizational_structure=structure):
+                # if protocol_required and not
+                # OrganizationalStructureWSProtocollo.get_active_protocol_configuration(organizational_structure=structure):
                 if protocol_required:
                     protocol_required = False
                     messages.add_message(
@@ -2402,7 +2403,7 @@ def category_input_module_clone_preload(
         )
         sub_title = _("Seleziona la Categoria")
     if selected_category_slug:
-        selected_category = get_object_or_404(
+        get_object_or_404(
             TicketCategory,
             organizational_structure=selected_structure,
             slug=selected_category_slug,
@@ -2665,13 +2666,7 @@ def category_task_edit(request, structure_slug, category_slug, task_id, structur
     )
     task = get_object_or_404(
         TicketCategoryTask, code=task_id, category=category)
-    data = {
-        "subject": task.subject,
-        "description": task.description,
-        "priority": task.priority,
-        "is_public": task.is_public,
-        "is_active": task.is_active,
-    }
+
     form = CategoryTaskForm(instance=task)
 
     template = "manager/category_task_edit.html"
@@ -3404,9 +3399,6 @@ def category_protocol_configuration_new(
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
-    structure_protocol = OrganizationalStructureWSProtocollo.objects.filter(
-        organizational_structure=structure, is_active=True
-    ).first()
     form = CategoryWSProtocolloModelForm()
 
     if request.method == "POST":

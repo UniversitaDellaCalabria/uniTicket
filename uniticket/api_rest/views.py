@@ -174,6 +174,7 @@ class TicketAPIDetail(TicketAPIBaseView):
     """
     Shows the status of a Ticket
     """
+
     def dispatch(self, request, *args, **kwargs):
         self.legacy_view = TicketDetail()
         self.legacy_view.request = request
@@ -187,15 +188,15 @@ class TicketAPIDetail(TicketAPIBaseView):
         if isinstance(legacy_response, dict):
             data = self.legacy_view.data
             for i in (
-                "ticket_assignments", 
-                'path_allegati', 
+                "ticket_assignments",
+                'path_allegati',
                 'details',
                 "ticket_form",
                 "logs",
                 "ticket_task"
             ):
                 data.pop(i)
-            
+
             ticket = data.pop("ticket")
             _messages = TicketReply.objects.filter(ticket=ticket)
             data["ticket"] = ticket.serialize()

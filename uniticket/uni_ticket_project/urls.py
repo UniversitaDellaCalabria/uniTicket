@@ -132,14 +132,14 @@ elif "spid_oidc_rp" in settings.INSTALLED_APPS:
     )
     urlpatterns += (
         path(
-            f"oidc/login",
+            "oidc/login",
             RedirectView.as_view(url=f"{settings.LOGIN_URL}"),
             name="login",
         ),
     )
     urlpatterns += (
         path(
-            f"oidc/logout",
+            "oidc/logout",
             RedirectView.as_view(url=f"{settings.LOGOUT_URL}"),
             name="logout",
         ),
