@@ -124,7 +124,9 @@ class TicketAssignmentNestedInline(nested_admin.NestedTabularInline):
     model = TicketAssignment
     form = TicketAssignmentModelForm
     extra = 0
-
+    raw_id_fields = (
+        "assigned_by", "office", "taken_by"
+    )
 
 # Ticket Reply
 class TicketReplyModelForm(forms.ModelForm):
@@ -137,7 +139,9 @@ class TicketReplyNestedInline(nested_admin.NestedTabularInline):
     model = TicketReply
     form = TicketReplyModelForm
     extra = 0
-
+    raw_id_fields = (
+        "owner", "read_by"
+    )
 
 # Ticket dependency from other Ticket
 class Ticket2TicketModelForm(forms.ModelForm):
@@ -151,3 +155,6 @@ class Ticket2TicketNestedInline(nested_admin.NestedTabularInline):
     form = Ticket2TicketModelForm
     extra = 0
     fk_name = "subordinate_ticket"
+    raw_id_fields = (
+        "main_ticket",
+    )
