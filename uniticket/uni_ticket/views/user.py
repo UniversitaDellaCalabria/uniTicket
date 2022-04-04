@@ -550,7 +550,7 @@ class TicketAddNew(View):
         }
 
         self.form = self.modulo.get_form(
-            data=request.POST or request.api_data, # csrf except workaround for API integration
+            data=request.POST or getattr(request, "api_data", {}), # csrf except workaround for API integration
             files=request.FILES,
             show_conditions=True,
             current_user=request.user,
