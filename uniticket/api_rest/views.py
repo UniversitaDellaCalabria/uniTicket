@@ -184,7 +184,7 @@ class TicketAPIDetail(TicketAPIBaseView):
         """
         Return a ticket by structure_slug, category_slug
         """
-        legacy_response = self.legacy_view.get(request, ticket_uid, api=1)
+        legacy_response = self.legacy_view.get(request, ticket_uid, api=True)
         if isinstance(legacy_response, dict):
             data = self.legacy_view.data
             for i in (
