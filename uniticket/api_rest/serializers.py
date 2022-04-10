@@ -2,7 +2,7 @@ from rest_framework import serializers
 from accounts.models import User
 from django.contrib.auth.models import Group
 
-from uni_ticket.models import TicketCategory
+from uni_ticket.models import Ticket, TicketCategory
 
 
 # Serializers define the API representation.
@@ -39,4 +39,26 @@ class TicketCategorySerializer(serializers.ModelSerializer):
         exclude = (
             "allowed_users",
             "confirm_message_text"
+        )
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    created_by = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='last_name'
+    )
+    compiled_by = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='last_name'
+    )
+    closed_by = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='last_name'
+    )
+
+    class Meta:
+        model = Ticket
+        lookup_field = 'pk'
+        exclude = (
+            "input_module",
         )

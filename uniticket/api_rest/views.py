@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core import serializers
 from django.core.exceptions import BadRequest
+from django.db.models import Q
 from django.http import Http404
 
 from rest_framework.exceptions import PermissionDenied
@@ -15,13 +16,13 @@ from rest_framework.response import Response
 from rest_framework import permissions, viewsets
 
 from uni_ticket.dynamic_form import serialize_form
-from uni_ticket.models import TicketCategory, TicketReply
+from uni_ticket.models import Ticket, TicketCategory, TicketReply
 from uni_ticket.views.user import TicketAddNew, TicketDetail
 from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME
 from organizational_area.models import OrganizationalStructure
 
 
-from . serializers import GroupSerializer, TicketCategorySerializer, UserSerializer
+from . serializers import GroupSerializer, TicketCategorySerializer, TicketSerializer, UserSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -208,3 +209,26 @@ class TicketAPIDetail(TicketAPIBaseView):
             raise PermissionDenied()
         else:
             raise BadRequest()
+
+
+class TicketAPIListCreated(generics.ListAPIView):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
+    def list(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise PermissionDenied()
+
+        queryset = self.filter_queryset(
+            Ticket.objects.filter(
+                Q(created_by=request.user) | Q(compiled_by=request.user)
+            )
+        )
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
