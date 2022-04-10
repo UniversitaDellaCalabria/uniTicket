@@ -1409,7 +1409,13 @@ class TicketClose(View):
 
     def dispatch(self, request, ticket_id:str, *args, **kwargs) -> Union[HttpResponse, HttpResponseRedirect]:
         self.ticket = get_object_or_404(Ticket, code=ticket_id)
-
+        self.title = _("Chiusura della richiesta")
+        self.sub_title = self.ticket
+        self.context_data = {
+            "sub_title": self.sub_title,
+            "ticket": self.ticket,
+            "title": self.title,
+        }
         if self.ticket.is_closed:
             # log action
             logger.error(
@@ -1432,9 +1438,6 @@ class TicketClose(View):
             return redirect(
                 "uni_ticket:ticket_detail", ticket_id=self.ticket.code
             )
-
-        self.title = _("Chiusura della richiesta")
-        self.sub_title = self.ticket
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, api:bool = False):
@@ -1447,22 +1450,18 @@ class TicketClose(View):
 
         :return: render
         """
-        form = BaseTicketCloseForm()
-        self.context_data = {
-            "form": form,
-            "sub_title": self.sub_title,
-            "ticket": self.ticket,
-            "title": self.title,
-        }
+        self.form = BaseTicketCloseForm()
+        self.context_data['form'] = self.form
         if api:
             return self.contenxt_data
         else:
             return render(request, self.template, self.context_data)
 
     def post(self, request, api:bool = False):
-        form = BaseTicketCloseForm(request.POST)
-        if form.is_valid():
-            motivazione = form.cleaned_data["note"]
+        self.form = BaseTicketCloseForm(request.POST or getattr(request, "api_data")) # API csrf token workaround
+        self.context_data['form'] = self.form
+        if self.form.is_valid():
+            motivazione = self.form.cleaned_data["note"]
             self.ticket.is_closed = True
             self.ticket.closing_reason = motivazione
             self.ticket.closed_date = timezone.localtime()
@@ -1475,14 +1474,14 @@ class TicketClose(View):
             )
             self.ticket.update_log(
                 user=request.user,
-                note=_("Chiusura richiesta da utente " "proprietario: {}").format(
+                note=_("Chiusura richiesta da utente proprietario: {}").format(
                     motivazione
                 ),
             )
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _("Richiesta {} chiusa correttamente" "").format(self.ticket),
+                _("Richiesta {} chiusa correttamente").format(self.ticket),
             )
 
             # log action
@@ -1493,7 +1492,7 @@ class TicketClose(View):
 
             return redirect("uni_ticket:ticket_detail", self.ticket.code)
         else:  # pragma: no cover
-            for k, v in get_labeled_errors(form).items():
+            for k, v in get_labeled_errors(self.form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(
                         k, strip_tags(v))

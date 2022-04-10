@@ -17,7 +17,7 @@ from rest_framework import permissions, viewsets
 
 from uni_ticket.dynamic_form import serialize_form
 from uni_ticket.models import Ticket, TicketCategory, TicketReply
-from uni_ticket.views.user import TicketAddNew, TicketDetail
+from uni_ticket.views.user import TicketAddNew, TicketClose, TicketDetail
 from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME
 from organizational_area.models import OrganizationalStructure
 
@@ -58,6 +58,11 @@ class TicketAPIBaseView(APIView):
     # authentication_classes = [authentication.TokenAuthentication]
     # permission_classes = [permissions.IsAdminUser]
 
+    def get_messages(self):
+        return [
+            {message_level(i.level): i.message for i in messages.get_messages(self.request)}
+        ]
+
 
 class TicketAPIView(TicketAPIBaseView):
     """
@@ -74,11 +79,6 @@ class TicketAPIView(TicketAPIBaseView):
         - allowed_users
     """
 
-    def get_messages(self):
-        return [
-            {message_level(i.level): i.message for i in messages.get_messages(self.request)}
-        ]
-
     def build_response(self) -> dict:
         """
         returns the dictionary for the JSON response
@@ -86,10 +86,8 @@ class TicketAPIView(TicketAPIBaseView):
         _messages = self.get_messages()
         return(
             dict(
-
                 # We may do it but ... it's crazy! :-)
                 # uniticket_html_page = legacy_response.content,
-
                 name = self.legacy_view.title.name,
                 description = self.legacy_view.title.description,
                 protocol_required = self.legacy_view.title.protocol_required,
@@ -232,3 +230,41 @@ class TicketAPIListCreated(generics.ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class TicketAPIClose(TicketAPIBaseView):
+
+    def build_response(self) -> dict:
+        """
+        returns the dictionary for the JSON response
+        """
+        return(
+            dict(
+                messages = self.get_messages(),
+                ticket = self.legacy_view.context_data['sub_title'].serialize(),
+                form = serialize_form(self.legacy_view.form)
+            )
+        )
+
+    def dispatch(self, request, *args, **kwargs):
+        self.legacy_view = TicketClose()
+        self.legacy_view.request = request
+        self.user = request.user
+        return super().dispatch(request, *args, **kwargs)
+
+    def close(self, request, ticket_id, *args, **kwargs):
+        request.api_data = getattr(request, "data", {})
+        self.legacy_view.dispatch(
+            request, ticket_id=ticket_id
+        )
+        legacy_response = self.legacy_view.post(
+            request
+        )
+        logger.debug(legacy_response)
+        return Response(self.build_response())
+    
+    def get(self, request, ticket_id, *args, **kwargs):
+        return self.close(request, ticket_id, *args, **kwargs)
+
+    def post(self, request, ticket_id, *args, **kwargs):
+        return self.close(request, ticket_id, *args, **kwargs)

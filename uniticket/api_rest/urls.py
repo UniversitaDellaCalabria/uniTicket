@@ -4,7 +4,7 @@ from rest_framework.renderers import JSONOpenAPIRenderer
 from rest_framework.schemas import get_schema_view
 
 from api_rest.views import (
-  GroupViewSet, TicketAPIDetail, TicketAPIListCreated,
+  GroupViewSet, TicketAPIClose, TicketAPIDetail, TicketAPIListCreated,
   TicketAPIStruttureList,
   TicketAPITicketCategoryList, TicketAPIView,
   UserViewSet
@@ -61,6 +61,12 @@ urlpatterns = [
     'api/ticket/user/list',
     TicketAPIListCreated.as_view(),
     name='api-ticket-user-list'
+  ),
+
+  path(
+    'api/ticket/close/<str:ticket_id>',
+    TicketAPIClose.as_view(),
+    name='api-ticket-close'
   ),
 
 
