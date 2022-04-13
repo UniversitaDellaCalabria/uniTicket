@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     # Django Rest
     'rest_framework',
+    'api_rest',
 
     # Django channels and chat
     'channels',

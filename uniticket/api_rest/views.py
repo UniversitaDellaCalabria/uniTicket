@@ -22,10 +22,12 @@ from uni_ticket.views.user import TicketAddNew, TicketClose, TicketDetail
 from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME
 from organizational_area.models import OrganizationalStructure
 from api_rest.authorizations import AuthorizationToken
+from uni_ticket.forms import OrganizationalStructureAlertForm
 
 
 from . serializers import (
-    GroupSerializer, 
+    GroupSerializer,
+    OrganizationalStructureSerializer, 
     TicketCategorySerializer, 
     TicketSerializer, 
     UserSerializer
@@ -50,6 +52,10 @@ class GroupViewSet(viewsets.ModelViewSet):
     serializer_class = GroupSerializer
 
 
+class uniTicketROGenericList(generics.ListAPIView):
+    authentication_classes = [AuthorizationToken, SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
 def message_level(level:int):
     levels = {v:k for k,v in messages.DEFAULT_LEVELS.items()}
     return levels.get(level, level)
@@ -64,7 +70,7 @@ class TicketAPIBaseView(APIView):
     authentication_classes = [
         AuthorizationToken, SessionAuthentication
     ]
-    # permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_messages(self):
         return [
@@ -162,23 +168,17 @@ class TicketAPIView(TicketAPIBaseView):
             raise BadRequest()
 
 
-class TicketAPIStruttureList(TicketAPIBaseView):
-
-    def get(self, request):
-        return Response(
-            json.loads(
-                serializers.serialize(
-                    'json', OrganizationalStructure.objects.filter(is_active=True)
-                )
-            )
-        )
+class TicketAPIStruttureList(uniTicketROGenericList):
+    queryset = OrganizationalStructure.objects.filter(is_active=True)
+    lookup_field = 'pk'
+    serializer_class = OrganizationalStructureSerializer
 
 
-class TicketAPITicketCategoryList(generics.ListAPIView):
+class TicketAPITicketCategoryList(uniTicketROGenericList):
     queryset = TicketCategory.objects.filter(is_active=True)
     lookup_field = 'pk'
     serializer_class = TicketCategorySerializer
-    authentication_classes = [AuthorizationToken]
+    
 
 
 class TicketAPIDetail(TicketAPIBaseView):
@@ -221,10 +221,9 @@ class TicketAPIDetail(TicketAPIBaseView):
             raise BadRequest()
 
 
-class TicketAPIListCreated(generics.ListAPIView):
+class TicketAPIListCreated(uniTicketROGenericList):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
-    authentication_classes = [AuthorizationToken]
 
     def list(self, request, *args, **kwargs):
         if not request.user.is_authenticated:

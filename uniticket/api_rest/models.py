@@ -47,6 +47,7 @@ class AuthorizationToken(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     class Meta:
+        app_label = "api_rest"
         ordering = ['name']
         verbose_name = _("Authorization Token")
         verbose_name_plural = _("Authorization Tokens")
@@ -57,6 +58,10 @@ class AuthorizationToken(models.Model):
             return timezone.localtime() < self.active_until
         except TypeError:
             return False
+
+    @property
+    def as_http_header(self):
+        return {"HTTP_AUTHORIZATION": f"Token {self.value}"}
 
     def __str__(self):
         return f"{self.name} [{self.user}]"

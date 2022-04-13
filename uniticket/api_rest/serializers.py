@@ -3,6 +3,7 @@ from accounts.models import User
 from django.contrib.auth.models import Group
 
 from uni_ticket.models import Ticket, TicketCategory
+from organizational_area.models import OrganizationalStructure
 
 
 # Serializers define the API representation.
@@ -21,6 +22,12 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ['url', 'name']
+
+
+class OrganizationalStructureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrganizationalStructure
+        fields = '__all__'
 
 
 class TicketCategorySerializer(serializers.ModelSerializer):
