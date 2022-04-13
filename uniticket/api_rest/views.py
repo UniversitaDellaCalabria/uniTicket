@@ -9,6 +9,7 @@ from django.core.exceptions import BadRequest
 from django.db.models import Q
 from django.http import Http404
 
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import PermissionDenied
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -20,9 +21,15 @@ from uni_ticket.models import Ticket, TicketCategory, TicketReply
 from uni_ticket.views.user import TicketAddNew, TicketClose, TicketDetail
 from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME
 from organizational_area.models import OrganizationalStructure
+from api_rest.authorizations import AuthorizationToken
 
 
-from . serializers import GroupSerializer, TicketCategorySerializer, TicketSerializer, UserSerializer
+from . serializers import (
+    GroupSerializer, 
+    TicketCategorySerializer, 
+    TicketSerializer, 
+    UserSerializer
+)
 
 logger = logging.getLogger(__name__)
 
@@ -53,14 +60,18 @@ class TicketAPIBaseView(APIView):
         base class to port in the API all the legacy code
     """
 
-    # TODO: AgID MoDI or custom token to authenticate(request) on the http authz header
-
-    # authentication_classes = [authentication.TokenAuthentication]
+    # TODO: AgID MoDI also here?
+    authentication_classes = [
+        AuthorizationToken, SessionAuthentication
+    ]
     # permission_classes = [permissions.IsAdminUser]
 
     def get_messages(self):
         return [
-            {message_level(i.level): i.message for i in messages.get_messages(self.request)}
+            {
+                message_level(i.level): i.message 
+                for i in messages.get_messages(self.request)
+            }
         ]
 
 
@@ -156,9 +167,9 @@ class TicketAPIStruttureList(TicketAPIBaseView):
     def get(self, request):
         return Response(
             json.loads(
-                    serializers.serialize(
-                        'json', OrganizationalStructure.objects.filter(is_active=True)
-                    )
+                serializers.serialize(
+                    'json', OrganizationalStructure.objects.filter(is_active=True)
+                )
             )
         )
 
@@ -167,6 +178,7 @@ class TicketAPITicketCategoryList(generics.ListAPIView):
     queryset = TicketCategory.objects.filter(is_active=True)
     lookup_field = 'pk'
     serializer_class = TicketCategorySerializer
+    authentication_classes = [AuthorizationToken]
 
 
 class TicketAPIDetail(TicketAPIBaseView):
@@ -212,6 +224,7 @@ class TicketAPIDetail(TicketAPIBaseView):
 class TicketAPIListCreated(generics.ListAPIView):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+    authentication_classes = [AuthorizationToken]
 
     def list(self, request, *args, **kwargs):
         if not request.user.is_authenticated:

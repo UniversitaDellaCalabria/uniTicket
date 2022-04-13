@@ -204,7 +204,7 @@ ORGANIZATION_EMPLOYEE_LABEL = getattr(
 USER_ATTRIBUTE_NAME = getattr(
     settings, "USER_ATTRIBUTE_NAME", "identificativo_utente")
 USER_ATTRIBUTE_LABEL = getattr(
-    settings, "USER_ATTRIBUTE_LABEL", "Matricola studente")
+    settings, "USER_ATTRIBUTE_LABEL", "Matricola utente")
 
 # Ticket categories CSV export
 # additional user fields to export
