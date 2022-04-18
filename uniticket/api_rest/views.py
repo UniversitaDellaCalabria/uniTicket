@@ -1,3 +1,4 @@
+from copy import deepcopy
 import json
 import logging
 
@@ -144,10 +145,10 @@ class TicketAPIView(TicketAPIBaseView):
         """
         Return a ticket by structure_slug, category_slug
         """
-        request.data[TICKET_CREATE_BUTTON_NAME] = 1
         # useless ... untill you don't except csrf on the legacy view ... but no.
         # request._set_post(request.data)
-        request.api_data = request.data
+        request.api_data = deepcopy(request.data)
+        request.api_data[TICKET_CREATE_BUTTON_NAME] = 1
         legacy_response = self.legacy_view.post(request, structure_slug, category_slug)
         logger.debug(legacy_response)
         if self.legacy_view.form.errors:
