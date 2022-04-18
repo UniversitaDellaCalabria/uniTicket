@@ -184,7 +184,49 @@ class uniTicketAPITest(TestCase):
             "testo_ad_inserimento_libero": "lorem ipsum",
             "testo_lungo_ad_inserimento_libero": "long lorem ipsum"
         }
-        res = req.post(url, data=data, content_type="application/json", **self.at.as_http_header)
+        res = req.post(
+            url, 
+            data=data, 
+            content_type="application/json", 
+            **self.at.as_http_header
+        )
         self.assertTrue(
             res.json()['messages'][0].get('SUCCESS', None)
+        )
+
+        # get ticket detail
+        tcode = res.json()['status']['code']
+        durl = reverse("api-view-ticket", kwargs={'ticket_uid': tcode})
+        res = req.get(durl, **self.at.as_http_header)
+        res_form = res.json()['ticket']['form']
+        for i in data.keys():
+            if i in ('ticket_subject', 'ticket_description'):
+                continue
+            self.assertIn(i, res_form)
+        
+
+        # get ticket list
+        lurl = reverse("api-ticket-user-list")
+
+        # create another ticket
+        req.post(
+            url, 
+            data=data, 
+            content_type="application/json", 
+            **self.at.as_http_header
+        )
+
+        res = req.get(lurl, **self.at.as_http_header)
+        self.assertTrue(
+            res.json()['count'] == 2
+        )
+        self.assertTrue(
+            len(res.json()['results']) == 2
+        )
+        
+        # close ticket
+        curl = reverse("api-ticket-close", kwargs={'ticket_id': tcode})
+        res = req.post(curl, data={'note': "have to go"}, **self.at.as_http_header)
+        self.assertTrue(
+            res.json()['messages'][0].get("SUCCESS", None)
         )
