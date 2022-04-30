@@ -1,0 +1,66 @@
+{% load i18n %}
+
+<div id="histogram"></div>
+<script src="{{ JS_CHART_CDN_URL }}"></script>
+<script>
+        var options = {
+          series: [{
+          name: '{% trans "Ticket aperti" %}',
+          data: [{% for ta in stats.open_day_serie.values %} {{ ta }}, {% endfor %}]
+        }, {
+          name: '{% trans "Ticket chiusi" %}',
+          data: [{% for ta in stats.closed_day_serie.values %} {{ ta }}, {% endfor %}]
+        }, {
+          name: '{% trans "Notifiche" %}',
+          data: [{% for ta in stats.reopenend_day_serie.values %} {{ ta }}, {% endfor %}]
+        }, {
+          name: '{% trans "Ticket riaperti" %}',
+          data: [{% for ta in stats.notifications_day_serie.values %} {{ ta }}, {% endfor %}]
+        },
+        {
+          name: '{% trans "Ticket assegnati" %}',
+          data: [{% for ta in stats.assigned_day_serie.values %} {{ ta }}, {% endfor %}]
+        }],
+          chart: {
+          type: 'bar',
+          height: 350,
+          stacked: true,
+          toolbar: {
+            show: true
+          },
+          zoom: {
+            enabled: false
+          }
+        },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            legend: {
+              position: 'bottom',
+              offsetX: -10,
+              offsetY: 0
+            }
+          }
+        }],
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            borderRadius: 10
+          },
+        },
+        xaxis: {
+          type: 'datetime',
+          categories: [{% for td in ticket_per_day %} "{{ td }}", {% endfor %}]
+        },
+        legend: {
+          position: 'right',
+          offsetY: 40
+        },
+        fill: {
+          opacity: 1
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#histogram"), options);
+        chart.render();
+</script>

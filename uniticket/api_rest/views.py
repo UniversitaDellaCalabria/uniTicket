@@ -23,14 +23,13 @@ from uni_ticket.views.user import TicketAddNew, TicketClose, TicketDetail
 from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME
 from organizational_area.models import OrganizationalStructure
 from api_rest.authorizations import AuthorizationToken
-from uni_ticket.forms import OrganizationalStructureAlertForm
 
 
 from . serializers import (
     GroupSerializer,
-    OrganizationalStructureSerializer, 
-    TicketCategorySerializer, 
-    TicketSerializer, 
+    OrganizationalStructureSerializer,
+    TicketCategorySerializer,
+    TicketSerializer,
     UserSerializer
 )
 
@@ -57,6 +56,7 @@ class uniTicketROGenericList(generics.ListAPIView):
     authentication_classes = [AuthorizationToken, SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
+
 def message_level(level:int):
     levels = {v:k for k,v in messages.DEFAULT_LEVELS.items()}
     return levels.get(level, level)
@@ -76,7 +76,7 @@ class TicketAPIBaseView(APIView):
     def get_messages(self):
         return [
             {
-                message_level(i.level): i.message 
+                message_level(i.level): i.message
                 for i in messages.get_messages(self.request)
             }
         ]
@@ -179,7 +179,6 @@ class TicketAPITicketCategoryList(uniTicketROGenericList):
     queryset = TicketCategory.objects.filter(is_active=True)
     lookup_field = 'pk'
     serializer_class = TicketCategorySerializer
-    
 
 
 class TicketAPIDetail(TicketAPIBaseView):
@@ -275,7 +274,7 @@ class TicketAPIClose(TicketAPIBaseView):
         )
         logger.debug(legacy_response)
         return Response(self.build_response())
-    
+
     def get(self, request, ticket_id, *args, **kwargs):
         return self.close(request, ticket_id, *args, **kwargs)
 

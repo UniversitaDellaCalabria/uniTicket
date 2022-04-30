@@ -676,3 +676,55 @@ SUMMARY_EMPLOYEE_EMAIL_OLD_EN = getattr(
         "Please do not reply to this email."
     ),
 )
+
+STATS_DEFAULT_DATE_START_DELTA_DAYS = getattr(
+    settings, "STATS_DEFAULT_DATE_START_DELTA_DAYS", 15
+)
+JS_CHART_CDN_URL = getattr(
+    settings, "JS_CHART_CDN_URL", "https://cdn.jsdelivr.net/npm/apexcharts"
+)
+STATS_DEFAULT_DAYS_DELTA = getattr(
+    settings, "STATS_DEFAULT_DAYS_DELTA", 15
+)
+STATS_TIME_SLOTS = getattr(
+    settings,
+    "STATS_TIME_SLOTS",    
+    {
+        1: range(8, 14),  # 8 - 13:59
+        2: range(14, 19), # 14 - 18:59
+        3: range(19, 22), # 19 - 21:59
+        4: range(22, 24),  # 22 - 23:59
+        5: range(0, 8)    # 0 - 7:59
+    }
+)
+
+STATS_MAX_DAYS = getattr(settings, "STATS_MAX_DAYS", 332)
+
+STATS_HEAT_MAP_RANGES = getattr(settings, "STATS_HEAT_MAP_RANGES",
+    [
+        {
+            "from": 0,
+            "to": 5,
+            "name": 'low',
+            "color": '#00A100'
+        },
+        {
+            "from": 6,
+            "to": 20,
+            "name": 'medium',
+            "color": '#128FD9'
+        },
+        {
+            "from": 21,
+            "to": 50,
+            "name": 'high',
+            "color": '#FFB200'
+        },
+        {
+            "from": 50,
+            "to": 250,
+            "name": 'extreme',
+            "color": '#FF0000'
+        }
+    ]
+)

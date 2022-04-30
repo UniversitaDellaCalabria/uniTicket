@@ -1,0 +1,297 @@
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+<div class="pb-3">
+
+    <div class="row">
+        <div class="col">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                <div class="card-body">
+
+                <!-- Filtri Statistiche -->
+                <div id="collapseDiv1" class="collapse-div collapse-left-icon" role="tablist">
+                    <div class="collapse-header" id="heading1">
+                        <button
+                            data-toggle="collapse"
+                            data-target="#collapse1"
+                            aria-expanded="false"
+                            aria-controls="collapse1">
+                        {% trans "Filtri sulle statistiche" %}
+                        </button>
+                    </div>
+
+                    <div
+                        id="collapse1"
+                        class="collapse"
+                        role="tabpanel"
+                        aria-labelledby="heading1">
+                        <div class="collapse-body pt-4 pb-0">
+
+                            <form method="post">
+                            {% csrf_token %}
+                            <!-- Date picker -->
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <label for="date_start" style="margin-top: -30px">
+                                            {% trans 'date start' %} {% if date_start %} ({{ date_start }}) {% endif %}
+                                        </label>
+                                        <input
+                                            id="date_start"
+                                            type="date"
+                                            name="date_start"
+                                            placeholder="{% trans 'date start' %}">
+                                    </div>
+                                    <div class="col-sm mt-5 mt-sm-0">
+                                        <label for="date_end" style="margin-top: -30px">
+                                            {% trans 'date end' %} {% if date_end %} ({{ date_end }}) {% endif %}
+                                        </label>
+                                        <input
+                                            id="date_end"
+                                            name="date_end" 
+                                            type="date"
+                                            
+                                            placeholder="{% trans 'date end' %}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Offices -->
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="bootstrap-select-wrapper">
+                                            <label for="office_slug">
+                                                {% trans "Ufficio" %}
+                                            </label>
+                                            <select
+                                                id="office_slug"
+                                                name="office_slug" 
+                                                multiple="true"
+                                                data-multiple-separator=" ">
+                                                {% for office in offices %}
+                                                    <option
+                                                        value="{{ office.slug }}"
+                                                        title=""
+                                                        placeholder=""
+                                                        data-content="<span class='select-pill'><span class='select-pill-text'>{{ office.name }}</span></span>">
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ticket category -->
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="bootstrap-select-wrapper">
+                                            <label for="category_slug">
+                                                {% trans "Categoria del Ticket" %}
+                                            </label>
+                                            <select
+                                                id="category_slug"
+                                                multiple="true"
+                                                name="category_slug"
+                                                data-multiple-separator=" ">
+                                                {% for category in tickets %}
+                                                    <option
+                                                        value="{{ category.slug }}"
+                                                        title=""
+                                                        placeholder=""
+                                                        data-content="<span class='select-pill'><span class='select-pill-text'>{{ category.name }}</span></span>">
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="btn-example pt-3 clearfix">
+                                <button type="submit" class="btn btn-outline-primary float-right btn mb-3" data-focus-mouse="false">
+                                    <svg class="icon icon-xs">
+                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-chart-line"></use>
+                                    </svg> 
+                                    {% trans "Esegui" %}
+                                </button>
+                            </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+    </div>
+</div>
+</div>
+</div>
+
+
+    <div class="row">
+        <div class="col">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                
+                    <div class="card-body">
+                        
+                        <!-- <h6>{% trans "Sommario" %}<h6> -->
+
+                        <!-- Tabella sommario -->
+                        <div class="container">
+                            <div class="row">
+                                <h6 class="text-muted">{% trans "Sommario" %}</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6 p-2"><b>{% trans "Periodo" %}</b>: {{ date_start}} - {{ date_end }} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Settore" %}</b>: {{ structure }} </div>
+                                {% if stats.office_slug %}
+                                    <div class="col-sm-6 p-2"><b>{% trans "Ufficio" %}</b>: {{ stats.office_slug}} </div>
+                                {% endif %}
+                                {% if stats.category_slug %}
+                                    <div class="col-sm-6 p-2"><b>{% trans "Ticket" %}</b>: {{ stats.category_slug}} </div>
+                                {% endif %}
+                                <div class="col-sm-6 p-2"><b>{% trans "Aperti" %}</b>: {{ stats.open}} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Chiusi" %}</b>: {{ stats.closed}} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Chiusi da operatori" %}</b>: {{ stats.closed_by_ops_count}} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Chiusi da utenti" %}</b>: {{ stats.closed_by_users}} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Riaperti" %}</b>: {{ stats.reopened}} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Notifiche" %}</b>: {{ stats.notifications}} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Assegnati" %}</b>: {{ stats.assigned}} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Messaggi per Ticket (media)" %}</b>: {{ stats.avg_msg_to_close}} </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="card-wrapper card-space">
+                            <div class="card card-bg no-after">
+                            <div class="card-body">
+
+                            <div class="row">
+                                <h6 class="text-muted">{% trans "Durate ed intervalli" %}</h6>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-sm-6 p-2"><b>{% trans "Apertura - Assegnazione" %}</b>: {{ stats.avg_pre_processing }} min</div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Assegnazione - Chiusura" %}</b>: {{ stats.avg_time_created_taken }} min</div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Primo tempo di risposta" %}</b>: {{ stats.avg_first_time_op_answer }} min</div>
+                            </div>
+                        </div>
+                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                    <div class="card-body">
+                        <h6 class="text-muted">{% trans "Histogram chart" %}</h6>
+                        {% include "management/statistics_histogram_tickets.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                    <div class="card-body">
+                        <h6 class="text-muted">{% trans "Heatmap chart dei Ticket aperti per fascia oraria" %}</h6>
+                        {% include "management/statistics_heatmap_tickets.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                <div class="card-body">
+
+                <h6 class="text-muted">{% trans "Ticket chiusi per operatore" %}</h6>
+                <div class="row">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">{% trans "Operatore" %}</th>
+                            <th scope="col">{% trans "numero ticket" %}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for op, closed in stats.closed_by_ops.items %}
+                          <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ op }}</td>
+                            <td>{{ closed }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+            
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                <div class="card-body">
+
+                <h6 class="text-muted">{% trans "Ticket creati per utente" %}</h6>
+                <div class="row">
+
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">{% trans "Operatore" %}</th>
+                            <th scope="col">{% trans "numero ticket" %}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for user,opened in stats.open_by_user.items%}
+                          <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ user }}</td>
+                            <td>{{ opened }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+
+                </div>
+            </div>
+            
+            </div>
+        </div>
+    </div>
+
+</div>
+</div>

@@ -28,6 +28,18 @@ TICKET_FIELDS = [
     {'name': 'allegato di test', 'field_type': 'CustomFileField', 'valore': '', 'is_required': False, 'aiuto': 'un allegato di test', 'pre_text': '', 'ordinamento': 100}
 ]
 
+TEST_STRUTTURA = {
+    "id": 10,
+    "name": "Structure 1",
+    "slug": "structure-1",
+    "unique_code": "structure-1",
+    "description": "",
+    "banner": None,
+    "url": None,
+    "is_active": True,
+    "structure_type": None
+}
+
 class uniTicketAPITest(TestCase):
     """
         tests
@@ -55,17 +67,7 @@ class uniTicketAPITest(TestCase):
         )
 
         self.struttura = OrganizationalStructure.objects.create(
-            **{
-                "id": 10,
-                "name": "Structure 1",
-                "slug": "structure-1",
-                "unique_code": "structure-1",
-                "description": "",
-                "banner": None,
-                "url": None,
-                "is_active": True,
-                "structure_type": None
-            }
+            **TEST_STRUTTURA
         )
 
         office = OrganizationalStructureOffice.objects.create(

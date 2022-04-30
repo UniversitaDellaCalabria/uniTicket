@@ -2,7 +2,6 @@ import string
 import random
 
 from django.contrib.auth import get_user_model
-from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -10,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 def create_token(length:int = 128) -> str:
     return ''.join(
-        random.sample(string.hexdigits*12, length)
+        random.sample(string.hexdigits * 12, length)
     )
 
 
@@ -19,7 +18,7 @@ class AuthorizationToken(models.Model):
     Token assigned to users to authenticate in the API
     """
     name = models.CharField(
-        max_length=128, blank=False, unique=True, 
+        max_length=128, blank=False, unique=True,
         help_text=_(
             "Name of the token to easily identify it by its scope"
         )

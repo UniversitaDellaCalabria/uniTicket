@@ -15,6 +15,21 @@ from .utils import (
     user_offices_list,
 )
 
+def is_super_admin(func_to_decorate):
+    """
+    """
+
+    def new_func(*original_args, **original_kwargs):
+        request = original_args[0]
+        if request.user.is_superuser:
+            return func_to_decorate(*original_args, **original_kwargs)
+        return custom_message(
+            request,
+            _("Accesso da admin non consentito")
+        )
+
+    return new_func
+
 
 def is_manager(func_to_decorate):
     """
@@ -90,7 +105,7 @@ def is_the_owner(func_to_decorate):
     return new_func
 
 
-def has_admin_privileges(func_to_decorate):
+def has_ticket_admin_privileges(func_to_decorate):
     """
     Manager or Operator with privileges to manage ticket
     """

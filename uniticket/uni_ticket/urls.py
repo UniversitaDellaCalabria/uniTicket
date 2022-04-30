@@ -7,7 +7,7 @@ from django.views.generic import RedirectView
 
 from uni_ticket.settings import MANAGEMENT_URL_PREFIX
 
-from .decorators import is_manager, is_operator, is_the_owner
+from .decorators import is_manager, is_operator, is_super_admin, is_the_owner
 from .views import datatables, generic, management, manager, operator, user
 
 app_name = "uni_ticket"
@@ -368,6 +368,16 @@ urlpatterns += [
         "{}/edit/".format(task_id),
         login_required(is_manager(management.task_edit)),
         name="manager_edit_task",
+    ),
+    path(
+        "statistics/",
+        login_required(is_super_admin(management.statistics)),
+        name="manager_statistics",
+    ),
+    path(
+        "statistics/<slug:structure_slug>/",
+        login_required(is_manager(management.statistics)),
+        name="manager_statistics",
     ),
     # Offices
     path(

@@ -1,6 +1,7 @@
 import logging
 import json
 import os
+import uuid
 
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -107,8 +108,7 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         validators=[
             RegexValidator(
                 regex="^(?=.*[a-zA-Z])",
-                message=_(
-                    "Il nome deve contenere almeno un carattere alfabetico"),
+                message=_("Il nome deve contenere almeno un carattere alfabetico"),
                 code="invalid_name",
             ),
         ],
@@ -408,7 +408,7 @@ class Ticket(SavedFormContent):
     Ticket
     """
 
-    code = models.CharField(max_length=255, unique=True, db_index=True)
+    code = models.CharField(max_length=255, unique=True, db_index=True, default=uuid.uuid4)
     subject = models.CharField(max_length=255)
     description = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
@@ -430,6 +430,7 @@ class Ticket(SavedFormContent):
         TicketCategoryModule, on_delete=models.PROTECT)
     is_closed = models.BooleanField(default=False)
     closed_date = models.DateTimeField(blank=True, null=True)
+    assigned_date = models.DateTimeField(blank=True, null=True)
     closed_by = models.ForeignKey(
         get_user_model(),
         on_delete=models.SET_NULL,
@@ -450,7 +451,8 @@ class Ticket(SavedFormContent):
     # protocol
     protocol_number = models.CharField(blank=True, default="", max_length=32)
     protocol_date = models.DateTimeField(
-        help_text=_("Quando la richiesta è stato protocollata"), blank=True, null=True
+        help_text=_("Quando la richiesta è stata protocollata"),
+        blank=True, null=True
     )
 
     class Meta:
@@ -463,6 +465,12 @@ class Ticket(SavedFormContent):
         ]
         verbose_name = _("Ticket")
         verbose_name_plural = _("Ticket")
+
+    @property
+    def taken_date(self):
+        return TicketAssignment.objects.filter(
+            ticket=self, taken_date__isnull=False
+        ).values_list("taken_date", flat=True).last()
 
     def serialize(self):
         _offices = [{
@@ -545,11 +553,12 @@ class Ticket(SavedFormContent):
 
     @staticmethod
     def number_limit_reached_by_user(user):
-        """ """
-        if MAX_DAILY_TICKET_PER_USER == 0:
+        # that's for tests override_settings
+        _max = getattr(settings, "MAX_DAILY_TICKET_PER_USER", MAX_DAILY_TICKET_PER_USER)
+        if _max == 0:
             return False
         today_tickets = Ticket.get_user_ticket_per_day(user=user).count()
-        if today_tickets < MAX_DAILY_TICKET_PER_USER:
+        if today_tickets < _max:
             return False
         return True
 
@@ -570,7 +579,7 @@ class Ticket(SavedFormContent):
     def is_open(self, user=None):
         if self.is_closed:
             return False
-        if not self.has_been_taken(user=user):
+        elif not self.has_been_taken(user=user):
             return False
         return True
 
@@ -1063,6 +1072,19 @@ class Ticket(SavedFormContent):
                 offices.append(assignment.office)
         return offices
 
+    def close(self, user:get_user_model(), motivazione:str):
+        self.is_closed = True
+        self.closing_reason = motivazione
+        self.closed_date = timezone.localtime()
+        self.closed_by = user
+        self.save(
+            update_fields=[
+                "is_closed",
+                "closing_reason",
+                "closed_date",
+            ]
+        )
+
     def __str__(self):
         return "{} ({})".format(self.subject, self.code)
 
@@ -1139,6 +1161,12 @@ class TicketAssignment(TimeStampedModel):
                 continue
             ticket_set.add(assignment["ticket__code"])
         return ticket_set
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if not self.ticket.assigned_date:
+            self.ticket.assigned_date = self.taken_date
+            self.ticket.save()
 
     def __str__(self):
         return "{} - {}".format(self.ticket, self.office)

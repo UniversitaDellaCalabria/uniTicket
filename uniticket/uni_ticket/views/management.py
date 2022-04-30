@@ -17,7 +17,7 @@ from django.utils.translation import gettext as _
 from django_form_builder.utils import get_as_dict, get_labeled_errors
 from organizational_area.models import *
 from uni_ticket.decorators import (
-    has_admin_privileges,
+    has_ticket_admin_privileges,
     ticket_assigned_to_structure,
     ticket_is_taken_and_not_closed,
     ticket_is_taken_for_employee,
@@ -28,9 +28,15 @@ from uni_ticket.settings import (
     NEW_TICKET_ASSIGNED_TO_OPERATOR_BODY,
     READONLY_COMPETENCE_OVER_TICKET,
     SIMPLE_USER_SHOW_PRIORITY,
+    STATS_DEFAULT_DATE_START_DELTA_DAYS,
     USER_TICKET_MESSAGE,
+    JS_CHART_CDN_URL,
+    STATS_TIME_SLOTS,
+    STATS_MAX_DAYS,
+    STATS_HEAT_MAP_RANGES
 )
 from uni_ticket.utils import *
+from uni_ticket.statistics import uniTicketStats
 
 
 logger = logging.getLogger(__name__)
@@ -115,7 +121,7 @@ def manage_ticket_url(request, structure_slug):  # pragma: no cover
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_assigned_to_structure
 def manage_ticket_url_detail(
     request, structure_slug, ticket_id, structure, can_manage, ticket
@@ -125,14 +131,14 @@ def manage_ticket_url_detail(
 
     :type structure_slug: String
     :type ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket(from @ticket_assigned_to_structure)
 
     :param structure_slug: slug of structure to manage
     :param ticket_id: code of ticket
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
 
     :return: redirect
@@ -147,7 +153,7 @@ def manage_ticket_url_detail(
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_assigned_to_structure
 def ticket_detail(
     request,
@@ -163,15 +169,15 @@ def ticket_detail(
 
     :type structure_slug: String
     :type ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: slug of structure to manage
     :param ticket_id: code
-    :param structure: OrganizationalStructure (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param office_employee: operator offices queryset (from @is_operator)
     :param ticket: Ticket (from @ticket_assigned_to_structure)
 
@@ -509,7 +515,7 @@ def ticket_dependence_add_url(request, structure_slug, ticket_id):
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -527,15 +533,15 @@ def ticket_dependence_add_new(
 
     :type structure_slug: String
     :type ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -647,7 +653,7 @@ def ticket_dependence_add_new(
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -660,15 +666,15 @@ def ticket_dependence_remove(
     :type structure_slug: String
     :type ticket_id: String
     :type main_ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param main_ticket_id: main ticket code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
 
     :return: redirect
@@ -734,7 +740,7 @@ def ticket_close_url(request, structure_slug, ticket_id):  # pragma: no cover
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -752,15 +758,15 @@ def ticket_close(
 
     :type structure_slug: String
     :type ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -865,7 +871,7 @@ def ticket_close(
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 def ticket_reopen(request, structure_slug, ticket_id, structure, can_manage, ticket):
@@ -874,14 +880,14 @@ def ticket_reopen(request, structure_slug, ticket_id, structure, can_manage, tic
 
     :type structure_slug: String
     :type ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
 
     :return: redirect
@@ -988,7 +994,7 @@ def ticket_competence_add_url(request, structure_slug, ticket_id):  # pragma: no
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -1006,15 +1012,15 @@ def ticket_competence_add_new(
 
     :type structure_slug: String
     :type ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -1045,7 +1051,7 @@ def ticket_competence_add_new(
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -1065,16 +1071,16 @@ def ticket_competence_add_final(
     :type structure_slug: String
     :type ticket_id: String
     :type new_structure_slug: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param new_structure_slug: selected structure slug
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -1274,7 +1280,7 @@ def ticket_message_url(request, structure_slug, ticket_id):  # pragma: no cover
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 # @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 # @ticket_is_taken_and_not_closed
@@ -1292,15 +1298,15 @@ def ticket_message(
 
     :type structure_slug: String
     :type ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -1450,7 +1456,7 @@ def task_add_new_url(request, structure_slug, ticket_id):  # pragma: no cover
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -1468,15 +1474,15 @@ def task_add_new(
 
     :type structure_slug: String
     :type ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -1534,7 +1540,7 @@ def task_add_new(
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -1547,15 +1553,15 @@ def task_remove(
     :type structure_slug: String
     :type ticket_id: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param task_id: task code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
 
     :return: render
@@ -1611,7 +1617,7 @@ def task_detail_url(request, structure_slug, ticket_id, task_id):  # pragma: no 
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_assigned_to_structure
 def task_detail(
     request,
@@ -1629,16 +1635,16 @@ def task_detail(
     :type structure_slug: String
     :type ticket_id: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param task_id: task code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -1674,7 +1680,6 @@ def task_detail(
                 ticket_id=ticket_id,
             )
         if task.is_closed:
-
             # log action
             logger.error(
                 "[{}] {} tried to"
@@ -1768,7 +1773,7 @@ def task_close_url(request, structure_slug, ticket_id, task_id):  # pragma: no c
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -1788,16 +1793,16 @@ def task_close(
     :type structure_slug: String
     :type ticket_id: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param task_id: task code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -1882,7 +1887,7 @@ def task_close(
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -1895,15 +1900,15 @@ def task_reopen(
     :type structure_slug: String
     :type ticket_id: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param task_id: task code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
 
     :return: redirect
@@ -1980,7 +1985,7 @@ def task_edit_url(request, structure_slug, ticket_id, task_id):  # pragma: no co
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -2000,16 +2005,16 @@ def task_edit(
     :type structure_slug: String
     :type ticket_id: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param task_id: task code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -2099,7 +2104,7 @@ def task_edit(
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -2119,16 +2124,16 @@ def task_attachment_delete(
     :type structure_slug: String
     :type ticket_id: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
     :param task_id: task code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -2168,7 +2173,7 @@ def task_attachment_delete(
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 @ticket_assigned_to_structure
 def ticket_taken_by_unassigned_offices(
     request, structure_slug, ticket_id, structure, can_manage, ticket
@@ -2197,7 +2202,7 @@ def ticket_taken_by_unassigned_offices(
 
 
 @login_required
-@has_admin_privileges
+@has_ticket_admin_privileges
 # @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
@@ -2215,15 +2220,15 @@ def ticket_competence_leave(
 
     :type structure_slug: String
     :type ticket_id: String
-    :type structure: OrganizationalStructure (from @has_admin_privileges)
-    :type can_manage: Dictionary (from @has_admin_privileges)
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
     :type ticket: Ticket (from @ticket_assigned_to_structure)
     :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
     :param ticket_id: ticket code
-    :param structure: structure object (from @has_admin_privileges)
-    :param can_manage: if user can manage or can read only (from @has_admin_privileges)
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
     :param ticket: ticket object (from @ticket_assigned_to_structure)
     :param office_employee: operator offices queryset (from @is_operator)
 
@@ -2375,3 +2380,76 @@ def export_detailed_report(request, structure_slug):
             return response
         return custom_message(request, _("Nessun record da esportare"))
     return custom_message(request, _("Forbidden"), 403)
+
+@login_required
+def statistics(request, structure_slug:str = None, structure: OrganizationalStructure = None):
+    """
+    uniTicket general statistics per structure
+    """
+    _default_start = timezone.localtime() - timezone.timedelta(days=STATS_DEFAULT_DATE_START_DELTA_DAYS)
+    date_start = _default_start
+    date_end = timezone.localtime()
+
+    if request.POST.get('date_start'):
+        date_start = timezone.datetime.strptime(request.POST['date_start'], '%Y-%m-%d')
+        date_start = timezone.make_aware(date_start)
+
+    if request.POST.get('date_end'):
+        date_end = timezone.datetime.strptime(request.POST['date_end'], '%Y-%m-%d')
+        date_end = timezone.make_aware(date_end)
+
+    if (date_end - date_start).days > STATS_MAX_DAYS:
+        date_start = _default_start
+        messages.add_message(
+            request, messages.WARNING, 
+            _(
+                "La finestra oraria massima per le statistiche è di {} giorni. "
+                "La data di inizio è stata corretta a {}"
+            ).format(
+                STATS_MAX_DAYS, 
+                _default_start.strftime(settings.DEFAULT_DATE_FORMAT)
+            )
+        )
+
+    _q = dict(
+        date_start = date_start,
+        date_end = date_end,
+        structure_slug = structure_slug
+    )
+    if request.POST.get('office_slug'):
+        _q['office_slug'] = request.POST['office_slug']
+    if request.POST.get('category_slug'):
+        _q['category_slug'] = request.POST['category_slug']
+
+    stats = uniTicketStats(**_q)
+    stats.load()
+    
+    _struct = (
+        structure or 
+        OrganizationalStructure.objects.filter(structure__slug = structure_slug).first()
+    )
+
+    context = {
+        "stats" : stats,
+        "structure" : _struct,
+        "title" : _("Statistiche"),
+        "sub_title" : _("Struttura {} - dal {} al {}").format(
+            structure, 
+            date_start.strftime(settings.DEFAULT_DATE_FORMAT), 
+            date_end.strftime(settings.DEFAULT_DATE_FORMAT)
+        ),
+        "date_start": date_start.strftime(settings.DEFAULT_DATE_FORMAT),
+        "date_end": date_end.strftime(settings.DEFAULT_DATE_FORMAT),
+        "JS_CHART_CDN_URL": JS_CHART_CDN_URL,
+        "ticket_per_day": tuple(stats.ticket_per_day.keys()),
+        "time_slots": STATS_TIME_SLOTS,
+        "ticket" : request.POST.get('category_slug'),
+        "office" : request.POST.get('office_slug'),
+        "STATS_HEAT_MAP_RANGES": json.dumps(STATS_HEAT_MAP_RANGES, indent=2)
+    }
+    if _struct:
+        context['offices'] = _struct.get_offices()
+        context['operators'] = _struct.get_employees()
+        context["tickets"] = TicketCategory.objects.filter(organizational_structure=_struct)
+
+    return render(request, "management/statistics.html", context)

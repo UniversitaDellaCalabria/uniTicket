@@ -13,6 +13,7 @@ pyyaml>=6.0,<7.0
 pillow>=8.2.0
 python-magic>=0.4.15
 pytz>=2019.3
+pydantic >= 1.9.0
 
 # datatables ajax
 git+https://github.com/peppelinux/django-datatables-ajax.git

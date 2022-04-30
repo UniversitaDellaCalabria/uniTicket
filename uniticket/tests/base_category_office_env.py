@@ -12,6 +12,7 @@ from . base import BaseTest
 
 logger = logging.getLogger('my_logger')
 
+
 class BaseCategoryOfficeEnvironment(BaseTest):
 
     def add_new_category(self, cat_name, structure_slug,

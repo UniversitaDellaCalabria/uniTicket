@@ -556,7 +556,6 @@ class TicketAddNew(View):
             current_user=request.user,
         )
         self.context_data["form"] = self.form
-
         if self.form.is_valid():
             # add static static fields to fields to pop
             # these fields are useful only in frontend
@@ -1462,16 +1461,7 @@ class TicketClose(View):
         self.context_data['form'] = self.form
         if self.form.is_valid():
             motivazione = self.form.cleaned_data["note"]
-            self.ticket.is_closed = True
-            self.ticket.closing_reason = motivazione
-            self.ticket.closed_date = timezone.localtime()
-            self.ticket.save(
-                update_fields=[
-                    "is_closed",
-                    "closing_reason",
-                    "closed_date",
-                ]
-            )
+            self.ticket.close(user= request.user, motivazione=motivazione)
             self.ticket.update_log(
                 user=request.user,
                 note=_("Chiusura richiesta da utente proprietario: {}").format(

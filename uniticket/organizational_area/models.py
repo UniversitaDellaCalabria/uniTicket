@@ -70,12 +70,25 @@ class OrganizationalStructure(models.Model):
         verbose_name_plural = _("Organizational Structures")
 
     # OnCreate -> signals.py per creazione ufficio di Default
+
+    def get_employees(self, **kwargs):
+        offices_pks = self.get_offices().values_list('pk', flat=True)
+        return OrganizationalStructureOfficeEmployee.objects.filter(
+            office__pk__in=offices_pks, **kwargs
+        )
+
+    def get_offices(self, **kwargs):
+        return OrganizationalStructureOffice.objects.filter(
+            organizational_structure=self, **kwargs
+        )
+
     def get_default_office(self):
         """
         Returns the default structure office
         """
-        office = OrganizationalStructureOffice.objects.filter(organizational_structure=self,
-                                                              is_default=True).first()
+        office = OrganizationalStructureOffice.objects.filter(
+            organizational_structure=self,
+            is_default=True).first()
         if office: return office
 
     def get_folder(self):
@@ -189,8 +202,10 @@ class OrganizationalStructureOffice(models.Model):
     name = models.CharField(max_length=128, null=False, blank=False)
     slug = models.SlugField(max_length=255,
                             blank=False, null=False)
-    organizational_structure = models.ForeignKey(OrganizationalStructure,
-                                                 on_delete=models.CASCADE)
+    organizational_structure = models.ForeignKey(
+        OrganizationalStructure,
+        on_delete=models.CASCADE
+    )
     description = models.TextField(max_length=1024, null=True,blank=True)
     is_default = models.BooleanField(default=False)
     is_private = models.BooleanField(default=False)
@@ -250,11 +265,13 @@ class OrganizationalStructureOfficeEmployee(models.Model):
         """
         osoe = OrganizationalStructureOfficeEmployee
         office_employees = osoe.objects.filter(office=office,
-                                               employee__is_active=True).order_by('?')
+                                               employee__is_active=True)
         if not office_employees:
-            office_employees = osoe.objects.filter(office__name=DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
-                                                   office__organizational_structure=office.organizational_structure,
-                                                   employee__is_active=True).order_by('?')
+            office_employees = osoe.objects.filter(
+                office__name=DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+                office__organizational_structure=office.organizational_structure,
+                employee__is_active=True
+            )
         random_office_operator = office_employees.first()
         return random_office_operator.employee
 

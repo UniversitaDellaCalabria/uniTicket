@@ -27,13 +27,17 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
 
     def create_ticket(self, subject, attachment,
                       structure_slug, category):
-        # Create new ticket
+        """
+         Create new ticket
+         this may fail silently -> ticket object would be None
+        """
+        
         # New ticket preload (select category)
         response = self.client.get(reverse('uni_ticket:new_ticket_preload',
                                            kwargs={'structure_slug': structure_slug,}),
                                    follow=True)
-        assert response.status_code == 200
-        assert category in response.context['categorie']
+        self.assertTrue(response.status_code == 200)
+        self.assertTrue(category in response.context['categorie'])
 
         # Add ticket (base form with an attachment)
         params = {'ticket_subject': subject,
@@ -46,7 +50,7 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
                                                     'category_slug': category.slug}),
                                     params,
                                     follow=True)
-        assert response.status_code == 200
+        self.assertTrue(response.status_code == 200)
         ticket = Ticket.objects.filter(subject=subject).first()
         return ticket
 

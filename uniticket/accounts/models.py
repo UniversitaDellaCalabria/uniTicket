@@ -38,4 +38,4 @@ class User(AbstractUser):
         verbose_name_plural = _("Utenti")
 
     def __str__(self):
-        return '{} {}'.format(self.last_name, self.first_name)
+        return f'{self.last_name} {self.first_name}'
