@@ -50,7 +50,7 @@
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
                   {% if day == "Sunday" %} 
-                    {% for num in serie %} {{ num }}, {% endfor %}
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
             ]
@@ -60,7 +60,7 @@
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
                   {% if day == "Saturday" %} 
-                    {% for num in serie %} {{ num }}, {% endfor %}
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
             ]
@@ -70,7 +70,7 @@
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
                   {% if day == "Friday" %} 
-                    {% for num in serie %} {{ num }}, {% endfor %}
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
             ]
@@ -80,7 +80,7 @@
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
                   {% if day == "Thursday" %} 
-                    {% for num in serie %} {{ num }}, {% endfor %}
+                    {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
             ]
@@ -90,7 +90,7 @@
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
                   {% if day == "Wednesday" %} 
-                    {% for num in serie %} {{ num }}, {% endfor %}
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
             ]
@@ -99,8 +99,8 @@
             name: '{% trans "Martedi" %}',
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
-                  {% if day == "Tuesday" %} 
-                    {% for num in serie %} {{ num }}, {% endfor %}
+                  {% if day == "Tuesday" %}
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
             ]
@@ -110,7 +110,7 @@
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
                   {% if day == "Monday" %} 
-                    {% for num in serie %} {{ num }}, {% endfor %}
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
             ]
@@ -126,8 +126,11 @@
         plotOptions: {
           heatmap: {
             shadeIntensity: 0.5,
-            radius: 0,
+            radius: 1,
             useFillColorAsStroke: true,
+            heatmap: {
+                distributed: true
+            },
             colorScale: {
               ranges: {{ STATS_HEAT_MAP_RANGES|safe }}
             }
@@ -135,6 +138,12 @@
         },
         dataLabels: {
           enabled: true
+        },
+        xaxis: {
+          type: 'category',
+          categories:  [
+              {% for slot, range in time_slots.items %}"{% trans 'fascia' %} {{ slot }}",{% endfor %}
+          ]
         },
         stroke: {
           width: 1

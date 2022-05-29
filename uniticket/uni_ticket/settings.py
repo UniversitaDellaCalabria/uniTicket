@@ -704,13 +704,13 @@ STATS_HEAT_MAP_RANGES = getattr(settings, "STATS_HEAT_MAP_RANGES",
     [
         {
             "from": 0,
-            "to": 5,
+            "to": 2,
             "name": 'low',
             "color": '#00A100'
         },
         {
-            "from": 6,
-            "to": 20,
+            "from": 3,
+            "to": 10,
             "name": 'medium',
             "color": '#128FD9'
         },
