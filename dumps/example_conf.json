@@ -3,8 +3,8 @@
   "model": "accounts.user",
   "pk": 3,
   "fields": {
-    "password": "pbkdf2_sha256$216000$XCXvx5XAelC1$kfp8opeg3CI96FrD9F4KXRKqavbfPcmS06k47kYM5aI=",
-    "last_login": "2021-02-10T14:38:44.031Z",
+    "password": "pbkdf2_sha256$260000$fkBI3fKKkrtJs8Ax4ise5d$fOlgrKJUyBiNi7nYD0iefEvxm5tnIu5WL01+hQ0lK7c=",
+    "last_login": "2022-05-28T15:46:00.617Z",
     "is_superuser": true,
     "username": "user1",
     "is_staff": true,
@@ -44,16 +44,38 @@
   }
 },
 {
+  "model": "accounts.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$DQCMVVkAeLXlXlG723XvOz$nww9wmGT4Ho9fT67u2ytNAcvuBC5n4aKsrFQhxNaEcU=",
+    "last_login": "2022-05-28T15:55:27.424Z",
+    "is_superuser": false,
+    "username": "utente",
+    "is_staff": false,
+    "date_joined": "2022-05-28T15:54:23.819Z",
+    "is_active": true,
+    "email": "ciao@me.it",
+    "identificativo_dipendente": null,
+    "identificativo_utente": null,
+    "first_name": "mario",
+    "last_name": "rossi",
+    "taxpayer_id": null,
+    "email_notify": true,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
   "model": "uni_ticket.ticketcategory",
   "pk": 3,
   "fields": {
     "date_start": null,
     "date_end": null,
     "created": "2020-05-08T07:30:02.759Z",
-    "modified": "2020-05-08T07:30:02.759Z",
-    "name": "Category 1",
-    "slug": "category-1",
-    "description": "Category 1 description",
+    "modified": "2022-04-11T11:02:23.178Z",
+    "name": "Modello di richiesta di test",
+    "slug": "modello-di-richiesta-di-test",
+    "description": "Descrizione del modulo e delle sue finalità",
     "organizational_structure": 10,
     "organizational_office": 37,
     "is_active": true,
@@ -65,8 +87,39 @@
     "allow_employee": true,
     "is_notification": false,
     "confirm_message_text": "",
+    "footer_text": "",
     "receive_email": false,
     "protocol_required": false,
+    "user_multiple_open_tickets": true,
+    "allowed_users": []
+  }
+},
+{
+  "model": "uni_ticket.ticketcategory",
+  "pk": 4,
+  "fields": {
+    "date_start": null,
+    "date_end": null,
+    "created": "2022-05-28T15:55:57.600Z",
+    "modified": "2022-05-28T15:55:57.600Z",
+    "name": "tipologia semplice",
+    "slug": "tipologia-semplice",
+    "description": "tipologia semplice",
+    "organizational_structure": 10,
+    "organizational_office": 36,
+    "is_active": true,
+    "not_available_message": null,
+    "show_heading_text": true,
+    "allow_anonymous": false,
+    "allow_guest": true,
+    "allow_user": true,
+    "allow_employee": true,
+    "is_notification": false,
+    "confirm_message_text": "",
+    "footer_text": "",
+    "receive_email": false,
+    "protocol_required": false,
+    "user_multiple_open_tickets": true,
     "allowed_users": []
   }
 },
@@ -77,6 +130,36 @@
     "name": "Module 1",
     "ticket_category": 3,
     "created": "2020-05-08T07:30:10.034Z",
+    "is_active": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 4,
+  "fields": {
+    "name": "ciao",
+    "ticket_category": 3,
+    "created": "2022-04-06T17:00:57.139Z",
+    "is_active": false
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 5,
+  "fields": {
+    "name": "Modulo esteso",
+    "ticket_category": 3,
+    "created": "2022-04-11T11:02:38.418Z",
+    "is_active": true
+  }
+},
+{
+  "model": "uni_ticket.ticketcategorymodule",
+  "pk": 6,
+  "fields": {
+    "name": "tipologia semplice",
+    "ticket_category": 4,
+    "created": "2022-05-28T15:56:37.067Z",
     "is_active": true
   }
 },
@@ -95,6 +178,202 @@
   }
 },
 {
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 2,
+  "fields": {
+    "name": "allegato di test",
+    "field_type": "CustomFileField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "un allegato di test",
+    "pre_text": "",
+    "ordinamento": 100,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 3,
+  "fields": {
+    "name": "selezione di una scelta",
+    "field_type": "CheckBoxField",
+    "valore": "\"opzione 1;opzione 2;opzione 3\"",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 50,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 4,
+  "fields": {
+    "name": "data di riferimento",
+    "field_type": "BaseDateField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 10,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 5,
+  "fields": {
+    "name": "data e ora con campi separati",
+    "field_type": "BaseDateTimeField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 40,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 6,
+  "fields": {
+    "name": "data e ora con inserimento singolo",
+    "field_type": "DateStartEndComplexField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 30,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 7,
+  "fields": {
+    "name": "email",
+    "field_type": "CustomEmailField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 20,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 8,
+  "fields": {
+    "name": "indirizzo ip",
+    "field_type": "CustomIPField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 81,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 9,
+  "fields": {
+    "name": "MAC Address",
+    "field_type": "CustomMACField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 80,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 10,
+  "fields": {
+    "name": "numero con virgola positivo",
+    "field_type": "PositiveFloatField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 70,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 11,
+  "fields": {
+    "name": "numero intero positivo",
+    "field_type": "PositiveIntegerField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 75,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 12,
+  "fields": {
+    "name": "testo ad inserimento libero",
+    "field_type": "CustomCharField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 85,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 13,
+  "fields": {
+    "name": "testo lungo ad inserimento libero",
+    "field_type": "TextAreaField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 90,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 14,
+  "fields": {
+    "name": "URL",
+    "field_type": "CustomURLField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 12,
+    "category_module": 5
+  }
+},
+{
+  "model": "uni_ticket.ticketcategoryinputlist",
+  "pk": 15,
+  "fields": {
+    "name": "email",
+    "field_type": "CustomEmailField",
+    "valore": "",
+    "is_required": true,
+    "aiuto": "",
+    "pre_text": "",
+    "ordinamento": 0,
+    "category_module": 6
+  }
+},
+{
   "model": "uni_ticket.ticket",
   "pk": 5,
   "fields": {
@@ -109,6 +388,282 @@
     "input_module": 3,
     "is_closed": false,
     "closed_date": null,
+    "assigned_date": null,
+    "closed_by": null,
+    "closing_reason": null,
+    "closing_status": null,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 16,
+  "fields": {
+    "modulo_compilato": "{\"custom_field_multi-choice\": [\"value1\"]}",
+    "code": "35c1bf185fd64fea854cb1f56db2604a",
+    "subject": "that-thing",
+    "description": "blah blah",
+    "created": "2022-04-02T22:31:37.715Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 3,
+    "is_closed": true,
+    "closed_date": "2022-04-10T21:53:14.716Z",
+    "assigned_date": null,
+    "closed_by": null,
+    "closing_reason": "nessuna",
+    "closing_status": null,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 17,
+  "fields": {
+    "modulo_compilato": "{\"custom_field_multi-choice\": [\"value1\"]}",
+    "code": "713622ec9e1549129cfbd736c8d08339",
+    "subject": "that-thing",
+    "description": "blah blah",
+    "created": "2022-04-02T22:33:20.187Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 3,
+    "is_closed": true,
+    "closed_date": "2022-04-10T21:59:44.895Z",
+    "assigned_date": null,
+    "closed_by": null,
+    "closing_reason": "nessuna",
+    "closing_status": null,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 18,
+  "fields": {
+    "modulo_compilato": "{\"custom_field_multi-choice\": [\"value1\"]}",
+    "code": "83014df81a1049f3819cad6776d8cb2d",
+    "subject": "that-thing",
+    "description": "blah blah",
+    "created": "2022-04-02T22:51:58.214Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 3,
+    "is_closed": false,
+    "closed_date": null,
+    "assigned_date": null,
+    "closed_by": null,
+    "closing_reason": null,
+    "closing_status": null,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 19,
+  "fields": {
+    "modulo_compilato": "{\"custom_field_multi-choice\": [\"value1\"]}",
+    "code": "f87c4880324944c9adeb51ddba55f656",
+    "subject": "that-thing",
+    "description": "blah blah",
+    "created": "2022-04-02T22:52:51.483Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 3,
+    "is_closed": true,
+    "closed_date": "2022-05-28T13:49:04.263Z",
+    "assigned_date": "2022-05-28T13:17:56.443Z",
+    "closed_by": 3,
+    "closing_reason": "dsf",
+    "closing_status": 1,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 20,
+  "fields": {
+    "modulo_compilato": "{\"custom_field_multi-choice\": [\"value1\"]}",
+    "code": "49e0fe61add04e70aa81858d558bd111",
+    "subject": "that-thing",
+    "description": "blah blah",
+    "created": "2022-04-02T22:53:28.673Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 3,
+    "is_closed": true,
+    "closed_date": "2022-04-03T12:41:48.936Z",
+    "assigned_date": null,
+    "closed_by": null,
+    "closing_reason": "ciao",
+    "closing_status": null,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 21,
+  "fields": {
+    "modulo_compilato": "{\"custom_field_multi-choice\": [\"value1\"]}",
+    "code": "0dfb628063924a2db02c7e0601e66ffb",
+    "subject": "ciao",
+    "description": "olaaaaaa",
+    "created": "2022-04-02T23:26:51.854Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 3,
+    "is_closed": false,
+    "closed_date": null,
+    "assigned_date": null,
+    "closed_by": null,
+    "closing_reason": null,
+    "closing_status": null,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 22,
+  "fields": {
+    "modulo_compilato": "{\"custom_field_multi-choice\": [\"value2\"]}",
+    "code": "dce6915f0b0645c3933b1c8222ed30eb",
+    "subject": "nome test",
+    "description": "descrizione 1",
+    "created": "2022-04-06T16:02:52.456Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 3,
+    "is_closed": false,
+    "closed_date": null,
+    "assigned_date": null,
+    "closed_by": null,
+    "closing_reason": null,
+    "closing_status": null,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 23,
+  "fields": {
+    "modulo_compilato": "{\"custom_field_multi-choice\": [\"value2\"]}",
+    "code": "ee147c95a70b48a8b13106603636f445",
+    "subject": "speriamo di no",
+    "description": "descrizione 345345",
+    "created": "2022-04-06T16:42:26.820Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 3,
+    "is_closed": true,
+    "closed_date": "2022-05-28T12:25:54.304Z",
+    "assigned_date": null,
+    "closed_by": 3,
+    "closing_reason": "non va bene",
+    "closing_status": -1,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 24,
+  "fields": {
+    "modulo_compilato": "{\"custom_field_multi-choice\": [\"value2\"]}",
+    "code": "9f27e6bd8dc84208a2632a4a8c6ff1ca",
+    "subject": "speriamo di no",
+    "description": "descrizione 345345",
+    "created": "2022-04-06T20:17:09.848Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 3,
+    "is_closed": false,
+    "closed_date": null,
+    "assigned_date": null,
+    "closed_by": null,
+    "closing_reason": null,
+    "closing_status": null,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 25,
+  "fields": {
+    "modulo_compilato": "{\"data_di_riferimento\": \"11/05/2022\", \"url\": \"http://127.0.0.1:8000/oidc/rp/\", \"email\": \"ciao@sad.it\", \"data_e_ora_con_inserimento_singolo_data_inizio_dyn\": \"05/05/2022\", \"data_e_ora_con_inserimento_singolo_data_fine_dyn\": \"21/05/2022\", \"data_e_ora_con_campi_separati_data_dyn\": \"28/05/2022\", \"data_e_ora_con_campi_separati_ore_dyn\": \"9\", \"data_e_ora_con_campi_separati_minuti_dyn\": \"13\", \"selezione_di_una_scelta\": \"on\", \"numero_con_virgola_positivo\": \"24.2\", \"numero_intero_positivo\": \"34\", \"mac_address\": \"02:42:c9:73:5a:d6\", \"indirizzo_ip\": \"192.168.5.4\", \"testo_ad_inserimento_libero\": \"sdfsdf\", \"testo_lungo_ad_inserimento_libero\": \"sdfadfs\", \"csrfmiddlewaretoken\": \"GjQ8HVN7Q1TsuH5rNCwBu9jdpI3Z0W4wUmuqLbOGn9ZSN7dKzoXtPu8LLUzewK69\", \"allegati\": {\"allegato_di_test\": \"bitmap.png\"}}",
+    "code": "0c9197b9709945a5b7893a53ff17fe03",
+    "subject": "Modello di richiesta di test",
+    "description": "Descrizione del modulo e delle sue finalità",
+    "created": "2022-05-28T15:47:52.312Z",
+    "created_by": 3,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 5,
+    "is_closed": false,
+    "closed_date": null,
+    "assigned_date": null,
+    "closed_by": null,
+    "closing_reason": null,
+    "closing_status": null,
+    "priority": 0,
+    "is_notification": false,
+    "protocol_number": "",
+    "protocol_date": null
+  }
+},
+{
+  "model": "uni_ticket.ticket",
+  "pk": 26,
+  "fields": {
+    "modulo_compilato": "eJyrVkrNTczMUbJSUErOTMx3KE5M0cssUdIBcouL0nIzU1JyUssTi1JL8rNT80CqikLdwwzDXdyzw6LS3ZyyXAxCMyIdM/yDsqOMKwNNI82yM8JSPMzccgsjfRLzfUq9KiMCjAqyChIzQyxKCnwsLJRqAbbRJqQ=",
+    "code": "c797c2e5197247ec98013d631b0f077e",
+    "subject": "tipologia semplice",
+    "description": "tipologia semplice",
+    "created": "2022-05-28T15:57:27.124Z",
+    "created_by": 5,
+    "compiled": null,
+    "compiled_by": null,
+    "input_module": 6,
+    "is_closed": false,
+    "closed_date": null,
+    "assigned_date": null,
     "closed_by": null,
     "closing_reason": null,
     "closing_status": null,
@@ -126,6 +681,182 @@
     "modified": "2020-05-08T07:39:05.208Z",
     "ticket": 5,
     "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": null,
+    "taken_by": null,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 15,
+  "fields": {
+    "created": "2022-04-02T22:31:37.729Z",
+    "modified": "2022-04-02T22:31:37.729Z",
+    "ticket": 16,
+    "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": null,
+    "taken_by": null,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 16,
+  "fields": {
+    "created": "2022-04-02T22:33:20.200Z",
+    "modified": "2022-04-02T22:33:20.200Z",
+    "ticket": 17,
+    "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": null,
+    "taken_by": null,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 17,
+  "fields": {
+    "created": "2022-04-02T22:51:58.249Z",
+    "modified": "2022-04-02T22:51:58.249Z",
+    "ticket": 18,
+    "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": "2022-05-28T12:25:28.267Z",
+    "taken_by": 3,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 18,
+  "fields": {
+    "created": "2022-04-02T22:52:51.497Z",
+    "modified": "2022-04-02T22:52:51.497Z",
+    "ticket": 19,
+    "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": "2022-05-28T13:17:56.443Z",
+    "taken_by": 3,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 19,
+  "fields": {
+    "created": "2022-04-02T22:53:28.684Z",
+    "modified": "2022-04-02T22:53:28.684Z",
+    "ticket": 20,
+    "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": null,
+    "taken_by": null,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 20,
+  "fields": {
+    "created": "2022-04-02T23:26:51.869Z",
+    "modified": "2022-04-02T23:26:51.869Z",
+    "ticket": 21,
+    "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": null,
+    "taken_by": null,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 21,
+  "fields": {
+    "created": "2022-04-06T16:02:52.471Z",
+    "modified": "2022-04-06T16:02:52.471Z",
+    "ticket": 22,
+    "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": null,
+    "taken_by": null,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 22,
+  "fields": {
+    "created": "2022-04-06T16:42:26.834Z",
+    "modified": "2022-04-06T16:42:26.834Z",
+    "ticket": 23,
+    "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": "2022-05-28T11:13:38.830Z",
+    "taken_by": 3,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 23,
+  "fields": {
+    "created": "2022-04-06T20:17:09.863Z",
+    "modified": "2022-04-06T20:17:43.970Z",
+    "ticket": 24,
+    "office": 37,
+    "note": null,
+    "assigned_by": 3,
+    "taken_date": "2022-04-06T20:17:43.970Z",
+    "taken_by": 4,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 24,
+  "fields": {
+    "created": "2022-05-28T15:47:52.353Z",
+    "modified": "2022-05-28T15:47:52.353Z",
+    "ticket": 25,
+    "office": 37,
+    "note": null,
+    "assigned_by": null,
+    "taken_date": null,
+    "taken_by": null,
+    "follow": true,
+    "readonly": false
+  }
+},
+{
+  "model": "uni_ticket.ticketassignment",
+  "pk": 25,
+  "fields": {
+    "created": "2022-05-28T15:57:27.150Z",
+    "modified": "2022-05-28T15:57:27.150Z",
+    "ticket": 26,
+    "office": 36,
     "note": null,
     "assigned_by": null,
     "taken_date": null,
@@ -215,6 +946,32 @@
   "fields": {
     "user": 3,
     "organizational_structure": 10
+  }
+},
+{
+  "model": "api_rest.authorizationtoken",
+  "pk": 1,
+  "fields": {
+    "name": "Token test",
+    "user": 3,
+    "value": "`%7^1=\":^`8(.-02[~22]ABD=bf\\]4,'>!{D'/&EA7%?99e{[\"a./F4e'|-#c1<3",
+    "active_until": "2022-12-29T16:56:06Z",
+    "note": "",
+    "created": "2022-04-13T15:56:11.200Z",
+    "modified": "2022-04-13T15:56:11.200Z"
+  }
+},
+{
+  "model": "api_rest.authorizationtoken",
+  "pk": 2,
+  "fields": {
+    "name": "sdfsdfsdf",
+    "user": 3,
+    "value": "f8fEebaBD4e0d9aa3Cec80B2E6bDC8f8C63da2b6C1F09620FAb84C51421cC5E702F2B0E135eDABf2Fdb4F9BD1c3d37997274EcE61FDB0dcda7Cab49eB9e615db",
+    "active_until": "2022-04-26T21:11:09Z",
+    "note": "",
+    "created": "2022-04-13T21:11:15.280Z",
+    "modified": "2022-04-13T21:11:23.603Z"
   }
 }
 ]

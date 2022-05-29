@@ -1,37 +1,24 @@
-version: '2.0'
-services:
-  #db:
-    #image: mariadb
-    #container_name: uniticket-db
-    #restart: always
-    #environment:
-      #MYSQL_DATABASE: uniticketdb
-      #MYSQL_USER: uniticket
-      #MYSQL_PASSWORD: changeme
-      #MYSQL_ROOT_PASSWORD: mypass
+version: "3"
 
-  uniticket:
-    image: unical/uniticket
-    container_name: uniticket
-    restart: always
-    #environment:
-      #SQL_HOST: uniticket-db
-      #SQL_USER: uniticket
-      #SQL_PASSWORD: changeme
-      #SQL_DATABASE: uniticketdb
-      #WAIT_HOSTS: uniticket-db:3306
-    command: >
-      sh -c "/wait &&
-             python manage.py test --noinput &&
-             python manage.py migrate --noinput &&
-             python manage.py collectstatic --noinput &&
-             python manage.py shell -c \"from django.contrib.auth import get_user_model; get_user_model().objects.filter(username='admin').exists() or get_user_model().objects.create_superuser('admin', 'admin@example.com', 'adminpass')\" &&
-             python manage.py runserver 0.0.0.0:8000"
+services:
+  uniticket.local:
+    image: ghcr.io/universitadellacalabria/uniticket:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    expose:
+      - 8000
     ports:
-      # HOST:CONTAINER
-      - "8000:8000/tcp"
-      - "80:8000/tcp"
-    #links:
-      #- db:uniticket-db
-    #depends_on:
-      #- db
+      - "8000:8000"
+    volumes:
+      - ./examples-docker:/django-project
+    networks:
+      - uniticket
+    command: |
+        bash -c "cd /django-project/ &&
+        python3 manage.py migrate &&
+        python3 manage.py loaddata dumps/example_conf.json &&
+        python3 manage.py runserver 0.0.0.0:8000"
+
+networks:
+  uniticket:

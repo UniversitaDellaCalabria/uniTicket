@@ -28,36 +28,11 @@ Principali caratteristiche:
 [Documentazione ufficiale](https://uniticket.readthedocs.io/it/latest/index.html) su **readthedocs** per installazione e utilizzo del software.
 
 
-uniTicket
----------
-
-Django **Unified Ticket System** Is a support software that let us manage tickets and generic submission modules with our user.
-Featurset:
-
-- Multi Tenant. Multiple office and organizational areas support in a single, unified, system;
-- Possibility to transfer and share tickets between different office/areas;
-- Possibility to add data consent or agreement submission before a ticket being created;
-- Ticket interdependencies;
-- Todo list for every ticket, to follow user to do things before submission;
-- Custom fields, custom complex field, custom multi row (table) fields with configurable fancy widgets;
-- Pdf and p7m signed fields, with validation on data integrity (attachment);
-- Chat and videoconference for operators and users;
-- Report summary via email about pending tickets to office's operators;
-- datatables ajax server side processing, very good performances on mobile device;
-- Bootstrap Italia responsive template for a better mobile experience;
-- SAML2 SSO integration (pySAML2);
-
-Consult the [Official Documentation](https://uniticket.readthedocs.io/it/latest/index.html) at readthedocs for usage specifications and advanced topics.
-
-Gallery
--------
-
-![Home](gallery/user_dashboard.png)
-_**Image 1:** Example of user dashboard_
-
-![Home](gallery/manager_dashboard.png)
-_**Image 2:** Example of manager dashboard_
-
+Dump example data
+-----------------
+````
+./manage.py dumpdata -e auth -e contenttypes -e sessions --indent 2 -e admin.logentry > ../dumps/example_conf.json
+````
 
 Load example data
 -----------------
@@ -68,6 +43,69 @@ Load example data
 
 - Manager user (username: user1 / password: secret1!)
 - Operator user (username: user2 / password: secret2!)
+- Normal user (username: utente / password secret1!)
+
+## Docker
+
+### Docker image
+
+````
+docker pull ghcr.io/UniversitaDellaCalabria/uniTicket:latest
+````
+
+### Docker compose
+
+Install Docker using the packages distributed from the official website and the following tools.
+````
+sudo apt install jq
+sudo pip install docker-compose
+````
+
+Please do your customizations in each _settingslocal.py_ files and/or in the example dumps json file.
+
+We can do that with the following steps:
+
+- Execute `bash docker-prepare.sh`
+- Customize the example data and settings contained in `examples-docker/` if needed (not necessary for a quick demo)
+
+Run the stack
+````
+sudo docker-compose up
+````
+
+Configure a proper DNS resolution for trust-anchor.org. In GNU/Linux we can configure it in `/etc/hosts`:
+````
+127.0.0.1   localhost  trust-anchor.org relying-party.org cie-provider.org
+````
+
+Point your web browser to `http://relying-party.org:8001/oidc/rp/landing` and do your first oidc authentication.
+
+
+## Usage
+
+The demo proposes a small federation composed by the following entities:
+
+ - Federation Authority, acts as trust anchor and onboarding system. It's available at `http://127.0.0.1:8000/`. It has also an embedded Spid provider and a embedded Relying Party available at `/oidc/rp/landing`.
+ - OpenID Relying Party, available at `http://127.0.0.1:8001/`
+ - CIE OpenID Provider, available at `http://127.0.0.1:8002/`
+
+In the docker example we have only the Federation Authority with an embedded SPID OP and a RP.
+
+Examples Users and Passwords:
+
+ - __admin__ __oidcadmin__
+ - __user__ __oidcuser__
+
+
+Gallery
+-------
+
+![Home](gallery/user_dashboard.png)
+_**Image 1:** Example of user dashboard_
+
+![Home](gallery/manager_dashboard.png)
+_**Image 2:** Example of manager dashboard_
+
 
 Production Setup
 ----------------

@@ -35,3 +35,5 @@ uniticket/tmp/*
 
 uniticket/uni_ticket_project/settingslocal.py
 uniticket/uni_ticket_project_cache/*
+
+examples-docker/*

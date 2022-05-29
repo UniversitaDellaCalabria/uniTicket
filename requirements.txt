@@ -29,8 +29,8 @@ libsass>=0.19.4
 django-sass-processor>=1.0.0
 
 # Bootstrap Italia + Unical template
-design-django-theme
-django-unical-bootstrap-italia
+design-django-theme>=1.6.2
+django-unical-bootstrap-italia>=1.0.5
 
 # Django REST
 djangorestframework>=3.11.2
@@ -51,6 +51,4 @@ WeasyPrint==52.4
 # git+https://github.com/peppelinux/pyWSArchiPRO.git
 
 # production
-
-# settings dependencies
 # mysqlclient>=1.4.6
