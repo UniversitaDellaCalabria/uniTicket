@@ -683,9 +683,6 @@ STATS_DEFAULT_DATE_START_DELTA_DAYS = getattr(
 JS_CHART_CDN_URL = getattr(
     settings, "JS_CHART_CDN_URL", "https://cdn.jsdelivr.net/npm/apexcharts"
 )
-STATS_DEFAULT_DAYS_DELTA = getattr(
-    settings, "STATS_DEFAULT_DAYS_DELTA", 15
-)
 STATS_TIME_SLOTS = getattr(
     settings,
     "STATS_TIME_SLOTS",    

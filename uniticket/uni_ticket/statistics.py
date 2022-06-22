@@ -9,7 +9,7 @@ from uni_ticket.models import Ticket, TicketReply
 
 from typing import Union
 from organizational_area.models import OrganizationalStructureOfficeEmployee
-from uni_ticket.settings import STATS_TIME_SLOTS, STATS_DEFAULT_DAYS_DELTA
+from uni_ticket.settings import STATS_TIME_SLOTS, STATS_DEFAULT_DATE_START_DELTA_DAYS
 
 
 class StatsArgsModel(BaseModel):
@@ -43,7 +43,7 @@ class uniTicketStats:
 
         self.date_end = date_end or timezone.localtime() + timezone.timedelta(hours = 1)
         # if not date_start it will go back for 15 days by default
-        self.date_start = self.date_end - timezone.timedelta(days = STATS_DEFAULT_DAYS_DELTA)
+        self.date_start = self.date_end - timezone.timedelta(days = STATS_DEFAULT_DATE_START_DELTA_DAYS)
 
         self.structure_slug = structure_slug
         self.office_slug = office_slug

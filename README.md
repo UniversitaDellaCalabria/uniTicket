@@ -74,6 +74,11 @@ sudo docker-compose up
 Point your web browser to `http://localhost:8000/` and do your first oidc authentication.
 
 
+## Tests
+````
+./manage.py test --settings tests.settings
+````
+
 Gallery
 -------
 
