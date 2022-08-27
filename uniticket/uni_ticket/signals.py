@@ -45,6 +45,7 @@ def delete_single_attachment(sender, instance, *args, **kwargs):
 
 @receiver(pre_save, sender=OrganizationalStructureWSProtocollo)
 @receiver(pre_save, sender=TicketCategoryWSProtocollo)
+@disable_for_loaddata
 def disable_others_active_protocol_configurations(sender, instance, **kwargs):
     """
     If a configuration (structure or category) is enabled
@@ -55,6 +56,7 @@ def disable_others_active_protocol_configurations(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=OrganizationalStructureWSProtocollo)
+@disable_for_loaddata
 def structure_conf_disable_categories_protocol_flag_pre_save(sender, instance, **kwargs):
     """
     If an active structure configuration is disabled,
@@ -97,6 +99,7 @@ def structure_conf_disable_categories_protocol_flag_pre_delete(sender, instance,
 
 
 @receiver(pre_save, sender=TicketCategoryWSProtocollo)
+@disable_for_loaddata
 def category_conf_disable_categories_protocol_flag_save(sender, instance, **kwargs):
     """
     If an active category configuration is disabled,
