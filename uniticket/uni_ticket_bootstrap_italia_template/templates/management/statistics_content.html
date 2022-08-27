@@ -161,7 +161,7 @@
                                 <div class="col-sm-6 p-2"><b>{% trans "Riaperti" %}</b>: {{ stats.reopened}} </div>
                                 <div class="col-sm-6 p-2"><b>{% trans "Notifiche" %}</b>: {{ stats.notifications}} </div>
                                 <div class="col-sm-6 p-2"><b>{% trans "Assegnati" %}</b>: {{ stats.assigned}} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Messaggi per Ticket (media)" %}</b>: {{ stats.avg_msg_to_close}} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Messaggi per Ticket (media)" %}</b>: {{ stats.avg_msg_to_close|floatformat:2}} </div>
                             </div>
                         </div>
                     </div>

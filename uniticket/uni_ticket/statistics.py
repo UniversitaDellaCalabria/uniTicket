@@ -278,7 +278,7 @@ class uniTicketStats:
         self.avg_pre_processing = int(self.avg_pre_processing_seconds / 60)
 
         self.avg_full_processing = int(statistics.mean(avg_full_processing) / 60)
-        self.avg_msg_to_close = round(statistics.mean(avg_msg_to_close), 2)
+        self.avg_msg_to_close = statistics.mean(avg_msg_to_close)
         self.first_time_op_answer_seconds = statistics.mean(first_time_op_answer)
         self.avg_first_time_op_answer = int(self.first_time_op_answer_seconds / 60)
         self.avg_time_created_taken = int(statistics.mean(avg_time_created_taken) / 60)
