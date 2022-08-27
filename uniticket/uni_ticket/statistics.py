@@ -41,9 +41,9 @@ class uniTicketStats:
             )
         )
 
-        self.date_end = date_end or timezone.localtime() + timezone.timedelta(hours = 1)
+        self.date_end = date_end or timezone.localtime() # + timezone.timedelta(hours = 1)
         # if not date_start it will go back for 15 days by default
-        self.date_start = self.date_end - timezone.timedelta(days = STATS_DEFAULT_DATE_START_DELTA_DAYS)
+        self.date_start = date_start or self.date_end - timezone.timedelta(days = STATS_DEFAULT_DATE_START_DELTA_DAYS)
 
         self.structure_slug = structure_slug
         self.office_slug = office_slug
@@ -145,9 +145,9 @@ class uniTicketStats:
         self.tickets = Ticket.objects.select_related(
             'input_module'
         ).filter(**self.ticket_data_query()).filter(
-            Q(created__gte = self.date_start) |
-            Q(closed_date__lte = self.date_start) |
-            Q(assigned_date__gte = self.date_start)
+            Q(created__gte = self.date_start, created__lte=self.date_end) |
+            Q(closed_date__gte = self.date_start, closed_date__lte=self.date_end) |
+            Q(assigned_date__gte = self.date_start, assigned_date__lte=self.date_end)
         )
 
         self.closed_tickets = self.tickets.filter(
@@ -278,7 +278,7 @@ class uniTicketStats:
         self.avg_pre_processing = int(self.avg_pre_processing_seconds / 60)
 
         self.avg_full_processing = int(statistics.mean(avg_full_processing) / 60)
-        self.avg_msg_to_close = statistics.mean(avg_msg_to_close)
+        self.avg_msg_to_close = round(statistics.mean(avg_msg_to_close), 2)
         self.first_time_op_answer_seconds = statistics.mean(first_time_op_answer)
         self.avg_first_time_op_answer = int(self.first_time_op_answer_seconds / 60)
         self.avg_time_created_taken = int(statistics.mean(avg_time_created_taken) / 60)

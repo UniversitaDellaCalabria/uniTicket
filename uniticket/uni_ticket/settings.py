@@ -678,14 +678,14 @@ SUMMARY_EMPLOYEE_EMAIL_OLD_EN = getattr(
 )
 
 STATS_DEFAULT_DATE_START_DELTA_DAYS = getattr(
-    settings, "STATS_DEFAULT_DATE_START_DELTA_DAYS", 15
+    settings, "STATS_DEFAULT_DATE_START_DELTA_DAYS", 7
 )
 JS_CHART_CDN_URL = getattr(
     settings, "JS_CHART_CDN_URL", "https://cdn.jsdelivr.net/npm/apexcharts"
 )
 STATS_TIME_SLOTS = getattr(
     settings,
-    "STATS_TIME_SLOTS",    
+    "STATS_TIME_SLOTS",
     {
         1: range(8, 14),  # 8 - 13:59
         2: range(14, 19), # 14 - 18:59

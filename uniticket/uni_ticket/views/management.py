@@ -2396,7 +2396,8 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
 
     if request.POST.get('date_end'):
         date_end = timezone.datetime.strptime(request.POST['date_end'], '%Y-%m-%d')
-        date_end = timezone.make_aware(date_end)
+        # X/Y/ZZZ 00:00:00 => X/Y/ZZZZ 23:59:59
+        date_end = timezone.make_aware(date_end) + timezone.timedelta(days = 1) - timezone.timedelta(seconds = 1)
 
     if (date_end - date_start).days > STATS_MAX_DAYS:
         date_start = _default_start

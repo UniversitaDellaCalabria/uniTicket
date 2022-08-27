@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 
     # Django channels and chat
     'channels',
-    'chat',
+    # 'chat',
 
     ##SAML2 SP
     # 'djangosaml2',
@@ -55,7 +55,7 @@ INSTALLED_APPS = [
 
 # chat app settings
 if 'chat' in INSTALLED_APPS:
-    pass
+    from chat.settings import *
 
 CUSTOM_WIDGETS = {
     'BaseDateField': 'bootstrap_italia_template.widgets.BootstrapItaliaDateWidget',

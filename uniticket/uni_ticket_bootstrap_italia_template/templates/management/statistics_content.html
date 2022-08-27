@@ -50,9 +50,9 @@
                                         </label>
                                         <input
                                             id="date_end"
-                                            name="date_end" 
+                                            name="date_end"
                                             type="date"
-                                            
+
                                             placeholder="{% trans 'date end' %}">
                                     </div>
                                 </div>
@@ -68,7 +68,7 @@
                                             </label>
                                             <select
                                                 id="office_slug"
-                                                name="office_slug" 
+                                                name="office_slug"
                                                 multiple="true"
                                                 data-multiple-separator=" ">
                                                 {% for office in offices %}
@@ -116,7 +116,7 @@
                                 <button type="submit" class="btn btn-outline-primary float-right btn mb-3" data-focus-mouse="false">
                                     <svg class="icon icon-xs">
                                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-chart-line"></use>
-                                    </svg> 
+                                    </svg>
                                     {% trans "Esegui" %}
                                 </button>
                             </div>
@@ -135,9 +135,9 @@
         <div class="col">
             <div class="card-wrapper card-space">
                 <div class="card card-bg no-after">
-                
+
                     <div class="card-body">
-                        
+
                         <!-- <h6>{% trans "Sommario" %}<h6> -->
 
                         <!-- Tabella sommario -->
@@ -179,14 +179,14 @@
                             <div class="row">
                                 <h6 class="text-muted">{% trans "Durate ed intervalli" %}</h6>
                             </div>
-                            
+
                             <div class="row">
                                 <div class="col-sm-6 p-2"><b>{% trans "Apertura - Assegnazione" %}</b>: {{ stats.avg_pre_processing }} min</div>
                                 <div class="col-sm-6 p-2"><b>{% trans "Assegnazione - Chiusura" %}</b>: {{ stats.avg_time_created_taken }} min</div>
                                 <div class="col-sm-6 p-2"><b>{% trans "Primo tempo di risposta" %}</b>: {{ stats.avg_first_time_op_answer }} min</div>
                             </div>
                         </div>
-                        
+
                             </div>
                         </div>
                     </div>
@@ -252,7 +252,7 @@
                       </table>
                 </div>
             </div>
-            
+
                 </div>
             </div>
         </div>
@@ -288,7 +288,7 @@
 
                 </div>
             </div>
-            
+
             </div>
         </div>
     </div>
