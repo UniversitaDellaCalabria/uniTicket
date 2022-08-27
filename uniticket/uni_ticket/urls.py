@@ -372,10 +372,10 @@ urlpatterns += [
     path(
         "statistics/",
         login_required(is_super_admin(management.statistics)),
-        name="manager_statistics",
+        name="superuser_statistics",
     ),
     path(
-        "statistics/<slug:structure_slug>/",
+        "{}/statistics/".format(base),
         login_required(is_manager(management.statistics)),
         name="manager_statistics",
     ),

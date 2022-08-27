@@ -2401,12 +2401,12 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
     if (date_end - date_start).days > STATS_MAX_DAYS:
         date_start = _default_start
         messages.add_message(
-            request, messages.WARNING, 
+            request, messages.WARNING,
             _(
                 "La finestra oraria massima per le statistiche è di {} giorni. "
                 "La data di inizio è stata corretta a {}"
             ).format(
-                STATS_MAX_DAYS, 
+                STATS_MAX_DAYS,
                 _default_start.strftime(settings.DEFAULT_DATE_FORMAT)
             )
         )
@@ -2423,9 +2423,9 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
 
     stats = uniTicketStats(**_q)
     stats.load()
-    
+
     _struct = (
-        structure or 
+        structure or
         OrganizationalStructure.objects.filter(structure__slug = structure_slug).first()
     )
 
@@ -2434,8 +2434,8 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
         "structure" : _struct,
         "title" : _("Statistiche"),
         "sub_title" : _("Struttura {} - dal {} al {}").format(
-            structure, 
-            date_start.strftime(settings.DEFAULT_DATE_FORMAT), 
+            structure,
+            date_start.strftime(settings.DEFAULT_DATE_FORMAT),
             date_end.strftime(settings.DEFAULT_DATE_FORMAT)
         ),
         "date_start": date_start.strftime(settings.DEFAULT_DATE_FORMAT),
