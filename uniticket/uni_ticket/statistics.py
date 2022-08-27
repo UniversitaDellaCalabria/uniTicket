@@ -33,9 +33,9 @@ class uniTicketStats:
         # args validation
         StatsArgsModel(
             **dict(
-                date_start = date_start, 
-                date_end = date_end, 
-                structure_slug = structure_slug, 
+                date_start = date_start,
+                date_end = date_end,
+                structure_slug = structure_slug,
                 office_slug = office_slug,
                 category_slug = category_slug
             )
@@ -57,7 +57,7 @@ class uniTicketStats:
 
         self.open_day_serie: dict = {}
         self.closed_day_serie: dict = {}
-        self.reopenend_day_serie: dict = {}
+        self.reopened_day_serie: dict = {}
         self.notifications_day_serie: dict = {}
         self.assigned_day_serie: dict = {}
 
@@ -88,7 +88,7 @@ class uniTicketStats:
 
         # {'monday': int, ''}
         self.ticket_per_weekday: dict = {
-            calendar.day_name[wd]: [0 for i in STATS_TIME_SLOTS.keys()] 
+            calendar.day_name[wd]: [0 for i in STATS_TIME_SLOTS.keys()]
             for wd in range(0,7)
         }
 
@@ -117,7 +117,7 @@ class uniTicketStats:
                 '__ticket_category'
                 '__slug'
             ] = self.category_slug
-        
+
         return _q
 
     def get_operators_pks(self):
@@ -129,9 +129,9 @@ class uniTicketStats:
                 '__organizational_structure'
                 '__slug'
             ] = self.structure_slug
-        
+
         return OrganizationalStructureOfficeEmployee.objects.filter(**_q).values_list(
-            "employee__pk", flat=True 
+            "employee__pk", flat=True
         )
 
     def load(self):
@@ -154,7 +154,7 @@ class uniTicketStats:
             closed_date__lte = self.date_end
         )
 
-        self.assigned_tickets = self.tickets.filter(assigned_date__gte = self.date_start) 
+        self.assigned_tickets = self.tickets.filter(assigned_date__gte = self.date_start)
 
         self.closed = self.closed_tickets.count()
         self.closed_by_users: int = 0
@@ -174,8 +174,8 @@ class uniTicketStats:
         # Time between creating a ticket and operator first message.
         first_time_op_answer = [0]
 
-        # in a single loop I have to process 
-        # whatever, otherwise it will takes too long. Efficiency may be huge, we know. 
+        # in a single loop I have to process
+        # whatever, otherwise it will takes too long. Efficiency may be huge, we know.
         tmsgs = TicketReply.objects.filter(
             ticket__pk__in = self.tickets.values_list("pk", flat=True)
         ).values_list("ticket__pk", "created", "owner")
@@ -190,7 +190,7 @@ class uniTicketStats:
             if not self.ticket_per_day_hour.get(ticket_day):
                 # {'01-01-2022': {'total': int, 'hours': {0: int, ... 23: int}}}
                 self.ticket_per_day_hour[ticket_day] = {'total': 0, 'hours': {}}
-            
+
             self.ticket_per_day_hour[ticket_day]['total'] += 1
             if not self.ticket_per_day_hour[ticket_day]["hours"].get(ticket_hour):
                 self.ticket_per_day_hour[ticket_day]["hours"][ticket_hour] = 0
