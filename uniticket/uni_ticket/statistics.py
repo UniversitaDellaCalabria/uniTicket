@@ -204,10 +204,9 @@ class uniTicketStats:
         content_type = ContentType.objects.get_for_model(Ticket)
 
         for i in self.tickets:
-
-            ticket_time = i.created.strftime("%d-%m-%Y %H")
+            ticket_time = timezone.localtime(i.created).strftime("%d-%m-%Y %H")
             ticket_day, ticket_hour = ticket_time.split(" ")
-            ticket_day_eu = i.created.strftime("%Y-%m-%d")
+            ticket_day_eu = timezone.localtime(i.created).strftime("%Y-%m-%d")
             if not self.ticket_per_day_hour.get(ticket_day):
                 # {'01-01-2022': {'total': int, 'hours': {0: int, ... 23: int}}}
                 self.ticket_per_day_hour[ticket_day] = {'total': 0, 'hours': {}}
@@ -222,12 +221,13 @@ class uniTicketStats:
             # self.ticket_per_day[ticket_day_eu] += 1
 
             # put the ticket in a configured time slot
-            for slot, hour_range in STATS_TIME_SLOTS.items():
-                if int(ticket_hour) in hour_range:
-                    self.ticket_per_weekday[
-                        i.created.strftime(calendar.day_name.format)
-                    ][slot - 1] += 1
-                    break
+            if i.created >= self.date_start and i.created <= self.date_end:
+                for slot, hour_range in STATS_TIME_SLOTS.items():
+                    if int(ticket_hour) in hour_range:
+                        self.ticket_per_weekday[
+                            timezone.localtime(i.created).strftime(calendar.day_name.format)
+                        ][slot - 1] += 1
+                        break
 
             if i.is_notification:
                 self.notifications += 1
@@ -245,13 +245,16 @@ class uniTicketStats:
             # Quanti ticket si trovavano in stato "assegnato" in quel giorno?
             # if not i.has_been_taken():
             # O quanti ticket sono stati presi in carico in quel giorno?
-            if not i.assigned_date and not i.is_closed:
+            # if not i.assigned_date and not i.is_closed:
+            if i.created >= self.date_start and i.created <= self.date_end:
                 self.open += 1
                 # if not self.open_day_serie.get(ticket_day):
                     # self.open_day_serie[ticket_day] = 0
                 # self.open_day_serie[ticket_day] += 1
-                self.open_day_serie[i.created.strftime("%d-%m-%Y")] += 1
-            elif not i.is_closed and i.assigned_date >= self.date_start and i.assigned_date <= self.date_end:
+                self.open_day_serie[timezone.localtime(i.created).strftime("%d-%m-%Y")] += 1
+
+            # elif not i.is_closed and i.assigned_date >= self.date_start and i.assigned_date <= self.date_end:
+            if i.assigned_date and i.assigned_date >= self.date_start and i.assigned_date <= self.date_end:
                 self.assigned += 1
                 avg_pre_processing.append(
                     (i.assigned_date - i.created).seconds
@@ -259,7 +262,7 @@ class uniTicketStats:
                 # if not self.assigned_day_serie.get(ticket_day):
                     # self.assigned_day_serie[ticket_day] = 0
                 # self.assigned_day_serie[ticket_day] += 1
-                self.assigned_day_serie[i.assigned_date.strftime("%d-%m-%Y")] += 1
+                self.assigned_day_serie[timezone.localtime(i.assigned_date).strftime("%d-%m-%Y")] += 1
 
             if i.closed_date and not i.is_closed:
                 self.reopened += 1
@@ -271,13 +274,15 @@ class uniTicketStats:
                 reopen_log_entry = LogEntry.objects.filter(content_type_id=content_type.pk,
                                                            object_id=i.pk,
                                                            action_time__gt=i.closed_date).first()
-                self.reopened_day_serie[reopen_log_entry.action_time.strftime("%d-%m-%Y")] += 1
-            elif i.closed_date and i in self.closed_tickets:
+                self.reopened_day_serie[timezone.localtime(reopen_log_entry.action_time).strftime("%d-%m-%Y")] += 1
+
+            # elif i.closed_date and i in self.closed_tickets:
+            if i.closed_date and i in self.closed_tickets:
                 # is closed
                 # if not self.closed_day_serie.get(ticket_day):
                     # self.closed_day_serie[ticket_day] = 0
                 # self.closed_day_serie[ticket_day] += 1
-                self.closed_day_serie[i.closed_date.strftime("%d-%m-%Y")] += 1
+                self.closed_day_serie[timezone.localtime(i.closed_date).strftime("%d-%m-%Y")] += 1
                 if i.closed_by:
                     # otherwise the user closed by himself
                     _op_name = i.closed_by.__str__()
