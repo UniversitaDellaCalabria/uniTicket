@@ -3,6 +3,8 @@ import statistics
 
 from pydantic import BaseModel
 
+from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.utils import timezone
 from uni_ticket.models import Ticket, TicketReply
@@ -81,7 +83,20 @@ class uniTicketStats:
         # Time between creating a ticket and a operator’s first message.
         self.avg_first_time_op_answer: int = 0
 
-        self.ticket_per_day: dict = {}
+        # self.ticket_per_day: dict = {}
+        self.ticket_per_day: list = []
+
+        delta = self.date_end - self.date_start
+        day = 0
+        while day <= delta.days:
+            self.ticket_per_day.append((self.date_start + timezone.timedelta(days=day)).strftime("%Y-%m-%d"))
+            self.open_day_serie[(self.date_start + timezone.timedelta(days=day)).strftime("%d-%m-%Y")] = 0
+            self.closed_day_serie[(self.date_start + timezone.timedelta(days=day)).strftime("%d-%m-%Y")] = 0
+            self.reopened_day_serie[(self.date_start + timezone.timedelta(days=day)).strftime("%d-%m-%Y")] = 0
+            self.notifications_day_serie[(self.date_start + timezone.timedelta(days=day)).strftime("%d-%m-%Y")] = 0
+            self.assigned_day_serie[(self.date_start + timezone.timedelta(days=day)).strftime("%d-%m-%Y")] = 0
+            day += 1
+
         # count per day and hours
         # {'01-01-2022': {'total': int, 'hours': {0: int, ... 23: int}}}
         self.ticket_per_day_hour: dict = {}
@@ -145,16 +160,20 @@ class uniTicketStats:
         self.tickets = Ticket.objects.select_related(
             'input_module'
         ).filter(**self.ticket_data_query()).filter(
-            Q(created__gte = self.date_start, created__lte=self.date_end) |
-            Q(closed_date__gte = self.date_start, closed_date__lte=self.date_end) |
-            Q(assigned_date__gte = self.date_start, assigned_date__lte=self.date_end)
+            Q(created__gte=self.date_start, created__lte=self.date_end) |
+            Q(closed_date__gte=self.date_start, closed_date__lte=self.date_end) |
+            Q(assigned_date__gte=self.date_start, assigned_date__lte=self.date_end)
         )
 
         self.closed_tickets = self.tickets.filter(
-            closed_date__lte = self.date_end
+            closed_date__gte=self.date_start,
+            closed_date__lte=self.date_end
         )
 
-        self.assigned_tickets = self.tickets.filter(assigned_date__gte = self.date_start)
+        self.assigned_tickets = self.tickets.filter(
+            assigned_date__gte=self.date_start,
+            assigned_date__lte=self.date_end
+        )
 
         self.closed = self.closed_tickets.count()
         self.closed_by_users: int = 0
@@ -182,6 +201,8 @@ class uniTicketStats:
 
         operators_pks = self.get_operators_pks()
 
+        content_type = ContentType.objects.get_for_model(Ticket)
+
         for i in self.tickets:
 
             ticket_time = i.created.strftime("%d-%m-%Y %H")
@@ -196,9 +217,9 @@ class uniTicketStats:
                 self.ticket_per_day_hour[ticket_day]["hours"][ticket_hour] = 0
             self.ticket_per_day_hour[ticket_day]["hours"][ticket_hour] += 1
 
-            if not self.ticket_per_day.get(ticket_day_eu):
-                self.ticket_per_day[ticket_day_eu] = 0
-            self.ticket_per_day[ticket_day_eu] += 1
+            # if not self.ticket_per_day.get(ticket_day_eu):
+                # self.ticket_per_day[ticket_day_eu] = 0
+            # self.ticket_per_day[ticket_day_eu] += 1
 
             # put the ticket in a configured time slot
             for slot, hour_range in STATS_TIME_SLOTS.items():
@@ -220,31 +241,43 @@ class uniTicketStats:
                         (op_msgs[0] - i.created).seconds
                     )
 
-            if not i.has_been_taken():
+            # Cosa si vuole mostrare?
+            # Quanti ticket si trovavano in stato "assegnato" in quel giorno?
+            # if not i.has_been_taken():
+            # O quanti ticket sono stati presi in carico in quel giorno?
+            if not i.assigned_date and not i.is_closed:
                 self.open += 1
-                if not self.open_day_serie.get(ticket_day):
-                    self.open_day_serie[ticket_day] = 0
-                self.open_day_serie[ticket_day] += 1
-            else:
+                # if not self.open_day_serie.get(ticket_day):
+                    # self.open_day_serie[ticket_day] = 0
+                # self.open_day_serie[ticket_day] += 1
+                self.open_day_serie[i.created.strftime("%d-%m-%Y")] += 1
+            elif not i.is_closed and i.assigned_date >= self.date_start and i.assigned_date <= self.date_end:
                 self.assigned += 1
                 avg_pre_processing.append(
-                    (i.taken_date - i.created).seconds
+                    (i.assigned_date - i.created).seconds
                 )
-                if not self.assigned_day_serie.get(ticket_day):
-                    self.assigned_day_serie[ticket_day] = 0
-                self.assigned_day_serie[ticket_day] += 1
+                # if not self.assigned_day_serie.get(ticket_day):
+                    # self.assigned_day_serie[ticket_day] = 0
+                # self.assigned_day_serie[ticket_day] += 1
+                self.assigned_day_serie[i.assigned_date.strftime("%d-%m-%Y")] += 1
 
             if i.closed_date and not i.is_closed:
                 self.reopened += 1
-                if not self.reopened_day_serie.get(ticket_day):
-                    self.reopened_day_serie[ticket_day] = 0
-                self.reopened_day_serie[ticket_day] += 1
-            elif i.closed_date:
-                # is closed
-                if not self.closed_day_serie.get(ticket_day):
-                    self.closed_day_serie[ticket_day] = 0
-                self.closed_day_serie[ticket_day] += 1
+                # if not self.reopened_day_serie.get(ticket_day):
+                    # self.reopened_day_serie[ticket_day] = 0
+                # self.reopened_day_serie[ticket_day] += 1
 
+                # get reopen time from first log action after closing
+                reopen_log_entry = LogEntry.objects.filter(content_type_id=content_type.pk,
+                                                           object_id=i.pk,
+                                                           action_time__gt=i.closed_date).first()
+                self.reopened_day_serie[reopen_log_entry.action_time.strftime("%d-%m-%Y")] += 1
+            elif i.closed_date and i in self.closed_tickets:
+                # is closed
+                # if not self.closed_day_serie.get(ticket_day):
+                    # self.closed_day_serie[ticket_day] = 0
+                # self.closed_day_serie[ticket_day] += 1
+                self.closed_day_serie[i.closed_date.strftime("%d-%m-%Y")] += 1
                 if i.closed_by:
                     # otherwise the user closed by himself
                     _op_name = i.closed_by.__str__()
@@ -258,9 +291,9 @@ class uniTicketStats:
                 avg_full_processing.append(
                     (i.closed_date - i.created).seconds
                 )
-                if i.taken_date:
+                if i.assigned_date:
                     avg_time_created_taken.append(
-                        (i.closed_date - i.taken_date).seconds
+                        (i.closed_date - i.assigned_date).seconds
                     )
 
                 # get how many messages has been taken to close this ticket

@@ -258,6 +258,8 @@
         </div>
     </div>
 
+    {% settings_value "STATS_SHOW_TICKETS_BY_USER" as stats_show_tickets_by_user %}
+    {% if stats_show_tickets_by_user %}
     <div class="row">
         <div class="col">
             <div class="card-wrapper card-space">
@@ -292,6 +294,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
 </div>
 </div>

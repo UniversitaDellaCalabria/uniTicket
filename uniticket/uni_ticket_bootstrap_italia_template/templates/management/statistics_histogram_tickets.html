@@ -12,10 +12,10 @@
           data: [{% for ta in stats.closed_day_serie.values %} {{ ta }}, {% endfor %}]
         }, {
           name: '{% trans "Notifiche" %}',
-          data: [{% for ta in stats.reopenend_day_serie.values %} {{ ta }}, {% endfor %}]
+          data: [{% for ta in stats.notifications_day_serie.values %} {{ ta }}, {% endfor %}]
         }, {
           name: '{% trans "Ticket riaperti" %}',
-          data: [{% for ta in stats.notifications_day_serie.values %} {{ ta }}, {% endfor %}]
+          data: [{% for ta in stats.reopened_day_serie.values %} {{ ta }}, {% endfor %}]
         },
         {
           name: '{% trans "Ticket assegnati" %}',
@@ -49,7 +49,8 @@
           },
         },
         xaxis: {
-          type: 'datetime',
+          //type: 'datetime',
+          //type: 'datetime',
           categories: [{% for td in ticket_per_day %} "{{ td }}", {% endfor %}]
         },
         legend: {

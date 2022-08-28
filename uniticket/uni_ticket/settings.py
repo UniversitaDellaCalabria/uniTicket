@@ -701,13 +701,13 @@ STATS_HEAT_MAP_RANGES = getattr(settings, "STATS_HEAT_MAP_RANGES",
     [
         {
             "from": 0,
-            "to": 2,
+            "to": 5,
             "name": 'low',
             "color": '#00A100'
         },
         {
-            "from": 3,
-            "to": 10,
+            "from": 6,
+            "to": 20,
             "name": 'medium',
             "color": '#128FD9'
         },
@@ -718,10 +718,12 @@ STATS_HEAT_MAP_RANGES = getattr(settings, "STATS_HEAT_MAP_RANGES",
             "color": '#FFB200'
         },
         {
-            "from": 50,
+            "from": 51,
             "to": 250,
             "name": 'extreme',
             "color": '#FF0000'
         }
     ]
 )
+
+STATS_SHOW_TICKETS_BY_USER = True
