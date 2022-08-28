@@ -139,10 +139,9 @@ class uniTicketAPIStatsTest(BaseTicketEnvironment):
         self.assertTrue(tuple(stats.closed_by_ops.values())[0] == 10)
 
         self.assertTrue(stats.avg_msg_to_close < 1.82 and stats.avg_msg_to_close > 1.81)
-
-        self.assertTrue(stats.avg_pre_processing == 607)
+        self.assertTrue(stats.avg_pre_processing == 480)
         self.assertTrue(stats.avg_full_processing == 676)
-        
+
         first_day = list(stats.ticket_per_day_hour.keys())[0]
         self.assertTrue(len(stats.ticket_per_day_hour[first_day].keys()) == 2)
 
