@@ -131,15 +131,14 @@ class uniTicketAPIStatsTest(BaseTicketEnvironment):
     def test_stats_result(self):
         stats = uniTicketStats(date_end = timezone.localtime() + timezone.timedelta(hours=2))
         stats.load()
-
-        self.assertTrue(stats.open == N_TICKET - 15)
+        self.assertTrue(stats.open == N_TICKET)
         self.assertTrue(tuple(stats.open_by_user.values())[0] == N_TICKET)
 
         self.assertTrue(stats.closed == 10)
         self.assertTrue(tuple(stats.closed_by_ops.values())[0] == 10)
 
         self.assertTrue(stats.avg_msg_to_close < 1.82 and stats.avg_msg_to_close > 1.81)
-        self.assertTrue(stats.avg_pre_processing == 480)
+        self.assertTrue(stats.avg_pre_processing == 607)
         self.assertTrue(stats.avg_full_processing == 676)
 
         first_day = list(stats.ticket_per_day_hour.keys())[0]
