@@ -2388,7 +2388,8 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
     """
     _default_start = timezone.localtime() - timezone.timedelta(days=STATS_DEFAULT_DATE_START_DELTA_DAYS)
     date_start = _default_start
-    date_end = timezone.localtime()
+    _default_end = timezone.localtime()
+    date_end = _default_end
 
     if request.POST.get('date_start'):
         date_start = timezone.datetime.strptime(request.POST['date_start'], '%Y-%m-%d')
@@ -2399,13 +2400,27 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
         # X/Y/ZZZ 00:00:00 => X/Y/ZZZZ 23:59:59
         date_end = timezone.make_aware(date_end) + timezone.timedelta(days = 1) - timezone.timedelta(seconds = 1)
 
+    if date_start > date_end:
+        date_start = _default_start
+        date_end = _default_end
+        messages.add_message(
+            request, messages.ERROR,
+            _(
+                "La data di inizio non può essere successiva a quella di fine. "
+                "La data di inizio è stata corretta a <b>{}</b> e quella di fine a <b>{}</b>"
+            ).format(
+                _default_start.strftime(settings.DEFAULT_DATE_FORMAT),
+                _default_end.strftime(settings.DEFAULT_DATE_FORMAT)
+            )
+        )
+
     if (date_end - date_start).days > STATS_MAX_DAYS:
         date_start = _default_start
         messages.add_message(
             request, messages.WARNING,
             _(
                 "La finestra oraria massima per le statistiche è di {} giorni. "
-                "La data di inizio è stata corretta a {}"
+                "La data di inizio è stata corretta a <b>{}</b>"
             ).format(
                 STATS_MAX_DAYS,
                 _default_start.strftime(settings.DEFAULT_DATE_FORMAT)
