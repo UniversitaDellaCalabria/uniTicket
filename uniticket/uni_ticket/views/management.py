@@ -2440,10 +2440,11 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
     stats = uniTicketStats(**_q)
     stats.load()
 
-    _struct = (
-        structure or
-        OrganizationalStructure.objects.filter(structure__slug = structure_slug).first()
-    )
+    if not structure and structure_slug:
+        structure = OrganizationalStructure.objects\
+                                           .filter(structure__slug=structure_slug)\
+                                           .first()
+    _struct = (structure)
 
     context = {
         "stats" : stats,

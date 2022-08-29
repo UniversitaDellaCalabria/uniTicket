@@ -146,7 +146,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-6 p-2"><b>{% trans "Periodo" %}</b>: {{ date_start}} - {{ date_end }} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Settore" %}</b>: {{ structure }} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Settore" %}</b>: {{ structure|default:"-" }} </div>
                                 {% if stats.office_slug %}
                                     <div class="col-sm-6 p-2"><b>{% trans "Ufficio" %}</b>: {{ stats.office_slug}} </div>
                                 {% endif %}
