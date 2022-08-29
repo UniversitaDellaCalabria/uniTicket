@@ -36,24 +36,23 @@
                                 <div class="row">
                                     <div class="col-sm">
                                         <label for="date_start" style="margin-top: -30px">
-                                            {% trans 'date start' %} {% if date_start %} ({{ date_start }}) {% endif %}
+                                            {% trans 'Data di inizio' %} {% if date_start %} ({{ date_start }}) {% endif %}
                                         </label>
                                         <input
                                             id="date_start"
                                             type="date"
                                             name="date_start"
-                                            placeholder="{% trans 'date start' %}">
+                                            placeholder="{% trans 'Data di inizio' %}">
                                     </div>
                                     <div class="col-sm mt-5 mt-sm-0">
                                         <label for="date_end" style="margin-top: -30px">
-                                            {% trans 'date end' %} {% if date_end %} ({{ date_end }}) {% endif %}
+                                            {% trans 'Data di fine' %} {% if date_end %} ({{ date_end }}) {% endif %}
                                         </label>
                                         <input
                                             id="date_end"
                                             name="date_end"
                                             type="date"
-
-                                            placeholder="{% trans 'date end' %}">
+                                            placeholder="{% trans 'Data di fine' %}">
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +90,7 @@
                                     <div class="col-sm">
                                         <div class="bootstrap-select-wrapper">
                                             <label for="category_slug">
-                                                {% trans "Categoria del Ticket" %}
+                                                {% trans "Categoria della richiesta" %}
                                             </label>
                                             <select
                                                 id="category_slug"
@@ -152,7 +151,7 @@
                                     <div class="col-sm-6 p-2"><b>{% trans "Ufficio" %}</b>: {{ stats.office_slug}} </div>
                                 {% endif %}
                                 {% if stats.category_slug %}
-                                    <div class="col-sm-6 p-2"><b>{% trans "Ticket" %}</b>: {{ stats.category_slug}} </div>
+                                    <div class="col-sm-6 p-2"><b>{% trans "Categoria" %}</b>: {{ stats.category_slug}} </div>
                                 {% endif %}
                                 <div class="col-sm-6 p-2"><b>{% trans "Aperti" %}</b>: {{ stats.open}} </div>
                                 <div class="col-sm-6 p-2"><b>{% trans "Chiusi" %}</b>: {{ stats.closed}} </div>
@@ -161,7 +160,7 @@
                                 <div class="col-sm-6 p-2"><b>{% trans "Riaperti" %}</b>: {{ stats.reopened}} </div>
                                 <div class="col-sm-6 p-2"><b>{% trans "Notifiche" %}</b>: {{ stats.notifications}} </div>
                                 <div class="col-sm-6 p-2"><b>{% trans "Assegnati" %}</b>: {{ stats.assigned}} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Messaggi per Ticket (media)" %}</b>: {{ stats.avg_msg_to_close|floatformat:2}} </div>
+                                <div class="col-sm-6 p-2"><b>{% trans "Messaggi per richiesta (media)" %}</b>: {{ stats.avg_msg_to_close|floatformat:2}} </div>
                             </div>
                         </div>
                     </div>
@@ -203,7 +202,7 @@
             <div class="card-wrapper card-space">
                 <div class="card card-bg no-after">
                     <div class="card-body">
-                        <h6 class="text-muted">{% trans "Histogram chart" %}</h6>
+                        <h6 class="text-muted">{% trans "Grafico dell'istogramma" %}</h6>
                         {% include "management/statistics_histogram_tickets.html" %}
                     </div>
                 </div>
@@ -216,7 +215,7 @@
             <div class="card-wrapper card-space">
                 <div class="card card-bg no-after">
                     <div class="card-body">
-                        <h6 class="text-muted">{% trans "Heatmap chart dei Ticket aperti per fascia oraria" %}</h6>
+                        <h6 class="text-muted">{% trans "Mappa delle richieste aperte nei giorni della settimana per fascia oraria" %}</h6>
                         {% include "management/statistics_heatmap_tickets.html" %}
                     </div>
                 </div>
@@ -230,14 +229,14 @@
                 <div class="card card-bg no-after">
                 <div class="card-body">
 
-                <h6 class="text-muted">{% trans "Ticket chiusi per operatore" %}</h6>
+                <h6 class="text-muted">{% trans "Richieste chiuse per operatore" %}</h6>
                 <div class="row">
                     <table class="table">
                         <thead>
                           <tr>
                             <th scope="col">#</th>
                             <th scope="col">{% trans "Operatore" %}</th>
-                            <th scope="col">{% trans "numero ticket" %}</th>
+                            <th scope="col">{% trans "Numero" %}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -266,7 +265,7 @@
                 <div class="card card-bg no-after">
                 <div class="card-body">
 
-                <h6 class="text-muted">{% trans "Ticket creati per utente" %}</h6>
+                <h6 class="text-muted">{% trans "Richieste create per utente" %}</h6>
                 <div class="row">
 
                     <table class="table">
@@ -274,7 +273,7 @@
                           <tr>
                             <th scope="col">#</th>
                             <th scope="col">{% trans "Utente" %}</th>
-                            <th scope="col">{% trans "numero ticket" %}</th>
+                            <th scope="col">{% trans "Numero" %}</th>
                           </tr>
                         </thead>
                         <tbody>
