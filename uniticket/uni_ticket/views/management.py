@@ -2470,4 +2470,5 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
         context['operators'] = _struct.get_employees()
         context["tickets"] = TicketCategory.objects.filter(organizational_structure=_struct)
 
-    return render(request, "management/statistics.html", context)
+    _template = "management/statistics_manager.html" if structure_slug else "management/statistics_superuser.html"
+    return render(request, _template, context)
