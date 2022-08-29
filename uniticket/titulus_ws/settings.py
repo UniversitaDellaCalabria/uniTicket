@@ -1,13 +1,11 @@
 # titulus_ws settings
 # you can ovverride them in settingslocal.py (if necessary)
-
-
 import os
 
 
-PROT_DOC_ENCODING = "utf-8"
-
 BASE_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+PROT_DOC_ENCODING = "utf-8"
 
 PROTOCOL_NAMESPACES = {
               'xsd': '{http://www.w3.org/2001/XMLSchema}',

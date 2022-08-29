@@ -45,8 +45,6 @@ from .settings import (
     TICKET_SUBJECT_ID,
     TICKET_TASK_ATTACHMENT_SUBFOLDER,
     TICKET_UPDATED,
-    TITOLARIO_DICT,
-    UO_DICT,
 )
 
 logger = logging.getLogger("__name__")
@@ -1478,7 +1476,7 @@ class TicketCategoryTask(AbstractTask):
 # max_length=12)
 # protocollo_cod_titolario = models.CharField(_('Codice titolario'),
 # max_length=12,
-# choices=TITOLARIO_DICT)
+# choices=settings.TITOLARIO_DICT)
 # protocollo_fascicolo_numero = models.CharField(_('Fascicolo numero'),
 # max_length=12)
 # default=settings.PROTOCOLLO_FASCICOLO_DEFAULT)
@@ -1540,7 +1538,7 @@ class TicketCategoryWSProtocollo(TimeStampedModel):
         TicketCategory, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
-    protocollo_uo = models.CharField("UO", max_length=12, choices=UO_DICT)
+    protocollo_uo = models.CharField("UO", max_length=12, choices=settings.UO_DICT)
     protocollo_uo_rpa = models.CharField(
         "RPA", max_length=255, default="", blank=True, help_text=_("Nominativo RPA")
     )
@@ -1568,7 +1566,7 @@ class TicketCategoryWSProtocollo(TimeStampedModel):
         help_text="default: settings.PROTOCOL_EMAIL_DEFAULT",
     )
     protocollo_cod_titolario = models.CharField(
-        _("Codice titolario"), max_length=12, choices=TITOLARIO_DICT
+        _("Codice titolario"), max_length=12, choices=settings.TITOLARIO_DICT
     )
     protocollo_fascicolo_numero = models.CharField(
         _("Fascicolo numero"), max_length=255, default="", blank=True

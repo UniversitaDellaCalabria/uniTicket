@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
 
 from io import BytesIO
-from .models import UO_DICT
+
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +84,7 @@ def ticket_protocol(
         destinatario_username=prot_uo_rpa_username,
         destinatario_code=prot_uo_rpa_matricola,
         send_email=prot_send_email,
-        uo_nome=dict(UO_DICT)[prot_uo],
+        uo_nome=dict(settings.UO_DICT)[prot_uo],
         uo=prot_uo,
         email_ufficio=prot_template,
         nome_mittente=user.first_name,
