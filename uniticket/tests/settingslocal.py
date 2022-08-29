@@ -7,7 +7,7 @@
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 
-ADMIN_PATH = 'gestione'
+ADMIN_PATH = 'admin'
 
 HOSTNAME = 'ticket.unical.it'
 EMAIL_SENDER = 'no-reply@{}'.format(HOSTNAME)
