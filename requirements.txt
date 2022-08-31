@@ -1,28 +1,18 @@
-# these minimum versions are definitely working
-
 Django>=3.2.4,<4
 
-beautifulsoup4>=4.8.2
-
 django-admin-search-builder>=0.2.0
-django-bootstrap-form>=3.4,<4
 django_ckeditor>=5.9.0
-django-countries>=6.0
+
 django-form-builder>=0.8.0
-django-markdown-deux>=1.0.5
 django-nested-admin>=3.2.4
 
-email-reply-parser>=0.5.9
+uritemplate>4.1
+pyyaml>=6.0,<7.0
 
-lxml>=4.5.0
 pillow>=8.2.0
 python-magic>=0.4.15
 pytz>=2019.3
-shortuuid>=1.0.1
-simplejson>=3.17.0
-six>=1.14.0
-xmlschema>=1.4.1
-importlib_resources>=5.1.0
+pydantic >= 1.9.0
 
 # datatables ajax
 git+https://github.com/peppelinux/django-datatables-ajax.git
@@ -31,52 +21,33 @@ git+https://github.com/peppelinux/django-datatables-ajax.git
 git+https://github.com/peppelinux/FileSignatureValidator.git
 
 # SAML2
-# git+https://github.com/peppelinux/pysaml2.git@pplnx-v6.5.1
-# git+https://github.com/peppelinux/djangosaml2.git@pplnx-dev
-pysaml2>=6.5.1
 djangosaml2>=1.0.3
 
 # SASS dynamic compiler
 libsass>=0.19.4
 django-sass-processor>=1.0.0
 
-# settings dependencies
-mysqlclient>=1.4.6
-
-#Bootstrap Italia + Unical template
-design-django-theme
-django-unical-bootstrap-italia
+# Bootstrap Italia + Unical template
+design-django-theme>=1.6.2
+django-unical-bootstrap-italia>=1.0.5
 
 # Django REST
-djangorestframework>=3.11.2
+djangorestframework>=3.13
 django-filter>=2.4.0
 
-# Django channels
+# Django channels only for chat
 channels>=2.4.0
 channels_redis>=2.4.2
 daphne>=3
 
-# markdown
 markdown>=3.2.1
-
 cryptojwt>=1.5.0
+WeasyPrint==52.4
 
+# Protocollo informatico
 # pyWSArchiPRO
 # (app folder included in project, not installed via pip)
 # git+https://github.com/peppelinux/pyWSArchiPRO.git
 
-# wkhtmltopdf
-# [
-#   wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb
-#   sudo dpkg -i wkhtmltox_0.12.5-1.buster_amd64.deb
-#   sudo apt install -f
-# ]
-
-WeasyPrint>=52.4
-# django-wkhtmltopdf>=3.3.0
-# pdfkit>=0.6.1
-# pypdf2>=1.26.0
-
-# SOAP Client protocollazione
-zeep>=3.4.0
-markdown2>=2.4.0 # not directly required, pinned by Snyk to avoid a vulnerability
+# production
+# mysqlclient>=1.4.6

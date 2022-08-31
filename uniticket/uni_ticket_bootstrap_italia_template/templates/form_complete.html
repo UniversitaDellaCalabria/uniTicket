@@ -1,0 +1,66 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manage' structure_slug=structure.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Dashboard" %}
+</a>
+{% endblock top_buttons %}
+
+{% block clean_content %}
+<div class="row">
+    <div class="col">
+        <div class="card-space card-wrapper">
+            <div class="card card-bg no-after">
+                <div class="card-body">
+    {% block page_content %}
+        {% block pre_form %}
+        {% endblock pre_form %}
+        <form method="post" enctype="multipart/form-data">
+            {% include 'form_template.html' %}
+            {% block allegati %}{% endblock allegati %}
+            {% block form_buttons %}{% endblock form_buttons %}
+        </form>
+        {% block post_form %}
+        {% endblock post_form %}
+    {% endblock page_content %}
+    </div>
+</div>
+</div>
+</div>
+</div>
+{% endblock clean_content %}
+
+{% block extra_scripts %}
+{{ block.super }}
+{{ form.media }}
+<!-- prevent submit form by press "enter" on field -->
+<script>
+$(document).on('keyup keypress', 'form input', function(e) {
+    if(e.which == 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
+<!-- datetime picker -->
+<script>
+{% settings_value "JS_DEFAULT_DATETIME_FORMAT" as js_default_datetime_value %}
+{% settings_value "LANGUAGE_CODE" as language_code %}
+
+$(function () {
+    $('.uniticket-datetimepicker').datetimepicker({
+        format:"{{ js_default_datetime_value }}",
+        showTodayButton:true,
+        locale: "{{ language_code }}"
+    });
+});
+</script>
+{% endblock extra_scripts %}

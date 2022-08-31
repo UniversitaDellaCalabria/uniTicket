@@ -1,0 +1,158 @@
+{% load i18n %}
+
+<div class="collapse-div collapse-left-icon" role="tablist">
+    <div class="collapse-header" id="heading1">
+        <button
+            data-toggle="collapse"
+            data-target="#collapse-fascia-oraria"
+            aria-expanded="false"
+            aria-controls="collapse-fascia-oraria">
+        {% trans "Fasce orarie configurate" %}
+        </button>
+    </div>
+
+    <div
+        id="collapse-fascia-oraria"
+        class="collapse"
+        role="tabpanel"
+        aria-labelledby="heading1">
+        <div class="collapse-body pt-4 pb-0">
+            
+            <ul class="list-group">
+                {% for slot, range in time_slots.items %}
+                <li class="list-group-item">
+                    <span class="badge badge-primary">{{ slot }}</span>&nbsp;&nbsp;
+                    {% for hour in range %}
+                        <span class="badge badge-light">
+                        {% if forloop.first or forloop.last%}
+                            {{ hour }}
+                        {% endif %}
+                        </span>
+                    {% endfor %}
+                </li>
+                {% endfor %}
+              </ul>
+              <br>
+            
+        </div>
+
+    </div>
+</div>
+
+<div id="heatmap"></div>
+<script src="{{ JS_CHART_CDN_URL }}"></script>                        
+                        
+<script>
+    var options = {
+          series: [
+          {
+            name: '{% trans "Domenica" %}',
+            data: [
+                {% for day, serie in stats.ticket_per_weekday.items %}
+                  {% if day == "Sunday" %} 
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
+                  {% endif %}
+                {% endfor %}
+            ]
+          },
+          {
+            name: '{% trans "Sabato" %}',
+            data: [
+                {% for day, serie in stats.ticket_per_weekday.items %}
+                  {% if day == "Saturday" %} 
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
+                  {% endif %}
+                {% endfor %}
+            ]
+          },
+          {
+            name: '{% trans "Venerdi" %}',
+            data: [
+                {% for day, serie in stats.ticket_per_weekday.items %}
+                  {% if day == "Friday" %} 
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
+                  {% endif %}
+                {% endfor %}
+            ]
+          },
+          {
+            name: '{% trans "Giovedi" %}',
+            data: [
+                {% for day, serie in stats.ticket_per_weekday.items %}
+                  {% if day == "Thursday" %} 
+                    {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
+                  {% endif %}
+                {% endfor %}
+            ]
+          },
+          {
+            name: '{% trans "Mercoledi" %}',
+            data: [
+                {% for day, serie in stats.ticket_per_weekday.items %}
+                  {% if day == "Wednesday" %} 
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
+                  {% endif %}
+                {% endfor %}
+            ]
+          },
+          {
+            name: '{% trans "Martedi" %}',
+            data: [
+                {% for day, serie in stats.ticket_per_weekday.items %}
+                  {% if day == "Tuesday" %}
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
+                  {% endif %}
+                {% endfor %}
+            ]
+          },
+          {
+            name: '{% trans "Lunedi" %}',
+            data: [
+                {% for day, serie in stats.ticket_per_weekday.items %}
+                  {% if day == "Monday" %} 
+                  {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
+                  {% endif %}
+                {% endfor %}
+            ]
+          }
+        ],
+          chart: {
+        //   height: 350,
+          type: 'heatmap',
+          zoom: {
+            enabled: false
+          }
+        },
+        plotOptions: {
+          heatmap: {
+            shadeIntensity: 0.5,
+            radius: 1,
+            useFillColorAsStroke: true,
+            heatmap: {
+                distributed: true
+            },
+            colorScale: {
+              ranges: {{ STATS_HEAT_MAP_RANGES|safe }}
+            }
+          }
+        },
+        dataLabels: {
+          enabled: true
+        },
+        xaxis: {
+          type: 'category',
+          categories:  [
+              {% for slot, range in time_slots.items %}"{% trans 'fascia' %} {{ slot }}",{% endfor %}
+          ]
+        },
+        stroke: {
+          width: 1
+        },
+        // title: {
+        //   text: 'HeatMap Chart with Color Range'
+        // },
+        };
+
+        var chart = new ApexCharts(document.querySelector("#heatmap"), options);
+        chart.render();
+</script>

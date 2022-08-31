@@ -1,0 +1,193 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manage_ticket_url_detail' structure_slug=structure.slug ticket_id=ticket.code %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna alla richiesta" %}
+</a>
+{% endblock top_buttons %}
+
+{% block page_content %}
+    {% if offices %}
+    <form method="post" enctype="multipart/form-data">
+    {% endif %}
+
+    <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
+    {% comment %}
+    <!-- Bootstrap Italia select -->
+    <div class="bootstrap-select-wrapper">
+    {% endcomment %}
+    <div class="bootstrap-select-wrapper">
+        <select id="structure_slug"
+                name="structure_slug"
+                title="{% trans 'A chi è indirizzata la richiesta?' %}"
+                data-live-search="true" data-live-search-placeholder="Cerca...">
+            <option value="">{% trans "Seleziona un'opzione" %}</option>
+            {% for struttura in strutture %}
+            <option value="{{ struttura.slug }}"
+            {% if struttura.slug == structure_slug %} selected {% endif %}>
+                {{ struttura }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div style="padding: 1.5rem 0 1rem">
+        <b><label for="office_slug">{% trans "Ufficio" %}</label></b>
+        {% if not structure_slug %}
+        <div class="alert alert-warning" role="alert">
+          {% trans "Seleziona l'ufficio a cui inoltrare la richiesta" %}
+        </div>
+        {% elif not offices %}
+        <div class="alert alert-danger" role="alert">
+          {% trans "Nessun ufficio disponibile per questa struttura" %}
+        </div>
+        {% else %}
+        {% comment %}
+        <!-- Bootstrap Italia select -->
+        <div class="bootstrap-select-wrapper">
+        {% endcomment %}
+        <div class="bootstrap-select-wrapper">
+            <select required
+                {% if not structure_slug %}disabled{% endif %}
+                name="office_slug"
+                title="{% trans 'A chi è indirizzata la richiesta?' %}"
+                data-live-search="true">
+                <option value="">{% trans "Seleziona un'opzione" %}</option>
+                {% for office in offices %}
+                <option value="{{ office.slug }}">{{ office.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="alert alert-warning" role="alert" style="margin-top: 1.5rem">
+            <div class="mb-2">
+                <b>
+                    <label for="id_follow" class="mb-0">
+                        {% trans "Mantieni la possibilità di gestire la richiesta:" %}
+                    </label>
+                </b>
+                <input type="checkbox" name="follow" id="id_follow"
+                       class=""
+                       onclick="hide_readonly()"
+                       checked>
+                <small class="form-text text-muted">
+                    {% trans "Deselezionando questa opzione non si avrà più accesso alla richiesta" %}
+                </small>
+            </div>
+            <div id="readonly_div">
+                <b>
+                    <label for="id_readonly" class="mb-0">
+                        {% trans "Accedi alla richiesta in sola lettura:" %}
+                    </label>
+                </b>
+                <input type="checkbox" name="readonly" id="id_readonly"
+                       class="">
+                <small class="form-text text-muted">
+                    {% trans "Selezionando questa opzione insieme a quella precedente si avrà accesso alla richiesta in sola lettura" %}
+                </small>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if offices %}
+
+    <div style="padding: 0 0 1.5rem">
+        <b>
+            <label for="structure_slug">
+                {% trans "Ufficio di origine" %}
+            </label>
+        </b>
+        <div class="bootstrap-select-wrapper">
+            <select id="selected_office"
+                    name="selected_office"
+                    data-live-search="true" data-live-search-placeholder={% trans "Cerca" %}...">
+                <option value="">{% trans "Tutti quelli a cui afferisco in questa struttura" %}</option>
+                {% for operator_office in operator_offices %}
+                <option value="{{ operator_office.slug }}">
+                    {{ operator_office }}
+                </option>
+                {% endfor %}
+            </select>
+            <small class="form-text text-muted">
+                {% trans "Ufficio a cui applicare i nuovi livelli di accesso (sola lettura, competenza abbandonata...)" %}
+        </small>
+        </div>
+    </div>
+
+    <div>
+        <button type="button"
+                class="btn btn-success btn-block"
+                data-toggle="modal"
+                data-target="#confirmData">
+            <svg class="icon icon-xs icon-white">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+            </svg> {% trans 'Trasferisci competenza' %}
+        </button>
+        <div class="modal fade" tabindex="-1" role="dialog" id="confirmData">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            {% trans "Conferma operazione" %}
+                        </h5>
+                        <button class="close" type="button"
+                                data-dismiss="modal" aria-label="Close">
+                           <svg class="icon">
+                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                           </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            {% trans "Confermi di voler procedere al trasferimento di competenza?" %}
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <input class="btn btn-success"
+                               id="submitForm"
+                               type="submit"
+                               value="{% trans 'Si, confermo' %}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% csrf_token %}
+
+    </form>
+    {% endif %}
+{% endblock page_content %}
+
+{% block extra_scripts %}
+{{ form.media }}
+<script type="text/javascript">
+function replace_last_param(url, new_param){
+    return url.split('/').slice(0,-2).join('/')+'/'+new_param
+}
+
+function hide_readonly() {
+  var checkBox = document.getElementById("id_follow");
+  var readonly_div = document.getElementById("readonly_div");
+  if (checkBox.checked == true){
+    readonly_div.style.display = "block";
+  } else {
+     readonly_div.style.display = "none";
+  }
+}
+
+$('#structure_slug').on('change', function(event) {
+    {% if structure_slug %}
+    window.location.href = replace_last_param(window.location.href, $(this).val());
+    {% else %}
+    window.location.href = window.location.href + $(this).val();
+    {% endif %}
+});
+</script>
+{% endblock extra_scripts %}
