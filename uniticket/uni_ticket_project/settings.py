@@ -1,3 +1,5 @@
+from django_form_builder.settings import *
+
 from .settingslocal import *
 
 
