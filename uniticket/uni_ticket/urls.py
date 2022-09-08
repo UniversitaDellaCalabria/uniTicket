@@ -336,7 +336,7 @@ urlpatterns += [
     path(
         "{}/competence/add/<str:new_structure_slug>/".format(ticket_id),
         login_required(is_manager(management.ticket_competence_add_final)),
-        name="manager_add_ticket_competence",
+        name="manager_add_ticket_competence_final",
     ),
     path(
         "{}/dependence/add/".format(ticket_id),
@@ -752,7 +752,7 @@ urlpatterns += [
     path(
         "{}/competence/add/<str:new_structure_slug>/".format(ticket_id),
         login_required(is_operator(management.ticket_competence_add_final)),
-        name="operator_add_ticket_competence",
+        name="operator_add_ticket_competence_final",
     ),
     path(
         "{}/dependence/add/".format(ticket_id),

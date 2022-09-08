@@ -185,7 +185,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                   'follow': 'on',
                   # 'readonly': False,
         }
-        response = self.client.post(reverse('uni_ticket:manager_add_ticket_competence',
+        response = self.client.post(reverse('uni_ticket:manager_add_ticket_competence_final',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'ticket_id': self.ticket.code,
                                                     'new_structure_slug': self.structure_2.slug}),
@@ -294,7 +294,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                   'follow': 'on',
                   'readonly': True,
         }
-        response = self.client.post(reverse('uni_ticket:manager_add_ticket_competence',
+        response = self.client.post(reverse('uni_ticket:manager_add_ticket_competence_final',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'ticket_id': self.ticket.code,
                                                     'new_structure_slug': self.structure_2.slug}),
