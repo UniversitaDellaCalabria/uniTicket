@@ -44,6 +44,15 @@
                     {% trans "Nessuno" %}
                   {% endif %}
                   <br>
+                  <b>{% trans 'Richieste di tipo notifica' %}:</b>
+                  <svg class="icon icon-xs">
+                  {% if category.is_notification %}
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                  {% else %}
+                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                  {% endif %}
+                  </svg>
+                  <br>
                   <b>{% trans 'Attiva dal' %}:</b>
                   {{ category.date_start | default:"-" }}
                   <br>

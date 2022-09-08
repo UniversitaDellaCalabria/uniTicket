@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-08-29 10:43+0200\n"
+"POT-Creation-Date: 2022-09-08 08:10+0200\n"
 "PO-Revision-Date: 2022-08-29 10:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1156,7 +1156,7 @@ msgstr "Select operator"
 msgid "Seleziona l'ufficio"
 msgstr "Select the office"
 
-#: uni_ticket/forms.py:719 uni_ticket/models.py:1498
+#: uni_ticket/forms.py:719 uni_ticket/models.py:1496
 msgid "Denominazione configurazione"
 msgstr "Configuration name"
 
@@ -1176,7 +1176,7 @@ msgstr ""
 msgid "Matricola RPA Unità Organizzativa"
 msgstr ""
 
-#: uni_ticket/forms.py:724 uni_ticket/models.py:1562
+#: uni_ticket/forms.py:724 uni_ticket/models.py:1560
 msgid "Invia e-mail a RPA"
 msgstr ""
 
@@ -1200,69 +1200,69 @@ msgstr "Issue year"
 msgid "A discrezione dell'utente. Es: \"Configurazione anno 2020\""
 msgstr "At the user's discretion. Ex: \"Configuration year 2020\""
 
-#: uni_ticket/models.py:64
-#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:47
+#: uni_ticket/models.py:62
+#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:56
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:103
 msgid "Attiva dal"
 msgstr "Active from"
 
-#: uni_ticket/models.py:65
-#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:50
+#: uni_ticket/models.py:63
+#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:59
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:107
 msgid "Attiva fino al"
 msgstr "Active until"
 
-#: uni_ticket/models.py:111
+#: uni_ticket/models.py:109
 msgid "Il nome deve contenere almeno un carattere alfabetico"
 msgstr "The name must contain at least one alphabetic character"
 
-#: uni_ticket/models.py:127
+#: uni_ticket/models.py:125
 msgid "Se disabilitato, non sarà visibile in Aggiungi Richiesta"
 msgstr "If disabled, it will not be visible in Add Request"
 
-#: uni_ticket/models.py:130
+#: uni_ticket/models.py:128
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:111
 msgid "Messaggio se non attiva"
 msgstr "Message if not active"
 
-#: uni_ticket/models.py:135
+#: uni_ticket/models.py:133
 msgid "Viene mostrato agli utenti se cercano di accedere al form"
 msgstr "It is shown to users if they try to access the form"
 
-#: uni_ticket/models.py:139
+#: uni_ticket/models.py:137
 msgid ""
 "Mostra agli utenti un testo di accettazione in fase di apertura nuova "
 "richiesta"
 msgstr "Show users an acceptance text when opening a new request"
 
-#: uni_ticket/models.py:147
+#: uni_ticket/models.py:145
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:252
 msgid "Accessibile a Utenti anonimi"
 msgstr "Accessible to anonymous users"
 
-#: uni_ticket/models.py:149
+#: uni_ticket/models.py:147
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:264
 msgid "Accessibile a Ospiti"
 msgstr "Accessible to Guests"
 
-#: uni_ticket/models.py:151 uni_ticket/models.py:154
+#: uni_ticket/models.py:149 uni_ticket/models.py:152
 msgid "Accessibile a {}"
 msgstr "Accessible to {}"
 
-#: uni_ticket/models.py:162 uni_ticket/models.py:448
+#: uni_ticket/models.py:160 uni_ticket/models.py:446
 msgid "Richiesta di tipo Notifica"
 msgstr "Notification type request"
 
-#: uni_ticket/models.py:165
+#: uni_ticket/models.py:163
 msgid "Richiesta che viene automaticamente presa in carico"
 msgstr "Request that is automatically taken care of"
 
-#: uni_ticket/models.py:168
+#: uni_ticket/models.py:166
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:206
 msgid "Messaggio di conferma"
 msgstr "Confirmation message"
 
-#: uni_ticket/models.py:173
+#: uni_ticket/models.py:171
 msgid ""
 "Es: 'Hai correttamente confermato la tua partecipazione'. Apri e chiudi le "
 "parentesi graffe per inserire l'oggetto della richiesta. Lascia vuoto per "
@@ -1272,39 +1272,39 @@ msgstr ""
 "braces to insert the subject of the request. Leave blank to use the default "
 "text \"{}\""
 
-#: uni_ticket/models.py:182
+#: uni_ticket/models.py:180
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:218
 msgid "Testo in calce per versione stampabile"
 msgstr "Visible in the printable version"
 
-#: uni_ticket/models.py:186
+#: uni_ticket/models.py:184
 msgid "Mail ad operatori"
 msgstr "Mail to operators"
 
-#: uni_ticket/models.py:188
+#: uni_ticket/models.py:186
 msgid "Invia email a operatori per ogni richiesta aperta"
 msgstr "Send emails to operators for each open request"
 
-#: uni_ticket/models.py:193
-#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:70
+#: uni_ticket/models.py:191
+#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:79
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:347
 msgid "Protocollo obbligatorio"
 msgstr "Mandatory protocol"
 
-#: uni_ticket/models.py:197
+#: uni_ticket/models.py:195
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:303
 msgid "Gli utenti possono aprire più richieste contemporaneamente"
 msgstr "Users can open multiple requests at the same time"
 
-#: uni_ticket/models.py:203
+#: uni_ticket/models.py:201
 msgid "Categoria della Richiesta"
 msgstr "Request category"
 
-#: uni_ticket/models.py:204
+#: uni_ticket/models.py:202
 msgid "Categorie delle Richieste"
 msgstr "Request categories"
 
-#: uni_ticket/models.py:222
+#: uni_ticket/models.py:220
 msgid ""
 "Per attivare la tipologia di richiesta <b>{}</b> è necessario assegnare un "
 "ufficio di competenza"
@@ -1312,7 +1312,7 @@ msgstr ""
 "To activate the type of request <b>{}</b> it is necessary to assign an "
 "office of competence"
 
-#: uni_ticket/models.py:227
+#: uni_ticket/models.py:225
 msgid ""
 "Per attivare la tipologia di richiesta <b>{}</b> è necessario attivare "
 "l'ufficio <b>{}</b>"
@@ -1320,7 +1320,7 @@ msgstr ""
 "To activate the type of request <b>{}</b> it is necessary to activate the "
 "office <b>{}</b>"
 
-#: uni_ticket/models.py:232
+#: uni_ticket/models.py:230
 msgid ""
 "Per attivare la tipologia di richiesta <b>{}</b> è necessario attivare un "
 "modulo di input"
@@ -1328,7 +1328,7 @@ msgstr ""
 "To activate the type of request <b>{}</b> it is necessary to activate an "
 "input form"
 
-#: uni_ticket/models.py:240
+#: uni_ticket/models.py:238
 msgid ""
 "Per attivare la tipologia di richiesta <b>{}</b> è necessario rimuovere o "
 "prolungare la data di scadenza"
@@ -1336,37 +1336,37 @@ msgstr ""
 "To activate the type of request <b>{}</b> it is necessary to activate an "
 "input form"
 
-#: uni_ticket/models.py:320
+#: uni_ticket/models.py:318
 msgid "Modulo di Inserimento Richiesta"
 msgstr "Request Input Form"
 
-#: uni_ticket/models.py:321
+#: uni_ticket/models.py:319
 msgid "Moduli di Inserimento Richieste"
 msgstr "Request Input Forms"
 
-#: uni_ticket/models.py:392
+#: uni_ticket/models.py:390
 msgid "Modulo di inserimento"
 msgstr "Input form"
 
-#: uni_ticket/models.py:393
+#: uni_ticket/models.py:391
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_options.html:8
 msgid "Moduli di inserimento"
 msgstr "Input forms"
 
-#: uni_ticket/models.py:454
+#: uni_ticket/models.py:452
 msgid "Quando la richiesta è stata protocollata"
 msgstr "When the request was registered"
 
-#: uni_ticket/models.py:466 uni_ticket/models.py:467
+#: uni_ticket/models.py:464 uni_ticket/models.py:465
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:38
 msgid "Ticket"
 msgstr ""
 
-#: uni_ticket/models.py:667 uni_ticket/models.py:695
+#: uni_ticket/models.py:665 uni_ticket/models.py:693
 msgid "<span class=\"badge badge-success\">Chiusa</span>"
 msgstr "<span class=\"badge badge-success\">Closed</span>"
 
-#: uni_ticket/models.py:671 uni_ticket/models.py:1358
+#: uni_ticket/models.py:669 uni_ticket/models.py:1356
 msgid ""
 "<span class=\"badge badge-success\">Chiusa</span> <span class=\"badge badge-"
 "{}\">{}</span>"
@@ -1374,15 +1374,15 @@ msgstr ""
 "<span class=\"badge badge-success\">Closed</span> <span class=\"badge badge-"
 "{}\">{}</span>"
 
-#: uni_ticket/models.py:684 uni_ticket/models.py:728 uni_ticket/models.py:1370
+#: uni_ticket/models.py:682 uni_ticket/models.py:726 uni_ticket/models.py:1368
 msgid "<span class=\"badge badge-danger\">Aperta</span>"
 msgstr "<span class=\"badge badge-danger\">Open</span>"
 
-#: uni_ticket/models.py:685 uni_ticket/models.py:729
+#: uni_ticket/models.py:683 uni_ticket/models.py:727
 msgid "<span class=\"badge badge-warning\">Assegnata</span> {}"
 msgstr "<span class=\"badge badge-warning\">Assigned</span> {}"
 
-#: uni_ticket/models.py:703
+#: uni_ticket/models.py:701
 msgid ""
 "<span class=\"badge badge-success\">Chiusa</span> <svg class=\"icon icon-xs "
 "{}\"><title>{}</title><use xlink:href=\"{}#{}\"></use></svg>"
@@ -1390,90 +1390,90 @@ msgstr ""
 "<span class=\"badge badge-success\">Closed</span> <svg class=\"icon icon-xs "
 "{}\"><title>{}</title><use xlink:href=\"{}#{}\"></use></svg>"
 
-#: uni_ticket/models.py:745
+#: uni_ticket/models.py:743
 msgid "{} - richiesta {} aggiornata"
 msgstr "{} - request {} updated"
 
-#: uni_ticket/models.py:1030 uni_ticket/models.py:1037
+#: uni_ticket/models.py:1028 uni_ticket/models.py:1035
 msgid "Da assegnare"
 msgstr "To assign"
 
-#: uni_ticket/models.py:1103
+#: uni_ticket/models.py:1101
 msgid "Risposta predefinita"
 msgstr "Default response"
 
-#: uni_ticket/models.py:1104
+#: uni_ticket/models.py:1102
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_options.html:84
 msgid "Risposte predefinite"
 msgstr "Default replies"
 
-#: uni_ticket/models.py:1136 uni_ticket/models.py:1137
+#: uni_ticket/models.py:1134 uni_ticket/models.py:1135
 msgid "Competenza Ticket"
 msgstr "Ticket Competence"
 
-#: uni_ticket/models.py:1208 uni_ticket/models.py:1209
+#: uni_ticket/models.py:1206 uni_ticket/models.py:1207
 msgid "Domande/Risposte Ticket"
 msgstr "Ticket Questions / Repl"
 
-#: uni_ticket/models.py:1260
+#: uni_ticket/models.py:1258
 msgid "Dipendenza Ticket"
 msgstr "Ticket depencende"
 
-#: uni_ticket/models.py:1261
+#: uni_ticket/models.py:1259
 msgid "Dipendenze Ticket"
 msgstr "Ticket dependencies"
 
-#: uni_ticket/models.py:1330 uni_ticket/models.py:1331
+#: uni_ticket/models.py:1328 uni_ticket/models.py:1329
 msgid "Task"
 msgstr ""
 
-#: uni_ticket/models.py:1391
+#: uni_ticket/models.py:1389
 msgid "Dipendenza Ticket da Task"
 msgstr "Ticket dependency on Task"
 
-#: uni_ticket/models.py:1392
+#: uni_ticket/models.py:1390
 msgid "Dipendenze Ticket da Task"
 msgstr "Ticket dependencies on Task"
 
-#: uni_ticket/models.py:1414
+#: uni_ticket/models.py:1412
 msgid "Visibile nella versione stampabile"
 msgstr "Visible in the printable version"
 
-#: uni_ticket/models.py:1416
+#: uni_ticket/models.py:1414
 msgid "Collassabile"
 msgstr "Collassable"
 
-#: uni_ticket/models.py:1417
+#: uni_ticket/models.py:1415
 msgid "Visibile agli utenti"
 msgstr "Visible to users"
 
-#: uni_ticket/models.py:1421
+#: uni_ticket/models.py:1419
 msgid "Clausola tipologia di richiesta ticket"
 msgstr "Type of ticket request clause"
 
-#: uni_ticket/models.py:1422
+#: uni_ticket/models.py:1420
 msgid "Clausole tipologia di richiesta ticket"
 msgstr "Clause type of ticket request"
 
-#: uni_ticket/models.py:1442
+#: uni_ticket/models.py:1440
 msgid "Visibile nei ticket"
 msgstr "Visible on tickets"
 
-#: uni_ticket/models.py:1446
+#: uni_ticket/models.py:1444
 msgid "Task predefinito"
 msgstr "Default task"
 
-#: uni_ticket/models.py:1447
+#: uni_ticket/models.py:1445
 msgid "Task predefiniti"
 msgstr "Default tasks"
 
-#: uni_ticket/models.py:1515
+#: uni_ticket/models.py:1513
 #, fuzzy
 #| msgid "Configurazione WSArchiPro Struttura"
 msgid "Configurazione WS Protocollo Struttura"
 msgstr "WSArchiPro Configuration Structure"
 
-#: uni_ticket/models.py:1516
+#: uni_ticket/models.py:1514
 #, fuzzy
 #| msgid "Configurazioni WSArchiPro Strutture"
 msgid "Configurazioni WS Protocollo Strutture"
@@ -1481,49 +1481,49 @@ msgstr ""
 "35/5000\n"
 "WSArchiPro Structures Configurations"
 
-#: uni_ticket/models.py:1545
+#: uni_ticket/models.py:1543
 #, fuzzy
 #| msgid "Non attivo"
 msgid "Nominativo RPA"
 msgstr "Not active"
 
-#: uni_ticket/models.py:1552
+#: uni_ticket/models.py:1550
 #, fuzzy
 #| msgid "Verifica il corretto funzionamento del sistema di protocollo"
 msgid "Username RPA sul sistema di protocollo"
 msgstr "Check the correct functioning of the protocol system"
 
-#: uni_ticket/models.py:1559
+#: uni_ticket/models.py:1557
 #, fuzzy
 #| msgid "Verifica il corretto funzionamento del sistema di protocollo"
 msgid "Matricola RPA sul sistema di protocollo"
 msgstr "Check the correct functioning of the protocol system"
 
-#: uni_ticket/models.py:1571
+#: uni_ticket/models.py:1569
 msgid "Codice titolario"
 msgstr "Holder code"
 
-#: uni_ticket/models.py:1574
+#: uni_ticket/models.py:1572
 msgid "Fascicolo numero"
 msgstr "Issue number"
 
-#: uni_ticket/models.py:1577
+#: uni_ticket/models.py:1575
 msgid "Fascicolo anno"
 msgstr "Issue year"
 
-#: uni_ticket/models.py:1582
+#: uni_ticket/models.py:1580
 #, fuzzy
 #| msgid "Configurazione WSArchiPro Categoria"
 msgid "Configurazione WS Protocollo Categoria"
 msgstr "WSArchiPro Category configuration"
 
-#: uni_ticket/models.py:1583
+#: uni_ticket/models.py:1581
 #, fuzzy
 #| msgid "Configurazioni WSArchiPro Categorie"
 msgid "Configurazioni WS Protocollo Categorie"
 msgstr "WSArchiPro Configurations Categories"
 
-#: uni_ticket/models.py:1608
+#: uni_ticket/models.py:1606
 msgid "Alert di struttura agli utenti"
 msgstr "Structure alert to users"
 
@@ -1631,7 +1631,7 @@ msgstr "No competence over the request"
 msgid "Hai accesso alla richiesta in sola lettura"
 msgstr "You have read-only access to the request"
 
-#: uni_ticket/settings.py:454
+#: uni_ticket/settings.py:225
 msgid ""
 "Impossibile effettuare l'operazione.<br>Nonostante tu abbia precompilato la "
 "richiesta, è l'utente <b>{}</b> che l'ha sottomessa"
@@ -1639,7 +1639,7 @@ msgstr ""
 "Could not do this.<br>Although you have pre-filled the request, it is user "
 "<b>{}</b> who submitted it"
 
-#: uni_ticket/settings.py:466
+#: uni_ticket/settings.py:237
 #, python-brace-format
 msgid ""
 "Gentile utente,\n"
@@ -1656,7 +1656,7 @@ msgstr ""
 "-------------------\n"
 "\n"
 
-#: uni_ticket/settings.py:480
+#: uni_ticket/settings.py:251
 msgid ""
 "\n"
 "\n"
@@ -1672,15 +1672,15 @@ msgstr ""
 "For technical problems contact our staff.\n"
 "Best regards.\n"
 
-#: uni_ticket/settings.py:493
+#: uni_ticket/settings.py:264
 msgid "La tipologia di richiesta non è attiva"
 msgstr "The type of request is not active"
 
-#: uni_ticket/settings.py:498
+#: uni_ticket/settings.py:269
 msgid "Richiesta \"{}\" creata con successo"
 msgstr "Request \"{}\" successfully created"
 
-#: uni_ticket/settings.py:505
+#: uni_ticket/settings.py:276
 #, python-brace-format
 msgid ""
 "{added_text}\n"
@@ -1695,7 +1695,7 @@ msgstr ""
 "\n"
 "Click here {url} to view it."
 
-#: uni_ticket/settings.py:517
+#: uni_ticket/settings.py:288
 #, python-brace-format
 msgid ""
 "La richiesta \"{ticket}\" è stata aggiornata con il seguente messaggio:\n"
@@ -1706,7 +1706,7 @@ msgstr ""
 "\n"
 "{message}"
 
-#: uni_ticket/settings.py:527
+#: uni_ticket/settings.py:298
 #, python-brace-format
 msgid ""
 "Hai {status} un nuovo messaggio per la richiesta \"{ticket}\"\n"
@@ -1725,12 +1725,12 @@ msgstr ""
 "\n"
 "Click here {url} to open the message panel."
 
-#: uni_ticket/settings.py:540
+#: uni_ticket/settings.py:311
 #, python-brace-format
 msgid "La richiesta \"{ticket}\" è stata eliminata correttamente."
 msgstr "The request \"{ticket}\" was successfully deleted."
 
-#: uni_ticket/settings.py:547
+#: uni_ticket/settings.py:318
 msgid ""
 "La seguente richiesta {event msg}:\n"
 "\n"
@@ -1740,7 +1740,7 @@ msgstr ""
 "\n"
 "{ticket}"
 
-#: uni_ticket/settings.py:557
+#: uni_ticket/settings.py:328
 #, python-brace-format
 msgid ""
 "Ci sono {opened_ticket_number} richieste da gestire.\n"
@@ -1751,7 +1751,7 @@ msgstr ""
 "\n"
 "{tickets_per_office}"
 
-#: uni_ticket/settings.py:567
+#: uni_ticket/settings.py:338
 #, python-brace-format
 msgid ""
 "E' stata effettuata una nuova richiesta all'ufficio {destination_office}.\n"
@@ -1770,7 +1770,7 @@ msgstr ""
 "\n"
 "URL: {ticket_url}"
 
-#: uni_ticket/settings.py:581
+#: uni_ticket/settings.py:352
 #, python-brace-format
 msgid ""
 "Hai ricevuto un nuovo messaggio per la richiesta \"{ticket}\"\n"
@@ -1789,7 +1789,7 @@ msgstr ""
 "\n"
 "Click here {url} to open the message panel."
 
-#: uni_ticket/settings.py:595
+#: uni_ticket/settings.py:366
 #, python-brace-format
 msgid ""
 "Ti è stata assegnata una nuova richiesta da {manager}.\n"
@@ -1808,35 +1808,35 @@ msgstr ""
 "\n"
 "URL: {ticket_url}"
 
-#: uni_ticket/settings.py:610
+#: uni_ticket/settings.py:381
 #, python-brace-format
 msgid ""
 "Dear user,you have successfully {status} the ticket:{ticket}This message was "
 "sent to you by {hostname}.Please do not reply to this email."
 msgstr ""
 
-#: uni_ticket/settings.py:624
+#: uni_ticket/settings.py:395
 #, python-brace-format
 msgid ""
 "Dear {user},you have successfully {status} a message for ticket:{ticket}This "
 "message was sent to you by {hostname}.Please do not reply to this email."
 msgstr ""
 
-#: uni_ticket/settings.py:638
+#: uni_ticket/settings.py:409
 #, python-brace-format
 msgid ""
 "Dear {user},the ticket:{ticket}has been updated with the message:{message}."
 "This message was sent to you by {hostname}.Please do not reply to this email."
 msgstr ""
 
-#: uni_ticket/settings.py:656
+#: uni_ticket/settings.py:427
 #, python-brace-format
 msgid ""
 "Dear {user},the following ticket {event_msg}:{ticket}This message was sent "
 "to you by {hostname}.Please do not reply to this email."
 msgstr ""
 
-#: uni_ticket/settings.py:670
+#: uni_ticket/settings.py:441
 #, python-brace-format
 msgid ""
 "Dear {user},You have {open_ticket_number} tickets to manage."
@@ -2308,12 +2308,12 @@ msgid ""
 "inizio è stata corretta a <b>{}</b>"
 msgstr ""
 
-#: uni_ticket/views/management.py:2451
+#: uni_ticket/views/management.py:2452
 #: uni_ticket_bootstrap_italia_template/templates/manager/main_menu.html:39
 msgid "Statistiche"
 msgstr ""
 
-#: uni_ticket/views/management.py:2452
+#: uni_ticket/views/management.py:2453
 msgid "Struttura {} - dal {} al {}"
 msgstr ""
 
@@ -3974,15 +3974,21 @@ msgstr "Competent office"
 msgid "Nessuno"
 msgstr "None"
 
-#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:53
+#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:47
+#, fuzzy
+#| msgid "Richiesta di tipo Notifica"
+msgid "Richieste di tipo notifica"
+msgstr "Notification type request"
+
+#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:62
 msgid "Clausole attive"
 msgstr "Active clauses"
 
-#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:57
+#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:66
 msgid "Attività predefinite attive"
 msgstr "Active default tasks"
 
-#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:61
+#: uni_ticket_bootstrap_italia_template/templates/manager/categories_list.html:70
 msgid "Notifica email a operatori"
 msgstr "Email notification to operators"
 
@@ -4313,8 +4319,10 @@ msgid "Si, rimuovi"
 msgstr "Yes, remove"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:228
-msgid "Ticket di tipo Notifica"
-msgstr "Notification ticket"
+#, fuzzy
+#| msgid "Richiesta di tipo Notifica"
+msgid "Richieste di tipo Notifica"
+msgstr "Notification type request"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:240
 msgid "Mostra intestazione richiesta"
@@ -5345,13 +5353,16 @@ msgstr "Other informations"
 msgid "E-mail"
 msgstr ""
 
-#: uni_ticket_project/settingslocal.py:321
+#: uni_ticket_project/settingslocal.py:361
 msgid "Italiano"
 msgstr "Italian"
 
-#: uni_ticket_project/settingslocal.py:322
+#: uni_ticket_project/settingslocal.py:362
 msgid "Inglese"
 msgstr "English"
+
+#~ msgid "Ticket di tipo Notifica"
+#~ msgstr "Notification ticket"
 
 #~ msgid "Categoria del Ticket"
 #~ msgstr "Request category"

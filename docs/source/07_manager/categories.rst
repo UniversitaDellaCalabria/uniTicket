@@ -9,7 +9,7 @@ Tipologie di richieste
 Aggiungi nuova
 --------------
 
-| La creazione di una nuova tipologia di richiesta prevede l’inserimento dei campi Nome e Descrizione, la scelta dei ruoli di accessibilità per l’apertura di nuovi ticket, del tipo di ticket e della possibilità di mostrare all'utente una intestazione con i suoi dati personali in fase di apertura di un nuovo ticket.
+| La creazione di una nuova tipologia di richiesta prevede l’inserimento dei campi Nome e Descrizione, la scelta dei ruoli di accessibilità per l’apertura di nuove richieste, del tipo di richiesta e della possibilità di mostrare all'utente una intestazione con i suoi dati personali in fase di apertura di un nuovo ticket.
 | Una tipologia appena creata si presenta con stato *Non attiva*, perché sprovvista di un modulo di input attivo e di un ufficio attivo competente.
 
 .. thumbnail:: images/category_new.png
