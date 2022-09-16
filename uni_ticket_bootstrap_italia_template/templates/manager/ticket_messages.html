@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load static %}
 
+
 {% block menu_links %}
 {% include 'manager/main_menu.html' %}
 {% endblock menu_links %}
@@ -28,6 +29,7 @@
                 <th>Oggetto</th>
 -->
                 <th>{% trans "Tipo" %}</th>
+                <th>{% trans "Gestito da me" %}</th>
     <!--
                 <th>Stato</th>
     -->
@@ -52,6 +54,17 @@
                     <td>{{ tm.0.subject }}</td>
 -->
                     <td>{{ tm.ticket__input_module__ticket_category__name}}</td>
+                    <td>
+                        {% if tm.ticket__code in my_assignments_list %}
+                        <svg class="mr-2 icon icon-success icon-xs">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                        </svg>
+                        {% else %}
+                        <svg class="mr-2 icon icon-danger icon-xs">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                        </svg>
+                        {% endif %}
+                    </td>
     <!--
                     <td>{{ tm.0.get_status }}</td>
     -->
