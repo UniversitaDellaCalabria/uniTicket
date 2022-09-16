@@ -366,12 +366,28 @@ def ticket_messages(request, structure_slug=None, structure=None, office_employe
         .annotate(started=started)
         .order_by("-not_read", "-started")
     )
-    paginator = Paginator(ticket_messages, 10)
+    paginator = Paginator(ticket_messages, 20)
     page = request.GET.get("page")
     ticket_messages = paginator.get_page(page)
+
+    my_assignments_list = []
+    if not by_operator:
+        ticket_pk = []
+        for tm in ticket_messages:
+            ticket_pk.append(tm['ticket__code'])
+        my_assignments = TicketAssignment.objects.filter(ticket__code__in=ticket_pk,
+                                                         taken_by=request.user,
+                                                         follow=True,
+                                                         readonly=False)\
+                                                 .select_related('ticket')
+        for ma in my_assignments:
+            if ma.ticket.code not in my_assignments_list:
+                my_assignments_list.append(ma.ticket.code)
+
     template = "{}/ticket_messages.html".format(user_type)
     title = _("Tutti i messaggi")
     d = {
+        "my_assignments_list": my_assignments_list,
         "structure": structure,
         "ticket_messages": ticket_messages,
         "title": title,
