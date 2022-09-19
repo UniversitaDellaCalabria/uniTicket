@@ -31,8 +31,7 @@
 -->
                 <th>{% trans "Tipo" %}</th>
                 <td>
-                    {% get_value dictionary=my_assignments_dict key=tm.ticket__code as is_mine %}
-                    {% if is_mine %}
+                    {% if tm.ticket__code in my_assignments_list %}
                     <svg class="mr-2 icon icon-success icon-xs">
                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
                     </svg>
