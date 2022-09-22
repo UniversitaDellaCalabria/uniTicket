@@ -60,7 +60,6 @@ from uni_ticket.settings import (
     USER_TICKET_MESSAGE,
 )
 from uni_ticket.utils import *
-from uni_ticket.views.management import ticket_detail
 
 
 logger = logging.getLogger(__name__)
@@ -1166,8 +1165,6 @@ def ticket_delete(request, ticket_id):
 # @login_required
 # @is_the_owner
 # decorators in urls.py (print view call this view but with different decorators)
-
-
 class TicketDetail(View):
     """
     Shows ticket details
@@ -1180,9 +1177,7 @@ class TicketDetail(View):
 
     :return: render
     """
-    template = "user/ticket_detail.html"
-
-    def get(self, request, ticket_id:str, api:bool = False):
+    def get(self, request, ticket_id:str, api:bool=False, template="user/ticket_detail.html"):
 
         ticket = get_object_or_404(Ticket, code=ticket_id)
         modulo_compilato = ticket.get_modulo_compilato()
@@ -1228,7 +1223,7 @@ class TicketDetail(View):
         if api:
             return self.data
         else:
-            return render(request, self.template, self.data)
+            return render(request, template, self.data)
 
 
 @login_required
@@ -1649,18 +1644,21 @@ def ticket_detail_print(request, ticket_id, ticket):  # pragma: no cover
 
     :return: view response
     """
-    response = ticket_detail(
-        request, ticket_id=ticket_id, template="ticket_detail_print.html"
-    )
+    response = TicketDetail().get(requestrequest,
+                                  ticket_id=ticket_id,
+                                  template="ticket_detail_print.html")
     return response
 
 
 @login_required
 @has_access_to_ticket
-def download_ticket_pdf(
-    request, ticket_id, ticket, template="ticket_detail_print_pdf.html"
-):  # pragma: no cover
-    response = ticket_detail(request, ticket_id=ticket_id, template=template)
+def download_ticket_pdf(request,
+                        ticket_id,
+                        ticket,
+                        template="ticket_detail_print_pdf.html"):  # pragma: no cover
+    response = TicketDetail().get(request=request,
+                                  ticket_id=ticket_id,
+                                  template=template)
 
     # file names
     pdf_fname = "{}.pdf".format(ticket.code)
