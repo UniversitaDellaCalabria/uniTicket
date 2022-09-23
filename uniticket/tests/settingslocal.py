@@ -31,7 +31,7 @@ INSTALLED_APPS = [
 
     'sass_processor',
     'uni_ticket_bootstrap_italia_template',
-    'django_unical_bootstrap_italia',
+    # 'django_unical_bootstrap_italia',
     'bootstrap_italia_template',
 
     #'bootstrapform',
