@@ -1,6 +1,27 @@
 CHANGELOG
 ---------
 
+v2.1.1
+------
+
+- fix: requirements and base template
+
+
+v2.1.0
+------
+
+- feat: 'managed_by_me' flag in ticket messages list;
+- fix: bug in printable version
+
+
+v2.0.1
+------
+
+- fix missing import in settings
+- fix url path_name collision
+- added notification ticket flag in manager dashboard
+
+
 v2.0.0
 ------
 
