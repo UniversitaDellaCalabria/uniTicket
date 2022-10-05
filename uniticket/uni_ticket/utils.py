@@ -634,3 +634,9 @@ def export_category_zip(category, ticket_codes_list=[]):
         category.name.replace("/", "_")
     )
     return response
+
+def base_context(context):
+    context['base_template'] = getattr(settings,
+                                       'DEFAULT_BASE_TEMPLATE',
+                                       '')
+    return context

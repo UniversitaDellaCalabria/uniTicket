@@ -290,7 +290,7 @@ def ticket_new_preload(request, structure_slug:str = None):
         _d = get_structures_by_request(request, structure_slug)
         d.update(_d)
 
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 class TicketAddNew(View):
@@ -529,7 +529,7 @@ class TicketAddNew(View):
         if api:
             return self.context_data
         else:
-            return render(request, self.template, self.context_data)
+            return render(request, self.template, base_context(self.context_data))
 
     def post(self, request, structure_slug, category_slug, api=False):
         self.get_assets(structure_slug, category_slug)
@@ -904,8 +904,7 @@ def dashboard(request):
         "ticket_non_gestiti": unassigned,
         "title": title,
     }
-
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1024,7 +1023,7 @@ def ticket_edit(request, ticket_id):
                         k, strip_tags(v))
                 )
 
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1223,7 +1222,7 @@ class TicketDetail(View):
         if api:
             return self.data
         else:
-            return render(request, template, self.data)
+            return render(request, template, base_context(self.data))
 
 
 @login_required
@@ -1365,7 +1364,7 @@ def ticket_message(request, ticket_id):
         "title": title,
     }
     template = "user/ticket_assistance.html"
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @method_decorator(login_required, name="dispatch")
@@ -1393,7 +1392,7 @@ class TaskDetail(View):  # pragma: no cover
         title = _("Dettaglio task")
         d = {"priority": priority, "sub_title": task, "task": task, "title": title}
         template = "user/task_detail.html"
-        return render(request, template, d)
+        return render(request, template, base_context(d))
 
 
 @method_decorator(login_required, 'dispatch')
@@ -1449,7 +1448,7 @@ class TicketClose(View):
         if api:
             return self.contenxt_data
         else:
-            return render(request, self.template, self.context_data)
+            return render(request, self.template, base_context(self.context_data))
 
     def post(self, request, api:bool = False):
         self.form = BaseTicketCloseForm(request.POST or getattr(request, "api_data")) # API csrf token workaround
@@ -1591,7 +1590,7 @@ def chat_new_preload(request, structure_slug=None):  # pragma: no cover
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required

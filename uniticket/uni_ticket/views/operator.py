@@ -7,7 +7,7 @@ from organizational_area.models import *
 from uni_ticket.decorators import is_operator
 from uni_ticket.models import *
 from uni_ticket.settings import OPERATOR_PREFIX
-from uni_ticket.utils import user_offices_list, visible_tickets_to_user
+from uni_ticket.utils import base_context, user_offices_list, visible_tickets_to_user
 
 
 @login_required
@@ -62,4 +62,4 @@ def dashboard(request, structure_slug, structure, office_employee):
         "ticket_messages": messages,
         "ticket_non_gestiti": unassigned,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))

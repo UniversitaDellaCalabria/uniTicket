@@ -18,6 +18,7 @@ from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.protocol_utils import ticket_protocol
 from uni_ticket.utils import (
+    base_context,
     custom_message,
     office_can_be_deleted,
     user_is_manager,
@@ -87,7 +88,7 @@ def dashboard(request, structure_slug, structure):
         "ticket_non_gestiti": unassigned,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -114,7 +115,7 @@ def offices(request, structure_slug, structure):
         "structure": structure,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -186,7 +187,7 @@ def office_add_new(request, structure_slug, structure):
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -266,7 +267,7 @@ def office_edit(request, structure_slug, office_slug, structure):
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -344,7 +345,7 @@ def office_detail(request, structure_slug, office_slug, structure):
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -846,7 +847,7 @@ def category_detail(request, structure_slug, category_slug, structure):
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1016,7 +1017,7 @@ def category_add_new(request, structure_slug, structure):
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1150,7 +1151,7 @@ def category_edit(request, structure_slug, category_slug, structure):
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1385,7 +1386,7 @@ def category_input_module_new(request, structure_slug, category_slug, structure)
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1458,7 +1459,7 @@ def category_input_module_edit(
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1752,7 +1753,7 @@ def category_input_module_details(
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1884,7 +1885,7 @@ def category_input_module_preview(
                     request, messages.ERROR, "<b>{}</b>: {}".format(
                         k, strip_tags(v))
                 )
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1990,7 +1991,7 @@ def category_input_field_edit(
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2054,7 +2055,7 @@ def category_condition_new(request, structure_slug, category_slug, structure):
         "sub_title": category,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2128,7 +2129,7 @@ def category_condition_edit(
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2324,7 +2325,7 @@ def category_condition_detail(
         "sub_title": condition,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2354,7 +2355,7 @@ def categories(request, structure_slug, structure):
         # 'sub_title': sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2420,7 +2421,7 @@ def category_input_module_clone_preload(
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2568,7 +2569,7 @@ def category_task_new(request, structure_slug, category_slug, structure):
         "sub_title": category,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2603,7 +2604,7 @@ def category_task_detail(request, structure_slug, category_slug, task_id, struct
         "task": task,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2715,7 +2716,7 @@ def category_task_edit(request, structure_slug, category_slug, task_id, structur
         "task": task,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -3008,7 +3009,7 @@ def manager_settings(request, structure_slug, structure):
         "sub_title": sub_title,
         "title": title,
     }
-    response = render(request, template, d)
+    response = render(request, template, base_context(d))
     return response
 
 
@@ -3068,7 +3069,7 @@ def structure_protocol_configuration_detail(
         "sub_title": structure,
         "title": title,
     }
-    response = render(request, template, d)
+    response = render(request, template, base_context(d))
     return response
 
 
@@ -3373,7 +3374,7 @@ def category_protocol_configuration_detail(
         "sub_title": category,
         "title": title,
     }
-    response = render(request, template, d)
+    response = render(request, template, base_context(d))
     return response
 
 
@@ -3448,7 +3449,7 @@ def category_protocol_configuration_new(
         "sub_title": category,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -3744,7 +3745,7 @@ def category_default_reply_new(request, structure_slug, category_slug, structure
         "sub_title": category,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -3971,7 +3972,7 @@ def category_default_reply_detail(
         "structure": structure,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -4024,7 +4025,7 @@ def structure_alert_new(request, structure_slug, structure):
         "sub_title": structure,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -4121,4 +4122,4 @@ def structure_alert_edit(request, structure_slug, alert_id, structure):
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))

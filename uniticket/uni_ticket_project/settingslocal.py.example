@@ -503,3 +503,8 @@ PROTOCOL_XML = """
 # statistics
 STATS_SHOW_TICKETS_BY_USER = False
 STATS_MAX_DAYS = 30
+
+# default template to extends
+# Default Bootstrap Italia template: 'bootstrap-italia-base.html'
+# Example: Unical template: 'base-setup.html'
+# DEFAULT_BASE_TEMPLATE = 'base-setup.html'

@@ -174,7 +174,7 @@ def opened_ticket(request, structure_slug=None, structure=None, office_employee=
         "sub_title": structure,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -202,7 +202,7 @@ def my_opened_ticket(
         "sub_title": structure,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -230,7 +230,7 @@ def unassigned_ticket(
         "sub_title": structure,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -256,7 +256,7 @@ def closed_ticket(request, structure_slug=None, structure=None, office_employee=
         "sub_title": structure,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -275,7 +275,7 @@ def email_notify_change(request):
             data["error"] = None
             user.save(update_fields=["email_notify"])
         d = {"data": data}
-        return render(request, "intercooler-notify.html", context=d)
+        return render(request, "intercooler-notify.html", context=base_context(d))
     raise Http404
 
 
@@ -305,7 +305,7 @@ def user_settings(
         "sub_title": sub_title,
         "title": title,
     }
-    response = render(request, template, d)
+    response = render(request, template, base_context(d))
     return response
 
 
@@ -392,7 +392,7 @@ def ticket_messages(request, structure_slug=None, structure=None, office_employe
         "ticket_messages": ticket_messages,
         "title": title,
     }
-    response = render(request, template, d)
+    response = render(request, template, base_context(d))
     return response
 
 

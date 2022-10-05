@@ -247,4 +247,3 @@ PROTOCOL_XML = """
 
 """
 # END PROTOCOLLO
-

@@ -1,9 +1,6 @@
-<!-- Extends default Bootstrap Unical Italia template -->
-<!--
-Bootstrap Italia template: bootstrap-italia-base.html
-Unical template: base-setup.html
--->
-{% extends 'bootstrap-italia-base.html' %}
+<!-- Define default template in your settings -->
+<!-- ( passed by uni_ticket.utils.base_context() -->
+{% extends base_template|default:"bootstrap-italia-base.html" %}
 
 {% load i18n %}
 {% load l10n %}

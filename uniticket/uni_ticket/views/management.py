@@ -421,7 +421,7 @@ def ticket_detail(
         "untaken_user_offices": untaken_user_offices,
     }
     template = "{}/ticket_detail.html".format(user_type)
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -489,7 +489,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
         "sub_title": sub_title,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -649,7 +649,7 @@ def ticket_dependence_add_new(
         "ticket": ticket,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -867,7 +867,7 @@ def ticket_close(
         "ticket": ticket,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1047,7 +1047,7 @@ def ticket_competence_add_new(
         "ticket": ticket,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1255,7 +1255,7 @@ def ticket_competence_add_final(
         "ticket": ticket,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1431,7 +1431,7 @@ def ticket_message(
         "title": title,
     }
     template = "{}/ticket_assistance.html".format(user_type)
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1536,7 +1536,7 @@ def task_add_new(
         "ticket": ticket,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1744,7 +1744,7 @@ def task_detail(
     }
     user_type = get_user_type(request.user, structure)
     template = "{}/task_detail.html".format(user_type)
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -1883,7 +1883,7 @@ def task_close(
         "task": task,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2100,7 +2100,7 @@ def task_edit(
         "task": task,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2316,7 +2316,7 @@ def ticket_competence_leave(
         "ticket": ticket,
         "title": title,
     }
-    return render(request, template, d)
+    return render(request, template, base_context(d))
 
 
 @login_required
@@ -2471,4 +2471,4 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
         context["tickets"] = TicketCategory.objects.filter(organizational_structure=_struct)
 
     _template = "management/statistics_manager.html" if structure_slug else "management/statistics_superuser.html"
-    return render(request, _template, context)
+    return render(request, _template, base_context(context))
