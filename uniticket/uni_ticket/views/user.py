@@ -29,7 +29,7 @@ from django.utils.translation import gettext as _
 from django_form_builder.utils import (
     get_as_dict,
     get_labeled_errors,
-    get_POST_as_json,
+    # get_POST_as_json,
     set_as_dict,
 )
 from organizational_area.models import (
@@ -562,6 +562,7 @@ class TicketAddNew(View):
                 TICKET_CONDITIONS_FIELD_ID,
                 TICKET_CAPTCHA_ID,
                 TICKET_CAPTCHA_HIDDEN_ID,
+                'csrfmiddlewaretoken'
             ]
             #
             # if user generates an encrypted token in URL
@@ -580,10 +581,10 @@ class TicketAddNew(View):
                 fields_to_pop.append(TICKET_GENERATE_URL_BUTTON_NAME)
 
                 # get form data in json
-                json_data = get_POST_as_json(
-                    request=request, fields_to_pop=fields_to_pop
-                )
-                form_data = json.loads(json_data)
+                form_data = deepcopy(self.form.data)
+                for i in fields_to_pop:
+                    if i in form_data:
+                        form_data.pop(i)
 
                 # insert input module pk to json data
                 form_data.update({TICKET_INPUT_MODULE_NAME: self.modulo.pk})
@@ -662,6 +663,7 @@ class TicketAddNew(View):
                 for i in fields_to_pop:
                     if i in form_data:
                         form_data.pop(i)
+
                 # make a UUID based on the host ID and current time
                 code = uuid_code()
 
@@ -962,10 +964,13 @@ def ticket_edit(request, ticket_id):
         "title": title,
     }
     if request.method == "POST":
-        fields_to_pop = [TICKET_CONDITIONS_FIELD_ID]
-        json_post = get_POST_as_json(
-            request=request, fields_to_pop=fields_to_pop)
-        json_response = json.loads(json_post)
+        fields_to_pop = [TICKET_CONDITIONS_FIELD_ID,
+                         'csrfmiddlewaretoken']
+        # get form data in json
+        json_response = deepcopy(request.POST)
+        for i in fields_to_pop:
+            if i in json_response:
+                json_response.pop(i)
         # Costruisco il form con il json dei dati inviati e tutti gli allegati
         # json_response[settings.ATTACHMENTS_DICT_PREFIX]=allegati
         # rimuovo solo gli allegati che sono stati già inseriti
