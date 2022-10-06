@@ -341,7 +341,7 @@ class TicketAddNew(View):
                     self.request,
                     _("Dati da importare non consistenti. Modulo di input mancante"),
                 )
-            modulo = get_object_or_404(
+            self.modulo = get_object_or_404(
                 TicketCategoryModule, ticket_category=self.category, pk=module_id
             )
             # get user that compiled module (if exists)
@@ -357,7 +357,7 @@ class TicketAddNew(View):
                     else timezone.localtime()
                 )
             # get compiled form
-            self.form = modulo.get_form(
+            self.form = self.modulo.get_form(
                 data=imported_data, show_conditions=True, current_user=self.request.user
             )
         else:
