@@ -556,6 +556,9 @@ class TicketAddNew(View):
         )
         self.context_data["form"] = self.form
         if self.form.is_valid():
+            # get form data in json
+            form_data = deepcopy(self.form.data)
+
             # add static static fields to fields to pop
             # these fields are useful only in frontend
             fields_to_pop = [
@@ -564,10 +567,9 @@ class TicketAddNew(View):
                 TICKET_CAPTCHA_HIDDEN_ID,
                 'csrfmiddlewaretoken'
             ]
-            #
+
             # if user generates an encrypted token in URL
             # no ticket is saved. compiled form is serialized
-            #
             if self.form.data.get(TICKET_GENERATE_URL_BUTTON_NAME):
 
                 # log action
@@ -580,8 +582,6 @@ class TicketAddNew(View):
                 # add the "generate url" button to fields to pop
                 fields_to_pop.append(TICKET_GENERATE_URL_BUTTON_NAME)
 
-                # get form data in json
-                form_data = deepcopy(self.form.data)
                 for i in fields_to_pop:
                     if i in form_data:
                         form_data.pop(i)
@@ -658,8 +658,6 @@ class TicketAddNew(View):
                     ]
                 )
 
-                # get form data in json
-                form_data = deepcopy(self.form.data)
                 for i in fields_to_pop:
                     if i in form_data:
                         form_data.pop(i)
