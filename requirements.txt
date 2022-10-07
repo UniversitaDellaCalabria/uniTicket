@@ -53,3 +53,6 @@ WeasyPrint==52.4
 
 # production
 # mysqlclient>=1.4.6
+
+# fix Bandit error on Python <= 3.7
+importlib-metadata<5.0; python_version < '3.8'
