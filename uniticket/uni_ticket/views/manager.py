@@ -72,7 +72,7 @@ def dashboard(request, structure_slug, structure):
 
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)
-    disabled_expired_items(categories)
+    # disabled_expired_items(categories)
 
     messages = TicketReply.get_unread_messages_count(tickets=tickets)
 
@@ -787,7 +787,7 @@ def category_detail(request, structure_slug, category_slug, structure):
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
-    category.disable_if_expired()
+    # category.disable_if_expired()
 
     title = _("Gestione tipologia di richiesta")
     template = "manager/category_detail.html"
@@ -2347,7 +2347,7 @@ def categories(request, structure_slug, structure):
     # sub_title = _("gestione ufficio livello manager")
     categories = TicketCategory.objects.filter(
         organizational_structure=structure)
-    disabled_expired_items(categories)
+    # disabled_expired_items(categories)
 
     d = {
         "categories": categories,
@@ -2951,7 +2951,7 @@ def manager_settings(request, structure_slug, structure):
     alerts = OrganizationalStructureAlert.objects.filter(
         organizational_structure=structure
     )
-    disabled_expired_items(alerts)
+    # disabled_expired_items(alerts)
 
     if request.method == "POST":
         form = OrganizationalStructureAddManagerForm(
@@ -4083,7 +4083,7 @@ def structure_alert_edit(request, structure_slug, alert_id, structure):
     alert = get_object_or_404(
         OrganizationalStructureAlert, pk=alert_id, organizational_structure=structure
     )
-    alert.disable_if_expired()
+    # alert.disable_if_expired()
     form = OrganizationalStructureAlertForm(instance=alert)
     if request.method == "POST":
         form = OrganizationalStructureAlertForm(

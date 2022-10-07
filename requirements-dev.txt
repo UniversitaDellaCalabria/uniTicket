@@ -17,6 +17,8 @@ black
 flake8
 isort
 bandit
+# fix Bandit error on Python <= 3.7
+importlib-metadata<5.0; python_version < '3.8'
 
 ipython
 pygments>=2.7.4
