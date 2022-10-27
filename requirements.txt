@@ -53,3 +53,4 @@ WeasyPrint==52.4
 
 # production
 # mysqlclient>=1.4.6
+twisted>=22.10.0rc1 # not directly required, pinned by Snyk to avoid a vulnerability
