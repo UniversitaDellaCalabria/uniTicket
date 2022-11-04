@@ -292,8 +292,8 @@ def ticket_add_new(request, structure_slug, category_slug):
 
     # TODO: not covered yet in the unit tests
     # if anonymous user and category only for logged users
-    if not self.category.allow_anonymous and not self.request.user.is_authenticated:
-        return redirect_after_login(self.request.get_full_path())
+    if not category.allow_anonymous and not request.user.is_authenticated:
+        return redirect_after_login(request.get_full_path())
 
     # is user is authenticated
     if request.user.is_authenticated:
