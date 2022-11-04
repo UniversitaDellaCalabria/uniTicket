@@ -25,6 +25,7 @@ jobs:
         django-version:
           - '3.2'
           - '4.0'
+          - '4.1'
 
     steps:
     - uses: actions/checkout@v2
@@ -48,7 +49,7 @@ jobs:
     - name: Test with Django tests
       working-directory: uniticket/
       run: |
-        DJANGO_SETTINGS_MODULE=tests.settings 
+        DJANGO_SETTINGS_MODULE=tests.settings
         coverage erase
         coverage run ./manage.py test --settings tests.settings --failfast -v 2
         coverage report -m
@@ -64,7 +65,7 @@ jobs:
         name: codecov-umbrella
         fail_ci_if_error: true
         path_to_write_report: uniticket/codecov_report.txt
-        # verbose: true    
+        # verbose: true
     - name: Bandit Security Scan
       working-directory: uniticket/
       run: |
