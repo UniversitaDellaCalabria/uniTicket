@@ -15,6 +15,7 @@ import zlib
 
 from django.apps import apps
 from django.conf import settings
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -640,3 +641,13 @@ def base_context(context):
                                        'DEFAULT_BASE_TEMPLATE',
                                        '')
     return context
+
+def redirect_after_login(fullpath):
+    _sep = "?"
+    if sep in settings.LOGIN_URL:
+        _sep = "&"
+    redirect_url = "{}{}{}={}".format(
+        settings.LOGIN_URL, _sep,
+        REDIRECT_FIELD_NAME, fullpath
+    )
+    return redirect(redirect_url)

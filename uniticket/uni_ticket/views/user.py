@@ -6,7 +6,6 @@ import re
 import shutil
 from typing import Union
 
-from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.models import LogEntry
@@ -454,18 +453,11 @@ class TicketAddNew(View):
         if not self.category.is_published():
             unavailable_msg = self.category.not_available_message or UNAVAILABLE_TICKET_CATEGORY
             return custom_message(self.request, unavailable_msg, status=404)
-        
+
         # TODO: not covered yet in the unit tests
         # if anonymous user and category only for logged users
         if not self.category.allow_anonymous and not self.request.user.is_authenticated:
-            _sep = "?"
-            if sep in settings.LOGIN_URL:
-                _sep = "&"
-            redirect_url = "{}{}{}={}".format(
-                settings.LOGIN_URL, _sep, 
-                REDIRECT_FIELD_NAME, self.request.get_full_path()
-            )
-            return redirect(redirect_url)
+            return redirect_after_login(self.request.get_full_path())
 
         # is user is authenticated
         if self.request.user.is_authenticated:
