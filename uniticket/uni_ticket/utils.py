@@ -644,7 +644,7 @@ def base_context(context):
 
 def redirect_after_login(fullpath):
     _sep = "?"
-    if sep in settings.LOGIN_URL:
+    if _sep in settings.LOGIN_URL:
         _sep = "&"
     redirect_url = "{}{}{}={}".format(
         settings.LOGIN_URL, _sep,
