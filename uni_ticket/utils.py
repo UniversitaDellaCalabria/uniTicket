@@ -527,7 +527,7 @@ def export_category_zip(category, ticket_codes_list=[]):
 
 def redirect_after_login(fullpath):
     _sep = "?"
-    if sep in settings.LOGIN_URL:
+    if _sep in settings.LOGIN_URL:
         _sep = "&"
     redirect_url = "{}{}{}={}".format(
         settings.LOGIN_URL, _sep,
