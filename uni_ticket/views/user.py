@@ -290,11 +290,10 @@ def ticket_add_new(request, structure_slug, category_slug):
         unavailable_msg = category.not_available_message or settings.UNAVAILABLE_TICKET_CATEGORY
         return custom_message(request, unavailable_msg, status=404)
 
+    # TODO: not covered yet in the unit tests
     # if anonymous user and category only for logged users
-    if not category.allow_anonymous and not request.user.is_authenticated:
-        redirect_url = '{}?next={}'.format(settings.LOGIN_URL,
-                                           request.get_full_path())
-        return redirect(redirect_url)
+    if not self.category.allow_anonymous and not self.request.user.is_authenticated:
+        return redirect_after_login(self.request.get_full_path())
 
     # is user is authenticated
     if request.user.is_authenticated:

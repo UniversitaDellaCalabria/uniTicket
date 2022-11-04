@@ -16,7 +16,7 @@ import zlib
 
 from django.apps import apps
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -524,3 +524,13 @@ def export_category_zip(category, ticket_codes_list=[]):
     response = HttpResponse(output.getvalue(), content_type='application/zip')
     response['Content-Disposition'] = 'attachment; filename="{}.zip"'.format(category.name.replace('/','_'))
     return response
+
+def redirect_after_login(fullpath):
+    _sep = "?"
+    if sep in settings.LOGIN_URL:
+        _sep = "&"
+    redirect_url = "{}{}{}={}".format(
+        settings.LOGIN_URL, _sep,
+        REDIRECT_FIELD_NAME, fullpath
+    )
+    return redirect(redirect_url)

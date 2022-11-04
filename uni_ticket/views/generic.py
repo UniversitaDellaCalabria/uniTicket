@@ -449,7 +449,7 @@ def ticket_message_delete(request, ticket_message_id):
                     structure_slug=structure.slug,
                     ticket_id=ticket.code)
 
-@login_required
+# @login_required
 def download_condition_attachment(request, structure_slug,
                                   category_slug, condition_id):
     """
@@ -470,6 +470,11 @@ def download_condition_attachment(request, structure_slug,
                                  is_active=True,
                                  organizational_structure__slug=structure_slug,
                                  organizational_structure__is_active=True)
+
+    # deny access only for login protected categories
+    if not category.allow_anonymous and not request.user.is_authenticated:
+       return redirect_after_login(request.get_full_path())
+
     condition = get_object_or_404(TicketCategoryCondition,
                                   category=category,
                                   pk=condition_id)
