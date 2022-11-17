@@ -1644,7 +1644,7 @@ def ticket_detail_print(request, ticket_id, ticket):  # pragma: no cover
 
     :return: view response
     """
-    response = TicketDetail().get(requestrequest,
+    response = TicketDetail().get(request=request,
                                   ticket_id=ticket_id,
                                   template="ticket_detail_print.html")
     return response
