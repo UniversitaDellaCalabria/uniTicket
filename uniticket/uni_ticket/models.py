@@ -22,25 +22,24 @@ from organizational_area.models import (
     OrganizationalStructureOffice,
     OrganizationalStructureOfficeEmployee,
 )
-from uni_ticket.settings import (
-    CLOSING_LEVELS,
-    NEW_TICKET_CREATED_ALERT,
-    ORGANIZATION_EMPLOYEE_LABEL,
-    ORGANIZATION_USER_LABEL,
-    PRIORITY_LEVELS,
-    SHOW_HEADING_TEXT,
-)
 
 from .dynamic_form import DynamicForm
 from .utils import *
 from .validators import *
 from .settings import (
     CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
+    CLOSING_LEVELS,
     MAX_DAILY_TICKET_PER_USER,
+    NEW_TICKET_CREATED_ALERT,
+    ORGANIZATION_EMPLOYEE_LABEL,
+    ORGANIZATION_USER_LABEL,
+    PRIORITY_LEVELS,
+    SHOW_HEADING_TEXT,
     STRUCTURES_FOLDER,
     TICKET_ATTACHMENT_FOLDER,
     TICKET_CATEGORIES_FOLDER,
     TICKET_DESCRIPTION_ID,
+    TICKET_MESSAGES_ATTACHMENT_SUBFOLDER,
     TICKET_MIN_DIGITS_TO_COMPRESS,
     TICKET_SUBJECT_ID,
     TICKET_TASK_ATTACHMENT_SUBFOLDER,
@@ -1230,7 +1229,7 @@ class TicketReply(models.Model):
         """
         ticket_folder = self.ticket.get_folder()
         folder = "{}/{}".format(
-            ticket_folder, settings.TICKET_MESSAGES_ATTACHMENT_SUBFOLDER
+            ticket_folder, TICKET_MESSAGES_ATTACHMENT_SUBFOLDER
         )
         return folder
 
