@@ -14,7 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import uni_ticket.urls
+
 from django.conf import settings
+from django.conf.urls import handler404
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
@@ -23,6 +25,7 @@ from django.urls import path, include
 
 from djangosaml2 import views
 
+from uni_ticket.views import handlers
 
 @login_required
 def test500(request):
@@ -38,6 +41,8 @@ urlpatterns = [
     path("{}/".format(getattr(settings, "ADMIN_PATH", "admin")), admin.site.urls),
     path("test500/", test500, name="test500"),
 ]
+
+handler404 = handlers.error_404
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
