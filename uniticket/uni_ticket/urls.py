@@ -10,13 +10,8 @@ from uni_ticket.settings import MANAGEMENT_URL_PREFIX
 from .decorators import is_manager, is_operator, is_super_admin, is_the_owner
 from .views import datatables, generic, management, manager, operator, user
 
+
 app_name = "uni_ticket"
-
-
-def my_test_500_view(request):
-    # Return an "Internal Server Error" 500 response code.
-    return HttpResponse(status=500)
-
 
 _dashboard_name = "dashboard"
 
@@ -25,7 +20,6 @@ _dashboard_name = "dashboard"
 ticket = "tickets/<str:ticket_id>"
 urlpatterns = [
     path("", RedirectView.as_view(url="/{}/".format(_dashboard_name))),
-    path("500/", my_test_500_view),
     # Router url di responsabilità su struttura (manager/operator/user)
     re_path(
         r"^manage/(?:(?P<structure_slug>[-\w]+))?$", generic.manage, name="manage"),
