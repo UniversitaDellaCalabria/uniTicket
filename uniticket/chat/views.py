@@ -10,7 +10,8 @@ from chat.settings import VIDEOCONF_PROVIDERS
 
 from organizational_area.models import OrganizationalStructure
 from uni_ticket.models import TicketCategory
-from uni_ticket.utils import (custom_message,
+from uni_ticket.utils import (base_context,
+                              custom_message,
                               get_user_type,
                               user_is_employee,
                               user_is_in_organization,
@@ -27,10 +28,11 @@ def room(request, room_name):
 
     if user_is_operator:
         return render(request, 'room_{}.html'.format(user_type),
-                      {'structure': structure,
-                       'title': '{} [chat-room]'.format(structure),
-                       'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
-                      })
+                      base_context(
+                        {'structure': structure,
+                         'title': '{} [chat-room]'.format(structure),
+                         'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
+                      }))
 
     # if not chat_operator_online(request.user, structure.slug):
         # return custom_message(request,
@@ -59,10 +61,11 @@ def room(request, room_name):
 
     if categorie:
         return render(request, 'room_{}.html'.format(user_type),
-                      {'structure': structure,
-                       'title': '{} [chat-room]'.format(structure),
-                       'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
-                      })
+                      base_context(
+                        {'structure': structure,
+                          'title': '{} [chat-room]'.format(structure),
+                          'ws_protocol': getattr(settings, 'WS_PROTOCOL', 'ws://')
+                      }))
     return custom_message(request,
                           _("Questa struttura non offre "
                             "categorie disponibili per la tua "
