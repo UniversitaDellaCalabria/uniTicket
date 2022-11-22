@@ -19,6 +19,7 @@ docs/build/*
 uniticket/templates/base-setup.html
 
 uniticket/saml2_sp/settings.py
+uniticket/saml2_sp/saml2_config/attribute-maps/satosa_spid.py
 uniticket/saml2_sp/saml2_config/certificates/*pem
 uniticket/saml2_sp/saml2_config/certificates/*key
 uniticket/saml2_sp/saml2_config/certificates/*src
