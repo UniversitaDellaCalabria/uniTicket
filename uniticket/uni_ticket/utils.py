@@ -46,6 +46,13 @@ from uni_ticket.settings import (
 logger = logging.getLogger(__name__)
 
 
+def base_context(context):
+    context['base_template'] = getattr(settings,
+                                       'DEFAULT_BASE_TEMPLATE',
+                                       '')
+    return context
+
+
 def compress_text_to_b64(text):
     """Returns a compressed and b64 encoded string"""
     if isinstance(text, str):
@@ -65,7 +72,7 @@ def custom_message(request, message="", structure_slug="", status=None):
     return render(
         request,
         "custom_message.html",
-        {"avviso": message, "structure_slug": structure_slug},
+        base_context({"avviso": message, "structure_slug": structure_slug}),
         status=status,
     )
 
@@ -636,11 +643,6 @@ def export_category_zip(category, ticket_codes_list=[]):
     )
     return response
 
-def base_context(context):
-    context['base_template'] = getattr(settings,
-                                       'DEFAULT_BASE_TEMPLATE',
-                                       '')
-    return context
 
 def redirect_after_login(fullpath):
     _sep = "?"
