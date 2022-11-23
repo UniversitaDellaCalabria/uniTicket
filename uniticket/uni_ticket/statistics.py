@@ -323,4 +323,4 @@ class uniTicketStats:
 
         # sort descending
         self.open_by_user = {k: v for k, v in sorted(self.open_by_user.items(), key=lambda item: item[1])}
-        self.closed_by_ops = {k: v for k, v in sorted(self.closed_by_ops.items(), key=lambda item: item[1])}
+        self.closed_by_ops = {k: v for k, v in sorted(self.closed_by_ops.items(), key=lambda item: item[1], reverse=True)}
