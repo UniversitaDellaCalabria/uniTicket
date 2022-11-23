@@ -43,6 +43,7 @@ from uni_ticket.models import *
 from uni_ticket.pdf_utils import response_as_pdf
 from uni_ticket.protocol_utils import ticket_protocol
 from uni_ticket.settings import (
+    NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY,
     NEW_TICKET_CREATED,
     NEW_TICKET_CREATED_EMPLOYEE_BODY,
     OPERATOR_PREFIX,
@@ -55,8 +56,9 @@ from uni_ticket.settings import (
     TICKET_DELETED,
     TICKET_GENERATE_URL_BUTTON_NAME,
     TICKET_INPUT_MODULE_NAME,
+    TICKET_SHARING_USER_ERROR_MESSAGE,
     UNAVAILABLE_TICKET_CATEGORY,
-    USER_TICKET_MESSAGE,
+    USER_TICKET_MESSAGE
 )
 from uni_ticket.utils import *
 
@@ -1108,7 +1110,7 @@ def ticket_delete(request, ticket_id):
         messages.add_message(
             request,
             messages.ERROR,
-            settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(
+            TICKET_SHARING_USER_ERROR_MESSAGE.format(
                 ticket.created_by),
         )
         return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
@@ -1341,7 +1343,7 @@ def ticket_message(request, ticket_id):
                     request=request,
                     ticket=ticket,
                     category=category,
-                    message_template=settings.NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY,
+                    message_template=NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY,
                     mail_params=mail_params,
                 )
             # END Send email to operators
@@ -1426,7 +1428,7 @@ class TicketClose(View):
             messages.add_message(
                 request,
                 messages.ERROR,
-                settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(
+                TICKET_SHARING_USER_ERROR_MESSAGE.format(
                     self.ticket.created_by),
             )
             return redirect(

@@ -17,15 +17,15 @@ from django.utils.translation import gettext as _
 from django_form_builder.forms import BaseDynamicForm
 from django_form_builder.models import DynamicFieldMap, SavedFormContent
 from django_form_builder.utils import get_as_dict, set_as_dict
+
 from organizational_area.models import (
     OrganizationalStructure,
     OrganizationalStructureOffice,
     OrganizationalStructureOfficeEmployee,
 )
+from organizational_area.settings import STRUCTURES_FOLDER
 
 from .dynamic_form import DynamicForm
-from .utils import *
-from .validators import *
 from .settings import (
     CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
     CLOSING_LEVELS,
@@ -35,7 +35,6 @@ from .settings import (
     ORGANIZATION_USER_LABEL,
     PRIORITY_LEVELS,
     SHOW_HEADING_TEXT,
-    STRUCTURES_FOLDER,
     TICKET_ATTACHMENT_FOLDER,
     TICKET_CATEGORIES_FOLDER,
     TICKET_DESCRIPTION_ID,
@@ -43,8 +42,11 @@ from .settings import (
     TICKET_MIN_DIGITS_TO_COMPRESS,
     TICKET_SUBJECT_ID,
     TICKET_TASK_ATTACHMENT_SUBFOLDER,
-    TICKET_UPDATED,
+    TICKET_UPDATED
 )
+from .utils import *
+from .validators import *
+
 
 logger = logging.getLogger("__name__")
 

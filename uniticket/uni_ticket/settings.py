@@ -2,8 +2,6 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 # system attachments folders
-LOGOS_FOLDER = getattr(settings, "LOGOS_FOLDER", "logos")
-STRUCTURES_FOLDER = getattr(settings, "STRUCTURES_FOLDER", "structures")
 TICKET_ATTACHMENT_FOLDER = getattr(
     settings, "TICKET_ATTACHMENT_FOLDER", "ticket")
 TICKET_CATEGORIES_FOLDER = getattr(
@@ -99,10 +97,14 @@ TICKET_DESCRIPTION_HELP_TEXT = getattr(
 )
 
 # captcha
-TICKET_CAPTCHA_ID = getattr(settings, "TICKET_CAPTCHA_ID", "ticket_captcha")
-TICKET_CAPTCHA_HIDDEN_ID = getattr(settings, "", "ticket_captcha_hidden")
+TICKET_CAPTCHA_ID = getattr(
+    settings, "TICKET_CAPTCHA_ID", "ticket_captcha"
+)
+TICKET_CAPTCHA_HIDDEN_ID = getattr(
+    settings, "TICKET_CAPTCHA_HIDDEN_ID", "ticket_captcha_hidden"
+)
 TICKET_CAPTCHA_LABEL = getattr(
-    settings, "TICKET_CAPTCHA_HIDDEN_ID", _("Codice di verifica")
+    settings, "TICKET_CAPTCHA_LABEL", _("Codice di verifica")
 )
 
 # new ticket submit buttons (create / generate import URL)
@@ -210,7 +212,8 @@ USER_ATTRIBUTE_LABEL = getattr(
 # additional user fields to export
 ADDITIONAL_USER_FIELDS = getattr(
     settings, "ADDITIONAL_USER_FIELDS", [
-        EMPLOYEE_ATTRIBUTE_NAME, USER_ATTRIBUTE_NAME]
+        EMPLOYEE_ATTRIBUTE_NAME,
+        USER_ATTRIBUTE_NAME]
 )
 
 # Label

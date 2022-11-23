@@ -458,13 +458,11 @@ def send_custom_mail(subject, recipients, body, params={}, force=False):
 def user_is_employee(user):
     if not user:
         return False
-    if getattr(settings, "EMPLOYEE_ATTRIBUTE_NAME", False):
-        attr = getattr(user, settings.EMPLOYEE_ATTRIBUTE_NAME)
-        if callable(attr):
-            return attr()
-        else:
-            return attr
-    return False
+    attr = getattr(user, EMPLOYEE_ATTRIBUTE_NAME, False)
+    if callable(attr):
+        return attr()
+    else:
+        return attr
     # If operator in the same Structure
     # is_operator = user_is_operator(request.user, struttura)
     # If manage something. For alla structures
@@ -528,14 +526,8 @@ def export_input_module_csv(
     module.ticket_category
 
     head = ["created", "user", "taxpayer_id"]
-    if hasattr(settings, "EMPLOYEE_ATTRIBUTE_NAME"):
-        head.append(
-            getattr(settings, "EMPLOYEE_ATTRIBUTE_LABEL",
-                    EMPLOYEE_ATTRIBUTE_LABEL)
-        )
-    if hasattr(settings, "USER_ATTRIBUTE_NAME"):
-        head.append(
-            getattr(settings, "USER_ATTRIBUTE_LABEL", USER_ATTRIBUTE_NAME))
+    head.append(EMPLOYEE_ATTRIBUTE_NAME)
+    head.append(USER_ATTRIBUTE_NAME)
     head.extend(["status", "subject", "description"])
     custom_head = []
     fields = apps.get_model("uni_ticket", "TicketCategoryInputList").objects.filter(
@@ -585,10 +577,8 @@ def export_input_module_csv(
             richiesta.created_by,
             richiesta.created_by.taxpayer_id,
         ]
-        if hasattr(settings, "EMPLOYEE_ATTRIBUTE_NAME"):
-            row.append(getattr(richiesta.created_by, EMPLOYEE_ATTRIBUTE_NAME))
-        if hasattr(settings, "USER_ATTRIBUTE_NAME"):
-            row.append(getattr(richiesta.created_by, USER_ATTRIBUTE_NAME))
+        row.append(getattr(richiesta.created_by, EMPLOYEE_ATTRIBUTE_NAME))
+        row.append(getattr(richiesta.created_by, USER_ATTRIBUTE_NAME))
         row.extend([status, richiesta.subject, richiesta.description])
 
         for column in custom_head:
