@@ -10,4 +10,4 @@ class UniTicketConfig(AppConfig):
 
     def ready(self):
         # Signals
-        pass
+        import uni_ticket.signals

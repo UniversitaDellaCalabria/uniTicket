@@ -8,16 +8,16 @@ from .models import *
 from .utils import delete_directory, delete_file
 
 
-@receiver(pre_save, sender=TicketCategory)
-@disable_for_loaddata
-def check_if_can_be_activated(sender, instance, **kwargs):
-    """
-    Check if TicketCategory can be activated
-    """
-    if instance.is_active:
-        problem = instance.something_stops_activation()
-        if problem:
-            raise ValidationError(problem)
+# @receiver(pre_save, sender=TicketCategory)
+# @disable_for_loaddata
+# def check_if_can_be_activated(sender, instance, **kwargs):
+    # """
+    # Check if TicketCategory can be activated
+    # """
+    # if instance.is_active:
+        # problem = instance.something_stops_activation()
+        # if problem:
+            # raise ValidationError(problem)
 
 
 @receiver(pre_delete, sender=Task)
