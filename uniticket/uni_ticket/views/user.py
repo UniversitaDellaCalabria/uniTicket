@@ -859,7 +859,7 @@ class TicketAddNew(View):
         if api:
             return self.context_data
         else:
-            return render(request, self.template, self.context_data)
+            return render(request, self.template, base_context(self.context_data))
 
 
 @login_required
