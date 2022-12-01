@@ -936,8 +936,7 @@ def ticket_edit(request, ticket_id):
         messages.add_message(
             request,
             messages.ERROR,
-            settings.TICKET_SHARING_USER_ERROR_MESSAGE.format(
-                ticket.created_by),
+            TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by),
         )
         return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
 
