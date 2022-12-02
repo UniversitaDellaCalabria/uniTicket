@@ -1,6 +1,12 @@
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
+
+# for javascript datepickers
+JS_DEFAULT_DATETIME_FORMAT = getattr(
+    settings, "JS_DEFAULT_DATETIME_FORMAT", "DD/MM/YYYY HH:mm"
+)
+
 # system attachments folders
 TICKET_ATTACHMENT_FOLDER = getattr(
     settings, "TICKET_ATTACHMENT_FOLDER", "ticket")
