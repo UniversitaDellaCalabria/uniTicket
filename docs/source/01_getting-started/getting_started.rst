@@ -518,7 +518,7 @@ Modificare le variabili opprtune (ignorare la parte dedicata al DB momentaneamen
 
 **06 - Media e statics**
 
-Copiare media e statics nella nuova folder
+Copiare `uniticket/data/media` e `uniticket/data/statics` in `uniticket/data`.
 
 .. code-block:: python
      cp [path]/uniticket_tmp/data [path]/uniticket/uniticket
@@ -539,7 +539,10 @@ Copiare media e statics nella nuova folder
 
 Poichè i log dei ticket sono collegati ai ContentType,
 è necessario sovrascrivere i valori creati da Django nella
-migrazione iniziale per la consistenza del backup da importare
+migrazione iniziale per la consistenza del backup da importare.
+
+Nel seguente script bisogna copiare il contenuto di `old_conf` 
+stampato al punto **02 - Export dei ContentType**
 
 .. code-block:: python
 
