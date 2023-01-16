@@ -515,7 +515,9 @@ class TicketAddNew(View):
             return deny_response
 
         # user that compiled ticket
-        self.get_modulo_and_form()
+        error = self.get_modulo_and_form()
+        if error:
+            return error
 
         self.context_data = {
             "categoria": self.category,
