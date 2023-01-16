@@ -516,7 +516,7 @@ class TicketAddNew(View):
 
         # user that compiled ticket
         error = self.get_modulo_and_form()
-        if error:
+        if error and not api:
             return error
 
         self.context_data = {
