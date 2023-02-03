@@ -1639,8 +1639,8 @@ def ticket_clone(request, ticket_id):
 
     # build encrypted url param with form data
     encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
-    compiled_ticket = CompiledTicket.objects.create(content=encrypted_data,
-                                                    one_time=True)
+    compiled_ticket = CompiledTicket.objects.create(content=encrypted_data)
+                                                    # one_time=True)
     base_url = reverse(
         "uni_ticket:add_new_ticket",
         kwargs={
