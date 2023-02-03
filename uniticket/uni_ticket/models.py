@@ -49,10 +49,6 @@ from .utils import *
 from .validators import *
 
 
-PRECOMPILED_TICKET_EXPIRE_DAYS = getattr(settings,
-                                         'PRECOMPILED_TICKET_EXPIRE_DAYS',
-                                         PRECOMPILED_TICKET_EXPIRE_DAYS)
-
 logger = logging.getLogger("__name__")
 
 

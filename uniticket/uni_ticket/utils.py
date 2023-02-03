@@ -643,3 +643,15 @@ def redirect_after_login(fullpath):
         REDIRECT_FIELD_NAME, fullpath
     )
     return redirect(redirect_url)
+
+
+def querydict_list(querydict):
+    if type(querydict) == dict:
+        return querydict
+    data = {}
+    for key in querydict.keys():
+        v = querydict.getlist(key)
+        if len(v) == 1:
+            v = v[0]
+        data[key] = v
+    return data
