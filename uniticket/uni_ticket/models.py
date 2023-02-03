@@ -33,6 +33,7 @@ from .settings import (
     NEW_TICKET_CREATED_ALERT,
     ORGANIZATION_EMPLOYEE_LABEL,
     ORGANIZATION_USER_LABEL,
+    PRECOMPILED_TICKET_EXPIRE_DAYS,
     PRIORITY_LEVELS,
     SHOW_HEADING_TEXT,
     TICKET_ATTACHMENT_FOLDER,
@@ -47,6 +48,10 @@ from .settings import (
 from .utils import *
 from .validators import *
 
+
+PRECOMPILED_TICKET_EXPIRE_DAYS = getattr(settings,
+                                         'PRECOMPILED_TICKET_EXPIRE_DAYS',
+                                         PRECOMPILED_TICKET_EXPIRE_DAYS)
 
 logger = logging.getLogger("__name__")
 
@@ -1608,3 +1613,22 @@ class OrganizationalStructureAlert(ExpirableModel, TimeStampedModel):
 
     def __str__(self):
         return "{} - {}".format(self.name, self.organizational_structure)
+
+
+class CompiledTicket(models.Model):
+    url_path = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
+    content = models.TextField()
+    one_time = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+
+    @staticmethod
+    def clear():
+        """ """
+        if PRECOMPILED_TICKET_EXPIRE_DAYS:
+            to_clear = []
+            precompiled_tickets = CompiledTicket.objects.all()
+            for precompiled in precompiled_tickets:
+                if (timezone.now() - precompiled.created).days >= PRECOMPILED_TICKET_EXPIRE_DAYS:
+                    to_clear.append(precompiled.pk)
+            entries_to_clean = CompiledTicket.objects.filter(pk__in=to_clear)
+            entries_to_clean.delete()

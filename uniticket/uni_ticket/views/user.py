@@ -329,10 +329,18 @@ class TicketAddNew(View):
     def get_modulo_and_form(self) -> None:
         # if there is an encrypted token with ticket params in URL
         if self.request.GET.get("import"):
+            CompiledTicket.clear()
             encoded_data = self.request.GET["import"]
             try:
+                compiled_ticket = get_object_or_404(CompiledTicket, url_path=encoded_data)
+            except Exception:
+                return custom_message(self.request, _("Il ticket precompilato è scaduto"))
+            try:
                 # decrypt and get imported form content
-                imported_data = json.loads(decrypt_from_jwe(encoded_data))
+                imported_data = json.loads(decrypt_from_jwe(compiled_ticket.content))
+                # one time
+                if compiled_ticket.one_time:
+                    compiled_ticket.delete()
             except Exception:
                 return custom_message(self.request, _("Dati da importare non consistenti."))
             # get input_module id from imported data
@@ -613,7 +621,9 @@ class TicketAddNew(View):
                     )
                 )
                 # build url to display in message
-                url = base_url + "?import=" + encrypted_data
+                compiled_ticket = CompiledTicket.objects.create(content=encrypted_data)
+                # url = base_url + "?import=" + encrypted_data
+                url = f"{base_url}?import={compiled_ticket.url_path}"
                 messages.add_message(
                     request,
                     messages.SUCCESS,
@@ -1623,6 +1633,8 @@ def ticket_clone(request, ticket_id):
 
     # build encrypted url param with form data
     encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
+    compiled_ticket = CompiledTicket.objects.create(content=encrypted_data,
+                                                    one_time=True)
     base_url = reverse(
         "uni_ticket:add_new_ticket",
         kwargs={
@@ -1630,7 +1642,7 @@ def ticket_clone(request, ticket_id):
             "category_slug": category.slug,
         },
     )
-    return HttpResponseRedirect(base_url + "?import={}".format(encrypted_data))
+    return HttpResponseRedirect(f"{base_url}?import={compiled_ticket.url_path}")
 
 
 @login_required
