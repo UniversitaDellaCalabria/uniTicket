@@ -624,7 +624,8 @@ class TicketAddNew(View):
                     )
                 )
                 # build url to display in message
-                compiled_ticket = CompiledTicket.objects.create(content=encrypted_data)
+                compiled_ticket = CompiledTicket.objects.create(url_path=uuid_code(),
+                                                                content=encrypted_data)
                 # url = base_url + "?import=" + encrypted_data
                 url = f"{base_url}?import={compiled_ticket.url_path}"
                 messages.add_message(
@@ -1639,7 +1640,8 @@ def ticket_clone(request, ticket_id):
 
     # build encrypted url param with form data
     encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
-    compiled_ticket = CompiledTicket.objects.create(content=encrypted_data)
+    compiled_ticket = CompiledTicket.objects.create(url_path=uuid_code(),
+                                                    content=encrypted_data)
                                                     # one_time=True)
     base_url = reverse(
         "uni_ticket:add_new_ticket",
