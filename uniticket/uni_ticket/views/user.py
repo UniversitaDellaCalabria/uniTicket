@@ -612,8 +612,8 @@ class TicketAddNew(View):
                     )
 
                 # build encrypted url param with form data
-                data = querydict_list(form_data)
-                encrypted_data = encrypt_to_jwe(json.dumps(data).encode())
+                form_data = querydict_to_dict(form_data)
+                encrypted_data = encrypt_to_jwe(json.dumps(form_data).encode())
                 base_url = request.build_absolute_uri(
                     reverse(
                         "uni_ticket:add_new_ticket",
@@ -678,7 +678,7 @@ class TicketAddNew(View):
                     if i in form_data:
                         form_data.pop(i)
 
-                data = querydict_list(form_data)
+                form_data = querydict_to_dict(form_data)
 
                 # make a UUID based on the host ID and current time
                 code = uuid_code()
@@ -717,7 +717,7 @@ class TicketAddNew(View):
                     code=code,
                     subject=subject,
                     description=description,
-                    modulo_compilato=json.dumps(data),
+                    modulo_compilato=json.dumps(form_data),
                     created_by=self.current_user,
                     input_module=self.modulo
                 )
@@ -986,7 +986,7 @@ def ticket_edit(request, ticket_id):
         for i in fields_to_pop:
             if i in json_response:
                 json_response.pop(i)
-        data = querydict_list(json_response)
+        data = querydict_to_dict(json_response)
         # Costruisco il form con il json dei dati inviati e tutti gli allegati
         # json_response[settings.ATTACHMENTS_DICT_PREFIX]=allegati
         # rimuovo solo gli allegati che sono stati già inseriti

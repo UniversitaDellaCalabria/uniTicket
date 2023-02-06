@@ -645,7 +645,7 @@ def redirect_after_login(fullpath):
     return redirect(redirect_url)
 
 
-def querydict_list(querydict):
+def querydict_to_dict(querydict):
     if type(querydict) == dict:
         return querydict
     data = {}
