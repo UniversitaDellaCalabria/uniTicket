@@ -986,7 +986,7 @@ def ticket_edit(request, ticket_id):
         for i in fields_to_pop:
             if i in json_response:
                 json_response.pop(i)
-        data = querydict_to_dict(json_response)
+        json_response = querydict_to_dict(json_response)
         # Costruisco il form con il json dei dati inviati e tutti gli allegati
         # json_response[settings.ATTACHMENTS_DICT_PREFIX]=allegati
         # rimuovo solo gli allegati che sono stati già inseriti
@@ -1015,7 +1015,7 @@ def ticket_edit(request, ticket_id):
             ticket.save_data(
                 form.cleaned_data[TICKET_SUBJECT_ID],
                 form.cleaned_data[TICKET_DESCRIPTION_ID],
-                data,
+                json_response,
             )
 
             # compress content (default makes a check on length)
