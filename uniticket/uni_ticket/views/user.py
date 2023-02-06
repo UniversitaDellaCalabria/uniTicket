@@ -51,6 +51,7 @@ from uni_ticket.settings import (
     TICKET_CAPTCHA_ID,
     TICKET_COMPILED_BY_USER_NAME,
     TICKET_COMPILED_CREATION_DATE,
+    TICKET_COMPILED_ONE_TIME_FLAG,
     TICKET_CONDITIONS_FIELD_ID,
     TICKET_CREATE_BUTTON_NAME,
     TICKET_DELETED,
@@ -624,8 +625,10 @@ class TicketAddNew(View):
                     )
                 )
                 # build url to display in message
+                one_time = 1 if self.form.data.get(TICKET_COMPILED_ONE_TIME_FLAG) else 0
                 compiled_ticket = CompiledTicket.objects.create(url_path=uuid_code(),
-                                                                content=encrypted_data)
+                                                                content=encrypted_data,
+                                                                one_time=one_time)
                 # url = base_url + "?import=" + encrypted_data
                 url = f"{base_url}?import={compiled_ticket.url_path}"
                 messages.add_message(

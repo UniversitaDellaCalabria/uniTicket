@@ -123,6 +123,9 @@ TICKET_GENERATE_URL_BUTTON_NAME = getattr(
 TICKET_COMPILED_BY_USER_NAME = getattr(
     settings, "TICKET_COMPILED_BY_USER_NAME", "compiled_by_user"
 )
+TICKET_COMPILED_ONE_TIME_FLAG = getattr(
+    settings, "TICKET_COMPILED_ONE_TIME_FLAG", "compiled_one_time"
+)
 TICKET_COMPILED_CREATION_DATE = getattr(
     settings, "TICKET_COMPILED_CREATION_DATE", "compiled_date"
 )

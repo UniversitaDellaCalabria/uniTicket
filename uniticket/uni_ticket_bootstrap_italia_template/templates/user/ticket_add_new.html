@@ -231,12 +231,20 @@
         <div class="collapse-body">
             {% settings_value name="TICKET_GENERATE_URL_BUTTON_NAME" as generate_url_button_name %}
             {% settings_value "TICKET_COMPILED_BY_USER_NAME" as compiled_by_name %}
+            {% settings_value "TICKET_COMPILED_ONE_TIME_FLAG" as compiled_one_time %}
             <input type="checkbox"
                    id="{{ compiled_by_name }}"
                    name="{{ compiled_by_name }}"
                    checked>
             <label for="{{ compiled_by_name }}">
                 <b>{% trans "Tieni traccia della mia compilazione nella richiesta" %}</b>
+            </label>
+            <br>
+            <input type="checkbox"
+                   id="{{ compiled_one_time }}"
+                   name="{{ compiled_one_time }}">
+            <label for="{{ compiled_one_time }}">
+                <b>{% trans "L'URL potrà essere aperto una sola volta" %}</b>
             </label>
             <small class="form-text text-muted">
                 {% trans "Selezionando questa opzione i dati della tua utenza saranno visibili nella scheda di dettaglio della richiesta" %}
