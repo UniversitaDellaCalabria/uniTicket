@@ -53,3 +53,6 @@ WeasyPrint==52.4
 
 # production
 # mysqlclient>=1.4.6
+
+# per la protocollazione
+zeep
