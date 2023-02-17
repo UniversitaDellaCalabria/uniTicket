@@ -90,7 +90,6 @@ class DynamicForm(BaseDynamicForm):
             captcha_field.define_value(custom_value="", **custom_params)
             for single_field in captcha_field.get_fields():
                 self.final_fields[single_field.name] = single_field
-
         super().__init__(
             initial_fields=self.initial_fields,
             final_fields=self.final_fields,

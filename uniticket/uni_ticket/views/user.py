@@ -216,7 +216,9 @@ def get_structures_by_request(request, structure_slug):
     active_alerts = [i for i in alerts if i.is_published()]
 
     categorie = TicketCategory.objects.filter(
-        organizational_structure=structure, is_active=True
+        organizational_structure=structure,
+        is_hidden=False,
+        is_active=True
     )
 
     # disabled_expired_items(categorie)

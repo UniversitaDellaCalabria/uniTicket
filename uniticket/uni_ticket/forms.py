@@ -31,6 +31,7 @@ class CategoryForm(ModelForm):
             "date_start",
             "date_end",
             "not_available_message",
+            "is_hidden",
             "is_notification",
             "show_heading_text",
             "allow_anonymous",
@@ -62,6 +63,7 @@ class CategoryForm(ModelForm):
             "date_end": _("Formato {}. Lasciare vuoto  per non impostare" "").format(
                 settings.DEFAULT_DATETIME_FORMAT.replace("%", "")
             ),
+            "is_hidden": _("Se questa opzione è attiva sarà possibile accedere al modulo esclusivamente tramite URL diretto")
         }
 
     class Media:

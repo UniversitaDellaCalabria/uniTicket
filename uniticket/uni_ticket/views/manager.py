@@ -1115,6 +1115,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                         "protocol_required",
                         "user_multiple_open_tickets",
                         "modified",
+                        "is_hidden"
                     ]
                 )
                 form.save_m2m()

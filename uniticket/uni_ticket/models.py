@@ -188,6 +188,10 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         help_text=_("Invia email a operatori per ogni richiesta aperta"),
     )
 
+    # hide new ticket URL from selection dropdown
+    is_hidden = models.BooleanField(
+        _("Accessibile solo tramite URL"), default=False)
+
     # protocol action required
     protocol_required = models.BooleanField(
         _("Protocollo obbligatorio"), default=False)

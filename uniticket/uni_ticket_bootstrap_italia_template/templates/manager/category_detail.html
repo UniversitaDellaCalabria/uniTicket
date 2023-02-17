@@ -225,6 +225,18 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">{% trans 'Accessibile solo tramite URL' %}</th>
+                <td>
+                    <svg class="icon icon-sm icon-secondary">
+                    {% if category.is_hidden %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans 'Richieste di tipo Notifica' %}</th>
                 <td>
                     <svg class="icon icon-sm icon-secondary">

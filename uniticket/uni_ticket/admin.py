@@ -27,6 +27,7 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
         "is_notification",
         "confirm_message_text",
         "user_multiple_open_tickets",
+        "is_hidden"
     )
     inlines = [
         TicketCategoryModuleNestedInline,
@@ -45,6 +46,7 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
         "allow_user",
         "allow_employee",
         "user_multiple_open_tickets",
+        "is_hidden",
         "is_notification",
         "is_active",
     )
@@ -54,6 +56,8 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
         "allow_guest",
         "allow_user",
         "allow_employee",
+        "is_hidden",
+        "is_notification",
         "is_active",
     )
     search_fields = ("name", "description")
