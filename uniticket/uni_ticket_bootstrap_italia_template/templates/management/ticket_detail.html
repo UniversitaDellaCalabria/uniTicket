@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load organizational_area_tags %}
 {% load uni_ticket_tags %}
 
 {% block right_button %}
@@ -30,9 +31,9 @@
 
 {% block top_buttons %}
 {% ticket_is_open ticket as is_open %}
-{% settings_value name="MANAGER_PREFIX" as manager_label %}
-{% settings_value name="OPERATOR_PREFIX" as operator_label %}
-{% settings_value name="DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE" as default_office %}
+{% organizational_area_settings_value name="DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE" as default_office %}
+{% uni_ticket_settings_value name="MANAGER_PREFIX" as manager_label %}
+{% uni_ticket_settings_value name="OPERATOR_PREFIX" as operator_label %}
 
 {% if untaken_user_offices and not ticket.is_closed %}
 

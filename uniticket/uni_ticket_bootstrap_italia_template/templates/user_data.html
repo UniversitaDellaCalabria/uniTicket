@@ -26,8 +26,8 @@
                                     <th scope="row">{% trans "Codice fiscale" %}</th>
                                     <td>{{ request.user.taxpayer_id }}</td>
                                 </tr>
-                                {% settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
-                                {% settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
+                                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
                                 {% obj_get_attr request.user employee_attribute_name as user_employee_attribute %}
                                 {% if user_employee_attribute %}
                                     <tr>
@@ -35,8 +35,8 @@
                                         <td>{{ user_employee_attribute }}</td>
                                     </tr>
                                 {% endif %}
-                                {% settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
-                                {% settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
+                                {% uni_ticket_settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
+                                {% uni_ticket_settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
                                 {% obj_get_attr request.user user_attribute_name as user_user_attribute %}
                                 {% if user_user_attribute %}
                                     <tr>

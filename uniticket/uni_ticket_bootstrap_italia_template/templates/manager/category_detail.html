@@ -114,7 +114,7 @@
                         {{ category.not_available_message }}
                     {% else %}
                         {% trans "Messaggio predefinito:" %}
-                        {% settings_value "UNAVAILABLE_TICKET_CATEGORY" as default_unavailable_message %}
+                        {% uni_ticket_settings_value "UNAVAILABLE_TICKET_CATEGORY" as default_unavailable_message %}
                         {{ default_unavailable_message }}
                     {% endif %}
                 </td>
@@ -209,7 +209,7 @@
                         {{ category.confirm_message_text }}
                     {% else %}
                         {% trans "Messaggio predefinito:" %}
-                        {% settings_value "NEW_TICKET_CREATED_ALERT" as default_message %}
+                        {% uni_ticket_settings_value "NEW_TICKET_CREATED_ALERT" as default_message %}
                         {{ default_message }}
                     {% endif %}
                 </td>
@@ -285,7 +285,7 @@
                 </td>
             </tr>
             <tr>
-                {% settings_value name="ORGANIZATION_USER_LABEL" as organization_user_label %}
+                {% uni_ticket_settings_value name="ORGANIZATION_USER_LABEL" as organization_user_label %}
                 <th scope="row">{% trans "Accessibile a" %} {{ organization_user_label }}</th>
                 <td>
                     <svg class="icon icon-sm icon-secondary">
@@ -298,7 +298,7 @@
                 </td>
             </tr>
             <tr>
-                {% settings_value name="ORGANIZATION_EMPLOYEE_LABEL" as organization_employee_label %}
+                {% uni_ticket_settings_value name="ORGANIZATION_EMPLOYEE_LABEL" as organization_employee_label %}
                 <th scope="row">{% trans "Accessibile a" %} {{ organization_employee_label }}</th>
                 <td>
                     <svg class="icon icon-sm icon-secondary">

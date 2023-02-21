@@ -5,7 +5,8 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
-from organizational_area.settings import DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE, DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE_DESC
+from organizational_area.settings import (DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
+                                          DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE_DESC)
 
 from . decorators import disable_for_loaddata
 from . models import (OrganizationalStructure,

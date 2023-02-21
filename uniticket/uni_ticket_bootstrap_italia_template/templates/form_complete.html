@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load static %}
 {% load uni_ticket_tags %}
+{% load uni_ticket_bootstrap_italia_tags %}
 
 
 {% block top_buttons %}
@@ -52,7 +53,7 @@ $(document).on('keyup keypress', 'form input', function(e) {
 </script>
 <!-- datetime picker -->
 <script>
-{% settings_value "JS_DEFAULT_DATETIME_FORMAT" as js_default_datetime_value %}
+{% uni_ticket_settings_value "JS_DEFAULT_DATETIME_FORMAT" as js_default_datetime_value %}
 {% settings_value "LANGUAGE_CODE" as language_code %}
 
 $(function () {

@@ -147,10 +147,8 @@ def user_operator_chat(user, structure):
 
 
 @register.simple_tag
-def settings_value(name, **kwargs):
-    value = getattr(settings, name) \
-            if hasattr(settings, name) \
-            else getattr(uni_ticket_settings, name, None)
+def uni_ticket_settings_value(name, **kwargs):
+    value = getattr(uni_ticket_settings, name, None)
     if value and kwargs:
         return value.format(**kwargs)
     return value

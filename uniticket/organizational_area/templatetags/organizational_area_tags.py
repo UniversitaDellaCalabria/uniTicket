@@ -1,5 +1,6 @@
 from django import template
 
+from organizational_area import settings
 from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 
@@ -16,3 +17,11 @@ def employee_offices(user, structure=None):
     if structure:
         oe = oe.filter(office__organizational_structure=structure)
     return oe
+
+
+@register.simple_tag
+def organizational_area_settings_value(name, **kwargs):
+    value = getattr(settings, name, None)
+    if value and kwargs:
+        return value.format(**kwargs)
+    return value

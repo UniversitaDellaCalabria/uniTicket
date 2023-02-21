@@ -48,16 +48,16 @@
                     <div class="card-body">
                         {% if categoria.show_heading_text and request.user.is_authenticated %}
                             <p class="card-title text-left">
-                                {% settings_value name="TICKET_HEADING_TEXT" user=request.user taxpayer=request.user.taxpayer_id as heading %}
+                                {% uni_ticket_settings_value name="TICKET_HEADING_TEXT" user=request.user taxpayer=request.user.taxpayer_id as heading %}
                                 {{ heading|safe  }}
-                                {% settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
-                                {% settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
+                                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
                                 {% obj_get_attr request.user employee_attribute_name as user_employee_attribute %}
                                 {% if user_employee_attribute %}
                                     <br><span class="x-small"><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}</span>
                                 {% endif %}
-                                {% settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
-                                {% settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
+                                {% uni_ticket_settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
+                                {% uni_ticket_settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
                                 {% obj_get_attr request.user user_attribute_name as user_user_attribute %}
                                 {% if user_user_attribute %}
                                     <br><span class="x-small"><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}</span>
@@ -65,16 +65,16 @@
                             </p>
                             {% if compiled_by %}
                             <p class="card-title text-left">
-                                {% settings_value name="TICKET_COMPILED_HEADING_TEXT" user=compiled_by taxpayer=compiled_by.taxpayer_id as heading %}
+                                {% uni_ticket_settings_value name="TICKET_COMPILED_HEADING_TEXT" user=compiled_by taxpayer=compiled_by.taxpayer_id as heading %}
                                 {{ heading|safe  }}
-                                {% settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
-                                {% settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
+                                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
                                 {% obj_get_attr compiled_by employee_attribute_name as user_employee_attribute %}
                                 {% if user_employee_attribute %}
                                     <br><span class="x-small"><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}</span>
                                 {% endif %}
-                                {% settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
-                                {% settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
+                                {% uni_ticket_settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
+                                {% uni_ticket_settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
                                 {% obj_get_attr compiled_by user_attribute_name as user_user_attribute %}
                                 {% if user_user_attribute %}
                                     <br><span class="x-small"><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}</span>
@@ -194,7 +194,7 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    {% settings_value name="TICKET_CREATE_BUTTON_NAME" as confirm_button_name %}
+                    {% uni_ticket_settings_value name="TICKET_CREATE_BUTTON_NAME" as confirm_button_name %}
                     <input class="btn btn-success"
                            type="submit"
                            id="submitForm"
@@ -229,9 +229,9 @@
          role="tabpanel"
          aria-labelledby="heading1-lft">
         <div class="collapse-body">
-            {% settings_value name="TICKET_GENERATE_URL_BUTTON_NAME" as generate_url_button_name %}
-            {% settings_value "TICKET_COMPILED_BY_USER_NAME" as compiled_by_name %}
-            {% settings_value "TICKET_COMPILED_ONE_TIME_FLAG" as compiled_one_time %}
+            {% uni_ticket_settings_value name="TICKET_GENERATE_URL_BUTTON_NAME" as generate_url_button_name %}
+            {% uni_ticket_settings_value "TICKET_COMPILED_BY_USER_NAME" as compiled_by_name %}
+            {% uni_ticket_settings_value "TICKET_COMPILED_ONE_TIME_FLAG" as compiled_one_time %}
             <input type="checkbox"
                    id="{{ compiled_by_name }}"
                    name="{{ compiled_by_name }}"
