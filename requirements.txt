@@ -28,7 +28,7 @@ djangosaml2>=1.0.3
 design-django-theme==1.6.4post4
 
 # Unical template
-# django-unical-bootstrap-italia
+# django-unical-bootstrap-italia==1.2.0
 
 # Django REST
 djangorestframework>=3.13
