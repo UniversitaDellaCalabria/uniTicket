@@ -29,10 +29,10 @@ libsass>=0.19.4
 django-sass-processor>=1.0.0
 
 # Bootstrap Italia
-design-django-theme==1.6.4
+design-django-theme==1.6.4post4
 
 # Unical template
-# django-unical-bootstrap-italia==1.0.5
+# django-unical-bootstrap-italia
 
 # Django REST
 djangorestframework>=3.13
