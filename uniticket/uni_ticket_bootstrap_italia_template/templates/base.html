@@ -4,19 +4,13 @@
 
 {% load i18n %}
 {% load l10n %}
-<!-- From app django-sass-processor -->
-{% if debug %}{% load sass_tags %}{% endif %}
 {% load static %}
 {% load uni_ticket_tags %}
 
 <!-- Return to Agid native template -->
 {% block extra_head %}
 {{ block.super }}
-{% if debug %}
-<link rel="stylesheet" href="{% sass_src 'css/uni_ticket.scss' %}">
-{% else %}
 <link rel="stylesheet" href="{% static 'css/uni_ticket.css' %}">
-{% endif %}
 <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
 <!--
 <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.css' %}">

@@ -8,7 +8,6 @@ ROOT_URLCONF = "uni_ticket_project.urls"
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-    "sass_processor.finders.CssFinder",
 ]
 
 WSGI_APPLICATION = "uni_ticket_project.wsgi.application"

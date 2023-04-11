@@ -82,7 +82,6 @@ INSTALLED_APPS = [
     'ckeditor',
     'datatables_ajax',
 
-    'sass_processor',
     'bootstrap_italia_template',
     # 'django_unical_bootstrap_italia',
     'uni_ticket_bootstrap_italia_template',

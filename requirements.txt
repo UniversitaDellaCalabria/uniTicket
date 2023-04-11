@@ -24,10 +24,6 @@ git+https://github.com/peppelinux/FileSignatureValidator.git
 # SAML2
 djangosaml2>=1.0.3
 
-# SASS dynamic compiler
-libsass>=0.19.4
-django-sass-processor>=1.0.0
-
 # Bootstrap Italia
 design-django-theme==1.6.4post4
 
