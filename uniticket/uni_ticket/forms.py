@@ -47,6 +47,8 @@ class CategoryForm(ModelForm):
             "name": _("Nome"),
             "description": _("Descrizione"),
             "allowed_users": _("Solo i seguenti utenti possono effettuare richieste"),
+            "allow_user": _("Accessibile a {}").format(ORGANIZATION_USER_LABEL),
+            "allow_employee": _("Accessibile a {}").format(ORGANIZATION_EMPLOYEE_LABEL),
         }
         widgets = {
             "description": forms.Textarea(attrs={"rows": 2}),

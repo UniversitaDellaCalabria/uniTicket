@@ -148,10 +148,10 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
     )
     allow_guest = models.BooleanField(_("Accessibile a Ospiti"), default=True)
     allow_user = models.BooleanField(
-        _("Accessibile a {}").format(ORGANIZATION_USER_LABEL), default=True
+        _("Accessibile a Utenti dell'organizzazione"), default=True
     )
     allow_employee = models.BooleanField(
-        _("Accessibile a {}").format(ORGANIZATION_EMPLOYEE_LABEL), default=True
+        _("Accessibile a Dipendenti dell'organizzazione"), default=True
     )
 
     # allowed users

@@ -2298,7 +2298,7 @@ def ticket_competence_leave(
                         "<br>"
                         "Rimuovendo la competenza "
                         " di <b>{}</b>, "
-                        "la ichiesta non sarebbe più gestita "
+                        "la richiesta non sarebbe più gestita "
                         "da alcun ufficio. "
                         ""
                     ).format(office),
