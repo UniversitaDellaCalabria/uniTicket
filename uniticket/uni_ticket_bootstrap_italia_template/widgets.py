@@ -6,7 +6,8 @@ class UniTicketDateTimeWidget(DateTimeInput):
 
     class Media:
         css = {
-            "all": ("css/font-awesome.min.css", "css/bootstrap-datetimepicker.min.css")
+            "all": ("css/font-awesome.min.css",
+                    "css/bootstrap-datetimepicker.min.css")
         }
         js = (
             "js/datetimepicker/moment.min.js",

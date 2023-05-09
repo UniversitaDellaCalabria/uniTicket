@@ -27,6 +27,10 @@ from djangosaml2 import views
 
 from uni_ticket.views import handlers
 
+
+DEFAULT_BASE_TEMPLATE = getattr(settings,'DEFAULT_BASE_TEMPLATE', '')
+
+
 @login_required
 def test500(request):
     from django.http import HttpResponse
@@ -155,7 +159,8 @@ else:
     urlpatterns += (
         path(
             "{}/login/".format(settings.LOCAL_URL_PREFIX),
-            auth_views.LoginView.as_view(template_name="login.html"),
+            auth_views.LoginView.as_view(extra_context={'base_template': DEFAULT_BASE_TEMPLATE},
+                                         template_name="login.html"),
             name="login",
         ),
     )
