@@ -579,7 +579,7 @@ def export_input_module_csv(
             # richiesta.compiled,
             richiesta.created,
             richiesta.compiled_by,
-            richiesta.compiled_by.taxpayer_id,
+            richiesta.compiled_by.taxpayer_id if(richiesta.compiled_by) else None,
             richiesta.created_by,
             richiesta.created_by.taxpayer_id,
         ]
