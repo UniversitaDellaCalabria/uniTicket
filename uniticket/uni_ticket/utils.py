@@ -525,7 +525,8 @@ def export_input_module_csv(
 
     module.ticket_category
 
-    head = ["created", "user", "taxpayer_id"]
+    head = ["unique_id", "compiled_by",
+            "created", "created_by", "taxpayer_id"]
     head.append(EMPLOYEE_ATTRIBUTE_NAME)
     head.append(USER_ATTRIBUTE_NAME)
     head.extend(["status", "subject", "description"])
@@ -573,6 +574,9 @@ def export_input_module_csv(
 
         status = strip_tags(richiesta.get_status())
         row = [
+            richiesta.code,
+            # richiesta.compiled,
+            richiesta.compiled_by,
             richiesta.created,
             richiesta.created_by,
             richiesta.created_by.taxpayer_id,
