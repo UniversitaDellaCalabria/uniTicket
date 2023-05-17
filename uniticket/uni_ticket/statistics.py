@@ -265,7 +265,6 @@ class uniTicketStats:
                 self.assigned_day_serie[timezone.localtime(i.assigned_date).strftime("%d-%m-%Y")] += 1
 
             if i.closed_date and not i.is_closed:
-                self.reopened += 1
                 # if not self.reopened_day_serie.get(ticket_day):
                     # self.reopened_day_serie[ticket_day] = 0
                 # self.reopened_day_serie[ticket_day] += 1
@@ -273,8 +272,12 @@ class uniTicketStats:
                 # get reopen time from first log action after closing
                 reopen_log_entry = LogEntry.objects.filter(content_type_id=content_type.pk,
                                                            object_id=i.pk,
-                                                           action_time__gt=i.closed_date).first()
-                self.reopened_day_serie[timezone.localtime(reopen_log_entry.action_time).strftime("%d-%m-%Y")] += 1
+                                                           action_time__gt=i.closed_date,
+                                                           action_time__lte=self.date_end,
+                                                           action_time__gte=self.date_start).first()
+                if reopen_log_entry:
+                    self.reopened += 1
+                    self.reopened_day_serie[timezone.localtime(reopen_log_entry.action_time).strftime("%d-%m-%Y")] += 1
 
             # elif i.closed_date and i in self.closed_tickets:
             if i.closed_date and i in self.closed_tickets:
