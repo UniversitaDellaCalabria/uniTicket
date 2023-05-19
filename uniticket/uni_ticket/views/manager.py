@@ -60,9 +60,9 @@ def dashboard(request, structure_slug, structure):
     ).select_related('ticket')
 
     chiusi = assignments.filter(ticket__is_closed=True).values('ticket__code').annotate(total=Count('ticket__code')).count()
-    opened = assignments.filter(taken_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
-    unassigned = assignments.filter(taken_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
-    my_opened = assignments.filter(taken_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
+    opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
+    unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
+    my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
     # aa = TicketAssignment.objects.filter(ticket__code__in=structure_tickets).values('ticket__code', 'taken_date','follow','taken_by','ticket__is_closed').annotate(total=Count('ticket__code'))
     # print(aa)
     # chiusi = aa.filter(ticket__is_closed=True).count()
