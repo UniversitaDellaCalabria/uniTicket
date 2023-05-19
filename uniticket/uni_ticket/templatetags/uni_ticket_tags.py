@@ -66,18 +66,18 @@ def current_date():
     return timezone.localtime().date()
 
 
-@register.simple_tag
-def conditions_in_category(category):
-    conditions = TicketCategoryCondition.objects.filter(
-        category=category, is_active=True
-    ).count()
-    return conditions
+# @register.simple_tag
+# def conditions_in_category(category):
+    # conditions = TicketCategoryCondition.objects.filter(
+        # category=category, is_active=True
+    # ).count()
+    # return conditions
 
 
-@register.simple_tag
-def tasks_in_category(category):
-    tasks = category.get_tasks().count()
-    return tasks
+# @register.simple_tag
+# def tasks_in_category(category):
+    # tasks = category.get_tasks().count()
+    # return tasks
 
 
 @register.simple_tag

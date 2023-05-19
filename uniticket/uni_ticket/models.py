@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.templatetags.static import static
 from django.core.validators import RegexValidator
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -997,18 +998,32 @@ class Ticket(SavedFormContent):
     def has_been_taken(
         self, user=None, follow=True, exclude_readonly=False, structure=None
     ):
-        assignments = TicketAssignment.objects.filter(
-            ticket=self, taken_date__isnull=False
-        )
+        q_base = Q(ticket=self, taken_date__isnull=False)
+        q_follow = Q()
+        q_readonly = Q()
+        q_structure = Q()
+        q_user = Q()
+        # assignments = TicketAssignment.objects.filter(
+            # ticket=self, taken_date__isnull=False
+        # )
         if follow:
-            assignments = assignments.filter(follow=True)
+            q_follow = Q(follow=True)
+            # assignments = assignments.filter(follow=True)
             if exclude_readonly:
-                assignments = assignments.filter(readonly=False)
+                q_redonly = Q(readonly=False)
+                # assignments = assignments.filter(readonly=False)
         if structure:
-            assignments = assignments.filter(
-                office__organizational_structure=structure)
+            q_structure = Q(office__organizational_structure=structure)
+            #assignments = assignments.filter(
+            #    office__organizational_structure=structure)
         if user:
-            assignments = assignments.filter(taken_by=user)
+            q_user = Q(taken_by=user)
+            # assignments = assignments.filter(taken_by=user)
+        assignments = TicketAssignment.objects.filter(q_base,
+                                                      q_follow,
+                                                      q_readonly,
+                                                      q_structure,
+                                                      q_user).exists()
         return True if assignments else False
 
     def has_been_taken_by_user(
@@ -1016,15 +1031,26 @@ class Ticket(SavedFormContent):
     ):
         if not user:
             return False
-        assignments = TicketAssignment.objects.filter(
-            ticket=self, taken_by=user)
+        q_base = Q(ticket=self, taken_by=user)
+        q_follow = Q()
+        q_readonly = Q()
+        q_structure = Q()
+        # assignments = TicketAssignment.objects.filter(
+            # ticket=self, taken_by=user)
         if structure:
-            assignments = assignments.filter(
-                office__organizational_structure=structure)
+            q_structure = Q(office__organizational_structure=structure)
+            # assignments = assignments.filter(
+                # office__organizational_structure=structure)
         if follow:
-            assignments = assignments.filter(follow=True)
+            q_follow = Q(follow=True)
+            # assignments = assignments.filter(follow=True)
             if exclude_readonly:
-                assignments = assignments.filter(readonly=False)
+                q_readonly = Q(readonly=False)
+                # assignments = assignments.filter(readonly=False)
+        assignments = TicketAssignment.objects.filter(q_base,
+                                                      q_follow,
+                                                      q_readonly,
+                                                      q_structure).exists()
         return True if assignments else False
 
     def taken_by_html_list(self):
@@ -1143,15 +1169,14 @@ class TicketAssignment(TimeStampedModel):
     @staticmethod
     def get_ticket_per_structure(structure, follow_check=True):
         """ """
+        q_base = Q(office__organizational_structure=structure,
+                   office__is_active=True)
+        q_follow = Q(follow=True) if follow_check else Q()
         ticket_assignments = TicketAssignment.objects.filter(
-            office__organizational_structure=structure, office__is_active=True
-        ).values("ticket__code", "follow")
-        ticket_set = set()
-        for assignment in ticket_assignments:
-            if follow_check and not assignment["follow"]:
-                continue
-            ticket_set.add(assignment["ticket__code"])
-        return ticket_set
+            q_base,
+            q_follow
+        ).values_list("ticket__code", flat=True)
+        return set(ticket_assignments)
 
     @staticmethod
     def get_ticket_in_office_list(office_list, follow_check=True):
@@ -1222,13 +1247,22 @@ class TicketReply(models.Model):
 
     @staticmethod
     def get_unread_messages_count(tickets, by_operator=False):
-        unread_messages = TicketReply.objects.filter(
-            ticket__in=tickets, read_date=None)
+        if type(tickets) is list:
+            q_base = Q(ticket__code__in=tickets, read_date__isnull=True)
+        else:
+            q_base = Q(ticket__in=tickets, read_date__isnull=True)
+        q_structure_null = Q(structure__isnull=True)
+        q_structure_not_null = Q(structure__isnull=False)
+        #unread_messages = TicketReply.objects.filter(
+        #    ticket__in=tickets, read_date=None)
         # show messages sent by operator
         if by_operator:
-            return unread_messages.exclude(structure=None).count()
+            return TicketReply.objects.filter(q_base, q_structure_not_null).count()
+            #return unread_messages.exclude(structure=None).count()
         # show messages sent by user
-        return unread_messages.filter(structure=None).count()
+        return TicketReply.objects.filter(q_base, q_structure_null).count()
+        #return unread_messages.filter(structure=None).count()
+
 
     def get_folder(self):
         """

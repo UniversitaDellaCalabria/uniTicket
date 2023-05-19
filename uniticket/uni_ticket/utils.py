@@ -103,6 +103,8 @@ def user_is_manager(user, structure):
     """
     Returns True if user is a manager for the structure
     """
+    if not user or not structure:
+        return False
     if SUPER_USER_VIEW_ALL and user.is_superuser:
         return True
     umos = UserManageOrganizationalStructure
@@ -110,8 +112,6 @@ def user_is_manager(user, structure):
         user=user, organizational_structure=structure
     ).first()
     if not user_structure_manager:
-        return False
-    if not structure:
         return False
     return user_is_in_default_office(user, structure)
 
@@ -129,7 +129,7 @@ def user_is_in_default_office(user, structure):
         employee=user,
         office__organizational_structure=structure,
         office__is_default=True,
-    ).first()
+    ).exists()
     if help_desk_assigned:
         return True
     return False
@@ -140,9 +140,7 @@ def user_is_operator(user, structure):
     Returns OrganizationalStructureOfficeEmployee queryset
     if user is a operator of an office for the structure
     """
-    if not user:
-        return False
-    if not structure:
+    if not user or not structure:
         return False
     osoe = OrganizationalStructureOfficeEmployee
     oe = osoe.objects.filter(

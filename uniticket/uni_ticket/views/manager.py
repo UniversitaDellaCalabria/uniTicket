@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.html import strip_tags
 from django.utils.text import slugify
@@ -48,34 +49,58 @@ def dashboard(request, structure_slug, structure):
         "Gestisci le richieste per la struttura {}").format(structure)
     template = "manager/dashboard.html"
 
-    ta = TicketAssignment
-    structure_tickets = ta.get_ticket_per_structure(structure=structure)
-    tickets = Ticket.objects.filter(code__in=structure_tickets)
-    not_closed = tickets.filter(is_closed=False)
-    unassigned = 0
-    opened = 0
-    my_opened = 0
-    for nc in not_closed:
-        if nc.has_been_taken():
-            # opened.append(nc)
-            opened += 1
-            if nc.has_been_taken_by_user(structure=structure, user=request.user):
-                # my_opened.append(nc)
-                my_opened += 1
-        else:
-            # unassigned.append(nc)
-            unassigned += 1
-    # chiusi = tickets.filter(is_closed=True)
-    chiusi = tickets.filter(is_closed=True).count()
+    # ta = TicketAssignment
+    # structure_tickets = ta.get_ticket_per_structure(structure=structure)
+    # tickets = Ticket.objects.filter(code__in=structure_tickets)
+
+    assignments = TicketAssignment.objects.filter(
+        office__organizational_structure=structure,
+        office__is_active=True,
+        follow=True
+    ).select_related('ticket')
+
+    chiusi = assignments.filter(ticket__is_closed=True).values('ticket__code').annotate(total=Count('ticket__code')).count()
+    opened = assignments.filter(taken_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
+    unassigned = assignments.filter(taken_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
+    my_opened = assignments.filter(taken_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
+    # aa = TicketAssignment.objects.filter(ticket__code__in=structure_tickets).values('ticket__code', 'taken_date','follow','taken_by','ticket__is_closed').annotate(total=Count('ticket__code'))
+    # print(aa)
+    # chiusi = aa.filter(ticket__is_closed=True).count()
+    # unassigned = aa.filter(follow=False, taken_date__isnull=True).count()
+    # opened = aa.filter(follow=True, taken_date__isnull=False).count()
+    # my_opened = aa.filter(follow=True, taken_date__isnull=False, taken_by=request.user).count()
+
+
+
+    # not_closed = tickets.filter(is_closed=False)
+    # unassigned = 0
+    # opened = 0
+    # my_opened = 0
+    # for nc in not_closed:
+        # if nc.has_been_taken():
+            # opened += 1
+            # if nc.has_been_taken_by_user(structure=structure, user=request.user):
+                # my_opened += 1
+        # else:
+            # unassigned += 1
+    # chiusi = tickets.filter(is_closed=True).count()
+
     om = OrganizationalStructureOffice
-    offices = om.objects.filter(organizational_structure=structure)
+    offices = om.objects.filter(organizational_structure=structure)\
+                        .prefetch_related('organizationalstructureofficeemployee_set')\
+                        .prefetch_related('ticketassignment_set')\
+                        .prefetch_related('ticketcategory_set')
 
     cm = TicketCategory
-    categories = cm.objects.filter(organizational_structure=structure)
+    categories = cm.objects.filter(organizational_structure=structure)\
+                           .select_related('organizational_office')\
+                           .prefetch_related('ticketcategorycondition_set')\
+                           .prefetch_related('ticketcategorytask_set')
     # disabled_expired_items(categories)
 
-    messages = TicketReply.get_unread_messages_count(tickets=tickets)
-
+    # messages = TicketReply.get_unread_messages_count(tickets=tickets)
+    ticket_codes = assignments.values_list('ticket',flat=True).distinct()
+    messages = TicketReply.get_unread_messages_count(tickets=ticket_codes)
     d = {
         "categories": categories,
         "offices": offices,
@@ -108,7 +133,10 @@ def offices(request, structure_slug, structure):
     title = _("Gestione uffici")
     template = "manager/offices.html"
     os = OrganizationalStructureOffice
-    offices = os.objects.filter(organizational_structure=structure)
+    offices = os.objects.filter(organizational_structure=structure)\
+                        .prefetch_related('organizationalstructureofficeemployee_set')\
+                        .prefetch_related('ticketassignment_set')\
+                        .prefetch_related('ticketcategory_set')
 
     d = {
         "offices": offices,
@@ -2346,8 +2374,11 @@ def categories(request, structure_slug, structure):
     title = _("Gestione tipologie di richieste")
     template = "manager/categories.html"
     # sub_title = _("gestione ufficio livello manager")
-    categories = TicketCategory.objects.filter(
-        organizational_structure=structure)
+    categories = TicketCategory.objects\
+                               .filter(organizational_structure=structure)\
+                               .select_related('organizational_office')\
+                               .prefetch_related('ticketcategorycondition_set')\
+                               .prefetch_related('ticketcategorytask_set')
     # disabled_expired_items(categories)
 
     d = {
