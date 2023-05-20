@@ -1204,7 +1204,8 @@ class TicketDetail(View):
     """
     def get(self, request, ticket_id:str, api:bool=False, template="user/ticket_detail.html"):
 
-        ticket = get_object_or_404(Ticket, code=ticket_id)
+        ticket = get_object_or_404(Ticket.objects.select_related('created_by','compiled_by','input_module__ticket_category'),
+                                   code=ticket_id)
         modulo_compilato = ticket.get_modulo_compilato()
         ticket_details = get_as_dict(
             compiled_module_json=modulo_compilato, allegati=False, formset_management=False
@@ -1224,7 +1225,8 @@ class TicketDetail(View):
         ticket_dependences = ticket.get_dependences()
         title = ticket.subject
         sub_title = ticket.code
-        ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
+        ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)\
+                                                     .select_related('office','assigned_by','taken_by')
 
         category_conditions = ticket.input_module.ticket_category.get_conditions(
             is_printable=True
