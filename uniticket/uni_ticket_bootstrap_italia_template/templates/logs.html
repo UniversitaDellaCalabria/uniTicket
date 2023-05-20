@@ -4,19 +4,18 @@
 <div class="it-list-wrapper">
     {% if logs %}
     <ul class="it-list">
-        {% for log in logs %}
-            {% user_from_pk log.user_id as user %}
-            <li>
-                <a>
-                    <div class="it-right-zone">
-                        <span class="text">{{ log.change_message|linebreaksbr }}<em>{{ user }}</em></span>
-                        <span class="it-multiple">
-                            <span class="metadata">{{ log.action_time }}</span>
-                        </span>
-                    </div>
-                </a>
-            </li>
-        {% endfor %}
+    {% for log in logs %}
+        <li>
+            <a>
+                <div class="it-right-zone">
+                    <span class="text">{{ log.change_message|linebreaksbr }}<em>{{ log.user }}</em></span>
+                    <span class="it-multiple">
+                        <span class="metadata">{{ log.action_time }}</span>
+                    </span>
+                </div>
+            </a>
+        </li>
+    {% endfor %}
     </ul>
     {% else %}
         {% trans "Nessun log" %}
