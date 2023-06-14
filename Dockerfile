@@ -1,5 +1,5 @@
 # DOCKER-VERSION 17.10.0-ce
-FROM python:slim-bullseye
+FROM python:3-slim-bullseye
 MAINTAINER Giuseppe De Marco <giuseppe.demarco@unical.it>
 # thanks to Marco Spasiano to have moved things :)
 
