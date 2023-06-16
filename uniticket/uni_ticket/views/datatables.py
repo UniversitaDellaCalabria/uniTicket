@@ -89,7 +89,7 @@ def user_all_tickets(request):
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(
         Q(created_by=request.user) | Q(compiled_by=request.user)
-    )
+    ).select_related('created_by','compiled_by','input_module__ticket_category')
     dtd = TicketDTD(request, ticket_list, columns)
     return JsonResponse(dtd.get_dict())
 
@@ -107,7 +107,7 @@ def user_unassigned_ticket(request):
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(
         Q(created_by=request.user) | Q(compiled_by=request.user), is_closed=False
-    )
+    ).select_related('created_by','compiled_by','input_module__ticket_category')
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if ticket.has_been_taken():
@@ -194,7 +194,7 @@ def manager_unassigned_ticket(request, structure_slug, structure):
     :return: JsonResponse
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=False)
+    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=False).select_related('created_by','compiled_by','input_module__ticket_category')
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if ticket.has_been_taken():

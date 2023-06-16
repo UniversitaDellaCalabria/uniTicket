@@ -63,28 +63,6 @@ def dashboard(request, structure_slug, structure):
     opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
     unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
     my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
-    # aa = TicketAssignment.objects.filter(ticket__code__in=structure_tickets).values('ticket__code', 'taken_date','follow','taken_by','ticket__is_closed').annotate(total=Count('ticket__code'))
-    # print(aa)
-    # chiusi = aa.filter(ticket__is_closed=True).count()
-    # unassigned = aa.filter(follow=False, taken_date__isnull=True).count()
-    # opened = aa.filter(follow=True, taken_date__isnull=False).count()
-    # my_opened = aa.filter(follow=True, taken_date__isnull=False, taken_by=request.user).count()
-
-
-
-    # not_closed = tickets.filter(is_closed=False)
-    # unassigned = 0
-    # opened = 0
-    # my_opened = 0
-    # for nc in not_closed:
-        # if nc.has_been_taken():
-            # opened += 1
-            # if nc.has_been_taken_by_user(structure=structure, user=request.user):
-                # my_opened += 1
-        # else:
-            # unassigned += 1
-    # chiusi = tickets.filter(is_closed=True).count()
-
     om = OrganizationalStructureOffice
     offices = om.objects.filter(organizational_structure=structure)\
                         .prefetch_related('organizationalstructureofficeemployee_set')\
