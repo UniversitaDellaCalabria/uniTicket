@@ -4,7 +4,6 @@ import zipfile
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.models import LogEntry
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
@@ -196,7 +195,7 @@ def ticket_detail(
     path_allegati = get_path(ticket.get_folder())
     ticket_form = ticket.input_module.get_form(
         files=allegati, remove_filefields=False)
-    ticket_logs = LogEntry.objects.filter(
+    ticket_logs = Log.objects.filter(
         content_type_id=ContentType.objects.get_for_model(ticket).pk,
         object_id=ticket.pk,
     )
@@ -1654,7 +1653,7 @@ def task_detail(
     title = _("Dettaglio attività")
     priority = task.get_priority()
     # allegati = ticket.get_allegati_dict()
-    task_logs = LogEntry.objects.filter(
+    task_logs = Log.objects.filter(
         content_type_id=ContentType.objects.get_for_model(
             task).pk, object_id=task.pk
     )

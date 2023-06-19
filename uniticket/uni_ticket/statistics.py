@@ -3,11 +3,10 @@ import statistics
 
 from pydantic import BaseModel
 
-from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.utils import timezone
-from uni_ticket.models import Ticket, TicketReply
+from uni_ticket.models import Log, Ticket, TicketReply
 
 from typing import Union
 from organizational_area.models import OrganizationalStructureOfficeEmployee
@@ -270,7 +269,7 @@ class uniTicketStats:
                 # self.reopened_day_serie[ticket_day] += 1
 
                 # get reopen time from first log action after closing
-                reopen_log_entry = LogEntry.objects.filter(content_type_id=content_type.pk,
+                reopen_log_entry = Log.objects.filter(content_type_id=content_type.pk,
                                                            object_id=i.pk,
                                                            action_time__gt=i.closed_date,
                                                            action_time__lte=self.date_end,

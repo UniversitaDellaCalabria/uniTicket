@@ -8,7 +8,6 @@ from typing import Union
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.models import LogEntry
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
@@ -1216,7 +1215,7 @@ class TicketDetail(View):
             files=allegati, remove_filefields=False)
         priority = ticket.get_priority()
 
-        ticket_logs = LogEntry.objects.filter(
+        ticket_logs = Log.objects.filter(
             content_type_id=ContentType.objects.get_for_model(ticket).pk,
             object_id=ticket.pk,
         ).select_related('user')
