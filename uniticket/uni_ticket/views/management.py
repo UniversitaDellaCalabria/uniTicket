@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -449,31 +449,40 @@ def tickets(request, structure_slug, structure, office_employee=None):
         ticket_list = visible_tickets_to_user(
             user=request.user, structure=structure, office_employee=office_employee
         )
+        tickets = Ticket.objects.filter(code__in=ticket_list)
+
+        not_closed = tickets.filter(is_closed=False)
+        # unassigned = []
+        # opened = []
+        # my_opened = []
+        unassigned = 0
+        opened = 0
+        my_opened = 0
+        for nc in not_closed:
+            if nc.has_been_taken():
+                # opened.append(nc)
+                opened += 1
+                if nc.has_been_taken_by_user(structure=structure, user=request.user):
+                    # my_opened.append(nc)
+                    my_opened += 1
+            else:
+                # unassigned.append(nc)
+                unassigned += 1
+        # chiusi = Ticket.objects.filter(code__in=ticket_list, is_closed=True)
+        chiusi = tickets.filter(is_closed=True).count()
     # if user is manager
     else:
-        ticket_list = TicketAssignment.get_ticket_per_structure(structure)
+        assignments = TicketAssignment.objects.filter(
+            office__organizational_structure=structure,
+            office__is_active=True,
+            follow=True
+        ).select_related('ticket')
 
-    tickets = Ticket.objects.filter(code__in=ticket_list)
-
-    not_closed = tickets.filter(is_closed=False)
-    # unassigned = []
-    # opened = []
-    # my_opened = []
-    unassigned = 0
-    opened = 0
-    my_opened = 0
-    for nc in not_closed:
-        if nc.has_been_taken():
-            # opened.append(nc)
-            opened += 1
-            if nc.has_been_taken_by_user(structure=structure, user=request.user):
-                # my_opened.append(nc)
-                my_opened += 1
-        else:
-            # unassigned.append(nc)
-            unassigned += 1
-    # chiusi = Ticket.objects.filter(code__in=ticket_list, is_closed=True)
-    chiusi = tickets.filter(is_closed=True).count()
+        chiusi = assignments.filter(ticket__is_closed=True).values('ticket__code').annotate(total=Count('ticket__code')).count()
+        opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
+        unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
+        my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
+        tickets = assignments.values_list('ticket',flat=True).distinct()
 
     # unread messages
     messages = TicketReply.get_unread_messages_count(tickets=tickets)
