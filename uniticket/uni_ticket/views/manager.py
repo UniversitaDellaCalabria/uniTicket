@@ -65,6 +65,7 @@ def dashboard(request, structure_slug, structure):
     my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
     om = OrganizationalStructureOffice
     offices = om.objects.filter(organizational_structure=structure)\
+                        .values('is_active','is_default','name','description','slug')\
                         .prefetch_related('organizationalstructureofficeemployee_set')\
                         .prefetch_related('ticketassignment_set')\
                         .prefetch_related('ticketcategory_set')
@@ -72,6 +73,7 @@ def dashboard(request, structure_slug, structure):
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)\
                            .select_related('organizational_office')\
+                           .values('description','name','slug')\
                            .prefetch_related('ticketcategorycondition_set')\
                            .prefetch_related('ticketcategorytask_set')
     # disabled_expired_items(categories)
