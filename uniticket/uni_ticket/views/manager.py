@@ -73,7 +73,6 @@ def dashboard(request, structure_slug, structure):
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)\
                            .select_related('organizational_office')\
-                           .values('description','name','slug')\
                            .prefetch_related('ticketcategorycondition_set')\
                            .prefetch_related('ticketcategorytask_set')
     # disabled_expired_items(categories)
