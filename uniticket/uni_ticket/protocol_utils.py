@@ -113,7 +113,7 @@ def ticket_protocol(
     docPrinc.seek(0)
 
     wsclient.aggiungi_docPrinc(
-        fopen=docPrinc, nome_doc=f"{file_name}.pdf", tipo_doc=file_name
+        fopen=docPrinc, nome_doc=f"{file_name}.pdf", tipo_doc=f"{file_name}.pdf"
     )
 
     # attachments
