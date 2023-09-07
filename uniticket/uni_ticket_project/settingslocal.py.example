@@ -45,6 +45,7 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
 
 HOSTNAME = 'uniticket.hostname.url'
+CSRF_TRUSTED_ORIGINS = [f'https://{HOSTNAME}']
 ALLOWED_HOSTS = ['*']
 
 EMAIL_SENDER = f'ticket.no-reply@{HOSTNAME}'
