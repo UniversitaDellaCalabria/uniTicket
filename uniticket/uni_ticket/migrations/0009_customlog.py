@@ -28,9 +28,7 @@ class Migration(migrations.Migration):
                 ('content_type', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='contenttypes.contenttype', verbose_name='content type')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='utente')),
             ],
-            options={
-                'index_together': {('content_type', 'object_id')},
-            },
+            options={},
             managers=[
                 ('objects', django.contrib.admin.models.LogEntryManager()),
             ],

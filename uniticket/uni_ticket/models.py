@@ -112,7 +112,7 @@ class Log(models.Model):
         verbose_name_plural = _("log entries")
         # db_table = "django_admin_log"
         ordering = ["-action_time"]
-        index_together = ["content_type", "object_id"]
+        indexes = [models.Index(fields=["content_type", "object_id"])]
 
     def __repr__(self):
         return str(self.action_time)
