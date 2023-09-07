@@ -1,9 +1,9 @@
-Django>=3.2.19,<4
+Django>=3.2.19,<5
 
 django-admin-search-builder>=0.2.0
 django_ckeditor>=5.9.0
 
-django-form-builder>=0.16.14
+django-form-builder>=0.17.0
 
 django-nested-admin>=3.2.4
 
