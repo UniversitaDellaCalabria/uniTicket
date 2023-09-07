@@ -48,7 +48,7 @@
             data-live-search="true" data-live-search-placeholder="Cerca...">
         <option value="">{% trans "Scegli un'opzione" %}</option>
         {% for struttura in strutture %}
-        <option value="{{ struttura.slug }}"
+        <option value="{{ struttura.slug }}/"
         {% if struttura.slug == chosen_structure.slug %} selected {% endif %}>
             {{ struttura }}
         </option>
@@ -75,7 +75,7 @@
                 data-live-search="true" data-live-search-placeholder="Cerca...">
             <option value="">{% trans "Scegli un'opzione" %}</option>
             {% for categoria in categorie %}
-            <option value="{{ categoria.slug }}">{{ categoria }}</option>
+            <option value="{{ categoria.slug }}/">{{ categoria }}</option>
             {% endfor %}
         </select>
     </div>

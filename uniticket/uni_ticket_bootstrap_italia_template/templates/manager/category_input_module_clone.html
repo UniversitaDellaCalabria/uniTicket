@@ -28,7 +28,7 @@
             data-live-search="true" data-live-search-placeholder="Cerca...">
         <option value="">{% trans "Scegli un'opzione" %}</option>
         {% for s in my_structures %}
-        <option value="{{ s.slug }}"
+        <option value="{{ s.slug }}/"
         {% if s.slug == selected_structure_slug %} selected {% endif %}>
             {{ s }}
         </option>
@@ -55,7 +55,7 @@
                 data-live-search="true" data-live-search-placeholder="Cerca...">
             <option value="">{% trans "Scegli dove clonare il modulo" %}</option>
             {% for category in categories %}
-            <option value="{{ category.slug }}"
+            <option value="{{ category.slug }}/"
             {% if category.slug == selected_category_slug %} selected {% endif %}>
                 {{ category }}
             </option>

@@ -29,7 +29,7 @@
                 data-live-search="true" data-live-search-placeholder="Cerca...">
             <option value="">{% trans "Seleziona un'opzione" %}</option>
             {% for struttura in strutture %}
-            <option value="{{ struttura.slug }}"
+            <option value="{{ struttura.slug }}/"
             {% if struttura.slug == structure_slug %} selected {% endif %}>
                 {{ struttura }}
             </option>
@@ -60,7 +60,7 @@
                 data-live-search="true">
                 <option value="">{% trans "Seleziona un'opzione" %}</option>
                 {% for office in offices %}
-                <option value="{{ office.slug }}">{{ office.name }}</option>
+                <option value="{{ office.slug }}/">{{ office.name }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -109,7 +109,7 @@
                     data-live-search="true" data-live-search-placeholder={% trans "Cerca" %}...">
                 <option value="">{% trans "Tutti quelli a cui afferisco in questa struttura" %}</option>
                 {% for operator_office in operator_offices %}
-                <option value="{{ operator_office.slug }}">
+                <option value="{{ operator_office.slug }}/">
                     {{ operator_office }}
                 </option>
                 {% endfor %}
