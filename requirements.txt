@@ -1,6 +1,6 @@
 Django>=3.2.19,<5
 
-git+https://github.com/UniversitaDellaCalabria/django-admin-search-builder.git>=0.2.0
+git+https://github.com/UniversitaDellaCalabria/django-admin-search-builder.git
 django_ckeditor>=5.9.0
 
 django-form-builder>=0.17.0
