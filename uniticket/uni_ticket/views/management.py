@@ -142,7 +142,6 @@ def manage_ticket_url_detail(
 
     :return: redirect
     """
-    request.user
     user_type = get_user_type(request.user, structure)
     return redirect(
         "uni_ticket:{}_manage_ticket".format(user_type),
@@ -1322,7 +1321,6 @@ def ticket_message(
     """
 
     title = "{} - {}".format(_("Messaggi"), ticket.created_by)
-    request.user
     user_type = get_user_type(request.user, structure)
     # Conversazione utente-operatori
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
