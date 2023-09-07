@@ -22,8 +22,7 @@ urlpatterns = [
     path("", RedirectView.as_view(url="/{}/".format(_dashboard_name))),
     # Router url di responsabilità su struttura (manager/operator/user)
     re_path(
-        # r"^manage/(?:(?P<structure_slug>[-\w]+))?$", generic.manage, name="manage"),
-        r"^manage/(?P<structure_slug>[a-zA-Z0-9\-\_]+)(/)?$", generic.manage, name="manage"),
+        r"^manage/(?:(?P<structure_slug>[-\w]+))?$", generic.manage, name="manage"),
     # Attachments download
     path(
         "{}/download/attachment/<str:attachment>/".format(ticket),
