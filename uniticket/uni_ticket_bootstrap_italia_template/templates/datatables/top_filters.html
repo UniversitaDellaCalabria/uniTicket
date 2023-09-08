@@ -16,7 +16,7 @@
                 </option>
                 {% year_list as year_list %}
                 {% for year in year_list %}
-                <option value="{{ year }}/">
+                <option value="{{ year }}">
                     {{ year }}
                 </option>
                 {% endfor %}
@@ -32,7 +32,7 @@
                 <option value="" selected>- {% trans "Tutte le tipologie" %} -</option>
                 {% categories_list structure request.user as categories_list %}
                 {% for category in categories_list %}
-                <option value="{{ category.slug }}/">
+                <option value="{{ category.slug }}">
                     {{ category }}
                 </option>
                 {% endfor %}

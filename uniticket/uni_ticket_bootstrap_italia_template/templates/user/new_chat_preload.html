@@ -27,7 +27,7 @@
             data-live-search="true" data-live-search-placeholder="Cerca...">
         <option value="">{% trans "Scegli un'opzione" %}</option>
         {% for struttura in strutture %}
-        <option value="{{ struttura.slug }}/"
+        <option value="{{ struttura.slug }}"
         {% if struttura.slug == structure_slug %} selected {% endif %}>
             {{ struttura }}
         </option>

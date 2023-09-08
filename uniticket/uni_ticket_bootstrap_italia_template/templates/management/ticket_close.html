@@ -28,7 +28,7 @@
                     onchange="set_reply(this);">
                 <option value="">{% trans "Scegli un'opzione" %}</option>
                 {% for reply in default_replies %}
-                <option value="{{ reply.text }}/">
+                <option value="{{ reply.text }}">
                     {{ reply }}
                 </option>
                 {% endfor %}
