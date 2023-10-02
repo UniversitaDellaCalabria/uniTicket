@@ -1409,21 +1409,14 @@ class TicketReply(models.Model):
 
     @staticmethod
     def get_unread_messages_count(tickets, by_operator=False):
-        if type(tickets) is list:
-            q_base = Q(ticket__code__in=tickets, read_date__isnull=True)
-        else:
-            q_base = Q(ticket__in=tickets, read_date__isnull=True)
-        q_structure_null = Q(structure__isnull=True)
-        q_structure_not_null = Q(structure__isnull=False)
-        #unread_messages = TicketReply.objects.filter(
-        #    ticket__in=tickets, read_date=None)
         # show messages sent by operator
+        q_base = Q(ticket__in=tickets, read_date__isnull=True,)
         if by_operator:
-            return TicketReply.objects.filter(q_base, q_structure_not_null).count()
-            #return unread_messages.exclude(structure=None).count()
+            return TicketReply.objects.filter(q_base,
+                                              structure__isnull=False).count()
         # show messages sent by user
-        return TicketReply.objects.filter(q_base, q_structure_null).count()
-        #return unread_messages.filter(structure=None).count()
+        return TicketReply.objects.filter(q_base,
+                                          structure__isnull=True).count()
 
 
     def get_folder(self):

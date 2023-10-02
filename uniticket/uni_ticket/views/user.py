@@ -915,7 +915,7 @@ def dashboard(request):
     chiusi = tickets.filter(is_closed=True).count()
 
     messages = TicketReply.get_unread_messages_count(
-        tickets=tickets, by_operator=True)
+        tickets=not_closed, by_operator=True)
 
     d = {
         "priority_levels": PRIORITY_LEVELS,

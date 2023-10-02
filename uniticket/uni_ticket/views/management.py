@@ -481,7 +481,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
         opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
         unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
         my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
-        tickets = assignments.values_list('ticket',flat=True).distinct()
+        tickets = assignments.filter(ticket__is_closed=False).values_list('ticket').distinct()
 
     # unread messages
     messages = TicketReply.get_unread_messages_count(tickets=tickets)
