@@ -47,7 +47,7 @@ def dashboard(request, structure_slug, structure, office_employee):
         else:
             unassigned += 1
 
-    chiusi = tickets.filter(is_closed=True).count()
+    # chiusi = tickets.filter(is_closed=True).count()
     ticket_codes = not_closed.values_list('ticket__code', flat=True).distinct()
     messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
 
@@ -58,7 +58,7 @@ def dashboard(request, structure_slug, structure, office_employee):
         "title": title,
         "ticket_aperti": opened,
         "ticket_assegnati_a_me": my_opened,
-        "ticket_chiusi": chiusi,
+        # "ticket_chiusi": chiusi,
         "ticket_messages": messages,
         "ticket_non_gestiti": unassigned,
     }

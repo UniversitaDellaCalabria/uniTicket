@@ -478,7 +478,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
             follow=True
         ).select_related('ticket')
 
-        chiusi = assignments.filter(ticket__is_closed=True).values('ticket__code').annotate(total=Count('ticket__code')).count()
+        # chiusi = assignments.filter(ticket__is_closed=True).values('ticket__code').annotate(total=Count('ticket__code')).count()
         opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
         unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
         my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
@@ -490,7 +490,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
     d = {
         "ticket_aperti": opened,
         "ticket_assegnati_a_me": my_opened,
-        "ticket_chiusi": chiusi,
+        # "ticket_chiusi": chiusi,
         "ticket_non_gestiti": unassigned,
         "ticket_messages": messages,
         "structure": structure,

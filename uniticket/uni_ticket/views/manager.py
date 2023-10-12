@@ -59,7 +59,7 @@ def dashboard(request, structure_slug, structure):
         follow=True
     ).select_related('ticket').values('ticket')
 
-    chiusi = assignments.filter(ticket__is_closed=True).annotate(total=Count('ticket__code')).count()
+    # chiusi = assignments.filter(ticket__is_closed=True).annotate(total=Count('ticket__code')).count()
     opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
     unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
     my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).annotate(total=Count('ticket__code')).count()
@@ -82,7 +82,7 @@ def dashboard(request, structure_slug, structure):
         "sub_title": sub_title,
         "ticket_aperti": opened,
         "ticket_assegnati_a_me": my_opened,
-        "ticket_chiusi": chiusi,
+        # "ticket_chiusi": chiusi,
         "ticket_messages": messages,
         "ticket_non_gestiti": unassigned,
         "title": title,
