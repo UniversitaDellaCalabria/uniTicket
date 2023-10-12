@@ -469,6 +469,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
                 unassigned += 1
         # chiusi = Ticket.objects.filter(code__in=ticket_list, is_closed=True)
         chiusi = tickets.filter(is_closed=True).count()
+        ticket_codes = not_closed.values_list('ticket__code', flat=True)
     # if user is manager
     else:
         assignments = TicketAssignment.objects.filter(
@@ -481,10 +482,10 @@ def tickets(request, structure_slug, structure, office_employee=None):
         opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
         unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
         my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
-        tickets = assignments.filter(ticket__is_closed=False).values_list('ticket').distinct()
+        ticket_codes = assignments.filter(ticket__is_closed=False).values_list('ticket__code', flat=True)
 
     # unread messages
-    messages = TicketReply.get_unread_messages_count(tickets=tickets)
+    messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
 
     d = {
         "ticket_aperti": opened,

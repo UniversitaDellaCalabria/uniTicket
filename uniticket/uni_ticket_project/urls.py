@@ -188,3 +188,10 @@ if "chat" in settings.INSTALLED_APPS:
     import chat.urls
 
     urlpatterns += (path("", include(chat.urls, "chat")),)
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]

@@ -912,16 +912,16 @@ def dashboard(request):
             # unassigned.append(nc)
             unassigned += 1
     # chiusi = tickets.filter(is_closed=True)
-    chiusi = tickets.filter(is_closed=True).count()
-
+    closed = tickets.filter(is_closed=True).count()
+    ticket_codes = not_closed.values_list('ticket__code', flat=True).distinct()
     messages = TicketReply.get_unread_messages_count(
-        tickets=not_closed, by_operator=True)
+        ticket_codes=ticket_codes, by_operator=True)
 
     d = {
         "priority_levels": PRIORITY_LEVELS,
         "sub_title": sub_title,
         "ticket_aperti": opened,
-        "ticket_chiusi": chiusi,
+        "ticket_chiusi": closed,
         "ticket_messages": messages,
         "ticket_non_gestiti": unassigned,
         "title": title,

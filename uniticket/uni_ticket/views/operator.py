@@ -48,8 +48,8 @@ def dashboard(request, structure_slug, structure, office_employee):
             unassigned += 1
 
     chiusi = tickets.filter(is_closed=True).count()
-
-    messages = TicketReply.get_unread_messages_count(tickets=not_closed)
+    ticket_codes = not_closed.values_list('ticket__code', flat=True).distinct()
+    messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
 
     d = {
         "offices": offices,

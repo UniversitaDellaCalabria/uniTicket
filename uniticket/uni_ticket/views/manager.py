@@ -72,8 +72,8 @@ def dashboard(request, structure_slug, structure):
     # disabled_expired_items(categories)
 
     # messages = TicketReply.get_unread_messages_count(tickets=tickets)
-    ticket_codes = assignments.filter(ticket__is_closed=False).distinct()
-    messages = TicketReply.get_unread_messages_count(tickets=ticket_codes)
+    ticket_codes = assignments.filter(ticket__is_closed=False).values_list('ticket__code', flat=True).distinct()
+    messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
     # messages = 0
     d = {
         "categories": categories,
