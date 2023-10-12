@@ -110,7 +110,7 @@ def user_is_manager(user, structure):
     umos = UserManageOrganizationalStructure
     user_structure_manager = umos.objects.filter(
         user=user, organizational_structure=structure
-    ).first()
+    ).exists()
     if not user_structure_manager:
         return False
     return user_is_in_default_office(user, structure)

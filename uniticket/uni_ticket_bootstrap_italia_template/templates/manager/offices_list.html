@@ -48,7 +48,7 @@
               <p class="card-text">{{ office.description }}</p>
               <p class="card-text">
                   <b>{% trans 'Operatori' %}:</b>
-                  {{ office.organizationalstructureofficeemployee_set.all.count }}
+                  {{ office.organizationalstructureofficeemployee_set.count }}
                   <br>
                   <b>{% trans 'Ad uso interno' %}:</b>
                   <svg class="icon icon-sm icon-secondary">
@@ -60,7 +60,7 @@
                     </svg>
                   <br>
                   <b>{% trans 'Richieste assegnate' %}:</b>
-                  {{ office.ticketassignment_set.all.count }}
+                  {{ office.ticketassignment_set.count }}
                   <br>
                   <b>{% trans 'Categorie di competenza' %}:</b>
                     {% if office.ticketcategory_set.all %}

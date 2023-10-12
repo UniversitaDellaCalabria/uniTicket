@@ -60,10 +60,10 @@
                   {{ category.date_end | default:"-" }}
                   <br>
                   <b>{% trans 'Clausole attive' %}:</b>
-                  {{ category.ticketcategorycondition_set.all.count }}
+                  {{ category.ticketcategorycondition_set.count }}
                   <br>
                   <b>{% trans 'Attività predefinite attive' %}:</b>
-                  {{ category.ticketcategorytask_set.all.count }}
+                  {{ category.ticketcategorytask_set.count }}
                   <br>
                   <b>{% trans 'Notifica email a operatori' %}:</b>
                   <svg class="icon icon-xs">

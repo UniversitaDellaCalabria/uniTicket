@@ -57,26 +57,24 @@ def dashboard(request, structure_slug, structure):
         office__organizational_structure=structure,
         office__is_active=True,
         follow=True
-    ).select_related('ticket')
+    ).select_related('ticket').values('ticket')
 
-    chiusi = assignments.filter(ticket__is_closed=True).values('ticket__code').annotate(total=Count('ticket__code')).count()
-    opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
-    unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
-    my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
+    chiusi = assignments.filter(ticket__is_closed=True).annotate(total=Count('ticket__code')).count()
+    opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
+    unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
+    my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).annotate(total=Count('ticket__code')).count()
     om = OrganizationalStructureOffice
-    offices = om.objects.filter(organizational_structure=structure)\
-                        .prefetch_related('ticketcategory_set')
+    offices = om.objects.filter(organizational_structure=structure)
 
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)\
-                           .select_related('organizational_office')\
-                           .prefetch_related('ticketcategorycondition_set')\
-                           .prefetch_related('ticketcategorytask_set')
+                           .select_related('organizational_office')
     # disabled_expired_items(categories)
 
     # messages = TicketReply.get_unread_messages_count(tickets=tickets)
-    ticket_codes = assignments.filter(ticket__is_closed=False).values_list('ticket').distinct()
+    ticket_codes = assignments.filter(ticket__is_closed=False).distinct()
     messages = TicketReply.get_unread_messages_count(tickets=ticket_codes)
+    # messages = 0
     d = {
         "categories": categories,
         "offices": offices,
@@ -109,10 +107,7 @@ def offices(request, structure_slug, structure):
     title = _("Gestione uffici")
     template = "manager/offices.html"
     os = OrganizationalStructureOffice
-    offices = os.objects.filter(organizational_structure=structure)\
-                        .prefetch_related('organizationalstructureofficeemployee_set')\
-                        .prefetch_related('ticketassignment_set')\
-                        .prefetch_related('ticketcategory_set')
+    offices = os.objects.filter(organizational_structure=structure)
 
     d = {
         "offices": offices,
@@ -2352,9 +2347,7 @@ def categories(request, structure_slug, structure):
     # sub_title = _("gestione ufficio livello manager")
     categories = TicketCategory.objects\
                                .filter(organizational_structure=structure)\
-                               .select_related('organizational_office')\
-                               .prefetch_related('ticketcategorycondition_set')\
-                               .prefetch_related('ticketcategorytask_set')
+                               .select_related('organizational_office')
     # disabled_expired_items(categories)
 
     d = {
