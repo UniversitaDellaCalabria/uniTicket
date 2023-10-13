@@ -61,7 +61,9 @@ def dashboard(request, structure_slug, structure):
     my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).exists()
 
     om = OrganizationalStructureOffice
-    offices = om.objects.filter(organizational_structure=structure)
+    offices = om.objects.filter(organizational_structure=structure)\
+                        .prefetch_related('organizationalstructureofficeemployee_set')\
+                        .prefetch_related('ticketcategory_set')
 
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)\
