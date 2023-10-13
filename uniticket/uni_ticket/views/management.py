@@ -475,7 +475,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
                 unassigned = True
         # chiusi = Ticket.objects.filter(code__in=ticket_list, is_closed=True)
         # chiusi = tickets.filter(is_closed=True).count()
-        ticket_codes = not_closed.values_list('ticket__code', flat=True)
+        ticket_codes = not_closed.values_list('code', flat=True)
     # if user is manager
     else:
         assignments = TicketAssignment.objects.filter(
