@@ -129,9 +129,9 @@
 
     {% if ticket_taken %}
         <a role="button" href="{% url 'uni_ticket:ticket_message' ticket_id=ticket.code %}"
-           class="btn btn-outline-secondary">
+           class="btn btn-outline-{% if unread_messages > 0 %}warning{% else %}secondary{% endif %}">
             {% get_unread_messages ticket=ticket as unread_messages %}
-            <svg class="icon icon-xs {% if unread_messages > 0 %}icon-warning{% endif %}">
+            <svg class="icon icon-xs">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
             </svg> {% trans "Messaggi" %}
         </a>

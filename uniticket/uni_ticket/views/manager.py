@@ -49,10 +49,6 @@ def dashboard(request, structure_slug, structure):
         "Gestisci le richieste per la struttura {}").format(structure)
     template = "manager/dashboard.html"
 
-    # ta = TicketAssignment
-    # structure_tickets = ta.get_ticket_per_structure(structure=structure)
-    # tickets = Ticket.objects.filter(code__in=structure_tickets)
-
     assignments = TicketAssignment.objects.filter(
         office__organizational_structure=structure,
         office__is_active=True,
@@ -60,21 +56,20 @@ def dashboard(request, structure_slug, structure):
     ).select_related('ticket').values('ticket')
 
     # chiusi = assignments.filter(ticket__is_closed=True).annotate(total=Count('ticket__code')).count()
-    opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
-    unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
-    my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).annotate(total=Count('ticket__code')).count()
+    opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).exists()
+    unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).exists()
+    my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).exists()
+
     om = OrganizationalStructureOffice
     offices = om.objects.filter(organizational_structure=structure)
 
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)\
                            .select_related('organizational_office')
-    # disabled_expired_items(categories)
 
-    # messages = TicketReply.get_unread_messages_count(tickets=tickets)
     ticket_codes = assignments.filter(ticket__is_closed=False).values_list('ticket__code', flat=True).distinct()
     messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
-    # messages = 0
+
     d = {
         "categories": categories,
         "offices": offices,
