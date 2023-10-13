@@ -1325,6 +1325,7 @@ class TicketAssignment(TimeStampedModel):
     class Meta:
         unique_together = ("ticket", "office")
         ordering = ["created"]
+        indexes = [models.Index(fields=["office_id", "follow"])]
         verbose_name = _("Competenza Ticket")
         verbose_name_plural = _("Competenza Ticket")
 
