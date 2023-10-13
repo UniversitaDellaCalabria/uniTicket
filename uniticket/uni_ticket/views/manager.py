@@ -106,7 +106,9 @@ def offices(request, structure_slug, structure):
     title = _("Gestione uffici")
     template = "manager/offices.html"
     os = OrganizationalStructureOffice
-    offices = os.objects.filter(organizational_structure=structure)
+    offices = os.objects.filter(organizational_structure=structure)\
+                        .prefetch_related('organizationalstructureofficeemployee_set')\
+                        .prefetch_related('ticketcategory_set')
 
     d = {
         "offices": offices,
@@ -2346,7 +2348,9 @@ def categories(request, structure_slug, structure):
     # sub_title = _("gestione ufficio livello manager")
     categories = TicketCategory.objects\
                                .filter(organizational_structure=structure)\
-                               .select_related('organizational_office')
+                               .select_related('organizational_office')\
+                               .prefetch_related('ticketcategorytask_set')\
+                               .prefetch_related('ticketcategorycondition_set')
     # disabled_expired_items(categories)
 
     d = {
