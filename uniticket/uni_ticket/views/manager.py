@@ -65,7 +65,9 @@ def dashboard(request, structure_slug, structure):
 
     cm = TicketCategory
     categories = cm.objects.filter(organizational_structure=structure)\
-                           .select_related('organizational_office')
+                           .select_related('organizational_office')\
+                           .prefetch_related('ticketcategorytask_set')\
+                           .prefetch_related('ticketcategorycondition_set')
 
     ticket_codes = assignments.filter(ticket__is_closed=False).values_list('ticket__code', flat=True).distinct()
     messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
