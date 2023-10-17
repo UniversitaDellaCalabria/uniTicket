@@ -595,9 +595,9 @@ class Ticket(SavedFormContent):
     )
     input_module = models.ForeignKey(
         TicketCategoryModule, on_delete=models.PROTECT)
-    is_closed = models.BooleanField(default=False)
+    is_closed = models.BooleanField(default=False, db_index=True)
     closed_date = models.DateTimeField(blank=True, null=True)
-    assigned_date = models.DateTimeField(blank=True, null=True)
+    assigned_date = models.DateTimeField(blank=True, null=True, db_index=True)
     closed_by = models.ForeignKey(
         get_user_model(),
         on_delete=models.SET_NULL,
