@@ -53,3 +53,4 @@ WeasyPrint==52.4
 
 # per la protocollazione
 zeep
+twisted>=23.10.0rc1 # not directly required, pinned by Snyk to avoid a vulnerability
