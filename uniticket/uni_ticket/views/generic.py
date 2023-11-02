@@ -328,7 +328,8 @@ def ticket_messages(request, structure_slug=None, structure=None, office_employe
     by_operator = False
     if user_type == "user":
         tickets = Ticket.objects.filter(
-            Q(created_by=request.user) | Q(compiled_by=request.user)
+            Q(created_by=request.user) | Q(compiled_by=request.user),
+            is_closed=False,
         ).values("code")
         # if user_type is 'user', retrieve messages leaved by a manager/operator
         # (linked to a structure)
@@ -336,12 +337,16 @@ def ticket_messages(request, structure_slug=None, structure=None, office_employe
     elif user_type == "operator":
         # if user is an operator, retrieve his tickets
         tickets = visible_tickets_to_user(
-            user=request.user, structure=structure, office_employee=office_employee
+            user=request.user,
+            structure=structure,
+            office_employee=office_employee,
+            only_open_tickets=True
         )
     else:
         # if user is a manager, get structure tickets
         ta = TicketAssignment
-        tickets = ta.get_ticket_per_structure(structure=structure)
+        tickets = ta.get_ticket_per_structure(structure=structure,
+                                              only_open_tickets=True)
 
     if by_operator:
         not_read = Count(

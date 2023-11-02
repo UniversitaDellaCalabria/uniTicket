@@ -1330,22 +1330,29 @@ class TicketAssignment(TimeStampedModel):
         verbose_name_plural = _("Competenza Ticket")
 
     @staticmethod
-    def get_ticket_per_structure(structure, follow_check=True):
+    def get_ticket_per_structure(structure, follow_check=True, only_open_tickets=False):
         """ """
         q_base = Q(office__organizational_structure=structure,
                    office__is_active=True)
         q_follow = Q(follow=True) if follow_check else Q()
+        q_only_open = Q(ticket__is_closed=False) if only_open_tickets else Q()
         ticket_assignments = TicketAssignment.objects.filter(
             q_base,
-            q_follow
+            q_follow,
+            q_only_open
         ).values_list("ticket__code", flat=True)
         return set(ticket_assignments)
 
     @staticmethod
-    def get_ticket_in_office_list(office_list, follow_check=True):
+    def get_ticket_in_office_list(office_list,
+                                  follow_check=True,
+                                  only_open_tickets=False):
         """ """
+        q_only_open = Q(ticket__is_closed=False) if only_open_tickets else Q()
         ticket_assignments = TicketAssignment.objects.filter(
-            office__in=office_list, office__is_active=True
+            q_only_open,
+            office__in=office_list,
+            office__is_active=True
         ).values("ticket__code", "follow")
         ticket_set = set()
         for assignment in ticket_assignments:
