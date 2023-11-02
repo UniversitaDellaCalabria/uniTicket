@@ -1351,7 +1351,7 @@ class TicketAssignment(TimeStampedModel):
         q_only_open = Q(ticket__is_closed=False) if only_open_tickets else Q()
         ticket_assignments = TicketAssignment.objects.filter(
             q_only_open,
-            office__in=office_list,
+            office__in=offices_list,
             office__is_active=True
         ).values("ticket__code", "follow")
         ticket_set = set()
