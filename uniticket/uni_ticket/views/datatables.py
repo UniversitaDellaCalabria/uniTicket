@@ -220,8 +220,9 @@ def manager_opened_ticket(request, structure_slug, structure):
 
     :return: JsonResponse
     """
-    tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=False)
+    tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                        only_open_tickets=True)
+    ticket_list = Ticket.objects.filter(code__in=tickets)
     result_list = copy.deepcopy(ticket_list)
     for ticket in ticket_list:
         if not ticket.has_been_taken():

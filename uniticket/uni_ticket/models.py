@@ -1344,7 +1344,7 @@ class TicketAssignment(TimeStampedModel):
         return set(ticket_assignments)
 
     @staticmethod
-    def get_ticket_in_office_list(office_list,
+    def get_ticket_in_office_list(offices_list,
                                   follow_check=True,
                                   only_open_tickets=False):
         """ """

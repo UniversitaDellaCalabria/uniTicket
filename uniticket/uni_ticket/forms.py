@@ -430,7 +430,7 @@ class TicketDependenceForm(forms.Form):
             user_offices = user_is_operator(user, structure)
             offices_list = user_offices_list(user_offices)
             ticket_id_list = TicketAssignment.get_ticket_in_office_list(
-                offices_list)
+                offices_list=offices_list)
         ticket_id_list.remove(current_ticket_id)
         cleaned_list = [
             code for code in ticket_id_list if code not in ticket_dependences_code_list
