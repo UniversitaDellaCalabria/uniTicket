@@ -3,16 +3,22 @@
 
 <li>
     <a href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
-        <svg class="icon {% if ticket_non_gestiti %}icon-warning{% endif %}"><use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use></svg>
+        {% if ticket_non_gestiti > 0 %}
+        <div class="badge-wrapper"><span class="toolbar-badge badge-primary">{{ ticket_non_gestiti }}</span></div>
+        {% endif %}
+        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use></svg>
         <span class="toolbar-label">{% trans 'Aperte' %}</span></span>
     </a>
 </li>
 <li>
     <a href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
-        <svg class="icon {% if ticket_aperti %}icon-warning{% endif %}"><use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use></svg>
+        {% if ticket_aperti > 0 %}
+        <div class="badge-wrapper"><span class="toolbar-badge">{{ ticket_aperti }}</span></div>
+        {% endif %}
+        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use></svg>
         <span class="toolbar-label">{% trans 'Assegnate' %}
-        {% if ticket_assegnati_a_me %}
-            <br>({% trans 'anche a me' %})
+        {% if ticket_assegnati_a_me > 0 %}
+            <br>({{ ticket_assegnati_a_me }} {% trans 'a me' %})
         {% endif %}
         </span>
     </a>

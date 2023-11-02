@@ -453,26 +453,16 @@ def tickets(request, structure_slug, structure, office_employee=None):
         tickets = Ticket.objects.filter(code__in=ticket_list)
 
         not_closed = tickets.filter(is_closed=False)
-        # unassigned = []
-        # opened = []
-        # my_opened = []
-        unassigned = False
-        opened = False
-        my_opened = False
+        unassigned = 0
+        opened = 0
+        my_opened = 0
         for nc in not_closed:
-            if unassigned and opened and my_opened:
-                break
             if nc.has_been_taken():
-                if opened and my_opened:
-                    continue
-                # opened.append(nc)
-                opened = True
+                opened += 1
                 if nc.has_been_taken_by_user(structure=structure, user=request.user):
-                    # my_opened.append(nc)
-                    my_opened = True
+                    my_opened += 1
             else:
-                # unassigned.append(nc)
-                unassigned = True
+                unassigned += 1
         # chiusi = Ticket.objects.filter(code__in=ticket_list, is_closed=True)
         # chiusi = tickets.filter(is_closed=True).count()
         ticket_codes = not_closed.values_list('code', flat=True)
@@ -485,9 +475,9 @@ def tickets(request, structure_slug, structure, office_employee=None):
         ).select_related('ticket')
 
         # chiusi = assignments.filter(ticket__is_closed=True).values('ticket__code').annotate(total=Count('ticket__code')).count()
-        opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).exists()
-        unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).exists()
-        my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).exists()
+        opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
+        unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
+        my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
         ticket_codes = assignments.filter(ticket__is_closed=False).values_list('ticket__code', flat=True)
 
     # unread messages

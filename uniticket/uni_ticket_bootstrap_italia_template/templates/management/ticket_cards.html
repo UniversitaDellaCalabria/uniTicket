@@ -2,13 +2,13 @@
 {% load static %}
 
 <a role="button"
-   class="btn btn-outline-{% if ticket_aperti %}warning{% else %}secondary{% endif %}"
+   class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
-    {% trans 'Aperte' %}
+    <span class="badge badge-light">{{ ticket_non_gestiti }}</span> {% trans 'Aperte' %}
 </a>
-<a role="button" class="btn btn-outline-{% if ticket_aperti %}warning{% else %}secondary{% endif %}" href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
-    {% trans 'Assegnate' %}
-    {% if ticket_assegnati_a_me %}({% trans 'anche a me' %}){% endif %}
+<a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+    <span class="badge badge-light">{{ ticket_aperti }}</span> {% trans 'Assegnate' %}
+    (<span class="badge badge-light">{{ ticket_assegnati_a_me }}</span> {% trans 'a me' %})
 </a>
 <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
     {% trans 'Chiuse' %}

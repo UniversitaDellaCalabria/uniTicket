@@ -16,7 +16,7 @@
 <div class="pb-4 clearfix">
     <div class="pull-left d-none d-md-block">
         {% include 'management/ticket_cards.html' %}
-        <a role="button" class="btn btn-outline-{% if ticket_aperti %}warning{% else %}secondary{% endif %}" href="{% url 'uni_ticket:manager_messages' structure_slug=structure.slug %}">
+        <a role="button" class="btn btn-outline-{% if ticket_messages %}warning{% else %}secondary{% endif %}" href="{% url 'uni_ticket:manager_messages' structure_slug=structure.slug %}">
             <svg class="icon icon-xs">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
             </svg>

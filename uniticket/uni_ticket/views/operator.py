@@ -36,20 +36,16 @@ def dashboard(request, structure_slug, structure, office_employee):
     )
     tickets = Ticket.objects.filter(code__in=user_tickets)
     not_closed = tickets.filter(is_closed=False)
-    unassigned = False
-    opened = False
-    my_opened = False
+    unassigned = 0
+    opened = 0
+    my_opened = 0
     for nc in not_closed:
-        if unassigned and opened and my_opened:
-            break
         if nc.has_been_taken():
-            if opened and my_opened:
-                continue
-            opened = True
+            opened += 1
             if nc.has_been_taken_by_user(structure=structure, user=request.user):
-                my_opened = True
+                my_opened += 1
         else:
-            unassigned = True
+            unassigned += 1
 
     # chiusi = tickets.filter(is_closed=True).count()
     ticket_codes = not_closed.values_list('code', flat=True).distinct()

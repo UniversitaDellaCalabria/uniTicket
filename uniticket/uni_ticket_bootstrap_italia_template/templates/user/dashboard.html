@@ -15,17 +15,17 @@
 
 <div class="pb-4 clearfix">
     <div class="pull-left d-none d-md-block">
-        <a role="button" class="btn btn-outline-{% if ticket_non_gestiti %}warning{% else %}secondary{% endif %}" href="{% url 'uni_ticket:user_unassigned_ticket' %}">
-            {% trans 'Aperte' %}
+        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_unassigned_ticket' %}">
+            <span class="badge badge-light">{{ ticket_non_gestiti }}</span> {% trans 'Aperte' %}
         </a>
-        <a role="button" class="btn btn-outline-{% if ticket_aperti %}warning{% else %}secondary{% endif %}" href="{% url 'uni_ticket:user_opened_ticket' %}">
-            {% trans 'Assegnate' %}
+        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_opened_ticket' %}">
+            <span class="badge badge-light">{{ ticket_aperti }}</span> {% trans 'Assegnate' %}
         </a>
         <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:user_closed_ticket' %}">
             {% trans 'Chiuse' %}
         </a>
-        <a role="button" class="btn btn-outline-{% if ticket_messages %}warning{% else %}secondary{% endif %}" href="{% url 'uni_ticket:messages' %}">
-            <svg class="icon icon-xs">
+        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:messages' %}">
+            <svg class="icon icon-xs {% if ticket_messages > 0 %}icon-warning{% endif %}">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
             </svg>
             {% trans 'Messaggi' %}
@@ -36,13 +36,19 @@
             <ul>
                 <li>
                     <a href="{% url 'uni_ticket:user_unassigned_ticket' %}">
-                        <svg class="icon {% if ticket_non_gestiti %}icon-warning{% endif %}"><use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use></svg>
+                        {% if ticket_non_gestiti > 0 %}
+                        <div class="badge-wrapper"><span class="toolbar-badge badge-primary">{{ ticket_non_gestiti }}</span></div>
+                        {% endif %}
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use></svg>
                         <span class="toolbar-label">{% trans 'Aperte' %}</span></span>
                     </a>
                 </li>
                 <li>
                     <a href="{% url 'uni_ticket:user_opened_ticket' %}">
-                        <svg class="icon {% if ticket_aperti %}icon-warning{% endif %}"><use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use></svg>
+                        {% if ticket_aperti > 0 %}
+                        <div class="badge-wrapper"><span class="toolbar-badge">{{ ticket_aperti }}</span></div>
+                        {% endif %}
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use></svg>
                         <span class="toolbar-label">{% trans 'Assegnate' %}</span>
                     </a>
                 </li>
@@ -54,7 +60,7 @@
                 </li>
                 <li>
                     <a href="{% url 'uni_ticket:messages' %}">
-                        <svg class="icon {% if ticket_messages %}icon-warning{% endif %}"><use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use></svg>
+                        <svg class="icon {% if ticket_messages > 0 %}icon-warning{% endif %}"><use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use></svg>
                         <span class="toolbar-label">{% trans 'Messaggi' %}</span></span>
                     </a>
                 </li>
