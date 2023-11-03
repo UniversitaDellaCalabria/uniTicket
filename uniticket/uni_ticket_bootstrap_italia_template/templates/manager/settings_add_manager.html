@@ -14,6 +14,12 @@
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Dashboard" %}
 </a>
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_user_settings' structure_slug=structure.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprite.svg' %}#it-share"></use>
+    </svg> {% trans "Torna alla configurazione" %}
+</a>
 {% endblock top_buttons %}
 
 {% block page_content %}
