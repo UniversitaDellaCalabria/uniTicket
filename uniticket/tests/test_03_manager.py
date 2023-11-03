@@ -282,9 +282,9 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         self.office_1_str_1.refresh_from_db()
 
         # Add office operator
-        new_params = {'operatore': self.user_1.pk,
+        new_params = {'operator': self.user_1.pk,
                       'description': 'operatore'}
-        response = self.client.post(reverse('uni_ticket:manager_office_detail',
+        response = self.client.post(reverse('uni_ticket:manager_add_office_operator',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'office_slug': self.office_1_str_1.slug}),
                                     new_params,

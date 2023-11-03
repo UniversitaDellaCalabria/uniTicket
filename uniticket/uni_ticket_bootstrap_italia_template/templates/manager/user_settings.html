@@ -38,7 +38,12 @@
     <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
         <div class="collapse-body">
             {% include 'manager/actual_structure_managers.html' %}
-            {% include 'manager/add_structure_manager.html' %}
+            <a href="{% url 'uni_ticket:manager_user_settings_add_manager' structure_slug=structure.slug %}"
+               class="btn btn-xs btn-outline-success">
+                <svg class="icon icon-xs icon-success">
+                    <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
+                </svg> {% trans "Assegna nuovo manager" %}
+            </a>
         </div>
     </div>
 

@@ -248,60 +248,12 @@ class OfficeForm(ModelForm):
         js = ("js/textarea-autosize.js",)
 
 
-class MyOperatorChoiceField(ModelChoiceField):
-    def label_from_instance(self, obj):
-        return "{} - {} {}".format(obj.taxpayer_id, obj.last_name, obj.first_name)
-
-
 class OfficeAddOperatorForm(forms.Form):
-    operatore = MyOperatorChoiceField(
-        label=_("Assegna operatore"),
-        queryset=None,
-        required=True,
-        widget=BootstrapItaliaSelectWidget,
-    )
-    description = forms.CharField(
-        label=_("Note"), widget=forms.Textarea(attrs={"rows": 2}), required=False
-    )
+    operator = forms.CharField(required=True)
+    description = forms.CharField(required=False)
 
-    def __init__(self, *args, **kwargs):
-        kwargs.pop("structure", None)
-        office_slug = kwargs.pop("office_slug", "")
-        osoe = OrganizationalStructureOfficeEmployee
-        actual = []
-        actual_employees = osoe.objects.filter(office__slug=office_slug)
-        for ae in actual_employees:
-            actual.append(ae.employee.pk)
-        employees_list = get_user_model().objects.all().exclude(pk__in=actual)
-        super().__init__(*args, **kwargs)
-        self.fields["operatore"].queryset = employees_list
-
-    class Media:
-        js = ("js/textarea-autosize.js",)
-
-
-class OrganizationalStructureAddManagerForm(forms.Form):
-    manager = MyOperatorChoiceField(
-        label=_("Assegna manager"),
-        queryset=None,
-        required=True,
-        widget=BootstrapItaliaSelectWidget,
-    )
-
-    def __init__(self, *args, **kwargs):
-        structure = kwargs.pop("structure", None)
-        manager_users = kwargs.pop("manager_users", None)
-        if not manager_users:
-            manager_users = structure.get_structure_managers()
-        manager_list = []
-        for manager_user in manager_users:
-            manager_list.append(manager_user.user.pk)
-        users_list = get_user_model().objects.all().exclude(pk__in=manager_list)
-        super().__init__(*args, **kwargs)
-        self.fields["manager"].queryset = users_list
-
-    class Media:
-        js = ("js/textarea-autosize.js",)
+class AddManagerForm(forms.Form):
+    manager = forms.CharField(required=True)
 
 
 class PriorityForm(forms.Form):

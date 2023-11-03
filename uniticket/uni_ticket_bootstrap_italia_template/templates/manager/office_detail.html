@@ -295,6 +295,15 @@
                         </ul>
                         <hr />
                     {% endif %}
+
+                    <a href="{% url 'uni_ticket:manager_add_office_operator' structure_slug=structure.slug office_slug=office.slug %}"
+                       class="btn btn-xs btn-outline-success">
+                        <svg class="icon icon-xs icon-success">
+                            <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
+                        </svg> {% trans "Assegna nuovo operatore" %}
+                    </a>
+
+                    {% comment %}
                     <form method="post" enctype="multipart/form-data">
                         {% include 'form_template.html' %}
                         {% block form_buttons %}
@@ -336,6 +345,8 @@
                         </div>
                         {% endblock form_buttons %}
                     </form>
+                    {% endcomment %}
+
                 </td>
             </tr>
         </tbody>

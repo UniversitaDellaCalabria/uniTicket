@@ -382,6 +382,11 @@ urlpatterns += [
     path("{}/edit/".format(office_id),
          manager.office_edit, name="manager_office_edit"),
     path(
+        "{}/add-operator/".format(office_id),
+        manager.office_add_operator,
+        name="manager_add_office_operator",
+    ),
+    path(
         "{}/remove-operator/<int:employee_id>/".format(office_id),
         manager.office_remove_operator,
         name="manager_remove_office_operator",
@@ -659,6 +664,11 @@ urlpatterns += [
         "{}/settings/".format(base),
         manager.manager_settings,
         name="manager_user_settings",
+    ),
+    path(
+        "{}/settings/add-manager/".format(base),
+        manager.manager_settings_add_manager,
+        name="manager_user_settings_add_manager",
     ),
     path(
         "{}/settings/check-protocol".format(base),
