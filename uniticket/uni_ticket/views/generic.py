@@ -340,13 +340,13 @@ def ticket_messages(request, structure_slug=None, structure=None, office_employe
             user=request.user,
             structure=structure,
             office_employee=office_employee,
-            only_open_tickets=True
+            closed=False
         )
     else:
         # if user is a manager, get structure tickets
         ta = TicketAssignment
         tickets = ta.get_ticket_per_structure(structure=structure,
-                                              only_open_tickets=True)
+                                              closed=False)
 
     if by_operator:
         not_read = Count(

@@ -195,13 +195,13 @@ def manager_unassigned_ticket(request, structure_slug, structure):
 
     :return: JsonResponse
     """
-    tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=False).select_related('created_by','compiled_by','input_module__ticket_category')
-    result_list = copy.deepcopy(ticket_list)
-    for ticket in ticket_list:
-        if ticket.has_been_taken():
-            result_list = result_list.exclude(pk=ticket.pk)
-    dtd = TicketDTD(request, result_list, _ticket_columns)
+    tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                        closed=False,
+                                                        taken=False)
+    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
+                                                                         'compiled_by',
+                                                                         'input_module__ticket_category')
+    dtd = TicketDTD(request, ticket_list, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -221,13 +221,12 @@ def manager_opened_ticket(request, structure_slug, structure):
     :return: JsonResponse
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                        only_open_tickets=True)
-    ticket_list = Ticket.objects.filter(code__in=tickets)
-    result_list = copy.deepcopy(ticket_list)
-    for ticket in ticket_list:
-        if not ticket.has_been_taken():
-            result_list = result_list.exclude(pk=ticket.pk)
-    dtd = TicketDTD(request, result_list, _ticket_columns)
+                                                        closed=False,
+                                                        taken=True)
+    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
+                                                                         'compiled_by',
+                                                                         'input_module__ticket_category')
+    dtd = TicketDTD(request, ticket_list, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -246,13 +245,14 @@ def manager_my_opened_ticket(request, structure_slug, structure):
 
     :return: JsonResponse
     """
-    tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=False)
-    result_list = copy.deepcopy(ticket_list)
-    for ticket in ticket_list:
-        if not ticket.has_been_taken(structure=structure, user=request.user):
-            result_list = result_list.exclude(pk=ticket.pk)
-    dtd = TicketDTD(request, result_list, _ticket_columns)
+    tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                        closed=False,
+                                                        taken=True,
+                                                        taken_by=request.user)
+    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
+                                                                         'compiled_by',
+                                                                         'input_module__ticket_category')
+    dtd = TicketDTD(request, ticket_list, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -271,8 +271,11 @@ def manager_closed_ticket(request, structure_slug, structure):
 
     :return: JsonResponse
     """
-    tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=True)
+    tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                        closed=True)
+    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
+                                                                         'compiled_by',
+                                                                         'input_module__ticket_category')
     dtd = TicketDTD(request, ticket_list, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
@@ -318,14 +321,15 @@ def operator_unassigned_ticket(request, structure_slug, structure, office_employ
 
     :return: JsonResponse
     """
-    tickets = visible_tickets_to_user(request.user, structure, office_employee)
-    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=False)
-
-    result_list = copy.deepcopy(ticket_list)
-    for ticket in ticket_list:
-        if ticket.has_been_taken():
-            result_list = result_list.exclude(pk=ticket.pk)
-    dtd = TicketDTD(request, result_list, _ticket_columns)
+    tickets = visible_tickets_to_user(user=request.user,
+                                      structure=structure,
+                                      office_employee=office_employee,
+                                      closed=False,
+                                      taken=False)
+    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
+                                                                         'compiled_by',
+                                                                         'input_module__ticket_category')
+    dtd = TicketDTD(request, ticket_list, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -346,13 +350,15 @@ def operator_opened_ticket(request, structure_slug, structure, office_employee):
 
     :return: JsonResponse
     """
-    tickets = visible_tickets_to_user(request.user, structure, office_employee)
-    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=False)
-    result_list = copy.deepcopy(ticket_list)
-    for ticket in ticket_list:
-        if not ticket.has_been_taken():
-            result_list = result_list.exclude(pk=ticket.pk)
-    dtd = TicketDTD(request, result_list, _ticket_columns)
+    tickets = visible_tickets_to_user(user=request.user,
+                                      structure=structure,
+                                      office_employee=office_employee,
+                                      closed=False,
+                                      taken=True)
+    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
+                                                                         'compiled_by',
+                                                                         'input_module__ticket_category')
+    dtd = TicketDTD(request, ticket_list, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -373,13 +379,16 @@ def operator_my_opened_ticket(request, structure_slug, structure, office_employe
 
     :return: JsonResponse
     """
-    tickets = visible_tickets_to_user(request.user, structure, office_employee)
-    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=False)
-    result_list = copy.deepcopy(ticket_list)
-    for ticket in ticket_list:
-        if not ticket.has_been_taken(structure=structure, user=request.user):
-            result_list = result_list.exclude(pk=ticket.pk)
-    dtd = TicketDTD(request, result_list, _ticket_columns)
+    tickets = visible_tickets_to_user(user=request.user,
+                                      structure=structure,
+                                      office_employee=office_employee,
+                                      closed=False,
+                                      taken=True,
+                                      taken_by=request.user)
+    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
+                                                                         'compiled_by',
+                                                                         'input_module__ticket_category')
+    dtd = TicketDTD(request, ticket_list, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -400,7 +409,12 @@ def operator_closed_ticket(request, structure_slug, structure, office_employee):
 
     :return: JsonResponse
     """
-    tickets = visible_tickets_to_user(request.user, structure, office_employee)
-    ticket_list = Ticket.objects.filter(code__in=tickets, is_closed=True)
+    tickets = visible_tickets_to_user(user=request.user,
+                                      structure=structure,
+                                      office_employee=office_employee,
+                                      closed=True)
+    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
+                                                                         'compiled_by',
+                                                                         'input_module__ticket_category')
     dtd = TicketDTD(request, ticket_list, _ticket_columns)
     return JsonResponse(dtd.get_dict())

@@ -363,19 +363,15 @@ class TicketCompetenceForm(forms.Form):
         current_ticket_id = kwargs.pop("ticket_id", None)
         ticket_dependences_code_list = kwargs.pop("ticket_dependences", [])
         structure = OrganizationalStructure.objects.get(slug=structure_slug)
-        ticket_id_list = TicketAssignment.get_ticket_per_structure(structure)
+        ticket_id_list = TicketAssignment.get_ticket_per_structure(structure,
+                                                                   closed=False,
+                                                                   taken=True)
         ticket_id_list.remove(current_ticket_id)
         ticket_list = Ticket.objects.filter(
             code__in=ticket_id_list,
-            # is_taken=True,
-            is_closed=False,
         ).exclude(code__in=ticket_dependences_code_list)
-        result_list = ticket_list
-        for ticket in ticket_list:
-            if not ticket.has_been_taken():
-                result_list = result_list.exclude(pk=ticket.pk)
         super().__init__(*args, **kwargs)
-        self.fields["ticket"].queryset = result_list
+        self.fields["ticket"].queryset = ticket_list
         self.fields["ticket"].to_field_name = "code"
 
 
@@ -430,19 +426,16 @@ class TicketDependenceForm(forms.Form):
             user_offices = user_is_operator(user, structure)
             offices_list = user_offices_list(user_offices)
             ticket_id_list = TicketAssignment.get_ticket_in_office_list(
-                offices_list=offices_list)
+                offices_list=offices_list,
+                taken=True)
         ticket_id_list.remove(current_ticket_id)
         cleaned_list = [
             code for code in ticket_id_list if code not in ticket_dependences_code_list
         ]
         ticket_list = Ticket.objects.filter(
             code__in=cleaned_list, is_closed=False)
-        result_list = ticket_list
-        for ticket in ticket_list:
-            if not ticket.has_been_taken():
-                result_list = result_list.exclude(pk=ticket.pk)
         super().__init__(*args, **kwargs)
-        self.fields["ticket"].queryset = result_list
+        self.fields["ticket"].queryset = ticket_list
         self.fields["ticket"].to_field_name = "code"
 
     class Media:

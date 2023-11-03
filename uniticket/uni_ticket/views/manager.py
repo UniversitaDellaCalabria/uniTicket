@@ -56,9 +56,9 @@ def dashboard(request, structure_slug, structure):
     ).select_related('ticket').values('ticket')
 
     # chiusi = assignments.filter(ticket__is_closed=True).annotate(total=Count('ticket__code')).count()
-    opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
-    unassigned = assignments.filter(ticket__assigned_date__isnull=True, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
-    my_opened = assignments.filter(ticket__assigned_date__isnull=False, ticket__is_closed=False, taken_by=request.user).annotate(total=Count('ticket__code')).count()
+    opened = assignments.filter(taken_date__isnull=False, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
+    unassigned = assignments.filter(taken_date__isnull=True, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
+    my_opened = assignments.filter(taken_date__isnull=False, ticket__is_closed=False, taken_by=request.user).annotate(total=Count('ticket__code')).count()
 
     om = OrganizationalStructureOffice
     offices = om.objects.filter(organizational_structure=structure)\

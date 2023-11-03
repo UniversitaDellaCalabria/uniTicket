@@ -1330,29 +1330,60 @@ class TicketAssignment(TimeStampedModel):
         verbose_name_plural = _("Competenza Ticket")
 
     @staticmethod
-    def get_ticket_per_structure(structure, follow_check=True, only_open_tickets=False):
+    def get_ticket_per_structure(structure,
+                                 follow_check=True,
+                                 closed=None,
+                                 taken=None,
+                                 taken_by=None):
         """ """
         q_base = Q(office__organizational_structure=structure,
                    office__is_active=True)
         q_follow = Q(follow=True) if follow_check else Q()
-        q_only_open = Q(ticket__is_closed=False) if only_open_tickets else Q()
+
+        q_closed = Q()
+        if closed == True: q_closed = Q(ticket__is_closed=True)
+        elif closed == False: q_closed = Q(ticket__is_closed=False)
+
+        q_taken = Q()
+        if taken == True: q_taken = Q(taken_date__isnull=False)
+        elif taken == False:  q_taken = Q(taken_date__isnull=True)
+
+        q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
+
         ticket_assignments = TicketAssignment.objects.filter(
             q_base,
             q_follow,
-            q_only_open
+            q_closed,
+            q_taken,
+            q_taken_by,
         ).values_list("ticket__code", flat=True)
         return set(ticket_assignments)
 
     @staticmethod
     def get_ticket_in_office_list(offices_list,
                                   follow_check=True,
-                                  only_open_tickets=False):
+                                  closed=None,
+                                  taken=None,
+                                  taken_by=None):
         """ """
-        q_only_open = Q(ticket__is_closed=False) if only_open_tickets else Q()
+        q_base = Q(office__in=offices_list, office__is_active=True)
+
+
+        q_closed = Q()
+        if closed == True: q_closed = Q(ticket__is_closed=True)
+        elif closed == False: q_closed = Q(ticket__is_closed=False)
+
+        q_taken = Q()
+        if taken == True: q_taken = Q(taken_date__isnull=False)
+        elif taken == False: q_taken = Q(taken_date__isnull=True)
+
+        q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
+
         ticket_assignments = TicketAssignment.objects.filter(
-            q_only_open,
-            office__in=offices_list,
-            office__is_active=True
+            q_base,
+            q_closed,
+            q_taken,
+            q_taken_by,
         ).values("ticket__code", "follow")
         ticket_set = set()
         for assignment in ticket_assignments:

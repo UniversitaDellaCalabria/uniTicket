@@ -264,21 +264,27 @@ def format_slugged_name(field_name, capitalize=True):
 def visible_tickets_to_user(user,
                             structure,
                             office_employee,
-                            only_open_tickets=False):
+                            closed=None,
+                            taken=None,
+                            taken_by=None):
     """
     Returns a list of tickets that are visible to user
     """
     model = apps.get_model("uni_ticket", "TicketAssignment")
     if user_is_in_default_office(user, structure):
         tickets = model.get_ticket_per_structure(structure=structure,
-                                                 only_open_tickets=only_open_tickets)
+                                                 closed=closed,
+                                                 taken=taken,
+                                                 taken_by=taken_by)
         return tickets
     offices = []
     for oe in office_employee:
         if oe.office not in offices:
             offices.append(oe.office)
     tickets = model.get_ticket_in_office_list(offices_list=offices,
-                                              only_open_tickets=only_open_tickets)
+                                              closed=closed,
+                                              taken=taken,
+                                              taken_by=taken_by)
     return tickets
 
 
