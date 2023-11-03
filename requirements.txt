@@ -10,7 +10,7 @@ django-nested-admin>=3.2.4
 uritemplate>4.1
 pyyaml>=6.0,<7.0
 
-pillow>=8.2.0
+pillow>=10.0.1
 python-magic>=0.4.15
 pytz>=2019.3
 pydantic >= 1.9.0
