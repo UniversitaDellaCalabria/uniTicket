@@ -1,6 +1,7 @@
 import logging
 import json
 import os
+import sys
 import uuid
 
 from django.contrib.auth import get_user_model
@@ -55,6 +56,11 @@ from .validators import *
 
 
 logger = logging.getLogger("__name__")
+
+
+_protocollo_titolario_list = settings.TITOLARIO_DICT
+if 'makemigrations' in sys.argv or 'migrate' in sys.argv: # pragma: no cover
+    _protocollo_titolario_list = [('', '-')]
 
 
 def _attachment_upload(instance, filename):
@@ -1801,7 +1807,7 @@ class TicketCategoryWSProtocollo(TimeStampedModel):
         help_text="default: settings.PROTOCOL_EMAIL_DEFAULT",
     )
     protocollo_cod_titolario = models.CharField(
-        _("Codice titolario"), max_length=12, choices=settings.TITOLARIO_DICT
+        _("Codice titolario"), max_length=12, choices=_protocollo_titolario_list
     )
     protocollo_fascicolo_numero = models.CharField(
         _("Fascicolo numero"), max_length=255, default="", blank=True
