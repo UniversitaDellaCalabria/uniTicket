@@ -39,7 +39,7 @@ class CategoryForm(ModelForm):
             "allow_user",
             "allow_employee",
             "user_multiple_open_tickets",
-            "allowed_users",
+            # "allowed_users",
             "receive_email",
             "protocol_required",
         ]
@@ -248,12 +248,12 @@ class OfficeForm(ModelForm):
         js = ("js/textarea-autosize.js",)
 
 
-class OfficeAddOperatorForm(forms.Form):
-    operator = forms.CharField(required=True)
-    description = forms.CharField(required=False)
+class AddUserForm(forms.Form):
+    user = forms.CharField(required=True)
 
-class AddManagerForm(forms.Form):
-    manager = forms.CharField(required=True)
+
+class OfficeAddOperatorForm(AddUserForm):
+    description = forms.CharField(required=False)
 
 
 class PriorityForm(forms.Form):

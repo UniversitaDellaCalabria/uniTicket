@@ -52,7 +52,7 @@
                                     {% for user in users %}
                                     <tr>
                                         <td>
-                                            <a href="#" data-toggle="modal" data-target="#addOperator{{ forloop.counter0 }}">
+                                            <a href="#" data-toggle="modal" data-target="#addUser{{ forloop.counter0 }}">
                                                 {{ user.taxpayer_id }}
                                             </a>
                                         </td>
@@ -61,7 +61,7 @@
                                         <td>{{ user.email }}</td>
                                     </tr>
                                     <form method="post">
-                                        <div class="modal fade" tabindex="-1" role="dialog" id="addOperator{{ forloop.counter0 }}">
+                                        <div class="modal fade" tabindex="-1" role="dialog" id="addUser{{ forloop.counter0 }}">
                                             <div class="modal-dialog modal-dialog-centered" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -85,7 +85,7 @@
                                                         <input type="text" name="description" />
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <input class="btn btn-success" type="hidden" name="operator" value="{{ user.pk }}">
+                                                        <input type="hidden" name="user" value="{{ user.pk }}">
                                                         <input class="btn btn-success" type="submit" value="{% trans 'Si, aggiungi' %}">
                                                     </div>
                                                 </div>

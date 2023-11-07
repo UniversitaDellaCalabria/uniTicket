@@ -494,7 +494,7 @@ def office_add_operator(request, structure_slug, office_slug, structure):
         form = OfficeAddOperatorForm(request.POST)
         if form.is_valid():
             osoe = OrganizationalStructureOfficeEmployee
-            user = get_user_model().objects.get(pk=form.cleaned_data['operator'])
+            user = get_user_model().objects.get(pk=form.cleaned_data['user'])
 
             # check if operator exists
             operator_exists = osoe.objects.filter(
@@ -906,6 +906,150 @@ def category_detail(request, structure_slug, category_slug, structure):
         "title": title,
     }
     return render(request, template, base_context(d))
+
+
+@login_required
+@is_manager
+def category_add_ticket_user(request, structure_slug, category_slug, structure):
+    """
+    Add user that can open tickets
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    category = get_object_or_404(
+        TicketCategory, organizational_structure=structure, slug=category_slug
+    )
+    title = _("Aggiungi nuovo utente abilitato all'apertura dei ticket")
+    template = "manager/category_add_ticket_user.html"
+    key = request.GET.get("search", "")
+    q_filter = (Q(taxpayer_id__icontains=key)
+                | Q(first_name__icontains=key)
+                | Q(last_name__icontains=key)) if key else Q()
+    all_users = get_user_model().objects.filter(q_filter, is_active=True)\
+                                .values("pk", "taxpayer_id",
+                                        "last_name", "first_name",
+                                        "email")
+    paginator = Paginator(all_users, 20)
+    page = request.GET.get("page")
+    users = paginator.get_page(page)
+
+    if request.POST:
+        form = AddUserForm(request.POST)
+
+        if form.is_valid():
+            user = get_user_model().objects.get(pk=form.cleaned_data['user'])
+            users = category.allowed_users
+
+            # check if user exists
+            if user in users.all():
+                return custom_message(
+                    request,
+                    _("Utente già selezionato.")
+                )
+
+            users.add(user)
+
+            messages.add_message(
+                request, messages.SUCCESS, _("Utente inserito con successo")
+            )
+
+            # log action
+            logger.info(
+                "[{}] manager of structure {}"
+                " {} added new user {} that can"
+                " open tickets in {}".format(
+                    timezone.localtime(),
+                    structure,
+                    request.user,
+                    user,
+                    category
+                )
+            )
+
+            return redirect(
+                "uni_ticket:manager_category_detail",
+                structure_slug=structure_slug,
+                category_slug=category_slug
+            )
+        else:  # pragma: no cover
+            for k, v in get_labeled_errors(form).items():
+                messages.add_message(
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
+                )
+    d = {
+        "category_slug": category_slug,
+        "structure": structure,
+        "sub_title": category,
+        "title": title,
+        "users": users,
+        "key": key
+    }
+    return render(request, template, base_context(d))
+
+
+@login_required
+@is_manager
+def category_remove_ticket_user(
+    request, structure_slug, category_slug, user_id, structure
+):
+    """
+    Remove employee from office
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type user_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param user_id: user_id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    user = get_user_model().objects.get(pk=user_id)
+    category = get_object_or_404(
+        TicketCategory, organizational_structure=structure, slug=category_slug
+    )
+    users = category.allowed_users
+    if user not in users.all():
+        messages.add_message(
+            request, messages.ERROR, _(
+                "L'utente non è tra quelli abilitati")
+        )
+    else:
+        users.remove(user)
+        # log action
+        logger.info(
+            "[{}] manager of structure {}"
+            " {} removed user {} from those that"
+            " can open tickets in {}".format(
+                timezone.localtime(),
+                structure,
+                request.user,
+                user,
+                category
+            )
+        )
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            _("Utente {} rimosso correttamente").format(user),
+        )
+    return redirect(
+        "uni_ticket:manager_category_detail",
+        structure_slug=structure_slug,
+        category_slug=category_slug,
+    )
 
 
 @login_required
@@ -3052,10 +3196,10 @@ def manager_settings_add_manager(request, structure_slug, structure):
     users = paginator.get_page(page)
 
     if request.POST:
-        form = AddManagerForm(request.POST)
+        form = AddUserForm(request.POST)
 
         if form.is_valid():
-            user = get_user_model().objects.get(pk=form.cleaned_data['manager'])
+            user = get_user_model().objects.get(pk=form.cleaned_data['user'])
             osoe = OrganizationalStructureOfficeEmployee
             default_office = OrganizationalStructureOffice.objects.get(
                 organizational_structure=structure, is_default=True

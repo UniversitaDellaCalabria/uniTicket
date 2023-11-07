@@ -430,6 +430,16 @@ urlpatterns += [
         name="manager_category_detail",
     ),
     path(
+        "{}/add-ticket-user/".format(category_id),
+        manager.category_add_ticket_user,
+        name="manager_category_add_ticket_user",
+    ),
+    path(
+        "{}/remove-ticket-user/<int:user_id>/".format(category_id),
+        manager.category_remove_ticket_user,
+        name="manager_category_remove_ticket_user",
+    ),
+    path(
         "{}/remove-office/<str:office_slug>/".format(category_id),
         manager.category_remove_office,
         name="manager_remove_category_office",
