@@ -920,7 +920,6 @@ def dashboard(request):
         "priority_levels": PRIORITY_LEVELS,
         "sub_title": sub_title,
         "ticket_aperti": opened,
-        # "ticket_chiusi": closed,
         "ticket_messages": messages,
         "ticket_non_gestiti": unassigned,
         "title": title,

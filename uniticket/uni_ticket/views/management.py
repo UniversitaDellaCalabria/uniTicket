@@ -445,55 +445,50 @@ def tickets(request, structure_slug, structure, office_employee=None):
     ticket_list = []
     # if user is operator
     if office_employee:
-        unassigned_tickets = visible_tickets_to_user(
-                                 user=request.user,
-                                 structure=structure,
-                                 office_employee=office_employee,
-                                 closed=False,
-                                 taken=False
-                             )
-        open_tickets = visible_tickets_to_user(
-                             user=request.user,
-                             structure=structure,
-                             office_employee=office_employee,
-                             closed=False,
-                             taken=True
-                         )
-        my_open_tickets = visible_tickets_to_user(
-                             user=request.user,
-                             structure=structure,
-                             office_employee=office_employee,
-                             closed=False,
-                             taken=True,
-                             taken_by=request.user
-                         )
+        unassigned = len(visible_tickets_to_user(user=request.user,
+                                                 structure=structure,
+                                                 office_employee=office_employee,
+                                                 closed=False,
+                                                 taken=False))
 
-        unassigned = len(unassigned_tickets)
-        opened = len(open_tickets)
-        my_opened = len(my_open_tickets)
+        opened = len(visible_tickets_to_user(user=request.user,
+                                             structure=structure,
+                                             office_employee=office_employee,
+                                             closed=False,
+                                             taken=True))
 
+        my_opened = len(visible_tickets_to_user(user=request.user,
+                                                structure=structure,
+                                                office_employee=office_employee,
+                                                closed=False,
+                                                taken=True,
+                                                taken_by=request.user))
 
-        not_closed_tickets = visible_tickets_to_user(
-            user=request.user,
-            structure=structure,
-            office_employee=office_employee,
-            closed=False
-        )
-        ticket_codes = Ticket.objects.filter(code__in=not_closed_tickets).values_list('code', flat=True)
+        ticket_codes = TicketAssignment.objects.filter(
+                            office__organizational_structure=structure,
+                            office__is_active=True,
+                            follow=True,
+                            ticket__is_closed=False,
+                            office_employee=office_employee,
+                        ).values_list('ticket__code', flat=True).distinct()
     # if user is manager
     else:
-        assignments = TicketAssignment.objects.filter(
+        unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                               closed=False,
+                                                               taken=False))
+        opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                               closed=False,
+                                                               taken=True))
+        my_opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                                  closed=False,
+                                                                  taken=True,
+                                                                  taken_by=request.user))
+        ticket_codes = TicketAssignment.objects.filter(
             office__organizational_structure=structure,
             office__is_active=True,
             follow=True,
             ticket__is_closed=False
-        ).select_related('ticket')
-
-        # chiusi = assignments.filter(ticket__is_closed=True).values('ticket__code').annotate(total=Count('ticket__code')).count()
-        opened = assignments.filter(taken_date__isnull=False, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
-        unassigned = assignments.filter(taken_date__isnull=True, ticket__is_closed=False).values('ticket__code').annotate(total=Count('ticket__code')).count()
-        my_opened = assignments.filter(taken_date__isnull=False, ticket__is_closed=False, taken_by=request.user).values('ticket__code').annotate(total=Count('ticket__code')).count()
-        ticket_codes = assignments.values_list('ticket__code', flat=True)
+        ).values_list('ticket__code', flat=True).distinct()
 
     # unread messages
     messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
@@ -501,7 +496,6 @@ def tickets(request, structure_slug, structure, office_employee=None):
     d = {
         "ticket_aperti": opened,
         "ticket_assegnati_a_me": my_opened,
-        # "ticket_chiusi": chiusi,
         "ticket_non_gestiti": unassigned,
         "ticket_messages": messages,
         "structure": structure,

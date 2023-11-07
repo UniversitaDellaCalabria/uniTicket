@@ -31,41 +31,34 @@ def dashboard(request, structure_slug, structure, office_employee):
         OPERATOR_PREFIX)
     template = "operator/dashboard.html"
     offices = user_offices_list(office_employee)
-    unassigned_tickets = visible_tickets_to_user(
-                             user=request.user,
-                             structure=structure,
-                             office_employee=office_employee,
-                             closed=False,
-                             taken=False
-                         )
-    open_tickets = visible_tickets_to_user(
-                         user=request.user,
-                         structure=structure,
-                         office_employee=office_employee,
-                         closed=False,
-                         taken=True
-                     )
-    my_open_tickets = visible_tickets_to_user(
-                         user=request.user,
-                         structure=structure,
-                         office_employee=office_employee,
-                         closed=False,
-                         taken=True,
-                         taken_by=request.user
-                     )
 
-    unassigned = len(unassigned_tickets)
-    opened = len(open_tickets)
-    my_opened = len(my_open_tickets)
+    unassigned = len(visible_tickets_to_user(user=request.user,
+                                             structure=structure,
+                                             office_employee=office_employee,
+                                             closed=False,
+                                             taken=False))
 
+    opened = len(visible_tickets_to_user(user=request.user,
+                                         structure=structure,
+                                         office_employee=office_employee,
+                                         closed=False,
+                                         taken=True))
 
-    not_closed_tickets = visible_tickets_to_user(
-        user=request.user,
-        structure=structure,
-        office_employee=office_employee,
-        closed=False
-    )
-    ticket_codes = Ticket.objects.filter(code__in=not_closed_tickets).values_list('code', flat=True)
+    my_opened = len(visible_tickets_to_user(user=request.user,
+                                            structure=structure,
+                                            office_employee=office_employee,
+                                            closed=False,
+                                            taken=True,
+                                            taken_by=request.user))
+
+    ticket_codes = TicketAssignment.objects.filter(
+                        office__organizational_structure=structure,
+                        office__is_active=True,
+                        follow=True,
+                        ticket__is_closed=False,
+                        office_employee=office_employee,
+                    ).values_list('ticket__code', flat=True).distinct()
+
     messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
     d = {
         "offices": offices,
@@ -74,7 +67,6 @@ def dashboard(request, structure_slug, structure, office_employee):
         "title": title,
         "ticket_aperti": opened,
         "ticket_assegnati_a_me": my_opened,
-        # "ticket_chiusi": chiusi,
         "ticket_messages": messages,
         "ticket_non_gestiti": unassigned,
     }

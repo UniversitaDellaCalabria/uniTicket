@@ -50,16 +50,16 @@ def dashboard(request, structure_slug, structure):
         "Gestisci le richieste per la struttura {}").format(structure)
     template = "manager/dashboard.html"
 
-    assignments = TicketAssignment.objects.filter(
-        office__organizational_structure=structure,
-        office__is_active=True,
-        follow=True
-    ).select_related('ticket').values('ticket')
-
-    # chiusi = assignments.filter(ticket__is_closed=True).annotate(total=Count('ticket__code')).count()
-    opened = assignments.filter(taken_date__isnull=False, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
-    unassigned = assignments.filter(taken_date__isnull=True, ticket__is_closed=False).annotate(total=Count('ticket__code')).count()
-    my_opened = assignments.filter(taken_date__isnull=False, ticket__is_closed=False, taken_by=request.user).annotate(total=Count('ticket__code')).count()
+    unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                               closed=False,
+                                                               taken=False))
+    opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                           closed=False,
+                                                           taken=True))
+    my_opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                              closed=False,
+                                                              taken=True,
+                                                              taken_by=request.user))
 
     om = OrganizationalStructureOffice
     offices = om.objects.filter(organizational_structure=structure)\
@@ -72,7 +72,12 @@ def dashboard(request, structure_slug, structure):
                            .prefetch_related('ticketcategorytask_set')\
                            .prefetch_related('ticketcategorycondition_set')
 
-    ticket_codes = assignments.filter(ticket__is_closed=False).values_list('ticket__code', flat=True).distinct()
+    ticket_codes = TicketAssignment.objects.filter(
+        office__organizational_structure=structure,
+        office__is_active=True,
+        follow=True,
+        ticket__is_closed=False
+    ).values_list('ticket__code', flat=True).distinct()
     messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
 
     d = {
@@ -82,7 +87,6 @@ def dashboard(request, structure_slug, structure):
         "sub_title": sub_title,
         "ticket_aperti": opened,
         "ticket_assegnati_a_me": my_opened,
-        # "ticket_chiusi": chiusi,
         "ticket_messages": messages,
         "ticket_non_gestiti": unassigned,
         "title": title,
