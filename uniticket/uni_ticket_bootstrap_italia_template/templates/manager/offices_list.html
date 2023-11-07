@@ -59,9 +59,11 @@
                         {% endif %}
                     </svg>
                   <br>
+                  {% comment %}
                   <b>{% trans 'Richieste assegnate' %}:</b>
                   {{ office.ticketassignment_set.count }}
                   <br>
+                  {% endcomment %}
                   <b>{% trans 'Categorie di competenza' %}:</b>
                     {% if office.ticketcategory_set.all %}
                       {% for office_cat in office.ticketcategory_set.all %}

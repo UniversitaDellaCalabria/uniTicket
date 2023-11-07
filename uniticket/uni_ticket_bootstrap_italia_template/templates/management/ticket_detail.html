@@ -245,7 +245,7 @@
 <a role="button"
    href="{% url 'uni_ticket:manage_ticket_message_url' structure_slug=structure.slug ticket_id=ticket.code %}"
    class="btn btn-outline-secondary">
-    {% with ticket.get_messages_count.1 as unread_messages %}
+    {% with ticket.get_messages_count as unread_messages %}
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
         </svg>

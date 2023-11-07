@@ -1115,11 +1115,12 @@ class Ticket(SavedFormContent):
             unread_messages = unread_messages.exclude(structure=None)
         else:
             unread_messages = unread_messages.filter(structure=None)
-        return (
-            all_messages.count(),
-            unread_messages.count(),
-            first_created.created if first_created else None,
-        )
+        return unread_messages.exists()
+        # (
+            # all_messages.exists(),
+            # unread_messages.exists(),
+            # first_created.created if first_created else None,
+        # )
 
     def _check_assignment_privileges(self, queryset):
         if not queryset:
@@ -1459,10 +1460,10 @@ class TicketReply(models.Model):
                    read_date__isnull=True,)
         if by_operator:
             return TicketReply.objects.filter(q_base,
-                                              structure__isnull=False).count()
+                                              structure__isnull=False).exists()
         # show messages sent by user
         return TicketReply.objects.filter(q_base,
-                                          structure__isnull=True).count()
+                                          structure__isnull=True).exists()
 
 
     def get_folder(self):

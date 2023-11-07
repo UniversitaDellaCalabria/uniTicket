@@ -16,12 +16,12 @@
 <div class="pb-4 clearfix">
     <div class="pull-left d-none d-md-block">
         {% include 'management/ticket_cards.html' %}
-        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manager_messages' structure_slug=structure.slug %}">
-            <svg class="icon icon-xs">
+         <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manager_messages' structure_slug=structure.slug %}">
+             <svg class="icon icon-xs">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
             </svg>
-            {% if ticket_messages > 0 %}
-            <span class="badge badge-primary">{{ ticket_messages }}</span>
+            {% if ticket_messages %}
+            <span class="badge badge-primary">{% trans "Nuovi" %}</span>
             {% endif %}
             {% trans 'Messaggi' %}
         </a>
@@ -32,10 +32,10 @@
                 {% include 'management/ticket_cards_mobile.html' %}
                 <li>
                     <a href="{% url 'uni_ticket:manager_messages' structure_slug=structure.slug %}">
-                        {% if ticket_messages > 0 %}
+                        {% if ticket_messages %}
                         <div class="badge-wrapper">
                             <span class="toolbar-badge badge-primary">
-                                {{ ticket_messages }}
+                                {% trans "Nuovi" %}
                             </span>
                         </div>
                         {% endif %}
