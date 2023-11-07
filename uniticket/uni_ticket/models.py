@@ -1111,7 +1111,7 @@ class Ticket(SavedFormContent):
             unread_messages = unread_messages.filter(structure=None)
         return (
             all_messages.count(),
-            unread_messages.exists(),
+            unread_messages.count(),
             first_created.created if first_created else None,
         )
 
@@ -1453,10 +1453,10 @@ class TicketReply(models.Model):
                    read_date__isnull=True,)
         if by_operator:
             return TicketReply.objects.filter(q_base,
-                                              structure__isnull=False).exists()
+                                              structure__isnull=False).count()
         # show messages sent by user
         return TicketReply.objects.filter(q_base,
-                                          structure__isnull=True).exists()
+                                          structure__isnull=True).count()
 
 
     def get_folder(self):

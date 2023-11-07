@@ -15,13 +15,40 @@
 {% user_operator_chat request.user structure as user_operator_chat %}
 
 <div class="pb-4">
-    {% include 'management/ticket_cards.html' %}
-    <a role="button" class="btn btn-outline-{% if ticket_messages %}warning{% else %}secondary{% endif %}" href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
-        <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
-        </svg>
-        {% trans 'Messaggi' %}
-    </a>
+    <div class="pull-left d-none d-md-block">
+        {% include 'management/ticket_cards.html' %}
+        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
+            </svg>
+            {% if ticket_messages > 0 %}
+            <span class="badge badge-primary">{{ ticket_messages }}</span>
+            {% endif %}
+            {% trans 'Messaggi' %}
+        </a>
+    </div>
+    <div class="d-block d-md-none">
+        <nav class="toolbar">
+            <ul>
+                {% include 'management/ticket_cards_mobile.html' %}
+                <li>
+                    <a href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
+                        {% if ticket_messages > 0 %}
+                        <div class="badge-wrapper">
+                            <span class="toolbar-badge badge-primary">
+                                {{ ticket_messages }}
+                            </span>
+                        </div>
+                        {% endif %}
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
+                        </svg>
+                        <span class="toolbar-label">{% trans 'Messaggi' %}</span></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
     {% if chat_installed and channels_installed and user_operator_chat %}
     <div class="pull-right">
         <a role="button"

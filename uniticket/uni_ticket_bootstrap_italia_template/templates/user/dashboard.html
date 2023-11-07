@@ -25,9 +25,12 @@
             {% trans 'Chiuse' %}
         </a>
         <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:messages' %}">
-            <svg class="icon icon-xs {% if ticket_messages > 0 %}icon-warning{% endif %}">
+            <svg class="icon icon-xs">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
             </svg>
+            {% if ticket_messages > 0 %}
+            <span class="badge badge-primary">{{ ticket_messages }}</span>
+            {% endif %}
             {% trans 'Messaggi' %}
         </a>
     </div>
@@ -60,7 +63,16 @@
                 </li>
                 <li>
                     <a href="{% url 'uni_ticket:messages' %}">
-                        <svg class="icon {% if ticket_messages > 0 %}icon-warning{% endif %}"><use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use></svg>
+                        {% if ticket_messages > 0 %}
+                        <div class="badge-wrapper">
+                            <span class="toolbar-badge badge-primary">
+                                {{ ticket_messages }}
+                            </span>
+                        </div>
+                        {% endif %}
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
+                        </svg>
                         <span class="toolbar-label">{% trans 'Messaggi' %}</span></span>
                     </a>
                 </li>
