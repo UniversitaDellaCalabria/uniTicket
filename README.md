@@ -1,7 +1,6 @@
-![Build status](https://travis-ci.org/UniversitaDellaCalabria/uniTicket.svg?branch=master)
-![Python version](https://img.shields.io/badge/license-Apache%202-blue.svg)
+![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)
 ![Codecov](https://codecov.io/gh/UniversitadellaCalabria/uniTicket/branch/master/graph/badge.svg)
-![License](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue.svg)
+![Python version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)
 
 
 uniTicket

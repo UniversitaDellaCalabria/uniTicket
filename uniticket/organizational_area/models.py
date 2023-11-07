@@ -213,6 +213,7 @@ class OrganizationalStructureOffice(models.Model):
     class Meta:
         unique_together = ('slug', 'organizational_structure')
         ordering = ['name']
+        indexes = [models.Index(fields=["is_active", "organizational_structure_id"])]
         verbose_name = _("Organizational Structure Office")
         verbose_name_plural = _("Organizational Structure Offices")
 

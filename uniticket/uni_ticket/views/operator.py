@@ -31,26 +31,34 @@ def dashboard(request, structure_slug, structure, office_employee):
         OPERATOR_PREFIX)
     template = "operator/dashboard.html"
     offices = user_offices_list(office_employee)
-    user_tickets = visible_tickets_to_user(
-        user=request.user, structure=structure, office_employee=office_employee
+
+    unassigned = len(visible_tickets_to_user(user=request.user,
+                                             structure=structure,
+                                             office_employee=office_employee,
+                                             closed=False,
+                                             taken=False))
+
+    opened = len(visible_tickets_to_user(user=request.user,
+                                         structure=structure,
+                                         office_employee=office_employee,
+                                         closed=False,
+                                         taken=True))
+
+    my_opened = len(visible_tickets_to_user(user=request.user,
+                                            structure=structure,
+                                            office_employee=office_employee,
+                                            closed=False,
+                                            taken=True,
+                                            taken_by=request.user))
+
+    ticket_codes = visible_tickets_to_user(
+        user=request.user,
+        structure=structure,
+        office_employee=office_employee,
+        closed=False
     )
-    tickets = Ticket.objects.filter(code__in=user_tickets)
-    not_closed = tickets.filter(is_closed=False)
-    unassigned = 0
-    opened = 0
-    my_opened = 0
-    for nc in not_closed:
-        if nc.has_been_taken():
-            opened += 1
-            if nc.has_been_taken_by_user(structure=structure, user=request.user):
-                my_opened += 1
-        else:
-            unassigned += 1
 
-    chiusi = tickets.filter(is_closed=True).count()
-
-    messages = TicketReply.get_unread_messages_count(tickets=tickets)
-
+    messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
     d = {
         "offices": offices,
         "structure": structure,
@@ -58,7 +66,6 @@ def dashboard(request, structure_slug, structure, office_employee):
         "title": title,
         "ticket_aperti": opened,
         "ticket_assegnati_a_me": my_opened,
-        "ticket_chiusi": chiusi,
         "ticket_messages": messages,
         "ticket_non_gestiti": unassigned,
     }

@@ -66,12 +66,10 @@ def is_operator(func_to_decorate):
         structure = get_object_or_404(
             OrganizationalStructure, slug=structure_slug, is_active=True
         )
+
         if user_is_manager(request.user, structure):
-            return custom_message(
-                request,
-                _("Accesso da operatore non consentito." " Sei un manager."),
-                structure_slug=structure_slug,
-            )
+            return redirect("uni_ticket:manager_dashboard", structure_slug=structure_slug)
+
         oe = user_is_operator(request.user, structure)
         if oe:
             original_kwargs["office_employee"] = oe

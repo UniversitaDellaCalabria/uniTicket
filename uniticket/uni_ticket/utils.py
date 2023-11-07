@@ -110,7 +110,7 @@ def user_is_manager(user, structure):
     umos = UserManageOrganizationalStructure
     user_structure_manager = umos.objects.filter(
         user=user, organizational_structure=structure
-    ).first()
+    ).exists()
     if not user_structure_manager:
         return False
     return user_is_in_default_office(user, structure)
@@ -261,21 +261,30 @@ def format_slugged_name(field_name, capitalize=True):
     return f
 
 
-def visible_tickets_to_user(user, structure, office_employee):
+def visible_tickets_to_user(user,
+                            structure,
+                            office_employee,
+                            closed=None,
+                            taken=None,
+                            taken_by=None):
     """
     Returns a list of tickets that are visible to user
     """
     model = apps.get_model("uni_ticket", "TicketAssignment")
-    # default_office = office_employee.filter(office__is_default=True).first()
-    # if default_office:
     if user_is_in_default_office(user, structure):
-        tickets = model.get_ticket_per_structure(structure)
+        tickets = model.get_ticket_per_structure(structure=structure,
+                                                 closed=closed,
+                                                 taken=taken,
+                                                 taken_by=taken_by)
         return tickets
     offices = []
     for oe in office_employee:
         if oe.office not in offices:
             offices.append(oe.office)
-    tickets = model.get_ticket_in_office_list(offices)
+    tickets = model.get_ticket_in_office_list(offices_list=offices,
+                                              closed=closed,
+                                              taken=taken,
+                                              taken_by=taken_by)
     return tickets
 
 

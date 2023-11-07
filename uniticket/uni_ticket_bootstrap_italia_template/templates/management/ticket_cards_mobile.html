@@ -25,9 +25,6 @@
 </li>
 <li>
     <a href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
-        {% if ticket_chiusi > 0 %}
-        <div class="badge-wrapper"><span class="toolbar-badge">{{ ticket_chiusi }}</span></div>
-        {% endif %}
         <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use></svg>
         <span class="toolbar-label">{% trans 'Chiuse' %}</span>
     </a>

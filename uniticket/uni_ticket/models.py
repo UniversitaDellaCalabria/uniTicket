@@ -1,6 +1,7 @@
 import logging
 import json
 import os
+import sys
 import uuid
 
 from django.contrib.auth import get_user_model
@@ -55,6 +56,11 @@ from .validators import *
 
 
 logger = logging.getLogger("__name__")
+
+
+_protocollo_titolario_list = settings.TITOLARIO_DICT
+if 'makemigrations' in sys.argv or 'migrate' in sys.argv: # pragma: no cover
+    _protocollo_titolario_list = [('', '-')]
 
 
 def _attachment_upload(instance, filename):
@@ -112,7 +118,7 @@ class Log(models.Model):
         verbose_name_plural = _("log entries")
         # db_table = "django_admin_log"
         ordering = ["-action_time"]
-        index_together = ["content_type", "object_id"]
+        indexes = [models.Index(fields=["content_type", "object_id"])]
 
     def __repr__(self):
         return str(self.action_time)
@@ -595,9 +601,9 @@ class Ticket(SavedFormContent):
     )
     input_module = models.ForeignKey(
         TicketCategoryModule, on_delete=models.PROTECT)
-    is_closed = models.BooleanField(default=False)
+    is_closed = models.BooleanField(default=False, db_index=True)
     closed_date = models.DateTimeField(blank=True, null=True)
-    assigned_date = models.DateTimeField(blank=True, null=True)
+    assigned_date = models.DateTimeField(blank=True, null=True, db_index=True)
     closed_by = models.ForeignKey(
         get_user_model(),
         on_delete=models.SET_NULL,
@@ -1109,11 +1115,12 @@ class Ticket(SavedFormContent):
             unread_messages = unread_messages.exclude(structure=None)
         else:
             unread_messages = unread_messages.filter(structure=None)
-        return (
-            all_messages.count(),
-            unread_messages.count(),
-            first_created.created if first_created else None,
-        )
+        return unread_messages.exists()
+        # (
+            # all_messages.exists(),
+            # unread_messages.exists(),
+            # first_created.created if first_created else None,
+        # )
 
     def _check_assignment_privileges(self, queryset):
         if not queryset:
@@ -1325,26 +1332,65 @@ class TicketAssignment(TimeStampedModel):
     class Meta:
         unique_together = ("ticket", "office")
         ordering = ["created"]
+        indexes = [models.Index(fields=["office_id", "follow"])]
         verbose_name = _("Competenza Ticket")
         verbose_name_plural = _("Competenza Ticket")
 
     @staticmethod
-    def get_ticket_per_structure(structure, follow_check=True):
+    def get_ticket_per_structure(structure,
+                                 follow_check=True,
+                                 closed=None,
+                                 taken=None,
+                                 taken_by=None):
         """ """
         q_base = Q(office__organizational_structure=structure,
                    office__is_active=True)
         q_follow = Q(follow=True) if follow_check else Q()
+
+        q_closed = Q()
+        if closed == True: q_closed = Q(ticket__is_closed=True)
+        elif closed == False: q_closed = Q(ticket__is_closed=False)
+
+        q_taken = Q()
+        if taken == True: q_taken = Q(taken_date__isnull=False)
+        elif taken == False:  q_taken = Q(taken_date__isnull=True)
+
+        q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
+
         ticket_assignments = TicketAssignment.objects.filter(
             q_base,
-            q_follow
+            q_follow,
+            q_closed,
+            q_taken,
+            q_taken_by,
         ).values_list("ticket__code", flat=True)
         return set(ticket_assignments)
 
     @staticmethod
-    def get_ticket_in_office_list(office_list, follow_check=True):
+    def get_ticket_in_office_list(offices_list,
+                                  follow_check=True,
+                                  closed=None,
+                                  taken=None,
+                                  taken_by=None):
         """ """
+        q_base = Q(office__in=offices_list, office__is_active=True)
+
+
+        q_closed = Q()
+        if closed == True: q_closed = Q(ticket__is_closed=True)
+        elif closed == False: q_closed = Q(ticket__is_closed=False)
+
+        q_taken = Q()
+        if taken == True: q_taken = Q(taken_date__isnull=False)
+        elif taken == False: q_taken = Q(taken_date__isnull=True)
+
+        q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
+
         ticket_assignments = TicketAssignment.objects.filter(
-            office__in=office_list, office__is_active=True
+            q_base,
+            q_closed,
+            q_taken,
+            q_taken_by,
         ).values("ticket__code", "follow")
         ticket_set = set()
         for assignment in ticket_assignments:
@@ -1408,22 +1454,16 @@ class TicketReply(models.Model):
         )
 
     @staticmethod
-    def get_unread_messages_count(tickets, by_operator=False):
-        if type(tickets) is list:
-            q_base = Q(ticket__code__in=tickets, read_date__isnull=True)
-        else:
-            q_base = Q(ticket__in=tickets, read_date__isnull=True)
-        q_structure_null = Q(structure__isnull=True)
-        q_structure_not_null = Q(structure__isnull=False)
-        #unread_messages = TicketReply.objects.filter(
-        #    ticket__in=tickets, read_date=None)
+    def get_unread_messages_count(ticket_codes, by_operator=False):
         # show messages sent by operator
+        q_base = Q(ticket__code__in=ticket_codes,
+                   read_date__isnull=True,)
         if by_operator:
-            return TicketReply.objects.filter(q_base, q_structure_not_null).count()
-            #return unread_messages.exclude(structure=None).count()
+            return TicketReply.objects.filter(q_base,
+                                              structure__isnull=False).exists()
         # show messages sent by user
-        return TicketReply.objects.filter(q_base, q_structure_null).count()
-        #return unread_messages.filter(structure=None).count()
+        return TicketReply.objects.filter(q_base,
+                                          structure__isnull=True).exists()
 
 
     def get_folder(self):
@@ -1768,7 +1808,7 @@ class TicketCategoryWSProtocollo(TimeStampedModel):
         help_text="default: settings.PROTOCOL_EMAIL_DEFAULT",
     )
     protocollo_cod_titolario = models.CharField(
-        _("Codice titolario"), max_length=12, choices=settings.TITOLARIO_DICT
+        _("Codice titolario"), max_length=12, choices=_protocollo_titolario_list
     )
     protocollo_fascicolo_numero = models.CharField(
         _("Fascicolo numero"), max_length=255, default="", blank=True

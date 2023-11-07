@@ -2,7 +2,7 @@
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
-publiccodeYmlVersion: '0.2'
+publiccodeYmlVersion: '0.3'
 categories:
   - collaboration
   - customer-service-and-support
@@ -57,7 +57,6 @@ description:
         lato server dei dati;
       - Template grafico Bootstrap Italia (Linee Guida di Design pe la P.A.);
       - Integazione SAML2 SSO (pySAML2);
-    genericName: applicazione web
     longDescription: >
       Django **Unified Ticket System** è un sistema software di ticketing ed
       helpdesk per il tracciamento e la digitalizzazione dei flussi di richieste
@@ -104,23 +103,23 @@ description:
       - Integazione SAML2 SSO (pySAML2);
     screenshots:
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/uniticket.png
+        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/uniticket.png
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/dashboard1.png
+         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/dashboard1.png
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/operator_takes_ticket1.png
+         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/operator_takes_ticket1.png
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/manager_dashboard1.png
+         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/manager_dashboard1.png
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/ticket_competence1.png
+         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/ticket_competence1.png
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/ticket_dependence1.png
+         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/ticket_dependence1.png
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/category_new1.png
+         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/category_new1.png
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/category_detail1.png
+         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/category_detail1.png
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/data/gallery/category_input_module_detail1.png
+         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/category_input_module_detail1.png
     shortDescription: >-
       Django Ticket System per il tracciamento e la digitalizzazione dei flussi
       di richieste e documentali.
@@ -146,7 +145,7 @@ landingURL: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 legal:
   authorsFile: >-
     https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/AUTHORS
-  license: Apache-2.0
+  license: AGPL-3.0-or-later
   mainCopyrightOwner: Università della Calabria
 localisation:
   availableLanguages:
@@ -164,10 +163,10 @@ name: uniTicket
 platforms:
   - linux
   - web
-releaseDate: '2023-02-21'
+releaseDate: '2023-11-07'
 roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
 softwareType: standalone/web
-softwareVersion: v2.4.1
+softwareVersion: v2.5.0
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
   - Università della Calabria - https://www.unical.it

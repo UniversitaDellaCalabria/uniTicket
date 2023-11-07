@@ -127,7 +127,7 @@ def get_dyn_field_name(value):
 
 @register.simple_tag
 def get_unread_messages(ticket, by_operator=True):
-    return ticket.get_messages_count(by_operator)[1]
+    return ticket.get_messages_count(by_operator)
 
 
 @register.simple_tag

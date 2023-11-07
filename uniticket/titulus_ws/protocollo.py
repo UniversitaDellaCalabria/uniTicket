@@ -1,3 +1,4 @@
+import logging
 import os
 import xml.etree.ElementTree as ET
 
@@ -8,6 +9,9 @@ from requests.auth import HTTPBasicAuth
 
 from zeep import Client, Settings, xsd
 from zeep.transports import Transport
+
+
+logger = logging.getLogger(__name__)
 
 
 class WSTitulusClient(object):
@@ -28,6 +32,8 @@ class WSTitulusClient(object):
         self.template_xml_flusso = template_xml_flusso
 
         self.doc = self.template_xml_flusso.format(**kwargs)
+
+        logger.info(f"Protocollazione Titulus {self.doc}")
 
         # RPA username and code
         # (per impersonificare RPA in fascicolazione!)

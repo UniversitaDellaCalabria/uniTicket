@@ -3,7 +3,7 @@ import magic
 
 from django.conf import settings
 from django.http import HttpResponse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from io import BytesIO
 
@@ -113,7 +113,7 @@ def ticket_protocol(
     docPrinc.seek(0)
 
     wsclient.aggiungi_docPrinc(
-        fopen=docPrinc, nome_doc=f"{file_name}.pdf", tipo_doc=file_name
+        fopen=docPrinc, nome_doc=f"{file_name}.pdf", tipo_doc=f"{file_name}.pdf"
     )
 
     # attachments

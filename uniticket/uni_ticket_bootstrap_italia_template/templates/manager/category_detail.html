@@ -328,16 +328,64 @@
                 <th scope="row">{% trans "Solo i seguenti utenti possono effettuare richieste" %}</th>
                 <td>
                     {% if category.allowed_users.all %}
-                        <ul>
+                        <table class="table">
+                            <tbody>
                             {% for allowed in category.allowed_users.all %}
-                                <li>{{ allowed }} - {{ allowed.email|lower }}</li>
+                                <tr>
+                                    <td>{{ allowed }}</td>
+                                    <td>{{ allowed.email|lower }}</td>
+                                    <td>
+                                        <button type="button"
+                                            class="btn btn-outline-danger btn-xs float-right"
+                                            data-toggle="modal"
+                                            data-target="#removeUser{{ forloop.counter0 }}">
+                                            {% trans "Rimuovi" %}
+                                        </button>
+                                        <div class="modal fade" tabindex="-1" role="dialog" id="removeUser{{ forloop.counter0 }}">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">
+                                                            {% trans "Rimozione utente" %}
+                                                        </h5>
+                                                        <button class="close" type="button"
+                                                                data-dismiss="modal" aria-label="Close">
+                                                           <svg class="icon">
+                                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                           </svg>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>{% trans "Vuoi davvero rimuovere l'utente" %}
+                                                           <b>{{ allowed }}</b> ?
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a role="button" class="btn btn-danger"
+                                                           href="{% url 'uni_ticket:manager_category_remove_ticket_user' structure_slug=structure.slug category_slug=category.slug user_id=allowed.pk %}">
+                                                            {% trans "Si, rimuovi" %}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
                             {% endfor %}
-                        </ul>
+                            </tbody>
+                        </table>
                     {% else %}
                     <svg class="icon icon-sm icon-secondary">
                         <use xlink:href="{% static 'svg/sprite.svg' %}#it-minus"></use>
                     </svg>
                     {% endif %}
+
+                    <a href="{% url 'uni_ticket:manager_category_add_ticket_user' structure_slug=structure.slug category_slug=category.slug %}"
+                       class="btn btn-xs btn-outline-success">
+                        <svg class="icon icon-xs icon-success">
+                            <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
+                        </svg> {% trans "Aggiungi nuovo" %}
+                    </a>
                 </td>
             </tr>
             <tr>

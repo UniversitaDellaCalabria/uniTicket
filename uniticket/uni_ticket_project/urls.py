@@ -46,7 +46,7 @@ urlpatterns = [
     path("test500/", test500, name="test500"),
 ]
 
-handler404 = handlers.error_404
+handler404 = uni_ticket.views.generic.custom_404
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
@@ -188,3 +188,10 @@ if "chat" in settings.INSTALLED_APPS:
     import chat.urls
 
     urlpatterns += (path("", include(chat.urls, "chat")),)
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]

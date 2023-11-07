@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.forms import ModelChoiceField, ModelForm
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from bootstrap_italia_template.widgets import (
     BootstrapItaliaSelectWidget,
@@ -39,7 +39,7 @@ class CategoryForm(ModelForm):
             "allow_user",
             "allow_employee",
             "user_multiple_open_tickets",
-            "allowed_users",
+            # "allowed_users",
             "receive_email",
             "protocol_required",
         ]
@@ -248,60 +248,12 @@ class OfficeForm(ModelForm):
         js = ("js/textarea-autosize.js",)
 
 
-class MyOperatorChoiceField(ModelChoiceField):
-    def label_from_instance(self, obj):
-        return "{} - {} {}".format(obj.taxpayer_id, obj.last_name, obj.first_name)
+class AddUserForm(forms.Form):
+    user = forms.CharField(required=True)
 
 
-class OfficeAddOperatorForm(forms.Form):
-    operatore = MyOperatorChoiceField(
-        label=_("Assegna operatore"),
-        queryset=None,
-        required=True,
-        widget=BootstrapItaliaSelectWidget,
-    )
-    description = forms.CharField(
-        label=_("Note"), widget=forms.Textarea(attrs={"rows": 2}), required=False
-    )
-
-    def __init__(self, *args, **kwargs):
-        kwargs.pop("structure", None)
-        office_slug = kwargs.pop("office_slug", "")
-        osoe = OrganizationalStructureOfficeEmployee
-        actual = []
-        actual_employees = osoe.objects.filter(office__slug=office_slug)
-        for ae in actual_employees:
-            actual.append(ae.employee.pk)
-        employees_list = get_user_model().objects.all().exclude(pk__in=actual)
-        super().__init__(*args, **kwargs)
-        self.fields["operatore"].queryset = employees_list
-
-    class Media:
-        js = ("js/textarea-autosize.js",)
-
-
-class OrganizationalStructureAddManagerForm(forms.Form):
-    manager = MyOperatorChoiceField(
-        label=_("Assegna manager"),
-        queryset=None,
-        required=True,
-        widget=BootstrapItaliaSelectWidget,
-    )
-
-    def __init__(self, *args, **kwargs):
-        structure = kwargs.pop("structure", None)
-        manager_users = kwargs.pop("manager_users", None)
-        if not manager_users:
-            manager_users = structure.get_structure_managers()
-        manager_list = []
-        for manager_user in manager_users:
-            manager_list.append(manager_user.user.pk)
-        users_list = get_user_model().objects.all().exclude(pk__in=manager_list)
-        super().__init__(*args, **kwargs)
-        self.fields["manager"].queryset = users_list
-
-    class Media:
-        js = ("js/textarea-autosize.js",)
+class OfficeAddOperatorForm(AddUserForm):
+    description = forms.CharField(required=False)
 
 
 class PriorityForm(forms.Form):
@@ -363,19 +315,15 @@ class TicketCompetenceForm(forms.Form):
         current_ticket_id = kwargs.pop("ticket_id", None)
         ticket_dependences_code_list = kwargs.pop("ticket_dependences", [])
         structure = OrganizationalStructure.objects.get(slug=structure_slug)
-        ticket_id_list = TicketAssignment.get_ticket_per_structure(structure)
+        ticket_id_list = TicketAssignment.get_ticket_per_structure(structure,
+                                                                   closed=False,
+                                                                   taken=True)
         ticket_id_list.remove(current_ticket_id)
         ticket_list = Ticket.objects.filter(
             code__in=ticket_id_list,
-            # is_taken=True,
-            is_closed=False,
         ).exclude(code__in=ticket_dependences_code_list)
-        result_list = ticket_list
-        for ticket in ticket_list:
-            if not ticket.has_been_taken():
-                result_list = result_list.exclude(pk=ticket.pk)
         super().__init__(*args, **kwargs)
-        self.fields["ticket"].queryset = result_list
+        self.fields["ticket"].queryset = ticket_list
         self.fields["ticket"].to_field_name = "code"
 
 
@@ -430,19 +378,16 @@ class TicketDependenceForm(forms.Form):
             user_offices = user_is_operator(user, structure)
             offices_list = user_offices_list(user_offices)
             ticket_id_list = TicketAssignment.get_ticket_in_office_list(
-                offices_list)
+                offices_list=offices_list,
+                taken=True)
         ticket_id_list.remove(current_ticket_id)
         cleaned_list = [
             code for code in ticket_id_list if code not in ticket_dependences_code_list
         ]
         ticket_list = Ticket.objects.filter(
             code__in=cleaned_list, is_closed=False)
-        result_list = ticket_list
-        for ticket in ticket_list:
-            if not ticket.has_been_taken():
-                result_list = result_list.exclude(pk=ticket.pk)
         super().__init__(*args, **kwargs)
-        self.fields["ticket"].queryset = result_list
+        self.fields["ticket"].queryset = ticket_list
         self.fields["ticket"].to_field_name = "code"
 
     class Media:

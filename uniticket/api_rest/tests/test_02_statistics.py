@@ -63,8 +63,8 @@ class uniTicketAPIStatsTest(BaseTicketEnvironment):
                 "organizational_office": self.office,
                 "date_start": None,
                 "date_end": None,
-                "created": "2020-05-08T09:30:02.759000+02:00",
-                "modified": "2022-04-11T13:02:23.178085+02:00",
+                "created": "2020-05-08T09:30:02.759000+00:00",
+                "modified": "2022-04-11T13:02:23.178085+00:00",
                 "name": "Modello di richiesta di test",
                 "slug": "modello-di-richiesta-di-test",
                 "description": "Descrizione del modulo e delle sue finalità",
@@ -103,6 +103,7 @@ class uniTicketAPIStatsTest(BaseTicketEnvironment):
                 # I close the first 10
                 ticket.created = timezone.localtime() - timezone.timedelta(hours=i*10)
                 ticket.add_competence(office=self.office, user=self.staff_2)
+
                 ticket.close(user=self.op1, motivazione = f"motivazione {i}")
                 ticket.closed_by = self.op1
                 ticket.closed_date = timezone.localtime() + timezone.timedelta(hours=1)
