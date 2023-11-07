@@ -20,6 +20,6 @@ bandit
 # fix Bandit error on Python <= 3.7
 importlib-metadata<5.0; python_version < '3.8'
 
-ipython
+ipython>=8.10.0
 pygments>=2.7.4
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
