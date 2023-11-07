@@ -51,13 +51,12 @@ def dashboard(request, structure_slug, structure, office_employee):
                                             taken=True,
                                             taken_by=request.user))
 
-    ticket_codes = TicketAssignment.objects.filter(
-                        office__organizational_structure=structure,
-                        office__is_active=True,
-                        follow=True,
-                        ticket__is_closed=False,
-                        office_employee=office_employee,
-                    ).values_list('ticket__code', flat=True).distinct()
+    ticket_codes = visible_tickets_to_user(
+        user=request.user,
+        structure=structure,
+        office_employee=office_employee,
+        closed=False
+    )
 
     messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
     d = {

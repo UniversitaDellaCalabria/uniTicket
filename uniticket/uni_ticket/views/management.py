@@ -464,13 +464,12 @@ def tickets(request, structure_slug, structure, office_employee=None):
                                                 taken=True,
                                                 taken_by=request.user))
 
-        ticket_codes = TicketAssignment.objects.filter(
-                            office__organizational_structure=structure,
-                            office__is_active=True,
-                            follow=True,
-                            ticket__is_closed=False,
-                            office_employee=office_employee,
-                        ).values_list('ticket__code', flat=True).distinct()
+        ticket_codes = visible_tickets_to_user(
+            user=request.user,
+            structure=structure,
+            office_employee=office_employee,
+            closed=False
+        )
     # if user is manager
     else:
         unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
