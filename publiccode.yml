@@ -146,7 +146,7 @@ landingURL: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 legal:
   authorsFile: >-
     https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/AUTHORS
-  license: Apache-2.0
+  license: AGPL-3.0-or-later
   mainCopyrightOwner: Università della Calabria
 localisation:
   availableLanguages:
