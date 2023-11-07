@@ -9,12 +9,6 @@
 
 {% block top_buttons %}
 <a role="button" class="btn btn-outline-secondary"
-   href="{% url 'uni_ticket:manager_dashboard' structure_slug=structure.slug %}">
-    <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
-    </svg> {% trans "Dashboard" %}
-</a>
-<a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manager_office_detail' structure_slug=structure.slug office_slug=office.slug %}">
     <svg class="icon icon-xs">
         <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
