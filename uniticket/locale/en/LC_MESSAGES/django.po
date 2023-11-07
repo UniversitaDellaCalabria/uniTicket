@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-11-07 16:07+0100\n"
-"PO-Revision-Date: 2023-11-07 16:14+0100\n"
+"PO-Revision-Date: 2023-11-07 16:29+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -4927,10 +4927,8 @@ msgstr "Return to all requests"
 #: uni_ticket_bootstrap_italia_template/templates/user/dashboard.html:32
 #: uni_ticket_bootstrap_italia_template/templates/user/dashboard.html:69
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:138
-#, fuzzy
-#| msgid "Rimuovi"
 msgid "Nuovi"
-msgstr "Remove"
+msgstr "New"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/dashboard.html:58
 #: uni_ticket_bootstrap_italia_template/templates/operator/dashboard.html:59
