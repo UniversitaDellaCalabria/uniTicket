@@ -1,6 +1,8 @@
 import copy
+import datetime
 import json
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import JsonResponse
@@ -35,6 +37,10 @@ _no_priority = [
 
 
 class TicketDTD(DjangoDatatablesServerProc):
+    def __init__(self, request, queryset, columns, direct_queryset=False):
+        super().__init__(request, queryset, columns)
+        self.direct_queryset = direct_queryset
+
     def get_queryset(self):
         """
         Sets DataTable tickets common queryset
@@ -48,32 +54,72 @@ class TicketDTD(DjangoDatatablesServerProc):
             structure = params["structure"]
             if year:
                 if year.isnumeric():
-                    self.aqs = self.aqs.filter(created__year=year)
+                    self.aqs = self.aqs.filter(ticket__created__year=year)
                 else:
                     days = 7 if year == "last_week" else 30
                     delta_day = get_datetime_delta(days=days)
-                    self.aqs = self.aqs.filter(created__gte=delta_day)
+                    self.aqs = self.aqs.filter(ticket__created__gte=delta_day)
             if category:
                 self.aqs = self.aqs.filter(
-                    input_module__ticket_category__slug=category,
-                    input_module__ticket_category__organizational_structure__slug=structure,
+                    ticket__input_module__ticket_category__slug=category,
+                    ticket__input_module__ticket_category__organizational_structure__slug=structure,
                 )
             if text:
                 self.aqs = self.aqs.filter(
-                    Q(code__icontains=text)
-                    | Q(subject__icontains=text)
-                    | Q(description__icontains=text)
-                    | Q(created_by__first_name__icontains=text)
-                    | Q(created_by__last_name__icontains=text)
-                    | Q(compiled_by__first_name__icontains=text)
-                    | Q(compiled_by__last_name__icontains=text)
+                    Q(ticket__code__icontains=text)
+                    | Q(ticket__subject__icontains=text)
+                    | Q(ticket__description__icontains=text)
+                    | Q(ticket__created_by__first_name__icontains=text)
+                    | Q(ticket__created_by__last_name__icontains=text)
+                    | Q(ticket__compiled_by__first_name__icontains=text)
+                    | Q(ticket__compiled_by__last_name__icontains=text)
                     #| Q(taken_by__first_name__icontains=text)
                     #| Q(taken_by__last_name__icontains=text)
-                    | Q(closed_by__first_name__icontains=text)
-                    | Q(closed_by__last_name__icontains=text)
-                    | Q(input_module__ticket_category__name__icontains=text)
-                    | Q(created__icontains=text)
+                    | Q(ticket__closed_by__first_name__icontains=text)
+                    | Q(ticket__closed_by__last_name__icontains=text)
+                    | Q(ticket__input_module__ticket_category__name__icontains=text)
+                    | Q(ticket__created__icontains=text)
                 )
+
+    def fill_data(self):
+        """
+        overload me if you need some clean up
+        """
+        if not self.fqs:
+            self.get_paging()
+
+        queryset = self.fqs
+        if not self.direct_queryset:
+            queryset = Ticket.objects.filter(code__in=list(self.fqs))\
+                                    .select_related('created_by',
+                                                    'compiled_by',
+                                                    'input_module__ticket_category',
+                                                    'closed_by')
+
+        # for r in self.fqs:
+        for r in queryset:
+            cleaned_data = []
+            for e in self.columns:
+                # this avoid null json value
+                v = getattr(r, e)
+                if v:
+                    if isinstance(v, datetime.datetime):
+                        default_datetime_format = settings.DEFAULT_DATETIME_FORMAT
+                        vrepr = self._make_aware(v).strftime(default_datetime_format)
+                    elif isinstance(v, datetime.date):
+                        default_date_format = settings.DEFAULT_DATE_FORMAT
+                        vrepr = v.strftime(default_date_format)
+                    elif callable(v):
+                        vrepr = str(v())
+                    else:
+                        vrepr = v.__str__()
+                else:
+                    vrepr = ''
+                cleaned_data.append(vrepr)
+
+            self.d['data'].append( cleaned_data )
+        self.d['recordsTotal'] = self.queryset.count()
+        self.d['recordsFiltered'] = self.aqs.count()
 
 
 @csrf_exempt
@@ -89,8 +135,11 @@ def user_all_tickets(request):
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(
         Q(created_by=request.user) | Q(compiled_by=request.user)
-    ).select_related('created_by','compiled_by','input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, columns)
+    ).select_related('created_by',
+                     'compiled_by',
+                     'closed_by',
+                     'input_module__ticket_category')
+    dtd = TicketDTD(request, ticket_list, columns, True)
     return JsonResponse(dtd.get_dict())
 
 
@@ -106,13 +155,13 @@ def user_unassigned_ticket(request):
     if SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(
-        Q(created_by=request.user) | Q(compiled_by=request.user), is_closed=False
-    ).select_related('created_by','compiled_by','input_module__ticket_category')
-    result_list = copy.deepcopy(ticket_list)
-    for ticket in ticket_list:
-        if ticket.has_been_taken():
-            result_list = result_list.exclude(pk=ticket.pk)
-    dtd = TicketDTD(request, result_list, columns)
+        Q(created_by=request.user) | Q(compiled_by=request.user),
+        is_closed=False,
+        assigned_date__isnull=True
+    ).select_related('created_by',
+                     'compiled_by',
+                     'input_module__ticket_category')
+    dtd = TicketDTD(request, ticket_list, columns, True)
     return JsonResponse(dtd.get_dict())
 
 
@@ -128,13 +177,13 @@ def user_opened_ticket(request):
     if SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(
-        Q(created_by=request.user) | Q(compiled_by=request.user), is_closed=False
-    )
-    result_list = copy.deepcopy(ticket_list)
-    for ticket in ticket_list:
-        if not ticket.has_been_taken():
-            result_list = result_list.exclude(pk=ticket.pk)
-    dtd = TicketDTD(request, result_list, columns)
+        Q(created_by=request.user) | Q(compiled_by=request.user),
+        is_closed=False,
+        assigned_date__isnull=False
+    ).select_related('created_by',
+                     'compiled_by',
+                     'input_module__ticket_category')
+    dtd = TicketDTD(request, ticket_list, columns, True)
     return JsonResponse(dtd.get_dict())
 
 
@@ -150,9 +199,13 @@ def user_closed_ticket(request):
     if SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
     ticket_list = Ticket.objects.filter(
-        Q(created_by=request.user) | Q(compiled_by=request.user), is_closed=True
-    )
-    dtd = TicketDTD(request, ticket_list, columns)
+        Q(created_by=request.user) | Q(compiled_by=request.user),
+        is_closed=True
+    ).select_related('created_by',
+                     'compiled_by',
+                     'closed_by',
+                     'input_module__ticket_category')
+    dtd = TicketDTD(request, ticket_list, columns, True)
     return JsonResponse(dtd.get_dict())
 
 
@@ -172,11 +225,7 @@ def manager_all_tickets(request, structure_slug, structure):
     :return: JsonResponse
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
-    ticket_list = Ticket.objects.filter(code__in=tickets)\
-                                .select_related('created_by',
-                                                'compiled_by',
-                                                'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, _ticket_columns)
+    dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -198,10 +247,7 @@ def manager_unassigned_ticket(request, structure_slug, structure):
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
                                                         closed=False,
                                                         taken=False)
-    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
-                                                                         'compiled_by',
-                                                                         'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, _ticket_columns)
+    dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -223,10 +269,7 @@ def manager_opened_ticket(request, structure_slug, structure):
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
                                                         closed=False,
                                                         taken=True)
-    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
-                                                                         'compiled_by',
-                                                                         'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, _ticket_columns)
+    dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -249,10 +292,7 @@ def manager_my_opened_ticket(request, structure_slug, structure):
                                                         closed=False,
                                                         taken=True,
                                                         taken_by=request.user)
-    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
-                                                                         'compiled_by',
-                                                                         'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, _ticket_columns)
+    dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -273,10 +313,7 @@ def manager_closed_ticket(request, structure_slug, structure):
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
                                                         closed=True)
-    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
-                                                                         'compiled_by',
-                                                                         'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, _ticket_columns)
+    dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -298,9 +335,8 @@ def operator_all_tickets(request, structure_slug, structure, office_employee):
     :return: JsonResponse
     """
     tickets = visible_tickets_to_user(request.user, structure, office_employee)
-    ticket_list = Ticket.objects.filter(code__in=tickets)
     # is_closed=False)
-    dtd = TicketDTD(request, ticket_list, _ticket_columns)
+    dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -326,10 +362,7 @@ def operator_unassigned_ticket(request, structure_slug, structure, office_employ
                                       office_employee=office_employee,
                                       closed=False,
                                       taken=False)
-    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
-                                                                         'compiled_by',
-                                                                         'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, _ticket_columns)
+    dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -355,10 +388,7 @@ def operator_opened_ticket(request, structure_slug, structure, office_employee):
                                       office_employee=office_employee,
                                       closed=False,
                                       taken=True)
-    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
-                                                                         'compiled_by',
-                                                                         'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, _ticket_columns)
+    dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -385,10 +415,7 @@ def operator_my_opened_ticket(request, structure_slug, structure, office_employe
                                       closed=False,
                                       taken=True,
                                       taken_by=request.user)
-    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
-                                                                         'compiled_by',
-                                                                         'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, _ticket_columns)
+    dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -413,8 +440,5 @@ def operator_closed_ticket(request, structure_slug, structure, office_employee):
                                       structure=structure,
                                       office_employee=office_employee,
                                       closed=True)
-    ticket_list = Ticket.objects.filter(code__in=tickets).select_related('created_by',
-                                                                         'compiled_by',
-                                                                         'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, _ticket_columns)
+    dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())

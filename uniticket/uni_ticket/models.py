@@ -632,7 +632,6 @@ class Ticket(SavedFormContent):
         ordering = [
             "is_closed",
             "priority",
-            # "is_taken",
             "-created",
             "code",
         ]
@@ -1223,7 +1222,11 @@ class Ticket(SavedFormContent):
         return True if assignments else False
 
     def taken_by_html_list(self):
-        assignments = TicketAssignment.objects.filter(ticket=self)
+        assignments = TicketAssignment.objects\
+                                      .filter(ticket=self)\
+                                      .select_related('office',
+                                                      'taken_by',
+                                                      'office__organizational_structure')
         elements = ""
         for assignment in assignments:
             assignment.taken_by or _("Da assegnare")
@@ -1363,8 +1366,10 @@ class TicketAssignment(TimeStampedModel):
             q_closed,
             q_taken,
             q_taken_by,
-        ).values_list("ticket__code", flat=True)
-        return set(ticket_assignments)
+        ).values_list("ticket__code", flat=True)\
+        .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+        .distinct()
+        return ticket_assignments
 
     @staticmethod
     def get_ticket_in_office_list(offices_list,
@@ -1385,19 +1390,19 @@ class TicketAssignment(TimeStampedModel):
         elif taken == False: q_taken = Q(taken_date__isnull=True)
 
         q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
+        q_follow = Q(follow=True) if follow_check else Q()
 
         ticket_assignments = TicketAssignment.objects.filter(
             q_base,
             q_closed,
             q_taken,
             q_taken_by,
-        ).values("ticket__code", "follow")
-        ticket_set = set()
-        for assignment in ticket_assignments:
-            if follow_check and not assignment["follow"]:
-                continue
-            ticket_set.add(assignment["ticket__code"])
-        return ticket_set
+            q_follow
+        ).values_list("ticket__code", flat=True)\
+        .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+        .distinct()
+
+        return ticket_assignments
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

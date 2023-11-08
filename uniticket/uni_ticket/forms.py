@@ -380,7 +380,7 @@ class TicketDependenceForm(forms.Form):
             ticket_id_list = TicketAssignment.get_ticket_in_office_list(
                 offices_list=offices_list,
                 taken=True)
-        ticket_id_list.remove(current_ticket_id)
+        ticket_id_list = ticket_id_list.exclude(ticket__code=current_ticket_id)
         cleaned_list = [
             code for code in ticket_id_list if code not in ticket_dependences_code_list
         ]
