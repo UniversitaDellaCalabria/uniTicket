@@ -1350,8 +1350,9 @@ class TicketAssignment(TimeStampedModel):
             q_taken,
             q_taken_by,
         ).values_list("ticket__code", flat=True)\
-        .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+        .order_by("ticket__priority", "-ticket__created", "ticket__is_closed", "ticket__code")\
         .distinct()
+
         return ticket_assignments
 
     @staticmethod
@@ -1382,7 +1383,7 @@ class TicketAssignment(TimeStampedModel):
             q_taken_by,
             q_follow
         ).values_list("ticket__code", flat=True)\
-        .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+        .order_by("ticket__priority", "-ticket__created", "ticket__is_closed", "ticket__code", )\
         .distinct()
 
         return ticket_assignments
