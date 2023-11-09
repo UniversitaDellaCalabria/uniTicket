@@ -85,7 +85,7 @@ class TicketDTD(DjangoDatatablesServerProc):
         if not self.fqs:
             self.get_paging()
 
-        self.fqs = Ticket.objects.filter(code__in=list(self.fqs))\
+        self.fqs = Ticket.objects.filter(code__in=self.fqs)\
                                  .select_related('created_by',
                                                  'compiled_by',
                                                  'input_module__ticket_category',
@@ -95,7 +95,8 @@ class TicketDTD(DjangoDatatablesServerProc):
             cleaned_data = []
             for e in self.columns:
                 # this avoid null json value
-                v = getattr(r, e)
+                # v = getattr(r, e)
+                v = r.get(e, None) if type(r) == dict else getattr(r,e)
                 if v:
                     if isinstance(v, datetime.datetime):
                         default_datetime_format = settings.DEFAULT_DATETIME_FORMAT
