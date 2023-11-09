@@ -37,9 +37,6 @@ _no_priority = [
 
 
 class TicketDTD(DjangoDatatablesServerProc):
-    def __init__(self, request, queryset, columns, direct_queryset=False):
-        super().__init__(request, queryset, columns)
-        self.direct_queryset = direct_queryset
 
     def get_queryset(self):
         """
@@ -88,16 +85,13 @@ class TicketDTD(DjangoDatatablesServerProc):
         if not self.fqs:
             self.get_paging()
 
-        queryset = self.fqs
-        if not self.direct_queryset:
-            queryset = Ticket.objects.filter(code__in=list(self.fqs))\
-                                    .select_related('created_by',
-                                                    'compiled_by',
-                                                    'input_module__ticket_category',
-                                                    'closed_by')
+        self.fqs = Ticket.objects.filter(code__in=list(self.fqs))\
+                                 .select_related('created_by',
+                                                 'compiled_by',
+                                                 'input_module__ticket_category',
+                                                 'closed_by')
 
-        # for r in self.fqs:
-        for r in queryset:
+        for r in self.fqs:
             cleaned_data = []
             for e in self.columns:
                 # this avoid null json value
@@ -133,13 +127,15 @@ def user_all_tickets(request):
     columns = _no_priority
     if SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
-    ticket_list = Ticket.objects.filter(
-        Q(created_by=request.user) | Q(compiled_by=request.user)
-    ).select_related('created_by',
-                     'compiled_by',
-                     'closed_by',
-                     'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, columns, True)
+
+    tickets = TicketAssignment.objects.filter(
+        Q(ticket__created_by=request.user) |
+        Q(ticket__compiled_by=request.user)
+    ).values_list('ticket__code', flat=True)\
+    .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+    .distinct()
+
+    dtd = TicketDTD(request, tickets, columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -154,14 +150,28 @@ def user_unassigned_ticket(request):
     columns = _no_priority
     if SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
-    ticket_list = Ticket.objects.filter(
-        Q(created_by=request.user) | Q(compiled_by=request.user),
-        is_closed=False,
-        assigned_date__isnull=True
-    ).select_related('created_by',
-                     'compiled_by',
-                     'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, columns, True)
+
+    tickets = TicketAssignment.objects.filter(
+        Q(ticket__created_by=request.user) |
+        Q(ticket__compiled_by=request.user),
+        Q(taken_date__isnull=True) | Q(follow=False),
+        ticket__is_closed=False,
+    ).values_list('ticket__code', flat=True)\
+    .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+    .distinct()
+
+    to_exclude = TicketAssignment.objects.filter(
+        Q(ticket__created_by=request.user) |
+        Q(ticket__compiled_by=request.user),
+        ticket__is_closed=False,
+        follow=True,
+        taken_date__isnull=False
+    ).values_list('ticket__code', flat=True)\
+    .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+    .distinct()
+
+    tickets = tickets.exclude(ticket__code__in=to_exclude)
+    dtd = TicketDTD(request, tickets, columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -176,14 +186,18 @@ def user_opened_ticket(request):
     columns = _no_priority
     if SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
-    ticket_list = Ticket.objects.filter(
-        Q(created_by=request.user) | Q(compiled_by=request.user),
-        is_closed=False,
-        assigned_date__isnull=False
-    ).select_related('created_by',
-                     'compiled_by',
-                     'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, columns, True)
+
+    tickets = TicketAssignment.objects.filter(
+        Q(ticket__created_by=request.user) |
+        Q(ticket__compiled_by=request.user),
+        ticket__is_closed=False,
+        taken_date__isnull=False,
+        follow=True
+    ).values_list('ticket__code', flat=True)\
+    .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+    .distinct()
+
+    dtd = TicketDTD(request, tickets, columns)
     return JsonResponse(dtd.get_dict())
 
 
@@ -198,14 +212,16 @@ def user_closed_ticket(request):
     columns = _no_priority
     if SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
-    ticket_list = Ticket.objects.filter(
-        Q(created_by=request.user) | Q(compiled_by=request.user),
-        is_closed=True
-    ).select_related('created_by',
-                     'compiled_by',
-                     'closed_by',
-                     'input_module__ticket_category')
-    dtd = TicketDTD(request, ticket_list, columns, True)
+
+    tickets = TicketAssignment.objects.filter(
+        Q(ticket__created_by=request.user) |
+        Q(ticket__compiled_by=request.user),
+        ticket__is_closed=True
+    ).values_list('ticket__code', flat=True)\
+    .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+    .distinct()
+
+    dtd = TicketDTD(request, tickets, columns)
     return JsonResponse(dtd.get_dict())
 
 

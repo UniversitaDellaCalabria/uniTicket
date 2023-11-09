@@ -1191,35 +1191,18 @@ class Ticket(SavedFormContent):
                                                       q_follow,
                                                       q_readonly,
                                                       q_structure,
-                                                      q_user).exists()
-        return True if assignments else False
+                                                      q_user)
+        return True if assignments.exists() else False
 
     def has_been_taken_by_user(
         self, user, follow=True, exclude_readonly=False, structure=None
     ):
         if not user:
             return False
-        q_base = Q(ticket=self, taken_by=user)
-        q_follow = Q()
-        q_readonly = Q()
-        q_structure = Q()
-        # assignments = TicketAssignment.objects.filter(
-            # ticket=self, taken_by=user)
-        if structure:
-            q_structure = Q(office__organizational_structure=structure)
-            # assignments = assignments.filter(
-                # office__organizational_structure=structure)
-        if follow:
-            q_follow = Q(follow=True)
-            # assignments = assignments.filter(follow=True)
-            if exclude_readonly:
-                q_readonly = Q(readonly=False)
-                # assignments = assignments.filter(readonly=False)
-        assignments = TicketAssignment.objects.filter(q_base,
-                                                      q_follow,
-                                                      q_readonly,
-                                                      q_structure).exists()
-        return True if assignments else False
+        return self.has_been_taken(user=user,
+                                   follow=follow,
+                                   exclude_readonly=exclude_readonly,
+                                   structure=structure)
 
     def taken_by_html_list(self):
         assignments = TicketAssignment.objects\
