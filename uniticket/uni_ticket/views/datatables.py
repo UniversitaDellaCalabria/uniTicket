@@ -244,7 +244,7 @@ def user_closed_ticket(request):
         Q(ticket__compiled_by=request.user),
         ticket__is_closed=True
     ).values_list('ticket__pk', flat=True)\
-    .order_by("ticket__priority", "-ticket__created")\
+    .order_by("-ticket__created")\
     .distinct()
 
     dtd = TicketDTD(request, tickets, columns)
@@ -354,7 +354,8 @@ def manager_closed_ticket(request, structure_slug, structure):
     :return: JsonResponse
     """
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                        closed=True)
+                                                        closed=True,
+                                                        priority_first=False)
     dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
@@ -481,6 +482,7 @@ def operator_closed_ticket(request, structure_slug, structure, office_employee):
     tickets = visible_tickets_to_user(user=request.user,
                                       structure=structure,
                                       office_employee=office_employee,
-                                      closed=True)
+                                      closed=True,
+                                      priority_first=False)
     dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())

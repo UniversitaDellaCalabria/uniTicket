@@ -618,6 +618,7 @@ def export_input_module_csv(
 
 
 def export_category_zip(category, ticket_codes_list=[]):
+    print(ticket_codes_list)
     output = io.BytesIO()
     f = zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED)
 

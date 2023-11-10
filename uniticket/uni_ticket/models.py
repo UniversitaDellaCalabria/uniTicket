@@ -1327,7 +1327,8 @@ class TicketAssignment(TimeStampedModel):
                                  follow_check=True,
                                  closed=None,
                                  taken=None,
-                                 taken_by=None):
+                                 taken_by=None,
+                                 priority_first=True):
         """ """
         q_base = Q(office__organizational_structure=structure,
                    office__is_active=True)
@@ -1343,6 +1344,10 @@ class TicketAssignment(TimeStampedModel):
 
         q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
 
+        ordering_list = ["ticket__priority", "-ticket__created"]
+        if not priority_first:
+            ordering_list.remove("ticket__priority")
+
         ticket_assignments = TicketAssignment.objects.filter(
             q_base,
             q_follow,
@@ -1350,7 +1355,7 @@ class TicketAssignment(TimeStampedModel):
             q_taken,
             q_taken_by,
         ).values_list("ticket__pk", flat=True)\
-        .order_by("ticket__priority", "-ticket__created")\
+        .order_by(*ordering_list)\
         .distinct()
 
         return ticket_assignments
@@ -1360,7 +1365,8 @@ class TicketAssignment(TimeStampedModel):
                                   follow_check=True,
                                   closed=None,
                                   taken=None,
-                                  taken_by=None):
+                                  taken_by=None,
+                                  priority_first=True):
         """ """
         q_base = Q(office__in=offices_list, office__is_active=True)
 
@@ -1376,6 +1382,10 @@ class TicketAssignment(TimeStampedModel):
         q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
         q_follow = Q(follow=True) if follow_check else Q()
 
+        ordering_list = ["ticket__priority", "-ticket__created"]
+        if not priority_first:
+            ordering_list.remove("ticket__priority")
+
         ticket_assignments = TicketAssignment.objects.filter(
             q_base,
             q_closed,
@@ -1383,7 +1393,7 @@ class TicketAssignment(TimeStampedModel):
             q_taken_by,
             q_follow
         ).values_list("ticket__pk", flat=True)\
-        .order_by("ticket__priority", "-ticket__created")\
+        .order_by(*ordering_list)\
         .distinct()
 
         return ticket_assignments
