@@ -85,13 +85,16 @@ class TicketDTD(DjangoDatatablesServerProc):
         if not self.fqs:
             self.get_paging()
 
-        self.fqs = Ticket.objects.filter(code__in=self.fqs)\
+        tickets = []
+        for entry in self.fqs:
+            t = Ticket.objects.filter(pk=entry)\
                                  .select_related('created_by',
                                                  'compiled_by',
                                                  'input_module__ticket_category',
                                                  'closed_by')
+            tickets.append(t.first())
 
-        for r in self.fqs:
+        for r in tickets:
             cleaned_data = []
             for e in self.columns:
                 # this avoid null json value
@@ -116,6 +119,28 @@ class TicketDTD(DjangoDatatablesServerProc):
         self.d['recordsTotal'] = self.queryset.count()
         self.d['recordsFiltered'] = self.aqs.count()
 
+    def get_ordering(self):
+        """
+           overload me if you need different ordering approach
+        """
+        if not self.aqs:
+            self.get_queryset()
+
+        # if lenght is -1 means ALL the records, sliceless
+        if self.lenght == -1:
+            self.lenght = self.aqs.count()
+
+        # fare ordinamento qui
+        # 'order[0][column]': ['2'],
+        # bisogna mappare la colonna con il numero di sequenza eppoi
+        # fare order_by
+        if self.order_col:
+            self.col_name = f'ticket__{self.columns[self.order_col]}'
+            if self.order_dir == 'asc':
+                self.aqs = self.aqs.order_by(self.col_name)
+            else:
+                self.aqs = self.aqs.order_by('-'+self.col_name)
+
 
 @csrf_exempt
 @login_required
@@ -132,8 +157,8 @@ def user_all_tickets(request):
     tickets = TicketAssignment.objects.filter(
         Q(ticket__created_by=request.user) |
         Q(ticket__compiled_by=request.user)
-    ).values_list('ticket__code', flat=True)\
-    .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+    ).values_list('ticket__pk', flat=True)\
+    .order_by("ticket__priority", "-ticket__created")\
     .distinct()
 
     dtd = TicketDTD(request, tickets, columns)
@@ -157,8 +182,8 @@ def user_unassigned_ticket(request):
         Q(ticket__compiled_by=request.user),
         Q(taken_date__isnull=True) | Q(follow=False),
         ticket__is_closed=False,
-    ).values_list('ticket__code', flat=True)\
-    .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+    ).values_list('ticket__pk', flat=True)\
+    .order_by("ticket__priority", "-ticket__created")\
     .distinct()
 
     to_exclude = TicketAssignment.objects.filter(
@@ -167,11 +192,11 @@ def user_unassigned_ticket(request):
         ticket__is_closed=False,
         follow=True,
         taken_date__isnull=False
-    ).values_list('ticket__code', flat=True)\
-    .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+    ).values_list('ticket__pk', flat=True)\
+    .order_by("ticket__priority", "-ticket__created")\
     .distinct()
 
-    tickets = tickets.exclude(ticket__code__in=to_exclude)
+    tickets = tickets.exclude(ticket__pk__in=to_exclude)
     dtd = TicketDTD(request, tickets, columns)
     return JsonResponse(dtd.get_dict())
 
@@ -194,8 +219,8 @@ def user_opened_ticket(request):
         ticket__is_closed=False,
         taken_date__isnull=False,
         follow=True
-    ).values_list('ticket__code', flat=True)\
-    .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+    ).values_list('ticket__pk', flat=True)\
+    .order_by("ticket__priority", "-ticket__created")\
     .distinct()
 
     dtd = TicketDTD(request, tickets, columns)
@@ -218,8 +243,8 @@ def user_closed_ticket(request):
         Q(ticket__created_by=request.user) |
         Q(ticket__compiled_by=request.user),
         ticket__is_closed=True
-    ).values_list('ticket__code', flat=True)\
-    .order_by("ticket__priority", "-ticket__created", "ticket__code", "ticket__is_closed")\
+    ).values_list('ticket__pk', flat=True)\
+    .order_by("ticket__priority", "-ticket__created")\
     .distinct()
 
     dtd = TicketDTD(request, tickets, columns)
