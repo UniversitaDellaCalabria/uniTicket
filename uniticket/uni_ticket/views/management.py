@@ -487,10 +487,10 @@ def tickets(request, structure_slug, structure, office_employee=None):
             office__is_active=True,
             follow=True,
             ticket__is_closed=False
-        ).values_list('ticket__code', flat=True).distinct()
+        ).values_list('ticket__pk', flat=True).distinct()
 
     # unread messages
-    messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
+    messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
 
     d = {
         "ticket_aperti": opened,

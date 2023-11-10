@@ -1443,9 +1443,9 @@ class TicketReply(models.Model):
         )
 
     @staticmethod
-    def get_unread_messages_count(ticket_codes, by_operator=False):
+    def get_unread_messages_count(ticket_ids, by_operator=False):
         # show messages sent by operator
-        q_base = Q(ticket__code__in=ticket_codes,
+        q_base = Q(ticket__pk__in=ticket_ids,
                    read_date__isnull=True,)
         if by_operator:
             return TicketReply.objects.filter(q_base,

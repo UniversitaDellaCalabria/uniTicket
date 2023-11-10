@@ -912,9 +912,9 @@ def dashboard(request):
             # unassigned.append(nc)
             unassigned += 1
     # closed = tickets.filter(is_closed=True).count()
-    ticket_codes = not_closed.values_list('code', flat=True).distinct()
+    ticket_ids = not_closed.values_list('pk', flat=True).distinct()
     messages = TicketReply.get_unread_messages_count(
-        ticket_codes=ticket_codes, by_operator=True)
+        ticket_ids=ticket_ids, by_operator=True)
 
     d = {
         "priority_levels": PRIORITY_LEVELS,

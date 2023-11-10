@@ -51,14 +51,14 @@ def dashboard(request, structure_slug, structure, office_employee):
                                             taken=True,
                                             taken_by=request.user))
 
-    ticket_codes = visible_tickets_to_user(
+    ticket_ids = visible_tickets_to_user(
         user=request.user,
         structure=structure,
         office_employee=office_employee,
         closed=False
     )
 
-    messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
+    messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
     d = {
         "offices": offices,
         "structure": structure,

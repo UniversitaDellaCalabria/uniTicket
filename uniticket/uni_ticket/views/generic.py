@@ -330,7 +330,7 @@ def ticket_messages(request, structure_slug=None, structure=None, office_employe
         tickets = Ticket.objects.filter(
             Q(created_by=request.user) | Q(compiled_by=request.user),
             is_closed=False,
-        ).values("code")
+        ).values("pk")
         # if user_type is 'user', retrieve messages leaved by a manager/operator
         # (linked to a structure)
         by_operator = True
@@ -358,8 +358,9 @@ def ticket_messages(request, structure_slug=None, structure=None, office_employe
 
     started = Min("created")
     ticket_messages = (
-        TicketReply.objects.filter(ticket__code__in=tickets)
+        TicketReply.objects.filter(ticket__pk__in=tickets)
         .values(
+            "ticket__pk",
             "ticket__code",
             "ticket__subject",
             "ticket__input_module__ticket_category__name",
@@ -379,8 +380,8 @@ def ticket_messages(request, structure_slug=None, structure=None, office_employe
     if not by_operator:
         ticket_pk = []
         for tm in ticket_messages:
-            ticket_pk.append(tm['ticket__code'])
-        my_assignments = TicketAssignment.objects.filter(ticket__code__in=ticket_pk,
+            ticket_pk.append(tm['ticket__pk'])
+        my_assignments = TicketAssignment.objects.filter(ticket__pk__in=ticket_pk,
                                                          taken_by=request.user,
                                                          follow=True,
                                                          readonly=False)\

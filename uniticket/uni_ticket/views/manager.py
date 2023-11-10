@@ -72,13 +72,13 @@ def dashboard(request, structure_slug, structure):
                            .prefetch_related('ticketcategorytask_set')\
                            .prefetch_related('ticketcategorycondition_set')
 
-    ticket_codes = TicketAssignment.objects.filter(
+    ticket_ids = TicketAssignment.objects.filter(
         office__organizational_structure=structure,
         office__is_active=True,
         follow=True,
         ticket__is_closed=False
-    ).values_list('ticket__code', flat=True).distinct()
-    messages = TicketReply.get_unread_messages_count(ticket_codes=ticket_codes)
+    ).values_list('ticket__pk', flat=True).distinct()
+    messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
 
     d = {
         "categories": categories,
