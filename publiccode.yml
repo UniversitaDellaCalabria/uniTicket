@@ -103,23 +103,23 @@ description:
       - Integazione SAML2 SSO (pySAML2);
     screenshots:
       - >-
-        https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/uniticket.png
+         https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/gallery/uniticket.png
       - >-
-         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/dashboard1.png
+         https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/gallery/dashboard1.png
       - >-
-         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/operator_takes_ticket1.png
+         https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/gallery/operator_takes_ticket1.png
       - >-
-         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/manager_dashboard1.png
+         https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/gallery/manager_dashboard1.png
       - >-
-         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/ticket_competence1.png
+         https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/gallery/ticket_competence1.png
       - >-
-         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/ticket_dependence1.png
+         https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/gallery/ticket_dependence1.png
       - >-
-         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/category_new1.png
+         https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/gallery/category_new1.png
       - >-
-         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/category_detail1.png
+         https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/gallery/category_detail1.png
       - >-
-         https://github.com/UniversitaDellaCalabria/uniTicket/blob/master/gallery/category_input_module_detail1.png
+         https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/gallery/category_input_module_detail1.png
     shortDescription: >-
       Django Ticket System per il tracciamento e la digitalizzazione dei flussi
       di richieste e documentali.
@@ -163,10 +163,10 @@ name: uniTicket
 platforms:
   - linux
   - web
-releaseDate: '2023-11-07'
+releaseDate: '2023-11-10'
 roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
 softwareType: standalone/web
-softwareVersion: v2.5.0
+softwareVersion: v2.5.1
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
   - Università della Calabria - https://www.unical.it
