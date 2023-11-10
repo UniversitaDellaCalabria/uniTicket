@@ -192,8 +192,8 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                     params,
                                     follow=True)
         assert response.status_code == 200
-        assert self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_1)
-        assert self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_2)
+        assert self.ticket.pk in TicketAssignment.get_ticket_per_structure(self.structure_1)
+        assert self.ticket.pk in TicketAssignment.get_ticket_per_structure(self.structure_2)
 
         # Change priority to ticket
         params = {'priorita': 1}
@@ -261,8 +261,8 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                    follow=True)
         self.ticket.refresh_from_db()
         assert response.status_code == 200
-        assert self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_1)
-        assert not self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_2)
+        assert self.ticket.pk in TicketAssignment.get_ticket_per_structure(self.structure_1)
+        assert not self.ticket.pk in TicketAssignment.get_ticket_per_structure(self.structure_2)
 
     def test_add_ticket_competence_and_readonly(self):
         # Take ticket
@@ -301,8 +301,8 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                     params,
                                     follow=True)
         assert response.status_code == 200
-        assert self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_1)
-        assert self.ticket.code in TicketAssignment.get_ticket_per_structure(self.structure_2)
+        assert self.ticket.pk in TicketAssignment.get_ticket_per_structure(self.structure_1)
+        assert self.ticket.pk in TicketAssignment.get_ticket_per_structure(self.structure_2)
 
         # Change priority to ticket (this fails, is readonly!)
         params = {'priorita': 1}
