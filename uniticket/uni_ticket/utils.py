@@ -266,7 +266,8 @@ def visible_tickets_to_user(user,
                             office_employee,
                             closed=None,
                             taken=None,
-                            taken_by=None):
+                            taken_by=None,
+                            priority_first=True):
     """
     Returns a list of tickets that are visible to user
     """
@@ -275,7 +276,8 @@ def visible_tickets_to_user(user,
         tickets = model.get_ticket_per_structure(structure=structure,
                                                  closed=closed,
                                                  taken=taken,
-                                                 taken_by=taken_by)
+                                                 taken_by=taken_by,
+                                                 priority_first=priority_first)
         return tickets
     offices = []
     for oe in office_employee:
@@ -284,7 +286,8 @@ def visible_tickets_to_user(user,
     tickets = model.get_ticket_in_office_list(offices_list=offices,
                                               closed=closed,
                                               taken=taken,
-                                              taken_by=taken_by)
+                                              taken_by=taken_by,
+                                              priority_first=priority_first)
     return tickets
 
 
