@@ -54,7 +54,7 @@
 -->
                     <td>{{ tm.ticket__input_module__ticket_category__name}}</td>
                     <td>
-                        {% if tm.ticket__code in my_assignments_list %}
+                        {% if tm.ticket__pk in my_assignments_list %}
                         <svg class="mr-2 icon icon-success icon-xs">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
                         </svg>

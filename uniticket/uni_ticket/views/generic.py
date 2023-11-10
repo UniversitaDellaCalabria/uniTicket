@@ -387,8 +387,8 @@ def ticket_messages(request, structure_slug=None, structure=None, office_employe
                                                          readonly=False)\
                                                  .select_related('ticket')
         for ma in my_assignments:
-            if ma.ticket.code not in my_assignments_list:
-                my_assignments_list.append(ma.ticket.code)
+            if ma.ticket.pk not in my_assignments_list:
+                my_assignments_list.append(ma.ticket.pk)
 
     template = "{}/ticket_messages.html".format(user_type)
     title = _("Tutti i messaggi")
