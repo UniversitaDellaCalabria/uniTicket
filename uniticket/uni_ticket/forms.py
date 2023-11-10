@@ -363,7 +363,7 @@ class TicketDependenceForm(forms.Form):
         user = kwargs.pop("user", None)
         structure = kwargs.pop("structure", None)
         current_ticket_id = kwargs.pop("ticket_id", None)
-        ticket_dependences_code_list = kwargs.pop("ticket_dependences", [])
+        ticket_dependences_pk_list = kwargs.pop("ticket_dependences", [])
         ticket_id_list = []
         # if user is manager/default_office operator:
         # he views all tickets followed by structure offices
@@ -380,12 +380,12 @@ class TicketDependenceForm(forms.Form):
             ticket_id_list = TicketAssignment.get_ticket_in_office_list(
                 offices_list=offices_list,
                 taken=True)
-        ticket_id_list = ticket_id_list.exclude(ticket__code=current_ticket_id)
+        ticket_id_list = ticket_id_list.exclude(ticket__pk=current_ticket_id)
         cleaned_list = [
-            code for code in ticket_id_list if code not in ticket_dependences_code_list
+            pk for pk in ticket_id_list if pk not in ticket_dependences_pk_list
         ]
         ticket_list = Ticket.objects.filter(
-            code__in=cleaned_list, is_closed=False)
+            pk__in=cleaned_list, is_closed=False)
         super().__init__(*args, **kwargs)
         self.fields["ticket"].queryset = ticket_list
         self.fields["ticket"].to_field_name = "code"

@@ -572,7 +572,7 @@ def ticket_dependence_add_new(
     form = TicketDependenceForm(
         user=request.user,
         structure=structure,
-        ticket_id=ticket.code,
+        ticket_id=ticket.pk,
         ticket_dependences=ticket_dependences_code_list,
     )
     if request.method == "POST":
@@ -580,7 +580,7 @@ def ticket_dependence_add_new(
             request.POST,
             user=request.user,
             structure=structure,
-            ticket_id=ticket.code,
+            ticket_id=ticket.pk,
             ticket_dependences=ticket_dependences_code_list,
         )
         if form.is_valid():
