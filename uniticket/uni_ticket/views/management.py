@@ -464,7 +464,7 @@ def tickets(request, structure_slug, structure, office_employee=None):
                                                 taken=True,
                                                 taken_by=request.user))
 
-        ticket_codes = visible_tickets_to_user(
+        ticket_ids = visible_tickets_to_user(
             user=request.user,
             structure=structure,
             office_employee=office_employee,
