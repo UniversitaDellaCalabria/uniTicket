@@ -59,8 +59,10 @@ logger = logging.getLogger("__name__")
 
 
 _protocollo_titolario_list = settings.TITOLARIO_DICT
+_protocollo_uo_list = settings.UO_DICT
 if 'makemigrations' in sys.argv or 'migrate' in sys.argv: # pragma: no cover
     _protocollo_titolario_list = [('', '-')]
+    _protocollo_uo_list = [('', '-')]
 
 
 def _attachment_upload(instance, filename):
@@ -1779,7 +1781,7 @@ class TicketCategoryWSProtocollo(TimeStampedModel):
         TicketCategory, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
-    protocollo_uo = models.CharField("UO", max_length=12, choices=settings.UO_DICT)
+    protocollo_uo = models.CharField("UO", max_length=12, choices=_protocollo_uo_list)
     protocollo_uo_rpa = models.CharField(
         "RPA", max_length=255, default="", blank=True, help_text=_("Nominativo RPA")
     )
