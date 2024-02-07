@@ -98,8 +98,8 @@
                         <div class="pagination" style="float: right">
                             <span class="step-links">
                                 {% if users.has_previous %}
-                                    <a href="?page=1">&laquo; {% trans "Prima" %}</a>
-                                    <a href="?page={{ users.previous_page_number }}">{% trans "Precedente" %}</a>
+                                    <a href="?page=1{% if key %}&search={{ key }}{% endif %}">&laquo; {% trans "Prima" %}</a>
+                                    <a href="?page={{ users.previous_page_number }}{% if key %}&search={{ key }}{% endif %}">{% trans "Precedente" %}</a>
                                 {% endif %}
 
                                 <span class="current">
@@ -107,8 +107,8 @@
                                 </span>
 
                                 {% if users.has_next %}
-                                    <a href="?page={{ users.next_page_number }}">{% trans "Successiva" %}</a>
-                                    <a href="?page={{ users.paginator.num_pages }}">{% trans "Ultima" %} &raquo;</a>
+                                    <a href="?page={{ users.next_page_number }}{% if key %}&search={{ key }}{% endif %}">{% trans "Successiva" %}</a>
+                                    <a href="?page={{ users.paginator.num_pages }}{% if key %}&search={{ key }}{% endif %}">{% trans "Ultima" %} &raquo;</a>
                                 {% endif %}
                             </span>
                         </div>
