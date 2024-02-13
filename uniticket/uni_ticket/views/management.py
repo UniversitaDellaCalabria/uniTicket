@@ -810,11 +810,11 @@ def ticket_close(
     if request.method == "POST":
         form = TicketCloseForm(request.POST)
         if form.is_valid():
-            motivazione = form.cleaned_data["note"]
+            motivazione = form.cleaned_data["note"].format(user=ticket.created_by)
             closing_status = form.cleaned_data["status"]
             ticket.is_closed = True
             ticket.closed_by = request.user
-            ticket.closing_reason = motivazione.format(user=ticket.created_by)
+            ticket.closing_reason = motivazione
             ticket.closing_status = closing_status
             ticket.closed_date = timezone.localtime()
             ticket.save(
