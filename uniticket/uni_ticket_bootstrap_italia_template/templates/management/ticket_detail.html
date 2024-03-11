@@ -250,7 +250,7 @@
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
         </svg>
         {% if unread_messages > 0 %}
-        <span class="badge badge-primary">{{ unread_messages }}</span>
+        <span class="badge badge-primary">{% trans "Nuovi" %}</span>
         {% endif %}
         {% trans "Messaggi" %}
     {% endwith %}
