@@ -162,7 +162,7 @@ def obj_get_attr(obj, attr, **kwargs):
 @register.filter()
 @stringfilter
 def markdown(value):
-    return md.markdown(value, extensions=["markdown.extensions.fenced_code"])
+    return md.markdown(value, extensions=uni_ticket_settings.MARKDOWN_EXTENSIONS)
 
 
 @register.simple_tag

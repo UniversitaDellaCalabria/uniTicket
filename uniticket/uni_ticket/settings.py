@@ -515,3 +515,8 @@ STATS_SHOW_TICKETS_BY_USER = getattr(
 PRECOMPILED_TICKET_EXPIRE_DAYS = getattr(
     settings, 'PRECOMPILED_TICKET_EXPIRE_DAYS', 7)
 
+MARKDOWN_EXTENSIONS = getattr(
+    settings, "MARKDOWN_EXTENSIONS",
+    ["markdown.extensions.fenced_code",
+     "markdown.extensions.tables"]
+)
