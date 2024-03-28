@@ -526,11 +526,11 @@ def disabled_expired_items(items):
 
 def export_input_module_csv(
     module,
-    delimiter="$",
-    quotechar='"',
-    dialect="excel",
     ticket_codes_list=[],
     file_name="export.csv",
+    delimiter =',',
+    quotechar ='"',
+    quoting=csv.QUOTE_ALL
 ):
 
     module.ticket_category
@@ -566,7 +566,10 @@ def export_input_module_csv(
     csv_file["Content-Disposition"] = 'attachment; filename="{}"'.format(
         file_name)
     writer = csv.writer(
-        csv_file, dialect=dialect, delimiter=delimiter, quotechar=quotechar
+        csv_file,
+        delimiter=delimiter,
+        quotechar=quotechar,
+        quoting=quoting
     )
 
     writer.writerow(head)
