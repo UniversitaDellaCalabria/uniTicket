@@ -566,7 +566,11 @@ def export_input_module_csv(
     csv_file["Content-Disposition"] = 'attachment; filename="{}"'.format(
         file_name)
     writer = csv.writer(
-        csv_file, dialect=dialect, delimiter=delimiter, quotechar=quotechar
+        csv_file,
+        dialect=dialect,
+        delimiter=delimiter,
+        quotechar=quotechar,
+        quoting=csv.QUOTE_NONNUMERIC
     )
 
     writer.writerow(head)
