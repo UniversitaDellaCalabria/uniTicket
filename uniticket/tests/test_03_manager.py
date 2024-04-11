@@ -29,7 +29,8 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
     def test_edit_category(self):
         # Edit
         name = 'new name'
-        params =  {'name': name,}
+        params =  {'name': name,
+                   'max_requests_per_user': 0}
         response = self.client.post(reverse('uni_ticket:manager_category_edit',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'category_slug': self.category_1_str_1.slug}),
@@ -44,7 +45,8 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         new_cat = self.add_new_category(cat_name='Category 2 Structure 1',
                                         structure_slug=self.structure_1.slug)
         name = 'Category 1 Structure 1'
-        params =  {'name': name,}
+        params =  {'name': name,
+                   'max_requests_per_user': 0}
         response = self.client.post(reverse('uni_ticket:manager_category_edit',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'category_slug': new_cat.slug}),

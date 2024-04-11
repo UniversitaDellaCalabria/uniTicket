@@ -193,6 +193,7 @@ class uniTicketAPITest(TestCase):
             content_type="application/json",
             **self.at.as_http_header
         )
+
         self.assertTrue(
             res.json()['messages'][0].get('SUCCESS', None)
         )
