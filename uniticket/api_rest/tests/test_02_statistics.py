@@ -80,7 +80,7 @@ class uniTicketAPIStatsTest(BaseTicketEnvironment):
                 "receive_email": False,
                 "protocol_required": False,
                 "user_multiple_open_tickets": True,
-
+                "max_requests_per_user": 0,
             }
         )
         self.modulo = TicketCategoryModule.objects.create(

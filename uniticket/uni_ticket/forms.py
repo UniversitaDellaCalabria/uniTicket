@@ -39,6 +39,7 @@ class CategoryForm(ModelForm):
             "allow_user",
             "allow_employee",
             "user_multiple_open_tickets",
+            "max_requests_per_user",
             # "allowed_users",
             "receive_email",
             "protocol_required",

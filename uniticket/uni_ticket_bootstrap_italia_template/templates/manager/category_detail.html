@@ -325,6 +325,12 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">
+                    {% trans 'Numero massimo di richieste per utente' %}
+                </th>
+                <td>{{ category.max_requests_per_user }}</td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans "Solo i seguenti utenti possono effettuare richieste" %}</th>
                 <td>
                     {% if category.allowed_users.all %}

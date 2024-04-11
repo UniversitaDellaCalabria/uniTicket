@@ -507,6 +507,19 @@ class TicketAddNew(View):
                     ),
                 )
 
+            # checks if the user has exceeded the maximum ticket threshold of this category
+            if self.category.max_requests_per_user and Ticket.objects.filter(
+                created_by=self.request.user,
+                input_module__ticket_category=self.category
+            ).count() >= self.category.max_requests_per_user:
+                return custom_message(
+                    self.request,
+                    _(
+                        "Non è possibile aprire ulteriori richieste"
+                        " per questa tipologia."
+                    ),
+                )
+
     def get(self, request, structure_slug, category_slug, api:bool = False):
         """
         Create the ticket

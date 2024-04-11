@@ -228,6 +228,13 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         _("Gli utenti possono aprire più richieste contemporaneamente"), default=True
     )
 
+    # maximum number of requests per user
+    max_requests_per_user = models.IntegerField(
+        _("Numero massimo di richieste per utente"),
+        default=0,
+        help_text=_("0 = illimitate")
+    )
+
     class Meta:
         unique_together = ("slug", "organizational_structure")
         ordering = ["name"]

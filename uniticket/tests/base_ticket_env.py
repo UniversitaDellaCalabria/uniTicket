@@ -31,7 +31,7 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
          Create new ticket
          this may fail silently -> ticket object would be None
         """
-        
+
         # New ticket preload (select category)
         response = self.client.get(reverse('uni_ticket:new_ticket_preload',
                                            kwargs={'structure_slug': structure_slug,}),
@@ -96,6 +96,7 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
         # Raise error because category_1_str_1 doesn't allow multiple
         # open tickets for same user
         self.category_1_str_1.user_multiple_open_tickets = False
+        self.category_1_str_1.max_requests_per_user = 0
         self.category_1_str_1.save()
         self.category_1_str_1.refresh_from_db()
         self.ticket_2 = self.create_ticket(
@@ -109,6 +110,7 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
         # Add ticket 2(base form)
         # Create new ticket
         self.category_1_str_1.user_multiple_open_tickets = True
+        self.category_1_str_1.max_requests_per_user = 0
         self.category_1_str_1.save()
         self.category_1_str_1.refresh_from_db()
         self.ticket_2 = self.create_ticket(subject='Ticket 2',

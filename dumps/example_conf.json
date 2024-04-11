@@ -91,6 +91,7 @@
     "receive_email": false,
     "protocol_required": false,
     "user_multiple_open_tickets": true,
+    "max_requests_per_user": 0,
     "allowed_users": []
   }
 },
@@ -120,6 +121,7 @@
     "receive_email": false,
     "protocol_required": false,
     "user_multiple_open_tickets": true,
+    "max_requests_per_user": 0,
     "allowed_users": []
   }
 },

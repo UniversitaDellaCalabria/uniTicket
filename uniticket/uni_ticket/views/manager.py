@@ -1320,6 +1320,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                         "receive_email",
                         "protocol_required",
                         "user_multiple_open_tickets",
+                        "max_requests_per_user",
                         "modified",
                         "is_hidden"
                     ]

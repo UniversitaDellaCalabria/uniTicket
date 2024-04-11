@@ -27,6 +27,7 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
         "is_notification",
         "confirm_message_text",
         "user_multiple_open_tickets",
+        "max_requests_per_user",
         "is_hidden"
     )
     inlines = [
@@ -46,6 +47,7 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
         "allow_user",
         "allow_employee",
         "user_multiple_open_tickets",
+        "max_requests_per_user",
         "is_hidden",
         "is_notification",
         "is_active",

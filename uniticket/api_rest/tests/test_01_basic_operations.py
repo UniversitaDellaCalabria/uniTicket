@@ -106,7 +106,8 @@ class uniTicketAPITest(TestCase):
                 "footer_text": "",
                 "receive_email": False,
                 "protocol_required": False,
-                "user_multiple_open_tickets": True
+                "user_multiple_open_tickets": True,
+                "max_requests_per_user": 0,
             }
         )
         self.modulo = TicketCategoryModule.objects.create(
@@ -124,7 +125,7 @@ class uniTicketAPITest(TestCase):
     def test_strutture_list(self):
         req = Client()
         url = reverse('api-strutture-list')
-        
+
         # no auth
         res = req.get(url)
         self.assertEqual(res.status_code,  401)
@@ -136,7 +137,7 @@ class uniTicketAPITest(TestCase):
     def test_category_list(self):
         req = Client()
         url = reverse('api-ticket-category-list')
-        
+
         # no auth
         res = req.get(url)
         self.assertEqual(res.status_code,  401)
@@ -155,7 +156,7 @@ class uniTicketAPITest(TestCase):
                 "category_slug": "modello-di-richiesta-di-test"
             }
         )
-        
+
         # no auth
         res = req.get(url)
         self.assertEqual(res.status_code,  401)
@@ -187,9 +188,9 @@ class uniTicketAPITest(TestCase):
             "testo_lungo_ad_inserimento_libero": "long lorem ipsum"
         }
         res = req.post(
-            url, 
-            data=data, 
-            content_type="application/json", 
+            url,
+            data=data,
+            content_type="application/json",
             **self.at.as_http_header
         )
         self.assertTrue(
@@ -205,16 +206,16 @@ class uniTicketAPITest(TestCase):
             if i in ('ticket_subject', 'ticket_description'):
                 continue
             self.assertIn(i, res_form)
-        
+
 
         # get ticket list
         lurl = reverse("api-ticket-user-list")
 
         # create another ticket
         req.post(
-            url, 
-            data=data, 
-            content_type="application/json", 
+            url,
+            data=data,
+            content_type="application/json",
             **self.at.as_http_header
         )
 
@@ -225,7 +226,7 @@ class uniTicketAPITest(TestCase):
         self.assertTrue(
             len(res.json()['results']) == 2
         )
-        
+
         # close ticket
         curl = reverse("api-ticket-close", kwargs={'ticket_id': tcode})
         res = req.post(curl, data={'note': "have to go"}, **self.at.as_http_header)
