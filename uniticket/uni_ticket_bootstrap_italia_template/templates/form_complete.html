@@ -24,7 +24,7 @@
     {% block page_content %}
         {% block pre_form %}
         {% endblock pre_form %}
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" novalidate>
             {% include 'form_template.html' %}
             {% block allegati %}{% endblock allegati %}
             {% block form_buttons %}{% endblock form_buttons %}
