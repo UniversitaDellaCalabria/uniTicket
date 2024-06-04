@@ -249,7 +249,7 @@
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
         </svg>
-        {% if unread_messages > 0 %}
+        {% if ticket_messages %}
         <span class="badge badge-primary">{% trans "Nuovi" %}</span>
         {% endif %}
         {% trans "Messaggi" %}

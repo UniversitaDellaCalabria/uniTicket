@@ -1231,7 +1231,8 @@ class TicketDetail(View):
             object_id=ticket.pk,
             is_public=True
         ).select_related('user')
-        # ticket_replies = TicketReply.objects.filter(ticket=ticket)
+        ticket_messages = TicketReply.get_unread_messages_count(
+            ticket_ids=[ticket.pk], by_operator=True)
         ticket_task = Task.objects.filter(ticket=ticket)
                                           # is_public=True)
         ticket_dependences = ticket.get_dependences()
@@ -1256,6 +1257,7 @@ class TicketDetail(View):
             "ticket": ticket,
             "ticket_assignments": ticket_assignments,
             "ticket_form": ticket_form,
+            "ticket_messages": ticket_messages,
             "logs": ticket_logs,
             "ticket_task": ticket_task,
         }

@@ -201,6 +201,7 @@ def ticket_detail(
     ticket_task = Task.objects.filter(ticket=ticket)
     ticket_dependences = ticket.get_dependences()
     ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
+    ticket_messages = TicketReply.get_unread_messages_count(ticket_ids=[ticket.pk])
 
     # priority form
     form = PriorityForm(initial={"priorita": ticket.priority})
@@ -414,6 +415,7 @@ def ticket_detail(
         "ticket_assignments": ticket_assignments,
         "ticket_form": ticket_form,
         "logs": ticket_logs,
+        "ticket_messages": ticket_messages,
         "ticket_task": ticket_task,
         "title": title,
         "untaken_user_offices": untaken_user_offices,
