@@ -787,7 +787,7 @@ def ticket_close(
     # Se il ticket non è chiudibile (per dipendenze attive)
     if not ticket.is_closable():
         # log action
-        logger.error(
+        logger.info(
             "[{}] {} tried to"
             " close not closable ticket {}".format(
                 timezone.localtime(), request.user, ticket
@@ -906,7 +906,7 @@ def ticket_reopen(request, structure_slug, ticket_id, structure, can_manage, tic
     """
     if not ticket.is_closed:
         # log action
-        logger.error(
+        logger.info(
             "[{}] {} tried to reopen"
             " not closed ticket {}".format(
                 timezone.localtime(), request.user, ticket)
@@ -919,7 +919,7 @@ def ticket_reopen(request, structure_slug, ticket_id, structure, can_manage, tic
 
     if ticket.is_notification:
         # log action
-        logger.error(
+        logger.info(
             "[{}] {} tried to reopen"
             " a notification ticket {}".format(
                 timezone.localtime(), request.user, ticket
@@ -933,7 +933,7 @@ def ticket_reopen(request, structure_slug, ticket_id, structure, can_manage, tic
 
     if not ticket.closed_by:
         # log action
-        logger.error(
+        logger.info(
             "[{}] {} tried to reopen"
             " a ticket closed by owner user{}"
             "".format(timezone.localtime(), request.user, ticket)
@@ -1584,9 +1584,8 @@ def task_remove(
     task = get_object_or_404(Task, code=task_id, ticket=ticket)
 
     # log action
-    logger.error(
-        "[{}] {} tried to"
-        " removed task {}"
+    logger.info(
+        "[{}] {} removed task {}"
         " in ticket {}".format(timezone.localtime(),
                                request.user, task, ticket)
     )
@@ -1680,7 +1679,7 @@ def task_detail(
         if can_manage["readonly"]:
 
             # log action
-            logger.error(
+            logger.info(
                 "[{}] {} tried to"
                 " edit task {}"
                 " in readonly ticket {}".format(
@@ -1698,7 +1697,7 @@ def task_detail(
             )
         if task.is_closed:
             # log action
-            logger.error(
+            logger.info(
                 "[{}] {} tried to"
                 " edit closed task {}".format(
                     timezone.localtime(), request.user, task)
@@ -1726,9 +1725,8 @@ def task_detail(
             ticket.update_log(user=request.user, note=msg)
 
             # log action
-            logger.error(
-                "[{}] {} tried to"
-                " edited task {}"
+            logger.info(
+                "[{}] {} edited task {}"
                 " priority to {}".format(
                     timezone.localtime(), request.user, task, priority_text
                 )
@@ -1942,7 +1940,7 @@ def task_reopen(
         )
     if ticket.is_closed:
         # log action
-        logger.error(
+        logger.info(
             "[{}] {} tried to"
             " remove task {}"
             " in closed ticket {}".format(
@@ -1960,7 +1958,7 @@ def task_reopen(
     msg = _("Riapertura attività {}".format(task))
 
     # log action
-    logger.error(
+    logger.info(
         "[{}] {} reopened task {}"
         " in ticket {}".format(
             timezone.localtime(), request.user, task, ticket)
@@ -2061,7 +2059,7 @@ def task_edit(
     if request.method == "POST":
         if task.is_closed:
             # log action
-            logger.error(
+            logger.info(
                 "[{}] {} tried to"
                 " edit closed task {}".format(
                     timezone.localtime(), request.user, task)

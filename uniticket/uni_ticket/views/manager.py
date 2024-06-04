@@ -1813,7 +1813,7 @@ def category_input_module_delete(
     if not module.can_be_deleted():
 
         # log action
-        logger.error(
+        logger.info(
             "[{}] manager of structure {}"
             " {} tried to delete"
             " the module {} of category {}".format(
@@ -1995,7 +1995,7 @@ def category_input_field_delete(
     if not module.can_be_deleted():
 
         # log action
-        logger.error(
+        logger.info(
             "[{}] manager of structure {}"
             " {} tried to delete a field"
             " from module {} of category {}".format(
@@ -2132,7 +2132,7 @@ def category_input_field_edit(
         if not module.can_be_deleted():
 
             # log action
-            logger.error(
+            logger.info(
                 "[{}] manager of structure {}"
                 " {} tried to edit a field"
                 " from module {} of category {}".format(

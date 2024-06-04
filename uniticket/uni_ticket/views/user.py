@@ -1232,8 +1232,8 @@ class TicketDetail(View):
             is_public=True
         ).select_related('user')
         # ticket_replies = TicketReply.objects.filter(ticket=ticket)
-        ticket_task = Task.objects.filter(ticket=ticket,
-                                          is_public=True)
+        ticket_task = Task.objects.filter(ticket=ticket)
+                                          # is_public=True)
         ticket_dependences = ticket.get_dependences()
         title = ticket.subject
         sub_title = ticket.code
@@ -1302,7 +1302,7 @@ def ticket_message(request, ticket_id):
 
         if not ticket.is_open():
             # log action
-            logger.error(
+            logger.info(
                 "[{}] user {} tried to submit"
                 " a message for the not opened ticket {}".format(
                     timezone.localtime(), request.user, ticket
@@ -1451,7 +1451,7 @@ class TicketClose(View):
         }
         if self.ticket.is_closed:
             # log action
-            logger.error(
+            logger.info(
                 "[{}] user {} tried to close "
                 " the already closed ticket {}".format(
                     timezone.localtime(), request.user, self.ticket
@@ -1539,14 +1539,14 @@ def ticket_reopen(request, ticket_id):
 
     # Se il ticket non è chiuso blocca
     if not ticket.is_closed:
-        logger.error(
+        logger.info(
             "[{}] {} tried to reopen not closed ticket {} "
             "".format(timezone.localtime(), request.user, ticket)
         )
         return custom_message(request, _("La richiesta non è stata chiusa"))
 
     if ticket.closed_by:
-        logger.error(
+        logger.info(
             "[{}] {} tried to reopen ticket {} "
             " closed by operator".format(
                 timezone.localtime(), request.user, ticket)
@@ -1561,7 +1561,7 @@ def ticket_reopen(request, ticket_id):
         )
 
     if ticket.is_notification:
-        logger.error(
+        logger.info(
             "[{}] {} tried to reopen notification ticket {} "
             "".format(timezone.localtime(), request.user, ticket)
         )
@@ -1590,7 +1590,7 @@ def ticket_reopen(request, ticket_id):
 
     msg = _("Riapertura richiesta {} da utente proprietario").format(ticket)
     # log action
-    logger.error(
+    logger.info(
         "[{}] {} reopened ticket {}".format(
             timezone.localtime(), request.user, ticket)
     )
