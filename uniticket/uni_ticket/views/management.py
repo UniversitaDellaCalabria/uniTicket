@@ -1521,14 +1521,17 @@ def task_add_new(
             )
 
             ticket.update_log(
-                user=request.user, note=_(
-                    "Aggiunta attività: {}".format(new_task))
+                user=request.user,
+                note=_("Aggiunta attività: {}".format(new_task)),
+                is_public=new_task.is_public
             )
+
             messages.add_message(
                 request,
                 messages.SUCCESS,
                 _("Attività {} creata con successo".format(new_task)),
             )
+
             return redirect(
                 "uni_ticket:manage_ticket_url_detail",
                 structure_slug=structure_slug,
@@ -1588,13 +1591,16 @@ def task_remove(
                                request.user, task, ticket)
     )
 
-    task.delete()
-    ticket.update_log(user=request.user, note=_(
-        "Rimossa attività: {}".format(task)))
+    ticket.update_log(user=request.user,
+                      note=_("Rimossa attività: {}".format(task)),
+                      is_public=task.is_public)
     messages.add_message(
         request, messages.SUCCESS, _(
             "Attività {} rimossa correttamente".format(task))
     )
+
+    task.delete()
+
     return redirect(
         "uni_ticket:manage_ticket_url_detail",
         structure_slug=structure_slug,
@@ -1867,8 +1873,12 @@ def task_close(
                     task, dict(CLOSING_LEVELS).get(closing_status), motivazione
                 )
             )
-            task.update_log(user=request.user, note=msg)
-            ticket.update_log(user=request.user, note=msg)
+            task.update_log(user=request.user,
+                            note=msg,
+                            is_public=task.is_public)
+            ticket.update_log(user=request.user,
+                              note=msg,
+                              is_public=task.is_public)
             messages.add_message(
                 request,
                 messages.SUCCESS,
@@ -1948,17 +1958,20 @@ def task_reopen(
     task.is_closed = False
     task.save(update_fields=["is_closed"])
     msg = _("Riapertura attività {}".format(task))
-    task.update_log(user=request.user, note=msg)
 
     # log action
     logger.error(
-        "[{}] {} tried to"
-        " reopened task {}"
-        " in closed ticket {}".format(
+        "[{}] {} reopened task {}"
+        " in ticket {}".format(
             timezone.localtime(), request.user, task, ticket)
     )
 
-    ticket.update_log(user=request.user, note=msg)
+    task.update_log(user=request.user,
+                    note=msg,
+                    is_public=task.is_public)
+    ticket.update_log(user=request.user,
+                      note=msg,
+                      is_public=task.is_public)
     messages.add_message(
         request, messages.SUCCESS, _(
             "Attività {} riaperta correttamente".format(task))
@@ -2084,8 +2097,12 @@ def task_edit(
                 )
             )
 
-            task.update_log(user=request.user, note=msg)
-            ticket.update_log(user=request.user, note=msg)
+            task.update_log(user=request.user,
+                            note=msg,
+                            is_public=task.is_public)
+            ticket.update_log(user=request.user,
+                              note=msg,
+                              is_public=task.is_public)
             messages.add_message(
                 request, messages.SUCCESS, _(
                     "Attività aggiornata con successo")
@@ -2165,8 +2182,12 @@ def task_attachment_delete(
     task.save(update_fields=["attachment"])
 
     msg = _("Allegato attività {} eliminato".format(task.code))
-    task.update_log(user=request.user, note=_("Allegato eliminato"))
-    ticket.update_log(user=request.user, note=msg)
+    task.update_log(user=request.user,
+                    note=_("Allegato eliminato"),
+                    is_public=task.is_public)
+    ticket.update_log(user=request.user,
+                      note=msg,
+                      is_public=task.is_public)
 
     # log action
     logger.info(

@@ -1229,9 +1229,11 @@ class TicketDetail(View):
         ticket_logs = Log.objects.filter(
             content_type_id=ContentType.objects.get_for_model(ticket).pk,
             object_id=ticket.pk,
+            is_public=True
         ).select_related('user')
         # ticket_replies = TicketReply.objects.filter(ticket=ticket)
-        ticket_task = Task.objects.filter(ticket=ticket)
+        ticket_task = Task.objects.filter(ticket=ticket,
+                                          is_public=True)
         ticket_dependences = ticket.get_dependences()
         title = ticket.subject
         sub_title = ticket.code

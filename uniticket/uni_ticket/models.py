@@ -81,9 +81,10 @@ def _attachment_upload(instance, filename):
 import inspect
 exec(inspect.getsource(LogEntry).replace('db_table = "django_admin_log"',
                                          'indexes = [models.Index(fields=["content_type", "object_id"])]')\
-                                .replace('class LogEntry','class Log')\
-                                .replace('models.TextField(_("object id"), blank=True, null=True)',
-                                         'models.PositiveIntegerField(_("object id"), blank=True, null=True)')) #nosec
+                                .replace('class LogEntry(models.Model):',
+                                         'class Log(models.Model):\n    is_public = models.BooleanField(default=True)')\
+                                .replace('object_id = models.TextField(_("object id"), blank=True, null=True)',
+                                         'object_id = models.PositiveIntegerField(_("object id"), blank=True, null=True)')) #nosec
 ### END Custom Logs ###
 
 
@@ -767,10 +768,10 @@ class Ticket(SavedFormContent):
             self.taken_by_html_list()
         )
 
-    def update_log(self, user, note="", send_mail=True, mail_msg=""):
+    def update_log(self, user, is_public=True, note="", send_mail=True, mail_msg=""):
         if not user:
             return False
-        if send_mail:
+        if is_public and send_mail:
             # Send mail to ticket owner
             d = {
                 "hostname": settings.HOSTNAME,
@@ -790,7 +791,7 @@ class Ticket(SavedFormContent):
             )
             # End send mail to ticket owner
 
-        Log.objects.log_action(
+        log = Log.objects.log_action(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(self).pk,
             object_id=self.pk,
@@ -798,6 +799,8 @@ class Ticket(SavedFormContent):
             action_flag=CHANGE,
             change_message=note,
         )
+        log.is_public = is_public
+        log.save(update_fields=['is_public'])
 
     def get_assigned_to_offices(
         self, office_active=True, structure=None, ignore_follow=True
@@ -1434,8 +1437,8 @@ class Task(AbstractTask):
         verbose_name = _("Task")
         verbose_name_plural = _("Task")
 
-    def update_log(self, user, note=None):
-        Log.objects.log_action(
+    def update_log(self, user, is_public=True, note=""):
+        log = Log.objects.log_action(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(self).pk,
             object_id=self.pk,
@@ -1443,6 +1446,8 @@ class Task(AbstractTask):
             action_flag=CHANGE,
             change_message=note,
         )
+        log.is_public = is_public
+        log.save(update_fields=['is_public'])
 
     def get_folder(self):
         """
