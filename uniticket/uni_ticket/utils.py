@@ -216,7 +216,7 @@ def delete_directory(path):
         shutil.rmtree(path)
         return path
     except Exception:
-        logger.error("Error removing folder{}".format(path))
+        # logger.error("Error removing folder{}".format(path))
         return False
 
 
