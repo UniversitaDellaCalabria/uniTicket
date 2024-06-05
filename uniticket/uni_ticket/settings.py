@@ -357,6 +357,20 @@ URL: {ticket_url}"""
     ),
 )
 
+NEW_TICKET_SHARED_EMPLOYEE_BODY = getattr(
+    settings,
+    "NEW_TICKET_SHARED_EMPLOYEE_BODY",
+    _(
+        """E' stata trasferita la competenza di una richiesta all'ufficio {destination_office}.
+
+Utente: {ticket_user}
+Oggetto: {ticket_subject}
+Descrizione: {ticket_description}
+
+URL: {ticket_url}"""
+    ),
+)
+
 NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY = getattr(
     settings,
     "NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY",

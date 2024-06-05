@@ -32,11 +32,13 @@ from organizational_area.models import (
     OrganizationalStructureOfficeEmployee,
     UserManageOrganizationalStructure,
 )
+
 from uni_ticket.settings import (
     EMPLOYEE_ATTRIBUTE_LABEL,
     EMPLOYEE_ATTRIBUTE_NAME,
     MSG_FOOTER,
     MSG_HEADER,
+    OPERATOR_PREFIX,
     SUMMARY_EMPLOYEE_EMAIL,
     SUPER_USER_VIEW_ALL,
     USER_ATTRIBUTE_NAME,
@@ -674,3 +676,46 @@ def querydict_to_dict(querydict):
             v = v[0]
         data[key] = v
     return data
+
+
+# send email to operators when new ticket is opened
+def send_new_ticket_mail_to_operators(
+    request, ticket, category, message_template, mail_params, office=None
+):
+    if not office:
+        office = category.organizational_office
+        structure = category.organizational_structure
+    else:
+        structure = office.organizational_structure
+
+    m_subject = f"{settings.HOSTNAME} - {category}"
+    operators = OrganizationalStructureOfficeEmployee.objects.filter(
+        office=office, employee__is_active=True
+    )
+    # if no operators in office, get default office operators
+    if not operators:
+        operators = OrganizationalStructureOfficeEmployee.objects.filter(
+            office__organizational_structure=structure,
+            office__is_default=True,
+            employee__is_active=True,
+        )
+    recipients = []
+    for op in operators:
+        recipients.append(op.employee.email)
+
+    mail_params["user"] = OPERATOR_PREFIX
+    msg_body_list = [MSG_HEADER, message_template, MSG_FOOTER]
+    msg_body = "".join(
+        [i.__str__() for i in msg_body_list]
+    ).format(**mail_params)
+    result = send_mail(
+        subject=m_subject,
+        message=msg_body,
+        from_email=settings.EMAIL_SENDER,
+        recipient_list=recipients,
+        fail_silently=True,
+    )
+    logger.info(
+        f"[{timezone.localtime()}] sent mail (result: {result}) "
+        f"to operators for ticket {ticket}"
+    )

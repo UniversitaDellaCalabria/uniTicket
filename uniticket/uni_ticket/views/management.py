@@ -25,6 +25,7 @@ from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.settings import (
     NEW_TICKET_ASSIGNED_TO_OPERATOR_BODY,
+    NEW_TICKET_SHARED_EMPLOYEE_BODY,
     READONLY_COMPETENCE_OVER_TICKET,
     SIMPLE_USER_SHOW_PRIORITY,
     STATS_DEFAULT_DATE_START_DELTA_DAYS,
@@ -1174,12 +1175,6 @@ def ticket_competence_add_final(
                     ticket_id=ticket_id,
                 )
 
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                _("Competenza <b>{}</b> aggiunta" " correttamente".format(new_office)),
-            )
-
             # If not follow anymore
             if not follow:
                 abandoned_offices = ticket.block_competence(
@@ -1227,11 +1222,44 @@ def ticket_competence_add_final(
                                 " accesso in sola lettura)".format(off)
                             ),
                         )
+
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                _("Competenza <b>{}</b> aggiunta" " correttamente".format(new_office)),
+            )
+
             # If follow and want to manage
             ticket.add_competence(office=new_office, user=request.user)
             ticket.update_log(
                 user=request.user, note=_(
                     "Nuova competenza: {}").format(new_office)
+            )
+
+            category = ticket.input_module.ticket_category
+            mail_params = {
+                "hostname": settings.HOSTNAME,
+                "ticket_url": request.build_absolute_uri(
+                    reverse(
+                        "uni_ticket:manage_ticket_url_detail",
+                        kwargs={
+                            "ticket_id": ticket.code,
+                            "structure_slug": structure.slug,
+                        },
+                    )
+                ),
+                "ticket_subject": ticket.subject,
+                "ticket_description": ticket.description,
+                "ticket_user": ticket.created_by,
+                "destination_office": new_office,
+            }
+            send_new_ticket_mail_to_operators(
+                request=request,
+                ticket=ticket,
+                category=category,
+                message_template=NEW_TICKET_SHARED_EMPLOYEE_BODY,
+                mail_params=mail_params,
+                office=new_office
             )
 
             # log action

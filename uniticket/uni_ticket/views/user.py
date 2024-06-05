@@ -159,45 +159,6 @@ def _save_new_ticket_attachments(ticket, json_stored, form, request_files):
         set_as_dict(ticket, json_stored)
 
 
-# send email to operators when new ticket is opened
-def _send_new_ticket_mail_to_operators(
-    request, ticket, category, message_template, mail_params
-):
-    office = category.organizational_office
-    structure = category.organizational_structure
-    m_subject = f"{settings.HOSTNAME} - {category}"
-    operators = OrganizationalStructureOfficeEmployee.objects.filter(
-        office=office, employee__is_active=True
-    )
-    # if no operators in office, get default office operators
-    if not operators:
-        operators = OrganizationalStructureOfficeEmployee.objects.filter(
-            office__organizational_structure=structure,
-            office__is_default=True,
-            employee__is_active=True,
-        )
-    recipients = []
-    for op in operators:
-        recipients.append(op.employee.email)
-
-    mail_params["user"] = OPERATOR_PREFIX
-    msg_body_list = [MSG_HEADER, message_template, MSG_FOOTER]
-    msg_body = "".join(
-        [i.__str__() for i in msg_body_list]
-    ).format(**mail_params)
-    result = send_mail(
-        subject=m_subject,
-        message=msg_body,
-        from_email=settings.EMAIL_SENDER,
-        recipient_list=recipients,
-        fail_silently=True,
-    )
-    logger.info(
-        f"[{timezone.localtime()}] sent mail (result: {result}) "
-        f"to operators for ticket {ticket}"
-    )
-
-
 def get_structures_by_request(request, structure_slug):
     try:
         structure = get_object_or_404(
@@ -839,7 +800,7 @@ class TicketAddNew(View):
                         "ticket_user": self.ticket.created_by,
                         "destination_office": self.category.organizational_office,
                     }
-                    _send_new_ticket_mail_to_operators(
+                    send_new_ticket_mail_to_operators(
                         request=request,
                         ticket=self.ticket,
                         category=self.category,
@@ -1379,7 +1340,7 @@ def ticket_message(request, ticket_id):
                     "message_text": ticket_reply.text,
                     "ticket": ticket,
                 }
-                _send_new_ticket_mail_to_operators(
+                send_new_ticket_mail_to_operators(
                     request=request,
                     ticket=ticket,
                     category=category,
