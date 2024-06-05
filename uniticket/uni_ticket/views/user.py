@@ -1180,8 +1180,6 @@ def ticket_delete(request, ticket_id):
     )
     # END Send mail to ticket owner
 
-    ticket.delete()
-
     # log action
     logger.info(
         "[{}] user {} deleted ticket {}".format(
@@ -1194,6 +1192,9 @@ def ticket_delete(request, ticket_id):
         messages.SUCCESS,
         _("Ticket {} eliminato correttamente".format(ticket.code)),
     )
+
+    ticket.delete()
+
     return redirect("uni_ticket:user_unassigned_ticket")
 
 
