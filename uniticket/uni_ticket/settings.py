@@ -371,6 +371,17 @@ URL: {ticket_url}"""
     ),
 )
 
+TASK_CLOSED_EMPLOYEE_NOTIFY_BODY = getattr(
+    settings,
+    "TASK_CLOSED_EMPLOYEE_NOTIFY_BODY",
+    _(
+        """Messaggio agli operatori dell'ufficio {office}.
+Il task {task} del ticket {ticket} è stato chiuso.
+
+URL: {ticket_url}"""
+    ),
+)
+
 NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY = getattr(
     settings,
     "NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY",

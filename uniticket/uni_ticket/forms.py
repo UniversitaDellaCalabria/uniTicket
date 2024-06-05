@@ -2,6 +2,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.forms import ModelChoiceField, ModelForm
+from django.forms.widgets import CheckboxSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from bootstrap_italia_template.widgets import (
@@ -191,6 +192,15 @@ class TaskCloseForm(forms.Form):
     note = forms.CharField(
         label=_("Motivazione"), widget=forms.Textarea(attrs={"rows": 2}), required=True
     )
+    mail_to_offices = forms.MultipleChoiceField(required=False, widget=CheckboxSelectMultiple)
+
+    def __init__(self, *args, **kwargs):
+        active_offices = kwargs.pop("active_offices", None)
+        super().__init__(*args, **kwargs)
+        choices = []
+        for ao in active_offices:
+            choices.append((ao.pk, ao.__str__()))
+        self.fields['mail_to_offices'].choices = choices
 
     class Media:
         js = ("js/textarea-autosize.js",)
@@ -397,7 +407,6 @@ class TicketDependenceForm(forms.Form):
 
 class TaskForm(ModelForm):
     """ """
-
     class Meta:
         model = Task
         fields = ["subject", "description",

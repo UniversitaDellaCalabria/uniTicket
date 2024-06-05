@@ -33,7 +33,8 @@ from uni_ticket.settings import (
     JS_CHART_CDN_URL,
     STATS_TIME_SLOTS,
     STATS_MAX_DAYS,
-    STATS_HEAT_MAP_RANGES
+    STATS_HEAT_MAP_RANGES,
+    TASK_CLOSED_EMPLOYEE_NOTIFY_BODY
 )
 from uni_ticket.utils import *
 from uni_ticket.statistics import uniTicketStats
@@ -1253,7 +1254,7 @@ def ticket_competence_add_final(
                 "ticket_user": ticket.created_by,
                 "destination_office": new_office,
             }
-            send_new_ticket_mail_to_operators(
+            send_ticket_mail_to_operators(
                 request=request,
                 ticket=ticket,
                 category=category,
@@ -1868,12 +1869,17 @@ def task_close(
 
     title = _("Chiusura dell'attività")
     sub_title = task
-    form = TaskCloseForm()
+
+    active_offices = ticket.get_assigned_to_offices(ignore_follow=False)
+    form = TaskCloseForm(active_offices=active_offices)
+
     if request.method == "POST":
-        form = TaskCloseForm(request.POST)
+        form = TaskCloseForm(active_offices=active_offices,
+                             data=request.POST)
         if form.is_valid():
             motivazione = form.cleaned_data["note"]
             closing_status = form.cleaned_data["status"]
+
             task.is_closed = True
             task.closed_by = request.user
             task.closing_reason = motivazione
@@ -1907,6 +1913,39 @@ def task_close(
             ticket.update_log(user=request.user,
                               note=msg,
                               is_public=task.is_public)
+
+            mail_to_offices = form.cleaned_data["mail_to_offices"]
+            mail_params = {
+                "hostname": settings.HOSTNAME,
+                "ticket_url": request.build_absolute_uri(
+                    reverse(
+                        "uni_ticket:manage_ticket_url_detail",
+                        kwargs={
+                            "ticket_id": ticket.code,
+                            "structure_slug": structure.slug,
+                        },
+                    )
+                ),
+                "task": task,
+                "ticket": ticket
+            }
+            for mto in mail_to_offices:
+                office = OrganizationalStructureOffice.objects.filter(pk=mto,
+                                                                      is_active=True).first()
+                if not office: continue
+
+                mail_params['office'] = office
+
+                send_ticket_mail_to_operators(
+                    request=request,
+                    ticket=ticket,
+                    category=ticket.input_module.ticket_category,
+                    message_template=TASK_CLOSED_EMPLOYEE_NOTIFY_BODY,
+                    mail_params=mail_params,
+                    office=office,
+                    send_to_default_office=False
+                )
+
             messages.add_message(
                 request,
                 messages.SUCCESS,
@@ -1926,6 +1965,7 @@ def task_close(
     user_type = get_user_type(request.user, structure)
     template = "{}/task_close.html".format(user_type)
     d = {
+        "active_offices": active_offices,
         "form": form,
         "structure": structure,
         "sub_title": sub_title,

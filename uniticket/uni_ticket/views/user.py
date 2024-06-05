@@ -800,7 +800,7 @@ class TicketAddNew(View):
                         "ticket_user": self.ticket.created_by,
                         "destination_office": self.category.organizational_office,
                     }
-                    send_new_ticket_mail_to_operators(
+                    send_ticket_mail_to_operators(
                         request=request,
                         ticket=self.ticket,
                         category=self.category,
@@ -1340,7 +1340,7 @@ def ticket_message(request, ticket_id):
                     "message_text": ticket_reply.text,
                     "ticket": ticket,
                 }
-                send_new_ticket_mail_to_operators(
+                send_ticket_mail_to_operators(
                     request=request,
                     ticket=ticket,
                     category=category,

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-05 09:46+0200\n"
-"PO-Revision-Date: 2024-06-05 09:50+0200\n"
+"POT-Creation-Date: 2024-06-05 14:05+0200\n"
+"PO-Revision-Date: 2024-06-05 14:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -64,8 +64,8 @@ msgstr ""
 msgid "eg: tax payer's identification number"
 msgstr ""
 
-#: accounts/models.py:27 uni_ticket/forms.py:48 uni_ticket/forms.py:98
-#: uni_ticket/forms.py:235 uni_ticket/forms.py:698
+#: accounts/models.py:27 uni_ticket/forms.py:49 uni_ticket/forms.py:99
+#: uni_ticket/forms.py:245 uni_ticket/forms.py:707
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_add_ticket_user.html:42
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:79
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:42
@@ -890,7 +890,7 @@ msgstr "The ticket has not been assigned to this facility"
 msgid "Il ticket deve essere prima preso in carico per poter essere gestito"
 msgstr "The ticket must first be taken in charge in order to be managed"
 
-#: uni_ticket/forms.py:49 uni_ticket/forms.py:236 uni_ticket/settings.py:92
+#: uni_ticket/forms.py:50 uni_ticket/forms.py:246 uni_ticket/settings.py:92
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:123
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:98
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:93
@@ -899,81 +899,81 @@ msgstr "The ticket must first be taken in charge in order to be managed"
 msgid "Descrizione"
 msgstr "Description"
 
-#: uni_ticket/forms.py:50
+#: uni_ticket/forms.py:51
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:334
 msgid "Solo i seguenti utenti possono effettuare richieste"
 msgstr "Only the following users can make requests"
 
-#: uni_ticket/forms.py:51 uni_ticket/forms.py:52
+#: uni_ticket/forms.py:52 uni_ticket/forms.py:53
 msgid "Accessibile a {}"
 msgstr "Accessible to {}"
 
-#: uni_ticket/forms.py:63 uni_ticket/forms.py:66 uni_ticket/forms.py:708
-#: uni_ticket/forms.py:711
+#: uni_ticket/forms.py:64 uni_ticket/forms.py:67 uni_ticket/forms.py:717
+#: uni_ticket/forms.py:720
 msgid "Formato {}. Lasciare vuoto  per non impostare"
 msgstr "Format {}. Leave empty to not set"
 
-#: uni_ticket/forms.py:69
+#: uni_ticket/forms.py:70
 msgid ""
 "Se questa opzione è attiva sarà possibile accedere al modulo esclusivamente "
 "tramite URL diretto"
 msgstr ""
 
-#: uni_ticket/forms.py:78
+#: uni_ticket/forms.py:79
 msgid "Assegna competenza ufficio"
 msgstr "Assign office competence"
 
-#: uni_ticket/forms.py:114
+#: uni_ticket/forms.py:115
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:95
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:68
 #: uni_ticket_bootstrap_italia_template/templates/manager/user_settings.html:96
 msgid "Denominazione"
 msgstr "Name"
 
-#: uni_ticket/forms.py:115
+#: uni_ticket/forms.py:116
 msgid "Tipo di campo"
 msgstr "Field type"
 
-#: uni_ticket/forms.py:116
+#: uni_ticket/forms.py:117
 msgid "Testo statico (Pre-text)"
 msgstr "Static text (Pre-text)"
 
-#: uni_ticket/forms.py:117
+#: uni_ticket/forms.py:118
 msgid "Definizione delle scelte"
 msgstr "Definition of choices"
 
-#: uni_ticket/forms.py:118
+#: uni_ticket/forms.py:119
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:82
 msgid "Obbligatorio"
 msgstr "Required"
 
-#: uni_ticket/forms.py:119
+#: uni_ticket/forms.py:120
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:84
 msgid "Aiuto"
 msgstr "Help"
 
-#: uni_ticket/forms.py:120 uni_ticket/forms.py:436
+#: uni_ticket/forms.py:121 uni_ticket/forms.py:445
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:126
 msgid "Ordinamento"
 msgstr "Sorting"
 
-#: uni_ticket/forms.py:123
+#: uni_ticket/forms.py:124
 msgid "Il nome che comparirà nel form"
 msgstr "The name that will appear on the form"
 
-#: uni_ticket/forms.py:125
+#: uni_ticket/forms.py:126
 msgid "Da visualizzare prima del campo (accetta formattazione Markdown)"
 msgstr "To be displayed before the field (accepts Markdown formatting)"
 
-#: uni_ticket/forms.py:127
+#: uni_ticket/forms.py:128
 msgid "Testo per guidare nella fase di compilazione"
 msgstr "Text to guide you in the compilation phase"
 
-#: uni_ticket/forms.py:128
+#: uni_ticket/forms.py:129
 msgid "Posizione nel form rispetto agli altri campi"
 msgstr "Position in the form with respect to the other fields"
 
-#: uni_ticket/forms.py:130
+#: uni_ticket/forms.py:131
 msgid ""
 "<li>La compilazione di quest'area di testo non avrà effetti sui campi che "
 "non accettano una serie di opzioni.</li><li>Se il campo prevede una serie di "
@@ -1019,15 +1019,15 @@ msgstr ""
 "available <a href='https://github.com/UniversitaDellaCalabria/django-form-"
 "builder/blob/master/django_form_builder/dynamic_fields.py'>here</a>.</li>"
 
-#: uni_ticket/forms.py:187 uni_ticket/forms.py:220
+#: uni_ticket/forms.py:188 uni_ticket/forms.py:230
 msgid "Stato chiusura"
 msgstr "Closing state"
 
-#: uni_ticket/forms.py:192 uni_ticket/forms.py:201
+#: uni_ticket/forms.py:193 uni_ticket/forms.py:211
 msgid "Motivazione"
 msgstr "Grounds"
 
-#: uni_ticket/forms.py:203 uni_ticket/forms.py:460
+#: uni_ticket/forms.py:213 uni_ticket/forms.py:469
 #, python-brace-format
 msgid ""
 "Inserisci il tag {user} per inserire automaticamente il nome e cognome "
@@ -1036,21 +1036,21 @@ msgstr ""
 "Enter the {user} tag to automatically insert the name and surname of the "
 "user who created the request"
 
-#: uni_ticket/forms.py:237
+#: uni_ticket/forms.py:247
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:101
 #: uni_ticket_bootstrap_italia_template/templates/manager/offices_list.html:53
 #: uni_ticket_bootstrap_italia_template/templates/operator/offices_list.html:32
 msgid "Ad uso interno"
 msgstr "For internal use"
 
-#: uni_ticket/forms.py:241
+#: uni_ticket/forms.py:251
 msgid ""
 "Visibile esclusivamente all'interno della struttura quando si effettua un "
 "trasferimento di competenza"
 msgstr ""
 
-#: uni_ticket/forms.py:265 uni_ticket/forms.py:276 uni_ticket/forms.py:408
-#: uni_ticket/forms.py:509 uni_ticket/forms.py:528
+#: uni_ticket/forms.py:275 uni_ticket/forms.py:286 uni_ticket/forms.py:417
+#: uni_ticket/forms.py:518 uni_ticket/forms.py:537
 #: uni_ticket_bootstrap_italia_template/templates/datatables/table_header.html:28
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:86
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:30
@@ -1058,7 +1058,7 @@ msgstr ""
 msgid "Priorità"
 msgstr "Priority"
 
-#: uni_ticket/forms.py:296 uni_ticket/forms.py:406 uni_ticket/forms.py:507
+#: uni_ticket/forms.py:306 uni_ticket/forms.py:415 uni_ticket/forms.py:516
 #: uni_ticket_bootstrap_italia_template/templates/datatables/table_header.html:19
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:94
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:42
@@ -1066,65 +1066,65 @@ msgstr "Priority"
 msgid "Oggetto"
 msgstr "Subject"
 
-#: uni_ticket/forms.py:297 uni_ticket/forms.py:407 uni_ticket/forms.py:435
-#: uni_ticket/forms.py:456 uni_ticket/forms.py:508 uni_ticket/forms.py:699
+#: uni_ticket/forms.py:307 uni_ticket/forms.py:416 uni_ticket/forms.py:444
+#: uni_ticket/forms.py:465 uni_ticket/forms.py:517 uni_ticket/forms.py:708
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:94
 msgid "Testo"
 msgstr "Text"
 
-#: uni_ticket/forms.py:298 uni_ticket/forms.py:409 uni_ticket/forms.py:437
-#: uni_ticket/forms.py:510
+#: uni_ticket/forms.py:308 uni_ticket/forms.py:418 uni_ticket/forms.py:446
+#: uni_ticket/forms.py:519
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:103
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:104
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:52
 msgid "Allegato"
 msgstr "Attachment"
 
-#: uni_ticket/forms.py:341
+#: uni_ticket/forms.py:351
 #: uni_ticket_bootstrap_italia_template/templates/management/add_ticket_competence.html:42
 #: uni_ticket_bootstrap_italia_template/templates/management/statistics_content.html:66
 #: uni_ticket_bootstrap_italia_template/templates/management/statistics_content.html:151
 msgid "Ufficio"
 msgstr "Office"
 
-#: uni_ticket/forms.py:342
+#: uni_ticket/forms.py:352
 msgid "Continua a seguire"
 msgstr "Keep following"
 
-#: uni_ticket/forms.py:343
+#: uni_ticket/forms.py:353
 msgid "Sola lettura"
 msgstr "Read only"
 
-#: uni_ticket/forms.py:345
+#: uni_ticket/forms.py:355
 msgid "Ufficio selezionato"
 msgstr "Selected office"
 
-#: uni_ticket/forms.py:360
+#: uni_ticket/forms.py:370
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:78
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:247
 msgid "Note"
 msgstr "Notes"
 
-#: uni_ticket/forms.py:410 uni_ticket/forms.py:512
+#: uni_ticket/forms.py:419 uni_ticket/forms.py:521
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:74
 msgid "Visibile all'utente"
 msgstr "Visible to users"
 
-#: uni_ticket/forms.py:434
+#: uni_ticket/forms.py:443
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:60
 msgid "Titolo"
 msgstr "Title"
 
-#: uni_ticket/forms.py:438
+#: uni_ticket/forms.py:447
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:114
 msgid "Collassabile (in nuova richiesta)"
 msgstr "Collapsible (in new request)"
 
-#: uni_ticket/forms.py:439
+#: uni_ticket/forms.py:448
 msgid "Visibile nel documento di stampa"
 msgstr "Visible in the print document"
 
-#: uni_ticket/forms.py:440 uni_ticket/forms.py:511 uni_ticket/forms.py:700
+#: uni_ticket/forms.py:449 uni_ticket/forms.py:520 uni_ticket/forms.py:709
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:42
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:68
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_conditions.html:40
@@ -1145,59 +1145,59 @@ msgstr "Visible in the print document"
 msgid "Attiva"
 msgstr "Active"
 
-#: uni_ticket/forms.py:474
+#: uni_ticket/forms.py:483
 msgid "Assegna tipologia di richiesta"
 msgstr "Assign type of request"
 
-#: uni_ticket/forms.py:533
+#: uni_ticket/forms.py:542
 msgid "Seleziona operatore"
 msgstr "Select operator"
 
-#: uni_ticket/forms.py:558
+#: uni_ticket/forms.py:567
 msgid "Seleziona l'ufficio"
 msgstr "Select the office"
 
-#: uni_ticket/forms.py:669 uni_ticket/models.py:1607
+#: uni_ticket/forms.py:678 uni_ticket/models.py:1607
 msgid "Denominazione configurazione"
 msgstr "Configuration name"
 
-#: uni_ticket/forms.py:670
+#: uni_ticket/forms.py:679
 msgid "Unità Organizzativa"
 msgstr ""
 
-#: uni_ticket/forms.py:671
+#: uni_ticket/forms.py:680
 msgid "RPA Unità Organizzativa"
 msgstr ""
 
-#: uni_ticket/forms.py:672
+#: uni_ticket/forms.py:681
 msgid "Username RPA Unità Organizzativa"
 msgstr ""
 
-#: uni_ticket/forms.py:673
+#: uni_ticket/forms.py:682
 msgid "Matricola RPA Unità Organizzativa"
 msgstr "RPA Organizational Unit code"
 
-#: uni_ticket/forms.py:674 uni_ticket/models.py:1671
+#: uni_ticket/forms.py:683 uni_ticket/models.py:1671
 msgid "Invia e-mail a RPA"
 msgstr ""
 
-#: uni_ticket/forms.py:675
+#: uni_ticket/forms.py:684
 msgid "Email riferimento"
 msgstr "Reference email"
 
-#: uni_ticket/forms.py:676
+#: uni_ticket/forms.py:685
 msgid "Titolario"
 msgstr "Holder"
 
-#: uni_ticket/forms.py:677
+#: uni_ticket/forms.py:686
 msgid "Numero Fascicolo"
 msgstr "Issue number"
 
-#: uni_ticket/forms.py:678
+#: uni_ticket/forms.py:687
 msgid "Anno Fascicolo"
 msgstr "Issue year"
 
-#: uni_ticket/forms.py:681
+#: uni_ticket/forms.py:690
 msgid "A discrezione dell'utente. Es: \"Configurazione anno 2020\""
 msgstr "At the user's discretion. Ex: \"Configuration year 2020\""
 
@@ -1797,6 +1797,19 @@ msgstr ""
 #: uni_ticket/settings.py:378
 #, python-brace-format
 msgid ""
+"Messaggio agli operatori dell'ufficio {office}.\n"
+"Il task {task} del ticket {ticket} è stato chiuso.\n"
+"\n"
+"URL: {ticket_url}"
+msgstr ""
+"Message to office {office} operators.\n"
+"The task {task} of ticket {ticket} has been closed.\n"
+"\n"
+"URL: {ticket_url}"
+
+#: uni_ticket/settings.py:389
+#, python-brace-format
+msgid ""
 "Hai ricevuto un nuovo messaggio per la richiesta \"{ticket}\"\n"
 "\n"
 "Oggetto: {message_subject}\n"
@@ -1813,7 +1826,7 @@ msgstr ""
 "\n"
 "Click here {url} to open the message panel."
 
-#: uni_ticket/settings.py:392
+#: uni_ticket/settings.py:403
 #, python-brace-format
 msgid ""
 "Ti è stata assegnata una nuova richiesta da {manager}.\n"
@@ -1832,35 +1845,35 @@ msgstr ""
 "\n"
 "URL: {ticket_url}"
 
-#: uni_ticket/settings.py:407
+#: uni_ticket/settings.py:418
 #, python-brace-format
 msgid ""
 "Dear user,you have successfully {status} the ticket:{ticket}This message was "
 "sent to you by {hostname}.Please do not reply to this email."
 msgstr ""
 
-#: uni_ticket/settings.py:421
+#: uni_ticket/settings.py:432
 #, python-brace-format
 msgid ""
 "Dear {user},you have successfully {status} a message for ticket:{ticket}This "
 "message was sent to you by {hostname}.Please do not reply to this email."
 msgstr ""
 
-#: uni_ticket/settings.py:435
+#: uni_ticket/settings.py:446
 #, python-brace-format
 msgid ""
 "Dear {user},the ticket:{ticket}has been updated with the message:{message}."
 "This message was sent to you by {hostname}.Please do not reply to this email."
 msgstr ""
 
-#: uni_ticket/settings.py:453
+#: uni_ticket/settings.py:464
 #, python-brace-format
 msgid ""
 "Dear {user},the following ticket {event_msg}:{ticket}This message was sent "
 "to you by {hostname}.Please do not reply to this email."
 msgstr ""
 
-#: uni_ticket/settings.py:467
+#: uni_ticket/settings.py:478
 #, python-brace-format
 msgid ""
 "Dear {user},You have {open_ticket_number} tickets to manage."
@@ -1933,7 +1946,7 @@ msgid "Impossibile recuperare il messaggio"
 msgstr "Could not retrieve the message"
 
 #: uni_ticket/views/generic.py:429 uni_ticket/views/generic.py:450
-#: uni_ticket/views/management.py:120 uni_ticket/views/user.py:1237
+#: uni_ticket/views/management.py:121 uni_ticket/views/user.py:1237
 msgid "Permesso negato"
 msgstr "Permission denied"
 
@@ -1957,67 +1970,67 @@ msgstr "deleted"
 msgid "{} - richiesta {} messaggio eliminato"
 msgstr "{} - request {} message deleted"
 
-#: uni_ticket/views/management.py:245
+#: uni_ticket/views/management.py:246
 msgid "Impossibile modificare un ticket chiuso"
 msgstr "Unable to edit a closed ticket"
 
-#: uni_ticket/views/management.py:276
+#: uni_ticket/views/management.py:277
 msgid "Ticket preso in carico da {}. Priorità assegnata: {}"
 msgstr "Ticket taken over by {}. Priority assigned: {}"
 
-#: uni_ticket/views/management.py:281
+#: uni_ticket/views/management.py:282
 msgid "Ticket preso in carico da {}."
 msgstr "Ticket taken over by {}."
 
-#: uni_ticket/views/management.py:287
+#: uni_ticket/views/management.py:288
 msgid "Ticket <b>{}</b> assegnato con successo a {}"
 msgstr "Ticket <b>{}</b> successfully assigned to {}"
 
-#: uni_ticket/views/management.py:311
+#: uni_ticket/views/management.py:312
 msgid "Richiesta assegnata a {} da {}. Priorità assegnata: {}"
 msgstr "Request assigned to {} by {}. Priority assigned: {}"
 
-#: uni_ticket/views/management.py:318
+#: uni_ticket/views/management.py:319
 msgid "Richiesta assegnata a {} da {}."
 msgstr "Request assigned to {} by {}."
 
-#: uni_ticket/views/management.py:326
+#: uni_ticket/views/management.py:327
 msgid "Richiesta <b>{}</b> assegnata con successo a {}"
 msgstr "Request <b>{}</b> successfully assigned to {}"
 
-#: uni_ticket/views/management.py:350
+#: uni_ticket/views/management.py:351
 msgid "{} - richiesta {} assegnata"
 msgstr "{} - request {} assigned"
 
-#: uni_ticket/views/management.py:376
+#: uni_ticket/views/management.py:377
 msgid "aggiornato"
 msgstr "updated"
 
-#: uni_ticket/views/management.py:381
+#: uni_ticket/views/management.py:382
 msgid "Priorità aggiornata"
 msgstr "Priority updated"
 
-#: uni_ticket/views/management.py:383
+#: uni_ticket/views/management.py:384
 msgid "Priorità assegnata: {}"
 msgstr "Priority assigned: {}"
 
-#: uni_ticket/views/management.py:391
+#: uni_ticket/views/management.py:392
 msgid "Richiesta <b>{}</b> aggiornata con successo"
 msgstr "Request <b>{}</b> successfully updated"
 
-#: uni_ticket/views/management.py:445
+#: uni_ticket/views/management.py:446
 msgid "Gestione richieste"
 msgstr "Request management"
 
-#: uni_ticket/views/management.py:446
+#: uni_ticket/views/management.py:447
 msgid "Tutti gli stati"
 msgstr "All requests"
 
-#: uni_ticket/views/management.py:567
+#: uni_ticket/views/management.py:568
 msgid "Aggiungi dipendenza da richiesta"
 msgstr "Add request dependency"
 
-#: uni_ticket/views/management.py:597
+#: uni_ticket/views/management.py:598
 msgid ""
 "La dipendenza non può essere aggiunta. La richiesta <b>{}</b> è dipendente "
 "da altre richieste"
@@ -2025,7 +2038,7 @@ msgstr ""
 "Dependency cannot be added. The request <b> {} </b> is dependent on other "
 "requests"
 
-#: uni_ticket/views/management.py:612
+#: uni_ticket/views/management.py:613
 msgid ""
 "La dipendenza non può essere aggiunta. Ci sono richieste che dipendono da "
 "quella corrente <b>{}</b>"
@@ -2033,15 +2046,15 @@ msgstr ""
 "Dependency cannot be added. There are requests that depend on the current "
 "one <b> {} </b>"
 
-#: uni_ticket/views/management.py:638
+#: uni_ticket/views/management.py:639
 msgid "Aggiunta dipendenza dalla richiesta: {}"
 msgstr "Request dependency added: {}"
 
-#: uni_ticket/views/management.py:646
+#: uni_ticket/views/management.py:647
 msgid "Dipendenza dalla richiesta <b>{}</b> aggiunta con successo"
 msgstr "Dependency on request <b>{}</b> successfully added"
 
-#: uni_ticket/views/management.py:707
+#: uni_ticket/views/management.py:708
 msgid ""
 "La richiesta <b>{}</b> non è stata assegnata a questa struttura, pertanto "
 "non puoi gestirla"
@@ -2049,27 +2062,27 @@ msgstr ""
 "The request <b>{}</b> has not been assigned to this facility, therefore you "
 "cannot handle it"
 
-#: uni_ticket/views/management.py:724
+#: uni_ticket/views/management.py:725
 msgid "Rimossa dipendenza dalla richiesta: {}"
 msgstr "Request dependency removed: {} a"
 
-#: uni_ticket/views/management.py:727
+#: uni_ticket/views/management.py:728
 msgid "Dipendenza rimossa correttamente"
 msgstr "Dependency removed correctly"
 
-#: uni_ticket/views/management.py:801
+#: uni_ticket/views/management.py:802
 msgid "Non è possibile chiudere la richiesta, ci sono dipendenze attive!"
 msgstr "The request cannot be closed, there are active dependencies!"
 
-#: uni_ticket/views/management.py:804 uni_ticket/views/user.py:1409
+#: uni_ticket/views/management.py:805 uni_ticket/views/user.py:1409
 msgid "Chiusura della richiesta"
 msgstr "Closing the request"
 
-#: uni_ticket/views/management.py:842
+#: uni_ticket/views/management.py:843
 msgid "Chiusura richiesta ({}): {}"
 msgstr "Request closure ({}): {}"
 
-#: uni_ticket/views/management.py:856
+#: uni_ticket/views/management.py:857
 msgid ""
 "Richiesta {} chiusa correttamente<br><a class='text-success' "
 "href='{}'><b>Clicca qui per tornare alle richieste assegnate</b></a>"
@@ -2077,21 +2090,21 @@ msgstr ""
 "Request {} successfully closed <br><a class='text-success' "
 "href='{}'><b>Click here to return to the assigned requests</b> </a>"
 
-#: uni_ticket/views/management.py:919
+#: uni_ticket/views/management.py:920
 msgid "La richiesta {} non è stata chiusa"
 msgstr "Request {} has not been closed"
 
-#: uni_ticket/views/management.py:933
+#: uni_ticket/views/management.py:934
 msgid "La richiesta {} non può essere riaperta"
 msgstr "Request {} cannot be reopened"
 
-#: uni_ticket/views/management.py:947
+#: uni_ticket/views/management.py:948
 msgid ""
 "La richiesta {} è stata chiusa dall'utente,  pertanto non può essere riaperta"
 msgstr ""
 "The request {} has been closed by the user, therefore it cannot be reopened"
 
-#: uni_ticket/views/management.py:961
+#: uni_ticket/views/management.py:962
 msgid ""
 "Nessuno degli uffici assegnati in precedenza può prendere nuovamente in "
 "carico la richiesta {} e pertanto questa non può essere riaperta"
@@ -2099,51 +2112,51 @@ msgstr ""
 "None of the previously assigned offices can re-process the request {} and "
 "therefore it cannot be reopened"
 
-#: uni_ticket/views/management.py:969
+#: uni_ticket/views/management.py:970
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:274
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:93
 msgid "Riapertura richiesta"
 msgstr "Reopening request"
 
-#: uni_ticket/views/management.py:980 uni_ticket/views/user.py:1566
+#: uni_ticket/views/management.py:981 uni_ticket/views/user.py:1566
 msgid "Richiesta {} riaperta correttamente"
 msgstr "Request {} reopened successfully"
 
-#: uni_ticket/views/management.py:1055 uni_ticket/views/management.py:1287
+#: uni_ticket/views/management.py:1056 uni_ticket/views/management.py:1288
 msgid "Trasferisci competenza richiesta"
 msgstr "Transfer request competence"
 
-#: uni_ticket/views/management.py:1151
+#: uni_ticket/views/management.py:1152
 msgid "Impossibile assegnare la richiesta all'ufficio selezionato"
 msgstr "Unable to assign request to selected office"
 
-#: uni_ticket/views/management.py:1169
+#: uni_ticket/views/management.py:1170
 msgid "La richiesta è già di competenza dell'ufficio <b>{}</b>"
 msgstr "The request is already the responsibility of the <b>{}</b> office"
 
-#: uni_ticket/views/management.py:1195 uni_ticket/views/management.py:2339
+#: uni_ticket/views/management.py:1196 uni_ticket/views/management.py:2379
 msgid "Competenza abbandonata da Ufficio: {}"
 msgstr "Competence abandoned by Office: {}"
 
-#: uni_ticket/views/management.py:1211
+#: uni_ticket/views/management.py:1212
 msgid "L'ufficio <b>{}</b> non può essere posto in sola lettura"
 msgstr "The <b>{}</b> office cannot be put in read-only"
 
-#: uni_ticket/views/management.py:1219
+#: uni_ticket/views/management.py:1220
 msgid ""
 "Competenza trasferita da Ufficio: {}. (L'ufficio ha mantenuto accesso in "
 "sola lettura)"
 msgstr "Competence transferred from Office: {}. (Office kept read-only access)"
 
-#: uni_ticket/views/management.py:1229
+#: uni_ticket/views/management.py:1230
 msgid "Competenza <b>{}</b> aggiunta correttamente"
 msgstr "Competence <b> {} </b> added successfully"
 
-#: uni_ticket/views/management.py:1236
+#: uni_ticket/views/management.py:1237
 msgid "Nuova competenza: {}"
 msgstr "New competence: {}"
 
-#: uni_ticket/views/management.py:1358 uni_ticket/views/user.py:1253
+#: uni_ticket/views/management.py:1359 uni_ticket/views/user.py:1253
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:255
 #: uni_ticket_bootstrap_italia_template/templates/manager/dashboard.html:26
 #: uni_ticket_bootstrap_italia_template/templates/manager/dashboard.html:45
@@ -2165,144 +2178,144 @@ msgstr "New competence: {}"
 msgid "Messaggi"
 msgstr "Messages"
 
-#: uni_ticket/views/management.py:1391
+#: uni_ticket/views/management.py:1392
 msgid "La richiesta deve essere prima presa in carico"
 msgstr "The request must first be processed"
 
-#: uni_ticket/views/management.py:1403 uni_ticket/views/user.py:1275
+#: uni_ticket/views/management.py:1404 uni_ticket/views/user.py:1275
 msgid "La richiesta non è modificabile"
 msgstr "The request cannot be modified"
 
-#: uni_ticket/views/management.py:1421
+#: uni_ticket/views/management.py:1422
 msgid "Nuovo messaggio (da operatore {}). Oggetto: {} / Testo: {}"
 msgstr "New message (from operator {}). Subject: {} / Text: {}"
 
-#: uni_ticket/views/management.py:1428
+#: uni_ticket/views/management.py:1429
 msgid "ricevuto"
 msgstr "received"
 
-#: uni_ticket/views/management.py:1440
+#: uni_ticket/views/management.py:1441
 msgid "{} - richiesta {} nuovo messaggio"
 msgstr "{} - request {} new message"
 
-#: uni_ticket/views/management.py:1452 uni_ticket/views/user.py:1353
+#: uni_ticket/views/management.py:1453 uni_ticket/views/user.py:1353
 msgid "Messaggio inviato con successo"
 msgstr "The message has been successfully sent"
 
-#: uni_ticket/views/management.py:1534
+#: uni_ticket/views/management.py:1535
 msgid "Aggiungi Attività"
 msgstr "Add task"
 
-#: uni_ticket/views/management.py:1555
+#: uni_ticket/views/management.py:1556
 msgid "Aggiunta attività: {}"
 msgstr "Task added: {}"
 
-#: uni_ticket/views/management.py:1562
+#: uni_ticket/views/management.py:1563
 msgid "Attività {} creata con successo"
 msgstr "Task {} successfully created"
 
-#: uni_ticket/views/management.py:1624
+#: uni_ticket/views/management.py:1625
 msgid "Rimossa attività: {}"
 msgstr "Removed task: {}"
 
-#: uni_ticket/views/management.py:1628
+#: uni_ticket/views/management.py:1629
 msgid "Attività {} rimossa correttamente"
 msgstr "Task {} successfully removed"
 
-#: uni_ticket/views/management.py:1700
+#: uni_ticket/views/management.py:1701
 msgid "Dettaglio attività"
 msgstr "Task details"
 
-#: uni_ticket/views/management.py:1738 uni_ticket/views/management.py:2100
+#: uni_ticket/views/management.py:1739 uni_ticket/views/management.py:2140
 msgid "Impossibile modificare un'attività chiusa"
 msgstr "Unable to edit a closed task"
 
-#: uni_ticket/views/management.py:1751
+#: uni_ticket/views/management.py:1752
 msgid "Task {} - Priorità assegnata: {}"
 msgstr "Task {} - Priority assigned: {}"
 
-#: uni_ticket/views/management.py:1767 uni_ticket/views/management.py:2136
+#: uni_ticket/views/management.py:1768 uni_ticket/views/management.py:2176
 msgid "Attività aggiornata con successo"
 msgstr "Task updated successfully"
 
-#: uni_ticket/views/management.py:1860
+#: uni_ticket/views/management.py:1861
 msgid "Attività già chiusa!"
 msgstr "Already closed task!"
 
-#: uni_ticket/views/management.py:1865 uni_ticket/views/management.py:1982
+#: uni_ticket/views/management.py:1866 uni_ticket/views/management.py:2022
 msgid "La richiesta {} è chiusa"
 msgstr "Request {} is closed"
 
-#: uni_ticket/views/management.py:1869
+#: uni_ticket/views/management.py:1870
 msgid "Chiusura dell'attività"
 msgstr "Closing task"
 
-#: uni_ticket/views/management.py:1900
+#: uni_ticket/views/management.py:1906
 msgid "Chiusura attività ({}): {} - {}"
 msgstr "Closing task ({}): {} - {}"
 
-#: uni_ticket/views/management.py:1913
+#: uni_ticket/views/management.py:1952
 msgid "Attività {} chiusa correttamente"
 msgstr "Task {} closed successfully"
 
-#: uni_ticket/views/management.py:1969
+#: uni_ticket/views/management.py:2009
 msgid "L'attività non è stata chiusa"
 msgstr "The task has not been closed"
 
-#: uni_ticket/views/management.py:1988
+#: uni_ticket/views/management.py:2028
 msgid "Riapertura attività {}"
 msgstr "Reopening task {}"
 
-#: uni_ticket/views/management.py:2005
+#: uni_ticket/views/management.py:2045
 msgid "Attività {} riaperta correttamente"
 msgstr "Task {} reopened successfully"
 
-#: uni_ticket/views/management.py:2080 uni_ticket/views/manager.py:2885
+#: uni_ticket/views/management.py:2120 uni_ticket/views/manager.py:2885
 #: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:140
 #: uni_ticket_bootstrap_italia_template/templates/management/task_edit.html:20
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_edit.html:20
 msgid "Modifica attività"
 msgstr "Edit task"
 
-#: uni_ticket/views/management.py:2112
+#: uni_ticket/views/management.py:2152
 msgid "Modifica attività {}"
 msgstr "Edit task {}"
 
-#: uni_ticket/views/management.py:2115
+#: uni_ticket/views/management.py:2155
 msgid " e Priorità assegnata: {}"
 msgstr " and Priority assigned: {}"
 
-#: uni_ticket/views/management.py:2202
+#: uni_ticket/views/management.py:2242
 msgid "Permessi di modifica dell'attività mancanti"
 msgstr "Missing task modification permissions"
 
-#: uni_ticket/views/management.py:2212 uni_ticket/views/manager.py:2965
+#: uni_ticket/views/management.py:2252 uni_ticket/views/manager.py:2965
 msgid "Allegato attività {} eliminato"
 msgstr "Task attachment {} deleted"
 
-#: uni_ticket/views/management.py:2214
+#: uni_ticket/views/management.py:2254
 msgid "Allegato eliminato"
 msgstr "Attachment deleted"
 
-#: uni_ticket/views/management.py:2252
+#: uni_ticket/views/management.py:2292
 msgid "Ticket {} correttamente assegnato a Ufficio: {} [{}]"
 msgstr "Ticket {} correctly assigned to Office: {} [{}] </b>"
 
-#: uni_ticket/views/management.py:2302
+#: uni_ticket/views/management.py:2342
 msgid "Abbandona competenza richiesta"
 msgstr "Leave request competence"
 
-#: uni_ticket/views/management.py:2304
+#: uni_ticket/views/management.py:2344
 msgid ""
 "Seleziona l'ufficio che deve abbandonare la competenza sulla richiesta \"{}\""
 msgstr ""
 "Select the office that should abandon competence over the request \"{}\""
 
-#: uni_ticket/views/management.py:2346
+#: uni_ticket/views/management.py:2386
 msgid "Competenza ufficio <b>{}</b> abbandonata con successo"
 msgstr "Office <b>{}</b> competence successfully abandoned"
 
-#: uni_ticket/views/management.py:2357
+#: uni_ticket/views/management.py:2397
 #, fuzzy
 #| msgid ""
 #| "<b>Operazione non consentita</b><br>Rimuovendo la competenza  di <b>{}</"
@@ -2314,15 +2327,15 @@ msgstr ""
 "<b> Operation not allowed </b> <br> By removing the competence of <b> {} </"
 "b>, the request would no longer be handled by any office."
 
-#: uni_ticket/views/management.py:2392 uni_ticket/views/management.py:2442
+#: uni_ticket/views/management.py:2432 uni_ticket/views/management.py:2482
 msgid "Forbidden"
 msgstr ""
 
-#: uni_ticket/views/management.py:2441
+#: uni_ticket/views/management.py:2481
 msgid "Nessun record da esportare"
 msgstr "No records"
 
-#: uni_ticket/views/management.py:2469
+#: uni_ticket/views/management.py:2509
 msgid ""
 "La data di inizio non può essere successiva a quella di fine. La data di "
 "inizio è stata corretta a <b>{}</b> e quella di fine a <b>{}</b>"
@@ -2330,7 +2343,7 @@ msgstr ""
 "The start date cannot be later than the end date. The start date has been "
 "corrected to <b>{}</b> and the end date to <b>{}</b>"
 
-#: uni_ticket/views/management.py:2482
+#: uni_ticket/views/management.py:2522
 msgid ""
 "La finestra oraria massima per le statistiche è di {} giorni. La data di "
 "inizio è stata corretta a <b>{}</b>"
@@ -2338,12 +2351,12 @@ msgstr ""
 "The maximum time window for statistics is {} days. The start date has been "
 "corrected to <b>{}</b>"
 
-#: uni_ticket/views/management.py:2512
+#: uni_ticket/views/management.py:2552
 #: uni_ticket_bootstrap_italia_template/templates/manager/main_menu.html:39
 msgid "Statistiche"
 msgstr ""
 
-#: uni_ticket/views/management.py:2513
+#: uni_ticket/views/management.py:2553
 msgid "Struttura {} - dal {} al {}"
 msgstr ""
 
@@ -3662,19 +3675,19 @@ msgstr "Assigned requests"
 msgid "Torna all'attività"
 msgstr "Back to task"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/task_close.html:26
+#: uni_ticket_bootstrap_italia_template/templates/management/task_close.html:27
 msgid "Chiudi l'attività"
 msgstr "Close the task"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/task_close.html:33
+#: uni_ticket_bootstrap_italia_template/templates/management/task_close.html:34
 msgid "Chiusura attività"
 msgstr "Closing task"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/task_close.html:43
+#: uni_ticket_bootstrap_italia_template/templates/management/task_close.html:44
 msgid "Vuoi davvero chiudere l'attività"
 msgstr "Do you really want to close the task"
 
-#: uni_ticket_bootstrap_italia_template/templates/management/task_close.html:51
+#: uni_ticket_bootstrap_italia_template/templates/management/task_close.html:52
 msgid "Si, chiudi l\\"
 msgstr "Yes, close the task"
 
