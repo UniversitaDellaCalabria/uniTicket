@@ -519,7 +519,7 @@ def get_datetime_delta(days):
     return delta_date.replace(hour=0, minute=0, second=0)
 
 
-def disabled_expired_items(items):
+def disable_expired_items(items):
     for item in items:
         item.disable_if_expired()
 

@@ -2558,7 +2558,7 @@ def categories(request, structure_slug, structure):
                                .select_related('organizational_office')\
                                .prefetch_related('ticketcategorytask_set')\
                                .prefetch_related('ticketcategorycondition_set')
-    # disabled_expired_items(categories)
+    # disable_expired_items(categories)
 
     d = {
         "categories": categories,

@@ -211,7 +211,7 @@ def get_structures_by_request(request, structure_slug):
     alerts = OrganizationalStructureAlert.objects.filter(
         organizational_structure=structure, is_active=True
     )
-    # disabled_expired_items(alerts)
+    # disable_expired_items(alerts)
     active_alerts = [i for i in alerts if i.is_published()]
 
     categorie = TicketCategory.objects.filter(
@@ -220,7 +220,7 @@ def get_structures_by_request(request, structure_slug):
         is_active=True
     )
 
-    # disabled_expired_items(categorie)
+    # disable_expired_items(categorie)
     to_be_excluded = []
     for category in categorie:
         if not category.is_published():
