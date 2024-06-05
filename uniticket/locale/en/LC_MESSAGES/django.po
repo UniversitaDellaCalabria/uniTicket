@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-05 14:05+0200\n"
-"PO-Revision-Date: 2024-06-05 14:06+0200\n"
+"POT-Creation-Date: 2024-06-05 14:13+0200\n"
+"PO-Revision-Date: 2024-06-05 14:13+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -65,7 +65,7 @@ msgid "eg: tax payer's identification number"
 msgstr ""
 
 #: accounts/models.py:27 uni_ticket/forms.py:49 uni_ticket/forms.py:99
-#: uni_ticket/forms.py:245 uni_ticket/forms.py:707
+#: uni_ticket/forms.py:247 uni_ticket/forms.py:709
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_add_ticket_user.html:42
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:79
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:42
@@ -890,7 +890,7 @@ msgstr "The ticket has not been assigned to this facility"
 msgid "Il ticket deve essere prima preso in carico per poter essere gestito"
 msgstr "The ticket must first be taken in charge in order to be managed"
 
-#: uni_ticket/forms.py:50 uni_ticket/forms.py:246 uni_ticket/settings.py:92
+#: uni_ticket/forms.py:50 uni_ticket/forms.py:248 uni_ticket/settings.py:92
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:123
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:98
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:93
@@ -908,8 +908,8 @@ msgstr "Only the following users can make requests"
 msgid "Accessibile a {}"
 msgstr "Accessible to {}"
 
-#: uni_ticket/forms.py:64 uni_ticket/forms.py:67 uni_ticket/forms.py:717
-#: uni_ticket/forms.py:720
+#: uni_ticket/forms.py:64 uni_ticket/forms.py:67 uni_ticket/forms.py:719
+#: uni_ticket/forms.py:722
 msgid "Formato {}. Lasciare vuoto  per non impostare"
 msgstr "Format {}. Leave empty to not set"
 
@@ -952,7 +952,7 @@ msgstr "Required"
 msgid "Aiuto"
 msgstr "Help"
 
-#: uni_ticket/forms.py:121 uni_ticket/forms.py:445
+#: uni_ticket/forms.py:121 uni_ticket/forms.py:447
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:126
 msgid "Ordinamento"
 msgstr "Sorting"
@@ -1019,15 +1019,19 @@ msgstr ""
 "available <a href='https://github.com/UniversitaDellaCalabria/django-form-"
 "builder/blob/master/django_form_builder/dynamic_fields.py'>here</a>.</li>"
 
-#: uni_ticket/forms.py:188 uni_ticket/forms.py:230
+#: uni_ticket/forms.py:188 uni_ticket/forms.py:232
 msgid "Stato chiusura"
 msgstr "Closing state"
 
-#: uni_ticket/forms.py:193 uni_ticket/forms.py:211
+#: uni_ticket/forms.py:193 uni_ticket/forms.py:213
 msgid "Motivazione"
 msgstr "Grounds"
 
-#: uni_ticket/forms.py:213 uni_ticket/forms.py:469
+#: uni_ticket/forms.py:195
+msgid "Email agli uffici"
+msgstr "Mail to offices"
+
+#: uni_ticket/forms.py:215 uni_ticket/forms.py:471
 #, python-brace-format
 msgid ""
 "Inserisci il tag {user} per inserire automaticamente il nome e cognome "
@@ -1036,21 +1040,21 @@ msgstr ""
 "Enter the {user} tag to automatically insert the name and surname of the "
 "user who created the request"
 
-#: uni_ticket/forms.py:247
+#: uni_ticket/forms.py:249
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:101
 #: uni_ticket_bootstrap_italia_template/templates/manager/offices_list.html:53
 #: uni_ticket_bootstrap_italia_template/templates/operator/offices_list.html:32
 msgid "Ad uso interno"
 msgstr "For internal use"
 
-#: uni_ticket/forms.py:251
+#: uni_ticket/forms.py:253
 msgid ""
 "Visibile esclusivamente all'interno della struttura quando si effettua un "
 "trasferimento di competenza"
 msgstr ""
 
-#: uni_ticket/forms.py:275 uni_ticket/forms.py:286 uni_ticket/forms.py:417
-#: uni_ticket/forms.py:518 uni_ticket/forms.py:537
+#: uni_ticket/forms.py:277 uni_ticket/forms.py:288 uni_ticket/forms.py:419
+#: uni_ticket/forms.py:520 uni_ticket/forms.py:539
 #: uni_ticket_bootstrap_italia_template/templates/datatables/table_header.html:28
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:86
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:30
@@ -1058,7 +1062,7 @@ msgstr ""
 msgid "Priorità"
 msgstr "Priority"
 
-#: uni_ticket/forms.py:306 uni_ticket/forms.py:415 uni_ticket/forms.py:516
+#: uni_ticket/forms.py:308 uni_ticket/forms.py:417 uni_ticket/forms.py:518
 #: uni_ticket_bootstrap_italia_template/templates/datatables/table_header.html:19
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:94
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:42
@@ -1066,65 +1070,65 @@ msgstr "Priority"
 msgid "Oggetto"
 msgstr "Subject"
 
-#: uni_ticket/forms.py:307 uni_ticket/forms.py:416 uni_ticket/forms.py:444
-#: uni_ticket/forms.py:465 uni_ticket/forms.py:517 uni_ticket/forms.py:708
+#: uni_ticket/forms.py:309 uni_ticket/forms.py:418 uni_ticket/forms.py:446
+#: uni_ticket/forms.py:467 uni_ticket/forms.py:519 uni_ticket/forms.py:710
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:94
 msgid "Testo"
 msgstr "Text"
 
-#: uni_ticket/forms.py:308 uni_ticket/forms.py:418 uni_ticket/forms.py:446
-#: uni_ticket/forms.py:519
+#: uni_ticket/forms.py:310 uni_ticket/forms.py:420 uni_ticket/forms.py:448
+#: uni_ticket/forms.py:521
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:103
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:104
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:52
 msgid "Allegato"
 msgstr "Attachment"
 
-#: uni_ticket/forms.py:351
+#: uni_ticket/forms.py:353
 #: uni_ticket_bootstrap_italia_template/templates/management/add_ticket_competence.html:42
 #: uni_ticket_bootstrap_italia_template/templates/management/statistics_content.html:66
 #: uni_ticket_bootstrap_italia_template/templates/management/statistics_content.html:151
 msgid "Ufficio"
 msgstr "Office"
 
-#: uni_ticket/forms.py:352
+#: uni_ticket/forms.py:354
 msgid "Continua a seguire"
 msgstr "Keep following"
 
-#: uni_ticket/forms.py:353
+#: uni_ticket/forms.py:355
 msgid "Sola lettura"
 msgstr "Read only"
 
-#: uni_ticket/forms.py:355
+#: uni_ticket/forms.py:357
 msgid "Ufficio selezionato"
 msgstr "Selected office"
 
-#: uni_ticket/forms.py:370
+#: uni_ticket/forms.py:372
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:78
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:247
 msgid "Note"
 msgstr "Notes"
 
-#: uni_ticket/forms.py:419 uni_ticket/forms.py:521
+#: uni_ticket/forms.py:421 uni_ticket/forms.py:523
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:74
 msgid "Visibile all'utente"
 msgstr "Visible to users"
 
-#: uni_ticket/forms.py:443
+#: uni_ticket/forms.py:445
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:60
 msgid "Titolo"
 msgstr "Title"
 
-#: uni_ticket/forms.py:447
+#: uni_ticket/forms.py:449
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:114
 msgid "Collassabile (in nuova richiesta)"
 msgstr "Collapsible (in new request)"
 
-#: uni_ticket/forms.py:448
+#: uni_ticket/forms.py:450
 msgid "Visibile nel documento di stampa"
 msgstr "Visible in the print document"
 
-#: uni_ticket/forms.py:449 uni_ticket/forms.py:520 uni_ticket/forms.py:709
+#: uni_ticket/forms.py:451 uni_ticket/forms.py:522 uni_ticket/forms.py:711
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:42
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:68
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_conditions.html:40
@@ -1145,59 +1149,59 @@ msgstr "Visible in the print document"
 msgid "Attiva"
 msgstr "Active"
 
-#: uni_ticket/forms.py:483
+#: uni_ticket/forms.py:485
 msgid "Assegna tipologia di richiesta"
 msgstr "Assign type of request"
 
-#: uni_ticket/forms.py:542
+#: uni_ticket/forms.py:544
 msgid "Seleziona operatore"
 msgstr "Select operator"
 
-#: uni_ticket/forms.py:567
+#: uni_ticket/forms.py:569
 msgid "Seleziona l'ufficio"
 msgstr "Select the office"
 
-#: uni_ticket/forms.py:678 uni_ticket/models.py:1607
+#: uni_ticket/forms.py:680 uni_ticket/models.py:1607
 msgid "Denominazione configurazione"
 msgstr "Configuration name"
 
-#: uni_ticket/forms.py:679
+#: uni_ticket/forms.py:681
 msgid "Unità Organizzativa"
 msgstr ""
 
-#: uni_ticket/forms.py:680
+#: uni_ticket/forms.py:682
 msgid "RPA Unità Organizzativa"
 msgstr ""
 
-#: uni_ticket/forms.py:681
+#: uni_ticket/forms.py:683
 msgid "Username RPA Unità Organizzativa"
 msgstr ""
 
-#: uni_ticket/forms.py:682
+#: uni_ticket/forms.py:684
 msgid "Matricola RPA Unità Organizzativa"
 msgstr "RPA Organizational Unit code"
 
-#: uni_ticket/forms.py:683 uni_ticket/models.py:1671
+#: uni_ticket/forms.py:685 uni_ticket/models.py:1671
 msgid "Invia e-mail a RPA"
 msgstr ""
 
-#: uni_ticket/forms.py:684
+#: uni_ticket/forms.py:686
 msgid "Email riferimento"
 msgstr "Reference email"
 
-#: uni_ticket/forms.py:685
+#: uni_ticket/forms.py:687
 msgid "Titolario"
 msgstr "Holder"
 
-#: uni_ticket/forms.py:686
+#: uni_ticket/forms.py:688
 msgid "Numero Fascicolo"
 msgstr "Issue number"
 
-#: uni_ticket/forms.py:687
+#: uni_ticket/forms.py:689
 msgid "Anno Fascicolo"
 msgstr "Issue year"
 
-#: uni_ticket/forms.py:690
+#: uni_ticket/forms.py:692
 msgid "A discrezione dell'utente. Es: \"Configurazione anno 2020\""
 msgstr "At the user's discretion. Ex: \"Configuration year 2020\""
 
@@ -5540,6 +5544,9 @@ msgstr "Italian"
 #: uni_ticket_project/settingslocal.py:357
 msgid "Inglese"
 msgstr "English"
+
+#~ msgid "Mail to offices"
+#~ msgstr "Email agli uffici"
 
 #~ msgid "Accesso da operatore non consentito. Sei un manager."
 #~ msgstr "Access by operator not allowed. You are a manager."

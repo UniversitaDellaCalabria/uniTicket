@@ -192,7 +192,9 @@ class TaskCloseForm(forms.Form):
     note = forms.CharField(
         label=_("Motivazione"), widget=forms.Textarea(attrs={"rows": 2}), required=True
     )
-    mail_to_offices = forms.MultipleChoiceField(required=False, widget=CheckboxSelectMultiple)
+    mail_to_offices = forms.MultipleChoiceField(label=_("Email agli uffici"),
+                                                required=False,
+                                                widget=CheckboxSelectMultiple)
 
     def __init__(self, *args, **kwargs):
         active_offices = kwargs.pop("active_offices", None)
