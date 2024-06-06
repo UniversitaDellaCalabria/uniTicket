@@ -416,13 +416,15 @@ class TaskForm(ModelForm):
     class Meta:
         model = Task
         fields = ["subject", "description",
-                  "priority", "is_public", "attachment"]
+                  "priority", "is_public",
+                  "attachment", "ordering"]
         labels = {
             "subject": _("Oggetto"),
             "description": _("Testo"),
             "priority": _("Priorità"),
             "attachment": _("Allegato"),
             "is_public": _("Visibile all'utente"),
+            "ordering": _("Ordinamento"),
         }
         widgets = {
             "priority": BootstrapItaliaSelectWidget,
@@ -515,6 +517,7 @@ class CategoryTaskForm(ModelForm):
             "description",
             "priority",
             "attachment",
+            "ordering",
             "is_public",
             "is_active",
         ]
@@ -525,6 +528,7 @@ class CategoryTaskForm(ModelForm):
             "attachment": _("Allegato"),
             "is_active": _("Attiva"),
             "is_public": _("Visibile all'utente"),
+            "ordering": _("Ordinamento"),
         }
         widgets = {
             "priority": BootstrapItaliaSelectWidget,

@@ -79,6 +79,7 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
         ticket_task.created_by = task.created_by
         ticket_task.code = uuid_code()
         ticket_task.attachment = task.attachment
+        ticket_task.ordering = task.ordering
         ticket_task.save()
 
         # copy category task attachments in ticket task folder

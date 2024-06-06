@@ -1406,6 +1406,7 @@ class AbstractTask(models.Model):
                     validate_file_size,
                     validate_file_length],
     )
+    ordering = models.IntegerField(default=10)
 
     class Meta:
         abstract = True
@@ -1444,7 +1445,7 @@ class Task(AbstractTask):
     )
 
     class Meta:
-        ordering = ["created"]
+        ordering = ["ordering", "created"]
         verbose_name = _("Task")
         verbose_name_plural = _("Task")
 
@@ -1563,7 +1564,7 @@ class TicketCategoryTask(AbstractTask):
     is_active = models.BooleanField(_("Visibile nei ticket"), default=False)
 
     class Meta:
-        ordering = ["created"]
+        ordering = ["ordering", "created"]
         verbose_name = _("Task predefinito")
         verbose_name_plural = _("Task predefiniti")
 
