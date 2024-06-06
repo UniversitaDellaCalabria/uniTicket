@@ -484,7 +484,8 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
 
         params = {'subject': subject,
                   'description': description,
-                  'priority': 0}
+                  'priority': 0,
+                  'ordering': 10}
 
         response = self.client.post(reverse('uni_ticket:manager_category_task_new',
                                             kwargs={'structure_slug': self.structure_1.slug,
@@ -502,7 +503,8 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
 
         params = {'subject': subject,
                   'description': description,
-                  'priority': new_priority}
+                  'priority': new_priority,
+                  'ordering': 10}
 
         response = self.client.post(reverse('uni_ticket:manager_category_task_edit',
                                             kwargs={'structure_slug': self.structure_1.slug,

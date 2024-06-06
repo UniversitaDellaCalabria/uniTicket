@@ -405,7 +405,8 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         subject = 'Ticket 1 task 1'
         params = {'subject': subject,
                   'description': "Task 1 description",
-                  'priority': 1}
+                  'priority': 1,
+                  'ordering': 10}
         response = self.client.post(reverse('uni_ticket:manager_add_ticket_task',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'ticket_id': self.ticket.code}),
@@ -435,7 +436,8 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         params = {'subject': subject,
                   'description': "new descr",
                   'priority': -1,
-                  'attachment': attachment}
+                  'attachment': attachment,
+                  'ordering': 10}
         response = self.client.post(reverse('uni_ticket:manager_edit_task',
                                             kwargs={'structure_slug': self.structure_1.slug,
                                                     'ticket_id': self.ticket.code,
