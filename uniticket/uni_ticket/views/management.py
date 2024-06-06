@@ -1629,12 +1629,13 @@ def task_remove(
             "Attività {} rimossa correttamente".format(task))
     )
 
-    try:
-        path = task.closing_attachment.path
-        if os.path.exists(path):
-            os.remove(path)
-    except Exception as e:
-        logger.error(e)
+    if task.closing_attachment:
+        try:
+            path = task.closing_attachment.path
+            if os.path.exists(path):
+                os.remove(path)
+        except Exception as e:
+            logger.error(e)
 
     task.delete()
 
@@ -2023,12 +2024,13 @@ def task_reopen(
             structure_slug=structure.slug,
         )
 
-    try:
-        path = task.closing_attachment.path
-        if os.path.exists(path):
-            os.remove(path)
-    except Exception as e:
-        logger.error(e)
+    if task.closing_attachment:
+        try:
+            path = task.closing_attachment.path
+            if os.path.exists(path):
+                os.remove(path)
+        except Exception as e:
+            logger.error(e)
 
     task.closing_attachment = None
     task.is_closed = False
