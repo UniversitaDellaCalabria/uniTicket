@@ -105,7 +105,7 @@ def download_message_attachment(
 
 
 @login_required
-def download_task_attachment(request, ticket_id, task_id):
+def download_task_attachment(request, ticket_id, task_id, closing_attachment=False):
     """
     Downloads ticket message attachment
 
@@ -140,15 +140,32 @@ def download_task_attachment(request, ticket_id, task_id):
     elif not task.is_public and not is_operator:
         return custom_message(request, _("Attività riservata agli operatori"))
 
+    attachment = task.closing_attachment if closing_attachment else task.attachment
     # if task has attachment
-    if task.attachment:
+    if attachment:
         # get ticket task folder path
         path_allegato = get_path(task.get_folder())
         # get file
         result = download_file(
-            path_allegato, os.path.basename(task.attachment.name))
+            path_allegato, os.path.basename(attachment.name))
         return result
     raise Http404
+
+
+@login_required
+def download_task_closing_attachment(request, ticket_id, task_id):
+    """
+    Downloads ticket message closing attachment
+
+    :type ticket_id: String
+    :type task_id: String
+
+    :param ticket_id: ticket code
+    :param task_id: task code
+
+    :return: file
+    """
+    return download_task_attachment(request, ticket_id, task_id, True)
 
 
 @login_required

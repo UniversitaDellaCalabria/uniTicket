@@ -1629,6 +1629,13 @@ def task_remove(
             "Attività {} rimossa correttamente".format(task))
     )
 
+    try:
+        path = task.closing_attachment.path
+        if os.path.exists(path):
+            os.remove(path)
+    except Exception as e:
+        logger.error(e)
+
     task.delete()
 
     return redirect(
@@ -1875,25 +1882,18 @@ def task_close(
 
     if request.method == "POST":
         form = TaskCloseForm(active_offices=active_offices,
-                             data=request.POST)
+                             data=request.POST,
+                             files=request.FILES)
         if form.is_valid():
-            motivazione = form.cleaned_data["note"]
-            closing_status = form.cleaned_data["status"]
-
+            motivazione = form.cleaned_data["closing_reason"]
+            closing_status = form.cleaned_data["closing_status"]
             task.is_closed = True
             task.closed_by = request.user
             task.closing_reason = motivazione
             task.closing_status = closing_status
+            task.closing_attachment = form.cleaned_data["closing_attachment"]
             task.closed_date = timezone.localtime()
-            task.save(
-                update_fields=[
-                    "is_closed",
-                    "closing_reason",
-                    "closing_status",
-                    "closed_date",
-                    "closed_by",
-                ]
-            )
+            task.save()
 
             # log action
             logger.info(
@@ -2023,6 +2023,14 @@ def task_reopen(
             structure_slug=structure.slug,
         )
 
+    try:
+        path = task.closing_attachment.path
+        if os.path.exists(path):
+            os.remove(path)
+    except Exception as e:
+        logger.error(e)
+
+    task.closing_attachment = None
     task.is_closed = False
     task.save(update_fields=["is_closed"])
     msg = _("Riapertura attività {}".format(task))

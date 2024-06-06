@@ -23,7 +23,16 @@
             </tr>
             <tr>
                 <th scope="row">{% trans 'Motivazione chiusura' %}</th>
-                <td>{{ task.closing_reason | linebreaks }}</td>
+                <td>
+                    {{ task.closing_reason | linebreaks }}
+                    {% if task.closing_attachment %}
+                    <a href="{% url 'uni_ticket:download_task_closing_attachment' ticket_id=task.ticket.code task_id=task.code %}">
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                        </svg> {{ task.closing_attachment|filename }}
+                    </a>
+                    {% endif %}
+                </td>
             </tr>
             {% endif %}
             <tr>

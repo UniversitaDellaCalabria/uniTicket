@@ -1295,7 +1295,8 @@ class TicketReply(models.Model):
         blank=True,
         max_length=255,
         validators=[validate_file_extension,
-                    validate_file_size, validate_file_length],
+                    validate_file_size,
+                    validate_file_length],
     )
     created = models.DateTimeField(auto_now_add=True)
     read_by = models.ForeignKey(
@@ -1402,7 +1403,8 @@ class AbstractTask(models.Model):
         blank=True,
         max_length=255,
         validators=[validate_file_extension,
-                    validate_file_size, validate_file_length],
+                    validate_file_size,
+                    validate_file_length],
     )
 
     class Meta:
@@ -1431,6 +1433,15 @@ class Task(AbstractTask):
     closing_reason = models.TextField(blank=True, null=True)
     closing_status = models.IntegerField(
         choices=CLOSING_LEVELS, null=True, blank=True)
+    closing_attachment = models.FileField(
+        upload_to=_attachment_upload,
+        null=True,
+        blank=True,
+        max_length=255,
+        validators=[validate_file_extension,
+                    validate_file_size,
+                    validate_file_length],
+    )
 
     class Meta:
         ordering = ["created"]
@@ -1517,7 +1528,8 @@ class TicketCategoryCondition(models.Model):
         blank=True,
         max_length=255,
         validators=[validate_file_extension,
-                    validate_file_size, validate_file_length],
+                    validate_file_size,
+                    validate_file_length],
     )
     is_printable = models.BooleanField(
         _("Visibile nella versione stampabile"), default=False

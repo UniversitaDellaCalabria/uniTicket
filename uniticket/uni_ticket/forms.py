@@ -180,18 +180,7 @@ class CategoryInputListForm(ModelForm):
         js = ("js/textarea-autosize.js",)
 
 
-class TaskCloseForm(forms.Form):
-    status = forms.TypedChoiceField(
-        choices=CLOSING_LEVELS,
-        required=True,
-        initial=1,
-        label=_("Stato chiusura"),
-        coerce=int,
-        widget=BootstrapItaliaSelectWidget,
-    )
-    note = forms.CharField(
-        label=_("Motivazione"), widget=forms.Textarea(attrs={"rows": 2}), required=True
-    )
+class TaskCloseForm(forms.ModelForm):
     mail_to_offices = forms.MultipleChoiceField(label=_("Email agli uffici"),
                                                 required=False,
                                                 widget=CheckboxSelectMultiple)
@@ -203,6 +192,21 @@ class TaskCloseForm(forms.Form):
         for ao in active_offices:
             choices.append((ao.pk, ao.__str__()))
         self.fields['mail_to_offices'].choices = choices
+        self.fields['closing_status'].initial = 1
+        self.fields['closing_status'].required = True
+        self.fields['closing_reason'].required = True
+
+    class Meta:
+        model = Task
+        fields = ["closing_status",
+                  "closing_reason",
+                  "closing_attachment"]
+        labels = {
+            "closing_status": _("Stato chiusura"),
+            "closing_reason": _("Motivazione"),
+            "closing_attachment": _("Allegato"),
+        }
+        widgets = {"closing_reason": forms.Textarea(attrs={"rows": 2})}
 
     class Media:
         js = ("js/textarea-autosize.js",)

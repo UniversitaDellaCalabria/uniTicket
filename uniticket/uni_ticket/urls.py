@@ -40,6 +40,11 @@ urlpatterns = [
         name="download_task_attachment",
     ),
     path(
+        "{}/tasks/<str:task_id>/download/closing-attachment/".format(ticket),
+        generic.download_task_closing_attachment,
+        name="download_task_closing_attachment",
+    ),
+    path(
         "<str:structure_slug>/<str:category_slug>/conditions/<int:condition_id>/download/attachment",
         generic.download_condition_attachment,
         name="download_condition_attachment",
