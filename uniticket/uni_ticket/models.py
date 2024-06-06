@@ -1490,7 +1490,7 @@ class Task(AbstractTask):
         return _('<span class="badge badge-danger">Aperta</span>')
 
     def __str__(self):
-        return "{} - ticket: {}".format(self.subject, self.ticket)
+        return self.subject
 
 
 class Task2Ticket(models.Model):
