@@ -695,19 +695,20 @@ def send_ticket_mail_to_operators(
         structure = office.organizational_structure
 
     m_subject = f"{settings.HOSTNAME} - {category}"
-    operators = OrganizationalStructureOfficeEmployee.objects.filter(
-        office=office, employee__is_active=True
-    )
+    recipients = OrganizationalStructureOfficeEmployee.objects.filter(
+        office=office,
+        employee__is_active=True,
+        employee__email_notify=True
+    ).values_list('employee__email', flat=True)
+
     # if no operators in office, get default office operators
-    if not operators and send_to_default_office:
-        operators = OrganizationalStructureOfficeEmployee.objects.filter(
+    if not recipients and send_to_default_office:
+        recipients = OrganizationalStructureOfficeEmployee.objects.filter(
             office__organizational_structure=structure,
             office__is_default=True,
             employee__is_active=True,
-        )
-    recipients = []
-    for op in operators:
-        recipients.append(op.employee.email)
+            employee__email_notify=True
+        ).values_list('employee__email', flat=True)
 
     if recipients:
         mail_params["user"] = OPERATOR_PREFIX
