@@ -98,6 +98,12 @@ h5.card-title .badge {
 .paginate_button {
     padding: 0 10px;
 }
+a.paginate_button.current {
+    font-weight: bold;
+    border-radius: 50%;
+    color: #fff;
+    background: #979899;
+}
 .dataTables_wrapper .dt-buttons {
     float: right;
 }
