@@ -720,7 +720,7 @@ def send_ticket_mail_to_operators(
             subject=m_subject,
             message=msg_body,
             from_email=settings.EMAIL_SENDER,
-            recipient_list=recipients,
+            recipient_list=list(recipients),
             fail_silently=True,
         )
         logger.info(
