@@ -19,6 +19,7 @@ from uni_ticket.decorators import is_manager
 from uni_ticket.forms import *
 from uni_ticket.models import *
 from uni_ticket.protocol_utils import ticket_protocol
+from uni_ticket.settings import EMPLOYEE_ATTRIBUTE_NAME
 from uni_ticket.utils import (
     base_context,
     custom_message,
@@ -489,7 +490,7 @@ def office_add_operator(request, structure_slug, office_slug, structure):
     all_users = get_user_model().objects.filter(q_filter, is_active=True)\
                                 .values("pk", "taxpayer_id",
                                         "last_name", "first_name",
-                                        "email")
+                                        "email", EMPLOYEE_ATTRIBUTE_NAME)
     paginator = Paginator(all_users, 20)
     page = request.GET.get("page")
     users = paginator.get_page(page)
@@ -940,7 +941,7 @@ def category_add_ticket_user(request, structure_slug, category_slug, structure):
     all_users = get_user_model().objects.filter(q_filter, is_active=True)\
                                 .values("pk", "taxpayer_id",
                                         "last_name", "first_name",
-                                        "email")
+                                        "email", EMPLOYEE_ATTRIBUTE_NAME)
     paginator = Paginator(all_users, 20)
     page = request.GET.get("page")
     users = paginator.get_page(page)
@@ -3195,7 +3196,7 @@ def manager_settings_add_manager(request, structure_slug, structure):
     all_users = get_user_model().objects.filter(q_filter, is_active=True)\
                                 .values("pk", "taxpayer_id",
                                         "last_name", "first_name",
-                                        "email")
+                                        "email", EMPLOYEE_ATTRIBUTE_NAME)
     paginator = Paginator(all_users, 20)
     page = request.GET.get("page")
     users = paginator.get_page(page)

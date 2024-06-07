@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 {% block menu_links %}
 {% include 'manager/main_menu.html' %}
@@ -47,6 +48,7 @@
                                     <th>{% trans "Cognome" %}</th>
                                     <th>{% trans "Nome" %}</th>
                                     <th>{% trans "Email" %}</th>
+                                    <th>{% trans "Staff" %}</th>
                                 </thead>
                                 <tbody>
                                     {% for user in users %}
@@ -59,6 +61,19 @@
                                         <td>{{ user.last_name }}</td>
                                         <td>{{ user.first_name }}</td>
                                         <td>{{ user.email }}</td>
+                                        <td>
+                                            {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                                            {% obj_get_attr user employee_attribute_name as user_employee_attribute %}
+                                            {% if user_employee_attribute %}
+                                            <svg class="mr-2 icon icon-success icon-xs">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                            </svg>
+                                            {% else %}
+                                            <svg class="mr-2 icon icon-danger icon-xs">
+                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                            </svg>
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                     <form method="post">
                                         <div class="modal fade" tabindex="-1" role="dialog" id="addUser{{ forloop.counter0 }}">

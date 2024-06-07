@@ -156,6 +156,7 @@ def uni_ticket_settings_value(name, **kwargs):
 
 @register.simple_tag
 def obj_get_attr(obj, attr, **kwargs):
+    if type(obj) == dict: return obj.get(attr, None)
     return getattr(obj, attr, None)
 
 
