@@ -1471,6 +1471,11 @@ class Task(AbstractTask):
         )
         return folder
 
+    def get_basic_status(self):
+        if self.is_closed:
+            return _('<span class="badge badge-success">Chiusa</span>')
+        return _('<span class="badge badge-danger">Aperta</span>')
+
     def get_status(self):
         if self.is_closed:
             status_literal = dict(CLOSING_LEVELS).get(self.closing_status)

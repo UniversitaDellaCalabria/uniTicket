@@ -17,8 +17,10 @@
             <span class="badge badge-secondary">
                 {% trans "Riservata agli operatori" %}
             </span>
-            {% endif %}
+            {{ task.get_basic_status|safe }}
+            {% else %}
             {{ task.get_status|safe }}
+            {% endif %}
         </li>
         {% endfor %}
     </ul>
