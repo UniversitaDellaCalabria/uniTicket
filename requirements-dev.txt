@@ -24,3 +24,4 @@ ipython>=8.10.0
 pygments>=2.7.4
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
 requests>=2.32.0 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
