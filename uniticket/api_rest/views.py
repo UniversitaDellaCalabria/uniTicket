@@ -9,6 +9,7 @@ from django.core import serializers
 from django.core.exceptions import BadRequest
 from django.db.models import Q
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import PermissionDenied
@@ -18,9 +19,11 @@ from rest_framework.response import Response
 from rest_framework import permissions, viewsets
 
 from uni_ticket.dynamic_form import serialize_form
-from uni_ticket.models import Ticket, TicketCategory, TicketReply
+from uni_ticket.models import Ticket, TicketAssignment, TicketCategory, TicketReply
 from uni_ticket.views.user import TicketAddNew, TicketClose, TicketDetail
 from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME
+from uni_ticket.utils import user_is_manager, user_is_operator, visible_tickets_to_user
+
 from organizational_area.models import OrganizationalStructure
 from api_rest.authorizations import AuthorizationToken
 
@@ -280,3 +283,74 @@ class TicketAPIClose(TicketAPIBaseView):
 
     def post(self, request, ticket_id, *args, **kwargs):
         return self.close(request, ticket_id, *args, **kwargs)
+
+
+class TicketAPIManagerUnassignedCount(TicketAPIBaseView):
+    def get(self, request, structure_slug, *args, **kwargs):
+        structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
+        if not user_is_manager(request.user, structure): raise PermissionDenied
+        unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                                   closed=False,
+                                                                   taken=False))
+        return Response({'count':unassigned})
+
+
+class TicketAPIManagerOpenCount(TicketAPIBaseView):
+    def get(self, request, structure_slug, *args, **kwargs):
+        structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
+        if not user_is_manager(request.user, structure): raise PermissionDenied
+        open_tickets = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                                     closed=False,
+                                                                     taken=True))
+        return Response({'count':open_tickets})
+
+
+class TicketAPIManagerMyOpenCount(TicketAPIBaseView):
+    def get(self, request, structure_slug, *args, **kwargs):
+        structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
+        if not user_is_manager(request.user, structure): raise PermissionDenied
+        my_open = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                              closed=False,
+                                                              taken=True,
+                                                              taken_by=request.user))
+        return Response({'count':my_open})
+
+
+class TicketAPIOperatorUnassignedCount(TicketAPIBaseView):
+    def get(self, request, structure_slug, *args, **kwargs):
+        structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
+        oe = user_is_operator(request.user, structure)
+        if not oe: raise PermissionDenied
+        unassigned = len(visible_tickets_to_user(user=request.user,
+                                             structure=structure,
+                                             office_employee=oe,
+                                             closed=False,
+                                             taken=False))
+        return Response({'count':unassigned})
+
+
+class TicketAPIOperatorOpenCount(TicketAPIBaseView):
+    def get(self, request, structure_slug, *args, **kwargs):
+        structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
+        oe = user_is_operator(request.user, structure)
+        if not oe: raise PermissionDenied
+        open_tickets = len(visible_tickets_to_user(user=request.user,
+                                         structure=structure,
+                                         office_employee=oe,
+                                         closed=False,
+                                         taken=True))
+        return Response({'count':open_tickets})
+
+
+class TicketAPIOperatorMyOpenCount(TicketAPIBaseView):
+    def get(self, request, structure_slug, *args, **kwargs):
+        structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
+        oe = user_is_operator(request.user, structure)
+        if not oe: raise PermissionDenied
+        my_open = len(visible_tickets_to_user(user=request.user,
+                                            structure=structure,
+                                            office_employee=oe,
+                                            closed=False,
+                                            taken=True,
+                                            taken_by=request.user))
+        return Response({'count':my_open})

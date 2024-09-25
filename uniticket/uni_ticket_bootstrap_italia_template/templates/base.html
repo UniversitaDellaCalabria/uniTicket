@@ -6,12 +6,20 @@
 {% load l10n %}
 {% load static %}
 {% load uni_ticket_tags %}
+{% load uni_ticket_bootstrap_italia_tags %}
 
 <!-- Return to Agid native template -->
 {% block extra_head %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'css/uni_ticket.css' %}">
 <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
+{% settings_value "DEBUG" as debug %}
+{% if debug %}
+<script src="{% static 'js/vue.3.4.31.js' %}"></script>
+{% else %}
+<script src="{% static 'js/vue.3.4.31.prod.js' %}"></script>
+{% endif %}
+<script src="{% static 'js/axios.js' %}"></script>
 <!--
 <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.css' %}">
 -->

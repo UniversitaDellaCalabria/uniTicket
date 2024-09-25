@@ -1,15 +1,82 @@
 {% load i18n %}
 {% load static %}
 
-<a role="button"
-   class="btn btn-outline-secondary"
-   href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
-    <span class="badge badge-light">{{ ticket_non_gestiti }}</span> {% trans 'Aperte' %}
-</a>
-<a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
-    <span class="badge badge-light">{{ ticket_aperti }}</span> {% trans 'Assegnate' %}
-    (<span class="badge badge-light">{{ ticket_assegnati_a_me }}</span> {% trans 'a me' %})
-</a>
-<a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
-    {% trans 'Chiuse' %}
-</a>
+
+<div id="counters" class="d-inline">
+    <a role="button"
+       class="btn btn-outline-secondary mr-1"
+       href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
+        <span class="badge badge-light" v-if="unassigned">[[ unassigned ]]</span>
+        <div class="progress progress-indeterminate progress-color" v-else>
+            <span class="sr-only">In elaborazione...</span>
+            <div class="progress-bar bg-info" role="progressbar"></div>
+        </div>
+        {% trans 'Aperte' %}
+    </a>
+    <a role="button" class="btn btn-outline-secondary mr-1" href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+        <span class="badge badge-light" v-if="open">
+            [[ open ]]
+        </span>
+        <div class="progress progress-indeterminate progress-color" v-else>
+            <span class="sr-only">In elaborazione...</span>
+            <div class="progress-bar bg-info" role="progressbar"></div>
+        </div> {% trans 'Assegnate' %}
+        <span class="badge badge-light" v-if="my_open">([[ my_open ]] {% trans 'a me' %})</span>
+    </a>
+    <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
+        {% trans 'Chiuse' %}
+    </a>
+</div>
+<script>
+const app = Vue.createApp({
+    delimiters: ['[[', ']]'],
+    data () {
+        return {
+            unassigned: null,
+            open: null,
+            my_open: null,
+        }
+    },
+    created(){
+        this.interval = setInterval(() =>{
+            this.getUnassigned();
+            this.getOpen();
+            this.getMyOpen();
+            }, 20000)
+    },
+    destroyed(){
+        clearInterval(this.interval)
+    },
+    mounted () {
+        this.getUnassigned()
+        this.getOpen()
+        this.getMyOpen()
+    },
+    methods: {
+        getUnassigned() {
+            url = '{% url "api-manager-tickets-unassigned-count" structure_slug=structure.slug %}'
+            axios
+                .get(url)
+                .then(response => (
+                    this.unassigned = response.data.count
+                ))
+        },
+        getOpen() {
+            url = '{% url "api-manager-tickets-open-count" structure_slug=structure.slug %}'
+            axios
+                .get(url)
+                .then(response => (
+                    this.open = response.data.count
+                ))
+        },
+        getMyOpen() {
+            url = '{% url "api-manager-tickets-my-open-count" structure_slug=structure.slug %}'
+            axios
+                .get(url)
+                .then(response => (
+                    this.my_open = response.data.count
+                ))
+        }
+    }
+}).mount('#counters')
+</script>

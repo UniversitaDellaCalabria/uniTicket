@@ -1,0 +1,144 @@
+{% load i18n %}
+{% load static %}
+
+
+<div id="counters">
+    <div class="d-none d-md-block">
+        <a role="button"
+           class="btn btn-outline-secondary mr-1"
+           href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
+            <span class="badge badge-light" v-if="unassigned != null">[[ unassigned ]]</span>
+            <div class="progress progress-indeterminate progress-color" v-else>
+                <span class="sr-only">In elaborazione...</span>
+                <div class="progress-bar bg-info" role="progressbar"></div>
+            </div>
+            {% trans 'Aperte' %}
+        </a>
+        <a role="button" class="btn btn-outline-secondary mr-1" href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+            <span class="badge badge-light" v-if="open != null">
+                [[ open ]]
+            </span>
+            <div class="progress progress-indeterminate progress-color" v-else>
+                <span class="sr-only">In elaborazione...</span>
+                <div class="progress-bar bg-info" role="progressbar"></div>
+            </div> {% trans 'Assegnate' %}
+            <span class="badge badge-light" v-if="my_open != null">([[ my_open ]] {% trans 'a me' %})</span>
+        </a>
+        <a role="button" class="btn btn-outline-secondary mr-1" href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
+            {% trans 'Chiuse' %}
+        </a>
+        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
+            </svg>
+            {% if ticket_messages %}
+            <span class="badge badge-primary">{% trans "Nuovi" %}</span>
+            {% endif %}
+            {% trans 'Messaggi' %}
+        </a>
+    </div>
+    <div class="d-block d-md-none">
+        <nav class="toolbar">
+            <ul>
+                <li>
+                    <a href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
+                        <div class="badge-wrapper" v-if="unassigned">
+                            <span class="toolbar-badge badge-primary">
+                                [[ unassigned ]]
+                            </span>
+                        </div>
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use></svg>
+                        <span class="toolbar-label">{% trans 'Aperte' %}</span></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+                        <div class="badge-wrapper" v-if="open">
+                            <span class="toolbar-badge">
+                                [[ open ]]
+                            </span>
+                        </div>
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use></svg>
+                        <span class="toolbar-label">{% trans 'Assegnate' %}
+                            <span v-if="my_open"><br>([[ my_open ]] {% trans 'a me' %})</span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use></svg>
+                        <span class="toolbar-label">{% trans 'Chiuse' %}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
+                        {% if ticket_messages %}
+                        <div class="badge-wrapper">
+                            <span class="toolbar-badge badge-primary">
+                                {% trans "Nuovi" %}
+                            </span>
+                        </div>
+                        {% endif %}
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
+                        </svg>
+                        <span class="toolbar-label">{% trans 'Messaggi' %}</span></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<script>
+const app = Vue.createApp({
+    delimiters: ['[[', ']]'],
+    data () {
+        return {
+            unassigned: null,
+            open: null,
+            my_open: null,
+        }
+    },
+    created(){
+        this.interval = setInterval(() =>{
+            this.getUnassigned();
+            this.getOpen();
+            this.getMyOpen();
+            }, 20000)
+    },
+    destroyed(){
+        clearInterval(this.interval)
+    },
+    mounted () {
+        this.getUnassigned()
+        this.getOpen()
+        this.getMyOpen()
+    },
+    methods: {
+        getUnassigned() {
+            url = '{% url "api-operator-tickets-unassigned-count" structure_slug=structure.slug %}'
+            axios
+                .get(url)
+                .then(response => (
+                    this.unassigned = response.data.count
+                ))
+        },
+        getOpen() {
+            url = '{% url "api-operator-tickets-open-count" structure_slug=structure.slug %}'
+            axios
+                .get(url)
+                .then(response => (
+                    this.open = response.data.count
+                ))
+        },
+        getMyOpen() {
+            url = '{% url "api-operator-tickets-my-open-count" structure_slug=structure.slug %}'
+            axios
+                .get(url)
+                .then(response => (
+                    this.my_open = response.data.count
+                ))
+        }
+    }
+}).mount('#counters')
+</script>

@@ -32,25 +32,6 @@ def dashboard(request, structure_slug, structure, office_employee):
     template = "operator/dashboard.html"
     offices = user_offices_list(office_employee)
 
-    unassigned = len(visible_tickets_to_user(user=request.user,
-                                             structure=structure,
-                                             office_employee=office_employee,
-                                             closed=False,
-                                             taken=False))
-
-    opened = len(visible_tickets_to_user(user=request.user,
-                                         structure=structure,
-                                         office_employee=office_employee,
-                                         closed=False,
-                                         taken=True))
-
-    my_opened = len(visible_tickets_to_user(user=request.user,
-                                            structure=structure,
-                                            office_employee=office_employee,
-                                            closed=False,
-                                            taken=True,
-                                            taken_by=request.user))
-
     ticket_ids = visible_tickets_to_user(
         user=request.user,
         structure=structure,
@@ -64,9 +45,6 @@ def dashboard(request, structure_slug, structure, office_employee):
         "structure": structure,
         "sub_title": sub_title,
         "title": title,
-        "ticket_aperti": opened,
-        "ticket_assegnati_a_me": my_opened,
         "ticket_messages": messages,
-        "ticket_non_gestiti": unassigned,
     }
     return render(request, template, base_context(d))

@@ -51,16 +51,16 @@ def dashboard(request, structure_slug, structure):
         "Gestisci le richieste per la struttura {}").format(structure)
     template = "manager/dashboard.html"
 
-    unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                               closed=False,
-                                                               taken=False))
-    opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                           closed=False,
-                                                           taken=True))
-    my_opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                              closed=False,
-                                                              taken=True,
-                                                              taken_by=request.user))
+    # unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                               # closed=False,
+                                                               # taken=False))
+    # opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                           # closed=False,
+                                                           # taken=True))
+    # my_opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                              # closed=False,
+                                                              # taken=True,
+                                                              # taken_by=request.user))
 
     om = OrganizationalStructureOffice
     offices = om.objects.filter(organizational_structure=structure)\
@@ -86,10 +86,10 @@ def dashboard(request, structure_slug, structure):
         "offices": offices,
         "structure": structure,
         "sub_title": sub_title,
-        "ticket_aperti": opened,
-        "ticket_assegnati_a_me": my_opened,
+        # "ticket_aperti": opened,
+        # "ticket_assegnati_a_me": my_opened,
         "ticket_messages": messages,
-        "ticket_non_gestiti": unassigned,
+        # "ticket_non_gestiti": unassigned,
         "title": title,
     }
     return render(request, template, base_context(d))
