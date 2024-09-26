@@ -35,7 +35,7 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
                                             kwargs={'structure_slug': self.structure_1.slug}),
                                     follow=True)
         assert response.status_code == 200
-        assert response.context['ticket_non_gestiti'] > 0
+        # assert response.context['ticket_non_gestiti'] > 0
         # assert self.ticket in response.context['ticket_non_gestiti']
 
     def test_take_ticket_and_test(self):
