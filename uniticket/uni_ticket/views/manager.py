@@ -73,13 +73,7 @@ def dashboard(request, structure_slug, structure):
                            .prefetch_related('ticketcategorytask_set')\
                            .prefetch_related('ticketcategorycondition_set')
 
-    ticket_ids = TicketAssignment.objects.filter(
-        office__organizational_structure=structure,
-        office__is_active=True,
-        follow=True,
-        ticket__is_closed=False
-    ).values_list('ticket__pk', flat=True).distinct()
-    messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
+
 
     d = {
         "categories": categories,
@@ -88,7 +82,7 @@ def dashboard(request, structure_slug, structure):
         "sub_title": sub_title,
         # "ticket_aperti": opened,
         # "ticket_assegnati_a_me": my_opened,
-        "ticket_messages": messages,
+        # "ticket_messages": messages,
         # "ticket_non_gestiti": unassigned,
         "title": title,
     }

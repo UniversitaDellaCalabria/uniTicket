@@ -446,61 +446,11 @@ def tickets(request, structure_slug, structure, office_employee=None):
     title = _("Gestione richieste")
     sub_title = _("Tutti gli stati")
 
-    ticket_list = []
-    # if user is operator
-    if office_employee:
-        unassigned = len(visible_tickets_to_user(user=request.user,
-                                                 structure=structure,
-                                                 office_employee=office_employee,
-                                                 closed=False,
-                                                 taken=False))
-
-        opened = len(visible_tickets_to_user(user=request.user,
-                                             structure=structure,
-                                             office_employee=office_employee,
-                                             closed=False,
-                                             taken=True))
-
-        my_opened = len(visible_tickets_to_user(user=request.user,
-                                                structure=structure,
-                                                office_employee=office_employee,
-                                                closed=False,
-                                                taken=True,
-                                                taken_by=request.user))
-
-        ticket_ids = visible_tickets_to_user(
-            user=request.user,
-            structure=structure,
-            office_employee=office_employee,
-            closed=False
-        )
-    # if user is manager
-    else:
-        unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                               closed=False,
-                                                               taken=False))
-        opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                               closed=False,
-                                                               taken=True))
-        my_opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                                  closed=False,
-                                                                  taken=True,
-                                                                  taken_by=request.user))
-        ticket_ids = TicketAssignment.objects.filter(
-            office__organizational_structure=structure,
-            office__is_active=True,
-            follow=True,
-            ticket__is_closed=False
-        ).values_list('ticket__pk', flat=True).distinct()
-
-    # unread messages
-    messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
-
     d = {
-        "ticket_aperti": opened,
-        "ticket_assegnati_a_me": my_opened,
-        "ticket_non_gestiti": unassigned,
-        "ticket_messages": messages,
+        # "ticket_aperti": opened,
+        # "ticket_assegnati_a_me": my_opened,
+        # "ticket_non_gestiti": unassigned,
+        # "ticket_messages": messages,
         "structure": structure,
         "sub_title": sub_title,
         "title": title,

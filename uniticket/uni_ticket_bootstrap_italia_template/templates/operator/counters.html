@@ -28,12 +28,14 @@
             {% trans 'Chiuse' %}
         </a>
         <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
+            <div class="progress progress-indeterminate progress-color" v-if="new_messages == null">
+                <span class="sr-only">In elaborazione...</span>
+                <div class="progress-bar bg-info" role="progressbar"></div>
+            </div>
             <svg class="icon icon-xs">
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
             </svg>
-            {% if ticket_messages %}
-            <span class="badge badge-primary">{% trans "Nuovi" %}</span>
-            {% endif %}
+            <span class="badge badge-primary" v-if="new_messages">{% trans "Nuovi" %}</span>{% trans "Nuovi" %}</span>
             {% trans 'Messaggi' %}
         </a>
     </div>
@@ -72,13 +74,11 @@
                 </li>
                 <li>
                     <a href="{% url 'uni_ticket:operator_messages' structure_slug=structure.slug %}">
-                        {% if ticket_messages %}
-                        <div class="badge-wrapper">
+                        <div class="badge-wrapper" v-if="new_messages">
                             <span class="toolbar-badge badge-primary">
                                 {% trans "Nuovi" %}
                             </span>
                         </div>
-                        {% endif %}
                         <svg class="icon">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
                         </svg>
@@ -97,47 +97,30 @@ const app = Vue.createApp({
             unassigned: null,
             open: null,
             my_open: null,
+            new_messages: false
         }
     },
     created(){
         this.interval = setInterval(() =>{
-            this.getUnassigned();
-            this.getOpen();
-            this.getMyOpen();
+            this.getCounters();
             }, 20000)
     },
     destroyed(){
         clearInterval(this.interval)
     },
     mounted () {
-        this.getUnassigned()
-        this.getOpen()
-        this.getMyOpen()
+        this.getCounters()
     },
     methods: {
-        getUnassigned() {
-            url = '{% url "api-operator-tickets-unassigned-count" structure_slug=structure.slug %}'
+        getCounters() {
+            url = '{% url "api-operator-tickets-count" structure_slug=structure.slug %}'
             axios
                 .get(url)
-                .then(response => (
-                    this.unassigned = response.data.count
-                ))
-        },
-        getOpen() {
-            url = '{% url "api-operator-tickets-open-count" structure_slug=structure.slug %}'
-            axios
-                .get(url)
-                .then(response => (
-                    this.open = response.data.count
-                ))
-        },
-        getMyOpen() {
-            url = '{% url "api-operator-tickets-my-open-count" structure_slug=structure.slug %}'
-            axios
-                .get(url)
-                .then(response => (
-                    this.my_open = response.data.count
-                ))
+                .then(response => {
+                    this.unassigned = response.data.unassigned
+                    this.open = response.data.open
+                    this.my_open = response.data.my_open
+                })
         }
     }
 }).mount('#counters')

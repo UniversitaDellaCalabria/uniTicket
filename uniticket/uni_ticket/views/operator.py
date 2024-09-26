@@ -32,19 +32,11 @@ def dashboard(request, structure_slug, structure, office_employee):
     template = "operator/dashboard.html"
     offices = user_offices_list(office_employee)
 
-    ticket_ids = visible_tickets_to_user(
-        user=request.user,
-        structure=structure,
-        office_employee=office_employee,
-        closed=False
-    )
-
-    messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
     d = {
         "offices": offices,
         "structure": structure,
         "sub_title": sub_title,
         "title": title,
-        "ticket_messages": messages,
+        # "ticket_messages": messages,
     }
     return render(request, template, base_context(d))
