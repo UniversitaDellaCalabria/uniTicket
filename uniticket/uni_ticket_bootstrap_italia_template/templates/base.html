@@ -15,9 +15,9 @@
 <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
 {% settings_value "DEBUG" as debug %}
 {% if debug %}
-<script src="{% static 'js/vue.3.4.31.js' %}"></script>
+<script src="{% static 'js/vue.3.5.4.min.js' %}"></script>
 {% else %}
-<script src="{% static 'js/vue.3.4.31.prod.js' %}"></script>
+<script src="{% static 'js/vue.3.5.4.prod.min.js' %}"></script>
 {% endif %}
 <script src="{% static 'js/axios.js' %}"></script>
 <!--
