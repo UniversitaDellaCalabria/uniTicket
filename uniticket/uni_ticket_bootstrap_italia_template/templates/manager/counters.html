@@ -112,9 +112,9 @@ const app = Vue.createApp({
     },
     methods: {
         getCounters() {
-            url = '{% url "api-manager-tickets-count" structure_slug=structure.slug %}'
+            api_url = '{% url "api-manager-tickets-count" structure_slug=structure.slug %}'
             axios
-                .get(url)
+                .get(api_url)
                 .then(response => {
                     this.unassigned = response.data.unassigned
                     this.open = response.data.open
