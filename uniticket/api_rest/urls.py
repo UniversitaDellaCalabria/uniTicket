@@ -1,9 +1,13 @@
 from django.urls import path, re_path
+from django.utils.text import slugify
+
 from rest_framework import routers
 from rest_framework.renderers import JSONOpenAPIRenderer
 from rest_framework.schemas import get_schema_view
 
 from api_rest.views import generic, manager, operator, user
+
+from uni_ticket.settings import MANAGEMENT_URL_PREFIX
 
 
 # Routers provide an easy way of automatically determining the URL conf.
@@ -27,7 +31,7 @@ urlpatterns = [
     path('api/ticket/close/<str:ticket_id>/', user.TicketAPIClose.as_view(), name='api-ticket-close'),
 
     # manager
-    path('api/manager/<slug:structure_slug>/tickets/count/', manager.TicketAPICounter.as_view(), name='api-manager-tickets-count'),
+    path(f'api/{slugify(MANAGEMENT_URL_PREFIX["manager"])}/<slug:structure_slug>/tickets/count/', manager.TicketAPICounter.as_view(), name='api-manager-tickets-count'),
 
     # operator
-    path('api/operatore/<slug:structure_slug>/tickets/count/', operator.TicketAPICounter.as_view(), name='api-operator-tickets-count'),]
+    path(f'api/{slugify(MANAGEMENT_URL_PREFIX["operator"])}/<slug:structure_slug>/tickets/count/', operator.TicketAPICounter.as_view(), name='api-operator-tickets-count'),]
