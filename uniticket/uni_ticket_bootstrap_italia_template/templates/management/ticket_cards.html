@@ -54,7 +54,7 @@ const app = Vue.createApp({
     },
     methods: {
         getUnassigned() {
-            url = '{% url "api-manager-tickets-unassigned-count" structure_slug=structure.slug %}'
+            url = '{% url "api_rest:api-manager-tickets-unassigned-count" structure_slug=structure.slug %}'
             axios
                 .get(url)
                 .then(response => (
@@ -62,7 +62,7 @@ const app = Vue.createApp({
                 ))
         },
         getOpen() {
-            url = '{% url "api-manager-tickets-open-count" structure_slug=structure.slug %}'
+            url = '{% url "api_rest:api-manager-tickets-open-count" structure_slug=structure.slug %}'
             axios
                 .get(url)
                 .then(response => (
@@ -70,7 +70,7 @@ const app = Vue.createApp({
                 ))
         },
         getMyOpen() {
-            url = '{% url "api-manager-tickets-my-open-count" structure_slug=structure.slug %}'
+            url = '{% url "api_rest:api-manager-tickets-my-open-count" structure_slug=structure.slug %}'
             axios
                 .get(url)
                 .then(response => (
