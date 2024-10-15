@@ -7,6 +7,5 @@ REQUIRED_FIELDS = getattr(settings, 'REQUIRED_FIELDS', EDITABLE_FIELDS)
 
 CHANGE_EMAIL_TOKEN_LIFE = getattr(settings, 'CHANGE_EMAIL_TOKEN_LIFE', 30)
 
-SAFE_URL_PATHS = getattr(settings, 'SAFE_URL_PATHS', [reverse("accounts:change_data"),
-                                                      reverse("accounts:confirm_email")])
+SAFE_URL_PATHS = getattr(settings, 'SAFE_URL_PATHS', [])
 SAFE_URL_APPS = getattr(settings, 'SAFE_URL_APPS', ['admin', 'api_rest'])
