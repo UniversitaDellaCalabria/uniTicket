@@ -30,4 +30,4 @@ urlpatterns = [
     path('api/manager/<slug:structure_slug>/tickets/count/', manager.TicketAPICounter.as_view(), name='api-manager-tickets-count'),
 
     # operator
-    path('api/operator/<slug:structure_slug>/tickets/count/', operator.TicketAPICounter.as_view(), name='api-operator-tickets-count'),]
+    path('api/operatore/<slug:structure_slug>/tickets/count/', operator.TicketAPICounter.as_view(), name='api-operator-tickets-count'),]
