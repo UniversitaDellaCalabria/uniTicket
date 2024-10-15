@@ -124,7 +124,7 @@ class uniTicketAPITest(TestCase):
 
     def test_strutture_list(self):
         req = Client()
-        url = reverse('api-strutture-list')
+        url = reverse('api_rest:api-strutture-list')
 
         # no auth
         res = req.get(url)
@@ -136,7 +136,7 @@ class uniTicketAPITest(TestCase):
 
     def test_category_list(self):
         req = Client()
-        url = reverse('api-ticket-category-list')
+        url = reverse('api_rest:api-ticket-category-list')
 
         # no auth
         res = req.get(url)
@@ -150,7 +150,7 @@ class uniTicketAPITest(TestCase):
     def test_new_ticket(self):
         req = Client()
         url = reverse(
-            'api-new-ticket',
+            'api_rest:api-new-ticket',
             kwargs={
                 "structure_slug": "structure-1",
                 "category_slug": "modello-di-richiesta-di-test"
@@ -200,7 +200,7 @@ class uniTicketAPITest(TestCase):
 
         # get ticket detail
         tcode = res.json()['status']['code']
-        durl = reverse("api-view-ticket", kwargs={'ticket_uid': tcode})
+        durl = reverse("api_rest:api-view-ticket", kwargs={'ticket_uid': tcode})
         res = req.get(durl, **self.at.as_http_header)
         res_form = res.json()['ticket']['form']
         for i in data.keys():
@@ -210,7 +210,7 @@ class uniTicketAPITest(TestCase):
 
 
         # get ticket list
-        lurl = reverse("api-ticket-user-list")
+        lurl = reverse("api_rest:api-ticket-user-list")
 
         # create another ticket
         req.post(
@@ -229,7 +229,7 @@ class uniTicketAPITest(TestCase):
         )
 
         # close ticket
-        curl = reverse("api-ticket-close", kwargs={'ticket_id': tcode})
+        curl = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': tcode})
         res = req.post(curl, data={'note': "have to go"}, **self.at.as_http_header)
         self.assertTrue(
             res.json()['messages'][0].get("SUCCESS", None)
