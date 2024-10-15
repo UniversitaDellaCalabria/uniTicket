@@ -3143,7 +3143,8 @@ def manager_settings(request, structure_slug, structure):
     user_type = get_user_type(request.user, structure)
     template = "{}/user_settings.html".format(user_type)
     title = _("Configurazione impostazioni")
-    sub_title = _("dati personali e della struttura")
+    # sub_title = _("dati personali e della struttura")
+    sub_title = _("della struttura")
 
     manager_users = structure.get_structure_managers()
 

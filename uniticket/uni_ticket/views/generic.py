@@ -315,11 +315,12 @@ def user_settings(
     """
     user_type = get_user_type(request.user, structure)
     template = "{}/user_settings.html".format(user_type)
-    title = _("Configurazione impostazioni")
-    sub_title = _("e riepilogo dati personali")
+    # title = _("Configurazione impostazioni")
+    title = _("Gestione account")
+    # sub_title = _("e riepilogo dati personali")
     d = {
         "structure": structure,
-        "sub_title": sub_title,
+        # "sub_title": sub_title,
         "title": title,
     }
     response = render(request, template, base_context(d))

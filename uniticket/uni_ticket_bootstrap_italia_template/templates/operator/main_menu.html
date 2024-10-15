@@ -31,9 +31,13 @@
     </a>
 </li>
 {% endif %}
+
+{% comment %}
 <li class="nav-item">
     <a class="nav-link" href="{% url 'uni_ticket:operator_user_settings' structure_slug=structure.slug %}">
         <span>{% trans "Configurazione" %}</span>
     </a>
 </li>
+{% endcomment %}
+
 {% endblock menu_pre_buttons %}

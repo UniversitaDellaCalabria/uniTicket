@@ -182,12 +182,17 @@ if "djangosaml2" in settings.INSTALLED_APPS:
 if "rest_framework" in settings.INSTALLED_APPS:
     import api_rest.urls
 
-    urlpatterns += (path("", include(api_rest.urls)),)
+    urlpatterns += (path("", include(api_rest.urls, "api_rest")),)
 
 if "chat" in settings.INSTALLED_APPS:
     import chat.urls
 
     urlpatterns += (path("", include(chat.urls, "chat")),)
+
+if "accounts" in settings.INSTALLED_APPS:
+    import accounts.urls
+
+    urlpatterns += (path("", include(accounts.urls, "accounts")),)
 
 if settings.DEBUG:
     import debug_toolbar

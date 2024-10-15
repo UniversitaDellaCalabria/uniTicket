@@ -804,11 +804,11 @@ urlpatterns += [
         login_required(is_operator(management.task_edit)),
         name="operator_edit_task",
     ),
-    path(
-        "{}/settings/".format(base),
-        login_required(is_operator(generic.user_settings)),
-        name="operator_user_settings",
-    ),
+    # path(
+        # "{}/settings/".format(base),
+        # login_required(is_operator(generic.user_settings)),
+        # name="operator_user_settings",
+    # ),
     path(
         "{}/messages/".format(base),
         login_required(is_operator(generic.ticket_messages)),
@@ -879,7 +879,7 @@ urlpatterns += [
         ),
         name="ticket_detail",
     ),
-    path("settings/", generic.user_settings, name="user_settings"),
+    path("account/", generic.user_settings, name="user_settings"),
     path("messages/", generic.ticket_messages, name="messages"),
 ]
 
