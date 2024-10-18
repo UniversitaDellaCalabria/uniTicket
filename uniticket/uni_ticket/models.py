@@ -1200,28 +1200,26 @@ class TicketAssignment(TimeStampedModel):
         """ """
         q_base = Q(office__organizational_structure=structure,
                    office__is_active=True)
-        q_follow = Q(follow=True) if follow_check else Q()
 
-        q_closed = Q()
-        if closed == True: q_closed = Q(ticket__is_closed=True)
-        elif closed == False: q_closed = Q(ticket__is_closed=False)
+        if follow_check:
+            q_base &= Q(follow=True)
 
-        q_taken = Q()
-        if taken == True: q_taken = Q(taken_date__isnull=False)
-        elif taken == False:  q_taken = Q(taken_date__isnull=True)
+        if closed is not None:
+            q_base &= Q(ticket__is_closed=closed)
 
-        q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
+        if taken is not None:
+            q_base &= Q(taken_date__isnull=not taken)
+
+        if taken_by:
+            q_base &= Q(taken_by=taken_by)
 
         ordering_list = ["ticket__priority", "-ticket__created"]
         if not priority_first:
             ordering_list.remove("ticket__priority")
 
-        ticket_assignments = TicketAssignment.objects.filter(
-            q_base,
-            q_follow,
-            q_closed,
-            q_taken,
-            q_taken_by,
+        ticket_assignments = TicketAssignment.objects\
+        .filter(
+            q_base
         ).values_list("ticket__pk", flat=True)\
         .order_by(*ordering_list)\
         .distinct()
