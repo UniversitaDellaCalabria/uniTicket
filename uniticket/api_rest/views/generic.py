@@ -56,7 +56,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 class uniTicketROGenericList(generics.ListAPIView):
-    authentication_classes = [AuthorizationToken, SessionAuthentication]
+    # authentication_classes = [AuthorizationToken, SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 
@@ -71,9 +71,9 @@ class TicketAPIBaseView(APIView):
     """
 
     # TODO: AgID MoDI also here?
-    authentication_classes = [
-        AuthorizationToken, SessionAuthentication
-    ]
+    # authentication_classes = [
+        # AuthorizationToken, SessionAuthentication
+    # ]
     permission_classes = [permissions.IsAuthenticated]
 
     def get_messages(self):

@@ -25,7 +25,6 @@ from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME
 from uni_ticket.utils import user_is_manager, user_is_operator, visible_tickets_to_user
 
 from organizational_area.models import OrganizationalStructure
-from api_rest.authorizations import AuthorizationToken
 
 from .. serializers import (
     GroupSerializer,
