@@ -236,8 +236,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_PAGINATION_CLASS':
-        'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100
+        'api_rest.pagination.StandardPagination'
+    'PAGE_SIZE': 10
 }
 
 # chat: message to load in a conversation from history
