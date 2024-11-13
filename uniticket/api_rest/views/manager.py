@@ -49,7 +49,7 @@ class TicketAPICounter(TicketAPIBaseView):
         ).values_list('ticket__pk', flat=True).distinct()
         messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
 
-        return Response({'unassigned': len(unassigned_tickets),
-                         'open': len(open_tickets),
-                         'my_open': len(my_open_tickets),
+        return Response({'unassigned': unassigned_tickets.count(),
+                         'open': open_tickets.count(),
+                         'my_open': my_open_tickets.count(),
                          'new_messages': messages})
