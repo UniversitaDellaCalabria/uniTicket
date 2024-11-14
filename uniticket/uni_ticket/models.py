@@ -1195,7 +1195,6 @@ class TicketAssignment(TimeStampedModel):
         indexes = [
             models.Index(fields=["office", "follow"]),
             models.Index(fields=["taken_date"]),
-            models.Index(fields=["taken_by"]),
             models.Index(fields=["ticket", "office"]),
         ]
         # indexes = [models.Index(fields=["office_id", "follow"])]
