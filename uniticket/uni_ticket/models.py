@@ -447,7 +447,7 @@ class Ticket(SavedFormContent):
     Ticket
     """
 
-    code = models.CharField(max_length=255, unique=True, db_index=True, default=uuid.uuid4)
+    code = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
     subject = models.CharField(max_length=255)
     description = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
@@ -469,7 +469,7 @@ class Ticket(SavedFormContent):
         TicketCategoryModule, on_delete=models.PROTECT)
     is_closed = models.BooleanField(default=False)
     closed_date = models.DateTimeField(blank=True, null=True)
-    assigned_date = models.DateTimeField(blank=True, null=True, db_index=True)
+    assigned_date = models.DateTimeField(blank=True, null=True)
     closed_by = models.ForeignKey(
         get_user_model(),
         on_delete=models.SET_NULL,
@@ -1186,7 +1186,7 @@ class TicketAssignment(TimeStampedModel):
     class Meta:
         unique_together = ("ticket", "office")
         ordering = ["created"]
-        indexes = [models.Index(fields=["office_id", "follow"])]
+        # indexes = [models.Index(fields=["office_id", "follow"])]
         verbose_name = _("Competenza Ticket")
         verbose_name_plural = _("Competenza Ticket")
 
