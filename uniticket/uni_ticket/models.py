@@ -504,10 +504,10 @@ class Ticket(SavedFormContent):
         verbose_name = _("Ticket")
         verbose_name_plural = _("Ticket")
         indexes = [
-            models.Index(fields=["is_closed"]),
-            models.Index(fields=["priority"]),
+            # models.Index(fields=["is_closed"]),
+            # models.Index(fields=["priority"]),
             models.Index(fields=["created"]),
-            models.Index(fields=["priority", "created"]),
+            # models.Index(fields=["priority", "created"]),
         ]
 
     @property
@@ -1195,7 +1195,7 @@ class TicketAssignment(TimeStampedModel):
         indexes = [
             models.Index(fields=["office", "follow"]),
             models.Index(fields=["taken_date"]),
-            models.Index(fields=["ticket", "office"]),
+            # models.Index(fields=["ticket", "office"]),
         ]
         # indexes = [models.Index(fields=["office_id", "follow"])]
         verbose_name = _("Competenza Ticket")
