@@ -504,10 +504,10 @@ class Ticket(SavedFormContent):
         verbose_name = _("Ticket")
         verbose_name_plural = _("Ticket")
         indexes = [
-            # models.Index(fields=["is_closed"]),
-            # models.Index(fields=["priority"]),
+            models.Index(fields=["is_closed"]),
+            models.Index(fields=["priority"]),
             models.Index(fields=["created"]),
-            # models.Index(fields=["priority", "created"]),
+            models.Index(fields=["priority", "created"]),
         ]
 
     @property
