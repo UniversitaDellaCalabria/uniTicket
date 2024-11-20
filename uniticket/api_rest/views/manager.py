@@ -62,6 +62,8 @@ class TicketAPIMessagesCounter(TicketAPIBaseView):
         ticket_ids = TicketAssignment.objects.filter(
             office__organizational_structure=structure,
             office__is_active=True,
+            ticket__is_closed=False,
+            follow=True
         ).values_list('ticket__pk', flat=True).distinct()
         messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
         return Response({'count': messages})
