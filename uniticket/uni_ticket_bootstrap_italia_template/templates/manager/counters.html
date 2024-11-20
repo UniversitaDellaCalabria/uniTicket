@@ -99,7 +99,10 @@ const app = Vue.createApp({
     },
     created(){
         this.interval = setInterval(() =>{
-            this.getCounters();
+            this.getUnassigned();
+            this.getOpen();
+            this.getMyOpen();
+            this.getMessages();
             }, 20000)
     },
     destroyed(){
