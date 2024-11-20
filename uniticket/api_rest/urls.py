@@ -31,7 +31,10 @@ urlpatterns = [
     path('api/ticket/close/<str:ticket_id>/', user.TicketAPIClose.as_view(), name='api-ticket-close'),
 
     # manager
-    path(f'api/{slugify(MANAGEMENT_URL_PREFIX["manager"])}/<slug:structure_slug>/tickets/count/', manager.TicketAPICounter.as_view(), name='api-manager-tickets-count'),
+    path(f'api/{slugify(MANAGEMENT_URL_PREFIX["manager"])}/<slug:structure_slug>/tickets/unassigned/count/', manager.TicketAPIUnassignedCounter.as_view(), name='api-manager-tickets-unassigned-count'),
+    path(f'api/{slugify(MANAGEMENT_URL_PREFIX["manager"])}/<slug:structure_slug>/tickets/open/count/', manager.TicketAPIOpenCounter.as_view(), name='api-manager-tickets-open-count'),
+    path(f'api/{slugify(MANAGEMENT_URL_PREFIX["manager"])}/<slug:structure_slug>/tickets/my-open/count/', manager.TicketAPIMyOpenCounter.as_view(), name='api-manager-tickets-my-open-count'),
+    path(f'api/{slugify(MANAGEMENT_URL_PREFIX["manager"])}/<slug:structure_slug>/tickets/messages/count/', manager.TicketAPIMessagesCounter.as_view(), name='api-manager-tickets-messages-count'),
 
     # operator
     path(f'api/{slugify(MANAGEMENT_URL_PREFIX["operator"])}/<slug:structure_slug>/tickets/count/', operator.TicketAPICounter.as_view(), name='api-operator-tickets-count'),]
