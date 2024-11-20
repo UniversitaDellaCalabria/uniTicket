@@ -151,22 +151,24 @@ $(function() {
         }
     });
 
-    $('#search_year, #search_box, #search_category').on('change keyup', function () {
-        var year = $('#search_year').val();
-        var category = $('#search_category').val();
-        if (typeof category === 'undefined'){
-            category = "";
+    $('#search_year, #search_box, #search_category').on('keypress', function () {
+        if (event.key === "Enter") {
+            var year = $('#search_year').val();
+            var category = $('#search_category').val();
+            if (typeof category === 'undefined'){
+                category = "";
+            }
+            var text = $('#search_box').val();
+            var structure = $('#search_structure').val();
+            if (typeof structure === 'undefined'){
+                structure = "";
+            }
+            var args = '{"year": "'+year+'", '+
+                       '"text": "'+text+'", '+
+                       '"category": "'+category+'", '+
+                       '"structure": "'+structure+'"}';
+            datatable.search(args).draw();
         }
-        var text = $('#search_box').val();
-        var structure = $('#search_structure').val();
-        if (typeof structure === 'undefined'){
-            structure = "";
-        }
-        var args = '{"year": "'+year+'", '+
-                   '"text": "'+text+'", '+
-                   '"category": "'+category+'", '+
-                   '"structure": "'+structure+'"}';
-        datatable.search(args).draw();
     } );
 
 
