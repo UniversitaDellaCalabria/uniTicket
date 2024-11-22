@@ -257,7 +257,8 @@ def manager_all_tickets(request, structure_slug, structure):
 
     :return: JsonResponse
     """
-    tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
+    tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                        priority_first=False)
     dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 
