@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
 
-    'ckeditor',
     'datatables_ajax',
 
     'uni_ticket_bootstrap_italia_template',

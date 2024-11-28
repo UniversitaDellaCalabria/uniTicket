@@ -80,7 +80,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
 
-    'ckeditor',
     'datatables_ajax',
 
     'bootstrap_italia_template',
