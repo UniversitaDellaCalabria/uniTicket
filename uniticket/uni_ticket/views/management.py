@@ -526,6 +526,7 @@ def ticket_dependence_add_new(
     form = TicketDependenceForm(
         user=request.user,
         structure=structure,
+        ticket_code=ticket.code,
         ticket_id=ticket.pk,
         ticket_dependences=ticket_dependences_code_list,
     )
@@ -534,6 +535,7 @@ def ticket_dependence_add_new(
             request.POST,
             user=request.user,
             structure=structure,
+            ticket_code=ticket.code,
             ticket_id=ticket.pk,
             ticket_dependences=ticket_dependences_code_list,
         )

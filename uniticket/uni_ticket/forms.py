@@ -1,6 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.forms import ModelChoiceField, ModelForm
 from django.forms.widgets import CheckboxSelectMultiple
 from django.utils.translation import gettext_lazy as _
@@ -369,43 +370,50 @@ class MyDependenceChoiceField(ModelChoiceField):
 class TicketDependenceForm(forms.Form):
     """ """
 
-    ticket = MyDependenceChoiceField(
-        queryset=None, required=True, widget=BootstrapItaliaSelectWidget
-    )
+    # ticket = MyDependenceChoiceField(
+        # queryset=None, required=True, widget=BootstrapItaliaSelectWidget
+    # )
+    ticket = forms.CharField(label=_("Ticket"), required=True,
+                             help_text=_("Codice univoco identificativo della richiesta"))
     note = forms.CharField(
         label=_("Note"), widget=forms.Textarea(attrs={"rows": 2}), required=True
     )
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop("user", None)
-        structure = kwargs.pop("structure", None)
-        current_ticket_id = kwargs.pop("ticket_id", None)
-        ticket_dependences_pk_list = kwargs.pop("ticket_dependences", [])
-        ticket_id_list = []
+        self.user = kwargs.pop("user", None)
+        self.structure = kwargs.pop("structure", None)
+        self.current_ticket_code = kwargs.pop("ticket_code", None)
+        self.current_ticket_id = kwargs.pop("ticket_id", None)
+        self.ticket_dependences_pk_list = kwargs.pop("ticket_dependences", [])
+        super().__init__(*args, **kwargs)
+
+    def clean_ticket(self):
+        code = self.cleaned_data["ticket"]
+
+        if code == self.current_ticket_code:
+            raise ValidationError(_("Non si può rendere un ticket dipendente da sè stesso"))
+        if code in self.ticket_dependences_pk_list:
+            raise ValidationError(_("Dipendenza già attiva"))
+
         # if user is manager/default_office operator:
-        # he views all tickets followed by structure offices
-        if user_is_manager(user, structure) or user_is_in_default_office(
-            user, structure
-        ):
-            ticket_id_list = TicketAssignment.get_ticket_per_structure(
-                structure)
+        # search in structure offices
+        if user_is_manager(self.user, self.structure) or user_is_in_default_office(self.user, self.structure):
+            ticket_id_list = TicketAssignment.get_ticket_per_structure(structure=self.structure,
+                                                                       ticket_codes=[code])
         # if user is operator:
-        # he views all tickets followed in his offices
+        # search in his offices tickets
         else:
-            user_offices = user_is_operator(user, structure)
+            user_offices = user_is_operator(self.user, self.structure)
             offices_list = user_offices_list(user_offices)
             ticket_id_list = TicketAssignment.get_ticket_in_office_list(
                 offices_list=offices_list,
-                taken=True)
-        ticket_id_list = ticket_id_list.exclude(ticket__pk=current_ticket_id)
-        cleaned_list = [
-            pk for pk in ticket_id_list if pk not in ticket_dependences_pk_list
-        ]
-        ticket_list = Ticket.objects.filter(
-            pk__in=cleaned_list, is_closed=False)
-        super().__init__(*args, **kwargs)
-        self.fields["ticket"].queryset = ticket_list
-        self.fields["ticket"].to_field_name = "code"
+                taken=True,
+                ticket_codes=[code])
+
+        if not ticket_id_list:
+            raise ValidationError(_("Ticket non trovato tra quelli gestiti"))
+
+        return Ticket.objects.get(code=code)
 
     class Media:
         js = ("js/textarea-autosize.js",)

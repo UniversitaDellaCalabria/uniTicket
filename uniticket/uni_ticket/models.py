@@ -1207,7 +1207,8 @@ class TicketAssignment(TimeStampedModel):
                                  closed=None,
                                  taken=None,
                                  taken_by=None,
-                                 priority_first=True):
+                                 priority_first=True,
+                                 ticket_codes=[]):
         """ """
         q_base = Q(office__organizational_structure=structure,
                    office__is_active=True)
@@ -1224,18 +1225,21 @@ class TicketAssignment(TimeStampedModel):
         if taken_by:
             q_base &= Q(taken_by=taken_by)
 
+        if ticket_codes:
+            q_base &= Q(ticket__code__in=ticket_codes)
+
         ordering_list = ["ticket__priority", "-ticket__created"]
         if not priority_first:
             ordering_list.remove("ticket__priority")
 
-        ticket_assignments = TicketAssignment.objects\
+        tickets = TicketAssignment.objects\
         .filter(
             q_base
         ).values_list("ticket__pk", flat=True)\
         .order_by(*ordering_list)\
         .distinct()
 
-        return ticket_assignments
+        return tickets
 
     @staticmethod
     def get_ticket_in_office_list(offices_list,
@@ -1243,37 +1247,37 @@ class TicketAssignment(TimeStampedModel):
                                   closed=None,
                                   taken=None,
                                   taken_by=None,
-                                  priority_first=True):
+                                  priority_first=True,
+                                  ticket_codes=[]):
         """ """
         q_base = Q(office__in=offices_list, office__is_active=True)
 
+        if closed is not None:
+            q_base &= Q(ticket__is_closed=closed)
 
-        q_closed = Q()
-        if closed == True: q_closed = Q(ticket__is_closed=True)
-        elif closed == False: q_closed = Q(ticket__is_closed=False)
+        if taken is not None:
+            q_base &= Q(taken_date__isnull=not taken)
 
-        q_taken = Q()
-        if taken == True: q_taken = Q(taken_date__isnull=False)
-        elif taken == False: q_taken = Q(taken_date__isnull=True)
+        if follow_check:
+            q_base &= Q(follow=True)
 
-        q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
-        q_follow = Q(follow=True) if follow_check else Q()
+        if taken_by:
+            q_base &= Q(taken_by=taken_by)
+
+        if ticket_codes:
+            q_base &= Q(ticket__code__in=ticket_codes)
 
         ordering_list = ["ticket__priority", "-ticket__created"]
         if not priority_first:
             ordering_list.remove("ticket__priority")
 
-        ticket_assignments = TicketAssignment.objects.filter(
+        tickets = TicketAssignment.objects.filter(
             q_base,
-            q_closed,
-            q_taken,
-            q_taken_by,
-            q_follow
         ).values_list("ticket__pk", flat=True)\
         .order_by(*ordering_list)\
         .distinct()
 
-        return ticket_assignments
+        return tickets
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
