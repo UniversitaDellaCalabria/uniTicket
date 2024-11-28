@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # Django Rest
     'rest_framework',
+    # 'rest_framework.authtoken',
     'api_rest',
 
     # Django channels and chat
@@ -68,7 +69,7 @@ CUSTOM_WIDGETS = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'api_rest.authorizations.AuthorizationToken',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [

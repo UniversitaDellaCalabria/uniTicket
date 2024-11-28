@@ -94,6 +94,7 @@ INSTALLED_APPS = [
 
     # Django Rest
     'rest_framework',
+    # 'rest_framework.authtoken',
     'api_rest',
 
     # Django channels and chat
