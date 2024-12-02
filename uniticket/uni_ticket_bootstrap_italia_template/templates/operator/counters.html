@@ -33,7 +33,7 @@
             <svg class="icon icon-xs" v-else>
                 <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
             </svg>
-            <span class="badge badge-primary" v-if="new_messages">{% trans "Nuovi" %}</span>{% trans "Nuovi" %}</span>
+            <span class="badge badge-primary" v-if="new_messages">{% trans "Nuovi" %}</span>
             {% trans 'Messaggi' %}
         </a>
     </div>
@@ -80,7 +80,7 @@
                         <svg class="icon">
                             <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
                         </svg>
-                        <span class="toolbar-label">{% trans 'Messaggi' %}</span></span>
+                        <span class="toolbar-label">{% trans 'Messaggi' %}</span>
                     </a>
                 </li>
             </ul>
@@ -100,24 +100,52 @@ const app = Vue.createApp({
     },
     created(){
         this.interval = setInterval(() =>{
-            this.getCounters();
+            this.getUnassigned();
+            this.getOpen();
+            this.getMyOpen();
+            this.getMessages();
             }, 20000)
     },
     destroyed(){
         clearInterval(this.interval)
     },
     mounted () {
-        this.getCounters()
+        this.getUnassigned()
+        this.getOpen()
+        this.getMyOpen()
+        this.getMessages()
     },
     methods: {
-        getCounters() {
-            api_url = '{% url "api_rest:api-operator-tickets-count" structure_slug=structure.slug %}'
+        getUnassigned() {
+            api_url = '{% url "api_rest:api-operator-tickets-unassigned-count" structure_slug=structure.slug %}'
             axios
                 .get(api_url)
                 .then(response => {
-                    this.unassigned = response.data.unassigned
-                    this.open = response.data.open
-                    this.my_open = response.data.my_open
+                    this.unassigned = response.data.count
+                })
+        },
+        getOpen() {
+            api_url = '{% url "api_rest:api-operator-tickets-open-count" structure_slug=structure.slug %}'
+            axios
+                .get(api_url)
+                .then(response => {
+                    this.open = response.data.count
+                })
+        },
+        getMyOpen() {
+            api_url = '{% url "api_rest:api-operator-tickets-my-open-count" structure_slug=structure.slug %}'
+            axios
+                .get(api_url)
+                .then(response => {
+                    this.my_open = response.data.count
+                })
+        },
+        getMessages() {
+            api_url = '{% url "api_rest:api-operator-tickets-messages-count" structure_slug=structure.slug %}'
+            axios
+                .get(api_url)
+                .then(response => {
+                    this.new_messages = response.data.count
                 })
         }
     }
