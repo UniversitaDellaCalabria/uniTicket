@@ -1,8 +1,8 @@
-Django>=3.2.19,<5
+Django>=4.2.16,<6
 
 git+https://github.com/UniversitaDellaCalabria/django-admin-search-builder.git
 
-django-form-builder>=1.0.1
+git+https://github.com/UniversitaDellaCalabria/django-form-builder.git
 
 django-nested-admin>=3.2.4
 
