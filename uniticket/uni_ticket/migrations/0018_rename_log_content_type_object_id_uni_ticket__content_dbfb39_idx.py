@@ -10,9 +10,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameIndex(
-            model_name='log',
-            new_name='uni_ticket__content_dbfb39_idx',
-            old_fields=('content_type', 'object_id'),
-        ),
+        # migrations.RenameIndex(
+            # model_name='log',
+            # new_name='uni_ticket__content_dbfb39_idx',
+            # old_fields=('content_type', 'object_id'),
+        # ),
     ]

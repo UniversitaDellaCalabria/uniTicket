@@ -77,7 +77,7 @@ def _attachment_upload(instance, filename):
 ### Custom Logs ###
 # like django.contrib.admin.models.LogEntry
 # but object_id as PositiveIntegerField
-# and with index_together = ["content_type", "object_id"])
+# and with indexes = [models.Index(fields=["content_type", "object_id"])]
 import inspect
 exec(inspect.getsource(LogEntry).replace('db_table = "django_admin_log"',
                                          'indexes = [models.Index(fields=["content_type", "object_id"])]')\

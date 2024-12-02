@@ -25,8 +25,8 @@ class Migration(migrations.Migration):
             name='protocollo_uo',
             field=models.CharField(choices=[('', '-')], max_length=12, verbose_name='UO'),
         ),
-        migrations.AlterIndexTogether(
-            name='log',
-            index_together={('content_type', 'object_id')},
-        ),
+        # migrations.AlterIndexTogether(
+            # name='log',
+            # index_together={('content_type', 'object_id')},
+        # ),
     ]
