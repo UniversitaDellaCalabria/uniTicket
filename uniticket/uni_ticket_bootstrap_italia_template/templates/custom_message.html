@@ -8,21 +8,23 @@
 {% block container_inner %}
 {% block content_title %}{% endblock content_title %}
 <div class="callout danger mt-5">
-	<div class="callout-title">
-        <svg class="icon icon-primary icon-danger">
-            <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
-        </svg> {% trans "Oops! C'è qualcosa che non va" %}</div>
-	<p>
-        {{ avviso }}
-        <hr>
-        <a role="button" class="btn btn-outline-secondary"
-           href="javascript:history.back()">
-            {% trans "Torna indietro" %}
-        </a>
-        <a role="button" class="btn btn-outline-secondary"
-           href="{% url 'uni_ticket:manage' structure_slug=structure_slug %}">
-            {% trans "Torna alla Dashboard" %}
-        </a>
-    </p>
+    <div class="callout-inner">
+        <div class="callout-title">
+            <svg class="icon icon-primary icon-danger">
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
+            </svg> {% trans "Oops! C'è qualcosa che non va" %}</div>
+        <p>
+            {{ avviso }}
+            <hr>
+            <a role="button" class="btn btn-outline-secondary"
+               href="javascript:history.back()">
+                {% trans "Torna indietro" %}
+            </a>
+            <a role="button" class="btn btn-outline-secondary"
+               href="{% url 'uni_ticket:manage' structure_slug=structure_slug %}">
+                {% trans "Torna alla Dashboard" %}
+            </a>
+        </p>
+    </div>
 </div>
 {% endblock container_inner %}
