@@ -49,7 +49,7 @@
                 <li>
                     <a href="{% url 'uni_ticket:user_opened_ticket' %}">
                         {% if ticket_aperti > 0 %}
-                        <div class="badge-wrapper"><span class="toolbar-badge">{{ ticket_aperti }}</span></div>
+                        <div class="badge-wrapper"><span class="toolbar-badge bg-primary">{{ ticket_aperti }}</span></div>
                         {% endif %}
                         <svg class="icon"><use xlink:href="{% static 'svg/sprites.svg' %}#it-clock"></use></svg>
                         <span class="toolbar-label">{% trans 'Assegnate' %}</span>

@@ -14,7 +14,7 @@
     <li>
         <a href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
             {% if ticket_aperti > 0 %}
-            <div class="badge-wrapper"><span class="toolbar-badge">[[ open ]]</span></div>
+            <div class="badge-wrapper"><span class="toolbar-badge  bg-primary">[[ open ]]</span></div>
             {% endif %}
             <svg class="icon"><use xlink:href="{% static 'svg/sprites.svg' %}#it-clock"></use></svg>
             <span class="toolbar-label">{% trans 'Assegnate' %}
