@@ -4,10 +4,10 @@
 <div class="pb-3">
     <div class="btn-example pt-3 clearfix">
         <a role="button"
-           class="btn btn-outline-secondary float-right btn-xs mb-3"
+           class="btn btn-outline-success float-end btn-xs mb-3"
            href="{% url 'uni_ticket:manager_office_add_new' structure_slug=structure.slug %}">
-            <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+            <svg class="icon icon-xs icon-success">
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
             </svg> {% trans "Aggiungi nuovo ufficio" %}
         </a>
     </div>
@@ -16,7 +16,7 @@
         <input type="text" id="officesFilter" placeholder="{% trans 'Filtra per parole chiave...' %}">
         <span class="autocomplete-icon" aria-hidden="true">
             <svg class="icon icon-sm">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-search"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-search"></use>
             </svg>
         </span>
     </div>
@@ -29,16 +29,16 @@
           <div class="card card-bg no-after">
             <div class="card-body">
                 {% if office.is_active %}
-                    <span class="badge badge-success mb-2">
+                    <span class="badge bg-success mb-2">
                         {% trans "Attivo" %}
                     </span>
                 {% else %}
-                    <span class="badge badge-danger mb-2">
+                    <span class="badge bg-danger mb-2">
                         {% trans "Non attivo" %}
                     </span>
                 {% endif %}
                 {% if office.is_default %}
-                    <span class="badge badge-warning mb-2">
+                    <span class="badge bg-warning mb-2">
                         {% trans "Ufficio speciale" %}
                     </span>
                 {% endif %}
@@ -53,9 +53,9 @@
                   <b>{% trans 'Ad uso interno' %}:</b>
                   <svg class="icon icon-sm icon-secondary">
                         {% if office.is_private %}
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                         {% else %}
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                         {% endif %}
                     </svg>
                   <br>

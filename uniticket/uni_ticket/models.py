@@ -708,12 +708,12 @@ class Ticket(SavedFormContent):
         if self.is_closed:
             # if is a notification ticket
             if self.is_notification or not self.closed_by:
-                return _('<span class="badge badge-success">Chiusa</span>')
+                return _('<span class="badge bg-success">Chiusa</span>')
             # normal ticket
             status_literal = dict(CLOSING_LEVELS).get(self.closing_status)
             html = _(
-                '<span class="badge badge-success">Chiusa</span> '
-                '<span class="badge badge-{}">{}</span>'
+                '<span class="badge bg-success">Chiusa</span> '
+                '<span class="badge bg-{}">{}</span>'
             )
             if self.closing_status == -1:
                 html = html.format("danger", status_literal)
@@ -725,8 +725,8 @@ class Ticket(SavedFormContent):
                 html = html.format("secondary", status_literal)
             return "{}<br><small>{}</small>".format(html, self.closed_by)
         if not self.has_been_taken():
-            return _('<span class="badge badge-danger">Aperta</span>')
-        return _('<span class="badge badge-warning">Assegnata</span> {}' "").format(
+            return _('<span class="badge bg-danger">Aperta</span>')
+        return _('<span class="badge bg-warning">Assegnata</span> {}' "").format(
             self.taken_by_html_list()
         )
 
@@ -736,15 +736,15 @@ class Ticket(SavedFormContent):
         if self.is_closed:
             # if is a notification ticket
             if self.is_notification or not self.closed_by:
-                return _('<span class="badge badge-success">Chiusa</span>')
+                return _('<span class="badge bg-success">Chiusa</span>')
             # normal ticket
             status_literal = dict(CLOSING_LEVELS).get(self.closing_status)
 
             # get svg file from static
-            static_icon = static("svg/sprite.svg")
+            static_icon = static("svg/sprites.svg")
 
             html = _(
-                '<span class="badge badge-success">Chiusa</span> '
+                '<span class="badge bg-success">Chiusa</span> '
                 '<svg class="icon icon-xs {}">'
                 "<title>{}</title>"
                 '<use xlink:href="{}#{}"></use>'
@@ -769,8 +769,8 @@ class Ticket(SavedFormContent):
                 )
             return "{}<br><small>{}</small>".format(html, self.closed_by)
         if not self.has_been_taken():
-            return _('<span class="badge badge-danger">Aperta</span>')
-        return _('<span class="badge badge-warning">Assegnata</span> {}' "").format(
+            return _('<span class="badge bg-danger">Aperta</span>')
+        return _('<span class="badge bg-warning">Assegnata</span> {}' "").format(
             self.taken_by_html_list()
         )
 
@@ -1092,7 +1092,7 @@ class Ticket(SavedFormContent):
             if assignment.taken_by:
                 element += "<small>{}</small></li>".format(assignment.taken_by)
             else:
-                element += '<span class="badge badge-danger">{}</span></li>'.format(
+                element += '<span class="badge bg-danger">{}</span></li>'.format(
                     _("Da assegnare")
                 )
             elements += element
@@ -1486,16 +1486,16 @@ class Task(AbstractTask):
 
     def get_basic_status(self):
         if self.is_closed:
-            return _('<span class="badge badge-success">Chiusa</span>')
-        return _('<span class="badge badge-danger">Aperta</span>')
+            return _('<span class="badge bg-success">Chiusa</span>')
+        return _('<span class="badge bg-danger">Aperta</span>')
 
     def get_status(self):
         if self.is_closed:
             status_literal = dict(CLOSING_LEVELS).get(self.closing_status)
 
             html = _(
-                '<span class="badge badge-success">Chiusa</span> '
-                '<span class="badge badge-{}">{}</span>'
+                '<span class="badge bg-success">Chiusa</span> '
+                '<span class="badge bg-{}">{}</span>'
             )
             if self.closing_status == -1:
                 html = html.format("danger", status_literal)
@@ -1506,7 +1506,7 @@ class Task(AbstractTask):
             elif self.closing_status == 2:
                 html = html.format("secondary", status_literal)
             return "{} <small>{}</small>".format(html, self.closed_by)
-        return _('<span class="badge badge-danger">Aperta</span>')
+        return _('<span class="badge bg-danger">Aperta</span>')
 
     def __str__(self):
         return self.subject

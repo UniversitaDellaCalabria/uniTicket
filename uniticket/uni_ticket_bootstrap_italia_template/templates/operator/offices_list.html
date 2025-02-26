@@ -10,16 +10,16 @@
           <div class="card card-bg no-after">
             <div class="card-body">
                 {% if office.is_active %}
-                    <span class="badge badge-success mb-2">
+                    <span class="badge bg-success mb-2">
                         {% trans "Attivo" %}
                     </span>
                 {% else %}
-                    <span class="badge badge-danger mb-2">
+                    <span class="badge bg-danger mb-2">
                         {% trans "Non attivo" %}
                     </span>
                 {% endif %}
                 {% if office.is_default %}
-                    <span class="badge badge-warning mb-2">
+                    <span class="badge bg-warning mb-2">
                         {% trans "Ufficio speciale" %}
                     </span>
                 {% endif %}
@@ -32,9 +32,9 @@
                   <b>{% trans 'Ad uso interno' %}:</b>
                   <svg class="icon icon-sm icon-secondary">
                         {% if office.is_private %}
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                         {% else %}
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                         {% endif %}
                     </svg>
               <br>

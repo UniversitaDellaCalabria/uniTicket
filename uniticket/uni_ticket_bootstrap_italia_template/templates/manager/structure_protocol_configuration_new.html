@@ -11,13 +11,13 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manager_dashboard' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Dashboard" %}
 </a>
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manager_user_settings' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna alla gestione parametri" %}
 </a>
 {% endblock top_buttons %}
@@ -36,13 +36,13 @@
                     <form method="post" enctype="multipart/form-data">
                         {% include 'form_template.html' %}
                         {% block form_buttons %}
-                        <div>
-                            <button class="btn btn-success btn-block"
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success"
                                     type="button"
-                                    data-toggle="modal"
-                                    data-target="#updateConfiguration">
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#updateConfiguration">
                                 <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                                 </svg> {% trans 'Crea configurazione' %}
                             </button>
                         </div>
@@ -53,12 +53,12 @@
                                         <h5 class="modal-title">
                                             {% trans "Creazione configurazione protocollo informatico" %}
                                         </h5>
-                                        <button class="close"
+                                        <button class="btn-close"
                                                 type="button"
-                                                data-dismiss="modal"
+                                                data-bs-dismiss="modal"
                                                 aria-label="Close">
                                            <svg class="icon">
-                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                            </svg>
                                         </button>
                                     </div>

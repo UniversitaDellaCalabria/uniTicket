@@ -24,8 +24,8 @@ git+https://github.com/peppelinux/FileSignatureValidator.git
 djangosaml2>=1.0.3
 
 # Bootstrap Italia
-git+https://github.com/italia/design-django-theme.git@v1
-
+#git+https://github.com/italia/design-django-theme.git@v1
+design-django-theme
 # Unical template
 # django-unical-bootstrap-italia==1.2.0
 

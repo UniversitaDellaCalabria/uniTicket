@@ -14,16 +14,16 @@
 {% app_is_installed "channels" as channels_installed %}
 
 <div class="pb-4 clearfix">
-    <div class="pull-left">
+    <div class="pull-start">
         {% include 'manager/counters.html' %}
     </div>
-    <div class="pull-right">
+    <div class="pull-end">
         {% if chat_installed and channels_installed %}
         <a role="button"
           class="btn btn-outline-success"
           href="{% url 'chat:room' room_name=structure.slug %}">
-            <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+            <svg class="icon icon-xs icon-success">
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-user"></use>
             </svg> {% trans "Entra in Chat" %}
         </a>
         {% endif %}
@@ -31,23 +31,23 @@
            href="#categorie"
            data-attribute="forward" class="forward" aria-hidden="true">
             <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-folder"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-folder"></use>
             </svg> {% trans "Tipologie" %}
         </a>
         <a role="button" class="btn btn-outline-secondary"
            href="#uffici"
            data-attribute="forward" class="forward" aria-hidden="true">
             <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-share"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-share"></use>
             </svg> {% trans "Uffici" %}
         </a>
     </div>
 </div>
 <hr />
-<h5 class="py-3 float-left" id="categorie">{% trans "Tipologie di richiesta" %}</h5>
+<h5 class="py-3 float-start" id="categorie">{% trans "Tipologie di richiesta" %}</h5>
 {% include 'manager/categories_list.html' %}
 <hr />
-<h5 class="pt-3 float-left" id="uffici">{% trans "Uffici" %}</h5>
+<h5 class="pt-3 float-start" id="uffici">{% trans "Uffici" %}</h5>
 {% include 'manager/offices_list.html' %}
 {% endblock container_inner %}
 

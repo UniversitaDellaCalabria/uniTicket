@@ -22,7 +22,7 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:new_ticket_preload' structure_slug=struttura.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna alla selezione tipologia di richiesta" %}
 </a>
 {% endif %}
@@ -47,7 +47,7 @@
                 <div class="card card-bg no-after">
                     <div class="card-body">
                         {% if categoria.show_heading_text and request.user.is_authenticated %}
-                            <p class="card-title text-left">
+                            <p class="card-title text-start">
                                 {% uni_ticket_settings_value name="TICKET_HEADING_TEXT" user=request.user taxpayer=request.user.taxpayer_id as heading %}
                                 {{ heading|safe  }}
                                 {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
@@ -64,7 +64,7 @@
                                 {% endif %}
                             </p>
                             {% if compiled_by %}
-                            <p class="card-title text-left">
+                            <p class="card-title text-start">
                                 {% uni_ticket_settings_value name="TICKET_COMPILED_HEADING_TEXT" user=compiled_by taxpayer=compiled_by.taxpayer_id as heading %}
                                 {{ heading|safe  }}
                                 {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
@@ -89,34 +89,24 @@
                             {% for condition in category_conditions %}
                                 {% if not forloop.first %}<hr>{% endif %}
                                 {% if condition.is_collapsable %}
-                                    <div id="accordionDiv{{ condition.pk }}"
-                                         class="collapse-div collapse-left-icon"
-                                         role="tablist"
-                                         style="border-bottom: none">
-                                        <div class="collapse-header" id="headingA{{ condition.pk }}">
-                                            <button data-toggle="collapse"
-                                                    data-target="#accordion{{ condition.pk }}"
-                                                    aria-expanded="false"
-                                                    aria-controls="accordion{{ condition.pk }}"
-                                                    class="px-0"
-                                                    style="border: none;">
-                                                {{ condition.title }}
-                                            </button>
-                                        </div>
-                                        <div id="accordion{{ condition.pk }}"
-                                             class="collapse"
-                                             role="tabpanel"
-                                             aria-labelledby="headingA{{ condition.pk }}"
-                                             data-parent="#accordionDiv{{ condition.pk }}">
-                                            <div class="collapse-body pb-0">
-                                                <p class="card-text">{{ condition.text | markdown | safe }}</p>
-                                                {% if condition.attachment %}
-                                                    <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
-                                                        <svg class="icon">
-                                                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
-                                                        </svg>{{ condition.attachment|filename }}
-                                                    </a>
-                                                {% endif %}
+                                    <div class="accordion accordion-left-icon" id="accordionDiv{{ condition.pk }}" style="border: 0">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header " id="heading{{ condition.pk }}">
+                                                <button class="accordion-button collapsed" style="border: 0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ condition.pk }}" aria-expanded="false" aria-controls="collapse{{ condition.pk }}">
+                                                    {{ condition.title }}
+                                                </button>
+                                            </h2>
+                                            <div id="collapse{{ condition.pk }}" class="accordion-collapse collapse" data-bs-parent="#accordionDiv{{ condition.pk }}" role="region" aria-labelledby="heading{{ condition.pk }}">
+                                                <div class="accordion-body">
+                                                    <p class="card-text">{{ condition.text | markdown | safe }}</p>
+                                                    {% if condition.attachment %}
+                                                        <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
+                                                            <svg class="icon">
+                                                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
+                                                            </svg>{{ condition.attachment|filename }}
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -126,7 +116,7 @@
                                     {% if condition.attachment %}
                                         <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
                                             <svg class="icon">
-                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
                                             </svg>{{ condition.attachment|filename }}
                                         </a>
                                     {% endif %}
@@ -145,14 +135,14 @@
 {% endblock over_content %}
 
 {% block form_buttons %}
-<div>
-    {% if not categoria.allowed_users.all or request.user in categoria.allowed_users.all %}
-    <button class="btn btn-success btn-block"
+{% if not categoria.allowed_users.all or request.user in categoria.allowed_users.all %}
+<div class="d-grid gap-2">
+    <button class="btn btn-success"
             type="button"
-            data-toggle="modal"
-            data-target="#action">
+            data-bs-toggle="modal"
+            data-bs-target="#action">
         <svg class="icon icon-xs icon-white">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
         </svg>
         {% if categoria.protocol_required %}
             {% trans "Invia e protocolla la richiesta" %}
@@ -160,104 +150,106 @@
             {% trans "Invia la richiesta" %}
         {% endif %}
     </button>
-    <div class="modal fade"
-         tabindex="-1"
-         role="dialog"
-         id="action">
-        <div class="modal-dialog modal-dialog-centered"
-             role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        {% if categoria.protocol_required %}
-                            {% trans "Conferma e protocolla" %}
-                        {% else %}
-                            {% trans "Conferma" %}
-                        {% endif %}
-                    </h5>
-                    <button class="close"
-                            type="button"
-                            data-dismiss="modal"
-                            aria-label="Close">
-                       <svg class="icon">
-                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                       </svg>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        {% if categoria.protocol_required %}
-                            {% trans "Desideri procedere, confermare i dati immessi e protocollare la tua richiesta?" %}
-                        {% else %}
-                            {% trans "Desideri procedere e confermare i dati immessi?" %}
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    {% uni_ticket_settings_value name="TICKET_CREATE_BUTTON_NAME" as confirm_button_name %}
-                    <input class="btn btn-success"
-                           type="submit"
-                           id="submitForm"
-                           name="{{ confirm_button_name }}"
-                           value="{% trans 'Si, procedi' %}">
-                </div>
+</div>
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="action">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% if categoria.protocol_required %}
+                        {% trans "Conferma e protocolla" %}
+                    {% else %}
+                        {% trans "Conferma" %}
+                    {% endif %}
+                </h5>
+                <button class="btn-close"
+                        type="button"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {% if categoria.protocol_required %}
+                        {% trans "Desideri procedere, confermare i dati immessi e protocollare la tua richiesta?" %}
+                    {% else %}
+                        {% trans "Desideri procedere e confermare i dati immessi?" %}
+                    {% endif %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                {% uni_ticket_settings_value name="TICKET_CREATE_BUTTON_NAME" as confirm_button_name %}
+                <input class="btn btn-success"
+                       type="submit"
+                       id="submitForm"
+                       name="{{ confirm_button_name }}"
+                       value="{% trans 'Si, procedi' %}">
             </div>
         </div>
     </div>
-    {% else %}
-    <button class="btn btn-secondary disabled btn-block"
+</div>
+{% else %}
+<div class="d-grid gap-2">
+    <button class="btn btn-secondary disabled"
             type="button">
         <svg class="icon icon-xs icon-white">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-ban"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-ban"></use>
         </svg>
         {% trans "Solo gli utenti abilitati possono generare richieste di questo tipo" %}
     </button>
-    {% endif %}
 </div>
+{% endif %}
 
-<div id="collapseDiv1-lft" class="mt-4 collapse-div collapse-left-icon" role="tablist">
-    <div class="collapse-header" id="heading1-lft">
-        <div data-toggle="collapse"
-                data-target="#collapse1-lft"
-                aria-expanded="false"
-                aria-controls="collapse1-lft">
-        {% trans "Se la richiesta che stai compilando deve essere completata e sottoscritta da un altro utente (es. Direttore Dipartimento, responsabile ufficio, ecc.), clicca qui" %}
-        </div>
-    </div>
-    <div id="collapse1-lft"
-         class="collapse"
-         role="tabpanel"
-         aria-labelledby="heading1-lft">
-        <div class="collapse-body">
-            {% uni_ticket_settings_value name="TICKET_GENERATE_URL_BUTTON_NAME" as generate_url_button_name %}
-            {% uni_ticket_settings_value "TICKET_COMPILED_BY_USER_NAME" as compiled_by_name %}
-            {% uni_ticket_settings_value "TICKET_COMPILED_ONE_TIME_FLAG" as compiled_one_time %}
-            <input type="checkbox"
-                   id="{{ compiled_by_name }}"
-                   name="{{ compiled_by_name }}"
-                   checked>
-            <label for="{{ compiled_by_name }}">
-                <b>{% trans "Tieni traccia della mia compilazione nella richiesta" %}</b>
-            </label>
-            <br>
-            <input type="checkbox"
-                   id="{{ compiled_one_time }}"
-                   name="{{ compiled_one_time }}">
-            <label for="{{ compiled_one_time }}">
-                <b>{% trans "L'URL potrà essere aperto una sola volta" %}</b>
-            </label>
-            <small class="form-text text-muted">
-                {% trans "Selezionando questa opzione i dati della tua utenza saranno visibili nella scheda di dettaglio della richiesta" %}
-            </small>
-            <br>
-            <button class="btn btn-outline-success"
-                    type="submit"
-                    name="generate_url_submit"
-                    value="{{ generate_url_button_name }}">
-                <svg class="icon icon-xs">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-link"></use>
-                </svg> {% trans "Genera URL per richiesta precompilata" %}
+
+<div class="accordion accordion-left-icon" id="accordionDiv1lft">
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading2l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2l" aria-expanded="false" aria-controls="collapse2l">
+                {% trans "Se la richiesta che stai compilando deve essere completata e sottoscritta da un altro utente (es. Direttore Dipartimento, responsabile ufficio, ecc.), clicca qui" %}
             </button>
+        </h2>
+        <div id="collapse2l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading2l">
+            <div class="accordion-body">
+                {% uni_ticket_settings_value name="TICKET_GENERATE_URL_BUTTON_NAME" as generate_url_button_name %}
+                {% uni_ticket_settings_value "TICKET_COMPILED_BY_USER_NAME" as compiled_by_name %}
+                {% uni_ticket_settings_value "TICKET_COMPILED_ONE_TIME_FLAG" as compiled_one_time %}
+                <input type="checkbox"
+                       id="{{ compiled_by_name }}"
+                       name="{{ compiled_by_name }}"
+                       checked>
+                <label for="{{ compiled_by_name }}">
+                    <b>{% trans "Tieni traccia della mia compilazione nella richiesta" %}</b>
+                </label>
+                <br>
+                <input type="checkbox"
+                       id="{{ compiled_one_time }}"
+                       name="{{ compiled_one_time }}">
+                <label for="{{ compiled_one_time }}">
+                    <b>{% trans "L'URL potrà essere aperto una sola volta" %}</b>
+                </label>
+                <br>
+                <small class="form-text text-muted">
+                    {% trans "Selezionando questa opzione i dati della tua utenza saranno visibili nella scheda di dettaglio della richiesta" %}
+                </small>
+                <br>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-success mt-4"
+                            type="submit"
+                            name="generate_url_submit"
+                            value="{{ generate_url_button_name }}">
+                        <svg class="icon icon-xs icon-success">
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-link"></use>
+                        </svg> {% trans "Genera URL per richiesta precompilata" %}
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

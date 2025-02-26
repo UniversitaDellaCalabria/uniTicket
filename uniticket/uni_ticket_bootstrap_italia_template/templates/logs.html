@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load static %}
 {% load uni_ticket_tags %}
 
 <div class="it-list-wrapper">
@@ -6,14 +7,16 @@
     <ul class="it-list">
     {% for log in logs %}
         <li>
-            <a>
+            <div class="list-item">
                 <div class="it-right-zone">
-                    <span class="text">{{ log.change_message|linebreaksbr }}<em>{{ log.user }}</em></span>
+                    <span class="text">{{ log.change_message|linebreaksbr }}</span>
                     <span class="it-multiple">
-                        <span class="metadata">{{ log.action_time }}</span>
+                        <span class="metadata">
+                            {{ log.user }}<br>{{ log.action_time }}
+                        </span>
                     </span>
                 </div>
-            </a>
+            </div>
         </li>
     {% endfor %}
     </ul>

@@ -3,177 +3,156 @@
 {% load uni_ticket_tags %}
 
 <div class="pb-3">
-
     <div class="row">
         <div class="col">
             <div class="card-wrapper card-space">
                 <div class="card card-bg no-after">
-                <div class="card-body">
-
-                <!-- Filtri Statistiche -->
-                <div id="collapseDiv1" class="collapse-div collapse-left-icon" role="tablist">
-                    <div class="collapse-header" id="heading1">
-                        <button
-                            data-toggle="collapse"
-                            data-target="#collapse1"
-                            aria-expanded="false"
-                            aria-controls="collapse1">
-                        {% trans "Filtri sulle statistiche" %}
-                        </button>
-                    </div>
-
-                    <div
-                        id="collapse1"
-                        class="collapse"
-                        role="tabpanel"
-                        aria-labelledby="heading1">
-                        <div class="collapse-body pt-4 pb-0">
-
-                            <form method="post">
-                            {% csrf_token %}
-                            <!-- Date picker -->
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-sm">
-                                        <label for="date_start" style="margin-top: -30px">
-                                            {% trans 'Data di inizio' %} {% if date_start %} ({{ date_start }}) {% endif %}
-                                        </label>
-                                        <input
-                                            id="date_start"
-                                            type="date"
-                                            name="date_start"
-                                            placeholder="{% trans 'Data di inizio' %}">
-                                    </div>
-                                    <div class="col-sm mt-5 mt-sm-0">
-                                        <label for="date_end" style="margin-top: -30px">
-                                            {% trans 'Data di fine' %} {% if date_end %} ({{ date_end }}) {% endif %}
-                                        </label>
-                                        <input
-                                            id="date_end"
-                                            name="date_end"
-                                            type="date"
-                                            placeholder="{% trans 'Data di fine' %}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Offices -->
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-sm">
-                                        <div class="bootstrap-select-wrapper">
-                                            <label for="office_slug">
-                                                {% trans "Ufficio" %}
-                                            </label>
-                                            <select
-                                                id="office_slug"
-                                                name="office_slug"
-                                                multiple="true"
-                                                data-multiple-separator=" ">
-                                                {% for office in offices %}
-                                                    <option
-                                                        value="{{ office.slug }}"
-                                                        title=""
-                                                        placeholder=""
-                                                        data-content="<span class='select-pill'><span class='select-pill-text'>{{ office.name }}</span></span>">
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Ticket category -->
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-sm">
-                                        <div class="bootstrap-select-wrapper">
-                                            <label for="category_slug">
-                                                {% trans "Categoria della richiesta" %}
-                                            </label>
-                                            <select
-                                                id="category_slug"
-                                                multiple="true"
-                                                name="category_slug"
-                                                data-multiple-separator=" ">
-                                                {% for category in tickets %}
-                                                    <option
-                                                        value="{{ category.slug }}"
-                                                        title=""
-                                                        placeholder=""
-                                                        data-content="<span class='select-pill'><span class='select-pill-text'>{{ category.name }}</span></span>">
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="btn-example pt-3 clearfix">
-                                <button type="submit" class="btn btn-outline-primary float-right btn mb-3" data-focus-mouse="false">
-                                    <svg class="icon icon-xs">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-chart-line"></use>
-                                    </svg>
-                                    {% trans "Esegui" %}
-                                </button>
-                            </div>
-
-                            </form>
-                        </div>
-
-                    </div>
-    </div>
-</div>
-</div>
-</div>
-
-
-    <div class="row">
-        <div class="col">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-
                     <div class="card-body">
 
-                        <!-- <h6>{% trans "Sommario" %}<h6> -->
+                        <!-- Filtri Statistiche -->
+                        <div class="accordion accordion-left-icon" id="accordionDiv-filtri-statistiche-lft">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header " id="heading-filtri-statistiche-l">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-filtri-statistiche-l" aria-expanded="false" aria-controls="collapse-filtri-statistiche-l">
+                                        {% trans "Filtri sulle statistiche" %}
+                                    </button>
+                                </h2>
+                                <div id="collapse-filtri-statistiche-l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv-filtri-statistiche-lft" role="region" aria-labelledby="heading-filtri-statistiche-l">
+                                    <div class="accordion-body">
+                                        <form method="post" class="mt-4">
+                                            {% csrf_token %}
+                                            <!-- Date picker -->
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-sm">
+                                                        <label for="date_start">
+                                                            {% trans 'Data di inizio' %} {% if date_start %} ({{ date_start }}) {% endif %}
+                                                        </label>
+                                                        <input
+                                                            id="date_start"
+                                                            type="date"
+                                                            name="date_start"
+                                                            placeholder="{% trans 'Data di inizio' %}">
+                                                    </div>
+                                                    <div class="col-sm mt-5 mt-sm-0">
+                                                        <label for="date_end">
+                                                            {% trans 'Data di fine' %} {% if date_end %} ({{ date_end }}) {% endif %}
+                                                        </label>
+                                                        <input
+                                                            id="date_end"
+                                                            name="date_end"
+                                                            type="date"
+                                                            placeholder="{% trans 'Data di fine' %}">
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                        <!-- Tabella sommario -->
-                        <div class="container">
-                            <div class="row">
-                                <h6 class="text-muted">{% trans "Sommario" %}</h6>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6 p-2"><b>{% trans "Periodo" %}</b>: {{ date_start}} - {{ date_end }} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Settore" %}</b>: {{ structure|default:"-" }} </div>
-                                {% if stats.office_slug %}
-                                    <div class="col-sm-6 p-2"><b>{% trans "Ufficio" %}</b>: {{ stats.office_slug}} </div>
-                                {% endif %}
-                                {% if stats.category_slug %}
-                                    <div class="col-sm-6 p-2"><b>{% trans "Categoria" %}</b>: {{ stats.category_slug}} </div>
-                                {% endif %}
-                                <div class="col-sm-6 p-2"><b>{% trans "Aperti" %}</b>: {{ stats.open}} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Chiusi" %}</b>: {{ stats.closed}} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Chiusi da operatori" %}</b>: {{ stats.closed_by_ops_count}} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Chiusi da utenti" %}</b>: {{ stats.closed_by_users}} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Riaperti" %}</b>: {{ stats.reopened}} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Notifiche" %}</b>: {{ stats.notifications}} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Assegnati" %}</b>: {{ stats.assigned}} </div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Messaggi per richiesta (media)" %}</b>: {{ stats.avg_msg_to_close|floatformat:2}} </div>
+                                            <!-- Offices -->
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-sm">
+                                                        <div class="bootstrap-select-wrapper">
+                                                            <label for="office_slug">
+                                                                {% trans "Uffici" %}
+                                                            </label>
+                                                            <select
+                                                                id="office_slug"
+                                                                name="office_slug"
+                                                                multiple="true"
+                                                                data-multiple-separator=" ">
+                                                                {% for office in offices %}
+                                                                    <option {% if office.slug in office_slugs %}selected{% endif %} value="{{ office.slug }}">{{ office.name }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Ticket category -->
+                                            <div class="form-group">
+                                                <div class="row">
+                                                    <div class="col-sm">
+                                                        <div class="bootstrap-select-wrapper">
+                                                            <label for="category_slug">
+                                                                {% trans "Categorie della richiesta" %}
+                                                            </label>
+                                                            <select
+                                                                id="category_slug"
+                                                                multiple="true"
+                                                                name="category_slug"
+                                                                data-multiple-separator=" ">
+                                                                {% for category in tickets %}
+                                                                    <option {% if category.slug in category_slugs %}selected{% endif %} value="{{ category.slug }}">{{ category.name }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="btn-example pt-3 clearfix">
+                                                <div class="d-grid gap-2">
+                                                    <button type="submit" class="btn btn-success btn mb-3" data-focus-mouse="false">
+                                                        <svg class="icon icon-xs icon-white">
+                                                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-chart-line"></use>
+                                                        </svg>
+                                                        {% trans "Esegui" %}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="row">
+            <div class="col">
+                <div class="card-wrapper card-space">
+                    <div class="card card-bg no-after">
 
-                <div class="row">
-                    <div class="col">
-                        <div class="card-wrapper card-space">
-                            <div class="card card-bg no-after">
-                            <div class="card-body">
+                        <div class="card-body">
+
+                            <!-- <h6>{% trans "Sommario" %}<h6> -->
+
+                            <!-- Tabella sommario -->
+                            <div class="container">
+                                <div class="row">
+                                    <h6 class="text-muted">{% trans "Sommario" %}</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 p-2"><b>{% trans "Periodo" %}</b>: {{ date_start}} - {{ date_end }} </div>
+                                    <div class="col-sm-6 p-2"><b>{% trans "Settore" %}</b>: {{ structure|default:"-" }} </div>
+                                    {% if stats.office_slug %}
+                                    <div class="col-sm-6 p-2"><b>{% trans "Ufficio" %}</b>: {{ stats.office_slug}} </div>
+                                    {% endif %}
+                                    {% if stats.category_slug %}
+                                    <div class="col-sm-6 p-2"><b>{% trans "Categoria" %}</b>: {{ stats.category_slug}} </div>
+                                    {% endif %}
+                                    <div class="col-sm-6 p-2"><b>{% trans "Aperti" %}</b>: {{ stats.open}} </div>
+                                    <div class="col-sm-6 p-2"><b>{% trans "Chiusi" %}</b>: {{ stats.closed}} </div>
+                                    <div class="col-sm-6 p-2"><b>{% trans "Chiusi da operatori" %}</b>: {{ stats.closed_by_ops_count}} </div>
+                                    <div class="col-sm-6 p-2"><b>{% trans "Chiusi da utenti" %}</b>: {{ stats.closed_by_users}} </div>
+                                    <div class="col-sm-6 p-2"><b>{% trans "Riaperti" %}</b>: {{ stats.reopened}} </div>
+                                    <div class="col-sm-6 p-2"><b>{% trans "Notifiche" %}</b>: {{ stats.notifications}} </div>
+                                    <div class="col-sm-6 p-2"><b>{% trans "Assegnati" %}</b>: {{ stats.assigned}} </div>
+                                    <div class="col-sm-6 p-2"><b>{% trans "Messaggi per richiesta (media)" %}</b>: {{ stats.avg_msg_to_close|floatformat:2}} </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="card-wrapper card-space">
+                    <div class="card card-bg no-after">
+                        <div class="card-body">
 
                             <div class="row">
                                 <h6 class="text-muted">{% trans "Durate ed intervalli" %}</h6>
@@ -186,16 +165,16 @@
                             </div>
                         </div>
 
-                            </div>
-                        </div>
                     </div>
                 </div>
-
             </div>
+        </div>
 
         </div>
 
     </div>
+
+</div>
 
     <div class="row">
         <div class="col">

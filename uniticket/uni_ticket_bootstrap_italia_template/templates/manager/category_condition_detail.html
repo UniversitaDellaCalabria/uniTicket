@@ -12,42 +12,42 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=condition.category.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna alla tipologia di richiesta" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_condition_edit' structure_slug=structure.slug category_slug=condition.category.slug condition_id=condition.pk %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
     </svg> {% trans "Modifica" %}
 </a>
 
 {% if condition.is_active %}
 <button type="button"
         class="btn btn-outline-secondary"
-        data-toggle="modal"
-        data-target="#disableCondition">
+        data-bs-toggle="modal"
+        data-bs-target="#disableCondition">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-invisible"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-password-invisible"></use>
         </svg> {% trans "Disattiva" %}
 </button>
 {% else %}
 <button type="button"
         class="btn btn-outline-secondary"
-        data-toggle="modal"
-        data-target="#enableCondition">
+        data-bs-toggle="modal"
+        data-bs-target="#enableCondition">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-visible"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-password-visible"></use>
         </svg> {% trans "Attiva" %}
 </button>
 {% endif %}
 <button type="button"
         class="btn btn-outline-danger"
-        data-toggle="modal"
-        data-target="#deleteCondition">
+        data-bs-toggle="modal"
+        data-bs-target="#deleteCondition">
         <svg class="icon icon-xs icon-danger">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
         </svg> {% trans "Elimina" %}
 </button>
 {% endblock top_buttons %}
@@ -104,7 +104,7 @@
                 <td>
                     <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=structure.slug category_slug=category.slug condition_id=condition.pk %}">
                         <svg class="icon">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
                         </svg> {{ condition.attachment|filename }}
                     </a>
                 </td>
@@ -115,9 +115,9 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if condition.is_collapsable %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -140,10 +140,10 @@
                 <h5 class="modal-title">
                     {% trans "Disattivazione clausola" %}
                 </h5>
-                <button class="close" type="button"
-                        data-dismiss="modal" aria-label="Close">
+                <button class="btn-close" type="button"
+                        data-bs-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>
@@ -169,10 +169,10 @@
                 <h5 class="modal-title">
                     {% trans "Attivazione clausola" %}
                 </h5>
-                <button class="close" type="button"
-                        data-dismiss="modal" aria-label="Close">
+                <button class="btn-close" type="button"
+                        data-bs-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>
@@ -198,10 +198,10 @@
                 <h5 class="modal-title">
                     {% trans "Eliminazione clausola" %}
                 </h5>
-                <button class="close" type="button"
-                        data-dismiss="modal" aria-label="Close">
+                <button class="btn-close" type="button"
+                        data-bs-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>

@@ -15,16 +15,16 @@
 {% user_operator_chat request.user structure as user_operator_chat %}
 
 <div class="pb-4 clearfix">
-    <div class="pull-left">
+    <div class="pull-start">
         {% include 'operator/counters.html' %}
     </div>
     {% if chat_installed and channels_installed and user_operator_chat %}
-    <div class="pull-right">
+    <div class="pull-end">
         <a role="button"
           class="btn btn-outline-success"
           href="{% url 'chat:room' room_name=structure.slug %}">
-            <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+            <svg class="icon icon-xs icon-success">
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-user"></use>
             </svg> {% trans "Entra in Chat" %}
         </a>
     </div>

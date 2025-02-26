@@ -9,144 +9,129 @@
 
 {% block clean_content %}
 
-<div id="collapseDiv1-lft" class="collapse-div collapse-left-icon" role="tablist">
-<!--
-    <div class="collapse-header" id="heading1-lft">
-        <button data-toggle="collapse" data-target="#collapse1-lft" aria-expanded="false" aria-controls="collapse1-lft">
-            <svg class="icon icon-sm">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
-            </svg>
-            {% trans "Configurazione dati personali" %}
-        </button>
-    </div>
-    <div id="collapse1-lft" class="collapse" role="tabpanel" aria-labelledby="heading1-lft">
-        <div class="collapse-body">
-            {% include 'email-toggle-notify.html' %}
-            {% include 'user_data.html' %}
-        </div>
-    </div>
--->
 
-
-    <div class="collapse-header" id="heading2-lft">
-        <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
-            <svg class="icon icon-sm">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-tool"></use>
-            </svg>
-            {% trans "Manager di struttura" %}
-            ({{ manager_users.count }})
-        </button>
-    </div>
-    <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
-        <div class="collapse-body">
-            {% include 'manager/actual_structure_managers.html' %}
-            <a href="{% url 'uni_ticket:manager_user_settings_add_manager' structure_slug=structure.slug %}"
-               class="btn btn-xs btn-outline-success">
-                <svg class="icon icon-xs icon-success">
-                    <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
-                </svg> {% trans "Assegna nuovo manager" %}
-            </a>
-        </div>
-    </div>
-
-
-    <div class="collapse-header" id="heading3-lft">
-        <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
-            <svg class="icon icon-sm">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-file"></use>
-            </svg>
-            {% trans "Configurazioni protocollo informatico" %}
-            ({{ structure.organizationalstructurewsprotocollo_set.all.count }})
-        </button>
-    </div>
-
-    <div id="collapse3-lft" class="collapse" role="tabpanel" aria-labelledby="heading3-lft">
-        <div class="collapse-body">
-
-            <div class="row">
-                <div class="col">
-                    <div class="card-wrapper card-space pb-3">
-                        <div class="card card-bg no-after">
-                            <div class="card-body">
-                                {% trans "Qui sono definiti i <b>parametri di configurazione</b> di protocollo della struttura." %}
-                                <hr>
-                                {% trans "E' anche possibile eseguire un <b>test</b> per verificare che il <b>sistema di protocollo</b> funzioni correttamente." %}
-                                <br>
-                                {% trans "Il test userà una configurazione pre-impostata, sicuramente funzionante, ed effettuerà un protocollo in una AOO predefinita." %}
-                                <br>
-                                <a role="button" class="mt-3 btn btn-outline-success"
-                                   href="{% url 'uni_ticket:manager_user_settings_check_protocol' structure_slug=structure.slug %}">
-                                    <svg class="icon icon-xs icon-success">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
-                                    </svg> {% trans "Verifica il corretto funzionamento del sistema di protocollo" %}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="accordion accordion-left-icon" id="accordionDiv1lft">
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading1l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1l" aria-expanded="false" aria-controls="collapse1l">
+                <svg class="icon icon-sm">
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-tool"></use>
+                </svg>
+                {% trans "Manager di struttura" %}
+                ({{ manager_users.count }})
+            </button>
+        </h2>
+        <div id="collapse1l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading1l">
+            <div class="accordion-body">
+                {% include 'manager/actual_structure_managers.html' %}
+                <a href="{% url 'uni_ticket:manager_user_settings_add_manager' structure_slug=structure.slug %}"
+                   class="btn btn-xs btn-outline-success">
+                    <svg class="icon icon-xs icon-success">
+                        <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
+                    </svg> {% trans "Assegna nuovo manager" %}
+                </a>
             </div>
-            {% if protocol_configurations %}
-            <div class="row">
-                <div class="col">
-                    <div class="card-space card-wrapper">
-                        <div class="card card-bg no-after">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover">
-                                        <thead>
-                                            <tr role="row">
-                                                <th>{% trans "Denominazione" %}</th>
-                                                <th>{% trans "Creata il" %}</th>
-                                                <th>{% trans "Modificata il" %}</th>
-                                                <th>{% trans "Stato" %}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for conf in protocol_configurations %}
-                                            <tr>
-                                                <td>
-                                                    <a href="{% url 'uni_ticket:manager_structure_protocol_configuration_detail' structure_slug=structure.slug configuration_id=conf.pk %}">
-                                                        {{ conf.name }}
-                                                    </a>
-                                                </td>
-                                                <td>{{ conf.created }}</td>
-                                                <td>{{ conf.modified }}</td>
-                                                <td>
-                                                    {% if conf.is_active %}
-                                                    <span class="badge badge-success mb-2">
-                                                        {% trans "Attiva" %}
-                                                    </span>
-                                                    {% else %}
-                                                    <span class="badge badge-danger mb-2">
-                                                        {% trans "Non attiva" %}
-                                                    </span>
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading2l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2l" aria-expanded="false" aria-controls="collapse2l">
+                <svg class="icon icon-sm">
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-file"></use>
+                </svg>
+                {% trans "Configurazioni protocollo informatico" %}
+                ({{ structure.organizationalstructurewsprotocollo_set.all.count }})
+            </button>
+        </h2>
+        <div id="collapse2l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading2l">
+            <div class="accordion-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="card-wrapper card-space pb-3">
+                            <div class="card card-bg no-after">
+                                <div class="card-body">
+                                    {% trans "Qui sono definiti i <b>parametri di configurazione</b> di protocollo della struttura." %}
+                                    <hr>
+                                    {% trans "E' anche possibile eseguire un <b>test</b> per verificare che il <b>sistema di protocollo</b> funzioni correttamente." %}
+                                    <br>
+                                    {% trans "Il test userà una configurazione pre-impostata, sicuramente funzionante, ed effettuerà un protocollo in una AOO predefinita." %}
+                                    <br>
+                                    <a role="button" class="mt-3 btn btn-outline-success"
+                                       href="{% url 'uni_ticket:manager_user_settings_check_protocol' structure_slug=structure.slug %}">
+                                        <svg class="icon icon-xs icon-success">
+                                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use>
+                                        </svg> {% trans "Verifica il corretto funzionamento del sistema di protocollo" %}
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                {% if protocol_configurations %}
+                <div class="row">
+                    <div class="col">
+                        <div class="card-space card-wrapper">
+                            <div class="card card-bg no-after">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th>{% trans "Denominazione" %}</th>
+                                                    <th>{% trans "Creata il" %}</th>
+                                                    <th>{% trans "Modificata il" %}</th>
+                                                    <th>{% trans "Stato" %}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for conf in protocol_configurations %}
+                                                <tr>
+                                                    <td>
+                                                        <a href="{% url 'uni_ticket:manager_structure_protocol_configuration_detail' structure_slug=structure.slug configuration_id=conf.pk %}">
+                                                            {{ conf.name }}
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ conf.created }}</td>
+                                                    <td>{{ conf.modified }}</td>
+                                                    <td>
+                                                        {% if conf.is_active %}
+                                                        <span class="badge bg-success mb-2">
+                                                            {% trans "Attiva" %}
+                                                        </span>
+                                                        {% else %}
+                                                        <span class="badge bg-danger mb-2">
+                                                            {% trans "Non attiva" %}
+                                                        </span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
     </div>
-    <div class="collapse-header" id="heading4-lft">
-        <button data-toggle="collapse" data-target="#collapse4-lft" aria-expanded="false" aria-controls="collapse4-lft">
-            <svg class="icon icon-sm">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-horn"></use>
-            </svg>
-            {% trans "Alert agli utenti" %}
-            ({{ alerts.count }})
-        </button>
-    </div>
-    <div id="collapse4-lft" class="collapse" role="tabpanel" aria-labelledby="heading4-lft">
-        <div class="collapse-body">
-            {% include 'manager/structure_alerts.html' %}
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading3l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3l" aria-expanded="false" aria-controls="collapse3l">
+                <svg class="icon icon-sm">
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-horn"></use>
+                </svg>
+                {% trans "Alert agli utenti" %}
+                ({{ alerts.count }})
+            </button>
+        </h2>
+        <div id="collapse3l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading3l">
+            <div class="accordion-body">
+                {% include 'manager/structure_alerts.html' %}
+            </div>
         </div>
     </div>
 </div>

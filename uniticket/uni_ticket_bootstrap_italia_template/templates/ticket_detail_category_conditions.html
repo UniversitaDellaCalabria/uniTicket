@@ -4,7 +4,7 @@
 
 
 {% if ticket.input_module.ticket_category.show_heading_text %}
-<p class="card-title text-left">
+<p class="card-title text-start">
     {% uni_ticket_settings_value name="TICKET_HEADING_TEXT" user=ticket.created_by taxpayer=ticket.created_by.taxpayer_id category=ticket.input_module.ticket_category as heading %}
     {{ heading|safe  }}
     {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
@@ -29,7 +29,7 @@
 {% if condition.attachment %}
 <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=condition.category.organizational_structure.slug category_slug=condition.category.slug condition_id=condition.pk %}">
         <svg class="icon">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
         </svg>{{ condition.attachment|filename }}
     </a>
 {% endif %}

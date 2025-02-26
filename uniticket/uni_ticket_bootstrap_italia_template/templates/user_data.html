@@ -52,12 +52,14 @@
 
                     {% accounts_settings_value "EDITABLE_FIELDS" as accounts_editable_fields %}
                     {% if accounts_editable_fields %}
-                    <a href="{% url 'accounts:change_data' %}" type="button" class="btn btn-success btn-block">
-                        <svg class="icon icon-xs icon-white">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
-                        </svg>
-                        {% trans "Modifica" %}
-                    </a>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'accounts:change_data' %}" type="button" class="btn btn-success">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
+                            </svg>
+                            {% trans "Modifica" %}
+                        </a>
+                    </div>
                     {% endif %}
                 </div>
             </div>

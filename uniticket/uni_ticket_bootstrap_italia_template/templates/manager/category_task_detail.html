@@ -12,42 +12,42 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=task.category.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna alla tipologia di richiesta" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_task_edit' structure_slug=structure.slug category_slug=task.category.slug task_id=task.code %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
     </svg> {% trans "Modifica" %}
 </a>
 
 {% if task.is_active %}
 <button type="button"
         class="btn btn-outline-secondary"
-        data-toggle="modal"
-        data-target="#disableTask">
+        data-bs-toggle="modal"
+        data-bs-target="#disableTask">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-invisible"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-password-invisible"></use>
         </svg> {% trans "Disattiva" %}
 </button>
 {% else %}
 <button type="button"
         class="btn btn-outline-secondary"
-        data-toggle="modal"
-        data-target="#enableTask">
+        data-bs-toggle="modal"
+        data-bs-target="#enableTask">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-visible"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-password-visible"></use>
         </svg> {% trans "Attiva" %}
 </button>
 {% endif %}
 <button type="button"
         class="btn btn-outline-danger"
-        data-toggle="modal"
-        data-target="#deleteTask">
+        data-bs-toggle="modal"
+        data-bs-target="#deleteTask">
         <svg class="icon icon-xs icon-danger">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
         </svg> {% trans "Elimina" %}
 </button>
 {% endblock top_buttons %}
@@ -75,9 +75,9 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if task.is_public %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -105,7 +105,7 @@
                 <td>
                     <a href="{% url 'uni_ticket:category_task_download_attachment' structure_slug=structure.slug category_slug=category.slug task_id=task.code %}">
                         <svg class="icon">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
                         </svg> {{ task.attachment|filename }}
                     </a>
                 </td>
@@ -124,9 +124,9 @@
                     {% trans "Disattivazione attività" %}
                 </h5>
                 <button class="close" type="button"
-                        data-dismiss="modal" aria-label="Close">
+                        data-bs-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>
@@ -153,9 +153,9 @@
                     {% trans "Attivazione attività" %}
                 </h5>
                 <button class="close" type="button"
-                        data-dismiss="modal" aria-label="Close">
+                        data-bs-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>
@@ -182,9 +182,9 @@
                     {% trans "Eliminazione attività" %}
                 </h5>
                 <button class="close" type="button"
-                        data-dismiss="modal" aria-label="Close">
+                        data-bs-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>

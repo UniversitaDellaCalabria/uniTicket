@@ -4,57 +4,48 @@
 {% load uni_ticket_tags %}
 {% load uni_ticket_bootstrap_italia_tags %}
 
+
 {% if request.user.is_authenticated %}
     {% not_a_simple_user request.user as not_a_simple_user %}
     {% simple_user_context_name as simple_user_context_name %}
     {% if not_a_simple_user %}
-        <div class="nav-item dropdown w-100">
-             <a class="nav-link dropdown-toggle pl-0 float-left" href="#" data-toggle="dropdown" aria-expanded="false">
-                <div class="it-access-top-wrapper">
-                    <button class="btn btn-primary btn-sm" href="#" type="button">
-                        <svg class="icon icon-light icon-xs">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-exchange-circle"></use>
-                        </svg>
-                        <span>
-                            {% trans "Ruolo attivo: " %}
-                            {% if structure %}
-                                {% get_usertype request.user structure as usertype %}
-                                {{ usertype|capfirst }} ({{ structure }})
-                            {% else %}
-                                {{ simple_user_context_name }}
-                            {% endif %}
-                        </span>
-                    </button>
-                </div>
-            </a>
-            <div class="dropdown-menu">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="link-list-wrapper">
-                            <ul class="link-list">
-                                <li>
-                                    <a class="list-item" href="{% url 'uni_ticket:user_dashboard' %}">
-                                        <span>{{ simple_user_context_name }}</span>
-                                    </a>
-                                </li>
-                                {% for structure in not_a_simple_user %}
-                                <li>
-                                    <a class="list-item" href="{% url 'uni_ticket:manage' structure_slug=structure.slug %}">
-                                        <span>{{ structure.name }}</span>
-                                    </a>
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <button type="button" class="btn btn-sm btn-primary dropdown-toggle me-2" style="white-space: inherit" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <svg class="icon icon-light icon-xs">
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-exchange-circle"></use>
+        </svg>
+        <span>
+            {% trans "Ruolo attivo: " %}
+            {% if structure %}
+                {% get_usertype request.user structure as usertype %}
+                {{ usertype|capfirst }} ({{ structure }})
+            {% else %}
+                {{ simple_user_context_name }}
+            {% endif %}
+        </span>
+    </button>
+    <div class="dropdown-menu">
+        <div class="link-list-wrapper">
+            <ul class="link-list">
+                <li>
+                    <a class="dropdown-item list-item" href="{% url 'uni_ticket:user_dashboard' %}">
+                        <span>{{ simple_user_context_name }}</span>
+                    </a>
+                </li>
+                {% for structure in not_a_simple_user %}
+                <li>
+                    <a class="dropdown-item list-item" href="{% url 'uni_ticket:manage' structure_slug=structure.slug %}">
+                        <span>{{ structure.name }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+          </ul>
         </div>
+    </div>
     {% endif %}
     <a href="{% url 'logout' %}">
         <button class="btn btn-primary btn-sm btn-icon" type="button">
             <svg class="icon icon-light icon-xs">
-              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
             </svg> <span>{% trans "Esci" %}</span>
         </button>
     </a>

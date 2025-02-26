@@ -18,13 +18,13 @@
    href="{% url 'uni_ticket:user_dashboard' %}"
    {% endif %}>
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Dashboard" %}
 </a>
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:user_settings' %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Gestione account" %}
 </a>
 {% endblock top_buttons %}
@@ -32,16 +32,18 @@
 {% block page_content %}
 <form method="post" novalidate>
     {% include 'form_template.html' %}
-    <button type="button"
-            class="btn btn-success btn-block"
-            data-toggle="modal"
-            data-target="#change_user_email">
-            <svg class="icon icon-xs icon-white">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
-            </svg>
-            {% trans "Invia" %}
-    </button>
-    <!-- priority ticket modal -->
+    <div class="d-grid gap-2">
+        <button type="button"
+                class="btn btn-success"
+                data-bs-toggle="modal"
+                data-bs-target="#change_user_email">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
+                </svg>
+                {% trans "Invia" %}
+        </button>
+    </div>
+    <!-- send ticket modal -->
     <div class="modal-div modal fade"
          tabindex="-1"
          role="dialog"
@@ -53,12 +55,12 @@
                     <h5 class="modal-title">
                         {% trans "Modifica dati personali" %}
                     </h5>
-                    <button class="close"
+                    <button class="btn-close"
                             type="button"
-                            data-dismiss="modal"
+                            data-bs-dismiss="modal"
                             aria-label="Close">
                        <svg class="icon">
-                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                        </svg>
                     </button>
                 </div>
@@ -73,7 +75,7 @@
             </div>
         </div>
     </div>
-    <!-- end priority ticket modal -->
+    <!-- end send ticket modal -->
 </form>
 {% endblock page_content %}
 

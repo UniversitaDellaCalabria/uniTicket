@@ -2494,10 +2494,10 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
         date_end = date_end,
         structure_slug = structure_slug
     )
-    if request.POST.get('office_slug'):
-        _q['office_slug'] = request.POST['office_slug']
-    if request.POST.get('category_slug'):
-        _q['category_slug'] = request.POST['category_slug']
+    if request.POST.getlist('office_slug'):
+        _q['office_slug'] = request.POST.getlist('office_slug')
+    if request.POST.getlist('category_slug'):
+        _q['category_slug'] = request.POST.getlist('category_slug')
 
     stats = uniTicketStats(**_q)
     stats.load()
@@ -2523,8 +2523,8 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
         # "ticket_per_day": tuple(stats.ticket_per_day.keys()),
         "ticket_per_day": stats.ticket_per_day,
         "time_slots": STATS_TIME_SLOTS,
-        "ticket" : request.POST.get('category_slug'),
-        "office" : request.POST.get('office_slug'),
+        "category_slugs" : request.POST.getlist('category_slug'),
+        "office_slugs" : request.POST.getlist('office_slug'),
         "STATS_HEAT_MAP_RANGES": json.dumps(STATS_HEAT_MAP_RANGES, indent=2)
     }
     if _struct:

@@ -3,18 +3,18 @@
 
 
 {% if category.is_published %}
-    <span class="badge badge-success mb-2">
+    <span class="badge bg-success mb-2">
         {% trans "Attiva" %}
     </span>
 {% elif category.is_active %}
     <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-clock"></use>
     </svg>
-    <span class="badge badge-warning mb-2">
+    <span class="badge bg-warning mb-2">
          {% trans "Non attiva" %}
     </span>
 {% else %}
-    <span class="badge badge-danger mb-2">
+    <span class="badge bg-danger mb-2">
         {% trans "Non attiva" %}
     </span>
 {% endif %}

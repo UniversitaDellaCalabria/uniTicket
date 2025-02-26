@@ -10,23 +10,23 @@
 
 {% block right_button %}
 {% ticket_has_been_taken ticket=ticket as ticket_taken %}
-<div class="pull-right">
+<div class="pull-end">
     <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:ticket_detail_print' ticket_id=ticket.code %}"
        target="_blank" rel="noopener noreferrer"
-       data-toggle="tooltip"
+       data-bs-toggle="tooltip"
        title="{% trans 'Versione stampabile' %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-print"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-print"></use>
         </svg>
     </a>
     <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:ticket_detail_print_pdf' ticket_id=ticket.code %}"
        target="_blank" rel="noopener noreferrer"
-       data-toggle="tooltip"
+       data-bs-toggle="tooltip"
        title="{% trans 'Versione PDF' %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-download"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-download"></use>
         </svg>
     </a>
 </div>
@@ -39,8 +39,8 @@
         {% if not ticket.protocol_number %}
         <div class="alert alert-info alert-dismissible fade show mb-5" role="alert">
           {% trans "E' possibile <b>modificare</b> o <b>eliminare</b> la richiesta fino a quando questa non sia stata assegnata ad un operatore" %}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <svg class="icon"><use href="{% static 'svg/sprites.svg' %}#it-close"></use></svg>
           </button>
         </div>
         {% endif %}
@@ -53,25 +53,25 @@
         <a role="button" class="btn btn-outline-secondary"
            href="{% url 'uni_ticket:user_dashboard' %}">
             <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
             </svg> {% trans "Dashboard" %}
         </a>
         <a role="button" class="btn btn-outline-secondary"
            href="{% url 'uni_ticket:user_unassigned_ticket' %}">
             <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-warning-circle"></use>
             </svg> {% trans "Torna alle richieste aperte" %}
         </a>
         <a role="button" class="btn btn-outline-secondary"
            href="{% url 'uni_ticket:user_opened_ticket' %}">
             <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-clock"></use>
             </svg> {% trans "Torna alle richieste assegnate" %}
         </a>
         <a role="button" class="btn btn-outline-secondary"
            href="{% url 'uni_ticket:user_closed_ticket' %}">
             <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use>
             </svg> {% trans "Torna alle richieste chiuse" %}
         </a>
     </div>
@@ -79,10 +79,10 @@
     {% if ticket.is_closed and not ticket.closed_by and not ticket.is_notification %}
     <button type="button"
         class="btn btn-outline-warning"
-        data-toggle="modal"
-        data-target="#reopenTicket">
+        data-bs-toggle="modal"
+        data-bs-target="#reopenTicket">
         <svg class="icon icon-xs icon-warning">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-exchange-circle"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-exchange-circle"></use>
         </svg> {% trans "Riapri richiesta" %}
     </button>
     <div class="modal fade" tabindex="-1" role="dialog" id="reopenTicket">
@@ -92,12 +92,12 @@
                     <h5 class="modal-title">
                         {% trans "Riapertura richiesta" %}
                     </h5>
-                    <button class="close"
+                    <button class="btn-close"
                             type="button"
-                            data-dismiss="modal"
+                            data-bs-dismiss="modal"
                             aria-label="Close">
                        <svg class="icon">
-                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                        </svg>
                     </button>
                 </div>
@@ -122,7 +122,7 @@
        href="{% url 'uni_ticket:user_clone_ticket' ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
        <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-copy"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-copy"></use>
        </svg> {% trans "Effettua richiesta simile" %}
     </a>
 
@@ -132,10 +132,10 @@
            class="btn btn-outline-secondary">
             {% get_unread_messages ticket=ticket as unread_messages %}
             <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-comment"></use>
             </svg>
             {% if ticket_messages %}
-            <span class="badge badge-primary">{% trans "Nuovi" %}</span>
+            <span class="badge bg-primary">{% trans "Nuovi" %}</span>
             {% endif %}
             {% trans "Messaggi" %}
         </a>
@@ -144,7 +144,7 @@
            class="btn btn-outline-secondary"
            href="{% url 'uni_ticket:ticket_edit' ticket_id=ticket.code %}">
             <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
             </svg> {% trans 'Modifica' %}
         </a>
     {% endif %}
@@ -152,17 +152,17 @@
         <a role="button"
            href="{% url 'uni_ticket:user_close_ticket' ticket_id=ticket.code %}"
            class="btn btn-outline-success">
-            <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+            <svg class="icon icon-xs icon-success">
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
             </svg> {% trans "Chiudi" %}
         </a>
     {% endif %}
 
     {% if not ticket_taken and not ticket.is_closed and ticket_assignments.count == 1 and not ticket.protocol_number %}
         <button type="button" class="btn btn-outline-danger"
-                data-toggle="modal"  data-target="#modalCenter">
+                data-bs-toggle="modal"  data-bs-target="#modalCenter">
             <svg class="icon icon-xs icon-danger">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
             </svg> {% trans 'Elimina' %}
         </button>
         <div class="modal fade" tabindex="-1" role="dialog" id="modalCenter">
@@ -172,12 +172,12 @@
                         <h5 class="modal-title">
                             {% trans "Richiesta conferma eliminazione" %}
                         </h5>
-                        <button class="close"
+                        <button class="btn-close"
                                 type="button"
-                                data-dismiss="modal"
+                                data-bs-dismiss="modal"
                                 aria-label="Close">
                            <svg class="icon">
-                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                            </svg>
                         </button>
                     </div>
@@ -208,8 +208,8 @@
 {% block extra_scripts %}
 {{ block.super }}
 <script>
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
+document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+    new bootstrap.Tooltip(el);
+});
 </script>
 {% endblock %}

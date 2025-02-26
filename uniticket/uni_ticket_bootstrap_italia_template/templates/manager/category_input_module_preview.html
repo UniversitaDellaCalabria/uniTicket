@@ -9,10 +9,10 @@
 {% block top_buttons_surround %}{% endblock %}
 
 {% block form_buttons %}
-<div>
-    <button class="btn btn-success btn-block" type="submit">
+<div class="d-grid gap-2">
+    <button class="btn btn-success" type="submit">
         <svg class="icon icon-xs icon-white">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
         </svg>
         {% trans "Simula invio richiesta" %}
     </button>

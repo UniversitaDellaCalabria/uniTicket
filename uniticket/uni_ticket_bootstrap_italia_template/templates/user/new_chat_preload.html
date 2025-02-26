@@ -13,7 +13,7 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:user_dashboard' %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna alla Dashboard" %}
 </a>
 {% endblock top_buttons %}
@@ -47,7 +47,7 @@
         {% if chat_installed and channels_installed and operator_online %}
             <a role="button" class="btn btn-success" href="{% url 'chat:room' room_name=structure_slug %}">
                 <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-user"></use>
                 </svg> {% trans "Entra in Chat" %}
             </a>
         {% else %}

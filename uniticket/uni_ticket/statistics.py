@@ -17,8 +17,8 @@ class StatsArgsModel(BaseModel):
     date_start : Union[timezone.datetime, None]
     date_end : Union[timezone.datetime, None]
     structure_slug : Union[str, None]
-    office_slug : Union[str, None]
-    category_slug : Union[str, None]
+    office_slug : Union[list, None]
+    category_slug : Union[list, None]
 
 
 class uniTicketStats:
@@ -28,8 +28,8 @@ class uniTicketStats:
         date_start:Union[timezone.datetime, None] = None,
         date_end:Union[timezone.datetime, None] = None,
         structure_slug:Union[str, None] = None,
-        office_slug : Union[str, None] = None,
-        category_slug:Union[str, None] = None
+        office_slug : Union[list, None] = None,
+        category_slug:Union[list, None] = None
     ):
         # args validation
         StatsArgsModel(
@@ -123,6 +123,7 @@ class uniTicketStats:
                 '__ticket_category'
                 '__organizational_office'
                 '__slug'
+                '__in'
             ] = self.office_slug
 
         if self.category_slug:
@@ -130,6 +131,7 @@ class uniTicketStats:
                 'input_module'
                 '__ticket_category'
                 '__slug'
+                '__in'
             ] = self.category_slug
 
         return _q

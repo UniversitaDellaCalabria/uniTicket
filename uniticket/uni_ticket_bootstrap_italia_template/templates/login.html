@@ -5,7 +5,7 @@
     <div class="py-md-5 bd-content clearfix">
         {% include 'messages.html' %}
 
-        <h4 class="float-left">
+        <h4 class="float-start">
            {% trans "Effettua l'accesso" %}
         </h4>
 
@@ -37,7 +37,9 @@
                             <input name="remember" type="checkbox" value="Remember Me">{% trans 'Remember Me' %}
                         </label>
                     </div>
-                    <input class="btn btn-lg btn-success btn-block" type='submit' value='{% trans "Login" %}' />
+                    <div class="d-grid gap-2">
+                        <input class="btn btn-lg btn-success" type="submit" value="{% trans 'Login' %}" />
+                    </div>
                     <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}../{% endif %}" />
                 </fieldset>
             {% csrf_token %}</form>

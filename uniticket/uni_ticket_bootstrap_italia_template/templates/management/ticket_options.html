@@ -17,14 +17,14 @@
             <div>
                 {% if not ticket.is_closed %}
                 <button type="button"
-                    class="mx-1 btn btn-outline-danger btn-xs float-right"
-                    data-toggle="modal"
-                    data-target="#deleteTask{{ forloop.counter0 }}">
+                    class="mx-1 btn btn-outline-danger btn-xs float-end"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteTask{{ forloop.counter0 }}">
                     {% trans "Elimina attività" %}
                 </button>
                 {% else %}
                 <button type="button"
-                    class="mx-1 btn btn-secondary btn-xs float-right"
+                    class="mx-1 btn btn-secondary btn-xs float-end"
                     title="{% trans 'Questa attività non può essere eliminata' %}"
                     disabled>
                     {% trans "Elimina attività" %}
@@ -33,21 +33,21 @@
 
                 {% if task.is_closed %}
                 <button type="button"
-                    class="mx-1 btn btn-outline-warning btn-xs float-right"
-                    data-toggle="modal"
-                    data-target="#reopenTask{{ forloop.counter0 }}">
+                    class="mx-1 btn btn-outline-warning btn-xs float-end"
+                    data-bs-toggle="modal"
+                    data-bs-target="#reopenTask{{ forloop.counter0 }}">
                     {% trans "Riapri attività" %}
                 </button>
                 {% else %}
                 <a role="button"
-                   class="mx-1 btn btn-outline-success btn-xs float-right"
+                   class="mx-1 btn btn-outline-success btn-xs float-end"
                    href="{% url 'uni_ticket:close_task' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code %}">
                     {% trans "Chiudi attività" %}
                 </a>
                 {% endif %}
 
                 <a role="button"
-                   class="mx-1 btn btn-outline-secondary btn-xs float-right"
+                   class="mx-1 btn btn-outline-secondary btn-xs float-end"
                    href="{% url 'uni_ticket:manage_task_detail_url' structure_slug=structure.slug ticket_id=ticket.code task_id=task.code %}">
                     {% trans "Dettagli" %}
                 </a>
@@ -65,11 +65,11 @@
                             <h5 class="modal-title">
                                 {% trans "Eliminazione attività" %}
                             </h5>
-                            <button class="close" type="button"
-                                    data-dismiss="modal"
+                            <button class="btn-close" type="button"
+                                    data-bs-dismiss="modal"
                                     aria-label="Close">
                                <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                </svg>
                             </button>
                         </div>
@@ -98,10 +98,10 @@
                             <h5 class="modal-title">
                                 {% trans "Riapertura task" %}
                             </h5>
-                            <button class="close" type="button"
-                                    data-dismiss="modal" aria-label="Close">
+                            <button class="btn-close" type="button"
+                                    data-bs-dismiss="modal" aria-label="Close">
                                <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                </svg>
                             </button>
                         </div>
@@ -126,11 +126,11 @@
         {% endfor %}
     </ul>
 </div>
-<div>
-    <a class="btn btn-outline-success btn-block mt-4"
+<div class="d-grid gap-2">
+    <a class="btn btn-outline-success mt-4"
        href="{% url 'uni_ticket:add_ticket_task_url' structure_slug=structure.slug ticket_id=ticket.code %}">
         <svg class="icon icon-xs icon-success">
-            <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
+            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
         </svg> {% trans "Aggiungi nuova attività" %}
     </a>
 </div>
@@ -143,11 +143,11 @@
         <li class="py-2 clearfix">
             <b>{{ dependence.main_ticket }}</b>
             {% if dependence.main_ticket.is_closed %}
-                <span class="badge badge-danger">
+                <span class="badge bg-danger">
                     {% trans "Chiuso" %}
                 </span>
             {% else %}
-                <span class="badge badge-success">
+                <span class="badge bg-success">
                     {% trans "Aperto" %}
                 </span>
             {% endif %}
@@ -161,9 +161,9 @@
 
             {% if not ticket.is_closed %}
             <button type="button"
-                class="mx-1 btn btn-outline-danger btn-xs float-right"
-                data-toggle="modal"
-                data-target="#deleteDependence{{ forloop.counter0 }}">
+                class="mx-1 btn btn-outline-danger btn-xs float-end"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteDependence{{ forloop.counter0 }}">
                 {% trans "Rimuovi dipendenza" %}
             </button>
             <div class="modal fade"
@@ -177,11 +177,11 @@
                             <h5 class="modal-title">
                                 {% trans "Eliminazione dipendenza" %}
                             </h5>
-                            <button class="close" type="button"
-                                    data-dismiss="modal"
+                            <button class="btn-close" type="button"
+                                    data-bs-dismiss="modal"
                                     aria-label="Close">
                                <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                </svg>
                             </button>
                         </div>
@@ -202,7 +202,7 @@
             </div>
             {% endif %}
             <a role="button"
-               class="mx-1 btn btn-outline-secondary btn-xs float-right"
+               class="mx-1 btn btn-outline-secondary btn-xs float-end"
                href="{% url 'uni_ticket:manage_ticket_url_detail' structure_slug=structure.slug ticket_id=dependence.main_ticket.code %}">
                 {% trans "Vai alla richiesta" %}
             </a>
@@ -210,11 +210,11 @@
         {% endfor %}
     </ul>
 </div>
-<div>
-    <a class="btn btn-outline-success btn-block mt-4"
+<div class="d-grid gap-2">
+    <a class="btn btn-outline-success mt-4"
        href="{% url 'uni_ticket:add_ticket_dependence_url' structure_slug=structure.slug ticket_id=ticket.code %}">
         <svg class="icon icon-xs icon-success">
-            <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
+            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
         </svg> {% trans "Aggiungi nuova dipendenza" %}
     </a>
 </div>

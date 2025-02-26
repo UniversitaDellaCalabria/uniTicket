@@ -1,12 +1,32 @@
-a {
+a{
     cursor: pointer;
     text-decoration: none;
 }
-.bootstrap-select-wrapper button {
+small, .form-text{
+    font-size: .9rem;
+}
+.table-responsive{
+    width: 100%;
+}
+.bootstrap-select-wrapper button{
     color: #000;
 }
-input[type=file] {
+form{
+    font-size: 1.125rem;
+}
+.form-check [type=checkbox]+label,
+.form-check [type=radio]+label{
+    font-size: 1rem;
+}
+.select-wrapper select, select{
+    font-weight: normal;
+}
+input:not([type=checkbox]), textarea{
     width: 100%;
+}
+input, select{
+    font-size: 1rem;
+    padding: .375rem .5rem;
 }
 input[type="date"], input[type="datetime-local"], input[type="email"],
 input[type="number"], input[type="password"], input[type="search"],
@@ -17,26 +37,38 @@ input[type="url"]{
 textarea{
     border: 1px solid #ddd;
 }
-.bootstrap-select-wrapper button .filter-option:after {
+.bootstrap-select-wrapper button .filter-option:after{
     background: #ddd;
 }
-
+.form-check [type=checkbox]+label,
+.form-check [type=radio]+label{
+    font-weight: normal;
+}
+label{
+    margin-bottom: .5rem;
+}
+.form-check-group label{
+    margin-bottom: 0;
+}
 /**
  * Cards
  */
- .card a.read-more {
+.card a.read-more{
     position: inherit;
     bottom: 0px;
- }
+}
+.card .card-body .category-top a.category{
+    color: #435a70;
+}
 .card .card-body p,
 .card .card-body p.card-text,
-.callout p {
+.callout p{
     font-family: "Titillium Web",Geneva,Tahoma,sans-serif;
 }
 .card .card-body{
     // overflow-x: auto;
 }
-.card .card-body a h5.card-title {
+.card .card-body a h5.card-title{
     text-transform: none;
     color: #17324d;
 
@@ -45,12 +77,15 @@ textarea{
     font-weight: normal;
     margin-bottom: 0;
 }
-h5.card-title .badge {
+.card .card-body a{
+    display: inline;
+}
+h5.card-title .badge{
     font-size: 1.1rem;
     margin-right: 20px;
 }
 
-.it-list-wrapper .it-list a {
+.it-list-wrapper .it-list a{
     margin-top: 0px;
 }
 
@@ -58,28 +93,31 @@ h5.card-title .badge {
  * Form
  */
 .it-datepicker-wrapper .form-group,
-.bootstrap-select-wrapper .form-group {
+.bootstrap-select-wrapper .form-group{
     margin-bottom: 0;
 }
 .errorlist{
     margin-bottom: 0;
 }
 
-.toggles label input[type=checkbox]:checked+.lever:after {
+.toggles label input[type=checkbox]:checked+.lever:after{
     background-color: #008758;
 }
 
-.collapse-header [data-toggle=collapse][aria-expanded=false] {
+.accordion-header [data-bs-toggle=collapse][aria-expanded=false]{
     color: #383838;
 }
-.collapse-header [data-toggle=collapse]:after {
+.accordion-header [data-bs-toggle=collapse]:after{
     color: #b83219;
 }
 
 /**
  * Datatables
  */
-.uni_ticket_select {
+table.dataTable{
+    width: 100% !important;
+}
+.uni_ticket_select{
     background: #fff;
     border-top: none;
     font-weight: bold;
@@ -89,22 +127,22 @@ h5.card-title .badge {
     padding: 5px 10px;
 
 }
-.dataTables_info {
+.dataTables_info{
     float: left;
 }
-.dataTables_paginate {
+.dataTables_paginate{
     float:right;
 }
-.paginate_button {
+.paginate_button{
     padding: 0 10px;
 }
-a.paginate_button.current {
+a.paginate_button.current{
     font-weight: bold;
     border-radius: 50%;
     color: #fff;
     background: #979899;
 }
-.dataTables_wrapper .dt-buttons {
+.dataTables_wrapper .dt-buttons{
     float: right;
 }
 
@@ -112,7 +150,7 @@ a.paginate_button.current {
 /*
  * Callout
  */
-.card .card-body .callout p {
+.card .card-body .callout p{
     font-size: 1rem;
 }
 
@@ -128,11 +166,11 @@ a.read-more .icon{ fill: #9d9d9d; }
         margin-right: 0 !important;
     }
 
-    .pb-md-5, .py-md-5 {
+    .pb-md-5, .py-md-5{
         padding-bottom: 25px!important;
         padding-top: 25px!important;
     }
-    .main-body {
+    .main-body{
         h1,h2,h3,h4,h5{
             text-align:center;
         }
@@ -166,58 +204,58 @@ a.read-more .icon{ fill: #9d9d9d; }
     }
 
     .dataTables_info,
-    .dataTables_paginate {
+    .dataTables_paginate{
         width: 100%;
         text-align: center;
     }
 
-    .header-slim-right-zone .dropdown-menu {
+    .header-slim-right-zone .dropdown-menu{
         width: 100%;
     }
-    .header-slim-right-zone .dropdown-menu:before {
+    .header-slim-right-zone .dropdown-menu:before{
         left: 50%;
         margin-left: -9px;
     }
 
-    .chip.chip-lg {
+    .chip.chip-lg{
         width: 100%;
     }
 
-    .collapse-div .badge {
+    .collapse-div .badge{
         display: table;
     }
 
-    .alert.mobile-adapt {
+    .alert.mobile-adapt{
         background: none;
         padding: 1rem;
     }
 }
 
-.table {
+.table{
   th,
-  td {
+  td{
     border-bottom: 1px solid #d6dce3;
     border-top: 1px solid #d6dce3;
   }
 }
 
-.table.ticket_detail th {
+.table.ticket_detail th{
     min-width: 200px;
 }
 
 /*
  * custom float only on desktop
  */
-@media (max-width: 768px) {
+@media (max-width: 768px){
     .table-responsive:not(.not-collapsable) .table:not(.dataTable) th,
-    .table-responsive:not(.not-collapsable) .table:not(.dataTable) td {
+    .table-responsive:not(.not-collapsable) .table:not(.dataTable) td{
         float: left;
         width: 100%;
         border-bottom: 0;
     }
 }
 
-.errorlist {
+.errorlist{
     color: #a31f33;
     list-style: none;
     padding-left: 10px;
@@ -226,7 +264,7 @@ a.read-more .icon{ fill: #9d9d9d; }
 /*
  * Select Input compatibility mode (emulate Bootstrap Italia)
  */
-select {
+select{
     width: 100%;
     background: #fff;
     border-top: 0;
@@ -239,14 +277,14 @@ select {
 /*
  * custom float only on desktop
  */
-@media (min-width: 992px) {
-    .pull-right {
+@media (min-width: 992px){
+    .pull-end{
         float: right !important;
     }
-    .pull-left {
+    .pull-start{
         float: left !important;
     }
-    .chat-user-list {
+    .chat-user-list{
         border-right:1px solid #ddd;
     }
 }
@@ -254,7 +292,7 @@ select {
 /*
  * normalize buttons and <a> tags with role=button
  */
-.it-list-wrapper .it-list a[role=button].btn-outline-secondary:hover {
+.it-list-wrapper .it-list a[role=button].btn-outline-secondary:hover{
     -webkit-box-shadow: inset 0 0 0 1px #c9cedc;
     box-shadow: inset 0 0 0 1px #c9cedc;
     color: #50565c !important;
@@ -265,48 +303,51 @@ select {
 /**
  * Ticket messages
  */
-.ticket_replies .card .card-body p {
+.ticket_replies .card .card-body p{
     font-size: 1rem;
 }
 
-.structure_banner {
+.structure_banner{
     max-width: 100%;
 }
 
-.header-slim-right-zone .link-list-wrapper ul li:not(:last-child) a {
+.header-slim-right-zone .link-list-wrapper ul li:not(:last-child) a{
     border-bottom: 1px solid #e7e7e7;
 }
 
 /*
  * DataTables pagination current page
  */
-.dataTables_paginate .pagination .page-item.active {
+.dataTables_paginate .pagination .page-item.active{
     text-decoration: underline;
 }
 
 /*
  * Toolbar shadow hidden
  */
-.toolbar>ul {
+.toolbar>ul{
     z-index: 0;
 }
-.toolbar:before {
+.toolbar:before{
     display: none;
 }
 
 .toolbar .toolbar-alert, .toolbar .toolbar-badge{
     background-color: #383838;
 }
-.toolbar .toolbar-alert, .toolbar .badge-primary{
+.toolbar .toolbar-alert, .toolbar .bg-primary{
     background-color: #b71918;
+}
+.table td, .table th{
+    padding: 1rem !important;
 }
 
 /*
  * Bootstrap Italia select box
  */
-.bootstrap-select-wrapper .dropdown.bootstrap-select .btn {
+.bootstrap-select-wrapper .dropdown.bootstrap-select .btn{
     height: auto;
 }
-.filter-option-inner-inner {
+.filter-option-inner-inner{
     white-space: normal;
 }

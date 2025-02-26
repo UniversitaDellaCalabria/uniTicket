@@ -7,7 +7,7 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manage_task_detail_url' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code%}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna all'attività" %}
 </a>
 {% endblock top_buttons %}
@@ -17,40 +17,40 @@
     {% include 'form_template.html' %}
 
     {% block form_buttons %}
-    <div>
+    <div class="d-grid gap-2">
         <button type="button"
-                class="btn btn-success btn-block"
-                data-toggle="modal"
-                data-target="#closetask">
+                class="btn btn-success"
+                data-bs-toggle="modal"
+                data-bs-target="#closetask">
                 <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                 </svg> {% trans "Chiudi l'attività" %}
         </button>
-        <div class="modal fade" tabindex="-1" role="dialog" id="closetask">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            {% trans "Chiusura attività" %}
-                        </h5>
-                        <button class="close" type="button"
-                                data-dismiss="modal" aria-label="Close">
-                           <svg class="icon">
-                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                           </svg>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{% trans "Vuoi davvero chiudere l'attività" %}
-                           <br>
-                           <b>{{ task }}</b> ?
-                        </p>
-                    </div>
-                    <div class="modal-footer">
-                        <input class="btn btn-success"
-                               type="submit"
-                               value="{% trans 'Si, chiudi l\'attività' %}">
-                    </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="closetask">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {% trans "Chiusura attività" %}
+                    </h5>
+                    <button class="btn-close" type="button"
+                            data-bs-dismiss="modal" aria-label="Close">
+                       <svg class="icon">
+                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                       </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>{% trans "Vuoi davvero chiudere l'attività" %}
+                       <br>
+                       <b>{{ task }}</b> ?
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-success"
+                           type="submit"
+                           value="{% trans 'Si, chiudi l\'attività' %}">
                 </div>
             </div>
         </div>

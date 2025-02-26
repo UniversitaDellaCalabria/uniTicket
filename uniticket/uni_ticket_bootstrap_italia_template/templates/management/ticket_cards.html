@@ -4,24 +4,24 @@
 
 <div id="counters" class="d-inline">
     <a role="button"
-       class="btn btn-outline-secondary mr-1"
+       class="btn btn-outline-secondary me-1"
        href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
-        <span class="badge badge-light" v-if="unassigned">[[ unassigned ]]</span>
+        <span class="badge bg-info" v-if="unassigned">[[ unassigned ]]</span>
         <div class="progress progress-indeterminate progress-color" v-else>
-            <span class="sr-only">In elaborazione...</span>
+            <span class="visually-hidden">In elaborazione...</span>
             <div class="progress-bar bg-info" role="progressbar"></div>
         </div>
         {% trans 'Aperte' %}
     </a>
-    <a role="button" class="btn btn-outline-secondary mr-1" href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
-        <span class="badge badge-light" v-if="open">
+    <a role="button" class="btn btn-outline-secondary me-1" href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+        <span class="badge bg-info" v-if="open">
             [[ open ]]
         </span>
         <div class="progress progress-indeterminate progress-color" v-else>
-            <span class="sr-only">In elaborazione...</span>
+            <span class="visually-hidden">In elaborazione...</span>
             <div class="progress-bar bg-info" role="progressbar"></div>
         </div> {% trans 'Assegnate' %}
-        <span class="badge badge-light" v-if="my_open">([[ my_open ]] {% trans 'a me' %})</span>
+        <span class="badge bg-info" v-if="my_open">([[ my_open ]] {% trans 'a me' %})</span>
     </a>
     <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
         {% trans 'Chiuse' %}
