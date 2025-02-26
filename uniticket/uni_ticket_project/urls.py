@@ -31,6 +31,9 @@ from uni_ticket.views import handlers
 DEFAULT_BASE_TEMPLATE = getattr(settings,'DEFAULT_BASE_TEMPLATE', '')
 
 
+handler404 = "uni_ticket.views.generic.custom_404"
+
+
 @login_required
 def test500(request):
     from django.http import HttpResponse
@@ -45,8 +48,6 @@ urlpatterns = [
     path("{}/".format(getattr(settings, "ADMIN_PATH", "admin")), admin.site.urls),
     path("test500/", test500, name="test500"),
 ]
-
-handler404 = uni_ticket.views.generic.custom_404
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
