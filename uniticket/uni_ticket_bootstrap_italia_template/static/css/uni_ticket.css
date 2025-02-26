@@ -331,13 +331,6 @@ select{
 .toolbar:before{
     display: none;
 }
-
-.toolbar .toolbar-alert, .toolbar .toolbar-badge{
-    background-color: #383838;
-}
-.toolbar .toolbar-alert, .toolbar .bg-primary{
-    background-color: #b71918;
-}
 .table td, .table th{
     padding: 1rem !important;
 }
