@@ -559,6 +559,6 @@ def download_condition_attachment(request, structure_slug, category_slug, condit
     raise Http404
 
 
-def custom_404(request, exception):
-    base_template = getattr(settings,'DEFAULT_BASE_TEMPLATE', '')
-    return render(request, '404.html', {'base_template': base_template}, status=404)
+# def custom_404(request, exception):
+    # base_template = getattr(settings,'DEFAULT_BASE_TEMPLATE', '')
+    # return render(request, '404.html', {'base_template': base_template}, status=404)
