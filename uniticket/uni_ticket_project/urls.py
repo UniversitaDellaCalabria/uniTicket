@@ -31,7 +31,7 @@ from uni_ticket.views import handlers
 DEFAULT_BASE_TEMPLATE = getattr(settings,'DEFAULT_BASE_TEMPLATE', '')
 
 
-# handler404 = "uni_ticket.views.generic.custom_404"
+handler404 = "uni_ticket.views.generic.custom_404"
 
 
 @login_required
