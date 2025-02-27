@@ -44,9 +44,7 @@
     {% endif %}
     <a href="{% url 'logout' %}" style="width: inherit">
         <button class="btn btn-primary btn-sm btn-icon" type="button">
-            <svg class="icon icon-light icon-xs">
-              <use xlink:href="{% static 'svg/sprites.svg' %}#it-logout"></use>
-            </svg> <span>{% trans "Esci" %}</span>
+            <span>{% trans "Esci" %}</span>
         </button>
     </a>
 {% else %}
