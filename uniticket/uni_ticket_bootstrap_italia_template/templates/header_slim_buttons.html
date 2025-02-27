@@ -23,11 +23,11 @@
             {% endif %}
         </span>
     </button>
-    <div class="dropdown-menu" style="overflow-x: scroll">
+    <div class="dropdown-menu">
         <div class="link-list-wrapper">
             <ul class="link-list">
                 <li>
-                    <a class="dropdown-item list-item" href="{% url 'uni_ticket:user_dashboard' %}">
+                    <a class="dropdown-item list-item" style="white-space: normal" href="{% url 'uni_ticket:user_dashboard' %}">
                         <span>{{ simple_user_context_name }}</span>
                     </a>
                 </li>
