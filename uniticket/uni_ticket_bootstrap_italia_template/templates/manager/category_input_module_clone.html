@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showNoOptionsFound: false,
         dropdownArrow: () => '',
         onConfirm:  (selected) => {
-            const selectedStructure = Array.from(structureElement.options).find(option => option.text === selected);
+            const selectedStructure = Array.from(structureElement.options).find(option => option.textContent === selected);
             if (selectedStructure) {
                 {% if structure_slug %}
                 window.location.href = replace_last_param(window.location.href, selectedStructure.value);
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showNoOptionsFound: false,
         dropdownArrow: () => '',
         onConfirm:  (selected) => {
-            const selectedCategory = Array.from(categoryElement.options).find(option => option.text === selected);
+            const selectedCategory = Array.from(categoryElement.options).find(option => option.textContent === selected);
             if (selectedCategory) {
                 {% if selected_category_slug %}
                 window.location.href = replace_last_param(window.location.href, selectedCategory.value);
