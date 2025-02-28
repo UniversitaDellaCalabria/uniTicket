@@ -151,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
         showAllValues: true,
         defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
         autoselect: false,
         showNoOptionsFound: false,
         dropdownArrow: () => '',
@@ -170,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let officeAutocomplete = new bootstrap.SelectAutocomplete(officeElement, {
         showAllValues: true,
         defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
         autoselect: false,
         showNoOptionsFound: false,
         dropdownArrow: () => '',
@@ -179,6 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let originOfficeAutocomplete = new bootstrap.SelectAutocomplete(originOfficeElement, {
         showAllValues: true,
         defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
         autoselect: false,
         showNoOptionsFound: false,
         dropdownArrow: () => '',

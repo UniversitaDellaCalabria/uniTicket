@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
         showAllValues: true,
         defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
         autoselect: false,
         showNoOptionsFound: false,
         dropdownArrow: () => '',
@@ -92,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let categoryAutocomplete = new bootstrap.SelectAutocomplete(categoryElement, {
         showAllValues: true,
         defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
         autoselect: false,
         showNoOptionsFound: false,
         dropdownArrow: () => '',

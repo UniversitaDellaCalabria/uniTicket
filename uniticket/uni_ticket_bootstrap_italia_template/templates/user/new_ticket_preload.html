@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
         showAllValues: true,
         defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
         autoselect: false,
         showNoOptionsFound: false,
         dropdownArrow: () => '',
@@ -100,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var categoryAutocomplete = new bootstrap.SelectAutocomplete(categoryElement, {
         showAllValues: true,
         defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
         autoselect: false,
         showNoOptionsFound: false,
         dropdownArrow: () => '',
@@ -115,17 +117,5 @@ document.addEventListener('DOMContentLoaded', function () {
 function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
 }
-
-//$('#structure_slug').on('change', function(event) {
-    //{% if chosen_structure %}
-    //window.location.href = replace_last_param(window.location.href, $(this).val());
-    //{% else %}
-    //window.location.href = window.location.href + $(this).val();
-    //{% endif %}
-//});
-
-//$('#category_slug').on('change', function(event) {
-    //window.location.href = window.location.href + $(this).val();
-//});
 </script>
 {% endblock extra_scripts %}
