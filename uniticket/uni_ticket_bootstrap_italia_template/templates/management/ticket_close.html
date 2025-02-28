@@ -24,13 +24,10 @@
             <select id="reply_select"
                     name="reply_select"
                     title="{% trans 'Seleziona una risposta predefinita' %}"
-                    data-live-search="true" data-live-search-placeholder="Cerca..."
                     onchange="set_reply(this);">
-                <option value="">{% trans "Scegli un'opzione" %}</option>
+                <option selected value="">{% trans "Scegli un'opzione" %}</option>
                 {% for reply in default_replies %}
-                <option value="{{ reply.text }}">
-                    {{ reply }}
-                </option>
+                <option value="{{ reply.text }}">{{ reply }}</option>
                 {% endfor %}
             </select>
         </div>

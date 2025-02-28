@@ -18,21 +18,11 @@
     {% endif %}
 
     <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
-    {% comment %}
-    <!-- Bootstrap Italia select -->
     <div class="bootstrap-select-wrapper">
-    {% endcomment %}
-    <div class="bootstrap-select-wrapper">
-        <select id="structure_slug"
-                name="structure_slug"
-                title="{% trans 'A chi è indirizzata la richiesta?' %}"
-                data-live-search="true" data-live-search-placeholder="Cerca...">
-            <option value="">{% trans "Seleziona un'opzione" %}</option>
+        <select id="structure_slug" name="structure_slug" title="{% trans 'A chi è indirizzata la richiesta?' %}">
+            <option value="" selected></option>
             {% for struttura in strutture %}
-            <option value="{{ struttura.slug }}"
-            {% if struttura.slug == structure_slug %} selected {% endif %}>
-                {{ struttura }}
-            </option>
+            <option value="{{ struttura.slug }}"{% if struttura.slug == structure_slug %} selected {% endif %}>{{ struttura }}</option>
             {% endfor %}
         </select>
     </div>
@@ -48,17 +38,9 @@
           {% trans "Nessun ufficio disponibile per questa struttura" %}
         </div>
         {% else %}
-        {% comment %}
-        <!-- Bootstrap Italia select -->
         <div class="bootstrap-select-wrapper">
-        {% endcomment %}
-        <div class="bootstrap-select-wrapper">
-            <select required
-                {% if not structure_slug %}disabled{% endif %}
-                name="office_slug"
-                title="{% trans 'A chi è indirizzata la richiesta?' %}"
-                data-live-search="true">
-                <option value="">{% trans "Seleziona un'opzione" %}</option>
+            <select required{% if not structure_slug %} disabled{% endif %} id="office_slug" name="office_slug" title="{% trans 'A chi è indirizzata la richiesta?' %}">
+                <option value="" selected></option>
                 {% for office in offices %}
                 <option value="{{ office.slug }}">{{ office.name }}</option>
                 {% endfor %}
@@ -104,14 +86,10 @@
             </label>
         </b>
         <div class="bootstrap-select-wrapper">
-            <select id="selected_office"
-                    name="selected_office"
-                    data-live-search="true" data-live-search-placeholder={% trans "Cerca" %}...">
-                <option value="">{% trans "Tutti quelli a cui afferisco in questa struttura" %}</option>
+            <select id="selected_office" name="selected_office">
+                <option value="" selected></option>
                 {% for operator_office in operator_offices %}
-                <option value="{{ operator_office.slug }}">
-                    {{ operator_office }}
-                </option>
+                <option value="{{ operator_office.slug }}">{{ operator_office }}</option>
                 {% endfor %}
             </select>
             <small class="form-text text-muted">
@@ -168,6 +146,45 @@
 {% block extra_scripts %}
 {{ form.media }}
 <script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function () {
+    let structureElement = document.querySelector('#structure_slug');
+    let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
+        showAllValues: true,
+        defaultValue: '',
+        autoselect: false,
+        showNoOptionsFound: false,
+        dropdownArrow: () => '',
+        onConfirm:  (selected) => {
+            const selectedStructure = Array.from(structureElement.options).find(option => option.text === selected);
+            if (selectedStructure) {
+                {% if structure_slug %}
+                window.location.href = replace_last_param(window.location.href, selectedStructure.value);
+                {% else %}
+                window.location.href = window.location.href + selectedStructure.value;
+                {% endif %}
+            }
+        }
+    });
+
+    let officeElement = document.querySelector('#office_slug');
+    let officeAutocomplete = new bootstrap.SelectAutocomplete(officeElement, {
+        showAllValues: true,
+        defaultValue: '',
+        autoselect: false,
+        showNoOptionsFound: false,
+        dropdownArrow: () => '',
+    });
+
+    let originOfficeElement = document.querySelector('#selected_office');
+    let originOfficeAutocomplete = new bootstrap.SelectAutocomplete(originOfficeElement, {
+        showAllValues: true,
+        defaultValue: '',
+        autoselect: false,
+        showNoOptionsFound: false,
+        dropdownArrow: () => '',
+    });
+});
+
 function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
 }
@@ -181,13 +198,5 @@ function hide_readonly() {
      readonly_div.style.display = "none";
   }
 }
-
-$('#structure_slug').on('change', function(event) {
-    {% if structure_slug %}
-    window.location.href = replace_last_param(window.location.href, $(this).val());
-    {% else %}
-    window.location.href = window.location.href + $(this).val();
-    {% endif %}
-});
 </script>
 {% endblock extra_scripts %}
