@@ -11,7 +11,7 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:operator_dashboard' structure_slug=structure.slug%}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Dashboard" %}
 </a>
 {% endblock top_buttons %}
@@ -55,12 +55,12 @@
                     <td>{{ tm.ticket__input_module__ticket_category__name}}</td>
                     <td>
                         {% if tm.ticket__pk in my_assignments_list %}
-                        <svg class="mr-2 icon icon-success icon-xs">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                        <svg class="me-2 icon icon-success icon-xs">
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use>
                         </svg>
                         {% else %}
-                        <svg class="mr-2 icon icon-danger icon-xs">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                        <svg class="me-2 icon icon-danger icon-xs">
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
                         </svg>
                         {% endif %}
                     </td>
@@ -74,11 +74,11 @@
                     <td>
                         {{ tm.total }}
                         {% if tm.not_read %}
-                            ( {% trans "da leggere" %} <span class="badge badge-primary">{{ tm.not_read }}</span> )
+                            ( {% trans "da leggere" %} <span class="badge bg-primary">{{ tm.not_read }}</span> )
                         {% endif %}
                     </td>
                     <td>
-                        <a role="button" class="mx-1 btn btn-outline-primary btn-xs float-right" href="{% url 'uni_ticket:operator_ticket_message' ticket_id=tm.ticket__code structure_slug=structure.slug %}">
+                        <a role="button" class="mx-1 btn btn-outline-primary btn-xs float-end" href="{% url 'uni_ticket:operator_ticket_message' ticket_id=tm.ticket__code structure_slug=structure.slug %}">
                             Leggi
                         </a>
                     </td>

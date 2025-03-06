@@ -19,7 +19,7 @@ from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from django_form_builder.forms import BaseDynamicForm
 from django_form_builder.models import DynamicFieldMap, SavedFormContent
@@ -77,7 +77,7 @@ def _attachment_upload(instance, filename):
 ### Custom Logs ###
 # like django.contrib.admin.models.LogEntry
 # but object_id as PositiveIntegerField
-# and with index_together = ["content_type", "object_id"])
+# and with indexes = [models.Index(fields=["content_type", "object_id"])]
 import inspect
 exec(inspect.getsource(LogEntry).replace('db_table = "django_admin_log"',
                                          'indexes = [models.Index(fields=["content_type", "object_id"])]')\
@@ -447,7 +447,7 @@ class Ticket(SavedFormContent):
     Ticket
     """
 
-    code = models.CharField(max_length=255, unique=True, db_index=True, default=uuid.uuid4)
+    code = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
     subject = models.CharField(max_length=255)
     description = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
@@ -467,9 +467,9 @@ class Ticket(SavedFormContent):
     )
     input_module = models.ForeignKey(
         TicketCategoryModule, on_delete=models.PROTECT)
-    is_closed = models.BooleanField(default=False, db_index=True)
+    is_closed = models.BooleanField(default=False)
     closed_date = models.DateTimeField(blank=True, null=True)
-    assigned_date = models.DateTimeField(blank=True, null=True, db_index=True)
+    assigned_date = models.DateTimeField(blank=True, null=True)
     closed_by = models.ForeignKey(
         get_user_model(),
         on_delete=models.SET_NULL,
@@ -503,6 +503,12 @@ class Ticket(SavedFormContent):
         ]
         verbose_name = _("Ticket")
         verbose_name_plural = _("Ticket")
+        indexes = [
+            models.Index(fields=["is_closed"]),
+            models.Index(fields=["priority"]),
+            models.Index(fields=["created"]),
+            models.Index(fields=["priority", "created"]),
+        ]
 
     @property
     def taken_date(self):
@@ -702,12 +708,12 @@ class Ticket(SavedFormContent):
         if self.is_closed:
             # if is a notification ticket
             if self.is_notification or not self.closed_by:
-                return _('<span class="badge badge-success">Chiusa</span>')
+                return _('<span class="badge bg-success">Chiusa</span>')
             # normal ticket
             status_literal = dict(CLOSING_LEVELS).get(self.closing_status)
             html = _(
-                '<span class="badge badge-success">Chiusa</span> '
-                '<span class="badge badge-{}">{}</span>'
+                '<span class="badge bg-success">Chiusa</span> '
+                '<span class="badge bg-{}">{}</span>'
             )
             if self.closing_status == -1:
                 html = html.format("danger", status_literal)
@@ -719,8 +725,8 @@ class Ticket(SavedFormContent):
                 html = html.format("secondary", status_literal)
             return "{}<br><small>{}</small>".format(html, self.closed_by)
         if not self.has_been_taken():
-            return _('<span class="badge badge-danger">Aperta</span>')
-        return _('<span class="badge badge-warning">Assegnata</span> {}' "").format(
+            return _('<span class="badge bg-danger">Aperta</span>')
+        return _('<span class="badge bg-warning">Assegnata</span> {}' "").format(
             self.taken_by_html_list()
         )
 
@@ -730,15 +736,15 @@ class Ticket(SavedFormContent):
         if self.is_closed:
             # if is a notification ticket
             if self.is_notification or not self.closed_by:
-                return _('<span class="badge badge-success">Chiusa</span>')
+                return _('<span class="badge bg-success">Chiusa</span>')
             # normal ticket
             status_literal = dict(CLOSING_LEVELS).get(self.closing_status)
 
             # get svg file from static
-            static_icon = static("svg/sprite.svg")
+            static_icon = static("svg/sprites.svg")
 
             html = _(
-                '<span class="badge badge-success">Chiusa</span> '
+                '<span class="badge bg-success">Chiusa</span> '
                 '<svg class="icon icon-xs {}">'
                 "<title>{}</title>"
                 '<use xlink:href="{}#{}"></use>'
@@ -763,8 +769,8 @@ class Ticket(SavedFormContent):
                 )
             return "{}<br><small>{}</small>".format(html, self.closed_by)
         if not self.has_been_taken():
-            return _('<span class="badge badge-danger">Aperta</span>')
-        return _('<span class="badge badge-warning">Assegnata</span> {}' "").format(
+            return _('<span class="badge bg-danger">Aperta</span>')
+        return _('<span class="badge bg-warning">Assegnata</span> {}' "").format(
             self.taken_by_html_list()
         )
 
@@ -1086,7 +1092,7 @@ class Ticket(SavedFormContent):
             if assignment.taken_by:
                 element += "<small>{}</small></li>".format(assignment.taken_by)
             else:
-                element += '<span class="badge badge-danger">{}</span></li>'.format(
+                element += '<span class="badge bg-danger">{}</span></li>'.format(
                     _("Da assegnare")
                 )
             elements += element
@@ -1186,7 +1192,12 @@ class TicketAssignment(TimeStampedModel):
     class Meta:
         unique_together = ("ticket", "office")
         ordering = ["created"]
-        indexes = [models.Index(fields=["office_id", "follow"])]
+        indexes = [
+            models.Index(fields=["office", "follow"]),
+            models.Index(fields=["taken_date"]),
+            # models.Index(fields=["ticket", "office"]),
+        ]
+        # indexes = [models.Index(fields=["office_id", "follow"])]
         verbose_name = _("Competenza Ticket")
         verbose_name_plural = _("Competenza Ticket")
 
@@ -1196,37 +1207,39 @@ class TicketAssignment(TimeStampedModel):
                                  closed=None,
                                  taken=None,
                                  taken_by=None,
-                                 priority_first=True):
+                                 priority_first=True,
+                                 ticket_codes=[]):
         """ """
         q_base = Q(office__organizational_structure=structure,
                    office__is_active=True)
-        q_follow = Q(follow=True) if follow_check else Q()
 
-        q_closed = Q()
-        if closed == True: q_closed = Q(ticket__is_closed=True)
-        elif closed == False: q_closed = Q(ticket__is_closed=False)
+        if follow_check:
+            q_base &= Q(follow=True)
 
-        q_taken = Q()
-        if taken == True: q_taken = Q(taken_date__isnull=False)
-        elif taken == False:  q_taken = Q(taken_date__isnull=True)
+        if closed is not None:
+            q_base &= Q(ticket__is_closed=closed)
 
-        q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
+        if taken is not None:
+            q_base &= Q(taken_date__isnull=not taken)
+
+        if taken_by:
+            q_base &= Q(taken_by=taken_by)
+
+        if ticket_codes:
+            q_base &= Q(ticket__code__in=ticket_codes)
 
         ordering_list = ["ticket__priority", "-ticket__created"]
         if not priority_first:
             ordering_list.remove("ticket__priority")
 
-        ticket_assignments = TicketAssignment.objects.filter(
-            q_base,
-            q_follow,
-            q_closed,
-            q_taken,
-            q_taken_by,
+        tickets = TicketAssignment.objects\
+        .filter(
+            q_base
         ).values_list("ticket__pk", flat=True)\
         .order_by(*ordering_list)\
         .distinct()
 
-        return ticket_assignments
+        return tickets
 
     @staticmethod
     def get_ticket_in_office_list(offices_list,
@@ -1234,37 +1247,37 @@ class TicketAssignment(TimeStampedModel):
                                   closed=None,
                                   taken=None,
                                   taken_by=None,
-                                  priority_first=True):
+                                  priority_first=True,
+                                  ticket_codes=[]):
         """ """
         q_base = Q(office__in=offices_list, office__is_active=True)
 
+        if closed is not None:
+            q_base &= Q(ticket__is_closed=closed)
 
-        q_closed = Q()
-        if closed == True: q_closed = Q(ticket__is_closed=True)
-        elif closed == False: q_closed = Q(ticket__is_closed=False)
+        if taken is not None:
+            q_base &= Q(taken_date__isnull=not taken)
 
-        q_taken = Q()
-        if taken == True: q_taken = Q(taken_date__isnull=False)
-        elif taken == False: q_taken = Q(taken_date__isnull=True)
+        if follow_check:
+            q_base &= Q(follow=True)
 
-        q_taken_by = Q(taken_by=taken_by) if taken_by else Q()
-        q_follow = Q(follow=True) if follow_check else Q()
+        if taken_by:
+            q_base &= Q(taken_by=taken_by)
+
+        if ticket_codes:
+            q_base &= Q(ticket__code__in=ticket_codes)
 
         ordering_list = ["ticket__priority", "-ticket__created"]
         if not priority_first:
             ordering_list.remove("ticket__priority")
 
-        ticket_assignments = TicketAssignment.objects.filter(
+        tickets = TicketAssignment.objects.filter(
             q_base,
-            q_closed,
-            q_taken,
-            q_taken_by,
-            q_follow
         ).values_list("ticket__pk", flat=True)\
         .order_by(*ordering_list)\
         .distinct()
 
-        return ticket_assignments
+        return tickets
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -1473,16 +1486,16 @@ class Task(AbstractTask):
 
     def get_basic_status(self):
         if self.is_closed:
-            return _('<span class="badge badge-success">Chiusa</span>')
-        return _('<span class="badge badge-danger">Aperta</span>')
+            return _('<span class="badge bg-success">Chiusa</span>')
+        return _('<span class="badge bg-danger">Aperta</span>')
 
     def get_status(self):
         if self.is_closed:
             status_literal = dict(CLOSING_LEVELS).get(self.closing_status)
 
             html = _(
-                '<span class="badge badge-success">Chiusa</span> '
-                '<span class="badge badge-{}">{}</span>'
+                '<span class="badge bg-success">Chiusa</span> '
+                '<span class="badge bg-{}">{}</span>'
             )
             if self.closing_status == -1:
                 html = html.format("danger", status_literal)
@@ -1493,7 +1506,7 @@ class Task(AbstractTask):
             elif self.closing_status == 2:
                 html = html.format("secondary", status_literal)
             return "{} <small>{}</small>".format(html, self.closed_by)
-        return _('<span class="badge badge-danger">Aperta</span>')
+        return _('<span class="badge bg-danger">Aperta</span>')
 
     def __str__(self):
         return self.subject

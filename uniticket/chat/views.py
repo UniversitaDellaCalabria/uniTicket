@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from chat.settings import VIDEOCONF_PROVIDERS
 
 from organizational_area.models import OrganizationalStructure

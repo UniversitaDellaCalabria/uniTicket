@@ -11,7 +11,7 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:user_dashboard' %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna alla Dashboard" %}
 </a>
 {% endblock top_buttons %}
@@ -41,21 +41,15 @@
 <b>
     <label for="structure_slug">{% trans "Struttura" %}</label>
 </b>
+
 <div class="bootstrap-select-wrapper">
-    <select id="structure_slug"
-            name="structure_slug"
-            title="{% trans 'A chi è indirizzata la richiesta?' %}"
-            data-live-search="true" data-live-search-placeholder="Cerca...">
-        <option value="">{% trans "Scegli un'opzione" %}</option>
+    <select id="structure_slug" name="structure_slug" title="{% trans 'A chi è indirizzata la richiesta?' %}">
+        <option select value=""></option>
         {% for struttura in strutture %}
-        <option value="{{ struttura.slug }}"
-        {% if struttura.slug == chosen_structure.slug %} selected {% endif %}>
-            {{ struttura }}
-        </option>
+        <option value="{{ struttura.slug }}"{% if struttura.slug == chosen_structure.slug %} selected{% endif %}>{{ struttura }}</option>
         {% endfor %}
     </select>
 </div>
-
 <div style="padding: 1.5rem 0 1rem" >
     <b><label for="category_slug">{% trans "Tipo di richiesta" %}</label></b>
     {% if not chosen_structure %}
@@ -68,12 +62,8 @@
     </div>
     {% else %}
     <div class="bootstrap-select-wrapper">
-        <select id="category_slug"
-                {% if not chosen_structure %}disabled{% endif %}
-                name="category_slug"
-                title="{% trans 'Di cosa si tratta?' %}"
-                data-live-search="true" data-live-search-placeholder="Cerca...">
-            <option value="">{% trans "Scegli un'opzione" %}</option>
+        <select id="category_slug"{% if not chosen_structure %} disabled{% endif %} name="category_slug" title="{% trans 'Di cosa si tratta?' %}">
+            <option value="" selected></option>
             {% for categoria in categorie %}
             <option value="{{ categoria.slug }}">{{ categoria }}</option>
             {% endfor %}
@@ -86,20 +76,48 @@
 
 {% block extra_scripts %}
 <script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function () {
+    let structureElement = document.querySelector('#structure_slug');
+    let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
+        showAllValues: true,
+        defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
+        autoselect: false,
+        showNoOptionsFound: false,
+        dropdownArrow: () => '',
+        onConfirm:  (selected) => {
+            const selectedStructure = Array.from(structureElement.options).find(option => option.textContent === selected);
+            if (selectedStructure) {
+                {% if chosen_structure %}
+                window.location.href = replace_last_param(window.location.href, selectedStructure.value);
+                {% else %}
+                window.location.href = window.location.href + selectedStructure.value;
+                {% endif %}
+            }
+        }
+    });
+
+    var categoryElement = document.querySelector('#category_slug');
+    var categoryAutocomplete = new bootstrap.SelectAutocomplete(categoryElement, {
+        showAllValues: true,
+        defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
+        autoselect: false,
+        showNoOptionsFound: false,
+        dropdownArrow: () => '',
+        onConfirm:  (selected) => {
+            const selectedCategory = Array.from(categoryElement.options).find(option => option.textContent === selected);
+            console.log(selected);
+            console.log(categoryElement.options);
+            if (selectedCategory) {
+                window.location.href = window.location.href + selectedCategory.value;
+            }
+        }
+    });
+})
+
 function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
 }
-
-$('#structure_slug').on('change', function(event) {
-    {% if chosen_structure %}
-    window.location.href = replace_last_param(window.location.href, $(this).val());
-    {% else %}
-    window.location.href = window.location.href + $(this).val();
-    {% endif %}
-});
-
-$('#category_slug').on('change', function(event) {
-    window.location.href = window.location.href + $(this).val();
-});
 </script>
 {% endblock extra_scripts %}

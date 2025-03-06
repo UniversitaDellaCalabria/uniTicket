@@ -7,16 +7,16 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manager_category_task_detail' structure_slug=structure.slug category_slug=task.category.slug task_id=task.code %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna all'attività" %}
 </a>
 {% endblock top_buttons %}
 
 {% block form_buttons %}
-<div>
-    <button class="btn btn-success btn-block" type="submit">
+<div class="d-grid gap-2">
+    <button class="btn btn-success" type="submit">
         <svg class="icon icon-xs icon-white">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
         </svg> {% trans 'Modifica attività' %}
     </button>
 </div>
@@ -51,15 +51,15 @@
                             -->
                             <td class="collapsing">
                                 <button type="button"
-                                        class="mx-1 btn btn-outline-danger btn-xs float-right"
-                                        data-toggle="modal"
-                                        data-target="#delete_allegato_{{ k }}">
+                                        class="mx-1 btn btn-outline-danger btn-xs float-end"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#delete_allegato_{{ k }}">
                                     {% trans 'Elimina allegato' %}
                                 </button>
                                 <a download
                                    href="{% url 'uni_ticket:category_task_download_attachment' structure_slug=structure.slug category_slug=category.slug task_id=task.code %}"
                                    role="button"
-                                   class="mx-1 btn btn-outline-secondary btn-xs float-right">
+                                   class="mx-1 btn btn-outline-secondary btn-xs float-end">
                                     <i class="icon download"></i>
                                     Vedi allegato
                                 </a>
@@ -78,12 +78,12 @@
                         <h5 class="modal-title">
                             {% trans "Eliminazione allegato" %}
                         </h5>
-                        <button class="close"
+                        <button class="btn-close"
                                 type="button"
-                                data-dismiss="modal"
+                                data-bs-dismiss="modal"
                                 aria-label="Close">
                            <svg class="icon">
-                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                            </svg>
                         </button>
                     </div>

@@ -13,7 +13,7 @@
                             <div class="toggles">
                               <label for="notifyEmail">
                                     <svg class="icon icon-xs">
-                                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-mail"></use>
+                                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-mail"></use>
                                     </svg> {% trans "Notifiche e-mail" %}
 
                                 <input type="checkbox"
@@ -47,8 +47,8 @@
 <div class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
      {% trans "Nessun indirizzo e-mail associato alla tua utenza." %}
     {% trans "Contatta il supporto tecnico per risolvere il problema." %}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        <svg class="icon"><use href="{% static 'svg/sprites.svg' %}#it-close"></use></svg>
     </button>
 </div>
 {% endif %}

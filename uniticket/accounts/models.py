@@ -32,6 +32,7 @@ class User(AbstractUser):
                                    max_length=50,
                                    blank=True, null=True)
     email_notify = models.BooleanField(_('Notifiche mail'), default=True)
+    manual_user_update = models.DateTimeField(_('Ultimo aggiornamento manuale dei dati'), blank=True, null=True)
 
     class Meta:
         ordering = ['last_name', 'first_name']

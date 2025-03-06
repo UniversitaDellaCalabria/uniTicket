@@ -5,44 +5,49 @@
 {% if not ticket.is_notification %}
 {% ticket_has_been_taken ticket=ticket as ticket_taken %}
 
-<div id="collapseDiv1-lft" class="collapse-div collapse-left-icon" role="tablist">
-    <div class="collapse-header" id="heading2-lft">
-        <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
-            {% trans "Aggiornamenti di stato (Log)" %} ({{ logs|length }})
-        </button>
-    </div>
-    <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
-        <div class="collapse-body">
-            {% include "logs.html" %}
+<div class="accordion accordion-left-icon" id="accordionDiv1lft">
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading2l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2l" aria-expanded="false" aria-controls="collapse2l">
+                {% trans "Aggiornamenti di stato (Log)" %} ({{ logs|length }})
+            </button>
+        </h2>
+        <div id="collapse2l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading2l">
+            <div class="accordion-body">
+                {% include "logs.html" %}
+            </div>
         </div>
     </div>
     {% if ticket_task %}
-    <div class="collapse-header" id="heading3-lft">
-        <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
-            {% trans "Attività della richiesta" %} ({{ ticket_task|length }})
-        </button>
-    </div>
-    <div id="collapse3-lft" class="collapse" role="tabpanel" aria-labelledby="heading3-lft">
-        <div class="collapse-body">
-            {% block ticket_task %}
-                {% include "ticket_task.html" %}
-            {% endblock ticket_task %}
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading3l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3l" aria-expanded="false" aria-controls="collapse3l">
+                {% trans "Attività della richiesta" %} ({{ ticket_task|length }})
+            </button>
+        </h2>
+        <div id="collapse3l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading3l">
+            <div class="accordion-body">
+                {% block ticket_task %}
+                    {% include "ticket_task.html" %}
+                {% endblock ticket_task %}
+            </div>
         </div>
     </div>
     {% endif %}
-
     {% if dependences %}
-    <div class="collapse-header" id="heading4-lft">
-        <button data-toggle="collapse" data-target="#collapse4-lft" aria-expanded="false" aria-controls="collapse4-lft">
-            {% trans "Dipendenze da altre richieste" %} ({{ dependences|length }})
-        </button>
-    </div>
-    <div id="collapse4-lft" class="collapse" role="tabpanel" aria-labelledby="heading4-lft">
-        <div class="collapse-body">
-            {% block ticket_dependences %}
-                {% include "ticket_dependences.html" %}
-            {% endblock ticket_dependences %}
-        </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading4l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4l" aria-expanded="false" aria-controls="collapse4l">
+                {% trans "Dipendenze da altre richieste" %} ({{ dependences|length }})
+            </button>
+        </h2>
+        <div id="collapse4l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading4l">
+            <div class="accordion-body">
+                {% block ticket_dependences %}
+                    {% include "ticket_dependences.html" %}
+                {% endblock ticket_dependences %}
+            </div>
+        </div
     </div>
     {% endif %}
 </div>

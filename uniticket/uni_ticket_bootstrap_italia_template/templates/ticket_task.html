@@ -14,7 +14,7 @@
             <small>{{ task.created }}</small>
             <br>
             {% if not task.is_public %}
-            <span class="badge badge-secondary">
+            <span class="badge bg-secondary">
                 {% trans "Riservata agli operatori" %}
             </span>
             {{ task.get_basic_status|safe }}

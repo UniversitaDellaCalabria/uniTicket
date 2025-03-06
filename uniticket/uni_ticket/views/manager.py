@@ -10,7 +10,7 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.html import strip_tags
 from django.utils.text import slugify
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from django_form_builder.utils import get_labeled_errors
 from organizational_area.models import *
@@ -51,16 +51,16 @@ def dashboard(request, structure_slug, structure):
         "Gestisci le richieste per la struttura {}").format(structure)
     template = "manager/dashboard.html"
 
-    unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                               closed=False,
-                                                               taken=False))
-    opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                           closed=False,
-                                                           taken=True))
-    my_opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                              closed=False,
-                                                              taken=True,
-                                                              taken_by=request.user))
+    # unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                               # closed=False,
+                                                               # taken=False))
+    # opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                           # closed=False,
+                                                           # taken=True))
+    # my_opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                              # closed=False,
+                                                              # taken=True,
+                                                              # taken_by=request.user))
 
     om = OrganizationalStructureOffice
     offices = om.objects.filter(organizational_structure=structure)\
@@ -73,23 +73,17 @@ def dashboard(request, structure_slug, structure):
                            .prefetch_related('ticketcategorytask_set')\
                            .prefetch_related('ticketcategorycondition_set')
 
-    ticket_ids = TicketAssignment.objects.filter(
-        office__organizational_structure=structure,
-        office__is_active=True,
-        follow=True,
-        ticket__is_closed=False
-    ).values_list('ticket__pk', flat=True).distinct()
-    messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
+
 
     d = {
         "categories": categories,
         "offices": offices,
         "structure": structure,
         "sub_title": sub_title,
-        "ticket_aperti": opened,
-        "ticket_assegnati_a_me": my_opened,
-        "ticket_messages": messages,
-        "ticket_non_gestiti": unassigned,
+        # "ticket_aperti": opened,
+        # "ticket_assegnati_a_me": my_opened,
+        # "ticket_messages": messages,
+        # "ticket_non_gestiti": unassigned,
         "title": title,
     }
     return render(request, template, base_context(d))
@@ -3149,7 +3143,8 @@ def manager_settings(request, structure_slug, structure):
     user_type = get_user_type(request.user, structure)
     template = "{}/user_settings.html".format(user_type)
     title = _("Configurazione impostazioni")
-    sub_title = _("dati personali e della struttura")
+    # sub_title = _("dati personali e della struttura")
+    sub_title = _("della struttura")
 
     manager_users = structure.get_structure_managers()
 

@@ -31,6 +31,9 @@ from uni_ticket.views import handlers
 DEFAULT_BASE_TEMPLATE = getattr(settings,'DEFAULT_BASE_TEMPLATE', '')
 
 
+handler404 = "uni_ticket.views.generic.custom_404"
+
+
 @login_required
 def test500(request):
     from django.http import HttpResponse
@@ -45,8 +48,6 @@ urlpatterns = [
     path("{}/".format(getattr(settings, "ADMIN_PATH", "admin")), admin.site.urls),
     path("test500/", test500, name="test500"),
 ]
-
-handler404 = uni_ticket.views.generic.custom_404
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
@@ -182,16 +183,21 @@ if "djangosaml2" in settings.INSTALLED_APPS:
 if "rest_framework" in settings.INSTALLED_APPS:
     import api_rest.urls
 
-    urlpatterns += (path("", include(api_rest.urls)),)
+    urlpatterns += (path("", include(api_rest.urls, "api_rest")),)
 
 if "chat" in settings.INSTALLED_APPS:
     import chat.urls
 
     urlpatterns += (path("", include(chat.urls, "chat")),)
 
-if settings.DEBUG:
-    import debug_toolbar
+if "accounts" in settings.INSTALLED_APPS:
+    import accounts.urls
 
-    urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ]
+    urlpatterns += (path("", include(accounts.urls, "accounts")),)
+
+# if settings.DEBUG:
+    # import debug_toolbar
+
+    # urlpatterns += [
+        # path('__debug__/', include(debug_toolbar.urls)),
+    # ]

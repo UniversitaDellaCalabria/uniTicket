@@ -95,21 +95,21 @@
                     {% for assignment in ticket_assignments %}
                     <li>
                         {% if not assignment.follow %}
-                        <span class="badge badge-danger">
+                        <span class="badge bg-danger">
                             {% trans "Competenza abbandonata" %}
                         </span>
                         {% elif assignment.follow and assignment.readonly %}
-                        <span class="badge badge-warning">
+                        <span class="badge bg-warning">
                             {% trans "Accesso in sola lettura" %}
                         </span>
                         {% else %}
-                        <span class="badge badge-success">
+                        <span class="badge bg-success">
                             {% trans "Competenza attiva" %}
                         </span>
                         {% endif %}
                         {% if not assignment.office.is_active %}
                         <b style="color: #5f5f5f">{{ assignment.office }}</b>
-                        <span class="badge badge-secondary">
+                        <span class="badge bg-secondary">
                             {% trans "Ufficio disattivato" %}
                         </span>
                         {% else %}
@@ -122,7 +122,7 @@
                                          {{ assignment.assigned_by }} - {{ assignment.modified }}
                                          {% if assignment.modified|date:"YmdHis" != assignment.created|date:"YmdHis" %}
                                          <a href="#"
-                                            data-toggle="tooltip"
+                                            data-bs-toggle="tooltip"
                                             title="{% trans 'Assegnazione iniziale a questo ufficio:' %} {{ assignment.created }}">
                                              info
                                          </a>
@@ -202,7 +202,7 @@
                     <li>
                         <a href="{% url 'uni_ticket:download_attachment' ticket_id=ticket.code attachment=k %}">
                             <svg class="icon">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
                             </svg>{{ k }}: {{ v }}
                         </a>
                         {% get_attachment_sign_details ticket_form path_allegati k v as sign_details %}

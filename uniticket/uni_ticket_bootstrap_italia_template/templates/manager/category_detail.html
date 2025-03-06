@@ -13,13 +13,13 @@
     <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manager_dashboard' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
         </svg> {% trans "Dashboard" %}
     </a>
     <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manager_categories' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
         </svg> {% trans "Torna alle Tipologie" %}
     </a>
 </div>
@@ -27,62 +27,62 @@
    href="{% url 'uni_ticket:manager_category_edit' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
     </svg> {% trans "Modifica" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_new_input_module' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
     </svg> {% trans "Nuovo Modulo" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_condition_new' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
     </svg> {% trans "Nuova Clausola" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_task_new' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
     </svg> {% trans "Nuova Attività" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:manager_category_default_reply_new' structure_slug=structure.slug category_slug=category.slug %}"
    class="btn btn-outline-secondary">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
     </svg> {% trans "Nuova Risposta predefinita" %}
 </a>
 {% if category.is_active %}
 <button type="button"
         class="btn btn-outline-secondary"
-        data-toggle="modal"
-        data-target="#disableCategory">
+        data-bs-toggle="modal"
+        data-bs-target="#disableCategory">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-invisible"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-password-invisible"></use>
         </svg> {% trans "Disattiva" %}
 </button>
 {% else %}
 <button type="button"
         class="btn btn-outline-secondary"
-        data-toggle="modal"
-        data-target="#enableCategory">
+        data-bs-toggle="modal"
+        data-bs-target="#enableCategory">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-password-visible"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-password-visible"></use>
         </svg> {% trans "Attiva" %}
 </button>
 {% endif %}
 <button type="button"
         class="btn btn-outline-danger"
-        data-toggle="modal"
-        data-target="#deleteCategory">
+        data-bs-toggle="modal"
+        data-bs-target="#deleteCategory">
         <svg class="icon icon-xs icon-danger">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
         </svg> {% trans "Elimina" %}
 </button>
 {% endblock top_buttons %}
@@ -148,10 +148,10 @@
                        <svg class="icon icon-sm icon-secondary">
                             {% if category.organizational_office.is_active %}
                                 <title>{% trans 'Attivo' %}</title>
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                             {% else %}
                                 <title>{% trans 'Non attivo' %}</title>
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                             {% endif %}
                             </svg>
                         {% if category.organizational_office.description %}
@@ -159,12 +159,12 @@
                             <small>{{ category.organizational_office.description }}</small>
                         {% endif %}
                        <button type="button"
-                            class="btn btn-outline-danger btn-xs float-right"
-                            data-toggle="modal"
-                            data-target="#removeOffice">
+                            class="btn btn-outline-danger btn-xs float-end"
+                            data-bs-toggle="modal"
+                            data-bs-target="#removeOffice">
                             {% trans "Rimuovi" %}
                         </button>
-                        <a role="button" class="mx-1 btn btn-outline-secondary btn-xs float-right"
+                        <a role="button" class="mx-1 btn btn-outline-secondary btn-xs float-end"
                            href="{% url 'uni_ticket:manager_office_detail' structure_slug=structure.slug office_slug=category.organizational_office.slug %}">
                             {% trans "Dettagli" %}
                         </a>
@@ -175,10 +175,10 @@
                                         <h5 class="modal-title">
                                             {% trans "Rimozione competenza ufficio" %}
                                         </h5>
-                                        <button class="close" type="button"
-                                                data-dismiss="modal" aria-label="Close">
+                                        <button class="btn-close" type="button"
+                                                data-bs-dismiss="modal" aria-label="Close">
                                            <svg class="icon">
-                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                            </svg>
                                         </button>
                                     </div>
@@ -229,9 +229,9 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.is_hidden %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -241,21 +241,21 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.is_notification %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
             </tr>
             <tr>
-                <th scope="row">{% trans 'Mostra intestazione richiesta' %}</th>
+                <th scope="row">{% trans "Mostra i dati del dichiarante nell'intestazione" %}</th>
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.show_heading_text %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -265,9 +265,9 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.allow_anonymous %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -277,9 +277,9 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.allow_guest %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -290,9 +290,9 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.allow_user %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -303,9 +303,9 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.allow_employee %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -317,9 +317,9 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.user_multiple_open_tickets %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -342,9 +342,9 @@
                                     <td>{{ allowed.email|lower }}</td>
                                     <td>
                                         <button type="button"
-                                            class="btn btn-outline-danger btn-xs float-right"
-                                            data-toggle="modal"
-                                            data-target="#removeUser{{ forloop.counter0 }}">
+                                            class="btn btn-outline-danger btn-xs float-end"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#removeUser{{ forloop.counter0 }}">
                                             {% trans "Rimuovi" %}
                                         </button>
                                         <div class="modal fade" tabindex="-1" role="dialog" id="removeUser{{ forloop.counter0 }}">
@@ -354,10 +354,10 @@
                                                         <h5 class="modal-title">
                                                             {% trans "Rimozione utente" %}
                                                         </h5>
-                                                        <button class="close" type="button"
-                                                                data-dismiss="modal" aria-label="Close">
+                                                        <button class="btn-close" type="button"
+                                                                data-bs-dismiss="modal" aria-label="Close">
                                                            <svg class="icon">
-                                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                                            </svg>
                                                         </button>
                                                     </div>
@@ -382,14 +382,14 @@
                         </table>
                     {% else %}
                     <svg class="icon icon-sm icon-secondary">
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-minus"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-minus"></use>
                     </svg>
                     {% endif %}
 
                     <a href="{% url 'uni_ticket:manager_category_add_ticket_user' structure_slug=structure.slug category_slug=category.slug %}"
                        class="btn btn-xs btn-outline-success">
                         <svg class="icon icon-xs icon-success">
-                            <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
+                            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
                         </svg> {% trans "Aggiungi nuovo" %}
                     </a>
                 </td>
@@ -401,9 +401,9 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.receive_email %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -415,9 +415,9 @@
                 <td>
                     <svg class="icon icon-sm icon-secondary">
                     {% if category.protocol_required %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                     {% endif %}
                     </svg>
                 </td>
@@ -435,38 +435,38 @@
     <form method="post" enctype="multipart/form-data">
         {% include 'form_template.html' %}
         {% block form_buttons %}
-        <div>
+        <div class="d-grid gap-2">
             <button type="button"
-                    class="btn btn-outline-success btn-block"
-                    data-toggle="modal"
-                    data-target="#action">
+                    class="btn btn-outline-success"
+                    data-bs-toggle="modal"
+                    data-bs-target="#action">
                     <svg class="icon icon-xs icon-success">
-                        <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     </svg> {% trans "Assegna competenza a un ufficio" %}
             </button>
-            <div class="modal fade" tabindex="-1" role="dialog" id="action">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                {% trans "Assegnazione competenza ufficio" %}
-                            </h5>
-                            <button class="close" type="button"
-                                    data-dismiss="modal" aria-label="Close">
-                               <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                               </svg>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>{% trans "Vuoi davvero assegnare la tipologia di richiesta all'ufficio selezionato?" %}
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <input class="btn btn-success"
-                                   type="submit"
-                                   value="{% trans 'Si, procedi' %}">
-                        </div>
+        </div>
+        <div class="modal fade" tabindex="-1" role="dialog" id="action">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            {% trans "Assegnazione competenza ufficio" %}
+                        </h5>
+                        <button class="btn-close" type="button"
+                                data-bs-dismiss="modal" aria-label="Close">
+                           <svg class="icon">
+                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                           </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{% trans "Vuoi davvero assegnare la tipologia di richiesta all'ufficio selezionato?" %}
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <input class="btn btn-success"
+                               type="submit"
+                               value="{% trans 'Si, procedi' %}">
                     </div>
                 </div>
             </div>
@@ -484,10 +484,10 @@
                 <h5 class="modal-title">
                     {% trans "Disattivazione tipologia di richiesta" %}
                 </h5>
-                <button class="close" type="button"
-                        data-dismiss="modal" aria-label="Close">
+                <button class="btn-close" type="button"
+                        data-bs-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>
@@ -513,10 +513,10 @@
                 <h5 class="modal-title">
                     {% trans "Attivazione tipologia di richiesta" %}
                 </h5>
-                <button class="close" type="button"
-                        data-dismiss="modal" aria-label="Close">
+                <button class="btn-close" type="button"
+                        data-bs-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>
@@ -542,10 +542,10 @@
                 <h5 class="modal-title">
                     {% trans "Eliminazione tipologia di richiesta" %}
                 </h5>
-                <button class="close" type="button"
-                        data-dismiss="modal" aria-label="Close">
+                <button class="btn-close" type="button"
+                        data-bs-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>

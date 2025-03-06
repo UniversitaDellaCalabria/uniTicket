@@ -20,7 +20,7 @@
     <a class="nav-link"
        href="{% url 'uni_ticket:new_ticket_preload' %}">
         <span>{% trans "Nuova richiesta" %}</span>
-        <span class="sr-only">current</span>
+        <span class="visually-hidden">current</span>
     </a>
 </li>
 {% if chat_installed and channels_installed %}
@@ -28,7 +28,7 @@
     <a class="nav-link"
        href="{% url 'uni_ticket:new_chat_preload' %}">
         <span>{% trans "Inizia nuova chat" %}</span>
-        <span class="sr-only">current</span>
+        <span class="visually-hidden">current</span>
     </a>
 </li>
 {% endif %}
@@ -39,7 +39,7 @@
 </li>
 <li class="nav-item">
     <a class="nav-link" href="{% url 'uni_ticket:user_settings' %}">
-        <span>{% trans "Configurazione" %}</span>
+        <span>{% trans "Account" %}</span>
     </a>
 </li>
 {% endif %}

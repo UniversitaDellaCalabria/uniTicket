@@ -13,12 +13,20 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+from django.urls import path
+
+from . settings import EDITABLE_FIELDS
+from . views import changeData, confirmEmail
+
 
 app_name = "accounts"
 
-urlpatterns = [
-
-    # url(r'^login/$', Login, name='login'),
-    # path('logout', Logout, name='logout'),
-
-]
+if EDITABLE_FIELDS:
+    urlpatterns = [
+        # url(r'^login/$', Login, name='login'),
+        # path('logout', Logout, name='logout'),
+        path('account/edit/', changeData, name='change_data'),
+        path('account/edit/confirm-email/', confirmEmail, name='confirm_email'),
+    ]
+else:
+    urlpatterns = []

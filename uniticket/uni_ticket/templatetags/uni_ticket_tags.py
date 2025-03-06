@@ -7,7 +7,7 @@ from django import template
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import stringfilter
 
 from django_form_builder import dynamic_fields

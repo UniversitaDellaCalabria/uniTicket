@@ -1,31 +1,43 @@
 {% load i18n %}
 {% load static %}
 
-<li>
-    <a href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
-        {% if ticket_non_gestiti > 0 %}
-        <div class="badge-wrapper"><span class="toolbar-badge badge-primary">{{ ticket_non_gestiti }}</span></div>
-        {% endif %}
-        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use></svg>
-        <span class="toolbar-label">{% trans 'Aperte' %}</span></span>
-    </a>
-</li>
-<li>
-    <a href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
-        {% if ticket_aperti > 0 %}
-        <div class="badge-wrapper"><span class="toolbar-badge">{{ ticket_aperti }}</span></div>
-        {% endif %}
-        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use></svg>
-        <span class="toolbar-label">{% trans 'Assegnate' %}
-        {% if ticket_assegnati_a_me > 0 %}
-            <br>({{ ticket_assegnati_a_me }} {% trans 'a me' %})
-        {% endif %}
-        </span>
-    </a>
-</li>
-<li>
-    <a href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
-        <svg class="icon"><use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use></svg>
-        <span class="toolbar-label">{% trans 'Chiuse' %}</span>
-    </a>
-</li>
+<div id="counters_mobile">
+    <li>
+        <a href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
+            {% if ticket_non_gestiti > 0 %}
+            <div class="badge-wrapper"><span class="toolbar-badge bg-primary">[[ unassigned ]]</span></div>
+            {% endif %}
+            <svg class="icon"><use xlink:href="{% static 'svg/sprites.svg' %}#it-warning-circle"></use></svg>
+            <span class="toolbar-label">{% trans 'Aperte' %}</span></span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+            {% if ticket_aperti > 0 %}
+            <div class="badge-wrapper"><span class="toolbar-badge  bg-primary">[[ open ]]</span></div>
+            {% endif %}
+            <svg class="icon"><use xlink:href="{% static 'svg/sprites.svg' %}#it-clock"></use></svg>
+            <span class="toolbar-label">{% trans 'Assegnate' %}
+                <br>([[ my_open ]] {% trans 'a me' %})
+            </span>
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
+            <svg class="icon"><use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use></svg>
+            <span class="toolbar-label">{% trans 'Chiuse' %}</span>
+        </a>
+    </li>
+</div>
+<script>
+const app = Vue.createApp({
+    delimiters: ['[[', ']]'],
+    data () {
+        return {
+            unassigned: null,
+            open: null,
+            my_open: null,
+        }
+    }
+}).mount('#counters_mobile')
+</script>

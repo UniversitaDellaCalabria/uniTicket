@@ -1,5 +1,7 @@
 {% load i18n %}
 {% load static %}
+
+{% load accounts_tags %}
 {% load uni_ticket_tags %}
 
 <div class="row">
@@ -12,19 +14,19 @@
                             <tbody>
                                 <tr>
                                     <th scope="row">{% trans "Nome" %}</th>
-                                    <td>{{ request.user.first_name }}</td>
+                                    <td>{{ request.user.first_name|default:'-' }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">{% trans "Cognome" %}</th>
-                                    <td>{{ request.user.last_name }}</td>
+                                    <td>{{ request.user.last_name|default:'-' }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">{% trans "E-mail" %}</th>
-                                    <td>{{ request.user.email }}</td>
+                                    <td>{{ request.user.email|default:'-' }}</td>
                                 </tr>
                                 <tr>
                                     <th scope="row">{% trans "Codice fiscale" %}</th>
-                                    <td>{{ request.user.taxpayer_id }}</td>
+                                    <td>{{ request.user.taxpayer_id|default:'-' }}</td>
                                 </tr>
                                 {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
                                 {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
@@ -47,6 +49,18 @@
                             </tbody>
                         </table>
                     </div>
+
+                    {% accounts_settings_value "EDITABLE_FIELDS" as accounts_editable_fields %}
+                    {% if accounts_editable_fields %}
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'accounts:change_data' %}" type="button" class="btn btn-success">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
+                            </svg>
+                            {% trans "Modifica" %}
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

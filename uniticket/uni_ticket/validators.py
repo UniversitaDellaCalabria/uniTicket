@@ -2,7 +2,7 @@ import os
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 def validate_file_extension(f):

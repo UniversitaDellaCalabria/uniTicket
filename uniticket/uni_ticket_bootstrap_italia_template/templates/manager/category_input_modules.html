@@ -10,25 +10,25 @@
             <br>
             {{ module.created }}
             {% if module.is_active %}
-                <span class="badge badge-success">
+                <span class="badge bg-success">
                     {% trans "attivo" %}
                 </span>
             {% else %}
-                <span class="badge badge-danger">
+                <span class="badge bg-danger">
                     {% trans "non attivo" %}
                 </span>
             {% endif %}
 
             {% if module.can_be_deleted %}
             <button type="button"
-                class="mx-1 btn btn-outline-secondary btn-xs float-right"
-                data-toggle="modal"
-                data-target="#deleteModule{{ forloop.counter0 }}">
+                class="mx-1 btn btn-outline-secondary btn-xs float-end"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModule{{ forloop.counter0 }}">
                 {% trans "Elimina" %}
             </button>
             {% else %}
             <button type="button"
-                class="mx-1 btn btn-secondary btn-xs float-right"
+                class="mx-1 btn btn-secondary btn-xs float-end"
                 title="{% trans 'Questo modulo non può essere eliminato' %}"
                 disabled>
                 {% trans "Elimina" %}
@@ -37,31 +37,31 @@
 
             {% if module.is_active %}
             <button type="button"
-                class="mx-1 btn btn-outline-danger btn-xs float-right"
-                data-toggle="modal"
-                data-target="#disableModule{{ forloop.counter0 }}">
+                class="mx-1 btn btn-outline-danger btn-xs float-end"
+                data-bs-toggle="modal"
+                data-bs-target="#disableModule{{ forloop.counter0 }}">
                 {% trans "Disattiva" %}
             </button>
             {% else %}
             <button type="button"
-                class="mx-1 btn btn-outline-success btn-xs float-right"
-                data-toggle="modal"
-                data-target="#enableModule{{ forloop.counter0 }}">
+                class="mx-1 btn btn-outline-success btn-xs float-end"
+                data-bs-toggle="modal"
+                data-bs-target="#enableModule{{ forloop.counter0 }}">
                 {% trans "Attiva" %}
             </button>
             {% endif %}
             <a role="button"
-               class="mx-1 btn btn-outline-secondary btn-xs float-right"
+               class="mx-1 btn btn-outline-secondary btn-xs float-end"
                href="{% url 'uni_ticket:manager_category_input_module_clone_preload' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
                 {% trans "Clona" %}
             </a>
             <a role="button"
-               class="mx-1 btn btn-outline-secondary btn-xs float-right"
+               class="mx-1 btn btn-outline-secondary btn-xs float-end"
                href="{% url 'uni_ticket:manager_category_input_module' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
                 {% trans "Modifica" %}
             </a>
             <a role="button"
-               class="mx-1 btn btn-outline-secondary btn-xs float-right"
+               class="mx-1 btn btn-outline-secondary btn-xs float-end"
                 style="color: #5c6f82;"
                 onclick="window.open('{% url 'uni_ticket:manager_category_input_module_preview' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}','winname','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,resizable=no,width=890,height=600');">
                 {% trans "Vedi anteprima" %}
@@ -74,10 +74,10 @@
                             <h5 class="modal-title">
                                 {% trans "Attivazione modulo" %}
                             </h5>
-                            <button class="close" type="button"
-                                    data-dismiss="modal" aria-label="Close">
+                            <button class="btn-close" type="button"
+                                    data-bs-dismiss="modal" aria-label="Close">
                                <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                </svg>
                             </button>
                         </div>
@@ -101,10 +101,10 @@
                             <h5 class="modal-title">
                                 {% trans "Disattivazione modulo" %}
                             </h5>
-                            <button class="close" type="button"
-                                    data-dismiss="modal" aria-label="Close">
+                            <button class="btn-close" type="button"
+                                    data-bs-dismiss="modal" aria-label="Close">
                                <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                </svg>
                             </button>
                         </div>
@@ -129,10 +129,10 @@
                             <h5 class="modal-title">
                                 {% trans "Eliminazione modulo" %}
                             </h5>
-                            <button class="close" type="button"
-                                    data-dismiss="modal" aria-label="Close">
+                            <button class="btn-close" type="button"
+                                    data-bs-dismiss="modal" aria-label="Close">
                                <svg class="icon">
-                                  <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                </svg>
                             </button>
                         </div>

@@ -8,7 +8,7 @@ from django.db.models import Count, Min, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from django_form_builder.utils import get_as_dict
 from organizational_area.models import OrganizationalStructure
@@ -315,11 +315,12 @@ def user_settings(
     """
     user_type = get_user_type(request.user, structure)
     template = "{}/user_settings.html".format(user_type)
-    title = _("Configurazione impostazioni")
-    sub_title = _("e riepilogo dati personali")
+    # title = _("Configurazione impostazioni")
+    title = _("Gestione account")
+    # sub_title = _("e riepilogo dati personali")
     d = {
         "structure": structure,
-        "sub_title": sub_title,
+        # "sub_title": sub_title,
         "title": title,
     }
     response = render(request, template, base_context(d))

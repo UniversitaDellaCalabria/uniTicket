@@ -18,7 +18,7 @@
    class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manage' structure_slug=structure.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Lascia la chat" %}
 </a>
 {% endblock top_buttons %}
@@ -57,17 +57,17 @@
                     <div>
                         <ul id="messages" class="messages">
                             {# Messages go here #}
-                            <div class="alert alert-info alert-dismissible fade show float-left" role="alert">
+                            <div class="alert alert-info alert-dismissible fade show float-start" role="alert">
                                 {% if user_operator_chat %}
                                     {% trans "Seleziona un utente tra quelli disponibili" %}
                                 {% else %}
                                     {% trans "Seleziona un operatore tra quelli disponibili" %}
                                 {% endif %}
                                 <button type="button"
-                                        class="close"
-                                        data-dismiss="alert"
+                                        class="btn-close"
+                                        data-bs-dismiss="alert"
                                         aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
+                                    <svg class="icon"><use href="{% static 'svg/sprites.svg' %}#it-close"></use></svg>
                                 </button>
                             </div>
                         </ul>

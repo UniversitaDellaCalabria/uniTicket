@@ -85,13 +85,13 @@ function message_is_for_active_chat(sender, recipient) {
 function operatorStatusChanged(user, status) {
     if (user != currentUser)
         if (status)
-            $( "#" + user + "_status" ).replaceWith(`<svg class="mr-2 icon icon-success icon-xs" id="`+ user + `_status">
-                                                        <use xlink:href="/static/svg/sprite.svg#it-check-circle"></use>
+            $( "#" + user + "_status" ).replaceWith(`<svg class="me-2 icon icon-success icon-xs" id="`+ user + `_status">
+                                                        <use xlink:href="/static/svg/sprites.svg#it-check-circle"></use>
                                                         <title>Disponibile</title>
                                                     </svg>`);
         else
-            $( "#" + user + "_status" ).replaceWith(`<svg class="mr-2 icon icon-danger icon-xs" id="`+ user + `_status">
-                                                          <use xlink:href="/static/svg/sprite.svg#it-minus-circle"></use>
+            $( "#" + user + "_status" ).replaceWith(`<svg class="me-2 icon icon-danger icon-xs" id="`+ user + `_status">
+                                                          <use xlink:href="/static/svg/sprites.svg#it-minus-circle"></use>
                                                           <title>Occupato</title>
                                                        </svg>`);
 }
@@ -135,13 +135,13 @@ function addUserDiv(user, user_fullname, is_operator, operator_status=true) {
                             <a role="button" user="${user}" class="user btn btn-outline-secondary w-75 p-3">`;
         if (is_operator && user != currentUser){
             if (operator_status)
-                userItem += `<svg class="mr-2 icon icon-success icon-xs" id="`+ user + `_status">
-                                <use xlink:href="/static/svg/sprite.svg#it-check-circle"></use>
+                userItem += `<svg class="me-2 icon icon-success icon-xs" id="`+ user + `_status">
+                                <use xlink:href="/static/svg/sprites.svg#it-check-circle"></use>
                                 <title>Disponibile</title>
                             </svg>`;
             else
-                userItem += `<svg class="mr-2 icon icon-danger icon-xs" id="`+ user + `_status">
-                                <use xlink:href="/static/svg/sprite.svg#it-minus-circle"></use>
+                userItem += `<svg class="me-2 icon icon-danger icon-xs" id="`+ user + `_status">
+                                <use xlink:href="/static/svg/sprites.svg#it-minus-circle"></use>
                                 <title>Occupato</title>
                             </svg>`;
         }
@@ -150,7 +150,7 @@ function addUserDiv(user, user_fullname, is_operator, operator_status=true) {
 
         if (currentUser != user)
             userItem += `<svg class="icon icon-secondary icon-xs ml-2 item_delete">
-                            <use xlink:href="/static/svg/sprite.svg#it-close-circle"></use>
+                            <use xlink:href="/static/svg/sprites.svg#it-close-circle"></use>
                             <title>Rimuovi dalla lista</title>
                         </svg>`;
         userItem += `</div>`;

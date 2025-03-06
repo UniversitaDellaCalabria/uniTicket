@@ -29,7 +29,7 @@ $(function() {
             "info":           "{% trans 'Visibili' %} _END_ {% trans 'di' %} _TOTAL_ {% trans 'record totali' %}",
             "infoEmpty":      "{% trans 'Visibili' %} 0 {% trans 'record' %}",
             "infoPostFix":    "",
-            "thousands":      ",",
+            "thousands":      ".",
             "lengthMenu":     "{% trans 'Mostra' %} _MENU_",
             "loadingRecords": "Loading...",
             "processing":     "Processing...",
@@ -72,7 +72,7 @@ $(function() {
                 className: "min-mobile-p",
                 //render: $.fn.dataTable.render.text(),
                 render: function ( data, type, row ) {
-                    return "<a href='"+url+row[2]+"/'><span style='word-break: break-word;'>"+escapeHtml(data)+"</span></a>";
+                    return "<a href='"+url+row[2]+"/'>"+escapeHtml(data)+"</a>";
                 }
             },
 
@@ -151,22 +151,24 @@ $(function() {
         }
     });
 
-    $('#search_year, #search_box, #search_category').on('change keyup', function () {
-        var year = $('#search_year').val();
-        var category = $('#search_category').val();
-        if (typeof category === 'undefined'){
-            category = "";
+    $('#search_year, #search_box, #search_category').on('change keypress', function () {
+        if (!event.key || event.key === "Enter") {
+            var year = $('#search_year').val();
+            var category = $('#search_category').val();
+            if (typeof category === 'undefined'){
+                category = "";
+            }
+            var structure = $('#search_structure').val();
+            if (typeof structure === 'undefined'){
+                structure = "";
+            }
+            var text = $('#search_box').val();
+            var args = '{"year": "'+year+'", '+
+                       '"text": "'+text+'", '+
+                       '"category": "'+category+'", '+
+                       '"structure": "'+structure+'"}';
+            datatable.search(args).draw();
         }
-        var text = $('#search_box').val();
-        var structure = $('#search_structure').val();
-        if (typeof structure === 'undefined'){
-            structure = "";
-        }
-        var args = '{"year": "'+year+'", '+
-                   '"text": "'+text+'", '+
-                   '"category": "'+category+'", '+
-                   '"structure": "'+structure+'"}';
-        datatable.search(args).draw();
     } );
 
 

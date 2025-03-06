@@ -13,7 +13,7 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:user_dashboard' %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna alla Dashboard" %}
 </a>
 {% endblock top_buttons %}
@@ -21,16 +21,10 @@
 {% block page_content %}
 <b><label for="structure_slug">{% trans "Struttura" %}</label></b>
 <div class="bootstrap-select-wrapper">
-    <select id="structure_slug"
-            name="structure_slug"
-            title="{% trans 'A chi è indirizzata la richiesta?' %}"
-            data-live-search="true" data-live-search-placeholder="Cerca...">
-        <option value="">{% trans "Scegli un'opzione" %}</option>
+    <select id="structure_slug" name="structure_slug" title="{% trans 'A chi è indirizzata la richiesta?' %}">
+        <option value="" selected>{% trans "Scegli un'opzione" %}</option>
         {% for struttura in strutture %}
-        <option value="{{ struttura.slug }}"
-        {% if struttura.slug == structure_slug %} selected {% endif %}>
-            {{ struttura }}
-        </option>
+        <option value="{{ struttura.slug }}"{% if struttura.slug == structure_slug %} selected{% endif %}>{{ struttura }}</option>
         {% endfor %}
     </select>
 </div>
@@ -47,7 +41,7 @@
         {% if chat_installed and channels_installed and operator_online %}
             <a role="button" class="btn btn-success" href="{% url 'chat:room' room_name=structure_slug %}">
                 <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-user"></use>
                 </svg> {% trans "Entra in Chat" %}
             </a>
         {% else %}
@@ -62,16 +56,30 @@
 
 {% block extra_scripts %}
 <script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function () {
+    let structureElement = document.querySelector('#structure_slug');
+    let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
+        showAllValues: true,
+        defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
+        autoselect: false,
+        showNoOptionsFound: false,
+        dropdownArrow: () => '',
+        onConfirm:  (selected) => {
+            const selectedStructure = Array.from(structureElement.options).find(option => option.textContent === selected);
+            if (selectedStructure) {
+                {% if structure_slug %}
+                window.location.href = replace_last_param(window.location.href, selectedStructure.value);
+                {% else %}
+                window.location.href = window.location.href + selectedStructure.value;
+                {% endif %}
+            }
+        }
+    });
+});
+
 function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
 }
-
-$('#structure_slug').on('change', function(event) {
-    {% if structure_slug %}
-    window.location.href = replace_last_param(window.location.href, $(this).val());
-    {% else %}
-    window.location.href = window.location.href + $(this).val();
-    {% endif %}
-});
 </script>
 {% endblock extra_scripts %}

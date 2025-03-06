@@ -11,7 +11,7 @@
 <a role="button" class="btn btn-outline-secondary"
    href="javascript:history.back()">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna indietro" %}
 </a>
 {% endblock top_buttons %}
@@ -24,14 +24,10 @@
 <div class="bootstrap-select-wrapper">
     <select id="selected_structure_slug"
             name="selected_structure_slug"
-            title="{% trans 'In quale struttura sarà creato il modulo?' %}"
-            data-live-search="true" data-live-search-placeholder="Cerca...">
-        <option value="">{% trans "Scegli un'opzione" %}</option>
+            title="{% trans 'In quale struttura sarà creato il modulo?' %}">
+        <option value="" selected>{% trans "Scegli un'opzione" %}</option>
         {% for s in my_structures %}
-        <option value="{{ s.slug }}"
-        {% if s.slug == selected_structure_slug %} selected {% endif %}>
-            {{ s }}
-        </option>
+        <option value="{{ s.slug }}"{% if s.slug == selected_structure_slug %} selected {% endif %}>{{ s }}</option>
         {% endfor %}
     </select>
 </div>
@@ -48,17 +44,10 @@
     </div>
     {% else %}
     <div class="bootstrap-select-wrapper">
-        <select id="selected_category_slug"
-            {% if not selected_structure_slug %}disabled{% endif %}
-                name="selected_category_slug"
-                title="{% trans 'Dove sarà duplicato il modulo?' %}"
-                data-live-search="true" data-live-search-placeholder="Cerca...">
-            <option value="">{% trans "Scegli dove clonare il modulo" %}</option>
+        <select id="selected_category_slug"{% if not selected_structure_slug %} disabled{% endif %} name="selected_category_slug" title="{% trans 'Dove sarà duplicato il modulo?' %}">
+            <option selected value="">{% trans "Scegli dove clonare il modulo" %}</option>
             {% for category in categories %}
-            <option value="{{ category.slug }}"
-            {% if category.slug == selected_category_slug %} selected {% endif %}>
-                {{ category }}
-            </option>
+            <option value="{{ category.slug }}"{% if category.slug == selected_category_slug %} selected {% endif %}>{{ category }}</option>
             {% endfor %}
         </select>
     </div>
@@ -69,7 +58,7 @@
 <div style="padding: 1.5rem 0 1rem" >
     <a role="button" class="btn btn-success" href="{% url 'uni_ticket:manager_category_input_module_clone' structure_slug=structure.slug category_slug=category.slug module_id=module.pk selected_structure_slug=selected_structure_slug selected_category_slug=selected_category_slug %}">
             <svg class="icon icon-xs icon-white">
-                <use xlink:href="/static/svg/sprite.svg#it-copy"></use>
+                <use xlink:href="/static/svg/sprites.svg#it-copy"></use>
             </svg> {% trans "Clona modulo di input" %}
     </a>
 </div>
@@ -79,24 +68,49 @@
 
 {% block extra_scripts %}
 <script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function () {
+    let structureElement = document.querySelector('#selected_structure_slug');
+    let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
+        showAllValues: true,
+        defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
+        autoselect: false,
+        showNoOptionsFound: false,
+        dropdownArrow: () => '',
+        onConfirm:  (selected) => {
+            const selectedStructure = Array.from(structureElement.options).find(option => option.textContent === selected);
+            if (selectedStructure) {
+                {% if structure_slug %}
+                window.location.href = replace_last_param(window.location.href, selectedStructure.value);
+                {% else %}
+                window.location.href = window.location.href + selectedStructure.value;
+                {% endif %}
+            }
+        }
+    });
+
+    let categoryElement = document.querySelector('#selected_category_slug');
+    let categoryAutocomplete = new bootstrap.SelectAutocomplete(categoryElement, {
+        showAllValues: true,
+        defaultValue: '',
+        placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
+        autoselect: false,
+        showNoOptionsFound: false,
+        dropdownArrow: () => '',
+        onConfirm:  (selected) => {
+            const selectedCategory = Array.from(categoryElement.options).find(option => option.textContent === selected);
+            if (selectedCategory) {
+                {% if selected_category_slug %}
+                window.location.href = replace_last_param(window.location.href, selectedCategory.value);
+                {% else %}
+                window.location.href = window.location.href + selectedCategory.value;
+                {% endif %}
+            }
+        }
+    });
+});
 function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param
 }
-
-$('#selected_structure_slug').on('change', function(event) {
-    {% if selected_structure_slug %}
-    window.location.href = replace_last_param(window.location.href, $(this).val());
-    {% else %}
-    window.location.href = window.location.href + $(this).val();
-    {% endif %}
-});
-
-$('#selected_category_slug').on('change', function(event) {
-    {% if selected_category_slug %}
-    window.location.href = replace_last_param(window.location.href, $(this).val());
-    {% else %}
-    window.location.href = window.location.href + $(this).val();
-    {% endif %}
-});
 </script>
 {% endblock extra_scripts %}

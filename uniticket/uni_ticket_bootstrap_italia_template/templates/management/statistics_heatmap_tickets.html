@@ -1,47 +1,37 @@
 {% load i18n %}
 
-<div class="collapse-div collapse-left-icon" role="tablist">
-    <div class="collapse-header" id="heading1">
-        <button
-            data-toggle="collapse"
-            data-target="#collapse-fascia-oraria"
-            aria-expanded="false"
-            aria-controls="collapse-fascia-oraria">
-        {% trans "Fasce orarie configurate" %}
-        </button>
-    </div>
 
-    <div
-        id="collapse-fascia-oraria"
-        class="collapse"
-        role="tabpanel"
-        aria-labelledby="heading1">
-        <div class="collapse-body pt-4 pb-0">
-            
-            <ul class="list-group">
-                {% for slot, range in time_slots.items %}
-                <li class="list-group-item">
-                    <span class="badge badge-primary">{{ slot }}</span>&nbsp;&nbsp;
-                    {% for hour in range %}
-                        <span class="badge badge-light">
-                        {% if forloop.first or forloop.last%}
-                            {{ hour }}
-                        {% endif %}
-                        </span>
+<div class="accordion accordion-left-icon" id="accordionDiv-fascia-oraria-lft">
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading-fascia-oraria-l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-fascia-oraria-l" aria-expanded="false" aria-controls="collapse-fascia-oraria-l">
+                {% trans "Fasce orarie configurate" %}
+            </button>
+        </h2>
+        <div id="collapse-fascia-oraria-l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv-fascia-oraria-lft" role="region" aria-labelledby="heading-fascia-oraria-l">
+            <div class="accordion-body">
+                <ul class="list-group">
+                    {% for slot, range in time_slots.items %}
+                    <li class="list-group-item">
+                        <span class="badge bg-primary">{{ slot }}</span>&nbsp;&nbsp;
+                        {% for hour in range %}
+                            <span class="badge bg-info">
+                            {% if forloop.first or forloop.last%}
+                                {{ hour }}
+                            {% endif %}
+                            </span>
+                        {% endfor %}
+                    </li>
                     {% endfor %}
-                </li>
-                {% endfor %}
-              </ul>
-              <br>
-            
+                  </ul>
+            </div>
         </div>
-
     </div>
 </div>
 
 <div id="heatmap"></div>
-<script src="{{ JS_CHART_CDN_URL }}"></script>                        
-                        
+<script src="{{ JS_CHART_CDN_URL }}"></script>
+
 <script>
     var options = {
           series: [
@@ -49,7 +39,7 @@
             name: '{% trans "Domenica" %}',
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
-                  {% if day == "Sunday" %} 
+                  {% if day == "Sunday" %}
                   {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
@@ -59,7 +49,7 @@
             name: '{% trans "Sabato" %}',
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
-                  {% if day == "Saturday" %} 
+                  {% if day == "Saturday" %}
                   {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
@@ -69,7 +59,7 @@
             name: '{% trans "Venerdi" %}',
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
-                  {% if day == "Friday" %} 
+                  {% if day == "Friday" %}
                   {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
@@ -79,7 +69,7 @@
             name: '{% trans "Giovedi" %}',
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
-                  {% if day == "Thursday" %} 
+                  {% if day == "Thursday" %}
                     {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
@@ -89,7 +79,7 @@
             name: '{% trans "Mercoledi" %}',
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
-                  {% if day == "Wednesday" %} 
+                  {% if day == "Wednesday" %}
                   {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}
@@ -109,7 +99,7 @@
             name: '{% trans "Lunedi" %}',
             data: [
                 {% for day, serie in stats.ticket_per_weekday.items %}
-                  {% if day == "Monday" %} 
+                  {% if day == "Monday" %}
                   {% for num in serie %} {x: "{{ forloop.counter }}", y: {{ num }}}{% if not forloop.last %},{% endif %} {% endfor %}
                   {% endif %}
                 {% endfor %}

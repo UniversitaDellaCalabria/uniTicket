@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
 
-    'ckeditor',
     'datatables_ajax',
 
     'uni_ticket_bootstrap_italia_template',
@@ -41,6 +40,7 @@ INSTALLED_APPS = [
 
     # Django Rest
     'rest_framework',
+    # 'rest_framework.authtoken',
     'api_rest',
 
     # Django channels and chat
@@ -68,12 +68,19 @@ CUSTOM_WIDGETS = {
 }
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'api_rest.authorizations.AuthorizationToken',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
     'DEFAULT_PAGINATION_CLASS':
-        'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100
+        'api_rest.pagination.StandardPagination',
+    'PAGE_SIZE': 5
 }
 
 MESSAGES_TO_LOAD = 1500

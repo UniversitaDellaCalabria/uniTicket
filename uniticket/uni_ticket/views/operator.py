@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from organizational_area.models import *
 
@@ -32,41 +32,11 @@ def dashboard(request, structure_slug, structure, office_employee):
     template = "operator/dashboard.html"
     offices = user_offices_list(office_employee)
 
-    unassigned = len(visible_tickets_to_user(user=request.user,
-                                             structure=structure,
-                                             office_employee=office_employee,
-                                             closed=False,
-                                             taken=False))
-
-    opened = len(visible_tickets_to_user(user=request.user,
-                                         structure=structure,
-                                         office_employee=office_employee,
-                                         closed=False,
-                                         taken=True))
-
-    my_opened = len(visible_tickets_to_user(user=request.user,
-                                            structure=structure,
-                                            office_employee=office_employee,
-                                            closed=False,
-                                            taken=True,
-                                            taken_by=request.user))
-
-    ticket_ids = visible_tickets_to_user(
-        user=request.user,
-        structure=structure,
-        office_employee=office_employee,
-        closed=False
-    )
-
-    messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
     d = {
         "offices": offices,
         "structure": structure,
         "sub_title": sub_title,
         "title": title,
-        "ticket_aperti": opened,
-        "ticket_assegnati_a_me": my_opened,
-        "ticket_messages": messages,
-        "ticket_non_gestiti": unassigned,
+        # "ticket_messages": messages,
     }
     return render(request, template, base_context(d))

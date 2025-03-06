@@ -1,9 +1,8 @@
-Django>=4.2.16
+Django>=4.2.16,<6
 
 git+https://github.com/UniversitaDellaCalabria/django-admin-search-builder.git
-django_ckeditor>=5.9.0
 
-django-form-builder>=1.0.1
+git+https://github.com/UniversitaDellaCalabria/django-form-builder.git
 
 django-nested-admin>=3.2.4
 
@@ -25,8 +24,8 @@ git+https://github.com/peppelinux/FileSignatureValidator.git
 djangosaml2>=1.0.3
 
 # Bootstrap Italia
-design-django-theme==1.6.4post4
-
+#git+https://github.com/italia/design-django-theme.git@v1
+design-django-theme
 # Unical template
 # django-unical-bootstrap-italia==1.2.0
 

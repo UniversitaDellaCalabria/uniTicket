@@ -1,99 +1,105 @@
 {% load i18n %}
 {% load static %}
 
-<div id="collapseDiv1-lft" class="collapse-div collapse-left-icon" role="tablist">
 
-    <div class="collapse-header" id="heading1-lft">
-        <button data-toggle="collapse" data-target="#collapse1-lft" aria-expanded="false" aria-controls="collapse1-lft">
-            {% trans "Moduli di inserimento" %} ({{ category.ticketcategorymodule_set.all.count }})
-        </button>
-    </div>
-    <div id="collapse1-lft" class="collapse" role="tabpanel" aria-labelledby="heading1-lft">
-        <div class="collapse-body">
-            {% include "manager/category_input_modules.html" %}
-            <div>
-                <a class="btn btn-outline-success btn-block mt-4"
-                   href="{% url 'uni_ticket:manager_category_new_input_module' structure_slug=structure.slug category_slug=category.slug %}">
-                    <svg class="icon icon-xs icon-success">
-                        <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
-                    </svg> {% trans "Aggiungi nuovo modulo di inserimento" %}
-                </a>
+<div class="accordion accordion-left-icon" id="accordionDiv1lft">
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading1l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1l" aria-expanded="false" aria-controls="collapse1l">
+                {% trans "Moduli di inserimento" %} ({{ category.ticketcategorymodule_set.all.count }})
+            </button>
+        </h2>
+        <div id="collapse1l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading1l">
+            <div class="accordion-body">
+                {% include "manager/category_input_modules.html" %}
+                <div class="d-grid gap-2">
+                    <a class="btn btn-outline-success mt-4"
+                       href="{% url 'uni_ticket:manager_category_new_input_module' structure_slug=structure.slug category_slug=category.slug %}">
+                        <svg class="icon icon-xs icon-success">
+                            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
+                        </svg> {% trans "Aggiungi nuovo modulo di inserimento" %}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="collapse-header" id="heading2-lft">
-        <button data-toggle="collapse" data-target="#collapse2-lft" aria-expanded="false" aria-controls="collapse2-lft">
-            {% trans "Clausole obbligatorie per le richieste" %} ({{ category.ticketcategorycondition_set.all.count }})
-        </button>
-    </div>
-    <div id="collapse2-lft" class="collapse" role="tabpanel" aria-labelledby="heading2-lft">
-        <div class="collapse-body">
-            {% include "manager/category_conditions.html" %}
-            <div>
-                <a class="btn btn-outline-success btn-block mt-4"
-                   href="{% url 'uni_ticket:manager_category_condition_new' structure_slug=structure.slug category_slug=category.slug %}">
-                    <svg class="icon icon-xs icon-success">
-                        <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
-                    </svg> {% trans "Aggiungi nuova clausola" %}
-                </a>
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading2l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2l" aria-expanded="false" aria-controls="collapse2l">
+                {% trans "Clausole obbligatorie per le richieste" %} ({{ category.ticketcategorycondition_set.all.count }})
+            </button>
+        </h2>
+        <div id="collapse2l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading2l">
+            <div class="accordion-body">
+                {% include "manager/category_conditions.html" %}
+                <div class="d-grid gap-2">
+                    <a class="btn btn-outline-success mt-4"
+                       href="{% url 'uni_ticket:manager_category_condition_new' structure_slug=structure.slug category_slug=category.slug %}">
+                        <svg class="icon icon-xs icon-success">
+                            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
+                        </svg> {% trans "Aggiungi nuova clausola" %}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="collapse-header" id="heading3-lft">
-        <button data-toggle="collapse" data-target="#collapse3-lft" aria-expanded="false" aria-controls="collapse3-lft">
-            {% trans "Attività predefinite per le richieste" %} ({{ category.ticketcategorytask_set.all.count }})
-        </button>
-    </div>
-    <div id="collapse3-lft" class="collapse" role="tabpanel" aria-labelledby="heading3-lft">
-        <div class="collapse-body">
-            {% include "manager/category_default_tasks.html" %}
-            <div>
-                <a class="btn btn-outline-success btn-block mt-4"
-                   href="{% url 'uni_ticket:manager_category_task_new' structure_slug=structure.slug category_slug=category.slug %}">
-                    <svg class="icon icon-xs icon-success">
-                        <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
-                    </svg> {% trans "Aggiungi nuova attività" %}
-                </a>
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading3l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3l" aria-expanded="false" aria-controls="collapse3l">
+                {% trans "Attività predefinite per le richieste" %} ({{ category.ticketcategorytask_set.all.count }})
+            </button>
+        </h2>
+        <div id="collapse3l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading3l">
+            <div class="accordion-body">
+                {% include "manager/category_default_tasks.html" %}
+                <div class="d-grid gap-2">
+                    <a class="btn btn-outline-success mt-4"
+                       href="{% url 'uni_ticket:manager_category_task_new' structure_slug=structure.slug category_slug=category.slug %}">
+                        <svg class="icon icon-xs icon-success">
+                            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
+                        </svg> {% trans "Aggiungi nuova attività" %}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="collapse-header" id="heading4-lft">
-        <button data-toggle="collapse" data-target="#collapse4-lft" aria-expanded="false" aria-controls="collapse4-lft">
-            {% trans "Configurazioni protocollo informatico" %} ({{ category.ticketcategorywsprotocollo_set.all.count }})
-        </button>
-    </div>
-    <div id="collapse4-lft" class="collapse" role="tabpanel" aria-labelledby="heading4-lft">
-        <div class="collapse-body">
-            {% include "manager/category_protocol_configurations.html" %}
-            <div>
-                <a class="btn btn-outline-success btn-block mt-4"
-                   href="{% url 'uni_ticket:manager_category_protocol_configuration_new' structure_slug=structure.slug category_slug=category.slug %}">
-                    <svg class="icon icon-xs icon-success">
-                        <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
-                    </svg> {% trans "Aggiungi nuova configurazione" %}
-                </a>
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading4l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4l" aria-expanded="false" aria-controls="collapse4l">
+                {% trans "Configurazioni protocollo informatico" %} ({{ category.ticketcategorywsprotocollo_set.all.count }})
+            </button>
+        </h2>
+        <div id="collapse4l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading4l">
+            <div class="accordion-body">
+                {% include "manager/category_protocol_configurations.html" %}
+                <div class="d-grid gap-2">
+                    <a class="btn btn-outline-success mt-4"
+                       href="{% url 'uni_ticket:manager_category_protocol_configuration_new' structure_slug=structure.slug category_slug=category.slug %}">
+                        <svg class="icon icon-xs icon-success">
+                            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
+                        </svg> {% trans "Aggiungi nuova configurazione" %}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="collapse-header" id="heading5-lft">
-        <button data-toggle="collapse" data-target="#collapse5-lft" aria-expanded="false" aria-controls="collapse5-lft">
-            {% trans "Risposte predefinite" %} ({{ category.ticketcategorydefaultreply_set.all.count }})
-        </button>
-    </div>
-    <div id="collapse5-lft" class="collapse" role="tabpanel" aria-labelledby="heading5-lft">
-        <div class="collapse-body">
-            {% include "manager/category_default_replies.html" %}
-            <div>
-                <a class="btn btn-outline-success btn-block mt-4"
-                   href="{% url 'uni_ticket:manager_category_default_reply_new' structure_slug=structure.slug category_slug=category.slug %}">
-                    <svg class="icon icon-xs icon-success">
-                        <use xlink:href="/static/svg/sprite.svg#it-plus-circle"></use>
-                    </svg> {% trans "Aggiungi nuova risposta" %}
-                </a>
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading5l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5l" aria-expanded="false" aria-controls="collapse5l">
+                {% trans "Risposte predefinite" %} ({{ category.ticketcategorydefaultreply_set.all.count }})
+            </button>
+        </h2>
+        <div id="collapse5l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading5l">
+            <div class="accordion-body">
+                {% include "manager/category_default_replies.html" %}
+                <div class="d-grid gap-2">
+                    <a class="btn btn-outline-success mt-4"
+                       href="{% url 'uni_ticket:manager_category_default_reply_new' structure_slug=structure.slug category_slug=category.slug %}">
+                        <svg class="icon icon-xs icon-success">
+                            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
+                        </svg> {% trans "Aggiungi nuova risposta" %}
+                    </a>
+                </div>
             </div>
         </div>
     </div>

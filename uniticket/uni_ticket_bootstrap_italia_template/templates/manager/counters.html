@@ -1,0 +1,152 @@
+{% load i18n %}
+{% load static %}
+
+<div id="counters">
+    <div class="d-none d-md-block">
+        <a role="button"
+           class="btn btn-outline-secondary me-1"
+           href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
+            <span class="badge bg-info" v-if="unassigned != null">[[ unassigned ]]</span>
+            <div class="spinner-border spinner-border-sm" role="status" v-else>
+                <span class="visually-hidden">In elaborazione...</span>
+            </div>
+            {% trans 'Aperte' %}
+        </a>
+        <a role="button" class="btn btn-outline-secondary me-1" href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+            <span class="badge bg-info" v-if="open != null">
+                [[ open ]]
+            </span>
+            <div class="spinner-border spinner-border-sm" role="status" v-else>
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            {% trans 'Assegnate' %}
+            <span class="badge bg-info" v-if="my_open != null">([[ my_open ]] {% trans 'a me' %})</span>
+        </a>
+        <a role="button" class="btn btn-outline-secondary me-1" href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
+            {% trans 'Chiuse' %}
+        </a>
+        <a role="button" class="btn btn-outline-secondary" href="{% url 'uni_ticket:manager_messages' structure_slug=structure.slug %}">
+            <div class="spinner-border spinner-border-sm" role="status" v-if="new_messages == null">
+                <span class="visually-hidden">In elaborazione...</span>
+            </div>
+            <svg class="icon icon-xs" v-else>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-comment"></use>
+            </svg>
+            <span class="badge bg-primary" v-if="new_messages">{% trans "Nuovi" %}</span>
+            {% trans 'Messaggi' %}
+        </a>
+    </div>
+    <div class="d-block d-md-none">
+        <nav class="toolbar">
+            <ul>
+                <li>
+                    <a href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
+                        <div class="badge-wrapper" v-if="unassigned">
+                            <span class="toolbar-badge bg-primary">
+                                [[ unassigned ]]
+                            </span>
+                        </div>
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprites.svg' %}#it-warning-circle"></use></svg>
+                        <span class="toolbar-label">{% trans 'Aperte' %}</span></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
+                        <div class="badge-wrapper" v-if="open">
+                            <span class="toolbar-badge bg-primary">
+                                [[ open ]]
+                            </span>
+                        </div>
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprites.svg' %}#it-clock"></use></svg>
+                        <span class="toolbar-label">{% trans 'Assegnate' %}
+                            <span v-if="my_open"><br>([[ my_open ]] {% trans 'a me' %})</span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
+                        <svg class="icon"><use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use></svg>
+                        <span class="toolbar-label">{% trans 'Chiuse' %}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'uni_ticket:manager_messages' structure_slug=structure.slug %}">
+                        <div class="badge-wrapper" v-if="new_messages">
+                            <span class="toolbar-badge bg-primary">
+                                {% trans "Nuovi" %}
+                            </span>
+                        </div>
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-comment"></use>
+                        </svg>
+                        <span class="toolbar-label">{% trans 'Messaggi' %}</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<script>
+const app = Vue.createApp({
+    delimiters: ['[[', ']]'],
+    data () {
+        return {
+            unassigned: null,
+            open: null,
+            my_open: null,
+            new_messages: null
+        }
+    },
+    created(){
+        this.interval = setInterval(() =>{
+            this.getUnassigned();
+            this.getOpen();
+            this.getMyOpen();
+            this.getMessages();
+            }, 20000)
+    },
+    destroyed(){
+        clearInterval(this.interval)
+    },
+    mounted () {
+        this.getUnassigned()
+        this.getOpen()
+        this.getMyOpen()
+        this.getMessages()
+    },
+    methods: {
+        getUnassigned() {
+            api_url = '{% url "api_rest:api-manager-tickets-unassigned-count" structure_slug=structure.slug %}'
+            axios
+                .get(api_url)
+                .then(response => {
+                    this.unassigned = response.data.count
+                })
+        },
+        getOpen() {
+            api_url = '{% url "api_rest:api-manager-tickets-open-count" structure_slug=structure.slug %}'
+            axios
+                .get(api_url)
+                .then(response => {
+                    this.open = response.data.count
+                })
+        },
+        getMyOpen() {
+            api_url = '{% url "api_rest:api-manager-tickets-my-open-count" structure_slug=structure.slug %}'
+            axios
+                .get(api_url)
+                .then(response => {
+                    this.my_open = response.data.count
+                })
+        },
+        getMessages() {
+            api_url = '{% url "api_rest:api-manager-tickets-messages-count" structure_slug=structure.slug %}'
+            axios
+                .get(api_url)
+                .then(response => {
+                    this.new_messages = response.data.count
+                })
+        }
+    }
+}).mount('#counters')
+</script>

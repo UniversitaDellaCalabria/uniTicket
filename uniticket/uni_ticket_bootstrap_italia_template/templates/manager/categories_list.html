@@ -5,10 +5,10 @@
 <div class="pb-3">
     <div class="btn-example pt-3 clearfix">
         <a role="button"
-           class="btn btn-outline-secondary float-right btn-xs mb-3"
+           class="btn btn-outline-success float-end btn-xs mb-3"
            href="{% url 'uni_ticket:manager_category_add_new' structure_slug=structure.slug %}">
-            <svg class="icon icon-xs">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-plus-circle"></use>
+            <svg class="icon icon-xs icon-success">
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
             </svg> {% trans "Aggiungi nuova tipologia di richiesta" %}
         </a>
     </div>
@@ -17,7 +17,7 @@
         <input type="text" id="categoriesFilter" placeholder="{% trans 'Filtra per parole chiave...' %}">
         <span class="autocomplete-icon" aria-hidden="true">
             <svg class="icon icon-sm">
-                <use xlink:href="{% static 'svg/sprite.svg' %}#it-search"></use>
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-search"></use>
             </svg>
         </span>
     </div>
@@ -47,9 +47,9 @@
                   <b>{% trans 'Richieste di tipo notifica' %}:</b>
                   <svg class="icon icon-xs">
                   {% if category.is_notification %}
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                   {% else %}
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                   {% endif %}
                   </svg>
                   <br>
@@ -68,18 +68,18 @@
                   <b>{% trans 'Notifica email a operatori' %}:</b>
                   <svg class="icon icon-xs">
                   {% if category.receive_email %}
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                   {% else %}
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                   {% endif %}
                   </svg>
                   <br>
                   <b>{% trans 'Protocollo obbligatorio' %}:</b>
                   <svg class="icon icon-xs">
                   {% if category.protocol_required %}
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                   {% else %}
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                   {% endif %}
                   </svg>
               </p>

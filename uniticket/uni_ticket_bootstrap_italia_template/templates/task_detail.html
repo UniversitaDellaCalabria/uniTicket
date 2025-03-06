@@ -9,7 +9,7 @@
                 <th scope="row">{% trans 'Stato' %}</th>
                 <td>
                     {% if not task.is_public %}
-                    <span class="badge badge-secondary">
+                    <span class="badge bg-secondary">
                         {% trans "Riservata agli operatori" %}
                     </span>
                     {% endif %}
@@ -28,7 +28,7 @@
                     {% if task.closing_attachment %}
                     <a href="{% url 'uni_ticket:download_task_closing_attachment' ticket_id=task.ticket.code task_id=task.code %}">
                         <svg class="icon">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
                         </svg> {{ task.closing_attachment|filename }}
                     </a>
                     {% endif %}
@@ -62,7 +62,7 @@
                 <td>
                     <a href="{% url 'uni_ticket:download_task_attachment' ticket_id=task.ticket.code task_id=task.code %}">
                         <svg class="icon">
-                            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
                         </svg> {{ task.attachment|filename }}
                     </a>
                 </td>

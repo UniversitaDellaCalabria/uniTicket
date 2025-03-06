@@ -30,13 +30,13 @@
                     {% endif %}
                         <span class="data">
                             <svg class="icon icon-xs icon-secondary">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-calendar"></use>
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-calendar"></use>
                             </svg> {{ reply.created }}
                         </span>
                         {% if reply.read_date %}
-                        <span title="{% trans 'Visualizzato da' %} {{ reply.read_by }} - {{ reply.read_date }}" class="float-right">
+                        <span title="{% trans 'Visualizzato da' %} {{ reply.read_by }} - {{ reply.read_date }}" class="float-end">
                             <svg class="icon icon-xs icon-primary">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use>
                             </svg>
                         </span>
                         {% endif %}
@@ -47,14 +47,14 @@
                     <p class="card-text">
                         <a href="{% url 'uni_ticket:download_message_attachment' ticket_id=reply.ticket.code reply_id=reply.id %}">
                             <svg class="icon">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-clip"></use>
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
                             </svg> {{ reply.attachment|filename }}
                         </a>
                     </p>
                     {% endif %}
                     {% if not reply.read_date and reply.owner == request.user %}
                         {% if reply.structure and management or not reply.structure and not management %}
-                        <button type="button" class="btn btn-outline-danger btn-xs float-right" data-toggle="modal" data-target="#removeOffice{{ reply.pk }}">
+                        <button type="button" class="btn btn-outline-danger btn-xs float-end" data-bs-toggle="modal" data-bs-target="#removeOffice{{ reply.pk }}">
                             {% trans "Elimina il messaggio" %}
                         </button>
                         <div class="modal fade" tabindex="-1" role="dialog" id="removeOffice{{ reply.pk }}">
@@ -64,10 +64,10 @@
                                         <h5 class="modal-title">
                                             {% trans "Eliminazione messaggio" %}
                                         </h5>
-                                        <button class="close" type="button"
-                                                data-dismiss="modal" aria-label="Close">
+                                        <button class="btn-close" type="button"
+                                                data-bs-dismiss="modal" aria-label="Close">
                                            <svg class="icon">
-                                              <use xlink:href="/static/svg/sprite.svg#it-close"></use>
+                                              <use xlink:href="/static/svg/sprites.svg#it-close"></use>
                                            </svg>
                                         </button>
                                     </div>
@@ -111,10 +111,10 @@
                     <form method="post" enctype="multipart/form-data">
                         {% include 'form_template.html' %}
                         {% block form_buttons %}
-                        <div>
-                            <button class="btn btn-success btn-block" type="submit">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success" type="submit">
                                 <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                                 </svg> {% trans 'Invia' %}
                             </button>
                         </div>

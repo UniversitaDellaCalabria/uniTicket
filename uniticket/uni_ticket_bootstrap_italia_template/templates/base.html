@@ -6,12 +6,21 @@
 {% load l10n %}
 {% load static %}
 {% load uni_ticket_tags %}
+{% load uni_ticket_bootstrap_italia_tags %}
 
 <!-- Return to Agid native template -->
 {% block extra_head %}
 {{ block.super }}
 <link rel="stylesheet" href="{% static 'css/uni_ticket.css' %}">
 <link rel="stylesheet" href="{% static 'css/datatables.css' %}">
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+{% settings_value "DEBUG" as debug %}
+{% if debug %}
+<script src="{% static 'js/vue.3.5.4.min.js' %}"></script>
+{% else %}
+<script src="{% static 'js/vue.3.5.4.prod.min.js' %}"></script>
+{% endif %}
+<script src="{% static 'js/axios.js' %}"></script>
 <!--
 <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.css' %}">
 -->
@@ -92,7 +101,7 @@ la digitalizzazione dei flussi di richieste e documentali.
        data-attribute="back-to-top"
        class="back-to-top back-to-top-small">
         <svg class="icon icon-light">
-          <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-up"></use>
+          <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-up"></use>
         </svg>
     </a>
 </div>
@@ -104,10 +113,10 @@ la digitalizzazione dei flussi di richieste e documentali.
     </p>
     <div class="cookiebar-buttons">
         <a href="#" class="cookiebar-btn">
-            {% trans "Preferenze" %} <span class="sr-only">cookies</span>
+            {% trans "Preferenze" %} <span class="visually-hidden">cookies</span>
         </a>
         <button data-accept="cookiebar" class="cookiebar-btn cookiebar-confirm">
-            {% trans "Accetto" %}<span class="sr-only"> i cookies</span>
+            {% trans "Accetto" %}<span class="visually-hidden"> i cookies</span>
         </button>
     </div>
 </div>

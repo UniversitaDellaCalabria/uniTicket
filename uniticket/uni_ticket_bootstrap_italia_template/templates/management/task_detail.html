@@ -7,17 +7,17 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manage_ticket_url_detail' structure_slug=structure.slug ticket_id=task.ticket.code %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna alla richiesta" %}
 </a>
 
 {% if task.is_closed and not task.ticket.is_closed %}
 <button type="button"
     class="btn btn-outline-warning"
-    data-toggle="modal"
-    data-target="#reopenTask">
+    data-bs-toggle="modal"
+    data-bs-target="#reopenTask">
     <svg class="icon icon-xs icon-warning">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-exchange-circle"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-exchange-circle"></use>
     </svg> {% trans "Riapri attività" %}
 </button>
 <div class="modal fade" tabindex="-1" role="dialog" id="reopenTask">
@@ -27,10 +27,10 @@
                 <h5 class="modal-title">
                     {% trans "Riapertura attività" %}
                 </h5>
-                <button class="close" type="button"
-                        data-dismiss="modal" aria-label="Close">
+                <button class="btn-close" type="button"
+                        data-bs-dismiss="modal" aria-label="Close">
                    <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                    </svg>
                 </button>
             </div>
@@ -53,22 +53,22 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:edit_task' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code%}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-pencil"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-pencil"></use>
     </svg> {% trans "Modifica" %}
 </a>
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:task_remove' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code %}"
-   data-toggle="modal"
-   data-target="#deleteTask">
+   data-bs-toggle="modal"
+   data-bs-target="#deleteTask">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
     </svg> {% trans "Elimina" %}
 </a>
 <a role="button"
    href="{% url 'uni_ticket:close_task' structure_slug=structure.slug ticket_id=task.ticket.code task_id=task.code %}"
    class="btn btn-outline-success">
    <svg class="icon icon-xs icon-success">
-    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
 </svg> {% trans "Chiudi" %}
 </a>
 {% endif %}
@@ -94,11 +94,11 @@
                         <h5 class="modal-title">
                             {% trans "Eliminazione attività" %}
                         </h5>
-                        <button class="close" type="button"
-                                data-dismiss="modal"
+                        <button class="btn-close" type="button"
+                                data-bs-dismiss="modal"
                                 aria-label="Close">
                            <svg class="icon">
-                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                            </svg>
                         </button>
                     </div>
@@ -122,41 +122,41 @@
             <form method="post" enctype="multipart/form-data">
                 {% include 'form_template.html' %}
                 {% block form_buttons %}
-                <div>
+                <div class="d-grid gap-2">
                     <button type="button"
-                            class="btn btn-success btn-block"
-                            data-toggle="modal"
-                            data-target="#action">
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#action">
                             <svg class="icon icon-xs icon-white">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                             </svg>
                             {% trans "Modifica la priorità" %}
                     </button>
-                    <div class="modal fade" tabindex="-1" role="dialog" id="action">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">
-                                        {% trans "Modifica attività" %}
-                                    </h5>
-                                    <button class="close" type="button"
-                                            data-dismiss="modal" aria-label="Close">
-                                       <svg class="icon">
-                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                       </svg>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>{% trans "Vuoi davvero procedere modificando l'attività" %}
-                                       <br>
-                                       <b>{{ task }}</b> ?
-                                    </p>
-                                </div>
-                                <div class="modal-footer">
-                                    <input class="btn btn-success"
-                                           type="submit"
-                                           value="{% trans 'Si, procedi' %}">
-                                </div>
+                </div>
+                <div class="modal fade" tabindex="-1" role="dialog" id="action">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    {% trans "Modifica attività" %}
+                                </h5>
+                                <button class="btn-close" type="button"
+                                        data-bs-dismiss="modal" aria-label="Close">
+                                   <svg class="icon">
+                                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                   </svg>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>{% trans "Vuoi davvero procedere modificando l'attività" %}
+                                   <br>
+                                   <b>{{ task }}</b> ?
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <input class="btn btn-success"
+                                       type="submit"
+                                       value="{% trans 'Si, procedi' %}">
                             </div>
                         </div>
                     </div>

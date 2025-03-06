@@ -11,7 +11,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils.html import strip_tags
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from django_form_builder.utils import get_as_dict, get_labeled_errors
 from organizational_area.models import *
@@ -446,61 +446,11 @@ def tickets(request, structure_slug, structure, office_employee=None):
     title = _("Gestione richieste")
     sub_title = _("Tutti gli stati")
 
-    ticket_list = []
-    # if user is operator
-    if office_employee:
-        unassigned = len(visible_tickets_to_user(user=request.user,
-                                                 structure=structure,
-                                                 office_employee=office_employee,
-                                                 closed=False,
-                                                 taken=False))
-
-        opened = len(visible_tickets_to_user(user=request.user,
-                                             structure=structure,
-                                             office_employee=office_employee,
-                                             closed=False,
-                                             taken=True))
-
-        my_opened = len(visible_tickets_to_user(user=request.user,
-                                                structure=structure,
-                                                office_employee=office_employee,
-                                                closed=False,
-                                                taken=True,
-                                                taken_by=request.user))
-
-        ticket_ids = visible_tickets_to_user(
-            user=request.user,
-            structure=structure,
-            office_employee=office_employee,
-            closed=False
-        )
-    # if user is manager
-    else:
-        unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                               closed=False,
-                                                               taken=False))
-        opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                               closed=False,
-                                                               taken=True))
-        my_opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                                  closed=False,
-                                                                  taken=True,
-                                                                  taken_by=request.user))
-        ticket_ids = TicketAssignment.objects.filter(
-            office__organizational_structure=structure,
-            office__is_active=True,
-            follow=True,
-            ticket__is_closed=False
-        ).values_list('ticket__pk', flat=True).distinct()
-
-    # unread messages
-    messages = TicketReply.get_unread_messages_count(ticket_ids=ticket_ids)
-
     d = {
-        "ticket_aperti": opened,
-        "ticket_assegnati_a_me": my_opened,
-        "ticket_non_gestiti": unassigned,
-        "ticket_messages": messages,
+        # "ticket_aperti": opened,
+        # "ticket_assegnati_a_me": my_opened,
+        # "ticket_non_gestiti": unassigned,
+        # "ticket_messages": messages,
         "structure": structure,
         "sub_title": sub_title,
         "title": title,
@@ -576,6 +526,7 @@ def ticket_dependence_add_new(
     form = TicketDependenceForm(
         user=request.user,
         structure=structure,
+        ticket_code=ticket.code,
         ticket_id=ticket.pk,
         ticket_dependences=ticket_dependences_code_list,
     )
@@ -584,6 +535,7 @@ def ticket_dependence_add_new(
             request.POST,
             user=request.user,
             structure=structure,
+            ticket_code=ticket.code,
             ticket_id=ticket.pk,
             ticket_dependences=ticket_dependences_code_list,
         )
@@ -2542,10 +2494,10 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
         date_end = date_end,
         structure_slug = structure_slug
     )
-    if request.POST.get('office_slug'):
-        _q['office_slug'] = request.POST['office_slug']
-    if request.POST.get('category_slug'):
-        _q['category_slug'] = request.POST['category_slug']
+    if request.POST.getlist('office_slug'):
+        _q['office_slug'] = request.POST.getlist('office_slug')
+    if request.POST.getlist('category_slug'):
+        _q['category_slug'] = request.POST.getlist('category_slug')
 
     stats = uniTicketStats(**_q)
     stats.load()
@@ -2571,8 +2523,8 @@ def statistics(request, structure_slug:str = None, structure: OrganizationalStru
         # "ticket_per_day": tuple(stats.ticket_per_day.keys()),
         "ticket_per_day": stats.ticket_per_day,
         "time_slots": STATS_TIME_SLOTS,
-        "ticket" : request.POST.get('category_slug'),
-        "office" : request.POST.get('office_slug'),
+        "category_slugs" : request.POST.getlist('category_slug'),
+        "office_slugs" : request.POST.getlist('office_slug'),
         "STATS_HEAT_MAP_RANGES": json.dumps(STATS_HEAT_MAP_RANGES, indent=2)
     }
     if _struct:

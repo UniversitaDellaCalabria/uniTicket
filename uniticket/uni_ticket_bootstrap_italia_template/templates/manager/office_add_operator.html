@@ -12,7 +12,7 @@
 <a role="button" class="btn btn-outline-secondary"
    href="{% url 'uni_ticket:manager_office_detail' structure_slug=structure.slug office_slug=office.slug %}">
     <svg class="icon icon-xs">
-        <use xlink:href="{% static 'svg/sprite.svg' %}#it-arrow-left"></use>
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
     </svg> {% trans "Torna all'ufficio" %}
 </a>
 {% endblock top_buttons %}
@@ -24,7 +24,7 @@
             <input type="text" id="usersFilter" name="search" value="{{ key }}" placeholder="{% trans 'Filtra per parole chiave...' %}">
             <span class="autocomplete-icon" aria-hidden="true">
                 <svg class="icon icon-sm">
-                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-search"></use>
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-search"></use>
                 </svg>
             </span>
         </div>
@@ -48,7 +48,7 @@
                                     {% for user in users %}
                                     <tr>
                                         <td>
-                                            <a href="#" data-toggle="modal" data-target="#addUser{{ forloop.counter0 }}">
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#addUser{{ forloop.counter0 }}">
                                                 {{ user.taxpayer_id }}
                                             </a>
                                         </td>
@@ -59,12 +59,12 @@
                                             {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
                                             {% obj_get_attr user employee_attribute_name as user_employee_attribute %}
                                             {% if user_employee_attribute %}
-                                            <svg class="mr-2 icon icon-success icon-xs">
-                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+                                            <svg class="me-2 icon icon-success icon-xs">
+                                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use>
                                             </svg>
                                             {% else %}
-                                            <svg class="mr-2 icon icon-danger icon-xs">
-                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-close-circle"></use>
+                                            <svg class="me-2 icon icon-danger icon-xs">
+                                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
                                             </svg>
                                             {% endif %}
                                         </td>
@@ -77,10 +77,10 @@
                                                         <h5 class="modal-title">
                                                             {% trans "Assegnazione operatore" %}
                                                         </h5>
-                                                        <button class="close" type="button"
-                                                                data-dismiss="modal" aria-label="Close">
+                                                        <button class="btn-close" type="button"
+                                                                data-bs-dismiss="modal" aria-label="Close">
                                                            <svg class="icon">
-                                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                                            </svg>
                                                         </button>
                                                     </div>

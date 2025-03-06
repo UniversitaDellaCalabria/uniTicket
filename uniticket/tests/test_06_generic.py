@@ -16,21 +16,21 @@ class Test_GenericFunctions(BaseTicketEnvironment):
                                            kwargs={'structure_slug': self.structure_1.slug}),
                                    follow=True)
         assert response.status_code == 200
-        self.assertEquals(response.context['structure'], self.structure_1)
+        self.assertEqual(response.context['structure'], self.structure_1)
 
     def test_closed_tickets_page(self):
         response = self.client.get(reverse('uni_ticket:manager_closed_ticket',
                                            kwargs={'structure_slug': self.structure_1.slug}),
                                    follow=True)
         assert response.status_code == 200
-        self.assertEquals(response.context['structure'], self.structure_1)
+        self.assertEqual(response.context['structure'], self.structure_1)
 
     def test_unassigned_tickets_page(self):
         response = self.client.get(reverse('uni_ticket:manager_unassigned_ticket',
                                            kwargs={'structure_slug': self.structure_1.slug}),
                                    follow=True)
         assert response.status_code == 200
-        self.assertEquals(response.context['structure'], self.structure_1)
+        self.assertEqual(response.context['structure'], self.structure_1)
 
     def test_email_notify_change(self):
         self.structure_1_default_office_operator_login()

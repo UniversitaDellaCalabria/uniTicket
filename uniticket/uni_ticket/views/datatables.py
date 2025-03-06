@@ -65,17 +65,8 @@ class TicketDTD(DjangoDatatablesServerProc):
                 self.aqs = self.aqs.filter(
                     Q(ticket__code__icontains=text)
                     | Q(ticket__subject__icontains=text)
-                    | Q(ticket__description__icontains=text)
-                    | Q(ticket__created_by__first_name__icontains=text)
                     | Q(ticket__created_by__last_name__icontains=text)
-                    | Q(ticket__compiled_by__first_name__icontains=text)
                     | Q(ticket__compiled_by__last_name__icontains=text)
-                    #| Q(taken_by__first_name__icontains=text)
-                    #| Q(taken_by__last_name__icontains=text)
-                    | Q(ticket__closed_by__first_name__icontains=text)
-                    | Q(ticket__closed_by__last_name__icontains=text)
-                    | Q(ticket__input_module__ticket_category__name__icontains=text)
-                    | Q(ticket__created__icontains=text)
                 )
 
     def fill_data(self):
@@ -266,7 +257,8 @@ def manager_all_tickets(request, structure_slug, structure):
 
     :return: JsonResponse
     """
-    tickets = TicketAssignment.get_ticket_per_structure(structure=structure)
+    tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
+                                                        priority_first=False)
     dtd = TicketDTD(request, tickets, _ticket_columns)
     return JsonResponse(dtd.get_dict())
 

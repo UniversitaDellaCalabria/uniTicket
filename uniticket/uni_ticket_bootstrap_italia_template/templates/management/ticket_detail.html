@@ -6,23 +6,23 @@
 {% load uni_ticket_tags %}
 
 {% block right_button %}
-<div class="pull-right">
+<div class="pull-end">
     <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:ticket_detail_print' ticket_id=ticket.code %}"
        target="_blank" rel="noopener noreferrer"
-       data-toggle="tooltip"
+       data-bs-toggle="tooltip"
        title="{% trans 'Versione stampabile' %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-print"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-print"></use>
         </svg>
     </a>
     <a role="button" class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:ticket_detail_print_pdf' ticket_id=ticket.code %}"
        target="_blank" rel="noopener noreferrer"
-       data-toggle="tooltip"
+       data-bs-toggle="tooltip"
        title="{% trans 'Versione PDF' %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-download"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-file-pdf-ext"></use>
         </svg>
     </a>
 </div>
@@ -45,81 +45,63 @@
     <ul>
         {% for office in untaken_user_offices %}
             <li>
-                <b class="mr-md-3">{{ office }}</b>
-                <div id="accordionDiv{{ office.pk }}"
-                     class="collapse-div collapse-left-icon" role="tablist"
-                     style="border-bottom: 0;">
-                    <div class="collapse-header" id="headingA{{ office.pk }}">
-                        <button data-toggle="collapse"
-                                data-target="#accordion{{ office.pk }}"
-                                aria-expanded="false"
-                                aria-controls="accordion{{ office.pk }}"
-                                style="padding-left: 0; padding-right: 0; border-top: 0;">
-                            <small>
+                <b class="me-md-3">{{ office }}</b>
+                <div class="accordion accordion-left-icon" id="accordionDiv{{ office.pk }}" style="border: 0">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header " id="heading{{ office.pk }}">
+                            <button class="accordion-button collapsed"  style="border: 0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ office.pk }}" aria-expanded="false" aria-controls="collapse{{ office.pk }}">
                                 {% trans "clicca qui per prendere in carico la richiesta" %}
-                            </small>
-                        </button>
-                    </div>
-                    <div id="accordion{{ office.pk }}"
-                         class="collapse"
-                         role="tabpanel"
-                         aria-labelledby="headingA{{ office.pk }}"
-                         data-parent="#accordionDiv{{ office.pk }}">
-                        <div class="collapse-body small">
-                            <div>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ office.pk }}" class="accordion-collapse collapse" data-bs-parent="#accordionDiv{{ office.pk }}" role="region" aria-labelledby="heading{{ office.pk }}">
+                            <div class="accordion-body">
                                 <form method="post" enctype="multipart/form-data">
                                     {% for key, value in offices_forms.items %}
                                         {% if key == office %}
                                             {% include 'form_template.html' with form=value.0 %}
                                         {% endif %}
                                     {% endfor %}
-                                    <div>
+                                    <div class="d-grid gap-2">
                                         <button type="button"
-                                                class="btn btn-success btn-block"
-                                                data-toggle="modal"
-                                                data-target="#action{{ office.pk }}">
+                                                class="btn btn-success"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#action{{ office.pk }}">
                                                 <svg class="icon icon-xs icon-white">
-                                                    <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                                                 </svg>
                                                 {% trans "Prendi in carico la richiesta" %}
                                         </button>
-                                        <!-- priority ticket modal -->
-                                        <div class="modal-div modal fade"
-                                             tabindex="-1"
-                                             role="dialog"
-                                             id="action{{ office.pk }}">
-                                            <div class="modal-dialog modal-dialog-centered"
-                                                 role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">
-                                                            {% trans "Modifica richiesta" %}
-                                                        </h5>
-                                                        <button class="close"
-                                                                type="button"
-                                                                data-dismiss="modal"
-                                                                aria-label="Close">
-                                                           <svg class="icon">
-                                                              <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                                           </svg>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p>{% trans "Vuoi davvero procedere modificando la richiesta" %}
-                                                           <br>
-                                                           <b>{{ ticket }}</b> ?
-                                                        </p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <input class="btn btn-success modal-submit"
-                                                               type="submit"
-                                                               value="{% trans 'Si, procedi' %}">
-                                                    </div>
+                                    </div>
+                                    <!-- prendi ticket modal -->
+                                    <div class="modal-div modal fade" tabindex="-1" role="dialog" id="action{{ office.pk }}">
+                                        <div class="modal-dialog modal-dialog-centered"
+                                             role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">
+                                                        {% trans "Prendi in carico la richiesta" %}
+                                                    </h5>
+                                                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                                                        <svg class="icon">
+                                                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>{% trans "Vuoi davvero procedere modificando la richiesta" %}
+                                                       <br>
+                                                       <b>{{ ticket }}</b> ?
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <input class="btn btn-success modal-submit"
+                                                           type="submit"
+                                                           value="{% trans 'Si, procedi' %}">
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- end priority ticket modal -->
                                     </div>
+                                    <!-- end prendi ticket modal -->
                                 </form>
                             </div>
                         </div>
@@ -127,43 +109,33 @@
                 </div>
                 {% get_usertype user=request.user structure=structure label_value_tuple=True as usertype_tuple %}
                 {% if usertype_tuple.0 == 'manager' %}
-                <div id="accordionDiv{{ office.pk }}_operators"
-                     class="collapse-div collapse-left-icon" role="tablist"
-                     style="border-bottom: 0;">
-                    <div class="collapse-header" id="headingA{{ office.pk }}">
-                        <button data-toggle="collapse"
-                                data-target="#accordion{{ office.pk }}_operators"
-                                aria-expanded="false"
-                                aria-controls="accordion{{ office.pk }}_operators"
-                                style="padding-left: 0; padding-right: 0; border-top: 0;">
-                            <small>
+                <div class="accordion accordion-left-icon" id="accordionDiv{{ office.pk }}_operators" style="border: 0">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header " id="heading{{ office.pk }}_operators">
+                            <button class="accordion-button collapsed"  style="border: 0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ office.pk }}_operators" aria-expanded="false" aria-controls="collapse{{ office.pk }}_operators">
                                 {% trans "clicca qui per assegnare a un operatore di questo ufficio" %}
-                            </small>
-                        </button>
-                    </div>
-                    <div id="accordion{{ office.pk }}_operators"
-                         class="collapse"
-                         role="tabpanel"
-                         aria-labelledby="headingA{{ office.pk }}_operators"
-                         data-parent="#accordionDiv{{ office.pk }}_operators">
-                        <div class="collapse-body small">
-                            <div>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ office.pk }}_operators" class="accordion-collapse collapse" data-bs-parent="#accordionDiv{{ office.pk }}_operators" role="region" aria-labelledby="heading{{ office.pk }}_operators">
+                            <div class="accordion-body">
                                 <form method="post" enctype="multipart/form-data">
                                     {% for key, value in offices_forms.items %}
                                         {% if key == office %}
                                             {% include 'form_template.html' with form=value.1 %}
                                         {% endif %}
                                     {% endfor %}
-                                    <button type="button"
-                                            class="btn btn-success btn-block"
-                                            data-toggle="modal"
-                                            data-target="#assign-{{ office.pk }}_operators">
-                                            <svg class="icon icon-xs icon-white">
-                                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-user"></use>
-                                            </svg>
-                                            {% trans "Assegna richiesta a un operatore dell'ufficio" %}
-                                    </button>
-                                    <!-- priority ticket modal -->
+                                    <div class="d-grid gap-2">
+                                        <button type="button"
+                                                class="btn btn-success"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#assign-{{ office.pk }}_operators">
+                                                <svg class="icon icon-xs icon-white">
+                                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-user"></use>
+                                                </svg>
+                                                {% trans "Assegna richiesta a un operatore dell'ufficio" %}
+                                        </button>
+                                    </div>
+                                    <!-- assegna ticket modal -->
                                     <div class="modal-div modal fade"
                                          tabindex="-1"
                                          role="dialog"
@@ -173,14 +145,14 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title">
-                                                        {% trans "Modifica richiesta" %}
+                                                        {% trans "Assegna richiesta a un operatore dell'ufficio" %}
                                                     </h5>
-                                                    <button class="close"
+                                                    <button class="btn-close"
                                                             type="button"
-                                                            data-dismiss="modal"
+                                                            data-bs-dismiss="modal"
                                                             aria-label="Close">
                                                        <svg class="icon">
-                                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                                                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                                                        </svg>
                                                     </button>
                                                 </div>
@@ -222,21 +194,21 @@
        class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-warning-circle"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-warning-circle"></use>
         </svg> {% trans "Torna alle richieste aperte" %}
     </a>
     <a role="button"
        class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manage_opened_ticket_url' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-clock"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-clock"></use>
         </svg> {% trans "Torna alle richieste assegnate" %}
     </a>
     <a role="button"
        class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manage_closed_ticket_url' structure_slug=structure.slug %}">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check-circle"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use>
         </svg> {% trans "Torna alle richieste chiuse" %}
     </a>
 </div>
@@ -247,10 +219,10 @@
    class="btn btn-outline-secondary">
     {% with ticket.get_messages_count as unread_messages %}
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-comment"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-comment"></use>
         </svg>
         {% if ticket_messages %}
-        <span class="badge badge-primary">{% trans "Nuovi" %}</span>
+        <span class="badge bg-primary">{% trans "Nuovi" %}</span>
         {% endif %}
         {% trans "Messaggi" %}
     {% endwith %}
@@ -260,10 +232,10 @@
 {% if ticket_taken and ticket.is_closed and not ticket.is_notification %}
     <button type="button"
         class="btn btn-outline-warning"
-        data-toggle="modal"
-        data-target="#reopenTicket">
+        data-bs-toggle="modal"
+        data-bs-target="#reopenTicket">
         <svg class="icon icon-xs icon-warning">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-exchange-circle"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-exchange-circle"></use>
         </svg> {% trans "Riapri richiesta" %}
     </button>
     <div class="modal fade" tabindex="-1" role="dialog" id="reopenTicket">
@@ -273,12 +245,12 @@
                     <h5 class="modal-title">
                         {% trans "Riapertura richiesta" %}
                     </h5>
-                    <button class="close"
+                    <button class="btn-close"
                             type="button"
-                            data-dismiss="modal"
+                            data-bs-dismiss="modal"
                             aria-label="Close">
                        <svg class="icon">
-                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
+                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
                        </svg>
                     </button>
                 </div>
@@ -302,36 +274,36 @@
        href="{% url 'uni_ticket:add_ticket_task_url' structure_slug=structure.slug ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-list"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-list"></use>
         </svg> {% trans "Aggiungi attività" %}
     </a>
     <a role="button"
        href="{% url 'uni_ticket:add_ticket_competence_url' structure_slug=structure.slug ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-share"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-share"></use>
         </svg> {% trans "Trasferisci competenza" %}
     </a>
         <a role="button"
        href="{% url 'uni_ticket:leave_ticket_competence' structure_slug=structure.slug ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-ban"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-ban"></use>
         </svg> {% trans "Abbandona competenza" %}
     </a>
     <a role="button"
        href="{% url 'uni_ticket:add_ticket_dependence_url' structure_slug=structure.slug ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-link"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-link"></use>
         </svg> {% trans "Aggiungi dipendenza" %}
     </a>
     {% if ticket.is_closable %}
         <a role="button"
            href="{% url 'uni_ticket:close_ticket' structure_slug=structure.slug ticket_id=ticket.code %}"
            class="btn btn-outline-success">
-           <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+           <svg class="icon icon-xs icon-success">
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
            </svg> {% trans "Chiudi" %}
         </a>
     {% endif %}
@@ -352,53 +324,53 @@
             <form method="post" enctype="multipart/form-data">
                 {% include 'form_template.html' %}
                 {% block form_buttons %}
-                <div>
+                <div class="d-grid gap-2">
                     <button type="button"
-                            class="btn btn-success btn-block"
-                            data-toggle="modal"
-                            data-target="#action">
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#action">
                             <svg class="icon icon-xs icon-white">
-                                <use xlink:href="{% static 'svg/sprite.svg' %}#it-check"></use>
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                             </svg>
                             {% trans "Modifica la priorità" %}
                     </button>
-                    <!-- priority ticket modal -->
-                    <div class="modal-div modal fade"
-                         tabindex="-1"
-                         role="dialog"
-                         id="action">
-                        <div class="modal-dialog modal-dialog-centered"
-                             role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">
-                                        {% trans "Modifica richiesta" %}
-                                    </h5>
-                                    <button class="close"
-                                            type="button"
-                                            data-dismiss="modal"
-                                            aria-label="Close">
-                                       <svg class="icon">
-                                          <use xlink:href="{% static 'svg/sprite.svg' %}#it-close"></use>
-                                       </svg>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>{% trans "Vuoi davvero procedere modificando la richiesta" %}
-                                       <br>
-                                       <b>{{ ticket }}</b> ?
-                                    </p>
-                                </div>
-                                <div class="modal-footer">
-                                    <input class="btn btn-success modal-submit"
-                                           type="submit"
-                                           value="{% trans 'Si, procedi' %}">
-                                </div>
+                </div>
+                <!-- priority ticket modal -->
+                <div class="modal-div modal fade"
+                     tabindex="-1"
+                     role="dialog"
+                     id="action">
+                    <div class="modal-dialog modal-dialog-centered"
+                         role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    {% trans "Modifica la priorità" %}
+                                </h5>
+                                <button class="btn-close"
+                                        type="button"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                   <svg class="icon">
+                                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                   </svg>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>{% trans "Vuoi davvero procedere modificando la richiesta" %}
+                                   <br>
+                                   <b>{{ ticket }}</b> ?
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <input class="btn btn-success modal-submit"
+                                       type="submit"
+                                       value="{% trans 'Si, procedi' %}">
                             </div>
                         </div>
                     </div>
-                    <!-- end priority ticket modal -->
                 </div>
+                <!-- end priority ticket modal -->
                 {% endblock form_buttons %}
             </form>
         </div>
@@ -412,8 +384,8 @@
 
 {% block extra_scripts %}
 <script>
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip();
-})
+document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+    new bootstrap.Tooltip(el);
+});
 </script>
 {% endblock %}
