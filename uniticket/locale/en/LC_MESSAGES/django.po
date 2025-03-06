@@ -1614,7 +1614,7 @@ msgstr ""
 
 #: uni_ticket/settings.py:46
 msgid ""
-"Dichiara di aver letto e compreso quanto scritto sopra e di assumersi ogni "
+"Dichiaro di aver letto e compreso quanto scritto sopra e di assumermi ogni "
 "responsabilità su quanto di seguito dichiarato"
 msgstr ""
 "I declare that I have read and understood what is written above and accept "
@@ -4574,8 +4574,8 @@ msgid "Richieste di tipo Notifica"
 msgstr "Notification type requests"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:252
-msgid "Mostra intestazione richiesta"
-msgstr "Show request header"
+msgid "Mostra i dati del dichiarante nell'intestazione"
+msgstr "Show declarant data in header"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:289
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:302

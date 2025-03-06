@@ -43,9 +43,9 @@ TICKET_CONDITIONS_TEXT = getattr(
     settings,
     "TICKET_CONDITIONS_TEXT",
     _(
-        "Dichiara di aver letto "
+        "Dichiaro di aver letto "
         "e compreso quanto scritto sopra "
-        "e di assumersi ogni responsabilità "
+        "e di assumermi ogni responsabilità "
         "su quanto di seguito dichiarato"
     ),
 )
