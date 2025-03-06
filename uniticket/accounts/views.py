@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from uni_ticket.jwts import encrypt_to_jwe, decrypt_from_jwe
 from uni_ticket.settings import MSG_FOOTER, MSG_HEADER

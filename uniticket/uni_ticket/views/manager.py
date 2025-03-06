@@ -10,7 +10,7 @@ from django.db.models import Count
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils.html import strip_tags
 from django.utils.text import slugify
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from django_form_builder.utils import get_labeled_errors
 from organizational_area.models import *

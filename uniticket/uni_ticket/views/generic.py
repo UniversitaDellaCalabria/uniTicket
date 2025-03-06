@@ -8,7 +8,7 @@ from django.db.models import Count, Min, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from django_form_builder.utils import get_as_dict
 from organizational_area.models import OrganizationalStructure

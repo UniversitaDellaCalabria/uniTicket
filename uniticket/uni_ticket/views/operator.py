@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from organizational_area.models import *
 

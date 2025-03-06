@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.core.validators import RegexValidator
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from . settings import (DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
                         LOGOS_FOLDER,

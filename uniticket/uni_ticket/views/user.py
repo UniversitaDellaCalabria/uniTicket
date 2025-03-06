@@ -21,7 +21,7 @@ from django.utils.decorators import method_decorator
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.html import strip_tags
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 
 from django_form_builder.utils import (

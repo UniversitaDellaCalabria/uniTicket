@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import resolve, reverse
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from . settings import *
 

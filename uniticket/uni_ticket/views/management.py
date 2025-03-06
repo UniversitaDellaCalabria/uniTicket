@@ -11,7 +11,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils.html import strip_tags
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from django_form_builder.utils import get_as_dict, get_labeled_errors
 from organizational_area.models import *
