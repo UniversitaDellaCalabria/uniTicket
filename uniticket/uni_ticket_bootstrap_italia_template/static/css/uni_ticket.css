@@ -2,7 +2,10 @@ a{
     cursor: pointer;
     text-decoration: none;
 }
-small, .form-text{
+small{
+    font-size: .9rem;
+}
+.form-text{
     font-size: .9rem;
     display: block;
     width: 100%;
