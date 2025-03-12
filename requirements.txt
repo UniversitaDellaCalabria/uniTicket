@@ -48,6 +48,7 @@ WeasyPrint==52.4
 # git+https://github.com/peppelinux/pyWSArchiPRO.git
 
 # production
+# sudo apt-get install python3-dev default-libmysqlclient-dev build-essential pkg-config
 # mysqlclient>=1.4.6
 
 # per la protocollazione
