@@ -4,6 +4,8 @@ a{
 }
 small, .form-text{
     font-size: .9rem;
+    display: block;
+    width: 100%;
 }
 .table-responsive{
     width: 100%;
