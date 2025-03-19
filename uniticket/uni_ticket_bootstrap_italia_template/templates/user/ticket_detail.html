@@ -108,10 +108,12 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <a role="button" class="btn btn-warning"
-                       href="{% url 'uni_ticket:user_reopen_ticket' ticket.code %}">
-                        {% trans "Si, riapri la richiesta" %}
-                    </a>
+                    <form action="{% url 'uni_ticket:user_reopen_ticket' ticket.code %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-warning" type="submit">
+                            {% trans "Si, riapri la richiesta" %}
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -125,7 +127,6 @@
         <use xlink:href="{% static 'svg/sprites.svg' %}#it-copy"></use>
        </svg> {% trans "Effettua richiesta simile" %}
     </a>
-
 
     {% if ticket_taken %}
         <a role="button" href="{% url 'uni_ticket:ticket_message' ticket_id=ticket.code %}"
@@ -188,11 +189,12 @@
                         </p>
                     </div>
                     <div class="modal-footer">
-                        <a role="button"
-                           class="btn btn-danger"
-                           href="{% url 'uni_ticket:ticket_delete' ticket_id=ticket.code %}">
-                           {% trans "Si, elimina" %}
-                        </a>
+                        <form action="{% url 'uni_ticket:ticket_delete' ticket_id=ticket.code %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-danger" type="submit">
+                                {% trans "Si, elimina" %}
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

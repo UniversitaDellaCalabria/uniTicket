@@ -44,7 +44,7 @@ class Test_UserFunctions(BaseTicketEnvironment):
     def test_delete_attachment(self):
         # Delete attachment
         assert self.ticket.get_allegati_dict()
-        response = self.client.get(reverse('uni_ticket:delete_my_attachment',
+        response = self.client.post(reverse('uni_ticket:delete_my_attachment',
                                             kwargs={'ticket_id': self.ticket.code,
                                                     'attachment': 'file_field_1'}),
                                    follow=True)
@@ -65,7 +65,7 @@ class Test_UserFunctions(BaseTicketEnvironment):
         assert self.ticket.is_closed
 
         # Delete ticket (fails because ticket is closed!)
-        response = self.client.get(reverse('uni_ticket:ticket_delete',
+        response = self.client.post(reverse('uni_ticket:ticket_delete',
                                            kwargs={'ticket_id': self.ticket.code}),
                                    follow=True)
         self.ticket.refresh_from_db()
@@ -73,7 +73,7 @@ class Test_UserFunctions(BaseTicketEnvironment):
         assert self.ticket
 
         # Reopen ticket
-        response = self.client.get(reverse('uni_ticket:user_reopen_ticket',
+        response = self.client.post(reverse('uni_ticket:user_reopen_ticket',
                                            kwargs={'ticket_id': self.ticket.code}),
                                    follow=True)
         self.ticket.refresh_from_db()
@@ -134,4 +134,4 @@ class Test_UserFunctions(BaseTicketEnvironment):
             response = self.client.get(reverse('uni_ticket:new_chat_preload'),
                                        follow=True)
             assert response.status_code == 200
-    
+
