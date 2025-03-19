@@ -42,11 +42,22 @@
         </div>
     </div>
     {% endif %}
-    <a href="{% url 'logout' %}">
+    {% settings_value "LOCAL_URL_PREFIX" as logout_url_prefix %}
+    {% settings_value "LOGOUT_URL" as logout_url %}
+    {% if logout_url_prefix in logout_url %}
+    <form action="{{ logout_url }}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-primary btn-sm btn-icon" type="submit">
+            <span>{% trans "Esci" %}</span>
+        </button>
+    </form>
+    {% else %}
+    <a href="{{ logout_url }}">
         <button class="btn btn-primary btn-sm btn-icon" type="button">
             <span>{% trans "Esci" %}</span>
         </button>
     </a>
+    {% endif %}
 {% else %}
     {% settings_value name="LOGIN_URL" as login_url %}
     <a href="{{ login_url }}/?next={{ request.get_full_path }}">
