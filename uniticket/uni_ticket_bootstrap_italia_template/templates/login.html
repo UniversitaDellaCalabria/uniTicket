@@ -17,7 +17,7 @@
 {% block container_inner %}
 <div class="container">
 {% if request.user.is_authenticated %}
-    <meta http-equiv="REFRESH" content="0;url={% url 'helpdesk:home' %}">
+    <meta http-equiv="REFRESH" content="0;url={% url 'uni_ticket:user_dashboard' %}">
 {% else %}
     <div class="login-panel panel panel-default">
         <div class="panel-body">
