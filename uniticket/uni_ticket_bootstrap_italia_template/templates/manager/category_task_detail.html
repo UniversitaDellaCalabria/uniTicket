@@ -83,6 +83,18 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">{% trans "Visibile nel documento di stampa" %}</th>
+                <td>
+                    <svg class="icon icon-sm icon-secondary">
+                    {% if task.is_printable %}
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">{% trans 'Priorità' %}</th>
                 <td>{{ task.get_priority }}</td>
             </tr>

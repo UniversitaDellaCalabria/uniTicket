@@ -77,6 +77,7 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
         ticket_task.description = task.description
         ticket_task.priority = task.priority
         ticket_task.is_public = task.is_public
+        ticket_task.is_printable = task.is_printable
         ticket_task.created_by = task.created_by
         ticket_task.code = uuid_code()
         ticket_task.attachment = task.attachment
@@ -1178,7 +1179,7 @@ class TicketDetail(View):
 
     :return: render
     """
-    def get(self, request, ticket_id:str, api:bool=False, template="user/ticket_detail.html"):
+    def get(self, request, ticket_id:str, api:bool=False, printable:bool=False, template="user/ticket_detail.html"):
 
         ticket = get_object_or_404(Ticket.objects.select_related('created_by','compiled_by','input_module__ticket_category'),
                                    code=ticket_id)
@@ -1200,7 +1201,8 @@ class TicketDetail(View):
         ticket_messages = TicketReply.get_unread_messages_count(
             ticket_ids=[ticket.pk], by_operator=True)
         ticket_task = Task.objects.filter(ticket=ticket)
-                                          # is_public=True)
+        if printable:
+            ticket_task = ticket_task.filter(is_printable=True)
         ticket_dependences = ticket.get_dependences()
         title = ticket.subject
         sub_title = ticket.code
@@ -1657,7 +1659,8 @@ def ticket_detail_print(request, ticket_id, ticket):  # pragma: no cover
     """
     response = TicketDetail().get(request=request,
                                   ticket_id=ticket_id,
-                                  template="ticket_detail_print.html")
+                                  template="ticket_detail_print.html",
+                                  printable=True)
     return response
 
 
@@ -1669,7 +1672,8 @@ def download_ticket_pdf(request,
                         template="ticket_detail_print_pdf.html"):  # pragma: no cover
     response = TicketDetail().get(request=request,
                                   ticket_id=ticket_id,
-                                  template=template)
+                                  template=template,
+                                  printable=True)
 
     # file names
     pdf_fname = "{}.pdf".format(ticket.code)

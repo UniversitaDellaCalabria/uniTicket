@@ -1410,6 +1410,7 @@ class AbstractTask(models.Model):
     # priority = models.IntegerField(default=0)
     priority = models.IntegerField(choices=PRIORITY_LEVELS, default=0)
     is_public = models.BooleanField(default=True)
+    is_printable = models.BooleanField(default=False)
     attachment = models.FileField(
         upload_to=_attachment_upload,
         null=True,

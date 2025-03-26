@@ -424,7 +424,7 @@ class TaskForm(ModelForm):
     class Meta:
         model = Task
         fields = ["subject", "description",
-                  "priority", "is_public",
+                  "priority", "is_public", "is_printable",
                   "attachment", "ordering"]
         labels = {
             "subject": _("Oggetto"),
@@ -432,6 +432,7 @@ class TaskForm(ModelForm):
             "priority": _("Priorità"),
             "attachment": _("Allegato"),
             "is_public": _("Visibile all'utente"),
+            "is_printable": _("Visibile nella versione stampabile"),
             "ordering": _("Ordinamento"),
         }
         widgets = {
@@ -527,6 +528,7 @@ class CategoryTaskForm(ModelForm):
             "attachment",
             "ordering",
             "is_public",
+            "is_printable",
             "is_active",
         ]
         labels = {
@@ -536,6 +538,7 @@ class CategoryTaskForm(ModelForm):
             "attachment": _("Allegato"),
             "is_active": _("Attiva"),
             "is_public": _("Visibile all'utente"),
+            "is_printable": _("Visibile nella versione stampabile"),
             "ordering": _("Ordinamento"),
         }
         widgets = {
