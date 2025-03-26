@@ -49,8 +49,8 @@ class Migration(migrations.Migration):
             name='user',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='user'),
         ),
-        migrations.AddIndex(
-            model_name='log',
-            index=models.Index(fields=['content_type', 'object_id'], name='uni_ticket__content_dbfb39_idx'),
-        ),
+        # ~ migrations.AddIndex(
+            # ~ model_name='log',
+            # ~ index=models.Index(fields=['content_type', 'object_id'], name='uni_ticket__content_dbfb39_idx'),
+        # ~ ),
     ]

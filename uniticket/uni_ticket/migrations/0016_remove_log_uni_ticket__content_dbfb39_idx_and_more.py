@@ -11,10 +11,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveIndex(
-            model_name='log',
-            name='uni_ticket__content_dbfb39_idx',
-        ),
+        # ~ migrations.RemoveIndex(
+            # ~ model_name='log',
+            # ~ name='uni_ticket__content_dbfb39_idx',
+        # ~ ),
         migrations.AlterField(
             model_name='log',
             name='action_flag',
