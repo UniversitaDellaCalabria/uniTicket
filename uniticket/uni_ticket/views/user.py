@@ -22,6 +22,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 
 
 from django_form_builder.utils import (
@@ -1025,6 +1026,7 @@ def ticket_edit(request, ticket_id):
 
 
 @login_required
+@require_POST
 @is_the_owner
 @ticket_is_not_taken_and_not_closed
 def delete_my_attachment(request, ticket_id, attachment):
@@ -1040,44 +1042,44 @@ def delete_my_attachment(request, ticket_id, attachment):
 
     :return: redirect
     """
-    if request.POST:
-        ticket = get_object_or_404(Ticket, code=ticket_id)
-        json_dict = ticket.get_modulo_compilato()
-        ticket_details = get_as_dict(compiled_module_json=json_dict)
-        nome_file = ticket_details[settings.ATTACHMENTS_DICT_PREFIX][attachment]
+    ticket = get_object_or_404(Ticket, code=ticket_id)
+    json_dict = ticket.get_modulo_compilato()
+    ticket_details = get_as_dict(compiled_module_json=json_dict)
+    nome_file = ticket_details[settings.ATTACHMENTS_DICT_PREFIX][attachment]
 
-        # Rimuove il riferimento all'allegato dalla base dati
-        del ticket_details[settings.ATTACHMENTS_DICT_PREFIX][attachment]
-        path_allegato = get_path(ticket.get_folder())
+    # Rimuove il riferimento all'allegato dalla base dati
+    del ticket_details[settings.ATTACHMENTS_DICT_PREFIX][attachment]
+    path_allegato = get_path(ticket.get_folder())
 
-        # Rimuove l'allegato dal disco
-        delete_file(file_name=nome_file, path=path_allegato)
+    # Rimuove l'allegato dal disco
+    delete_file(file_name=nome_file, path=path_allegato)
 
-        # log action
-        logger.info(
-            "[{}] user {} deleted file {}".format(
-                timezone.localtime(), request.user.username, path_allegato
-            )
+    # log action
+    logger.info(
+        "[{}] user {} deleted file {}".format(
+            timezone.localtime(), request.user.username, path_allegato
         )
+    )
 
-        set_as_dict(ticket, ticket_details)
-        ticket.update_log(user=request.user, note=_("Elimina allegato"))
+    set_as_dict(ticket, ticket_details)
+    ticket.update_log(user=request.user, note=_("Elimina allegato"))
 
-        # log action
-        logger.info(
-            "[{}] user {} deleted attachment "
-            "{} for ticket {}".format(
-                timezone.localtime(), request.user.username, nome_file, ticket
-            )
+    # log action
+    logger.info(
+        "[{}] user {} deleted attachment "
+        "{} for ticket {}".format(
+            timezone.localtime(), request.user.username, nome_file, ticket
         )
+    )
 
-        messages.add_message(
-            request, messages.SUCCESS, _("Allegato eliminato correttamente")
-        )
-        return redirect("uni_ticket:ticket_edit", ticket_id=ticket_id)
+    messages.add_message(
+        request, messages.SUCCESS, _("Allegato eliminato correttamente")
+    )
+    return redirect("uni_ticket:ticket_edit", ticket_id=ticket_id)
 
 
 @login_required
+@require_POST
 @is_the_owner
 @ticket_is_not_taken_and_not_closed
 def ticket_delete(request, ticket_id):
@@ -1091,76 +1093,74 @@ def ticket_delete(request, ticket_id):
 
     :return: redirect
     """
-    if request.POST:
+    ticket = get_object_or_404(Ticket, code=ticket_id)
 
-        ticket = get_object_or_404(Ticket, code=ticket_id)
-
-        if ticket.protocol_number:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                _("Impossibile eliminare una richiesta protocollata"),
-            )
-            return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
-
-        # deny action if user is not the owner but has compiled only
-        if not request.user == ticket.created_by:
-            messages.add_message(
-                request,
-                messages.ERROR,
-                TICKET_SHARING_USER_ERROR_MESSAGE.format(
-                    ticket.created_by),
-            )
-            return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
-
-        ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
-
-        # log action
-        logger.info(
-            "[{}] ticket {} assignment"
-            " to office {}"
-            " has been deleted"
-            " by user {}".format(
-                timezone.localtime(), ticket, ticket_assignment.office, request.user
-            )
-        )
-
-        ticket_assignment.delete()
-
-        # Send mail to ticket owner
-        mail_params = {
-            "hostname": settings.HOSTNAME,
-            "user": request.user,
-            "status": _("eliminato"),
-            "ticket": ticket,
-        }
-        m_subject = _(
-            "{} - richiesta {} eliminata".format(settings.HOSTNAME, ticket))
-
-        send_custom_mail(
-            subject=m_subject,
-            recipients=ticket.get_owners(),
-            body=TICKET_DELETED,
-            params=mail_params,
-        )
-        # END Send mail to ticket owner
-
-        # log action
-        logger.info(
-            "[{}] user {} deleted ticket {}".format(
-                timezone.localtime(), request.user, ticket
-            )
-        )
-
+    if ticket.protocol_number:
         messages.add_message(
             request,
-            messages.SUCCESS,
-            _("Ticket {} eliminato correttamente".format(ticket.code)),
+            messages.ERROR,
+            _("Impossibile eliminare una richiesta protocollata"),
         )
+        return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
 
-        ticket.delete()
+    # deny action if user is not the owner but has compiled only
+    if not request.user == ticket.created_by:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            TICKET_SHARING_USER_ERROR_MESSAGE.format(
+                ticket.created_by),
+        )
+        return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
 
-        return redirect("uni_ticket:user_unassigned_ticket")
+    ticket_assignment = TicketAssignment.objects.filter(ticket=ticket).first()
+
+    # log action
+    logger.info(
+        "[{}] ticket {} assignment"
+        " to office {}"
+        " has been deleted"
+        " by user {}".format(
+            timezone.localtime(), ticket, ticket_assignment.office, request.user
+        )
+    )
+
+    ticket_assignment.delete()
+
+    # Send mail to ticket owner
+    mail_params = {
+        "hostname": settings.HOSTNAME,
+        "user": request.user,
+        "status": _("eliminato"),
+        "ticket": ticket,
+    }
+    m_subject = _(
+        "{} - richiesta {} eliminata".format(settings.HOSTNAME, ticket))
+
+    send_custom_mail(
+        subject=m_subject,
+        recipients=ticket.get_owners(),
+        body=TICKET_DELETED,
+        params=mail_params,
+    )
+    # END Send mail to ticket owner
+
+    # log action
+    logger.info(
+        "[{}] user {} deleted ticket {}".format(
+            timezone.localtime(), request.user, ticket
+        )
+    )
+
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        _("Ticket {} eliminato correttamente".format(ticket.code)),
+    )
+
+    ticket.delete()
+
+    return redirect("uni_ticket:user_unassigned_ticket")
 
 
 # @login_required
@@ -1492,6 +1492,7 @@ class TicketClose(View):
 
 
 @login_required
+@require_POST
 @is_the_owner
 def ticket_reopen(request, ticket_id):
     """
@@ -1503,74 +1504,73 @@ def ticket_reopen(request, ticket_id):
 
     :return: redirect
     """
-    if request.POST:
-        ticket = get_object_or_404(Ticket, code=ticket_id)
+    ticket = get_object_or_404(Ticket, code=ticket_id)
 
-        # Se il ticket non è chiuso blocca
-        if not ticket.is_closed:
-            logger.info(
-                "[{}] {} tried to reopen not closed ticket {} "
-                "".format(timezone.localtime(), request.user, ticket)
-            )
-            return custom_message(request, _("La richiesta non è stata chiusa"))
-
-        if ticket.closed_by:
-            logger.info(
-                "[{}] {} tried to reopen ticket {} "
-                " closed by operator".format(
-                    timezone.localtime(), request.user, ticket)
-            )
-            return custom_message(
-                request,
-                _(
-                    "La richiesta è stata chiusa "
-                    "da un operatore e non può "
-                    "essere riaperta"
-                ),
-            )
-
-        if ticket.is_notification:
-            logger.info(
-                "[{}] {} tried to reopen notification ticket {} "
-                "".format(timezone.localtime(), request.user, ticket)
-            )
-            return custom_message(
-                request,
-                _("La richiesta è di tipo " "notifica e non può essere " "riaperta"),
-            )
-
-        # check if user has already open a ticket of this category
-        category = ticket.input_module.ticket_category
-        if not category.user_multiple_open_tickets and Ticket.existent_open_ticket(
-            request.user, category
-        ):
-            return custom_message(
-                request,
-                _(
-                    "Esistono già tue richieste aperte"
-                    " di questa tipologia."
-                    " Non puoi riaprire questa"
-                    " fino a quando le altre non verranno chiuse"
-                ),
-            )
-
-        ticket.is_closed = False
-        ticket.save(update_fields=["is_closed"])
-
-        msg = _("Riapertura richiesta {} da utente proprietario").format(ticket)
-        # log action
+    # Se il ticket non è chiuso blocca
+    if not ticket.is_closed:
         logger.info(
-            "[{}] {} reopened ticket {}".format(
+            "[{}] {} tried to reopen not closed ticket {} "
+            "".format(timezone.localtime(), request.user, ticket)
+        )
+        return custom_message(request, _("La richiesta non è stata chiusa"))
+
+    if ticket.closed_by:
+        logger.info(
+            "[{}] {} tried to reopen ticket {} "
+            " closed by operator".format(
                 timezone.localtime(), request.user, ticket)
         )
-
-        ticket.update_log(user=request.user, note=msg)
-        messages.add_message(
+        return custom_message(
             request,
-            messages.SUCCESS,
-            _("Richiesta {} riaperta correttamente".format(ticket)),
+            _(
+                "La richiesta è stata chiusa "
+                "da un operatore e non può "
+                "essere riaperta"
+            ),
         )
-        return redirect("uni_ticket:ticket_detail", ticket_id=ticket_id)
+
+    if ticket.is_notification:
+        logger.info(
+            "[{}] {} tried to reopen notification ticket {} "
+            "".format(timezone.localtime(), request.user, ticket)
+        )
+        return custom_message(
+            request,
+            _("La richiesta è di tipo " "notifica e non può essere " "riaperta"),
+        )
+
+    # check if user has already open a ticket of this category
+    category = ticket.input_module.ticket_category
+    if not category.user_multiple_open_tickets and Ticket.existent_open_ticket(
+        request.user, category
+    ):
+        return custom_message(
+            request,
+            _(
+                "Esistono già tue richieste aperte"
+                " di questa tipologia."
+                " Non puoi riaprire questa"
+                " fino a quando le altre non verranno chiuse"
+            ),
+        )
+
+    ticket.is_closed = False
+    ticket.save(update_fields=["is_closed"])
+
+    msg = _("Riapertura richiesta {} da utente proprietario").format(ticket)
+    # log action
+    logger.info(
+        "[{}] {} reopened ticket {}".format(
+            timezone.localtime(), request.user, ticket)
+    )
+
+    ticket.update_log(user=request.user, note=msg)
+    messages.add_message(
+        request,
+        messages.SUCCESS,
+        _("Richiesta {} riaperta correttamente".format(ticket)),
+    )
+    return redirect("uni_ticket:ticket_detail", ticket_id=ticket_id)
 
 
 @login_required
