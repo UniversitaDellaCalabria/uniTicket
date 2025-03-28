@@ -195,7 +195,7 @@ LOGOUT_REDIRECT_URL='/'
 CUSTOM_WIDGETS_IN_FORMSETS = False
 CUSTOM_WIDGETS = {
     'BaseDateField': 'bootstrap_italia_template.widgets.BootstrapItaliaDateWidget',
-    # 'BaseDateTimeField': 'bootstrap_italia_template.widgets.BootstrapItaliaTimeWidget',
+    'BaseDateTimeSimpleField': 'uni_ticket_bootstrap_italia_template.widgets.UniTicketDateTimeWidget',
     'CustomSelectBoxField': 'bootstrap_italia_template.widgets.BootstrapItaliaSelectWidget',
     'CustomRadioBoxField': 'bootstrap_italia_template.widgets.BootstrapItaliaRadioWidget',
     # 'BaseDateField': forms.widgets.DateInput(),
