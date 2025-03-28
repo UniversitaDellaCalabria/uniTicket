@@ -80,9 +80,9 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
 
         # Delete ticket
         # Fails, ticket is taken
-        response = self.client.get(reverse('uni_ticket:ticket_delete',
-                                           kwargs={'ticket_id': self.ticket.code}),
-                                   follow=True)
+        response = self.client.post(reverse('uni_ticket:ticket_delete',
+                                            kwargs={'ticket_id': self.ticket.code}),
+                                    follow=True)
         assert response.status_code == 200
         assert self.ticket
 

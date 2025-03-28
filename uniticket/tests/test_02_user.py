@@ -84,7 +84,7 @@ class Test_UserFunctions(BaseTicketEnvironment):
     def test_ticket_deletion(self):
         # Delete ticket
         code = self.ticket.code
-        response = self.client.get(reverse('uni_ticket:ticket_delete',
+        response = self.client.post(reverse('uni_ticket:ticket_delete',
                                            kwargs={'ticket_id': code}),
                                    follow=True)
         assert response.status_code == 200
