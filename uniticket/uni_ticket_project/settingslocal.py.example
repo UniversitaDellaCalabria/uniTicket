@@ -82,9 +82,9 @@ INSTALLED_APPS = [
 
     'datatables_ajax',
 
-    'bootstrap_italia_template',
-    # 'django_unical_bootstrap_italia',
     'uni_ticket_bootstrap_italia_template',
+    # 'django_unical_bootstrap_italia',
+    'bootstrap_italia_template',
 
     # 'bootstrapform',
     'uni_ticket',
