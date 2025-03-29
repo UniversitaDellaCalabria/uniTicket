@@ -1,4 +1,4 @@
-Django>=4.2.16,<6
+Django>=4.2.20
 
 git+https://github.com/UniversitaDellaCalabria/django-admin-search-builder.git
 
