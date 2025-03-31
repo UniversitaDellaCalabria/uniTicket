@@ -82,9 +82,11 @@ label{
     font-weight: normal;
     margin-bottom: 0;
 }
+/*
 .card .card-body a{
     display: inline;
 }
+*/
 h5.card-title .badge{
     font-size: 1.1rem;
     margin-right: 20px;

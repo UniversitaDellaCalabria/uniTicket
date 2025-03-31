@@ -42,6 +42,7 @@
                         {% trans "Ufficio speciale" %}
                     </span>
                 {% endif %}
+                <br>
                 <a class="read-more" href="{% url 'uni_ticket:manager_office_detail' structure_slug=structure.slug office_slug=office.slug %}">
                     <h5 class="card-title">{{ office.name }}</h5>
                 </a>
