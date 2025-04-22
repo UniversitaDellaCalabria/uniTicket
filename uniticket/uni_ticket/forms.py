@@ -10,11 +10,16 @@ from bootstrap_italia_template.widgets import (
     BootstrapItaliaSelectWidget,
     BootstrapItaliaSelectMultipleWidget,
 )
+
+from markdownx.fields import MarkdownxFormField
+from markdownx.widgets import MarkdownxWidget
+
 from organizational_area.models import (
     OrganizationalStructure,
     OrganizationalStructureOffice,
     OrganizationalStructureOfficeEmployee,
 )
+
 from uni_ticket.settings import CLOSING_LEVELS
 from uni_ticket_bootstrap_italia_template.widgets import UniTicketDateTimeWidget
 
@@ -23,6 +28,11 @@ from .utils import *
 
 
 class CategoryForm(ModelForm):
+    footer_text = MarkdownxFormField(label=_("Testo in calce per versione stampabile"),
+                                     help_text=_(
+                                         "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
+                                     ),
+                                     widget=MarkdownxWidget(attrs={'rows': 4}))
     class Meta:
         model = TicketCategory
         fields = [
@@ -56,7 +66,7 @@ class CategoryForm(ModelForm):
         widgets = {
             "description": forms.Textarea(attrs={"rows": 2}),
             "confirm_message_text": forms.Textarea(attrs={"rows": 2}),
-            "footer_text": forms.Textarea(attrs={"rows": 2}),
+            # ~ "footer_text": forms.Textarea(attrs={"rows": 2}),
             "allowed_users": BootstrapItaliaSelectMultipleWidget,
             "date_start": UniTicketDateTimeWidget,
             "date_end": UniTicketDateTimeWidget,
@@ -101,6 +111,10 @@ class CategoryInputModuleForm(ModelForm):
 
 
 class CategoryInputListForm(ModelForm):
+    pre_text = MarkdownxFormField(label=_("Testo statico (Pre-text)"),
+                                  help_text=_("Da visualizzare prima del campo.") + _("Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"),
+                                  widget=MarkdownxWidget(attrs={'rows': 4}))
+
     class Meta:
         model = TicketCategoryInputList
         fields = [
@@ -115,7 +129,7 @@ class CategoryInputListForm(ModelForm):
         labels = {
             "name": _("Denominazione"),
             "field_type": _("Tipo di campo"),
-            "pre_text": _("Testo statico (Pre-text)"),
+            # ~ "pre_text": _("Testo statico (Pre-text)"),
             "valore": _("Definizione delle scelte"),
             "is_required": _("Obbligatorio"),
             "aiuto": _("Aiuto"),
@@ -123,9 +137,9 @@ class CategoryInputListForm(ModelForm):
         }
         help_texts = {
             "name": _("Il nome che comparirà nel form"),
-            "pre_text": _(
-                "Da visualizzare prima del campo " "(accetta formattazione Markdown)"
-            ),
+            # ~ "pre_text": _(
+                # ~ "Da visualizzare prima del campo " "(accetta formattazione Markdown)"
+            # ~ ),
             "aiuto": _("Testo per guidare nella fase di compilazione"),
             "ordinamento": _("Posizione nel form rispetto agli altri campi"),
             "valore": _(
@@ -445,6 +459,12 @@ class TaskForm(ModelForm):
 
 
 class CategoryConditionForm(ModelForm):
+    text = MarkdownxFormField(label=_("Testo"),
+                              help_text=_(
+                                  "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
+                              ),
+                              widget=MarkdownxWidget(attrs={'rows': 4}))
+
     class Meta:
         model = TicketCategoryCondition
         fields = [
@@ -458,14 +478,14 @@ class CategoryConditionForm(ModelForm):
         ]
         labels = {
             "title": _("Titolo"),
-            "text": _("Testo"),
+            # ~ "text": _("Testo"),
             "ordinamento": _("Ordinamento"),
             "attachment": _("Allegato"),
             "is_collapsable": _("Collassabile (in nuova richiesta)"),
             "is_printable": _("Visibile nel documento di stampa"),
             "is_active": _("Attiva"),
         }
-        widgets = {"text": forms.Textarea(attrs={"rows": 2})}
+        # ~ widgets = {"text": forms.Textarea(attrs={"rows": 2})}
 
     class Media:
         js = ("js/textarea-autosize.js",)

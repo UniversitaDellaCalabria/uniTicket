@@ -164,6 +164,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# markdownX
+MARKDOWNX_UPLOAD_CONTENT_TYPES = []
+# END markdownx
+
 if "djangosaml2" in INSTALLED_APPS:
     MIDDLEWARE.append("djangosaml2.middleware.SamlSessionMiddleware")
 
