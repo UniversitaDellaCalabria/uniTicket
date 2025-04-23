@@ -32,7 +32,8 @@ class CategoryForm(ModelForm):
                                      help_text=_(
                                          "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
                                      ),
-                                     widget=MarkdownxWidget(attrs={'rows': 4}))
+                                     widget=MarkdownxWidget(attrs={'rows': 4}),
+                                     required=False)
     class Meta:
         model = TicketCategory
         fields = [
@@ -113,7 +114,8 @@ class CategoryInputModuleForm(ModelForm):
 class CategoryInputListForm(ModelForm):
     pre_text = MarkdownxFormField(label=_("Testo statico (Pre-text)"),
                                   help_text=_("Da visualizzare prima del campo.") + _("Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"),
-                                  widget=MarkdownxWidget(attrs={'rows': 4}))
+                                  widget=MarkdownxWidget(attrs={'rows': 4}),
+                                  required=False)
 
     class Meta:
         model = TicketCategoryInputList
