@@ -1197,7 +1197,7 @@ class TicketDetail(View):
             content_type_id=ContentType.objects.get_for_model(ticket).pk,
             object_id=ticket.pk,
             is_public=True
-        ).select_related('user')
+        ).select_related('user', 'app_io_message')
         ticket_messages = TicketReply.get_unread_messages_count(
             ticket_ids=[ticket.pk], by_operator=True)
         ticket_task = Task.objects.filter(ticket=ticket)
@@ -1298,7 +1298,7 @@ def ticket_message(request, ticket_id):
             log_msg = _(
                 "Nuovo messaggio (da utente). Oggetto: {} / " "Testo: {}"
             ).format(ticket_reply.subject, ticket_reply.text)
-            ticket.update_log(request.user, note=log_msg, send_mail=False)
+            ticket.update_log(user=request.user, note=log_msg, send_mail=False)
 
             # Send mail to ticket owner
             mail_params = {

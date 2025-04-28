@@ -191,6 +191,11 @@ if "chat" in settings.INSTALLED_APPS:
 
     urlpatterns += (path("", include(chat.urls, "chat")),)
 
+if "app_io" in settings.INSTALLED_APPS:
+    import app_io.urls
+
+    urlpatterns += (path("", include(app_io.urls, "app_io")),)
+
 if "accounts" in settings.INSTALLED_APPS:
     import accounts.urls
 

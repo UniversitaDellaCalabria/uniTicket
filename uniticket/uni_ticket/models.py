@@ -807,6 +807,7 @@ class Ticket(SavedFormContent):
         )
         log.is_public = is_public
         log.save(update_fields=['is_public'])
+        return log
 
     def get_assigned_to_offices(
         self, office_active=True, structure=None, ignore_follow=True

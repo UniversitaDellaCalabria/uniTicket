@@ -73,10 +73,10 @@ class CategoryForm(ModelForm):
             "date_end": UniTicketDateTimeWidget,
         }
         help_texts = {
-            "date_start": _("Formato {}. Lasciare vuoto  per non impostare" "").format(
+            "date_start": _("Formato {}. Lasciare vuoto  per non impostare").format(
                 settings.DEFAULT_DATETIME_FORMAT.replace("%", "")
             ),
-            "date_end": _("Formato {}. Lasciare vuoto  per non impostare" "").format(
+            "date_end": _("Formato {}. Lasciare vuoto  per non impostare").format(
                 settings.DEFAULT_DATETIME_FORMAT.replace("%", "")
             ),
             "is_hidden": _("Se questa opzione è attiva sarà possibile accedere al modulo esclusivamente tramite URL diretto")
@@ -757,10 +757,10 @@ class OrganizationalStructureAlertForm(ModelForm):
             "date_end": UniTicketDateTimeWidget,
         }
         help_texts = {
-            "date_start": _("Formato {}. Lasciare vuoto  per non impostare" "").format(
+            "date_start": _("Formato {}. Lasciare vuoto  per non impostare").format(
                 settings.DEFAULT_DATETIME_FORMAT.replace("%", "")
             ),
-            "date_end": _("Formato {}. Lasciare vuoto  per non impostare" "").format(
+            "date_end": _("Formato {}. Lasciare vuoto  per non impostare").format(
                 settings.DEFAULT_DATETIME_FORMAT.replace("%", "")
             ),
         }

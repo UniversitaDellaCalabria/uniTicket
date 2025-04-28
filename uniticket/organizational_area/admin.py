@@ -22,9 +22,9 @@ class OrganizationalStructureTypeAdmin(AbstractAdmin):
 class OrganizationalStructureAdmin(AbstractAdmin):
     prepopulated_fields = {'slug': ('name',)}
     list_display = ('name', 'structure_type',
-                    'description', 'is_active')
-    list_filter = ('structure_type', 'is_active')
-    list_editable = ('is_active',)
+                    'description', 'app_io_enabled', 'is_active')
+    list_filter = ('structure_type', 'app_io_enabled', 'is_active')
+    list_editable = ('is_active', 'app_io_enabled')
     inlines = [OrganizationalStructureLocationInline,
                OrganizationalStructureOfficeInline,
                UserManageOrganizationalStructureInline]

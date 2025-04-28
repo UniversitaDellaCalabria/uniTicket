@@ -61,6 +61,7 @@ class OrganizationalStructure(models.Model):
                                null=True, blank=True,
                                max_length=255)
     url = models.CharField(max_length=768, null=True, blank=True)
+    app_io_enabled = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
     class Meta:

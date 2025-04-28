@@ -103,4 +103,27 @@
             </div>
         </div>
     </div>
+
+    {% if structure.app_io_enabled %}
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading6l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6l" aria-expanded="false" aria-controls="collapse6l">
+                {% trans "Servizi App IO" %} ({{ category.ioserviceticketcategory_set.all.count }})
+            </button>
+        </h2>
+        <div id="collapse6l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading6l">
+            <div class="accordion-body">
+                {% include "manager/category_app_io_services.html" %}
+                <div class="d-grid gap-2">
+                    <a class="btn btn-outline-success mt-4"
+                       href="{% url 'app_io:app_io_services_new' structure_slug=structure.slug category_slug=category.slug %}">
+                        <svg class="icon icon-xs icon-success">
+                            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
+                        </svg> {% trans "Aggiungi nuovo servizio" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>

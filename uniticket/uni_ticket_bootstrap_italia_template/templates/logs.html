@@ -9,7 +9,30 @@
         <li>
             <div class="list-item">
                 <div class="row it-right-zone">
-                    <div class="col-12 col-lg-6 text">{{ log.change_message|linebreaksbr }}</div>
+                    <div class="col-12 col-lg-6 text">
+                        {{ log.change_message|linebreaksbr }}
+                        {% if log.app_io_message %}
+                            <br>
+                            <img src="{% static 'images/io-it-logo.svg' %}" width="20"/>
+                            <small>
+                                {% if log.app_io_message.response.error %}
+                                <svg class="icon icon-danger" width="20" aria-labelledby="{{ log.pk }}-error">
+                                    <title id="{{ log.pk }}-error">
+                                        {{ log.app_io_message.response.error }}
+                                    </title>
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-error"></use>
+                                </svg> Notifica tramite App IO fallita. Errore: {{ log.app_io_message.response.error }}
+                                {% else %}
+                                <svg class="icon icon-success" width="20" aria-labelledby="{{ log.pk }}-success">
+                                    <title id="{{ log.pk }}-success">
+                                        ID messaggio: {{ log.app_io_message.response.message_id }}
+                                    </title>
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use>
+                                </svg> Notifica inviata tramite App IO
+                                {% endif %}
+                            </small>
+                        {% endif %}
+                    </div>
                     <div class="col-12 col-lg-6 it-multiple">
                         <span class="text-start text-lg-end metadata">
                             {{ log.user }}<br>{{ log.action_time }}

@@ -1,0 +1,153 @@
+{% load i18n %}
+{% load static %}
+
+<div class="it-list-wrapper">
+    {% if category.ioserviceticketcategory_set.all %}
+    <ul class="it-list">
+        {% for service in category.ioserviceticketcategory_set.all %}
+        <li class="py-2 clearfix">
+            {% if service.service.is_active %}
+                <span class="badge bg-success">
+                    {% trans "attivo globalmente" %}
+                </span>
+            {% else %}
+                <span class="badge bg-danger">
+                    {% trans "non attivo globalmente" %}
+                </span>
+            {% endif %}
+            {% if service.is_active %}
+                <span class="badge bg-success">
+                    {% trans "attivo localmente" %}
+                </span>
+            {% else %}
+                <span class="badge bg-danger">
+                    {% trans "non attivo localmente" %}
+                </span>
+            {% endif %}
+            <br>
+            <b>{{ service.service }}</b>
+            {% if service.note %}
+            <br>
+            {{ service.note }}
+            {% endif %}
+            <br>
+            {{ service.created }}
+
+            <button type="button"
+                class="mx-1 btn btn-outline-secondary btn-xs float-end"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteIOService{{ forloop.counter0 }}">
+                {% trans "Elimina" %}
+            </button>
+
+            {% if service.is_active %}
+            <button type="button"
+                class="mx-1 btn btn-outline-danger btn-xs float-end"
+                data-bs-toggle="modal"
+                data-bs-target="#disableIOService{{ forloop.counter0 }}">
+                {% trans "Disattiva" %}
+            </button>
+            {% else %}
+            <button type="button"
+                class="mx-1 btn btn-outline-success btn-xs float-end"
+                data-bs-toggle="modal"
+                data-bs-target="#enableIOService{{ forloop.counter0 }}">
+                {% trans "Attiva" %}
+            </button>
+            {% endif %}
+            <a role="button"
+               class="mx-1 btn btn-outline-secondary btn-xs float-end"
+               href="{% url 'app_io:app_io_services_edit' structure_slug=structure.slug category_slug=category.slug service_id=service.pk %}">
+                {% trans "Modifica" %}
+            </a>
+
+            <div class="modal fade" tabindex="-1" role="dialog" id="enableIOService{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Attivazione servizio" %}
+                            </h5>
+                            <button class="btn-close" type="button"
+                                    data-bs-dismiss="modal" aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Attivando questo servizio, verrà inviata una notifica tramite App IO per ogni aggiornamento di stato.<br>Vuoi procedere?" %}
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-success"
+                               href="{% url 'app_io:app_io_services_enable' structure_slug=structure.slug category_slug=category.slug service_id=service.pk %}">
+                                {% trans "Si, attiva il servizio" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" tabindex="-1" role="dialog" id="disableIOService{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Disattivazione servizio" %}
+                            </h5>
+                            <button class="btn-close" type="button"
+                                    data-bs-dismiss="modal" aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Disattivando questo servizio, verrà disabilitato l'invio di notifiche tramite App IO.<br>Vuoi procedere?" %}
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-danger"
+                               href="{% url 'app_io:app_io_services_disable' structure_slug=structure.slug category_slug=category.slug service_id=service.pk %}">
+                                {% trans "Si, disattiva il servizio" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" tabindex="-1" role="dialog" id="deleteIOService{{ forloop.counter0 }}">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {% trans "Eliminazione servizio" %}
+                            </h5>
+                            <button class="btn-close" type="button"
+                                    data-bs-dismiss="modal" aria-label="Close">
+                               <svg class="icon">
+                                  <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                               </svg>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>{% trans "Vuoi davvero eliminare il servizio " %}
+                               <b>{{ service.service }}</b> ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <a role="button" class="btn btn-danger"
+                               href="{% url 'app_io:app_io_services_delete' structure_slug=structure.slug category_slug=category.slug service_id=service.pk %}">
+                                {% trans "Si, elimina il servizio" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+        {% endfor %}
+    </ul>
+    {% else %}
+    {% trans "Nessun servizio presente" %}
+    {% endif %}
+</div>

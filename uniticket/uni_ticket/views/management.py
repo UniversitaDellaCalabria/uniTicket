@@ -1,5 +1,7 @@
+import json
 import logging
 import os
+import requests
 import zipfile
 
 from django.conf import settings
@@ -12,6 +14,14 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
+
+from app_io.settings import (
+    APP_IO_CLOSE_TICKET_SUBJECT,
+    APP_IO_CLOSE_TICKET_MESSAGE,
+    APP_IO_REOPEN_TICKET_SUBJECT,
+    APP_IO_REOPEN_TICKET_MESSAGE
+)
+from app_io.utils import send_message as send_app_io_message
 
 from django_form_builder.utils import get_as_dict, get_labeled_errors
 from organizational_area.models import *
@@ -199,7 +209,7 @@ def ticket_detail(
     ticket_logs = Log.objects.filter(
         content_type_id=ContentType.objects.get_for_model(ticket).pk,
         object_id=ticket.pk,
-    )
+    ).select_related('app_io_message')
     ticket_task = Task.objects.filter(ticket=ticket)
     ticket_dependences = ticket.get_dependences()
     ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
@@ -790,9 +800,9 @@ def ticket_close(
                 )
             )
 
-            ticket.update_log(
+            log = ticket.update_log(
                 user=request.user,
-                note=_("Chiusura richiesta ({}): {}" "").format(
+                note=_("Chiusura richiesta ({}): {}").format(
                     dict(CLOSING_LEVELS).get(closing_status), motivazione
                 ),
             )
@@ -813,6 +823,48 @@ def ticket_close(
                     "</b></a>"
                 ).format(ticket, opened_ticket_url),
             )
+
+            # App IO message
+            if structure.app_io_enabled:
+                ticket_url = request.build_absolute_uri(
+                    reverse(
+                        "uni_ticket:ticket_detail",
+                        kwargs={"ticket_id": ticket.code},
+                    )
+                )
+                io_subject = APP_IO_CLOSE_TICKET_SUBJECT.format(ticket_code=ticket.code)
+                io_body = APP_IO_CLOSE_TICKET_MESSAGE.format(
+                    ticket_subject=ticket.subject,
+                    ticket_code=ticket.code,
+                    closing_status=dict(CLOSING_LEVELS).get(closing_status),
+                    ticket_url=ticket_url
+                )
+
+                io_response = send_app_io_message(
+                    ticket=ticket,
+                    log=log,
+                    subject=io_subject,
+                    body=io_body
+                )
+
+                if io_response.get('error'):
+                    messages.add_message(
+                        request,
+                        messages.DANGER,
+                        _(
+                            "Errore invio messaggio App IO: {}"
+                        ).format(io_response.get('error')),
+                    )
+                else:
+                    messages.add_message(
+                        request,
+                        messages.SUCCESS,
+                        _(
+                            "Messaggio App IO inviato correttamente"
+                        )
+                    )
+            # End App IO message
+
             return redirect(
                 "uni_ticket:manage_ticket_url_detail",
                 structure_slug=structure_slug,
@@ -919,7 +971,10 @@ def ticket_reopen(request, structure_slug, ticket_id, structure, can_manage, tic
         )
     ticket.is_closed = False
     ticket.save(update_fields=["is_closed"])
-    ticket.update_log(user=request.user, note=_("Riapertura richiesta"))
+    log = ticket.update_log(
+        user=request.user,
+        note=_("Riapertura richiesta")
+    )
 
     # log action
     logger.info(
@@ -932,6 +987,48 @@ def ticket_reopen(request, structure_slug, ticket_id, structure, can_manage, tic
         messages.SUCCESS,
         _("Richiesta {} riaperta correttamente").format(ticket),
     )
+
+    # App IO message
+    if structure.app_io_enabled:
+        ticket_url = request.build_absolute_uri(
+            reverse(
+                "uni_ticket:ticket_detail",
+                kwargs={"ticket_id": ticket.code},
+            )
+        )
+
+        io_subject = APP_IO_REOPEN_TICKET_SUBJECT.format(ticket_code=ticket.code)
+        io_body = APP_IO_REOPEN_TICKET_MESSAGE.format(
+            ticket_subject=ticket.subject,
+            ticket_code=ticket.code,
+            ticket_url=ticket_url
+        )
+
+        io_response = send_app_io_message(
+            ticket=ticket,
+            log=log,
+            subject=io_subject,
+            body=io_body
+        )
+
+        if io_response.get('error'):
+            messages.add_message(
+                request,
+                messages.DANGER,
+                _(
+                    "Errore invio messaggio App IO: {}"
+                ).format(io_response.get('error')),
+            )
+        else:
+            messages.add_message(
+                request,
+                messages.SUCCESS,
+                _(
+                    "Messaggio App IO inviato correttamente"
+                )
+            )
+    # End App IO message
+
     return redirect(
         "uni_ticket:manage_ticket_url_detail",
         structure_slug=structure_slug,
@@ -1373,7 +1470,7 @@ def ticket_message(
             log_msg = _(
                 "Nuovo messaggio (da operatore {}). " "Oggetto: {} / " "Testo: {}"
             ).format(structure, ticket_reply.subject, ticket_reply.text)
-            ticket.update_log(request.user, note=log_msg, send_mail=False)
+            ticket.update_log(user=request.user, note=log_msg, send_mail=False)
 
             # Send mail to ticket owner
             mail_params = {

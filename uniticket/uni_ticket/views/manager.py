@@ -1382,7 +1382,7 @@ def category_disable(request, structure_slug, category_slug, structure):
         messages.add_message(
             request,
             messages.SUCCESS,
-            _("Tipo di richieste {} disattivato con successo" "").format(category),
+            _("Tipo di richieste {} disattivato con successo").format(category),
         )
 
         # log action
@@ -1397,7 +1397,7 @@ def category_disable(request, structure_slug, category_slug, structure):
         messages.add_message(
             request,
             messages.ERROR,
-            _("Tipo di richieste {} già disattivato" "").format(category),
+            _("Tipo di richieste {} già disattivato").format(category),
         )
     return redirect(
         "uni_ticket:manager_category_detail",
@@ -1430,7 +1430,7 @@ def category_enable(request, structure_slug, category_slug, structure):
         messages.add_message(
             request,
             messages.ERROR,
-            _("Tipo di richieste {} già attivato" "").format(category),
+            _("Tipo di richieste {} già attivato").format(category),
         )
     elif problem:
         messages.add_message(request, messages.ERROR, problem)
@@ -1441,7 +1441,7 @@ def category_enable(request, structure_slug, category_slug, structure):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _("Tipo di richieste {} attivato con successo" "").format(category),
+                _("Tipo di richieste {} attivato con successo").format(category),
             )
         else:
             start = timezone.localtime(category.date_start)
@@ -1501,7 +1501,7 @@ def category_delete(request, structure_slug, category_slug, structure):
         messages.add_message(
             request,
             messages.SUCCESS,
-            _("Categoria {} eliminata correttamente" "").format(category),
+            _("Categoria {} eliminata correttamente").format(category),
         )
 
         category.delete()
@@ -3748,7 +3748,7 @@ def category_protocol_configuration_delete(
     messages.add_message(
         request,
         messages.SUCCESS,
-        _("Configurazione <b>{}</b> eliminata correttamente" "").format(configuration),
+        _("Configurazione <b>{}</b> eliminata correttamente").format(configuration),
     )
     configuration.delete()
     return redirect(
@@ -3796,7 +3796,7 @@ def category_protocol_configuration_disable(
         messages.add_message(
             request,
             messages.SUCCESS,
-            _("Configurazione <b>{}</b> disattivata con successo" "").format(
+            _("Configurazione <b>{}</b> disattivata con successo").format(
                 configuration
             ),
         )
@@ -3823,7 +3823,7 @@ def category_protocol_configuration_disable(
         messages.add_message(
             request,
             messages.ERROR,
-            _("Configurazione {} già disattivata" "").format(configuration),
+            _("Configurazione {} già disattivata").format(configuration),
         )
 
     return redirect(
@@ -3864,7 +3864,7 @@ def category_protocol_configuration_enable(
         messages.add_message(
             request,
             messages.ERROR,
-            _("Configurazione {} già attivata" "").format(configuration),
+            _("Configurazione {} già attivata").format(configuration),
         )
 
     else:
@@ -3878,7 +3878,7 @@ def category_protocol_configuration_enable(
         messages.add_message(
             request,
             messages.SUCCESS,
-            _("Configurazione <b>{}</b> attivata con successo" "").format(
+            _("Configurazione <b>{}</b> attivata con successo").format(
                 configuration
             ),
         )
