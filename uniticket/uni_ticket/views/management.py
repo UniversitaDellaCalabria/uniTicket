@@ -847,22 +847,23 @@ def ticket_close(
                     body=io_body
                 )
 
-                if io_response.get('error'):
-                    messages.add_message(
-                        request,
-                        messages.DANGER,
-                        _(
-                            "Errore invio messaggio App IO: {}"
-                        ).format(io_response.get('error')),
-                    )
-                else:
-                    messages.add_message(
-                        request,
-                        messages.SUCCESS,
-                        _(
-                            "Messaggio App IO inviato correttamente"
+                if io_response:
+                    if io_response.get('error'):
+                        messages.add_message(
+                            request,
+                            messages.DANGER,
+                            _(
+                                "Errore invio messaggio App IO: {}"
+                            ).format(io_response.get('error')),
                         )
-                    )
+                    else:
+                        messages.add_message(
+                            request,
+                            messages.SUCCESS,
+                            _(
+                                "Messaggio App IO inviato correttamente"
+                            )
+                        )
             # End App IO message
 
             return redirect(
@@ -1011,22 +1012,23 @@ def ticket_reopen(request, structure_slug, ticket_id, structure, can_manage, tic
             body=io_body
         )
 
-        if io_response.get('error'):
-            messages.add_message(
-                request,
-                messages.DANGER,
-                _(
-                    "Errore invio messaggio App IO: {}"
-                ).format(io_response.get('error')),
-            )
-        else:
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                _(
-                    "Messaggio App IO inviato correttamente"
+        if io_response:
+            if io_response.get('error'):
+                messages.add_message(
+                    request,
+                    messages.DANGER,
+                    _(
+                        "Errore invio messaggio App IO: {}"
+                    ).format(io_response.get('error')),
                 )
-            )
+            else:
+                messages.add_message(
+                    request,
+                    messages.SUCCESS,
+                    _(
+                        "Messaggio App IO inviato correttamente"
+                    )
+                )
     # End App IO message
 
     return redirect(
