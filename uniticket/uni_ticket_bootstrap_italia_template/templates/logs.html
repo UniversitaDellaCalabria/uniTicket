@@ -16,7 +16,7 @@
                             <img src="{% static 'images/io-it-logo.svg' %}" width="20"/>
                             <small>
                                 {% if log.app_io_message.response.error %}
-                                <svg class="icon icon-danger" width="20" aria-labelledby="{{ log.pk }}-error">
+                                <svg class="icon icon-danger" style="width: 20px" aria-labelledby="{{ log.pk }}-error">
                                     <title id="{{ log.pk }}-error">
                                         {{ log.app_io_message.response.error }}
                                     </title>
