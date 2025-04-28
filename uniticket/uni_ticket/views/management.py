@@ -1468,27 +1468,27 @@ def ticket_message(
             )
 
             log_msg = _(
-                "Nuovo messaggio (da operatore {}). " "Oggetto: {} / " "Testo: {}"
-            ).format(structure, ticket_reply.subject, ticket_reply.text)
+                "Nuovo messaggio (da operatore {}). Oggetto: {}"
+            ).format(structure, ticket_reply.subject)
             ticket.update_log(user=request.user, note=log_msg, send_mail=False)
 
             # Send mail to ticket owner
             mail_params = {
                 "hostname": settings.HOSTNAME,
                 "status": _("ricevuto"),
-                "message_subject": ticket_reply.subject,
-                "message_text": ticket_reply.text,
                 "ticket": ticket,
                 "user": ticket.created_by,
                 "url": request.build_absolute_uri(
                     reverse(
-                        "uni_ticket:ticket_message", kwargs={"ticket_id": ticket.code}
+                        "uni_ticket:ticket_message",
+                        kwargs={"ticket_id": ticket.code}
                     )
                 ),
             }
             m_subject = _(
                 "{} - richiesta {} nuovo messaggio".format(
-                    settings.HOSTNAME, ticket)
+                    settings.HOSTNAME, ticket
+                )
             )
             send_custom_mail(
                 subject=m_subject,

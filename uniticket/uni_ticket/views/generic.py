@@ -476,7 +476,6 @@ def ticket_message_delete(request, ticket_message_id):
 
     # delete message
     msg_subject = ticket_message.subject
-    msg_text = ticket_message.text
 
     ticket_message.delete()
 
@@ -490,8 +489,6 @@ def ticket_message_delete(request, ticket_message_id):
         mail_params = {
             "hostname": settings.HOSTNAME,
             "status": _("eliminato"),
-            "message_subject": msg_subject,
-            "message_text": msg_text,
             "ticket": ticket,
             "user": request.user,
             "url": request.build_absolute_uri(

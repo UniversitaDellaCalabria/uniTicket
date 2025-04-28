@@ -309,10 +309,6 @@ USER_TICKET_MESSAGE = getattr(
     _(
         """Hai {status} un nuovo messaggio per la richiesta \"{ticket}\"
 
-Oggetto: {message_subject}
-
-Testo: {message_text}
-
 Clicca qui {url} per aprire il pannello dei messaggi."""
     ),
 )
@@ -387,10 +383,6 @@ NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY = getattr(
     "NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY",
     _(
         """Hai ricevuto un nuovo messaggio per la richiesta \"{ticket}\"
-
-Oggetto: {message_subject}
-
-Testo: {message_text}
 
 Clicca qui {url} per aprire il pannello dei messaggi."""
     ),
