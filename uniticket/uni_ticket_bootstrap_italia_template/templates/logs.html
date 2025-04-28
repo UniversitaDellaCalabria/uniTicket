@@ -23,7 +23,7 @@
                                     <use xlink:href="{% static 'svg/sprites.svg' %}#it-error"></use>
                                 </svg> Notifica tramite App IO fallita. Errore: {{ log.app_io_message.response.error }}
                                 {% else %}
-                                <svg class="icon icon-success" width="20" aria-labelledby="{{ log.pk }}-success">
+                                <svg class="icon icon-success" style="width: 20px" aria-labelledby="{{ log.pk }}-success">
                                     <title id="{{ log.pk }}-success">
                                         ID messaggio: {{ log.app_io_message.response.message_id }}
                                     </title>
