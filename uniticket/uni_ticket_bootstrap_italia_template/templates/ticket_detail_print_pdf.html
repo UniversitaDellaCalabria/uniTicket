@@ -6,8 +6,14 @@
 {% block extra_head %}
 {{ block.super }}
 <style>
-.it-brand-wrapper {width: 400px}
-.title-div {padding: 0 35px}
+.it-brand-wrapper {width: 400px;}
+.title-div {padding: 0 35px;}
+body, p, a {font-size: 10pt;}
+a {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
 </style>
 {% endblock extra_head %}
 
