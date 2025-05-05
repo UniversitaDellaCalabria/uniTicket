@@ -55,10 +55,12 @@
 {% endblock page_content %}
 
 {% block extra_scripts %}
+<script src="{% static 'js/accessible-autocomplete.2.0.4.min.js' %}"></script>
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function () {
     let structureElement = document.querySelector('#structure_slug');
-    let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
+    let structureAutocomplete = new accessibleAutocomplete.enhanceSelectElement({
+        selectElement: structureElement,
         showAllValues: true,
         defaultValue: '',
         placeholder: "- {% trans 'Scegli un\'opzione' %}- ",

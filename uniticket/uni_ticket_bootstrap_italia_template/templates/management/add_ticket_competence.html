@@ -145,10 +145,12 @@
 
 {% block extra_scripts %}
 {{ form.media }}
+<script src="{% static 'js/accessible-autocomplete.2.0.4.min.js' %}"></script>
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function () {
     let structureElement = document.querySelector('#structure_slug');
-    let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
+    let structureAutocomplete = accessibleAutocomplete.enhanceSelectElement({
+        selectElement: structureElement,
         showAllValues: true,
         defaultValue: '',
         placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
@@ -167,8 +169,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    {% if offices %}
     let officeElement = document.querySelector('#office_slug');
-    let officeAutocomplete = new bootstrap.SelectAutocomplete(officeElement, {
+    let officeAutocomplete = accessibleAutocomplete.enhanceSelectElement({
+        selectElement: officeElement,
         showAllValues: true,
         defaultValue: '',
         placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
@@ -178,7 +182,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     let originOfficeElement = document.querySelector('#selected_office');
-    let originOfficeAutocomplete = new bootstrap.SelectAutocomplete(originOfficeElement, {
+    let originOfficeAutocomplete = accessibleAutocomplete.enhanceSelectElement({
+        selectElement: originOfficeElement,
         showAllValues: true,
         defaultValue: '',
         placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
@@ -186,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showNoOptionsFound: false,
         dropdownArrow: () => '',
     });
+    {% endif %}
 });
 
 function replace_last_param(url, new_param){

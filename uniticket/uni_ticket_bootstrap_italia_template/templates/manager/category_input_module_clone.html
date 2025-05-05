@@ -67,10 +67,12 @@
 {% endblock page_content %}
 
 {% block extra_scripts %}
+<script src="{% static 'js/accessible-autocomplete.2.0.4.min.js' %}"></script>
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function () {
     let structureElement = document.querySelector('#selected_structure_slug');
-    let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
+    let structureAutocomplete = accessibleAutocomplete.enhanceSelectElement({
+        selectElement: structureElement,
         showAllValues: true,
         defaultValue: '',
         placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
@@ -89,8 +91,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    {% if categories %}
     let categoryElement = document.querySelector('#selected_category_slug');
-    let categoryAutocomplete = new bootstrap.SelectAutocomplete(categoryElement, {
+    let categoryAutocomplete = accessibleAutocomplete.enhanceSelectElement({
+        selectElement: categoryElement,
         showAllValues: true,
         defaultValue: '',
         placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
@@ -108,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
+    {% endif %}
 });
 function replace_last_param(url, new_param){
     return url.split('/').slice(0,-2).join('/')+'/'+new_param

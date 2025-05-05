@@ -38,10 +38,10 @@
     </div>
     {% endif %}
 {% endif %}
+
 <b>
     <label for="structure_slug">{% trans "Struttura" %}</label>
 </b>
-
 <div class="bootstrap-select-wrapper">
     <select id="structure_slug" name="structure_slug" title="{% trans 'A chi è indirizzata la richiesta?' %}">
         <option select value=""></option>
@@ -75,10 +75,12 @@
 {% endblock page_content %}
 
 {% block extra_scripts %}
+<script src="{% static 'js/accessible-autocomplete.2.0.4.min.js' %}"></script>
 <script type="text/javascript">
 document.addEventListener('DOMContentLoaded', function () {
     let structureElement = document.querySelector('#structure_slug');
-    let structureAutocomplete = new bootstrap.SelectAutocomplete(structureElement, {
+    let structureAutocomplete = accessibleAutocomplete.enhanceSelectElement({
+        selectElement: structureElement,
         showAllValues: true,
         defaultValue: '',
         placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
@@ -97,8 +99,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    var categoryElement = document.querySelector('#category_slug');
-    var categoryAutocomplete = new bootstrap.SelectAutocomplete(categoryElement, {
+    {% if categorie %}
+    let categoryElement = document.querySelector('#category_slug');
+    let categoryAutocomplete = accessibleAutocomplete.enhanceSelectElement({
+        selectElement: categoryElement,
         showAllValues: true,
         defaultValue: '',
         placeholder: "- {% trans 'Scegli un\'opzione' %}- ",
@@ -114,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
+    {% endif %}
 })
 
 function replace_last_param(url, new_param){
