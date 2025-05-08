@@ -220,7 +220,7 @@
         <svg class="icon icon-xs">
             <use xlink:href="{% static 'svg/sprites.svg' %}#it-note"></use>
         </svg>
-        {% trans "Note" %} <span class="badge bg-info">{{ ticket_notes }}</span>
+        {% trans "Note" %} {% if ticket_notes %}<span class="badge bg-info">{{ ticket_notes }}</span>{% endif %}
     </a>
     <a role="button"
        href="{% url 'uni_ticket:manage_ticket_message_url' structure_slug=structure.slug ticket_id=ticket.code %}"
