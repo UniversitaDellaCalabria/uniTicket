@@ -1770,3 +1770,22 @@ class CompiledTicket(models.Model):
                     to_clear.append(precompiled.pk)
             entries_to_clean = CompiledTicket.objects.filter(pk__in=to_clear)
             entries_to_clean.delete()
+
+
+_TICKET_OPERATOR_NOTES_VISIBILITY_LEVELS = (
+    (0, _("Solo uffici della struttura attuale")),
+    (1, _("Tutti gli uffici delle strutture coinvolte")),
+)
+
+class TicketOperatorNote(TimeStampedModel):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL,
+                              on_delete=models.PROTECT)
+    structure = models.ForeignKey(OrganizationalStructure,
+                                  on_delete=models.PROTECT)
+    text = models.TextField()
+    visibility = models.IntegerField(choices=_TICKET_OPERATOR_NOTES_VISIBILITY_LEVELS,
+                                     default=0)
+
+    class Meta:
+        ordering = ('created',)

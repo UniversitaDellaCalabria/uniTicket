@@ -310,6 +310,7 @@ select{
 /**
  * Ticket messages
  */
+.ticket_notes .card .card-body p,
 .ticket_replies .card .card-body p{
     font-size: 1rem;
 }

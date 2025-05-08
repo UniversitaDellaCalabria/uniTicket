@@ -1,0 +1,127 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manage_ticket_url_detail' structure_slug=structure.slug ticket_id=ticket.code %}">
+   <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
+    </svg> {% trans 'Torna alla richiesta' %}
+</a>
+{% endblock top_buttons %}
+
+{% block clean_content %}
+{% if ticket_notes %}
+    {% for note in ticket_notes %}
+    <div class="row" class="ticket_notes">
+        <div class="col">
+            <div class="card-wrapper card-space">
+                <div class="card card-bg no-after">
+                    {% if note.structure != structure %}
+                    <div class="card-body" style="background: #eff7ff">
+                    {% else %}
+                    <div class="card-body">
+                    {% endif %}
+                        <div class="category-top">
+                            {% if not note.visibility %}
+                            <span class="badge bg-info mb-2">
+                                {% trans "Visibile solo in" %} {{ structure }}
+                            </span>
+                            <br>
+                            {% endif %}
+                            <a class="category">{{ note.owner }} ({{ note.structure }})</a>
+                            <span class="data">
+                                <svg class="icon icon-xs icon-secondary">
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-calendar"></use>
+                                </svg> {{ note.created }}
+                            </span>
+                        </div>
+                        <p class="card-text">{{ note.text | markdown | safe }}</p>
+                        {% if note.owner == request.user %}
+                        <div class="pull-end">
+                            <a title="{% trans 'Modifica' %}" role="button" class="btn btn-outline-info btn-xs" href="{% url 'uni_ticket:manage_ticket_note_url' structure_slug=structure.slug ticket_id=ticket.code note_id=note.pk %}">
+                                <svg class="icon icon-info icon-xs">
+                                   <use xlink:href="/static/svg/sprites.svg#it-pencil"></use>
+                                </svg>
+                            </a>
+                            <button title="{% trans 'Elimina' %}" type="button" class="btn btn-outline-danger btn-xs" data-bs-toggle="modal" data-bs-target="#removeNote{{ note.pk }}">
+                                <svg class="icon icon-danger icon-xs">
+                                    <use xlink:href="/static/svg/sprites.svg#it-delete"></use>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="modal fade" tabindex="-1" role="dialog" id="removeNote{{ note.pk }}">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Eliminazione nota" %}
+                                        </h5>
+                                        <button class="btn-close" type="button"
+                                                data-bs-dismiss="modal" aria-label="Close">
+                                           <svg class="icon">
+                                              <use xlink:href="/static/svg/sprites.svg#it-close"></use>
+                                           </svg>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            {% trans "Vuoi davvero eliminare la nota" %}?
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form action="{% url 'uni_ticket:manage_ticket_note_delete' structure_slug=structure.slug ticket_id=ticket.code note_id=note.pk %}" method="post">
+                                            {% csrf_token %}
+                                            <button class="btn btn-danger" type="submit">
+                                                {% trans "Si, elimina" %}
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <hr>
+{% else %}
+    <div class="alert alert-warning" role="alert">
+      {% trans "Non ci sono note" %}
+    </div>
+{% endif %}
+
+<div class="row">
+    <div class="col">
+        <div class="card-wrapper card-space">
+            <div class="card card-bg no-after">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% include 'form_template.html' %}
+                        {% block form_buttons %}
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success" type="submit">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
+                                </svg> {% trans 'Crea nuova' %}
+                            </button>
+                        </div>
+                        {% endblock form_buttons %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock clean_content %}
+
+{% block extra_scripts %}
+{{ form.media }}
+{% endblock extra_scripts %}

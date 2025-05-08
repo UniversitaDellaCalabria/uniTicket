@@ -7,6 +7,7 @@ from django.forms.widgets import CheckboxSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
 from bootstrap_italia_template.widgets import (
+    BootstrapItaliaRadioWidget,
     BootstrapItaliaSelectWidget,
     BootstrapItaliaSelectMultipleWidget,
 )
@@ -767,3 +768,19 @@ class OrganizationalStructureAlertForm(ModelForm):
 
     class Media:
         js = ("js/textarea-autosize.js",)
+
+
+class TicketOperatorNoteForm(ModelForm):
+    text = MarkdownxFormField(label=_("Testo"),
+                              help_text=_(
+                                "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
+                              ),
+                              widget=MarkdownxWidget(attrs={'rows': 4}),
+                              required=True)
+    class Meta:
+        model = TicketOperatorNote
+        fields = ["text", "visibility",]
+        labels = {"visibility": _("Visibilità"),}
+        widgets = {
+            "visibility": BootstrapItaliaRadioWidget
+        }

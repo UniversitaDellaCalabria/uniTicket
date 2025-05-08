@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 
 from app_io.settings import (
     APP_IO_CLOSE_TICKET_SUBJECT,
@@ -214,6 +215,10 @@ def ticket_detail(
     ticket_dependences = ticket.get_dependences()
     ticket_assignments = TicketAssignment.objects.filter(ticket=ticket)
     ticket_messages = TicketReply.get_unread_messages_count(ticket_ids=[ticket.pk])
+    ticket_notes = TicketOperatorNote.objects.filter(
+        Q(structure=structure) | Q(visibility=1),
+        ticket=ticket,
+    ).count()
 
     # priority form
     form = PriorityForm(initial={"priorita": ticket.priority})
@@ -428,6 +433,7 @@ def ticket_detail(
         "ticket_form": ticket_form,
         "logs": ticket_logs,
         "ticket_messages": ticket_messages,
+        "ticket_notes": ticket_notes,
         "ticket_task": ticket_task,
         "title": title,
         "untaken_user_offices": untaken_user_offices,
@@ -1374,6 +1380,50 @@ def ticket_message_url(request, structure_slug, ticket_id):  # pragma: no cover
 
 
 @login_required
+def ticket_note_url(request, structure_slug, ticket_id, note_id):  # pragma: no cover
+    """
+    Makes URL redirect to edit ticket note by user role
+
+    :type structure_slug: String
+    :type ticket_id: String
+
+    :param structure_slug: structure slug
+    :param ticket_id: ticket code
+
+    :return: redirect
+    """
+    structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
+    user_type = get_user_type(request.user, structure)
+    return redirect(
+        "uni_ticket:{}_ticket_note".format(user_type),
+        structure_slug,
+        ticket_id,
+        note_id
+    )
+
+
+@login_required
+def ticket_notes_url(request, structure_slug, ticket_id):  # pragma: no cover
+    """
+    Makes URL redirect to add ticket note by user role
+
+    :type structure_slug: String
+    :type ticket_id: String
+
+    :param structure_slug: structure slug
+    :param ticket_id: ticket code
+
+    :return: redirect
+    """
+    structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
+    user_type = get_user_type(request.user, structure)
+    return redirect(
+        "uni_ticket:{}_ticket_notes".format(
+            user_type), structure_slug, ticket_id
+    )
+
+
+@login_required
 @has_ticket_admin_privileges
 # @ticket_is_taken_for_employee
 @ticket_assigned_to_structure
@@ -1411,25 +1461,12 @@ def ticket_message(
     user_type = get_user_type(request.user, structure)
     # Conversazione utente-operatori
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
-    form = ReplyForm()
-
-    ticket_taken = ticket.has_been_taken(
-        structure=structure, exclude_readonly=True)
-
-    # if ticket.is_open() and can_manage:
-    if can_manage:
-        user_replies = ticket_replies.filter(
-            Q(owner=ticket.created_by) | Q(owner=ticket.compiled_by),
-            structure=None,
-            read_by=None,
-        )
-        if not can_manage["readonly"] and ticket_taken:
-            for reply in user_replies:
-                reply.read_by = request.user
-                reply.read_date = timezone.localtime()
-                reply.save(update_fields=["read_by", "read_date"])
 
     if request.method == "POST":
+        ticket_taken = ticket.has_been_taken(
+            structure=structure, exclude_readonly=True
+        )
+
         if can_manage["readonly"]:
             messages.add_message(
                 request, messages.ERROR, READONLY_COMPETENCE_OVER_TICKET
@@ -1514,6 +1551,35 @@ def ticket_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(
                         k, strip_tags(v))
                 )
+    else:
+        ticket_taken = ticket.has_been_taken(
+            structure=structure, exclude_readonly=False
+        )
+
+        if not ticket_taken:
+            m = _("La richiesta deve essere prima presa in carico")
+            messages.add_message(request, messages.ERROR, m)
+            return redirect(
+                "uni_ticket:manage_ticket_url_detail",
+                structure_slug=structure_slug,
+                ticket_id=ticket_id,
+            )
+
+        # if ticket.is_open() and can_manage:
+        if can_manage:
+            user_replies = ticket_replies.filter(
+                Q(owner=ticket.created_by) | Q(owner=ticket.compiled_by),
+                structure=None,
+                read_by=None,
+            )
+            if not can_manage["readonly"]:
+                for reply in user_replies:
+                    reply.read_by = request.user
+                    reply.read_date = timezone.localtime()
+                    reply.save(update_fields=["read_by", "read_date"])
+
+        form = ReplyForm()
+
     d = {
         "form": form,
         "structure": structure,
@@ -1525,6 +1591,277 @@ def ticket_message(
     }
     template = "{}/ticket_assistance.html".format(user_type)
     return render(request, template, base_context(d))
+
+
+@login_required
+@has_ticket_admin_privileges
+@ticket_assigned_to_structure
+def ticket_notes(
+    request,
+    structure_slug,
+    ticket_id,
+    structure,
+    can_manage,
+    ticket,
+    office_employee=None,
+):
+    """
+    View ticket notes
+
+    :type structure_slug: String
+    :type ticket_id: String
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
+    :type ticket: Ticket (from @ticket_assigned_to_structure)
+    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
+
+    :param structure_slug: structure slug
+    :param ticket_id: ticket code
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
+    :param ticket: ticket object (from @ticket_assigned_to_structure)
+    :param office_employee: operator offices queryset (from @is_operator)
+
+    :return: render
+    """
+
+    title = _("Note degli operatori")
+    user_type = get_user_type(request.user, structure)
+    ticket_notes = TicketOperatorNote.objects.filter(
+        Q(structure=structure) | Q(visibility=1),
+        ticket=ticket,
+    )
+
+    if request.method == "POST":
+        ticket_taken = ticket.has_been_taken(
+            structure=structure, exclude_readonly=True
+        )
+        if can_manage["readonly"]:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                READONLY_COMPETENCE_OVER_TICKET
+            )
+            return redirect(
+                "uni_ticket:manage_ticket_notes_url",
+                structure_slug=structure_slug,
+                ticket_id=ticket_id,
+            )
+
+        if not ticket_taken:
+            m = _("La richiesta deve essere prima presa in carico")
+            messages.add_message(request, messages.ERROR, m)
+            return redirect(
+                "uni_ticket:manage_ticket_url_detail",
+                structure_slug=structure_slug,
+                ticket_id=ticket_id,
+            )
+
+        form = TicketOperatorNoteForm(request.POST)
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.ticket = ticket
+            note.structure = structure
+            note.owner = request.user
+            note.save()
+
+            # log action
+            logger.info(
+                "[{}] {} added new note in"
+                " ticket {}".format(timezone.localtime(), request.user, ticket)
+            )
+
+            messages.add_message(
+                request, messages.SUCCESS, _("Nota creata con successo")
+            )
+            return redirect(
+                "uni_ticket:manage_ticket_notes_url",
+                structure_slug=structure_slug,
+                ticket_id=ticket_id,
+            )
+        else:  # pragma: no cover
+            for k, v in get_labeled_errors(form).items():
+                messages.add_message(
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
+                )
+    else:
+        ticket_taken = ticket.has_been_taken(
+            structure=structure, exclude_readonly=False
+        )
+        if not ticket_taken:
+            m = _("La richiesta deve essere prima presa in carico")
+            messages.add_message(request, messages.ERROR, m)
+            return redirect(
+                "uni_ticket:manage_ticket_url_detail",
+                structure_slug=structure_slug,
+                ticket_id=ticket_id,
+            )
+        form = TicketOperatorNoteForm()
+
+    d = {
+        "form": form,
+        "structure": structure,
+        "sub_title": ticket.__str__(),
+        "sub_title_2": ticket.description,
+        "ticket": ticket,
+        "ticket_notes": ticket_notes,
+        "title": title,
+    }
+    template = "{}/ticket_notes.html".format(user_type)
+    return render(request, template, base_context(d))
+
+
+@login_required
+@has_ticket_admin_privileges
+@ticket_is_taken_for_employee
+@ticket_assigned_to_structure
+def ticket_note(
+    request,
+    structure_slug,
+    ticket_id,
+    note_id,
+    structure,
+    can_manage,
+    ticket,
+    office_employee=None,
+):
+    """
+    Edit ticket note
+
+    :type structure_slug: String
+    :type ticket_id: String
+    :type note_id: Int
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
+    :type ticket: Ticket (from @ticket_assigned_to_structure)
+    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
+
+    :param structure_slug: structure slug
+    :param ticket_id: ticket code
+    :param note_id: note primary key
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
+    :param ticket: ticket object (from @ticket_assigned_to_structure)
+    :param office_employee: operator offices queryset (from @is_operator)
+
+    :return: render
+    """
+
+    title = _("Modifica nota")
+    user_type = get_user_type(request.user, structure)
+    note = get_object_or_404(TicketOperatorNote,
+                             owner=request.user,
+                             ticket=ticket,
+                             pk=note_id)
+    form = TicketOperatorNoteForm(instance=note)
+
+    if request.method == "POST":
+        form = TicketOperatorNoteForm(instance=note,
+                                      data=request.POST)
+        if form.is_valid():
+            note = form.save(commit=False)
+            note.save()
+
+            # log action
+            logger.info(
+                "[{}] {} edited note {} in"
+                " ticket {}".format(
+                    timezone.localtime(),
+                    request.user,
+                    note.id,
+                    ticket
+                )
+            )
+
+            messages.add_message(
+                request, messages.SUCCESS, _("Nota modificata con successo")
+            )
+            return redirect(
+                "uni_ticket:manage_ticket_notes_url",
+                structure_slug=structure_slug,
+                ticket_id=ticket_id,
+            )
+        else:  # pragma: no cover
+            for k, v in get_labeled_errors(form).items():
+                messages.add_message(
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
+                )
+
+    d = {
+        "form": form,
+        "structure": structure,
+        "sub_title": ticket.__str__(),
+        "sub_title_2": ticket.description,
+        "ticket": ticket,
+        "title": title,
+    }
+    template = "{}/ticket_note.html".format(user_type)
+    return render(request, template, base_context(d))
+
+
+@login_required
+@has_ticket_admin_privileges
+@ticket_is_taken_for_employee
+@ticket_assigned_to_structure
+def ticket_note_delete(
+    request,
+    structure_slug,
+    ticket_id,
+    note_id,
+    structure,
+    can_manage,
+    ticket,
+    office_employee=None,
+):
+    """
+    Edit ticket note
+
+    :type structure_slug: String
+    :type ticket_id: String
+    :type note_id: Int
+    :type structure: OrganizationalStructure (from @has_ticket_admin_privileges)
+    :type can_manage: Dictionary (from @has_ticket_admin_privileges)
+    :type ticket: Ticket (from @ticket_assigned_to_structure)
+    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
+
+    :param structure_slug: structure slug
+    :param ticket_id: ticket code
+    :param note_id: note primary key
+    :param structure: structure object (from @has_ticket_admin_privileges)
+    :param can_manage: if user can manage or can read only (from @has_ticket_admin_privileges)
+    :param ticket: ticket object (from @ticket_assigned_to_structure)
+    :param office_employee: operator offices queryset (from @is_operator)
+
+    :return: render
+    """
+    note = get_object_or_404(TicketOperatorNote,
+                             owner=request.user,
+                             ticket=ticket,
+                             pk=note_id)
+
+    logger.info(
+            "[{}] {} deleted note {} in"
+            " ticket {}".format(
+                timezone.localtime(),
+                request.user,
+                note.id,
+                ticket
+            )
+        )
+
+    note.delete()
+
+    messages.add_message(
+        request, messages.SUCCESS, _("Nota eliminata con successo")
+    )
+
+    return redirect(
+        "uni_ticket:manage_ticket_notes_url",
+        structure_slug=structure.slug,
+        ticket_id=ticket.code,
+    )
 
 
 @login_required
@@ -2364,7 +2701,7 @@ def ticket_taken_by_unassigned_offices(
 
 @login_required
 @has_ticket_admin_privileges
-# @ticket_is_taken_for_employee
+@ticket_is_taken_for_employee
 @ticket_assigned_to_structure
 @ticket_is_taken_and_not_closed
 def ticket_competence_leave(

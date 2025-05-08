@@ -199,6 +199,21 @@ urlpatterns += [
         name="manage_ticket_message_url",
     ),
     path(
+        "{}/notes/".format(ticket_id),
+        management.ticket_notes_url,
+        name="manage_ticket_notes_url",
+    ),
+    path(
+        "{}/notes/<int:note_id>/".format(ticket_id),
+        management.ticket_note_url,
+        name="manage_ticket_note_url",
+    ),
+    path(
+        "{}/notes/<str:note_id>/delete/".format(ticket_id),
+        management.ticket_note_delete,
+        name="manage_ticket_note_delete",
+    ),
+    path(
         "{}/competence/add/".format(ticket_id),
         management.ticket_competence_add_url,
         name="add_ticket_competence_url",
@@ -326,6 +341,16 @@ urlpatterns += [
         "{}/messages/".format(ticket_id),
         login_required(is_manager(management.ticket_message)),
         name="manager_ticket_message",
+    ),
+    path(
+        "{}/notes/".format(ticket_id),
+        login_required(is_manager(management.ticket_notes)),
+        name="manager_ticket_notes",
+    ),
+    path(
+        "{}/notes/<int:note_id>/".format(ticket_id),
+        login_required(is_manager(management.ticket_note)),
+        name="manager_ticket_note",
     ),
     path(
         "{}/competence/add/".format(ticket_id),
@@ -762,6 +787,16 @@ urlpatterns += [
         "{}/messages/".format(ticket_id),
         login_required(is_operator(management.ticket_message)),
         name="operator_ticket_message",
+    ),
+    path(
+        "{}/notes/".format(ticket_id),
+        login_required(is_operator(management.ticket_notes)),
+        name="operator_ticket_notes",
+    ),
+    path(
+        "{}/notes/<int:note_id>/".format(ticket_id),
+        login_required(is_operator(management.ticket_note)),
+        name="operator_ticket_note",
     ),
     path(
         "{}/competence/add/".format(ticket_id),

@@ -188,8 +188,8 @@
 </div>
 {% endif %}
 
-{% ticket_has_been_taken ticket=ticket as ticket_taken %}
-<div class="pb-md-4">
+{% ticket_has_been_taken ticket=ticket structure=structure as ticket_taken %}
+<div{% if ticket_taken %} class="pb-md-4"{% endif %}>
     <a role="button"
        class="btn btn-outline-secondary"
        href="{% url 'uni_ticket:manage_unassigned_ticket_url' structure_slug=structure.slug %}">
@@ -214,22 +214,28 @@
 </div>
 
 {% if ticket_taken %}
-<a role="button"
-   href="{% url 'uni_ticket:manage_ticket_message_url' structure_slug=structure.slug ticket_id=ticket.code %}"
-   class="btn btn-outline-secondary">
-    {% with ticket.get_messages_count as unread_messages %}
+    <a role="button"
+       href="{% url 'uni_ticket:manage_ticket_notes_url' structure_slug=structure.slug ticket_id=ticket.code %}"
+       class="btn btn-outline-secondary">
         <svg class="icon icon-xs">
-            <use xlink:href="{% static 'svg/sprites.svg' %}#it-comment"></use>
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-note"></use>
         </svg>
-        {% if ticket_messages %}
-        <span class="badge bg-primary">{% trans "Nuovi" %}</span>
-        {% endif %}
-        {% trans "Messaggi" %}
-    {% endwith %}
-</a>
-{% endif %}
-
-{% if ticket_taken and ticket.is_closed and not ticket.is_notification %}
+        {% trans "Note" %} <span class="badge bg-info">{{ ticket_notes }}</span>
+    </a>
+    <a role="button"
+       href="{% url 'uni_ticket:manage_ticket_message_url' structure_slug=structure.slug ticket_id=ticket.code %}"
+       class="btn btn-outline-secondary">
+        {% with ticket.get_messages_count as unread_messages %}
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-comment"></use>
+            </svg>
+            {% if ticket_messages %}
+            <span class="badge bg-primary">{% trans "Nuovi" %}</span>
+            {% endif %}
+            {% trans "Messaggi" %}
+        {% endwith %}
+    </a>
+    {% if ticket.is_closed and not ticket.is_notification %}
     <button type="button"
         class="btn btn-outline-warning"
         data-bs-toggle="modal"
@@ -269,7 +275,7 @@
             </div>
         </div>
     </div>
-{% elif is_open %}
+    {% elif ticket.is_open %}
     <a role="button"
        href="{% url 'uni_ticket:add_ticket_task_url' structure_slug=structure.slug ticket_id=ticket.code %}"
        class="btn btn-outline-secondary">
@@ -298,7 +304,7 @@
             <use xlink:href="{% static 'svg/sprites.svg' %}#it-link"></use>
         </svg> {% trans "Aggiungi dipendenza" %}
     </a>
-    {% if ticket.is_closable %}
+        {% if ticket.is_closable %}
         <a role="button"
            href="{% url 'uni_ticket:close_ticket' structure_slug=structure.slug ticket_id=ticket.code %}"
            class="btn btn-outline-success">
@@ -306,6 +312,7 @@
             <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
            </svg> {% trans "Chiudi" %}
         </a>
+        {% endif %}
     {% endif %}
 {% endif %}
 {% endblock top_buttons %}
