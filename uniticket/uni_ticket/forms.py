@@ -322,16 +322,21 @@ class TakeTicketForm(forms.Form):
 
 class ReplyForm(ModelForm):
     """ """
-
+    text = MarkdownxFormField(label=_("Testo"),
+                              help_text=_(
+                                "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
+                              ),
+                              widget=MarkdownxWidget(attrs={'rows': 4}),
+                              required=True)
     class Meta:
         model = TicketReply
         fields = ["subject", "text", "attachment"]
         labels = {
             "subject": _("Oggetto"),
-            "text": _("Testo"),
+            # ~ "text": _("Testo"),
             "attachment": _("Allegato"),
         }
-        widgets = {"text": forms.Textarea(attrs={"rows": 2})}
+        # ~ widgets = {"text": forms.Textarea(attrs={"rows": 2})}
 
     class Media:
         js = ("js/textarea-autosize.js",)
