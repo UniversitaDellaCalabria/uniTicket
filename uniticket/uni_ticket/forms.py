@@ -443,6 +443,12 @@ class TicketDependenceForm(forms.Form):
 
 class TaskForm(ModelForm):
     """ """
+    description = MarkdownxFormField(label=_("Testo"),
+                                      help_text=_(
+                                        "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
+                                      ),
+                                      widget=MarkdownxWidget(attrs={'rows': 4}),
+                                      required=True)
     class Meta:
         model = Task
         fields = ["subject", "description",
@@ -450,7 +456,7 @@ class TaskForm(ModelForm):
                   "attachment", "ordering"]
         labels = {
             "subject": _("Oggetto"),
-            "description": _("Testo"),
+            # ~ "description": _("Testo"),
             "priority": _("Priorità"),
             "attachment": _("Allegato"),
             "is_public": _("Visibile all'utente"),
@@ -459,7 +465,7 @@ class TaskForm(ModelForm):
         }
         widgets = {
             "priority": BootstrapItaliaSelectWidget,
-            "description": forms.Textarea(attrs={"rows": 2}),
+            # ~ "description": forms.Textarea(attrs={"rows": 2}),
         }
 
     class Media:
@@ -546,7 +552,12 @@ class OfficeAddCategoryForm(forms.Form):
 # is_active = forms.BooleanField(label=_('Attiva'), required=False)
 class CategoryTaskForm(ModelForm):
     """ """
-
+    description = MarkdownxFormField(label=_("Testo"),
+                                      help_text=_(
+                                        "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
+                                      ),
+                                      widget=MarkdownxWidget(attrs={'rows': 4}),
+                                      required=True)
     class Meta:
         model = TicketCategoryTask
         fields = [
@@ -561,7 +572,7 @@ class CategoryTaskForm(ModelForm):
         ]
         labels = {
             "subject": _("Oggetto"),
-            "description": _("Testo"),
+            # ~ "description": _("Testo"),
             "priority": _("Priorità"),
             "attachment": _("Allegato"),
             "is_active": _("Attiva"),
@@ -571,7 +582,7 @@ class CategoryTaskForm(ModelForm):
         }
         widgets = {
             "priority": BootstrapItaliaSelectWidget,
-            "description": forms.Textarea(attrs={"rows": 2}),
+            # ~ "description": forms.Textarea(attrs={"rows": 2}),
         }
 
     class Media:
