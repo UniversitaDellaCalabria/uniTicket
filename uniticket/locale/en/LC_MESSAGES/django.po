@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-08 16:19+0200\n"
-"PO-Revision-Date: 2025-05-08 16:32+0200\n"
+"POT-Creation-Date: 2025-07-01 16:10+0200\n"
+"PO-Revision-Date: 2025-07-01 16:10+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -29,6 +29,22 @@ msgstr "Permessi"
 #: accounts/admin.py:39
 msgid "Date accessi sistema"
 msgstr "System access dates"
+
+#: accounts/forms.py:38
+msgid "Password"
+msgstr ""
+
+#: accounts/forms.py:43
+msgid "Ripeti Password"
+msgstr ""
+
+#: accounts/forms.py:58 uni_ticket/settings.py:113
+msgid "Codice di verifica"
+msgstr "Verification code"
+
+#: accounts/forms.py:88 accounts/forms.py:89
+msgid "Le password non coincidono."
+msgstr ""
 
 #: accounts/middlewares.py:23
 msgid "Completa il tuo profilo per poter utilizzare il sistema"
@@ -69,7 +85,7 @@ msgid "eg: tax payer's identification number"
 msgstr ""
 
 #: accounts/models.py:27 app_io/models.py:9 uni_ticket/forms.py:62
-#: uni_ticket/forms.py:112 uni_ticket/forms.py:269 uni_ticket/forms.py:751
+#: uni_ticket/forms.py:112 uni_ticket/forms.py:269 uni_ticket/forms.py:767
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_add_ticket_user.html:43
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:79
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:43
@@ -87,8 +103,14 @@ msgid "Cognome"
 msgstr "Surname"
 
 #: accounts/models.py:31
-msgid "TaxPayer ID - codice fiscale"
-msgstr "TaxPayer ID"
+#: uni_ticket_bootstrap_italia_template/templates/manager/category_add_ticket_user.html:41
+#: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:41
+#: uni_ticket_bootstrap_italia_template/templates/manager/settings_add_manager.html:47
+#: uni_ticket_bootstrap_italia_template/templates/ticket_detail_table.html:44
+#: uni_ticket_bootstrap_italia_template/templates/ticket_detail_table.html:72
+#: uni_ticket_bootstrap_italia_template/templates/user_data.html:28
+msgid "Codice fiscale"
+msgstr "Taxpayer Identification Number"
 
 #: accounts/models.py:34
 msgid "Notifiche mail"
@@ -102,19 +124,19 @@ msgstr ""
 msgid "Utenti"
 msgstr "Users"
 
-#: accounts/views.py:39
+#: accounts/views.py:42
 msgid "Dati salvati con successo"
 msgstr "Data saved successfully"
 
-#: accounts/views.py:49
+#: accounts/views.py:52
 msgid "Conferma la tua email cliccando qui {}"
 msgstr "Confirm your email address by clicking here {}"
 
-#: accounts/views.py:52
+#: accounts/views.py:55
 msgid "Conferma email"
 msgstr "Email confirmation"
 
-#: accounts/views.py:59
+#: accounts/views.py:62
 msgid ""
 "E' stata inviata un'email all'indirizzo di posta che hai indicato. Clicca "
 "sul link contenuto nel messaggio per confermare i nuovi dati"
@@ -122,30 +144,59 @@ msgstr ""
 "An email has been sent to the email address you indicated. Click on the link "
 "in the message to confirm the new data"
 
-#: accounts/views.py:64
+#: accounts/views.py:67 accounts/views.py:154
 msgid "Dati errati"
 msgstr "Wrong data"
 
-#: accounts/views.py:67
+#: accounts/views.py:70
 #: uni_ticket_bootstrap_italia_template/templates/change_user_data.html:56
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:55
 msgid "Modifica dati personali"
 msgstr "Edit personal data"
 
-#: accounts/views.py:76
+#: accounts/views.py:79 accounts/views.py:170
 msgid "Token mancante"
 msgstr "Missing token"
 
-#: accounts/views.py:85
+#: accounts/views.py:88 accounts/views.py:179
 msgid "Token non valido"
 msgstr "Invalid token"
 
-#: accounts/views.py:102
+#: accounts/views.py:105 accounts/views.py:201
 msgid "Token scaduto"
 msgstr "Expired token"
 
-#: accounts/views.py:110
+#: accounts/views.py:113
 msgid "Email aggiornata con successo"
 msgstr "Email updated successfully"
+
+#: accounts/views.py:129 accounts/views.py:190
+msgid "Questo codice fiscale è già presente in anagrafica"
+msgstr "This tax code is already present in the registry"
+
+#: accounts/views.py:138
+msgid "Conferma la tua registrazione cliccando qui {}"
+msgstr "Confirm your registration by clicking here {}"
+
+#: accounts/views.py:141
+msgid "Conferma registrazione"
+msgstr "Confirm registration"
+
+#: accounts/views.py:148
+msgid ""
+"E' stata inviata un'email all'indirizzo di posta che hai indicato. Clicca "
+"sul link contenuto nel messaggio per completare la registrazione"
+msgstr ""
+"An email has been sent to the email address you indicated. Click on the link "
+"in the message to complete registration"
+
+#: accounts/views.py:159
+msgid "Crea il tuo account"
+msgstr "Create account"
+
+#: accounts/views.py:215
+msgid "Registrazione avvenuta con successo"
+msgstr "Registration successfully completed"
 
 #: api_rest/authorizations.py:29
 msgid "Invalid token."
@@ -185,7 +236,7 @@ msgstr ""
 msgid "Servizio"
 msgstr "Service"
 
-#: app_io/forms.py:24 uni_ticket/forms.py:396
+#: app_io/forms.py:24 uni_ticket/forms.py:401
 #: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:223
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:93
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_detail.html:247
@@ -198,16 +249,16 @@ msgstr "Service ID"
 
 #: app_io/models.py:11
 msgid "API key del servizio"
-msgstr ""
+msgstr "Service API key"
 
 #: app_io/models.py:15
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_options.html:111
 msgid "Servizi App IO"
-msgstr ""
+msgstr "App IO services"
 
 #: app_io/views.py:34
 msgid "Nuovo servizo App IO"
-msgstr ""
+msgstr "New App IO service"
 
 #: app_io/views.py:35
 msgid "Aggiungi un nuovo servizio alla tipologia di richiesta {}"
@@ -869,6 +920,7 @@ msgstr "Write your message here..."
 #: chat/templates/room.html:87
 #: uni_ticket_bootstrap_italia_template/templates/change_user_data.html:43
 #: uni_ticket_bootstrap_italia_template/templates/ticket_assistance.html:119
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:42
 msgid "Invia"
 msgstr "Send"
 
@@ -1017,8 +1069,9 @@ msgstr "The ticket must first be taken in charge in order to be managed"
 msgid "Testo in calce per versione stampabile"
 msgstr "Visible in the printable version"
 
-#: uni_ticket/forms.py:34 uni_ticket/forms.py:117 uni_ticket/forms.py:467
-#: uni_ticket/forms.py:776
+#: uni_ticket/forms.py:34 uni_ticket/forms.py:117 uni_ticket/forms.py:327
+#: uni_ticket/forms.py:448 uni_ticket/forms.py:478 uni_ticket/forms.py:557
+#: uni_ticket/forms.py:792
 msgid ""
 "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
 msgstr "Only Markdown format: https://www.markdownguide.org/cheat-sheet/"
@@ -1041,8 +1094,8 @@ msgstr "Only the following users can make requests"
 msgid "Accessibile a {}"
 msgstr "Accessible to {}"
 
-#: uni_ticket/forms.py:77 uni_ticket/forms.py:80 uni_ticket/forms.py:761
-#: uni_ticket/forms.py:764
+#: uni_ticket/forms.py:77 uni_ticket/forms.py:80 uni_ticket/forms.py:777
+#: uni_ticket/forms.py:780
 msgid "Formato {}. Lasciare vuoto  per non impostare"
 msgstr "Format {}. Leave empty to not set"
 
@@ -1089,8 +1142,8 @@ msgstr "Required"
 msgid "Aiuto"
 msgstr "Help"
 
-#: uni_ticket/forms.py:139 uni_ticket/forms.py:453 uni_ticket/forms.py:485
-#: uni_ticket/forms.py:565
+#: uni_ticket/forms.py:139 uni_ticket/forms.py:464 uni_ticket/forms.py:496
+#: uni_ticket/forms.py:581
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:126
 msgid "Ordinamento"
 msgstr "Sorting"
@@ -1165,15 +1218,15 @@ msgstr "Closing state"
 msgid "Motivazione"
 msgstr "Grounds"
 
-#: uni_ticket/forms.py:225 uni_ticket/forms.py:332 uni_ticket/forms.py:450
-#: uni_ticket/forms.py:486 uni_ticket/forms.py:561
+#: uni_ticket/forms.py:225 uni_ticket/forms.py:337 uni_ticket/forms.py:461
+#: uni_ticket/forms.py:497 uni_ticket/forms.py:577
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:103
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:116
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:61
 msgid "Allegato"
 msgstr "Attachment"
 
-#: uni_ticket/forms.py:237 uni_ticket/forms.py:509
+#: uni_ticket/forms.py:237 uni_ticket/forms.py:520
 #, python-brace-format
 msgid ""
 "Inserisci il tag {user} per inserire automaticamente il nome e cognome "
@@ -1195,8 +1248,8 @@ msgid ""
 "trasferimento di competenza"
 msgstr ""
 
-#: uni_ticket/forms.py:299 uni_ticket/forms.py:310 uni_ticket/forms.py:449
-#: uni_ticket/forms.py:560 uni_ticket/forms.py:581
+#: uni_ticket/forms.py:299 uni_ticket/forms.py:310 uni_ticket/forms.py:460
+#: uni_ticket/forms.py:576 uni_ticket/forms.py:597
 #: uni_ticket_bootstrap_italia_template/templates/datatables/table_header.html:28
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:98
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:39
@@ -1204,7 +1257,14 @@ msgstr ""
 msgid "Priorità"
 msgstr "Priority"
 
-#: uni_ticket/forms.py:330 uni_ticket/forms.py:447 uni_ticket/forms.py:558
+#: uni_ticket/forms.py:325 uni_ticket/forms.py:446 uni_ticket/forms.py:476
+#: uni_ticket/forms.py:516 uni_ticket/forms.py:555 uni_ticket/forms.py:768
+#: uni_ticket/forms.py:790
+#: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:94
+msgid "Testo"
+msgstr "Text"
+
+#: uni_ticket/forms.py:335 uni_ticket/forms.py:458 uni_ticket/forms.py:574
 #: uni_ticket_bootstrap_italia_template/templates/datatables/table_header.html:19
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:106
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:51
@@ -1212,77 +1272,70 @@ msgstr "Priority"
 msgid "Oggetto"
 msgstr "Subject"
 
-#: uni_ticket/forms.py:331 uni_ticket/forms.py:448 uni_ticket/forms.py:465
-#: uni_ticket/forms.py:505 uni_ticket/forms.py:559 uni_ticket/forms.py:752
-#: uni_ticket/forms.py:774
-#: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:94
-msgid "Testo"
-msgstr "Text"
-
-#: uni_ticket/forms.py:375
+#: uni_ticket/forms.py:380
 #: uni_ticket_bootstrap_italia_template/templates/management/add_ticket_competence.html:31
 #: uni_ticket_bootstrap_italia_template/templates/management/statistics_content.html:130
 msgid "Ufficio"
 msgstr "Office"
 
-#: uni_ticket/forms.py:376
+#: uni_ticket/forms.py:381
 msgid "Continua a seguire"
 msgstr "Keep following"
 
-#: uni_ticket/forms.py:377
+#: uni_ticket/forms.py:382
 msgid "Sola lettura"
 msgstr "Read only"
 
-#: uni_ticket/forms.py:379
+#: uni_ticket/forms.py:384
 msgid "Ufficio selezionato"
 msgstr "Selected office"
 
-#: uni_ticket/forms.py:393 uni_ticket/models.py:504 uni_ticket/models.py:505
+#: uni_ticket/forms.py:398 uni_ticket/models.py:504 uni_ticket/models.py:505
 #: uni_ticket_bootstrap_italia_template/templates/task_detail.html:47
 msgid "Ticket"
 msgstr ""
 
-#: uni_ticket/forms.py:394
+#: uni_ticket/forms.py:399
 msgid "Codice univoco identificativo della richiesta"
 msgstr "Unique code identifying the request"
 
-#: uni_ticket/forms.py:411
+#: uni_ticket/forms.py:416
 msgid "Non si può rendere un ticket dipendente da sè stesso"
 msgstr "You cannot make a ticket dependent on itself"
 
-#: uni_ticket/forms.py:413
+#: uni_ticket/forms.py:418
 msgid "Dipendenza già attiva"
 msgstr "Already active dependency"
 
-#: uni_ticket/forms.py:431
+#: uni_ticket/forms.py:436
 msgid "Ticket non trovato tra quelli gestiti"
 msgstr ""
 
-#: uni_ticket/forms.py:451 uni_ticket/forms.py:563
+#: uni_ticket/forms.py:462 uni_ticket/forms.py:579
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:74
 msgid "Visibile all'utente"
 msgstr "Visible to users"
 
-#: uni_ticket/forms.py:452 uni_ticket/forms.py:564 uni_ticket/models.py:1556
+#: uni_ticket/forms.py:463 uni_ticket/forms.py:580 uni_ticket/models.py:1556
 msgid "Visibile nella versione stampabile"
 msgstr "Visible in the printable version"
 
-#: uni_ticket/forms.py:483
+#: uni_ticket/forms.py:494
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:60
 msgid "Titolo"
 msgstr "Title"
 
-#: uni_ticket/forms.py:487
+#: uni_ticket/forms.py:498
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:114
 msgid "Collassabile (in nuova richiesta)"
 msgstr "Collapsible (in new request)"
 
-#: uni_ticket/forms.py:488
+#: uni_ticket/forms.py:499
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:86
 msgid "Visibile nel documento di stampa"
 msgstr "Visible in the print document"
 
-#: uni_ticket/forms.py:489 uni_ticket/forms.py:562 uni_ticket/forms.py:753
+#: uni_ticket/forms.py:500 uni_ticket/forms.py:578 uni_ticket/forms.py:769
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_app_io_services.html:55
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:42
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_condition_detail.html:68
@@ -1304,63 +1357,63 @@ msgstr "Visible in the print document"
 msgid "Attiva"
 msgstr "Active"
 
-#: uni_ticket/forms.py:523
+#: uni_ticket/forms.py:534
 msgid "Assegna tipologia di richiesta"
 msgstr "Assign type of request"
 
-#: uni_ticket/forms.py:586
+#: uni_ticket/forms.py:602
 msgid "Seleziona operatore"
 msgstr "Select operator"
 
-#: uni_ticket/forms.py:611
+#: uni_ticket/forms.py:627
 msgid "Seleziona l'ufficio"
 msgstr "Select the office"
 
-#: uni_ticket/forms.py:722 uni_ticket/models.py:1640
+#: uni_ticket/forms.py:738 uni_ticket/models.py:1640
 msgid "Denominazione configurazione"
 msgstr "Configuration name"
 
-#: uni_ticket/forms.py:723
+#: uni_ticket/forms.py:739
 msgid "Unità Organizzativa"
 msgstr ""
 
-#: uni_ticket/forms.py:724
+#: uni_ticket/forms.py:740
 msgid "RPA Unità Organizzativa"
 msgstr ""
 
-#: uni_ticket/forms.py:725
+#: uni_ticket/forms.py:741
 msgid "Username RPA Unità Organizzativa"
 msgstr ""
 
-#: uni_ticket/forms.py:726
+#: uni_ticket/forms.py:742
 msgid "Matricola RPA Unità Organizzativa"
 msgstr "RPA Organizational Unit code"
 
-#: uni_ticket/forms.py:727 uni_ticket/models.py:1704
+#: uni_ticket/forms.py:743 uni_ticket/models.py:1704
 msgid "Invia e-mail a RPA"
 msgstr ""
 
-#: uni_ticket/forms.py:728
+#: uni_ticket/forms.py:744
 msgid "Email riferimento"
 msgstr "Reference email"
 
-#: uni_ticket/forms.py:729
+#: uni_ticket/forms.py:745
 msgid "Titolario"
 msgstr "Holder"
 
-#: uni_ticket/forms.py:730
+#: uni_ticket/forms.py:746
 msgid "Numero Fascicolo"
 msgstr "Issue number"
 
-#: uni_ticket/forms.py:731
+#: uni_ticket/forms.py:747
 msgid "Anno Fascicolo"
 msgstr "Issue year"
 
-#: uni_ticket/forms.py:734
+#: uni_ticket/forms.py:750
 msgid "A discrezione dell'utente. Es: \"Configurazione anno 2020\""
 msgstr "At the user's discretion. Ex: \"Configuration year 2020\""
 
-#: uni_ticket/forms.py:783
+#: uni_ticket/forms.py:799
 msgid "Visibilità"
 msgstr "Visibility"
 
@@ -1735,10 +1788,6 @@ msgid ""
 msgstr ""
 "The Description field is set with the generic description of the request. It "
 "is possible to modify or integrate it to provide specific indications"
-
-#: uni_ticket/settings.py:113
-msgid "Codice di verifica"
-msgstr "Verification code"
 
 #: uni_ticket/settings.py:141
 msgid "Molto alta"
@@ -2514,7 +2563,7 @@ msgstr ""
 #: uni_ticket/views/management.py:2950
 #: uni_ticket_bootstrap_italia_template/templates/manager/main_menu.html:39
 msgid "Statistiche"
-msgstr ""
+msgstr "Statistics"
 
 #: uni_ticket/views/management.py:2951
 msgid "Struttura {} - dal {} al {}"
@@ -3351,6 +3400,7 @@ msgid "Dashboard"
 msgstr ""
 
 #: uni_ticket_bootstrap_italia_template/templates/change_user_data.html:68
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:67
 msgid "Vuoi confermare i dati immessi?"
 msgstr "Do you want confirm the entered data?"
 
@@ -3367,6 +3417,7 @@ msgstr "Do you want confirm the entered data?"
 #: uni_ticket_bootstrap_italia_template/templates/manager/settings_add_manager.html:101
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_protocol_configuration_new.html:74
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:193
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:72
 msgid "Si, procedi"
 msgstr "Yes, I confirm"
 
@@ -3552,11 +3603,11 @@ msgid "Effettua l'accesso"
 msgstr "Sign-in"
 
 #: uni_ticket_bootstrap_italia_template/templates/login.html:26
-msgid "Your username and password didn't match. Please try again."
+msgid "Username e/o password non corretti. Prova ancora."
 msgstr ""
 
 #: uni_ticket_bootstrap_italia_template/templates/login.html:37
-msgid "Remember Me"
+msgid "Ricordami"
 msgstr ""
 
 #: uni_ticket_bootstrap_italia_template/templates/login.html:41
@@ -4345,15 +4396,6 @@ msgstr "Create new type of request"
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_detail.html:16
 msgid "Torna alla tipologia di richiesta"
 msgstr "Back to the type of request"
-
-#: uni_ticket_bootstrap_italia_template/templates/manager/category_add_ticket_user.html:41
-#: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:41
-#: uni_ticket_bootstrap_italia_template/templates/manager/settings_add_manager.html:47
-#: uni_ticket_bootstrap_italia_template/templates/ticket_detail_table.html:44
-#: uni_ticket_bootstrap_italia_template/templates/ticket_detail_table.html:72
-#: uni_ticket_bootstrap_italia_template/templates/user_data.html:28
-msgid "Codice fiscale"
-msgstr "Taxpayer Identification Number"
 
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_add_ticket_user.html:44
 #: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:44
@@ -5834,13 +5876,70 @@ msgstr "Other informations"
 msgid "E-mail"
 msgstr ""
 
-#: uni_ticket_project/settingslocal.py:375
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:21
+msgid "Informativa sul trattamento dei dati personali"
+msgstr "Information on the processing of personal data"
+
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:24
+msgid ""
+"Ai sensi del Regolamento UE 2016/679 (GDPR), ti informiamo che i dati "
+"personali da te forniti saranno trattati nel rispetto dei principi di "
+"liceità, correttezza e trasparenza. I tuoi dati saranno utilizzati "
+"esclusivamente per finalità connesse alla registrazione e all'erogazione dei "
+"servizi richiesti."
+msgstr ""
+"In accordance with EU Regulation 2016/679 (GDPR), we inform you that the "
+"personal data you provide will be processed in compliance with the "
+"principles of lawfulness, correctness and transparency. Your data will be "
+"used exclusively for purposes related to registration and provision of the "
+"requested services."
+
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:25
+msgid ""
+"Il Titolare del trattamento è Fondazione Università Magna Graecia, con sede "
+"legale in Viale Europa - Edificio Secondo lotto, Residenze universitarie – "
+"Loc. Germaneto 88100 CATANZARO (ITALY), contattabile all’indirizzo email "
+"infofo.fondazioneumg@unicz.it."
+msgstr ""
+"The Data Controller is Fondazione Università Magna Graecia, with registered "
+"office in Viale Europa - Edificio Secondo lotto, University Residences – "
+"Loc. Germaneto 88100 CATANZARO (ITALY), contactable at the email address "
+"infofo.fondazioneumg@unicz.it."
+
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:26
+msgid ""
+"Puoi esercitare in qualsiasi momento i diritti previsti dagli articoli 15-22 "
+"del GDPR, inclusi l’accesso, la rettifica, la cancellazione e la limitazione "
+"del trattamento dei tuoi dati."
+msgstr ""
+"You can exercise at any time the rights provided for by Articles 15-22 of "
+"the GDPR, including access, rectification, erasure and limitation of the "
+"processing of your data."
+
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:27
+msgid "Per maggiori dettagli consulta la nostra"
+msgstr "For more details see our"
+
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:30
+msgid ""
+"Inviando il form dichiari di aver letto l’informativa sulla privacy e "
+"acconsenti al trattamento dei tuoi dati personali ai sensi del Regolamento "
+"(UE) 2016/679."
+msgstr ""
+"By submitting the form you declare that you have read the privacy policy and "
+"consent to the processing of your personal data pursuant to Regulation (EU) "
+"2016/679."
+
+#: uni_ticket_project/settingslocal.py:413
 msgid "Italiano"
 msgstr "Italian"
 
-#: uni_ticket_project/settingslocal.py:376
+#: uni_ticket_project/settingslocal.py:414
 msgid "Inglese"
 msgstr "English"
+
+#~ msgid "TaxPayer ID - codice fiscale"
+#~ msgstr "TaxPayer ID"
 
 #~ msgid "Cerca"
 #~ msgstr "Search"
@@ -5853,9 +5952,6 @@ msgstr "English"
 
 #~ msgid "Modifica richiesta"
 #~ msgstr "Edit the request"
-
-#~ msgid "Configurazione dati personali"
-#~ msgstr "Personal data configuration"
 
 #, fuzzy
 #~| msgid "Modifica richiesta"

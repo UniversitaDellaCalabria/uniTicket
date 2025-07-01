@@ -23,7 +23,7 @@
         <div class="panel-body">
             <form role="form" method="post" action="./">
             {% if form.errors %}
-            <div class="alert alert-danger">{% trans "Your username and password didn't match. Please try again." %}</div>
+            <div class="alert alert-danger">{% trans "Username e/o password non corretti. Prova ancora." %}</div>
             {% endif %}
                 <fieldset>
                     <div class="form-group">
@@ -34,13 +34,13 @@
                     </div>
                     <div class="checkbox">
                         <label>
-                            <input name="remember" type="checkbox" value="Remember Me">{% trans 'Remember Me' %}
+                            <input name="remember" type="checkbox" value="Remember Me">{% trans 'Ricordami' %}
                         </label>
                     </div>
                     <div class="d-grid gap-2">
                         <input class="btn btn-lg btn-success" type="submit" value="{% trans 'Login' %}" />
                     </div>
-                    <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}../{% endif %}" />
+                    <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/{% endif %}" />
                 </fieldset>
             {% csrf_token %}</form>
         </div>

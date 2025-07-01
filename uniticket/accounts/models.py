@@ -28,7 +28,7 @@ class User(AbstractUser):
                                   blank=True, null=True)
     last_name = models.CharField(_('Cognome'), max_length=70,
                                  blank=True, null=True)
-    taxpayer_id = models.CharField(_('TaxPayer ID - codice fiscale'),
+    taxpayer_id = models.CharField(_('Codice fiscale'),
                                    max_length=50,
                                    blank=True, null=True)
     email_notify = models.BooleanField(_('Notifiche mail'), default=True)
