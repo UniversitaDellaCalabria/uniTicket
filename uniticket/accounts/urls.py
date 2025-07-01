@@ -15,18 +15,25 @@ Including another URLconf
 """
 from django.urls import path
 
-from . settings import EDITABLE_FIELDS
-from . views import changeData, confirmEmail
+from . settings import ALLOW_USER_REGISTRATION, EDITABLE_FIELDS
+from . views import *
 
 
 app_name = "accounts"
 
-if EDITABLE_FIELDS:
+
+urlpatterns = []
+
+if ALLOW_USER_REGISTRATION:
     urlpatterns = [
-        # url(r'^login/$', Login, name='login'),
-        # path('logout', Logout, name='logout'),
+        path('account/create/', registration, name='registration'),
+        path('account/confirm-registration/', confirmRegistration, name='confirm_registration'),
+    ]
+
+if EDITABLE_FIELDS:
+    urlpatterns.extend([
         path('account/edit/', changeData, name='change_data'),
         path('account/edit/confirm-email/', confirmEmail, name='confirm_email'),
-    ]
-else:
-    urlpatterns = []
+
+    ])
+

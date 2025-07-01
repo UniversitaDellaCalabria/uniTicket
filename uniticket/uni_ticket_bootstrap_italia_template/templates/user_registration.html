@@ -1,0 +1,76 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+
+{% block menu_links %}
+{% include 'user/main_menu.html' %}
+{% endblock menu_links %}
+
+
+{% block top_buttons %}
+{% endblock top_buttons %}
+
+{% block page_content %}
+<form method="post" novalidate>
+    {% include 'form_template.html' %}
+    <div class="d-grid gap-2">
+        <button type="button"
+                class="btn btn-success"
+                data-bs-toggle="modal"
+                data-bs-target="#change_user_email">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
+                </svg>
+                {% trans "Invia" %}
+        </button>
+    </div>
+    <!-- send ticket modal -->
+    <div class="modal-div modal fade"
+         tabindex="-1"
+         role="dialog"
+         id="change_user_email">
+        <div class="modal-dialog modal-dialog-centered"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {% trans "Modifica dati personali" %}
+                    </h5>
+                    <button class="btn-close"
+                            type="button"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                       <svg class="icon">
+                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                       </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>{% trans "Vuoi confermare i dati immessi?" %}</p>
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-success modal-submit"
+                           type="submit"
+                           value="{% trans 'Si, procedi' %}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end send ticket modal -->
+</form>
+{% endblock page_content %}
+
+{% block extra_scripts %}
+<!-- prevent submit form by press "enter" on field -->
+<script>
+$(document).on('keyup keypress', 'form input', function(e) {
+    if(e.which == 13) {
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
+{% endblock extra_scripts %}

@@ -70,6 +70,10 @@ if settings.DEBUG:
 if "nested_admin" in settings.INSTALLED_APPS:
     urlpatterns += (path("nested_admin/", include("nested_admin.urls")),)
 
+if "django_spid_cie_sp" in settings.INSTALLED_APPS:
+    import django_spid_cie_sp.urls
+    urlpatterns += (path("", include(django_spid_cie_sp.urls, "django_spid_cie_sp")),)
+
 if "saml2_sp" in settings.INSTALLED_APPS:
     import saml2_sp.urls
 
@@ -156,21 +160,24 @@ elif "spid_oidc_rp" in settings.INSTALLED_APPS:
         ),
     )
 
-else:
-    # local_url_prefix = 'local'
+if settings.LOCAL_LOGIN_URL:
     urlpatterns += (
         path(
-            "{}/login/".format(settings.LOCAL_URL_PREFIX),
-            auth_views.LoginView.as_view(extra_context={'base_template': DEFAULT_BASE_TEMPLATE},
-                                         template_name="login.html"),
+            settings.LOCAL_LOGIN_URL,
+            auth_views.LoginView.as_view(
+                template_name="login.html",
+                extra_context={'base_template': DEFAULT_BASE_TEMPLATE}
+            ),
             name="login",
         ),
     )
+
+if settings.LOCAL_LOGOUT_URL:
     urlpatterns += (
         path(
-            "{}/logout/".format(settings.LOCAL_URL_PREFIX),
+            settings.LOCAL_LOGOUT_URL,
             auth_views.LogoutView.as_view(
-                template_name="logout.html", next_page="/"),
+                template_name="logout.html", next_page=settings.LOGOUT_REDIRECT_URL),
             name="logout",
         ),
     )

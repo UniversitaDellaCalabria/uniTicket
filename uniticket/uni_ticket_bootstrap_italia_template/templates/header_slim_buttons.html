@@ -60,7 +60,7 @@
     {% endif %}
 {% else %}
     {% settings_value name="LOGIN_URL" as login_url %}
-    <a href="{{ login_url }}/?next={{ request.get_full_path }}">
+    <a href="{{ login_url }}?next={{ request.get_full_path }}">
         <button class="btn btn-primary btn-sm" type="button">
             {% trans "Accedi" %}
         </button>

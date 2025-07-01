@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_page_schema.html" %}
 {% load i18n %}
 
 {% block content_title %}
@@ -21,7 +21,7 @@
 {% else %}
     <div class="login-panel panel panel-default">
         <div class="panel-body">
-            <form role="form" method='post' action='./'>
+            <form role="form" method="post" action="./">
             {% if form.errors %}
             <div class="alert alert-danger">{% trans "Your username and password didn't match. Please try again." %}</div>
             {% endif %}
