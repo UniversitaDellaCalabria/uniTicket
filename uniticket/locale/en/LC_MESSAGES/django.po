@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-07-03 12:15+0200\n"
-"PO-Revision-Date: 2025-07-03 12:15+0200\n"
+"PO-Revision-Date: 2025-07-03 14:06+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -1537,31 +1537,31 @@ msgstr "When the request was registered"
 
 #: uni_ticket/models.py:711 uni_ticket/models.py:739 uni_ticket/models.py:1491
 msgid "<span class=\"badge bg-success\">Chiusa</span>"
-msgstr "<span class=\"badge badge-success\">Closed</span>"
+msgstr "<span class=\"badge bg-success\">Closed</span>"
 
 #: uni_ticket/models.py:715 uni_ticket/models.py:1499
 msgid ""
 "<span class=\"badge bg-success\">Chiusa</span> <span class=\"badge bg-{}\">{}"
 "</span>"
 msgstr ""
-"<span class=\"badge badge-success\">Closed</span> <span class=\"badge badge-"
+"<span class=\"badge bg-success\">Closed</span> <span class=\"badge bg-"
 "{}\">{}</span>"
 
 #: uni_ticket/models.py:728 uni_ticket/models.py:772 uni_ticket/models.py:1492
 #: uni_ticket/models.py:1511
 msgid "<span class=\"badge bg-danger\">Aperta</span>"
-msgstr "<span class=\"badge badge-danger\">Open</span>"
+msgstr "<span class=\"badge bg-danger\">Open</span>"
 
 #: uni_ticket/models.py:729 uni_ticket/models.py:773
 msgid "<span class=\"badge bg-warning\">Assegnata</span> {}"
-msgstr "<span class=\"badge badge-warning\">Assigned</span> {}"
+msgstr "<span class=\"badge bg-warning\">Assigned</span> {}"
 
 #: uni_ticket/models.py:747
 msgid ""
 "<span class=\"badge bg-success\">Chiusa</span> <svg class=\"icon icon-xs "
 "{}\"><title>{}</title><use xlink:href=\"{}#{}\"></use></svg>"
 msgstr ""
-"<span class=\"badge badge-success\">Closed</span> <svg class=\"icon icon-xs "
+"<span class=\"badge bg-success\">Closed</span> <svg class=\"icon icon-xs "
 "{}\"><title>{}</title><use xlink:href=\"{}#{}\"></use></svg>"
 
 #: uni_ticket/models.py:789
@@ -3714,10 +3714,8 @@ msgid "Uffici"
 msgstr "Offices"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/statistics_content.html:78
-#, fuzzy
-#| msgid "Categoria della richiesta"
 msgid "Categorie della richiesta"
-msgstr "Request category"
+msgstr "Request categories"
 
 #: uni_ticket_bootstrap_italia_template/templates/management/statistics_content.html:99
 msgid "Esegui"
