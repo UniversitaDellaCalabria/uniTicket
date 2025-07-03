@@ -204,7 +204,7 @@
 
 {% block page_content %}
     {% include 'ticket_detail.html' with is_simple_user=request.user %}
-    {% include 'ticket_options.html' %}
+    {% include 'ticket_options.html' with is_simple_user=request.user %}
 {% endblock page_content %}
 
 {% block extra_scripts %}

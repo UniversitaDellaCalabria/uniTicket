@@ -14,7 +14,7 @@
         </h2>
         <div id="collapse2l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading2l">
             <div class="accordion-body">
-                {% include "logs.html" %}
+                {% include "logs.html" with is_simple_user=is_simple_user %}
             </div>
         </div>
     </div>
@@ -28,7 +28,7 @@
         <div id="collapse3l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading3l">
             <div class="accordion-body">
                 {% block ticket_task %}
-                    {% include "ticket_task.html" %}
+                    {% include "ticket_task.html" with is_simple_user=is_simple_user %}
                 {% endblock ticket_task %}
             </div>
         </div>
