@@ -446,8 +446,8 @@ class TicketAddNew(View):
                     _(
                         "Hai raggiunto il limite massimo giornaliero"
                         " di richieste: <b>{}</b>"
-                        "".format(MAX_DAILY_TICKET_PER_USER)
-                    ),
+                    ).format(MAX_DAILY_TICKET_PER_USER)
+
                 )
                 return redirect("uni_ticket:user_dashboard")
 
@@ -1135,8 +1135,7 @@ def ticket_delete(request, ticket_id):
         "status": _("eliminato"),
         "ticket": ticket,
     }
-    m_subject = _(
-        "{} - richiesta {} eliminata".format(settings.HOSTNAME, ticket))
+    m_subject = _("{} - richiesta {} eliminata").format(settings.HOSTNAME, ticket)
 
     send_custom_mail(
         subject=m_subject,
@@ -1156,7 +1155,7 @@ def ticket_delete(request, ticket_id):
     messages.add_message(
         request,
         messages.SUCCESS,
-        _("Ticket {} eliminato correttamente".format(ticket.code)),
+        _("Ticket {} eliminato correttamente").format(ticket.code),
     )
 
     ticket.delete()
@@ -1315,12 +1314,11 @@ def ticket_message(request, ticket_id):
                     )
                 ),
             }
-            m_subject = _(
-                "{} - richiesta {} messaggio inviato".format(
+            m_subject = _("{} - richiesta {} messaggio inviato").format(
                     settings.HOSTNAME,
                     ticket
                 )
-            )
+
             send_custom_mail(
                 subject=m_subject,
                 recipients=[request.user],
@@ -1571,7 +1569,7 @@ def ticket_reopen(request, ticket_id):
     messages.add_message(
         request,
         messages.SUCCESS,
-        _("Richiesta {} riaperta correttamente".format(ticket)),
+        _("Richiesta {} riaperta correttamente").format(ticket),
     )
     return redirect("uni_ticket:ticket_detail", ticket_id=ticket_id)
 

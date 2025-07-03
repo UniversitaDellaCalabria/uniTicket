@@ -290,8 +290,9 @@ def ticket_detail(
                 priority_text = dict(PRIORITY_LEVELS).get(priority)
                 msg = _(
                     "Ticket preso in carico da {}. "
-                    "Priorità assegnata: {}".format(
-                        request.user, priority_text)
+                    "Priorità assegnata: {}"
+                ).format(
+                    request.user, priority_text
                 )
                 if not SIMPLE_USER_SHOW_PRIORITY:
                     msg = _("Ticket preso in carico da {}.".format(request.user))
@@ -301,8 +302,10 @@ def ticket_detail(
                     messages.SUCCESS,
                     _(
                         "Ticket <b>{}</b> assegnato"
-                        " con successo a {}".format(ticket.code, request.user)
-                    ),
+                        " con successo a {}"
+                    ).format(
+                        ticket.code, request.user
+                    )
                 )
                 return redirect(
                     "uni_ticket:manage_ticket_url_detail",
@@ -325,14 +328,16 @@ def ticket_detail(
                 priority_text = dict(PRIORITY_LEVELS).get(priority)
                 msg = _(
                     "Richiesta assegnata a {} da {}. "
-                    "Priorità assegnata: {}".format(
-                        operator, request.user, priority_text
-                    )
+                    "Priorità assegnata: {}"
+                ).format(
+                    operator, request.user,
+                    priority_text
                 )
                 if not SIMPLE_USER_SHOW_PRIORITY:
                     msg = _(
-                        "Richiesta assegnata a {} da {}.".format(
-                            operator, request.user)
+                        "Richiesta assegnata a {} da {}."
+                    ).format(
+                        operator, request.user
                     )
                 ticket.update_log(user=request.user, note=msg)
                 messages.add_message(
@@ -340,8 +345,8 @@ def ticket_detail(
                     messages.SUCCESS,
                     _(
                         "Richiesta <b>{}</b> assegnata"
-                        " con successo a {}".format(ticket.code, operator)
-                    ),
+                        " con successo a {}"
+                    ).format(ticket.code, operator)
                 )
 
                 # Send mail to operator
@@ -363,8 +368,9 @@ def ticket_detail(
                     ),
                 }
                 m_subject = _(
-                    "{} - richiesta {} assegnata".format(
-                        settings.HOSTNAME, ticket)
+                    "{} - richiesta {} assegnata"
+                ).format(
+                    settings.HOSTNAME, ticket
                 )
                 send_custom_mail(
                     subject=m_subject,
@@ -396,7 +402,7 @@ def ticket_detail(
 
             msg = _("Priorità aggiornata")
             if SIMPLE_USER_SHOW_PRIORITY:
-                msg = _("Priorità assegnata: {}".format(priority_text))
+                msg = _("Priorità assegnata: {}").format(priority_text)
 
             ticket.update_log(user=request.user, note=msg)
             ticket.priority = priority
@@ -604,9 +610,8 @@ def ticket_dependence_add_new(
             ticket.update_log(
                 user=request.user,
                 note=_(
-                    "Aggiunta dipendenza dalla richiesta:" " {}".format(
-                        main_ticket)
-                ),
+                    "Aggiunta dipendenza dalla richiesta:" " {}"
+                ).format(main_ticket)
             )
             messages.add_message(
                 request,
@@ -690,7 +695,7 @@ def ticket_dependence_remove(
         to_remove.delete()
         ticket.update_log(
             user=request.user,
-            note=_("Rimossa dipendenza dalla richiesta:" " {}".format(main_ticket)),
+            note=_("Rimossa dipendenza dalla richiesta:" " {}").format(main_ticket),
         )
         messages.add_message(
             request, messages.SUCCESS, _("Dipendenza rimossa correttamente")
@@ -765,6 +770,7 @@ def ticket_close(
                 timezone.localtime(), request.user, ticket
             )
         )
+
         return custom_message(
             request,
             _("Non è possibile chiudere la richiesta," " ci sono dipendenze attive!"),
@@ -1250,7 +1256,8 @@ def ticket_competence_add_final(
                     ticket.update_log(
                         user=request.user,
                         note=_(
-                            "Competenza abbandonata da" " Ufficio: {}".format(off)),
+                            "Competenza abbandonata da" " Ufficio: {}"
+                        ).format(off)
                     )
 
             # If follow but readonly
@@ -1267,8 +1274,8 @@ def ticket_competence_add_final(
                             messages.WARNING,
                             _(
                                 "L'ufficio <b>{}</b> non può essere"
-                                " posto in sola lettura".format(off)
-                            ),
+                                " posto in sola lettura"
+                            ).format(off)
                         )
                     else:
                         ticket.update_log(
@@ -1277,21 +1284,22 @@ def ticket_competence_add_final(
                                 "Competenza trasferita da"
                                 " Ufficio: {}."
                                 " (L'ufficio ha mantenuto"
-                                " accesso in sola lettura)".format(off)
-                            ),
+                                " accesso in sola lettura)"
+                            ).format(off)
                         )
 
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _("Competenza <b>{}</b> aggiunta" " correttamente".format(new_office)),
+                _("Competenza <b>{}</b> aggiunta" " correttamente").format(new_office),
             )
 
             # If follow and want to manage
             ticket.add_competence(office=new_office, user=request.user)
             ticket.update_log(
                 user=request.user, note=_(
-                    "Nuova competenza: {}").format(new_office)
+                    "Nuova competenza: {}"
+                ).format(new_office)
             )
 
             category = ticket.input_module.ticket_category
@@ -1941,14 +1949,14 @@ def task_add_new(
 
             ticket.update_log(
                 user=request.user,
-                note=_("Aggiunta attività: {}".format(new_task)),
+                note=_("Aggiunta attività: {}").format(new_task),
                 is_public=new_task.is_public
             )
 
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _("Attività {} creata con successo".format(new_task)),
+                _("Attività {} creata con successo").format(new_task),
             )
 
             return redirect(
@@ -2010,11 +2018,12 @@ def task_remove(
     )
 
     ticket.update_log(user=request.user,
-                      note=_("Rimossa attività: {}".format(task)),
+                      note=_("Rimossa attività: {}").format(task),
                       is_public=task.is_public)
     messages.add_message(
         request, messages.SUCCESS, _(
-            "Attività {} rimossa correttamente".format(task))
+            "Attività {} rimossa correttamente"
+        ).format(task)
     )
 
     if task.closing_attachment:
@@ -2145,7 +2154,7 @@ def task_detail(
         if form.is_valid():
             priority = form.cleaned_data["priorita"]
             priority_text = dict(PRIORITY_LEVELS).get(priority)
-            msg = _("Task {} - Priorità assegnata: {}".format(task, priority_text))
+            msg = _("Task {} - Priorità assegnata: {}").format(task, priority_text)
             task.priority = priority
             task.save(update_fields=["priority"])
             task.update_log(user=request.user, note=msg)
@@ -2259,7 +2268,7 @@ def task_close(
     if ticket.is_closed:
         return custom_message(
             request,
-            _("La richiesta {} è chiusa".format(ticket)),
+            _("La richiesta {} è chiusa").format(ticket),
             structure_slug=structure.slug,
         )
 
@@ -2292,10 +2301,10 @@ def task_close(
             )
 
             msg = _(
-                "Chiusura attività ({}): {} - {}".format(
+                    "Chiusura attività ({}): {} - {}"
+                ).format(
                     task, dict(CLOSING_LEVELS).get(closing_status), motivazione
                 )
-            )
             task.update_log(user=request.user,
                             note=msg,
                             is_public=task.is_public)
@@ -2338,7 +2347,7 @@ def task_close(
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _("Attività {} chiusa correttamente".format(task)),
+                _("Attività {} chiusa correttamente").format(task),
             )
             return redirect(
                 "uni_ticket:manage_ticket_url_detail",
@@ -2423,7 +2432,7 @@ def task_reopen(
     task.closing_attachment = None
     task.is_closed = False
     task.save(update_fields=["is_closed"])
-    msg = _("Riapertura attività {}".format(task))
+    msg = _("Riapertura attività {}").format(task)
 
     # log action
     logger.info(
@@ -2440,7 +2449,9 @@ def task_reopen(
                       is_public=task.is_public)
     messages.add_message(
         request, messages.SUCCESS, _(
-            "Attività {} riaperta correttamente".format(task))
+            "Attività {} riaperta correttamente"
+        )
+        .format(task)
     )
     return redirect(
         "uni_ticket:manage_ticket_url_detail",
@@ -2547,13 +2558,13 @@ def task_edit(
         form = TaskForm(instance=task, data=request.POST, files=request.FILES)
 
         if form.is_valid():
-            msg = _("Modifica attività {}".format(task))
+            msg = _("Modifica attività {}").format(task)
             if task.priority != form.cleaned_data["priority"]:
                 msg = msg + _(
-                    " e Priorità assegnata: {}"
-                    "".format(dict(PRIORITY_LEVELS).get(
-                        form.cleaned_data["priority"]))
-                )
+                        " e Priorità assegnata: {}"
+                    ).format(
+                        dict(PRIORITY_LEVELS).get(form.cleaned_data["priority"])
+                    )
             form.save()
 
             # log action
@@ -2647,7 +2658,7 @@ def task_attachment_delete(
     task.attachment = None
     task.save(update_fields=["attachment"])
 
-    msg = _("Allegato attività {} eliminato".format(task.code))
+    msg = _("Allegato attività {} eliminato").format(task.code)
     task.update_log(user=request.user,
                     note=_("Allegato eliminato"),
                     is_public=task.is_public)
@@ -2688,8 +2699,8 @@ def ticket_taken_by_unassigned_offices(
 
         msg = _(
             "Ticket {} correttamente "
-            "assegnato a Ufficio: {} [{}]".format(ticket, office, request.user)
-        )
+            "assegnato a Ufficio: {} [{}]"
+        ).format(ticket, office, request.user)
         ticket.update_log(user=request.user, note=msg)
         messages.add_message(request, messages.SUCCESS, msg)
     return redirect(
@@ -2774,7 +2785,7 @@ def ticket_competence_leave(
 
                 ticket.update_log(
                     user=request.user,
-                    note=_("Competenza abbandonata da" " Ufficio: {}".format(office)),
+                    note=_("Competenza abbandonata da" " Ufficio: {}").format(office),
                 )
 
                 messages.add_message(
@@ -2783,8 +2794,7 @@ def ticket_competence_leave(
                     _(
                         "Competenza ufficio <b>{}</b> "
                         "abbandonata con successo"
-                        "".format(office)
-                    ),
+                    ).format(office)
                 )
             # this is the only office managing ticket
             else:
