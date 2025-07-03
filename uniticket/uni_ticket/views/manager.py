@@ -48,7 +48,8 @@ def dashboard(request, structure_slug, structure):
     """
     title = _("Pannello di Controllo")
     sub_title = _(
-        "Gestisci le richieste per la struttura {}").format(structure)
+        "Gestisci le richieste per la struttura {}"
+    ).format(structure)
     template = "manager/dashboard.html"
 
     # unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
@@ -150,8 +151,8 @@ def office_add_new(request, structure_slug, structure):
                     messages.ERROR,
                     _(
                         "Esiste già un ufficio con"
-                        " nome {} o slug {}".format(name, slug)
-                    ),
+                        " nome {} o slug {}"
+                    ).format(name, slug)
                 )
             else:
                 new_office = form.save(commit=False)
@@ -432,10 +433,10 @@ def office_remove_category(
             messages.SUCCESS,
             _(
                 "La tipologia di richiesta <b>{}</b> non è più di competenza "
-                " dell'ufficio <b>{}</b> ed è stato disattivato".format(
-                    category, office
-                )
-            ),
+                " dell'ufficio <b>{}</b> ed è stato disattivato"
+            ).format(
+                category, office
+            )
         )
 
         # log action
@@ -1904,7 +1905,7 @@ def category_input_module_details(
                 messages.add_message(
                     request,
                     messages.ERROR,
-                    _("Esiste già un campo con questo" " nome: <b>{}</b>".format(name)),
+                    _("Esiste già un campo con questo" " nome: <b>{}</b>").format(name),
                 )
             else:
                 # is_required_value = form.cleaned_data['is_required']
