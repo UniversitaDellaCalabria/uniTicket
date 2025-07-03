@@ -32,11 +32,13 @@
                     <div class="form-group">
                         <input class="form-control" placeholder="Password" name="password" type="password" value="">
                     </div>
+                    {% comment %}
                     <div class="checkbox">
                         <label>
                             <input name="remember" type="checkbox" value="Remember Me">{% trans 'Ricordami' %}
                         </label>
                     </div>
+                    {% endcomment %}
                     <div class="d-grid gap-2">
                         <input class="btn btn-lg btn-success" type="submit" value="{% trans 'Login' %}" />
                     </div>
