@@ -2307,8 +2307,7 @@ def task_close(
 
             msg = _(
                     "Chiusura attività ({}): {} - {}"
-                )
-                .format(
+                ).format(
                     task, dict(CLOSING_LEVELS).get(closing_status), motivazione
                 )
             task.update_log(user=request.user,
