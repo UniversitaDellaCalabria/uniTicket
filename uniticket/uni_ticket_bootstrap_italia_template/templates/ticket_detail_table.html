@@ -25,7 +25,7 @@
             <!-- stupid var passed to template only to
                  check if current user is manager/operator -->
             {% uni_ticket_settings_value name="SIMPLE_USER_SHOW_PRIORITY" as user_show_priority %}
-            {% if not is_simple_user  or user_show_priority %}
+            {% if not is_simple_user or user_show_priority %}
             <tr>
                 <th scope="row">{% trans 'Priorità' %}</th>
                 <td>{{ priority }}</td>
@@ -119,7 +119,7 @@
                             <br>
                             {% if assignment.assigned_by %}
                                 <small>- {% trans "Assegnato da" %}:
-                                         {{ assignment.assigned_by }} - {{ assignment.modified }}
+                                         {% trans "Operatore" %} {{ assignment.assigned_by.pk }} - {{ assignment.modified }}
                                          {% if assignment.modified|date:"YmdHis" != assignment.created|date:"YmdHis" %}
                                          <a href="#"
                                             data-bs-toggle="tooltip"
@@ -131,7 +131,7 @@
                                 <br>
                             {% endif %}
                             {% if assignment.taken_date %}
-                                <small>- {% trans "Assegnato a" %}: {{ assignment.taken_by }} - {{ assignment.taken_date }}</small>
+                                <small>- {% trans "Assegnato a" %}: {% trans "Operatore" %} {{ assignment.taken_by.pk }} - {{ assignment.taken_date }}</small>
                             {% else %}
                                 <small>- {% trans "Non ancora preso in carico in questo ufficio" %}</small>
                             {% endif %}

@@ -292,10 +292,10 @@ def ticket_detail(
                     "Ticket preso in carico da {}. "
                     "Priorità assegnata: {}"
                 ).format(
-                    request.user, priority_text
+                    _("Operatore") + " " + str(request.user.pk), priority_text
                 )
                 if not SIMPLE_USER_SHOW_PRIORITY:
-                    msg = _("Ticket preso in carico da {}.".format(request.user))
+                    msg = _("Ticket preso in carico da {}.").format(_("Operatore") + " " + str(request.user.pk))
                 ticket.update_log(user=request.user, note=msg)
                 messages.add_message(
                     request,
@@ -304,7 +304,7 @@ def ticket_detail(
                         "Ticket <b>{}</b> assegnato"
                         " con successo a {}"
                     ).format(
-                        ticket.code, request.user
+                        ticket.code, _("Operatore") + " " + str(request.user.pk)
                     )
                 )
                 return redirect(
@@ -330,14 +330,16 @@ def ticket_detail(
                     "Richiesta assegnata a {} da {}. "
                     "Priorità assegnata: {}"
                 ).format(
-                    operator, request.user,
+                    _("Operatore") + " " + str(operator.pk),
+                    _("Operatore") + " " + str(request.user.pk),
                     priority_text
                 )
                 if not SIMPLE_USER_SHOW_PRIORITY:
                     msg = _(
                         "Richiesta assegnata a {} da {}."
                     ).format(
-                        operator, request.user
+                         _("Operatore") + " " + str(operator.pk),
+                         _("Operatore") + " " + str(request.user.pk)
                     )
                 ticket.update_log(user=request.user, note=msg)
                 messages.add_message(
@@ -346,7 +348,10 @@ def ticket_detail(
                     _(
                         "Richiesta <b>{}</b> assegnata"
                         " con successo a {}"
-                    ).format(ticket.code, operator)
+                    ).format(
+                        ticket.code,
+                        _("Operatore") + " " + str(operator.pk)
+                    )
                 )
 
                 # Send mail to operator
@@ -2701,7 +2706,7 @@ def ticket_taken_by_unassigned_offices(
         msg = _(
             "Ticket {} correttamente "
             "assegnato a Ufficio: {} [{}]"
-        ).format(ticket, office, request.user)
+        ).format(ticket, office, _("Operatore") + " " + str(request.user.pk))
         ticket.update_log(user=request.user, note=msg)
         messages.add_message(request, messages.SUCCESS, msg)
     return redirect(

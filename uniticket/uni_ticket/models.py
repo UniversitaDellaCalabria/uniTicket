@@ -723,7 +723,7 @@ class Ticket(SavedFormContent):
                 html = html.format("success", status_literal)
             elif self.closing_status == 2:
                 html = html.format("secondary", status_literal)
-            return "{}<br><small>{}</small>".format(html, self.closed_by)
+            return "{}<br><small>{} {}</small>".format(html, _("Operatore"), self.closed_by.pk)
         if not self.has_been_taken():
             return _('<span class="badge bg-danger">Aperta</span>')
         return _('<span class="badge bg-warning">Assegnata</span> {}' "").format(
@@ -767,7 +767,7 @@ class Ticket(SavedFormContent):
                 html = html.format(
                     "icon-secondary", status_literal, static_icon, "it-minus-circle"
                 )
-            return "{}<br><small>{}</small>".format(html, self.closed_by)
+            return "{}<br><small>{} {}</small>".format(html, _("Operatore"), self.closed_by.pk)
         if not self.has_been_taken():
             return _('<span class="badge bg-danger">Aperta</span>')
         return _('<span class="badge bg-warning">Assegnata</span> {}' "").format(
@@ -1091,7 +1091,7 @@ class Ticket(SavedFormContent):
             element = "<li><small><b>{}</b></small>: ".format(
                 assignment.office)
             if assignment.taken_by:
-                element += "<small>{}</small></li>".format(assignment.taken_by)
+                element += "<small>{} {}</small></li>".format(_("Operatore"), assignment.taken_by.pk)
             else:
                 element += '<span class="badge bg-danger">{}</span></li>'.format(
                     _("Da assegnare")
@@ -1507,7 +1507,7 @@ class Task(AbstractTask):
                 html = html.format("success", status_literal)
             elif self.closing_status == 2:
                 html = html.format("secondary", status_literal)
-            return "{} <small>{}</small>".format(html, self.closed_by)
+            return "{} <small>{} {}</small>".format(html, _("Operatore"), self.closed_by.pk)
         return _('<span class="badge bg-danger">Aperta</span>')
 
     def __str__(self):

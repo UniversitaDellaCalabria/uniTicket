@@ -41,7 +41,7 @@
             </tr>
             <tr>
                 <th scope="row">{% trans 'Creato da' %}</th>
-                <td>{{ task.created_by }} - {{ task.created }}</td>
+                <td>{% trans "Operatore" %} {{ task.created_by.pk }}  - {{ task.created }}</td>
             </tr>
             <tr>
                 <th scope="row">{% trans 'Ticket' %}</th>
