@@ -193,9 +193,8 @@ def confirmRegistration(request):
     token_date = parse_datetime(timestamp)
     time_diff = timezone.now() - token_date
     token_life_expired = time_diff.total_seconds() / 60 > USER_REGISTRATION_TOKEN_LIFE
-    token_invalid = user_exists and token_date < request.user.manual_user_update
 
-    if token_life_expired or token_date < request.user.manual_user_update:
+    if token_life_expired:
         messages.add_message(
             request, messages.ERROR, _("Token scaduto")
         )
