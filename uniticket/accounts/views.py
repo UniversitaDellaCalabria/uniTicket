@@ -124,7 +124,7 @@ def registration(request):
     if request.POST:
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            if get_user_model().objects.filter(taxpayer_id=form.cleaned_data['taxpayer_id']).exists():
+            if get_user_model().objects.filter(taxpayer_id__iexact=form.cleaned_data['taxpayer_id']).exists():
                 messages.add_message(
                     request, messages.ERROR, _("Questo codice fiscale è già presente in anagrafica")
                 )
@@ -147,7 +147,6 @@ def registration(request):
                 messages.add_message(
                     request, messages.INFO, _("E' stata inviata un'email all'indirizzo di posta che hai indicato. Clicca sul link contenuto nel messaggio per completare la registrazione")
                 )
-                print(encrypted_data)
                 return redirect("accounts:registration")
         else:
             messages.add_message(
@@ -183,7 +182,7 @@ def confirmRegistration(request):
     cleaned_data = ast.literal_eval(items[0])
     timestamp = items[1]
 
-    user_exists = get_user_model().objects.filter(taxpayer_id=cleaned_data['taxpayer_id']).exists()
+    user_exists = get_user_model().objects.filter(taxpayer_id__iexact=cleaned_data['taxpayer_id']).exists()
 
     if user_exists:
         messages.add_message(
@@ -194,9 +193,9 @@ def confirmRegistration(request):
     token_date = parse_datetime(timestamp)
     time_diff = timezone.now() - token_date
     token_life_expired = time_diff.total_seconds() / 60 > USER_REGISTRATION_TOKEN_LIFE
-    token_invalid = user_exists and token_date < user.manual_user_update
+    token_invalid = user_exists and token_date < request.user.manual_user_update
 
-    if token_life_expired or token_date < user.manual_user_update:
+    if token_life_expired or token_date < request.user.manual_user_update:
         messages.add_message(
             request, messages.ERROR, _("Token scaduto")
         )
@@ -206,7 +205,7 @@ def confirmRegistration(request):
         username=cleaned_data['taxpayer_id'],
         first_name=cleaned_data['first_name'],
         last_name=cleaned_data['last_name'],
-        taxpayer_id=cleaned_data['taxpayer_id'],
+        taxpayer_id=cleaned_data['taxpayer_id'].upper(),
         email=cleaned_data['email'],
         is_active=True,
         password = make_password(cleaned_data['password'])
