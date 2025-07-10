@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'nested_admin',
     'organizational_area',
 
+    # interfaccia con App IO
+    'app_io',
+
     # Django Rest
     'rest_framework',
     # 'rest_framework.authtoken',
@@ -231,7 +234,7 @@ PROTOCOL_XML = """
     <classif cod="{cod_classif}">{classif}</classif>
     <allegato>{allegato}</allegato>
     <rif_interni>
-		<rif_interno diritto="RPA"
+        <rif_interno diritto="RPA"
                      nome_persona="{nome_persona_rif_interno}"
                      nome_uff="{nome_uff_rif_interno}"
                      cod_uff="{cod_uff_rif_interno}"/>

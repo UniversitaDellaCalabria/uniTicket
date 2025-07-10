@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'django_form_builder',
     'nested_admin',
     'organizational_area',
+
     # interfaccia con App IO
     'app_io',
 
