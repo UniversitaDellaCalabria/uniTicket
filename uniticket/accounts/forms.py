@@ -126,7 +126,7 @@ class RegisteredUserPasswordForm(PasswordForm):
     old_password = forms.CharField(
         widget=forms.PasswordInput,
         required=True,
-        label=_("Actual password")
+        label=_("Password attuale")
     )
 
     def __init__(self, *args, **kwargs):

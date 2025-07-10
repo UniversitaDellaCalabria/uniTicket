@@ -269,7 +269,7 @@ def passwordReset(request):
             if 'old_password' in form.cleaned_data:
                 if not user.check_password(form.cleaned_data['old_password']):
                     messages.add_message(
-                        request, messages.ERROR, _("Wrong actual password")
+                        request, messages.ERROR, _("Password attuale errata")
                     )
                     return redirect("accounts:password_reset")
             user.password = make_password(form.cleaned_data['password'])

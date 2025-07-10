@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-09 17:50+0200\n"
-"PO-Revision-Date: 2025-07-09 17:50+0200\n"
+"POT-Creation-Date: 2025-07-10 09:26+0200\n"
+"PO-Revision-Date: 2025-07-10 09:27+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -49,10 +49,8 @@ msgid "Le password non coincidono."
 msgstr "Passwords do not match."
 
 #: accounts/forms.py:129
-#, fuzzy
-#| msgid "Imposta la nuova password"
-msgid "Actual password"
-msgstr "Set the new password"
+msgid "Password attuale"
+msgstr "Actual passord"
 
 #: accounts/forms.py:145 accounts/models.py:31
 #: uni_ticket_bootstrap_italia_template/templates/login.html:28
@@ -217,8 +215,8 @@ msgid "Questo codice fiscale non è associato ad alcun utente registrato"
 msgstr "This tax code is not associated with any registered user"
 
 #: accounts/views.py:272
-msgid "Wrong actual password"
-msgstr "La password attuale è errata"
+msgid "Password attuale errata"
+msgstr "Wrong actual password"
 
 #: accounts/views.py:279 accounts/views.py:284
 msgid "Password aggiornata con successo"
@@ -6001,3 +5999,11 @@ msgstr "Italian"
 #: uni_ticket_project/settingslocal.py:414
 msgid "Inglese"
 msgstr "English"
+
+#, fuzzy
+#~| msgid "Imposta la nuova password"
+#~ msgid "Actual password"
+#~ msgstr "Set the new password"
+
+#~ msgid "Wrong actual password"
+#~ msgstr "La password attuale è errata"
