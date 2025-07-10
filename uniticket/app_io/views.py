@@ -5,7 +5,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
+from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
+
+from django_form_builder.utils import get_labeled_errors
 
 from uni_ticket.decorators import is_manager
 from uni_ticket.models import TicketCategory
