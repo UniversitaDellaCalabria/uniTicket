@@ -28,6 +28,8 @@ if ALLOW_USER_REGISTRATION:
     urlpatterns = [
         path('account/create/', registration, name='registration'),
         path('account/confirm-registration/', confirmRegistration, name='confirm_registration'),
+        path('account/password-reset/', passwordReset, name='password_reset'),
+        path('account/password-reset/email/', passwordResetEmail, name='password_reset_email'),
     ]
 
 if EDITABLE_FIELDS:

@@ -1,5 +1,7 @@
 import copy
 
+from collections import OrderedDict
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -30,7 +32,7 @@ class UserDataForm(forms.ModelForm):
         fields = EDITABLE_FIELDS
         labels = {'email': 'E-mail'}
 
-from django_form_builder.forms import BaseDynamicForm
+
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(
         widget=forms.PasswordInput,
@@ -87,6 +89,90 @@ class RegistrationForm(forms.ModelForm):
         if password and confirm_password and password != confirm_password:
             self.add_error("password", _("Le password non coincidono."))
             self.add_error("confirm_password", _("Le password non coincidono."))
+
+        captcha_errors = self.fields['captcha'].parent.raise_error('captcha', cleaned_data)
+        for captcha_error in captcha_errors:
+            self.add_error('captcha', captcha_error)
+
+        return cleaned_data
+
+
+class PasswordForm(forms.Form):
+    password = forms.CharField(
+        widget=forms.PasswordInput,
+        required=True,
+        label=_("Password")
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput,
+        required=True,
+        label=_("Ripeti Password")
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password and confirm_password and password != confirm_password:
+            self.add_error("password", _("Le password non coincidono."))
+            self.add_error("confirm_password", _("Le password non coincidono."))
+
+        return cleaned_data
+
+
+class RegisteredUserPasswordForm(PasswordForm):
+    old_password = forms.CharField(
+        widget=forms.PasswordInput,
+        required=True,
+        label=_("Actual password")
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        fields = OrderedDict()
+        fields["old_password"] = self.fields["old_password"]
+        fields["password"] = self.fields["password"]
+        fields["confirm_password"] = self.fields["confirm_password"]
+        self.fields = fields
+
+
+class PasswordEmailForm(forms.Form):
+    taxpayer_id = forms.CharField(
+        required=True,
+        max_length=50,
+        label=_('Codice fiscale')
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        captcha_data = {
+            "label": _('Codice di verifica'),
+            "captcha_name": dynamic_fields.format_field_name('captcha'),
+            "captcha_hidden_name": dynamic_fields.format_field_name(
+                'hidden_captcha'
+            ),
+        }
+        captcha_field = getattr(dynamic_fields, "CustomCaptchaComplexField")(
+            **captcha_data
+        )
+        captcha_field.define_value(custom_value="")
+        for single_field in captcha_field.get_fields():
+            self.fields[single_field.name] = single_field
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        self.data = copy.deepcopy(self.data)
+
+        # CaPTCHA MUST BE ALWAYS RENEWED!
+        for field_name, field_obj in self.fields.items():
+            if type(field_obj) in (dynamic_fields.CaptchaField,
+                                   dynamic_fields.CaptchaHiddenField):
+                self.data[field_name] = self.fields[field_name].widget.attrs['value']
+        # end CAPTCHA
 
         captcha_errors = self.fields['captcha'].parent.raise_error('captcha', cleaned_data)
         for captcha_error in captcha_errors:

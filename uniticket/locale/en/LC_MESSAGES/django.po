@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-09 15:04+0200\n"
-"PO-Revision-Date: 2025-07-09 15:04+0200\n"
+"POT-Creation-Date: 2025-07-09 17:50+0200\n"
+"PO-Revision-Date: 2025-07-09 17:50+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -30,21 +30,40 @@ msgstr "Permessi"
 msgid "Date accessi sistema"
 msgstr "System access dates"
 
-#: accounts/forms.py:38
+#: accounts/forms.py:40 accounts/forms.py:104
+#: uni_ticket_bootstrap_italia_template/templates/user_data.html:50
 msgid "Password"
 msgstr ""
 
-#: accounts/forms.py:43
+#: accounts/forms.py:45 accounts/forms.py:109
 msgid "Ripeti Password"
-msgstr ""
+msgstr "Repeat password"
 
-#: accounts/forms.py:58 uni_ticket/settings.py:113
+#: accounts/forms.py:60 accounts/forms.py:152 uni_ticket/settings.py:113
 msgid "Codice di verifica"
 msgstr "Verification code"
 
-#: accounts/forms.py:88 accounts/forms.py:89
+#: accounts/forms.py:90 accounts/forms.py:91 accounts/forms.py:119
+#: accounts/forms.py:120
 msgid "Le password non coincidono."
-msgstr ""
+msgstr "Passwords do not match."
+
+#: accounts/forms.py:129
+#, fuzzy
+#| msgid "Imposta la nuova password"
+msgid "Actual password"
+msgstr "Set the new password"
+
+#: accounts/forms.py:145 accounts/models.py:31
+#: uni_ticket_bootstrap_italia_template/templates/login.html:28
+#: uni_ticket_bootstrap_italia_template/templates/manager/category_add_ticket_user.html:41
+#: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:41
+#: uni_ticket_bootstrap_italia_template/templates/manager/settings_add_manager.html:47
+#: uni_ticket_bootstrap_italia_template/templates/ticket_detail_table.html:44
+#: uni_ticket_bootstrap_italia_template/templates/ticket_detail_table.html:72
+#: uni_ticket_bootstrap_italia_template/templates/user_data.html:28
+msgid "Codice fiscale"
+msgstr "Taxpayer Identification Number"
 
 #: accounts/middlewares.py:23
 msgid "Completa il tuo profilo per poter utilizzare il sistema"
@@ -102,17 +121,6 @@ msgstr "Name"
 msgid "Cognome"
 msgstr "Surname"
 
-#: accounts/models.py:31
-#: uni_ticket_bootstrap_italia_template/templates/login.html:30
-#: uni_ticket_bootstrap_italia_template/templates/manager/category_add_ticket_user.html:41
-#: uni_ticket_bootstrap_italia_template/templates/manager/office_add_operator.html:41
-#: uni_ticket_bootstrap_italia_template/templates/manager/settings_add_manager.html:47
-#: uni_ticket_bootstrap_italia_template/templates/ticket_detail_table.html:44
-#: uni_ticket_bootstrap_italia_template/templates/ticket_detail_table.html:72
-#: uni_ticket_bootstrap_italia_template/templates/user_data.html:28
-msgid "Codice fiscale"
-msgstr "Taxpayer Identification Number"
-
 #: accounts/models.py:34
 msgid "Notifiche mail"
 msgstr "Email notifications"
@@ -145,7 +153,8 @@ msgstr ""
 "An email has been sent to the email address you indicated. Click on the link "
 "in the message to confirm the new data"
 
-#: accounts/views.py:67 accounts/views.py:153
+#: accounts/views.py:67 accounts/views.py:153 accounts/views.py:293
+#: accounts/views.py:335
 msgid "Dati errati"
 msgstr "Wrong data"
 
@@ -159,11 +168,11 @@ msgstr "Edit personal data"
 msgid "Token mancante"
 msgstr "Missing token"
 
-#: accounts/views.py:88 accounts/views.py:178
+#: accounts/views.py:88 accounts/views.py:178 accounts/views.py:235
 msgid "Token non valido"
 msgstr "Invalid token"
 
-#: accounts/views.py:105 accounts/views.py:199
+#: accounts/views.py:105 accounts/views.py:199 accounts/views.py:257
 msgid "Token scaduto"
 msgstr "Expired token"
 
@@ -173,7 +182,7 @@ msgstr "Email updated successfully"
 
 #: accounts/views.py:129 accounts/views.py:189
 msgid "Questo codice fiscale è già presente in anagrafica"
-msgstr "This tax code is already present in the registry"
+msgstr "This tax code is already registered"
 
 #: accounts/views.py:138
 msgid "Conferma la tua registrazione cliccando qui {}"
@@ -198,6 +207,47 @@ msgstr "Create account"
 #: accounts/views.py:213
 msgid "Registrazione avvenuta con successo"
 msgstr "Registration successfully completed"
+
+#: accounts/views.py:220
+msgid "Imposta la nuova password"
+msgstr "Set the new password"
+
+#: accounts/views.py:246
+msgid "Questo codice fiscale non è associato ad alcun utente registrato"
+msgstr "This tax code is not associated with any registered user"
+
+#: accounts/views.py:272
+msgid "Wrong actual password"
+msgstr "La password attuale è errata"
+
+#: accounts/views.py:279 accounts/views.py:284
+msgid "Password aggiornata con successo"
+msgstr "Password updated successfully"
+
+#: accounts/views.py:281
+msgid "La password è stata correttamente aggiornata"
+msgstr ""
+
+#: accounts/views.py:302
+msgid "Inserisci il tuo codice fiscale"
+msgstr "Enter your Taxpayer Identification Number"
+
+#: accounts/views.py:318
+msgid "Resetta la tua password cliccando qui {}"
+msgstr "Reset your password by clicking here {}"
+
+#: accounts/views.py:323
+msgid "Reset password"
+msgstr ""
+
+#: accounts/views.py:330
+msgid ""
+"E' stata inviata un'email all'indirizzo di posta associato al codice fiscale "
+"che hai indicato. Clicca sul link contenuto nel messaggio per resettare la "
+"tua password"
+msgstr ""
+"An email has been sent to the email address associated with the tax code you "
+"provided. Click the link in the email to reset your password."
 
 #: api_rest/authorizations.py:29
 msgid "Invalid token."
@@ -919,6 +969,7 @@ msgid "Scrivi qui il tuo messaggio..."
 msgstr "Write your message here..."
 
 #: chat/templates/room.html:87
+#: uni_ticket_bootstrap_italia_template/templates/change_password.html:27
 #: uni_ticket_bootstrap_italia_template/templates/change_user_data.html:43
 #: uni_ticket_bootstrap_italia_template/templates/ticket_assistance.html:119
 #: uni_ticket_bootstrap_italia_template/templates/user_registration.html:42
@@ -3387,6 +3438,35 @@ msgstr "Preferences"
 msgid "Accetto"
 msgstr "I accept"
 
+#: uni_ticket_bootstrap_italia_template/templates/change_password.html:40
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:166
+msgid "Conferma"
+msgstr "Confirm"
+
+#: uni_ticket_bootstrap_italia_template/templates/change_password.html:52
+#: uni_ticket_bootstrap_italia_template/templates/change_user_data.html:68
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:67
+msgid "Vuoi confermare i dati immessi?"
+msgstr "Do you want confirm the entered data?"
+
+#: uni_ticket_bootstrap_italia_template/templates/change_password.html:57
+#: uni_ticket_bootstrap_italia_template/templates/change_user_data.html:73
+#: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:159
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:99
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:168
+#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:375
+#: uni_ticket_bootstrap_italia_template/templates/manager/category_add_ticket_user.html:95
+#: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:469
+#: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:173
+#: uni_ticket_bootstrap_italia_template/templates/manager/category_protocol_configuration_detail.html:97
+#: uni_ticket_bootstrap_italia_template/templates/manager/category_protocol_configuration_new.html:79
+#: uni_ticket_bootstrap_italia_template/templates/manager/settings_add_manager.html:101
+#: uni_ticket_bootstrap_italia_template/templates/manager/structure_protocol_configuration_new.html:74
+#: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:193
+#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:72
+msgid "Si, procedi"
+msgstr "Yes, I confirm"
+
 #: uni_ticket_bootstrap_italia_template/templates/change_user_data.html:22
 #: uni_ticket_bootstrap_italia_template/templates/form_complete.html:14
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:17
@@ -3415,28 +3495,6 @@ msgstr "I accept"
 #: uni_ticket_bootstrap_italia_template/templates/user_settings.html:16
 msgid "Dashboard"
 msgstr ""
-
-#: uni_ticket_bootstrap_italia_template/templates/change_user_data.html:68
-#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:67
-msgid "Vuoi confermare i dati immessi?"
-msgstr "Do you want confirm the entered data?"
-
-#: uni_ticket_bootstrap_italia_template/templates/change_user_data.html:73
-#: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:159
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:99
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:168
-#: uni_ticket_bootstrap_italia_template/templates/management/ticket_detail.html:375
-#: uni_ticket_bootstrap_italia_template/templates/manager/category_add_ticket_user.html:95
-#: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:469
-#: uni_ticket_bootstrap_italia_template/templates/manager/category_input_module_detail.html:173
-#: uni_ticket_bootstrap_italia_template/templates/manager/category_protocol_configuration_detail.html:97
-#: uni_ticket_bootstrap_italia_template/templates/manager/category_protocol_configuration_new.html:79
-#: uni_ticket_bootstrap_italia_template/templates/manager/settings_add_manager.html:101
-#: uni_ticket_bootstrap_italia_template/templates/manager/structure_protocol_configuration_new.html:74
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:193
-#: uni_ticket_bootstrap_italia_template/templates/user_registration.html:72
-msgid "Si, procedi"
-msgstr "Yes, I confirm"
 
 #: uni_ticket_bootstrap_italia_template/templates/custom_message.html:15
 msgid "Oops! C'è qualcosa che non va"
@@ -3615,15 +3673,19 @@ msgstr "Notifications enabled on the email:"
 msgid "Notifiche disabilitate sulla mail:"
 msgstr "Notifications enabled on the email:"
 
-#: uni_ticket_bootstrap_italia_template/templates/login.html:9
+#: uni_ticket_bootstrap_italia_template/templates/login.html:7
 msgid "Effettua l'accesso"
 msgstr "Sign-in"
 
-#: uni_ticket_bootstrap_italia_template/templates/login.html:26
+#: uni_ticket_bootstrap_italia_template/templates/login.html:24
 msgid "Username e/o password non corretti. Prova ancora."
+msgstr "Username and/or password incorrect. Try again."
+
+#: uni_ticket_bootstrap_italia_template/templates/login.html:34
+msgid "Password dimenticata?"
 msgstr ""
 
-#: uni_ticket_bootstrap_italia_template/templates/login.html:44
+#: uni_ticket_bootstrap_italia_template/templates/login.html:45
 msgid "Login"
 msgstr ""
 
@@ -3982,7 +4044,8 @@ msgstr "Yes, reopen the task"
 #: uni_ticket_bootstrap_italia_template/templates/manager/structure_alerts.html:43
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_detail.html:149
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_edit.html:123
-#: uni_ticket_bootstrap_italia_template/templates/user_data.html:60
+#: uni_ticket_bootstrap_italia_template/templates/user_data.html:51
+#: uni_ticket_bootstrap_italia_template/templates/user_data.html:64
 msgid "Modifica"
 msgstr "Edit"
 
@@ -5790,10 +5853,6 @@ msgstr "Send the request"
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:164
 msgid "Conferma e protocolla"
 msgstr "Confirm and protocol"
-
-#: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:166
-msgid "Conferma"
-msgstr "Confirm"
 
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:181
 msgid ""

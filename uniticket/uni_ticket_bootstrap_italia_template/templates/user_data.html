@@ -46,6 +46,10 @@
                                         <td>{{ user_user_attribute }}</td>
                                     </tr>
                                 {% endif %}
+                                <tr>
+                                    <th scope="row">{% trans "Password" %}</th>
+                                    <td><a href="{% url 'accounts:password_reset' %}">{% trans 'Modifica' %}</a></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
