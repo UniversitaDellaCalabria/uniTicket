@@ -34,7 +34,7 @@
                             </svg> {{ reply.created }}
                         </span>
                         {% if reply.read_date %}
-                        <span title="{% trans 'Visualizzato da' %} {% if reply.structure %}{% trans 'Operatore' %} {{ reply.read_by.pk }}{% else %}{{ reply.read_by }}{% endif %} - {{ reply.read_date }}" class="float-end">
+                        <span title="{% trans 'Visualizzato da' %} {% if reply.structure %}{{ reply.read_by }}{% else %}{% trans 'Operatore' %} {{ reply.read_by.pk }}{% endif %} - {{ reply.read_date }}" class="float-end">
                             <svg class="icon icon-xs icon-primary">
                                 <use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use>
                             </svg>
