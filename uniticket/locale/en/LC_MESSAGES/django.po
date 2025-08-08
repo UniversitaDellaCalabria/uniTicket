@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-03 12:15+0200\n"
-"PO-Revision-Date: 2025-07-03 14:06+0200\n"
+"POT-Creation-Date: 2025-08-08 11:23+0200\n"
+"PO-Revision-Date: 2025-08-08 11:23+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -107,8 +107,14 @@ msgid "Dati salvati con successo"
 msgstr "Data saved successfully"
 
 #: accounts/views.py:49
-msgid "Conferma la tua email cliccando qui {}"
-msgstr "Confirm your email address by clicking here {}"
+msgid ""
+"Conferma la tua email cliccando qui:\n"
+"\n"
+"<{}>"
+msgstr ""
+"Confirm your email address by clicking here:\n"
+"\n"
+"<{}>"
 
 #: accounts/views.py:52
 msgid "Conferma email"
@@ -205,47 +211,47 @@ msgstr ""
 msgid "Servizi App IO"
 msgstr ""
 
-#: app_io/views.py:34
+#: app_io/views.py:37
 msgid "Nuovo servizo App IO"
 msgstr ""
 
-#: app_io/views.py:35
+#: app_io/views.py:38
 msgid "Aggiungi un nuovo servizio alla tipologia di richiesta {}"
 msgstr "Add a new service to the request type {}"
 
-#: app_io/views.py:64
+#: app_io/views.py:67
 msgid "Servizio App IO <b>{}</b> aggiunto con successo"
 msgstr "App IO service <b>{}</b> added successfully"
 
-#: app_io/views.py:108
+#: app_io/views.py:111
 msgid "Modifica servizo App IO"
 msgstr "Edit IO App service"
 
-#: app_io/views.py:109
+#: app_io/views.py:112
 msgid "Modifica il servizio {}"
 msgstr "Edit service {}"
 
-#: app_io/views.py:135
+#: app_io/views.py:138
 msgid "Servizio App IO <b>{}</b> modificato con successo"
 msgstr "App IO service <b>{}</b> edited successfully"
 
-#: app_io/views.py:183
+#: app_io/views.py:186
 msgid "Servizio App IO <b>{}</b> già attivato"
 msgstr "App IO service {} already activated"
 
-#: app_io/views.py:192
+#: app_io/views.py:195
 msgid "Servizio App IO <b>{}</b> attivato con successo"
 msgstr "App IO service <b>{}</b> activated successfully"
 
-#: app_io/views.py:236
+#: app_io/views.py:239
 msgid "Servizio App IO <b>{}</b> già disattivato"
 msgstr "App IO service {} already disabled"
 
-#: app_io/views.py:244
+#: app_io/views.py:247
 msgid "Servizio App IO <b>{}</b> disattivato con successo"
 msgstr "App IO service <b>{}</b> disabled successfully"
 
-#: app_io/views.py:287
+#: app_io/views.py:290
 msgid "Servizio App IO <b>{}</b> eliminato correttamente"
 msgstr "App IO service <b>{}</b> successfully deleted"
 
@@ -1544,8 +1550,8 @@ msgid ""
 "<span class=\"badge bg-success\">Chiusa</span> <span class=\"badge bg-{}\">{}"
 "</span>"
 msgstr ""
-"<span class=\"badge bg-success\">Closed</span> <span class=\"badge bg-"
-"{}\">{}</span>"
+"<span class=\"badge bg-success\">Closed</span> <span class=\"badge bg-{}\">{}"
+"</span>"
 
 #: uni_ticket/models.py:728 uni_ticket/models.py:772 uni_ticket/models.py:1492
 #: uni_ticket/models.py:1511
@@ -2282,7 +2288,7 @@ msgstr "Unable to assign request to selected office"
 msgid "La richiesta è già di competenza dell'ufficio <b>{}</b>"
 msgstr "The request is already the responsibility of the <b>{}</b> office"
 
-#: uni_ticket/views/management.py:1259 uni_ticket/views/management.py:2789
+#: uni_ticket/views/management.py:1259 uni_ticket/views/management.py:2788
 msgid "Competenza abbandonata da Ufficio: {}"
 msgstr "Competence abandoned by Office: {}"
 
@@ -2391,7 +2397,7 @@ msgstr "Task {} successfully removed"
 msgid "Dettaglio attività"
 msgstr "Task details"
 
-#: uni_ticket/views/management.py:2144 uni_ticket/views/management.py:2550
+#: uni_ticket/views/management.py:2144 uni_ticket/views/management.py:2549
 msgid "Impossibile modificare un'attività chiusa"
 msgstr "Unable to edit a closed task"
 
@@ -2399,7 +2405,7 @@ msgstr "Unable to edit a closed task"
 msgid "Task {} - Priorità assegnata: {}"
 msgstr "Task {} - Priority assigned: {}"
 
-#: uni_ticket/views/management.py:2173 uni_ticket/views/management.py:2586
+#: uni_ticket/views/management.py:2173 uni_ticket/views/management.py:2585
 msgid "Attività aggiornata con successo"
 msgstr "Task updated successfully"
 
@@ -2407,7 +2413,7 @@ msgstr "Task updated successfully"
 msgid "Attività già chiusa!"
 msgstr "Already closed task!"
 
-#: uni_ticket/views/management.py:2271 uni_ticket/views/management.py:2421
+#: uni_ticket/views/management.py:2271 uni_ticket/views/management.py:2420
 msgid "La richiesta {} è chiusa"
 msgstr "Request {} is closed"
 
@@ -2419,68 +2425,68 @@ msgstr "Closing task"
 msgid "Chiusura attività ({}): {} - {}"
 msgstr "Closing task ({}): {} - {}"
 
-#: uni_ticket/views/management.py:2351
+#: uni_ticket/views/management.py:2350
 msgid "Attività {} chiusa correttamente"
 msgstr "Task {} closed successfully"
 
-#: uni_ticket/views/management.py:2408
+#: uni_ticket/views/management.py:2407
 msgid "L'attività non è stata chiusa"
 msgstr "The task has not been closed"
 
-#: uni_ticket/views/management.py:2436
+#: uni_ticket/views/management.py:2435
 msgid "Riapertura attività {}"
 msgstr "Reopening task {}"
 
-#: uni_ticket/views/management.py:2453
+#: uni_ticket/views/management.py:2452
 msgid "Attività {} riaperta correttamente"
 msgstr "Task {} reopened successfully"
 
-#: uni_ticket/views/management.py:2530 uni_ticket/views/manager.py:2881
+#: uni_ticket/views/management.py:2529 uni_ticket/views/manager.py:2881
 #: uni_ticket_bootstrap_italia_template/templates/management/task_detail.html:141
 #: uni_ticket_bootstrap_italia_template/templates/management/task_edit.html:20
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_task_edit.html:20
 msgid "Modifica attività"
 msgstr "Edit task"
 
-#: uni_ticket/views/management.py:2562
+#: uni_ticket/views/management.py:2561
 msgid "Modifica attività {}"
 msgstr "Edit task {}"
 
-#: uni_ticket/views/management.py:2565
+#: uni_ticket/views/management.py:2564
 msgid " e Priorità assegnata: {}"
 msgstr " and Priority assigned: {}"
 
-#: uni_ticket/views/management.py:2652
+#: uni_ticket/views/management.py:2651
 msgid "Permessi di modifica dell'attività mancanti"
 msgstr "Missing task modification permissions"
 
-#: uni_ticket/views/management.py:2662 uni_ticket/views/manager.py:2961
+#: uni_ticket/views/management.py:2661 uni_ticket/views/manager.py:2961
 msgid "Allegato attività {} eliminato"
 msgstr "Task attachment {} deleted"
 
-#: uni_ticket/views/management.py:2664
+#: uni_ticket/views/management.py:2663
 msgid "Allegato eliminato"
 msgstr "Attachment deleted"
 
-#: uni_ticket/views/management.py:2702
+#: uni_ticket/views/management.py:2701
 msgid "Ticket {} correttamente assegnato a Ufficio: {} [{}]"
 msgstr "Ticket {} correctly assigned to Office: {} [{}] </b>"
 
-#: uni_ticket/views/management.py:2752
+#: uni_ticket/views/management.py:2751
 msgid "Abbandona competenza richiesta"
 msgstr "Leave request competence"
 
-#: uni_ticket/views/management.py:2754
+#: uni_ticket/views/management.py:2753
 msgid ""
 "Seleziona l'ufficio che deve abbandonare la competenza sulla richiesta \"{}\""
 msgstr ""
 "Select the office that should abandon competence over the request \"{}\""
 
-#: uni_ticket/views/management.py:2796
+#: uni_ticket/views/management.py:2795
 msgid "Competenza ufficio <b>{}</b> abbandonata con successo"
 msgstr "Office <b>{}</b> competence successfully abandoned"
 
-#: uni_ticket/views/management.py:2806
+#: uni_ticket/views/management.py:2805
 msgid ""
 "<b>Operazione non consentita</b><br>Rimuovendo la competenza  di <b>{}</b>, "
 "la richiesta non sarebbe più gestita da alcun ufficio. "
@@ -2488,15 +2494,15 @@ msgstr ""
 "<b> Operation not allowed </b> <br> By removing the competence of <b> {} </"
 "b>, the request would no longer be handled by any office. "
 
-#: uni_ticket/views/management.py:2841 uni_ticket/views/management.py:2891
+#: uni_ticket/views/management.py:2840 uni_ticket/views/management.py:2890
 msgid "Forbidden"
 msgstr ""
 
-#: uni_ticket/views/management.py:2890
+#: uni_ticket/views/management.py:2889
 msgid "Nessun record da esportare"
 msgstr "No records"
 
-#: uni_ticket/views/management.py:2918
+#: uni_ticket/views/management.py:2917
 msgid ""
 "La data di inizio non può essere successiva a quella di fine. La data di "
 "inizio è stata corretta a <b>{}</b> e quella di fine a <b>{}</b>"
@@ -2504,7 +2510,7 @@ msgstr ""
 "The start date cannot be later than the end date. The start date has been "
 "corrected to <b>{}</b> and the end date to <b>{}</b>"
 
-#: uni_ticket/views/management.py:2931
+#: uni_ticket/views/management.py:2930
 msgid ""
 "La finestra oraria massima per le statistiche è di {} giorni. La data di "
 "inizio è stata corretta a <b>{}</b>"
@@ -2512,12 +2518,12 @@ msgstr ""
 "The maximum time window for statistics is {} days. The start date has been "
 "corrected to <b>{}</b>"
 
-#: uni_ticket/views/management.py:2961
+#: uni_ticket/views/management.py:2960
 #: uni_ticket_bootstrap_italia_template/templates/manager/main_menu.html:39
 msgid "Statistiche"
 msgstr ""
 
-#: uni_ticket/views/management.py:2962
+#: uni_ticket/views/management.py:2961
 msgid "Struttura {} - dal {} al {}"
 msgstr ""
 

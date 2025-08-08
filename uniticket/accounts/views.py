@@ -46,7 +46,7 @@ def changeData(request):
                 token = f'{request.user.id}|{email}|{timezone.now()}'
                 encrypted_data = encrypt_to_jwe(token)
                 url = f'{base_url}?token={encrypted_data}'
-                body=_("Conferma la tua email cliccando qui {}").format(url)
+                body=_("Conferma la tua email cliccando qui:\n\n<{}>").format(url)
                 msg_body = f'{MSG_HEADER.format(hostname=settings.HOSTNAME)}{body}{MSG_FOOTER}'
                 result = send_mail(
                     subject=_("Conferma email"),
