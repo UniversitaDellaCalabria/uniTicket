@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-10 09:26+0200\n"
-"PO-Revision-Date: 2025-07-10 09:27+0200\n"
+"POT-Creation-Date: 2025-08-08 11:28+0200\n"
+"PO-Revision-Date: 2025-08-08 11:29+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -136,8 +136,14 @@ msgid "Dati salvati con successo"
 msgstr "Data saved successfully"
 
 #: accounts/views.py:52
-msgid "Conferma la tua email cliccando qui {}"
-msgstr "Confirm your email address by clicking here {}"
+msgid ""
+"Conferma la tua email cliccando qui:\n"
+"\n"
+"<{}>"
+msgstr ""
+"Confirm your email address by clicking here:\n"
+"\n"
+"<{}>"
 
 #: accounts/views.py:55
 msgid "Conferma email"
@@ -305,47 +311,47 @@ msgstr "Service API key"
 msgid "Servizi App IO"
 msgstr "App IO services"
 
-#: app_io/views.py:34
+#: app_io/views.py:37
 msgid "Nuovo servizo App IO"
 msgstr "New App IO service"
 
-#: app_io/views.py:35
+#: app_io/views.py:38
 msgid "Aggiungi un nuovo servizio alla tipologia di richiesta {}"
 msgstr "Add a new service to the request type {}"
 
-#: app_io/views.py:64
+#: app_io/views.py:67
 msgid "Servizio App IO <b>{}</b> aggiunto con successo"
 msgstr "App IO service <b>{}</b> added successfully"
 
-#: app_io/views.py:108
+#: app_io/views.py:111
 msgid "Modifica servizo App IO"
 msgstr "Edit IO App service"
 
-#: app_io/views.py:109
+#: app_io/views.py:112
 msgid "Modifica il servizio {}"
 msgstr "Edit service {}"
 
-#: app_io/views.py:135
+#: app_io/views.py:138
 msgid "Servizio App IO <b>{}</b> modificato con successo"
 msgstr "App IO service <b>{}</b> edited successfully"
 
-#: app_io/views.py:183
+#: app_io/views.py:186
 msgid "Servizio App IO <b>{}</b> già attivato"
 msgstr "App IO service {} already activated"
 
-#: app_io/views.py:192
+#: app_io/views.py:195
 msgid "Servizio App IO <b>{}</b> attivato con successo"
 msgstr "App IO service <b>{}</b> activated successfully"
 
-#: app_io/views.py:236
+#: app_io/views.py:239
 msgid "Servizio App IO <b>{}</b> già disattivato"
 msgstr "App IO service {} already disabled"
 
-#: app_io/views.py:244
+#: app_io/views.py:247
 msgid "Servizio App IO <b>{}</b> disattivato con successo"
 msgstr "App IO service <b>{}</b> disabled successfully"
 
-#: app_io/views.py:287
+#: app_io/views.py:290
 msgid "Servizio App IO <b>{}</b> eliminato correttamente"
 msgstr "App IO service <b>{}</b> successfully deleted"
 
