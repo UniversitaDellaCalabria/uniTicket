@@ -537,12 +537,21 @@ def export_input_module_csv(
 
     module.ticket_category
 
-    head = ["unique_id", "created",
-            "compiled_by", "compiled_by_taxpayer_id",
-            "created_by", "taxpayer_id"]
-    head.append(EMPLOYEE_ATTRIBUTE_NAME)
-    head.append(USER_ATTRIBUTE_NAME)
-    head.extend(["status", "subject", "description"])
+    head = [
+        "unique_id",
+        "created",
+        "compiled_by",
+        "compiled_by_taxpayer_id",
+        f"compiled_by_{EMPLOYEE_ATTRIBUTE_NAME}",
+        f"compiled_by_{USER_ATTRIBUTE_NAME}",
+        "created_by",
+        "taxpayer_id",
+        EMPLOYEE_ATTRIBUTE_NAME,
+        USER_ATTRIBUTE_NAME,
+        "status",
+        "subject",
+        "description"
+     ]
     custom_head = []
     fields = apps.get_model("uni_ticket", "TicketCategoryInputList").objects.filter(
         category_module=module
@@ -594,13 +603,17 @@ def export_input_module_csv(
             # richiesta.compiled,
             richiesta.created,
             richiesta.compiled_by,
-            richiesta.compiled_by.taxpayer_id if(richiesta.compiled_by) else None,
+            richiesta.compiled_by.taxpayer_id if richiesta.compiled_by else None,
+            getattr(richiesta.compiled_by, EMPLOYEE_ATTRIBUTE_NAME, None) if richiesta.compiled_by else None,
+            getattr(richiesta.compiled_by, USER_ATTRIBUTE_NAME, None) if richiesta.compiled_by else None,
             richiesta.created_by,
             richiesta.created_by.taxpayer_id,
+            getattr(richiesta.created_by, EMPLOYEE_ATTRIBUTE_NAME, None),
+            getattr(richiesta.created_by, USER_ATTRIBUTE_NAME, None),
+            status,
+            richiesta.subject,
+            richiesta.description
         ]
-        row.append(getattr(richiesta.created_by, EMPLOYEE_ATTRIBUTE_NAME))
-        row.append(getattr(richiesta.created_by, USER_ATTRIBUTE_NAME))
-        row.extend([status, richiesta.subject, richiesta.description])
 
         for column in custom_head:
             name = format_field_name(column)
