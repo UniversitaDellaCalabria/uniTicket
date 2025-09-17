@@ -78,7 +78,8 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
         ticket_task.priority = task.priority
         ticket_task.is_public = task.is_public
         ticket_task.is_printable = task.is_printable
-        ticket_task.created_by = task.created_by
+        # ~ ticket_task.created_by = task.created_by
+        ticket_task.created_by = None
         ticket_task.code = uuid_code()
         ticket_task.attachment = task.attachment
         ticket_task.ordering = task.ordering
