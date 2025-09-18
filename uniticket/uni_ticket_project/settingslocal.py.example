@@ -186,7 +186,8 @@ if 'djangosaml2'  in INSTALLED_APPS:
 
     AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
-        'djangosaml2.backends.Saml2Backend',
+        # 'djangosaml2.backends.Saml2Backend', default djangosaml2 backend
+        'saml2_sp.backends.CustomSaml2Backend, # custom backend for fields manual update
     )
 elif 'spid_oidc_rp' in INSTALLED_APPS:
     LOGIN_URL = f'/oidc/rp/begin?issuer_id=agid_login'

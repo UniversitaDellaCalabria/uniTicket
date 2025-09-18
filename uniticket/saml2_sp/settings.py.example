@@ -184,8 +184,8 @@ SAML_ATTRIBUTE_MAPPING = {
     'eduPersonPrincipalName': ('username', ),
 
     # pure oid standard
-    # 'email': ('email', ),
-    # 'mail': ('email',),
+    'email': ('email', ),
+    'mail': ('email',),
 
     # oid pure
     'cn': ('first_name', ),
