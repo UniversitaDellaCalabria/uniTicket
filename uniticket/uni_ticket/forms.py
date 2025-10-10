@@ -449,6 +449,21 @@ class TaskForm(ModelForm):
                                       ),
                                       widget=MarkdownxWidget(attrs={'rows': 4}),
                                       required=True)
+    mail_to_offices = forms.MultipleChoiceField(label=_("Email agli uffici"),
+                                                required=False,
+                                                widget=CheckboxSelectMultiple)
+
+    def __init__(self, *args, **kwargs):
+        active_offices = kwargs.pop("active_offices", [])
+        super().__init__(*args, **kwargs)
+        choices = []
+        if not active_offices:
+            self.fields.pop('mail_to_offices')
+        else:
+            for ao in active_offices:
+                choices.append((ao.pk, ao.__str__()))
+                self.fields['mail_to_offices'].choices = choices
+            
     class Meta:
         model = Task
         fields = ["subject", "description",

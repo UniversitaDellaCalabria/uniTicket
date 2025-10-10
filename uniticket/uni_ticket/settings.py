@@ -378,6 +378,17 @@ URL: {ticket_url}"""
     ),
 )
 
+TASK_OPEN_EMPLOYEE_NOTIFY_BODY = getattr(
+    settings,
+    "TASK_OPEN_EMPLOYEE_NOTIFY_BODY",
+    _(
+        """Messaggio agli operatori dell'ufficio {office}.
+E' stato creato un nuovo task ({task}) per il ticket {ticket}.
+
+URL: {ticket_url}"""
+    ),
+)
+
 NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY = getattr(
     settings,
     "NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY",

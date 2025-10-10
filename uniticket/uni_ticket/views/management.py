@@ -45,7 +45,8 @@ from uni_ticket.settings import (
     STATS_TIME_SLOTS,
     STATS_MAX_DAYS,
     STATS_HEAT_MAP_RANGES,
-    TASK_CLOSED_EMPLOYEE_NOTIFY_BODY
+    TASK_CLOSED_EMPLOYEE_NOTIFY_BODY,
+    TASK_OPEN_EMPLOYEE_NOTIFY_BODY
 )
 from uni_ticket.utils import *
 from uni_ticket.statistics import uniTicketStats
@@ -1930,9 +1931,14 @@ def task_add_new(
     template = "{}/add_ticket_task.html".format(user_type)
     title = _("Aggiungi Attività")
     sub_title = "{} ({})".format(ticket.subject, ticket_id)
-    form = TaskForm()
+
+    active_offices = ticket.get_assigned_to_offices(ignore_follow=False)
+    form = TaskForm(active_offices=active_offices)
+    
     if request.method == "POST":
-        form = TaskForm(data=request.POST, files=request.FILES)
+        form = TaskForm(active_offices=active_offices,
+                        data=request.POST,
+                        files=request.FILES)
         if form.is_valid():
             new_task = form.save(commit=False)
             new_task.ticket = ticket
@@ -1953,6 +1959,41 @@ def task_add_new(
                 is_public=new_task.is_public
             )
 
+            mail_to_offices = form.cleaned_data["mail_to_offices"]
+            print(mail_to_offices)
+            mail_params = {
+                "hostname": settings.HOSTNAME,
+                "ticket_url": request.build_absolute_uri(
+                    reverse(
+                        "uni_ticket:manage_ticket_url_detail",
+                        kwargs={
+                            "ticket_id": ticket.code,
+                            "structure_slug": structure.slug,
+                        },
+                    )
+                ),
+                "task": new_task,
+                "ticket": ticket
+            }
+
+            notification_offices = OrganizationalStructureOffice.objects.filter(
+                pk__in=mail_to_offices,
+                is_active=True
+            )
+            
+            for office in notification_offices:
+                mail_params['office'] = office
+
+                send_ticket_mail_to_operators(
+                    request=request,
+                    ticket=ticket,
+                    category=ticket.input_module.ticket_category,
+                    message_template=TASK_OPEN_EMPLOYEE_NOTIFY_BODY,
+                    mail_params=mail_params,
+                    office=office,
+                    send_to_default_office=False
+                )
+                
             messages.add_message(
                 request,
                 messages.SUCCESS,
@@ -2327,13 +2368,14 @@ def task_close(
                 "task": task,
                 "ticket": ticket
             }
-            for mto in mail_to_offices:
-                office = OrganizationalStructureOffice.objects.filter(pk=mto,
-                                                                      is_active=True).first()
-                if not office: continue
 
+            notification_offices = OrganizationalStructureOffice.objects.filter(
+                pk__in=mail_to_offices,
+                is_active=True
+            )
+            
+            for office in notification_offices:
                 mail_params['office'] = office
-
                 send_ticket_mail_to_operators(
                     request=request,
                     ticket=ticket,
@@ -2349,6 +2391,7 @@ def task_close(
                 messages.SUCCESS,
                 _("Attività {} chiusa correttamente").format(task),
             )
+            
             return redirect(
                 "uni_ticket:manage_ticket_url_detail",
                 structure_slug=structure_slug,
