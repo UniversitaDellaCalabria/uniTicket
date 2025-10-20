@@ -30,7 +30,7 @@ design-django-theme
 # django-unical-bootstrap-italia==1.2.0
 
 # Django REST
-djangorestframework>=3.13
+djangorestframework>=3.15.1
 django-filter>=2.4.0
 
 # Django channels only for chat
