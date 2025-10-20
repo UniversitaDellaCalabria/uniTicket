@@ -2,7 +2,7 @@
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
-publiccodeYmlVersion: '0.3'
+publiccodeYmlVersion: '0.4'
 categories:
   - collaboration
   - customer-service-and-support
@@ -163,10 +163,10 @@ name: uniTicket
 platforms:
   - linux
   - web
-releaseDate: '2023-11-10'
+releaseDate: '2025-10-20'
 roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
 softwareType: standalone/web
-softwareVersion: v2.5.2
+softwareVersion: v2.6.0
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
   - Università della Calabria - https://www.unical.it
