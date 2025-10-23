@@ -1,6 +1,7 @@
-![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)
+![CI build](https://github.com/UniversitaDellaCalabria/uniTicket/workflows/uniTicket/badge.svg)
+![License](https://img.shields.io/badge/license-AGPL%20v3.0%20or%20later-blue.svg)
 ![Codecov](https://codecov.io/gh/UniversitadellaCalabria/uniTicket/branch/master/graph/badge.svg)
-![Python version](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)
+![Python version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)
 
 
 uniTicket
