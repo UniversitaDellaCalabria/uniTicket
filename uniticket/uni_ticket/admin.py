@@ -1,7 +1,7 @@
 import nested_admin
 
 from admin_adv_search_builder.filters import AdvancedSearchBuilder
-from django.contrib import admin
+from django.contrib import admin, messages
 
 from .admin_actions import *
 from .admin_nested_inlines import *
