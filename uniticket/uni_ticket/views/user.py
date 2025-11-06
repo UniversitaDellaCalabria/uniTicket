@@ -642,7 +642,7 @@ class TicketAddNew(View):
                             "possono generare richieste "
                             "di questo tipo"
                         ),
-                        status=404,
+                        status=403,
                     )
 
                 # extends fields_to_pop list
