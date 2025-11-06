@@ -632,8 +632,8 @@ class TicketAddNew(View):
 
                 # if user is not allowed (category allowed users list)
                 if (
-                    self.category.allowed_users.all()
-                    and self.request.user not in self.category.allowed_users.all()
+                    self.category.allowed_users.exists()
+                    and self.category.allowed_users.filter(pk=self.request.user.pk).exists()
                 ):
                     return custom_message(
                         request,
