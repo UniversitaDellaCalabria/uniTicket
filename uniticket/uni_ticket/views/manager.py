@@ -949,10 +949,10 @@ def category_add_ticket_user(request, structure_slug, category_slug, structure):
             users = category.allowed_users
 
             # check if user exists
-            if user in users.all():
+            if users.filter(pk=user.pk):
                 return custom_message(
                     request,
-                    _("Utente già selezionato.")
+                    _("Utente già selezionato")
                 )
 
             users.add(user)
@@ -1015,7 +1015,7 @@ def category_add_ticket_users_list(request, structure_slug, category_slug, struc
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
-    title = _("Aggiungi nuovo utente abilitato all'apertura dei ticket")
+    title = _("Aggiungi nuova lista di utenti abilitati all'apertura dei ticket")
     template = "manager/category_add_ticket_users_list.html"
     key = request.GET.get("search", "")
     q_filter = Q(name__icontains=key) if key else Q()
@@ -1040,7 +1040,7 @@ def category_add_ticket_users_list(request, structure_slug, category_slug, struc
             if lists.filter(pk=users_list.pk):
                 return custom_message(
                     request,
-                    _("Lista già selezionata.")
+                    _("Lista già selezionata")
                 )
 
             lists.add(users_list)
@@ -4724,7 +4724,7 @@ def structure_users_list_add_user(request, structure_slug, list_id, structure):
             if user in users.all():
                 return custom_message(
                     request,
-                    _("Utente già selezionato.")
+                    _("Utente già selezionato")
                 )
 
             users.add(user)

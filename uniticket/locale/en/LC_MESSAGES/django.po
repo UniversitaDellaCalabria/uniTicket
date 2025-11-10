@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-10 14:32+0100\n"
-"PO-Revision-Date: 2025-11-10 14:38+0100\n"
+"POT-Creation-Date: 2025-11-10 18:10+0100\n"
+"PO-Revision-Date: 2025-11-10 18:10+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -2704,43 +2704,41 @@ msgstr "Type of request management"
 msgid "Competenza ufficio già presente"
 msgstr "Office competence already present"
 
-#: uni_ticket/views/manager.py:930 uni_ticket/views/manager.py:1018
+#: uni_ticket/views/manager.py:930
 msgid "Aggiungi nuovo utente abilitato all'apertura dei ticket"
 msgstr "Add new user that can open ticket"
 
 #: uni_ticket/views/manager.py:955 uni_ticket/views/manager.py:4727
-msgid "Utente già selezionato."
-msgstr "User already selected."
+msgid "Utente già selezionato"
+msgstr "User already selected"
 
 #: uni_ticket/views/manager.py:961 uni_ticket/views/manager.py:4733
 msgid "Utente inserito con successo"
 msgstr "User inserted successfully"
 
+#: uni_ticket/views/manager.py:1018
+msgid "Aggiungi nuova lista di utenti abilitati all'apertura dei ticket"
+msgstr "Add a new list of users authorized to open tickets"
+
 #: uni_ticket/views/manager.py:1043
-#, fuzzy
-#| msgid "Utente già selezionato."
-msgid "Lista già selezionata."
-msgstr "User already selected."
+msgid "Lista già selezionata"
+msgstr "List already selected"
 
 #: uni_ticket/views/manager.py:1049
-#, fuzzy
-#| msgid "Utente inserito con successo"
 msgid "Lista inserita con successo"
-msgstr "User inserted successfully"
+msgstr "List inserted successfully"
 
 #: uni_ticket/views/manager.py:1114
 msgid "La lista non è tra quelle presenti"
-msgstr ""
+msgstr "The list is not among those present"
 
 #: uni_ticket/views/manager.py:1132
-#, fuzzy
-#| msgid "Attività {} rimossa correttamente"
 msgid "Lista {} rimossa correttamente"
-msgstr "Task {} successfully removed"
+msgstr "List {} successfully removed"
 
 #: uni_ticket/views/manager.py:1169 uni_ticket/views/manager.py:4801
 msgid "L'utente non è tra quelli abilitati"
-msgstr ""
+msgstr "The user is not among those authorized"
 
 #: uni_ticket/views/manager.py:1188 uni_ticket/views/manager.py:4819
 msgid "Utente {} rimosso correttamente"
@@ -6012,6 +6010,9 @@ msgstr "Italian"
 #: uni_ticket_project/settingslocal.py:414
 msgid "Inglese"
 msgstr "English"
+
+#~ msgid "Utente già selezionato."
+#~ msgstr "User already selected."
 
 #, fuzzy
 #~| msgid "Scegli un'opzione"
