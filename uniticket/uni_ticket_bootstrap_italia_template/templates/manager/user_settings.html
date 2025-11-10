@@ -14,7 +14,7 @@
     <div class="accordion-item">
         <h2 class="accordion-header " id="heading1l">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1l" aria-expanded="false" aria-controls="collapse1l">
-                <svg class="icon icon-sm">
+                <svg class="icon icon-sm me-2">
                     <use xlink:href="{% static 'svg/sprites.svg' %}#it-tool"></use>
                 </svg>
                 {% trans "Manager di struttura" %}
@@ -36,11 +36,11 @@
     <div class="accordion-item">
         <h2 class="accordion-header " id="heading2l">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2l" aria-expanded="false" aria-controls="collapse2l">
-                <svg class="icon icon-sm">
+                <svg class="icon icon-sm me-2">
                     <use xlink:href="{% static 'svg/sprites.svg' %}#it-file"></use>
                 </svg>
                 {% trans "Configurazioni protocollo informatico" %}
-                ({{ structure.organizationalstructurewsprotocollo_set.all.count }})
+                ({{ protocol_configurations.count }})
             </button>
         </h2>
         <div id="collapse2l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading2l">
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-                {% if protocol_configurations %}
+                {% if protocol_configurations.exists %}
                 <div class="row">
                     <div class="col">
                         <div class="card-space card-wrapper">
@@ -121,7 +121,7 @@
     <div class="accordion-item">
         <h2 class="accordion-header " id="heading3l">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3l" aria-expanded="false" aria-controls="collapse3l">
-                <svg class="icon icon-sm">
+                <svg class="icon icon-sm me-2">
                     <use xlink:href="{% static 'svg/sprites.svg' %}#it-horn"></use>
                 </svg>
                 {% trans "Alert agli utenti" %}
@@ -131,6 +131,22 @@
         <div id="collapse3l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading3l">
             <div class="accordion-body">
                 {% include 'manager/structure_alerts.html' %}
+            </div>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading4l">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4l" aria-expanded="false" aria-controls="collapse4l">
+                <svg class="icon icon-sm me-2">
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-list"></use>
+                </svg>
+                {% trans "Liste utenti autorizzati" %}
+                ({{ allowed_users_lists.count }})
+            </button>
+        </h2>
+        <div id="collapse4l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading4l">
+            <div class="accordion-body">
+                {% include 'manager/structure_users_lists.html' %}
             </div>
         </div>
     </div>

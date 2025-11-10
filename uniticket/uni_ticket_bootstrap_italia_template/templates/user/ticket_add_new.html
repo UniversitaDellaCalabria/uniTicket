@@ -135,7 +135,7 @@
 {% endblock over_content %}
 
 {% block form_buttons %}
-{% if not categoria.allowed_users.all or request.user in categoria.allowed_users.all %}
+{% if user_can_open_tickets %}
 <div class="d-grid gap-2">
     <button class="btn btn-success"
             type="button"

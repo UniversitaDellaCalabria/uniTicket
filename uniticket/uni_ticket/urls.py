@@ -470,6 +470,16 @@ urlpatterns += [
         name="manager_category_remove_ticket_user",
     ),
     path(
+        "{}/add-ticket-users-list/".format(category_id),
+        manager.category_add_ticket_users_list,
+        name="manager_category_add_ticket_users_list",
+    ),
+    path(
+        "{}/remove-ticket-users-list/<int:list_id>/".format(category_id),
+        manager.category_remove_ticket_users_list,
+        name="manager_category_remove_ticket_users_list",
+    ),
+    path(
         "{}/remove-office/<str:office_slug>/".format(category_id),
         manager.category_remove_office,
         name="manager_remove_category_office",
@@ -711,24 +721,49 @@ urlpatterns += [
         name="manager_user_settings_add_manager",
     ),
     path(
-        "{}/settings/check-protocol".format(base),
+        "{}/settings/check-protocol/".format(base),
         manager.manager_settings_check_protocol,
         name="manager_user_settings_check_protocol",
     ),
     path(
-        "{}/settings/alerts/new".format(base),
+        "{}/settings/alerts/new/".format(base),
         manager.structure_alert_new,
         name="manager_structure_alert_new",
     ),
     path(
-        "{}/settings/alerts/<int:alert_id>/edit".format(base),
+        "{}/settings/alerts/<int:alert_id>/edit/".format(base),
         manager.structure_alert_edit,
         name="manager_structure_alert_edit",
     ),
     path(
-        "{}/settings/alerts/<int:alert_id>/delete".format(base),
+        "{}/settings/alerts/<int:alert_id>/delete/".format(base),
         manager.structure_alert_delete,
         name="manager_structure_alert_delete",
+    ),
+    path(
+        "{}/settings/users-lists/new/".format(base),
+        manager.structure_users_list_new,
+        name="manager_structure_users_list_new",
+    ),
+    path(
+        "{}/settings/users-lists/<int:list_id>/edit/".format(base),
+        manager.structure_users_list_edit,
+        name="manager_structure_users_list_edit",
+    ),
+    path(
+        "{}/settings/users-lists/<int:list_id>/edit/add-user/".format(base),
+        manager.structure_users_list_add_user,
+        name="manager_structure_users_list_add_user",
+    ),
+    path(
+        "{}/settings/users-lists/<int:list_id>/edit/remove-ticket-user/<int:user_id>/".format(base),
+        manager.structure_users_list_remove_user,
+        name="manager_structure_users_list_remove",
+    ),
+    path(
+        "{}/settings/users-lists/<int:list_id>/delete/".format(base),
+        manager.structure_users_list_delete,
+        name="manager_structure_users_list_delete",
     ),
     # Others generic
     path(

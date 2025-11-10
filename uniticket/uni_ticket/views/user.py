@@ -515,6 +515,7 @@ class TicketAddNew(View):
             "struttura": self.struttura,
             "sub_title": "{} - {}".format(self.struttura, self.sub_title),
             "title": self.title,
+            "user_can_open_tickets": self.category.user_can_open_tickets(self.request.user)
         }
         if api:
             return self.context_data
@@ -631,10 +632,7 @@ class TicketAddNew(View):
             elif self.form.data.get(TICKET_CREATE_BUTTON_NAME):
 
                 # if user is not allowed (category allowed users list)
-                if (
-                    self.category.allowed_users.exists()
-                    and self.category.allowed_users.filter(pk=self.request.user.pk).exists()
-                ):
+                if not self.category.user_can_open_tickets(self.request.user):
                     return custom_message(
                         request,
                         _(

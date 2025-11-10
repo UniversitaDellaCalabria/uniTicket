@@ -53,6 +53,7 @@ class TicketAPIView(TicketAPIBaseView):
         - allow_user
         - allowed_to_user
         - allowed_users
+        - allowed_users_lists
     """
 
     def build_response(self) -> dict:

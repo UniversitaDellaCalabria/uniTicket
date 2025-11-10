@@ -995,6 +995,148 @@ def category_add_ticket_user(request, structure_slug, category_slug, structure):
     }
     return render(request, template, base_context(d))
 
+    
+@login_required
+@is_manager
+def category_add_ticket_users_list(request, structure_slug, category_slug, structure):
+    """
+    Add user that can open tickets
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    category = get_object_or_404(
+        TicketCategory, organizational_structure=structure, slug=category_slug
+    )
+    title = _("Aggiungi nuovo utente abilitato all'apertura dei ticket")
+    template = "manager/category_add_ticket_users_list.html"
+    key = request.GET.get("search", "")
+    q_filter = Q(name__icontains=key) if key else Q()
+    all_lists = OrganizationalStructureAllowedUsersList.objects.filter(
+        q_filter
+    ).values(
+        "pk", "name", "description"
+    )
+    paginator = Paginator(all_lists, 20)
+    page = request.GET.get("page")
+    lists = paginator.get_page(page)
+
+    if request.POST:
+        form = AddUsersListForm(request.POST)
+        if form.is_valid():
+            users_list = OrganizationalStructureAllowedUsersList.objects.get(
+                pk=form.cleaned_data['users_list']
+            )
+            lists = category.allowed_users_lists
+
+            # check if user exists
+            if lists.filter(pk=users_list.pk):
+                return custom_message(
+                    request,
+                    _("Lista già selezionata.")
+                )
+
+            lists.add(users_list)
+
+            messages.add_message(
+                request, messages.SUCCESS, _("Lista inserita con successo")
+            )
+
+            # log action
+            logger.info(
+                "[{}] manager of structure {}"
+                " {} added new list {} of allowed users in {}".format(
+                    timezone.localtime(),
+                    structure,
+                    request.user,
+                    users_list,
+                    category
+                )
+            )
+
+            return redirect(
+                "uni_ticket:manager_category_detail",
+                structure_slug=structure_slug,
+                category_slug=category_slug
+            )
+        else:  # pragma: no cover
+            for k, v in get_labeled_errors(form).items():
+                messages.add_message(
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
+                )
+    d = {
+        "category_slug": category_slug,
+        "structure": structure,
+        "sub_title": category,
+        "title": title,
+        "lists": lists,
+        "key": key
+    }
+    return render(request, template, base_context(d))
+
+
+@login_required
+@is_manager
+def category_remove_ticket_users_list(
+    request, structure_slug, category_slug, list_id, structure
+):
+    """
+    Remove employee from office
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type list_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param list_id: list id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    users_list = OrganizationalStructureAllowedUsersList.objects.get(pk=list_id)
+    category = get_object_or_404(
+        TicketCategory, organizational_structure=structure, slug=category_slug
+    )
+    lists = category.allowed_users_lists
+    if not lists.filter(pk=list_id):
+        messages.add_message(
+            request, messages.ERROR, _(
+                "La lista non è tra quelle presenti")
+        )
+    else:
+        lists.remove(users_list)
+        # log action
+        logger.info(
+            "[{}] manager of structure {}"
+            " {} removed users list{} from {}".format(
+                timezone.localtime(),
+                structure,
+                request.user,
+                users_list,
+                category
+            )
+        )
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            _("Lista {} rimossa correttamente").format(users_list),
+        )
+    return redirect(
+        "uni_ticket:manager_category_detail",
+        structure_slug=structure_slug,
+        category_slug=category_slug,
+    )
+    
 
 @login_required
 @is_manager
@@ -1021,7 +1163,7 @@ def category_remove_ticket_user(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
     users = category.allowed_users
-    if user not in users.all():
+    if not users.filter(pk=user_id):
         messages.add_message(
             request, messages.ERROR, _(
                 "L'utente non è tra quelli abilitati")
@@ -3159,12 +3301,14 @@ def manager_settings(request, structure_slug, structure):
 
     d = {
         "alerts": alerts,
+        "allowed_users_lists": structure.organizationalstructurealloweduserslist_set.all(),
         "manager_users": manager_users,
         "protocol_configurations": protocol_configurations,
         "structure": structure,
         "sub_title": sub_title,
         "title": title,
     }
+
     response = render(request, template, base_context(d))
     return response
 
@@ -4376,3 +4520,306 @@ def structure_alert_edit(request, structure_slug, alert_id, structure):
         "title": title,
     }
     return render(request, template, base_context(d))
+
+
+@login_required
+@is_manager
+def structure_users_list_new(request, structure_slug, structure):
+    """
+    Creates a new allowed users list for organizational structure
+
+    :type structure_slug: String
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    title = _("Nuova lista di utenti per la struttura")
+    form = OrganizationalStructureAllowedUsersListForm()
+    if request.method == "POST":
+        form = OrganizationalStructureAllowedUsersListForm(request.POST)
+        if form.is_valid():
+            users_list = form.save(commit=False)
+            users_list.organizational_structure = structure
+            users_list.save()
+
+            # log action
+            logger.info(
+                "[{}] manager of structure {}"
+                " {} created the new allowed users list {}"
+                "".format(timezone.localtime(), structure, request.user, users_list)
+            )
+
+            messages.add_message(
+                request, messages.SUCCESS, _("Lista creata con successo")
+            )
+            return redirect(
+                "uni_ticket:manager_user_settings", structure_slug=structure_slug
+            )
+        else:  # pragma: no cover
+            for k, v in get_labeled_errors(form).items():
+                messages.add_message(
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
+                )
+
+    template = "manager/structure_users_list_add_new.html"
+    d = {
+        "form": form,
+        "structure": structure,
+        "sub_title": structure,
+        "title": title,
+    }
+    return render(request, template, base_context(d))
+
+
+@login_required
+@is_manager
+def structure_users_list_edit(request, structure_slug, list_id, structure):
+    """
+    Edits allowed users list details
+
+    :type structure_slug: String
+    :type list_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param list_id: alert list_id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    users_list = get_object_or_404(
+        OrganizationalStructureAllowedUsersList,
+        pk=list_id,
+        organizational_structure=structure
+    )
+    form = OrganizationalStructureAllowedUsersListForm(instance=users_list)
+    if request.method == "POST":
+        form = OrganizationalStructureAllowedUsersListForm(
+            instance=users_list, data=request.POST)
+        if form.is_valid():
+            users_list = form.save()
+
+            # log action
+            logger.info(
+                "[{}] manager of structure {}"
+                " {} edited alert {}".format(
+                    timezone.localtime(), structure, request.user, users_list
+                )
+            )
+
+            messages.add_message(
+                request, messages.SUCCESS, _("Lista modificata con successo")
+            )
+            return redirect(
+                "uni_ticket:manager_structure_users_list_edit",
+                structure_slug=structure_slug,
+                list_id=list_id
+            )
+        else:  # pragma: no cover
+            for k, v in get_labeled_errors(form).items():
+                messages.add_message(
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
+                )
+    template = "manager/structure_users_list_edit.html"
+    title = _("Modifica lista di utenti")
+    sub_title = users_list
+    d = {
+        "form": form,
+        "list_id": list_id,
+        "structure": structure,
+        "sub_title": sub_title,
+        "title": title,
+        "users": users_list.allowed_users
+    }
+    return render(request, template, base_context(d))
+
+    
+@login_required
+@is_manager
+def structure_users_list_delete(request, structure_slug, list_id, structure):
+    """
+    Deletes allowed users list from a structure
+
+    :type structure_slug: String
+    :type list_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param list_id: list_id id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    users_list = get_object_or_404(
+        OrganizationalStructureAllowedUsersList,
+        pk=list_id,
+        organizational_structure=structure
+    )
+    messages.add_message(
+        request, messages.SUCCESS, _(
+            "Lista {} eliminata correttamente").format(users_list)
+    )
+
+    # log action
+    logger.info(
+        "[{}] manager of structure {}"
+        " {} deleted allowed users list {}".format(
+            timezone.localtime(),
+            structure,
+            request.user,
+            users_list
+        )
+    )
+
+    users_list.delete()
+    return redirect("uni_ticket:manager_user_settings", structure_slug=structure_slug)
+
+
+@login_required
+@is_manager
+def structure_users_list_add_user(request, structure_slug, list_id, structure):
+    """
+    Edits allowed users list details
+
+    :type structure_slug: String
+    :type list_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param list_id: alert list_id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    users_list = get_object_or_404(
+        OrganizationalStructureAllowedUsersList,
+        pk=list_id,
+        organizational_structure=structure
+    )
+    key = request.GET.get("search", "")
+    q_filter = (Q(taxpayer_id__icontains=key)
+                | Q(first_name__icontains=key)
+                | Q(last_name__icontains=key)) if key else Q()
+    all_users = get_user_model().objects.filter(q_filter, is_active=True)\
+                                .values("pk", "taxpayer_id",
+                                        "last_name", "first_name",
+                                        "email", EMPLOYEE_ATTRIBUTE_NAME)
+    paginator = Paginator(all_users, 20)
+    page = request.GET.get("page")
+    users = paginator.get_page(page)
+
+    if request.POST:
+        form = AddUserForm(request.POST)
+
+        if form.is_valid():
+            user = get_user_model().objects.get(pk=form.cleaned_data['user'])
+            users = users_list.allowed_users
+
+            # check if user exists
+            if user in users.all():
+                return custom_message(
+                    request,
+                    _("Utente già selezionato.")
+                )
+
+            users.add(user)
+
+            messages.add_message(
+                request, messages.SUCCESS, _("Utente inserito con successo")
+            )
+
+            # log action
+            logger.info(
+                "[{}] manager of structure {}"
+                " {} added new user {} to users list {}".format(
+                    timezone.localtime(),
+                    structure,
+                    request.user,
+                    user,
+                    users_list
+                )
+            )
+
+            return redirect(
+                "uni_ticket:manager_structure_users_list_edit",
+                structure_slug=structure_slug,
+                list_id=list_id
+            )
+        else:  # pragma: no cover
+            for k, v in get_labeled_errors(form).items():
+                messages.add_message(
+                    request, messages.ERROR, "<b>{}</b>: {}".format(
+                        k, strip_tags(v))
+                )
+                
+    template = "manager/structure_users_list_add_user.html"
+    title = _("Aggiungi utente alla lista")
+    sub_title = users_list
+    d = {
+        "structure": structure,
+        "sub_title": sub_title,
+        "title": title,
+        "users": users,
+        "list_id": list_id,
+    }
+    return render(request, template, base_context(d))
+
+
+@login_required
+@is_manager
+def structure_users_list_remove_user(request, structure_slug, list_id, user_id, structure):
+    """
+    Remove user from users list
+
+    :type structure_slug: String
+    :type list_id: Integer
+    :type user_id: Integer
+    :type structure: OrganizationalStructure (from @is_manager)
+
+    :param structure_slug: structure slug
+    :param list_id: list_id
+    :param user_id: user_id
+    :param structure: structure object (from @is_manager)
+
+    :return: render
+    """
+    user = get_user_model().objects.get(pk=user_id)
+    users_list = get_object_or_404(
+        OrganizationalStructureAllowedUsersList,
+        pk=list_id,
+        organizational_structure=structure
+    )
+    users = users_list.allowed_users
+    if not users.filter(pk=user_id):
+        messages.add_message(
+            request, messages.ERROR, _(
+                "L'utente non è tra quelli abilitati")
+        )
+    else:
+        users.remove(user)
+        # log action
+        logger.info(
+            "[{}] manager of structure {}"
+            " {} removed user {} from list {}".format(
+                timezone.localtime(),
+                structure,
+                request.user,
+                user,
+                users_list
+            )
+        )
+        messages.add_message(
+            request,
+            messages.SUCCESS,
+            _("Utente {} rimosso correttamente").format(user),
+        )
+    return redirect(
+        "uni_ticket:manager_structure_users_list_edit",
+        structure_slug=structure_slug,
+        list_id=list_id,
+    )

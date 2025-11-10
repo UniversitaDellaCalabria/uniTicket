@@ -1960,7 +1960,6 @@ def task_add_new(
             )
 
             mail_to_offices = form.cleaned_data["mail_to_offices"]
-            print(mail_to_offices)
             mail_params = {
                 "hostname": settings.HOSTNAME,
                 "ticket_url": request.build_absolute_uri(

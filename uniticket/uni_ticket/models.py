@@ -125,6 +125,21 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
+class OrganizationalStructureAllowedUsersList(TimeStampedModel):
+    organizational_structure = models.ForeignKey(OrganizationalStructure,
+                                                 on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.TextField(default='', blank=True)
+    allowed_users = models.ManyToManyField(get_user_model(), blank=True)
+
+    class Meta:
+        ordering = ["name", "created"]
+        verbose_name = _("Lista di utenti abilitati")
+        
+    def __str__(self):
+        return "{} - {}".format(self.name, self.organizational_structure)
+        
+    
 class TicketCategory(ExpirableModel, TimeStampedModel):
     """
     Categoria di appartenenza dei Ticket
@@ -184,7 +199,9 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
 
     # allowed users
     allowed_users = models.ManyToManyField(get_user_model(), blank=True)
-
+    allowed_users_lists = models.ManyToManyField(OrganizationalStructureAllowedUsersList,
+                                                 blank=True)
+    
     # ticket type = notification
     is_notification = models.BooleanField(
         _("Richiesta di tipo Notifica"),
@@ -339,6 +356,17 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
 
         return conf if conf else False
 
+    def get_users_allowed_to_open_tickets(self):
+        result = self.allowed_users.all()
+        for users_list in self.allowed_users_lists.all():
+            result = result | users_list.allowed_users.all()
+        return result
+
+    def user_can_open_tickets(self, user):
+        allowed_users = self.get_users_allowed_to_open_tickets()
+        if not allowed_users: return True
+        return user in allowed_users
+        
     def __str__(self):
         return "{}".format(self.name)
 
@@ -347,7 +375,7 @@ class TicketCategoryModule(models.Model):
     """
     Modulo di input per i ticket di una categoria
     """
-
+    
     name = models.CharField(max_length=255)
     ticket_category = models.ForeignKey(
         TicketCategory, on_delete=models.CASCADE)
@@ -1776,6 +1804,7 @@ _TICKET_OPERATOR_NOTES_VISIBILITY_LEVELS = (
     (0, _("Solo uffici della struttura attuale")),
     (1, _("Tutti gli uffici delle strutture coinvolte")),
 )
+
 
 class TicketOperatorNote(TimeStampedModel):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)

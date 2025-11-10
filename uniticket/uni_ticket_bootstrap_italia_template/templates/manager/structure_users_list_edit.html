@@ -1,0 +1,96 @@
+{% extends "form_complete.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+{% block menu_links %}
+{% include 'manager/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:manager_user_settings' structure_slug=structure.slug %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Torna alla configurazione" %}
+</a>
+{% endblock top_buttons %}
+
+{% block form_buttons %}
+<div class="d-grid gap-2">
+    <button class="btn btn-success" type="submit">
+        <svg class="icon icon-xs icon-white">
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
+        </svg> {% trans 'Modifica lista' %}
+    </button>
+</div>
+{% endblock form_buttons %}
+
+{% block page_content %}
+{{ block.super }}
+<hr class="my-4">
+<p class="h4">{% trans "Utenti nella lista" %}</p>
+<div class="pb-4">
+    {% if users.exists %}
+        <table class="table">
+            <tbody>
+            {% for allowed in users.all %}
+                <tr>
+                    <td>{{ allowed }}</td>
+                    <td>{{ allowed.email|lower }}</td>
+                    <td>
+                        <button type="button"
+                            class="btn btn-outline-danger btn-xs float-end"
+                            data-bs-toggle="modal"
+                            data-bs-target="#removeUser{{ forloop.counter0 }}">
+                            {% trans "Rimuovi" %}
+                        </button>
+                        <div class="modal fade" tabindex="-1" role="dialog" id="removeUser{{ forloop.counter0 }}">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Rimozione utente" %}
+                                        </h5>
+                                        <button class="btn-close" type="button"
+                                                data-bs-dismiss="modal" aria-label="Close">
+                                           <svg class="icon">
+                                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                           </svg>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>{% trans "Vuoi davvero rimuovere l'utente" %}
+                                           <b>{{ allowed }}</b> ?
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a role="button" class="btn btn-danger"
+                                           href="{% url 'uni_ticket:manager_structure_users_list_remove' structure_slug=structure.slug list_id=list_id user_id=allowed.pk %}">
+                                            {% trans "Si, rimuovi" %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    <svg class="icon icon-sm icon-secondary">
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-minus"></use>
+    </svg>
+    {% endif %}
+</div>
+<div class="d-grid gap-2">
+    <a href="{% url 'uni_ticket:manager_structure_users_list_add_user' structure_slug=structure.slug list_id=list_id %}"
+       class="btn btn-xs btn-outline-success">
+        <svg class="icon icon-xs icon-success">
+            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
+        </svg> {% trans "Aggiungi nuovo" %}
+    </a>
+</div>
+{% endblock page_content %}

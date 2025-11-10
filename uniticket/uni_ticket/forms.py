@@ -61,7 +61,7 @@ class CategoryForm(ModelForm):
         labels = {
             "name": _("Nome"),
             "description": _("Descrizione"),
-            "allowed_users": _("Solo i seguenti utenti possono effettuare richieste"),
+            # ~ "allowed_users": _("Solo i seguenti utenti possono effettuare richieste"),
             "allow_user": _("Accessibile a {}").format(ORGANIZATION_USER_LABEL),
             "allow_employee": _("Accessibile a {}").format(ORGANIZATION_EMPLOYEE_LABEL),
         }
@@ -69,7 +69,7 @@ class CategoryForm(ModelForm):
             "description": forms.Textarea(attrs={"rows": 2}),
             "confirm_message_text": forms.Textarea(attrs={"rows": 2}),
             # ~ "footer_text": forms.Textarea(attrs={"rows": 2}),
-            "allowed_users": BootstrapItaliaSelectMultipleWidget,
+            # ~ "allowed_users": BootstrapItaliaSelectMultipleWidget,
             "date_start": UniTicketDateTimeWidget,
             "date_end": UniTicketDateTimeWidget,
         }
@@ -285,6 +285,10 @@ class OfficeForm(ModelForm):
 
 class AddUserForm(forms.Form):
     user = forms.CharField(required=True)
+
+    
+class AddUsersListForm(forms.Form):
+    users_list = forms.CharField(required=True)
 
 
 class OfficeAddOperatorForm(AddUserForm):
@@ -815,3 +819,19 @@ class TicketOperatorNoteForm(ModelForm):
         widgets = {
             "visibility": BootstrapItaliaRadioWidget
         }
+
+
+class OrganizationalStructureAllowedUsersListForm(ModelForm):
+    class Meta:
+        model = OrganizationalStructureAllowedUsersList
+        fields = ["name", "description"]
+        labels = {
+            "name": _("Nome"),
+            "description": _("Descrizione"),
+        }
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 2}),
+        }
+
+    class Media:
+        js = ("js/textarea-autosize.js",)

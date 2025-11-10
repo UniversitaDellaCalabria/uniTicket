@@ -45,6 +45,7 @@ class TicketCategorySerializer(serializers.ModelSerializer):
         lookup_field = 'pk'
         exclude = (
             "allowed_users",
+            "allowed_users_lists",
             "confirm_message_text"
         )
 

@@ -333,57 +333,53 @@
             <tr>
                 <th scope="row">{% trans "Solo i seguenti utenti possono effettuare richieste" %}</th>
                 <td>
-                    {% if category.allowed_users.all %}
-                        <table class="table">
-                            <tbody>
-                            {% for allowed in category.allowed_users.all %}
-                                <tr>
-                                    <td>{{ allowed }}</td>
-                                    <td>{{ allowed.email|lower }}</td>
-                                    <td>
-                                        <button type="button"
-                                            class="btn btn-outline-danger btn-xs float-end"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#removeUser{{ forloop.counter0 }}">
-                                            {% trans "Rimuovi" %}
-                                        </button>
-                                        <div class="modal fade" tabindex="-1" role="dialog" id="removeUser{{ forloop.counter0 }}">
-                                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">
-                                                            {% trans "Rimozione utente" %}
-                                                        </h5>
-                                                        <button class="btn-close" type="button"
-                                                                data-bs-dismiss="modal" aria-label="Close">
-                                                           <svg class="icon">
-                                                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
-                                                           </svg>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p>{% trans "Vuoi davvero rimuovere l'utente" %}
-                                                           <b>{{ allowed }}</b> ?
-                                                        </p>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <a role="button" class="btn btn-danger"
-                                                           href="{% url 'uni_ticket:manager_category_remove_ticket_user' structure_slug=structure.slug category_slug=category.slug user_id=allowed.pk %}">
-                                                            {% trans "Si, rimuovi" %}
-                                                        </a>
-                                                    </div>
+                    {% if category.allowed_users.exists %}
+                    <table class="table">
+                        <tbody>
+                        {% for allowed in category.allowed_users.all %}
+                            <tr>
+                                <td>{{ allowed }}</td>
+                                <td>{{ allowed.email|lower }}</td>
+                                <td>
+                                    <button type="button"
+                                        class="btn btn-outline-danger btn-xs float-end"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#removeUser{{ forloop.counter0 }}">
+                                        {% trans "Rimuovi" %}
+                                    </button>
+                                    <div class="modal fade" tabindex="-1" role="dialog" id="removeUser{{ forloop.counter0 }}">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">
+                                                        {% trans "Rimozione utente" %}
+                                                    </h5>
+                                                    <button class="btn-close" type="button"
+                                                            data-bs-dismiss="modal" aria-label="Close">
+                                                       <svg class="icon">
+                                                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                                       </svg>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>{% trans "Vuoi davvero rimuovere l'utente" %}
+                                                       <b>{{ allowed }}</b> ?
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a role="button" class="btn btn-danger"
+                                                       href="{% url 'uni_ticket:manager_category_remove_ticket_user' structure_slug=structure.slug category_slug=category.slug user_id=allowed.pk %}">
+                                                        {% trans "Si, rimuovi" %}
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    {% else %}
-                    <svg class="icon icon-sm icon-secondary">
-                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-minus"></use>
-                    </svg>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                     {% endif %}
 
                     <a href="{% url 'uni_ticket:manager_category_add_ticket_user' structure_slug=structure.slug category_slug=category.slug %}"
@@ -391,6 +387,71 @@
                         <svg class="icon icon-xs icon-success">
                             <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
                         </svg> {% trans "Aggiungi nuovo" %}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">{% trans "Solo gli utenti inclusi nelle seguenti liste possono effettuare richieste" %}</th>
+                <td>
+                    {% if category.allowed_users_lists.exists %}
+                    <table class="table">
+                        <tbody>
+                        {% for list in category.allowed_users_lists.all %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'uni_ticket:manager_structure_users_list_edit' structure_slug=structure.slug list_id=list.pk %}" target="_blank">
+                                        {{ list.name }}
+                                    </a>
+                                    <br>
+                                    <small>{{ list.description|default:"-" }}</small>
+                                </td>
+                                <td>
+                                    <button type="button"
+                                        class="btn btn-outline-danger btn-xs float-end"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#removeUsersList{{ forloop.counter0 }}">
+                                        {% trans "Rimuovi" %}
+                                    </button>
+                                    <div class="modal fade" tabindex="-1" role="dialog" id="removeUsersList{{ forloop.counter0 }}">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">
+                                                        {% trans "Rimozione lista" %}
+                                                    </h5>
+                                                    <button class="btn-close" type="button"
+                                                            data-bs-dismiss="modal" aria-label="Close">
+                                                       <svg class="icon">
+                                                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                                       </svg>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>{% trans "Vuoi davvero rimuovere la lista" %}
+                                                       <b>{{ list.name }}</b> ?
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a role="button" class="btn btn-danger"
+                                                       href="{% url 'uni_ticket:manager_category_remove_ticket_users_list' structure_slug=structure.slug category_slug=category.slug list_id=list.pk %}">
+                                                        {% trans "Si, rimuovi" %}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+
+                    <a href="{% url 'uni_ticket:manager_category_add_ticket_users_list' structure_slug=structure.slug category_slug=category.slug %}"
+                       class="btn btn-xs btn-outline-success">
+                        <svg class="icon icon-xs icon-success">
+                            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
+                        </svg> {% trans "Aggiungi nuova lista" %}
                     </a>
                 </td>
             </tr>
