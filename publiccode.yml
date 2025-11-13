@@ -163,10 +163,10 @@ name: uniTicket
 platforms:
   - linux
   - web
-releaseDate: '2025-11-10'
+releaseDate: '2025-11-13'
 roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
 softwareType: standalone/web
-softwareVersion: v2.7.0
+softwareVersion: v2.7.1
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
   - Università della Calabria - https://www.unical.it
