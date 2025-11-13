@@ -515,7 +515,7 @@ class TicketAddNew(View):
             "struttura": self.struttura,
             "sub_title": "{} - {}".format(self.struttura, self.sub_title),
             "title": self.title,
-            "user_can_open_tickets": self.category.user_can_open_tickets(self.request.user)
+            "user_can_open_tickets": self.category.user_can_open_tickets(request.user)
         }
         if api:
             return self.context_data
@@ -539,6 +539,7 @@ class TicketAddNew(View):
             "struttura": self.struttura,
             "sub_title": "{} - {}".format(self.struttura, self.sub_title),
             "title": self.title,
+            "user_can_open_tickets": self.category.user_can_open_tickets(request.user)
         }
 
         self.form = self.modulo.get_form(
@@ -632,7 +633,7 @@ class TicketAddNew(View):
             elif self.form.data.get(TICKET_CREATE_BUTTON_NAME):
 
                 # if user is not allowed (category allowed users list)
-                if not self.category.user_can_open_tickets(self.request.user):
+                if not self.category.user_can_open_tickets(request.user):
                     return custom_message(
                         request,
                         _(
@@ -682,12 +683,12 @@ class TicketAddNew(View):
                 # set users for current operations and for log
                 # if current_user isn't authenticated, for logging we use 'anonymous'
                 self.current_user = (
-                    self.request.user
+                    request.user
                     if request.user.is_authenticated
                     else random_office_operator
                 )
                 self.log_user = (
-                    self.request.user.username
+                    request.user.username
                     if request.user.is_authenticated
                     else "anonymous"
                 )
@@ -815,7 +816,7 @@ class TicketAddNew(View):
                     # Send mail to ticket owner
                     mail_params = {
                         "hostname": settings.HOSTNAME,
-                        "user": self.request.user,
+                        "user": request.user,
                         "ticket": self.ticket.code,
                         "ticket_subject": subject,
                         "url": request.build_absolute_uri(
