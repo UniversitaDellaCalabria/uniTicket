@@ -1,26 +1,42 @@
+{% load i18n %}
 {% load uni_ticket_tags %}
 
+
+{% uni_ticket_settings_value name="TICKET_CONDITIONS_FIELD_ID" as ticket_conditions_field_id %}
+
+
 {% for field in form %}
+
     {{ field.field.pre_text | markdown | safe }}
+    
     {% if field.field.widget.input_type != 'hidden' %}
-    <div style="padding: 0 0 1rem">
-        <b>{{ field.label_tag }}</b>
+        {% if field.id_for_label == "id_"|add:ticket_conditions_field_id %}
+        <div class="alert alert-{% if field.errors %}danger{% else %}info{% endif %} mb-4" role="alert">
+            <h4 class="alert-heading">{% trans "Attenzione" %}</h4>
+            <span>{{ field.label_tag }}</span>
+        {% else %}
+        <div style="padding: 0 0 1rem">
+            <b>{{ field.label_tag }}</b>
+        {% endif %}
         {% if field.field.required %}*{% endif %}
     {% endif %}
+
     {{ field }}
-    {% if field.help_text %}
+
+    {% if field.field.widget.input_type != 'hidden' %}
+        {% if field.help_text %}
         <small class="form-text text-muted">
             {{ field.help_text|safe }}
         </small>
-    {% endif %}
-    {% if field.errors and field.field.widget.input_type != 'hidden' %}
+        {% endif %}
+    
+        {% if field.errors %}
         <small class="text-danger">
             {{ field.errors }}
         </small>
-    {% endif %}
-
-    {% if field.field.widget.input_type != 'hidden' %}
+        {% endif %}
     </div>
     {% endif %}
+    
 {% endfor %}
 {% csrf_token %}
