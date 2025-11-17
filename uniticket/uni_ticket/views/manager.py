@@ -4766,6 +4766,7 @@ def structure_users_list_add_user(request, structure_slug, list_id, structure):
         "title": title,
         "users": users,
         "list_id": list_id,
+        "key": key
     }
     return render(request, template, base_context(d))
 
