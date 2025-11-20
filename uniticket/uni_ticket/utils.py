@@ -550,6 +550,10 @@ def export_input_module_csv(
         "email",
         EMPLOYEE_ATTRIBUTE_NAME,
         USER_ATTRIBUTE_NAME,
+        "is_closed",
+        "closed_date",
+        "closed_by",
+        "closing_reason",
         "status",
         "subject",
         "description"
@@ -614,6 +618,10 @@ def export_input_module_csv(
             richiesta.created_by.email,
             getattr(richiesta.created_by, EMPLOYEE_ATTRIBUTE_NAME, None),
             getattr(richiesta.created_by, USER_ATTRIBUTE_NAME, None),
+            richiesta.is_closed,
+            richiesta.closed_date if richiesta.is_closed else None,
+            richiesta.closed_by if richiesta.is_closed else None,
+            richiesta.closing_reason if richiesta.is_closed else None,
             status,
             richiesta.subject,
             richiesta.description
