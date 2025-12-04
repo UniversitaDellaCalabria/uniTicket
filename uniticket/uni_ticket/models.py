@@ -43,6 +43,7 @@ from .settings import (
     PRECOMPILED_TICKET_EXPIRE_DAYS,
     PRIORITY_LEVELS,
     SHOW_HEADING_TEXT,
+    SPID_CIE_ALLOWED_CONTEXTS,
     TICKET_ATTACHMENT_FOLDER,
     TICKET_CATEGORIES_FOLDER,
     TICKET_DESCRIPTION_ID,
@@ -196,7 +197,9 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
     allow_employee = models.BooleanField(
         _("Accessibile a Dipendenti dell'organizzazione"), default=True
     )
-
+    allow_spid_cie = models.BooleanField(
+        _("Accessibile solo con autenticazione SPID o CIE"), default=False
+    )
     # allowed users
     allowed_users = models.ManyToManyField(get_user_model(), blank=True)
     allowed_users_lists = models.ManyToManyField(OrganizationalStructureAllowedUsersList,
@@ -327,18 +330,19 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
 
     def allowed_to_user(self, user):
         if not user:
-            return False
+            return (False,)
         if self.allow_anonymous:
-            return True
+            return (True,)
+        if self.allow_spid_cie and not user.last_login_context in SPID_CIE_ALLOWED_CONTEXTS:
+            return (False, _("Per accedere a questo modulo è necessario autenticarsi con SPID o CIE"))
         if self.allow_guest:
-            return True
-
+            return (True,)
         is_employee = user_is_employee(user)
         if is_employee and self.allow_employee:
-            return True
+            return (True,)
         if user_is_in_organization(user) and self.allow_user:
-            return True
-        return False
+            return (True,)
+        return (False, _("Permesso negato a questa tipologia di utente"))
 
     def get_active_protocol_configuration(self):
         # if structure hasn't an active configuration returns False

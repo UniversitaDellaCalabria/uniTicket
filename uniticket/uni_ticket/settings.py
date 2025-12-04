@@ -548,3 +548,12 @@ MARKDOWN_EXTENSIONS = getattr(
     ["markdown.extensions.fenced_code",
      "markdown.extensions.tables"]
 )
+
+SPID_CIE_ALLOWED_CONTEXTS = getattr(
+    settings, "SPID_CIE_ALLOWED_CONTEXTS",
+    ["https://www.spid.gov.it/SpidL1",
+     "https://www.spid.gov.it/SpidL2",
+     "https://www.spid.gov.it/SpidL3",
+     "https://www.cartaidentita.interno.gov.it/CIE",
+     "https://www.cartaidentita.interno.gov.it/AutenticazioneCIE"]
+)

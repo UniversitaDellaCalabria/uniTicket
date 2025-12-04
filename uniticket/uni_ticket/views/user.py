@@ -453,9 +453,10 @@ class TicketAddNew(View):
                 return redirect("uni_ticket:user_dashboard")
 
             # check if user is allowed to access this category
-            if not self.category.allowed_to_user(self.request.user):
+            user_permission = self.category.allowed_to_user(self.request.user)
+            if not user_permission[0]:
                 return custom_message(
-                    self.request, _("Permesso negato a questa tipologia di utente.")
+                    self.request, user_permission[1]
                 )
 
             # check if user has already open a ticket of this category

@@ -52,6 +52,7 @@ class CategoryForm(ModelForm):
             "allow_guest",
             "allow_user",
             "allow_employee",
+            "allow_spid_cie",
             "user_multiple_open_tickets",
             "max_requests_per_user",
             # "allowed_users",

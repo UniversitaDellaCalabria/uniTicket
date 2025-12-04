@@ -1455,6 +1455,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                         "allow_guest",
                         "allow_user",
                         "allow_employee",
+                        "allow_spid_cie",
                         "receive_email",
                         "protocol_required",
                         "user_multiple_open_tickets",

@@ -311,6 +311,18 @@
                 </td>
             </tr>
             <tr>
+                <th scope="row">{% trans "Accessibile solo con autenticazione SPID o CIE" %}</th>
+                <td>
+                    <svg class="icon icon-sm icon-secondary">
+                    {% if category.allow_spid_cie %}
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+            </tr>
+            <tr>
                 <th scope="row">
                     {% trans 'Gli utenti possono aprire più richieste contemporaneamente' %}
                 </th>

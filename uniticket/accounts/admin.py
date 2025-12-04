@@ -7,7 +7,7 @@ from .models import User
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    readonly_fields = ('date_joined', 'last_login', 'manual_user_update')
+    readonly_fields = ('date_joined', 'last_login', 'manual_user_update','last_login_context')
     list_display = ('username', 'last_name', 'first_name',
                     'identificativo_dipendente', 'identificativo_utente',
                     'email', 'email_notify',
@@ -38,7 +38,8 @@ class CustomUserAdmin(UserAdmin):
 
         (_('Date accessi sistema'), {'fields': (('date_joined',
                                                  'last_login',
-                                                 'manual_user_update'))
+                                                 'manual_user_update',
+                                                 'last_login_context'))
                                     }),
     )
     add_fieldsets = (

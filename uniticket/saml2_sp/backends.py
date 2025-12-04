@@ -5,6 +5,24 @@ from saml2_sp.settings import SAML_ATTRIBUTE_MAPPING
 
 
 class CustomSaml2Backend(Saml2Backend):
+    
+    def authenticate(self, request, session_info=None, attribute_mapping=None, create_unknown_user=True, **kwargs):
+        user = super().authenticate(
+            request,
+            session_info=session_info,
+            attribute_mapping=attribute_mapping,
+            create_unknown_user=create_unknown_user,
+            **kwargs
+        )
+
+        auth_info = session_info.get('authn_info')
+        if auth_info:
+            user.last_login_context = auth_info[0][0]
+        else:
+            user.last_login_context = ""
+        user.save(update_fields=['last_login_context'])
+        return user
+
     def _update_user(self, user, attributes: dict, attribute_mapping: dict, force_save: bool = False):
         mapping = {}
         # get editable fields from accounts app

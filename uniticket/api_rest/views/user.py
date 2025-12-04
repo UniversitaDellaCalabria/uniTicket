@@ -51,6 +51,7 @@ class TicketAPIView(TicketAPIBaseView):
         - allow_employee
         - allow_guest
         - allow_user
+        - allow_spid_cie
         - allowed_to_user
         - allowed_users
         - allowed_users_lists
