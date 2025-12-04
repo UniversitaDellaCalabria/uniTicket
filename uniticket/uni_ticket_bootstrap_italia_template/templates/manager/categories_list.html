@@ -30,6 +30,9 @@
           <div class="card card-bg no-after">
             <div class="card-body">
                 {% include "manager/category_status.html" %}
+                {% if category.allow_spid_cie %}
+                <span class="badge c-line primary-bg-b1 mb-2">SPID/CIE</span>
+                {% endif %}
                 <br>
                 <a class="read-more" href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=category.slug %}">
                     <h5 class="card-title">{{ category.name }}</h5>

@@ -65,7 +65,7 @@
         <select id="category_slug"{% if not chosen_structure %} disabled{% endif %} name="category_slug" title="{% trans 'Di cosa si tratta?' %}">
             <option value="" selected></option>
             {% for categoria in categorie %}
-            <option value="{{ categoria.slug }}">{{ categoria }}</option>
+            <option value="{{ categoria.slug }}">{{ categoria }} {% if categoria.allow_spid_cie %}({% trans "Accessibile solo con autenticazione SPID o CIE" %}){% endif %}</option>
             {% endfor %}
         </select>
     </div>

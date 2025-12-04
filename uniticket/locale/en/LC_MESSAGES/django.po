@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-04 14:56+0100\n"
-"PO-Revision-Date: 2025-12-04 14:57+0100\n"
+"PO-Revision-Date: 2025-12-04 16:01+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -1434,7 +1434,7 @@ msgstr "Accessible to organization employees"
 #: uni_ticket/models.py:201
 #: uni_ticket_bootstrap_italia_template/templates/manager/category_detail.html:314
 msgid "Accessibile solo con autenticazione SPID o CIE"
-msgstr ""
+msgstr "Accessible only with SPID or CIE authentication"
 
 #: uni_ticket/models.py:210 uni_ticket/models.py:519
 msgid "Richiesta di tipo Notifica"
