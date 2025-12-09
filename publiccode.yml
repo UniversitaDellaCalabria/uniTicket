@@ -150,23 +150,22 @@ legal:
 localisation:
   availableLanguages:
     - it
+    - en
   localisationReady: true
 maintenance:
   contacts:
     - affiliation: unical.it
       email: francesco.filicetti@unical.it
       name: Francesco Filicetti
-    - email: giuseppe.demarco@unical.it
-      name: Giuseppe De Marco
   type: internal
 name: uniTicket
 platforms:
   - linux
   - web
-releaseDate: '2025-11-17'
+releaseDate: '2025-12-09'
 roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
 softwareType: standalone/web
-softwareVersion: v2.7.2
+softwareVersion: v2.8.0
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
   - Università della Calabria - https://www.unical.it
