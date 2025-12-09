@@ -28,5 +28,5 @@ if EDITABLE_FIELDS:
         path('account/edit/', changeData, name='change_data'),
         path('account/edit/confirm-email/', confirmEmail, name='confirm_email'),
     ]
-else:
+else: # pragma: no cover
     urlpatterns = []
