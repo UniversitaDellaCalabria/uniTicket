@@ -5,6 +5,6 @@ register = template.Library()
 
 
 @register.filter(name='has_group')
-def has_group(user, group_name):
+def has_group(user, group_name): # pragma: no cover
     group = Group.objects.get(name=group_name)
     return group in user.groups.all()

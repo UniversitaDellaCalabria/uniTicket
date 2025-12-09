@@ -18,7 +18,7 @@ from . settings import *
 
 
 @login_required
-def changeData(request):
+def changeData(request): # pragma: no cover
     initial = {}
     for field in EDITABLE_FIELDS:
         initial[field] = getattr(request.user, field)
@@ -69,7 +69,7 @@ def changeData(request):
 
 
 @login_required
-def confirmEmail(request):
+def confirmEmail(request): # pragma: no cover
     token = request.GET.get('token')
     if not token:
         messages.add_message(

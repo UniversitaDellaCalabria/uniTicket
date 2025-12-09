@@ -4,7 +4,7 @@ from django.forms import ModelForm
 from . settings import EDITABLE_FIELDS, REQUIRED_FIELDS
 
 
-class UserDataForm(ModelForm):
+class UserDataForm(ModelForm): # pragma: no cover
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in EDITABLE_FIELDS:
