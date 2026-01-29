@@ -60,7 +60,7 @@
                         <br><b>{% trans "Protocollo" %}</b>: {{ticket.protocol_number}} {% trans " / " %} {{ticket.protocol_date}}
                     {% endif %}
                 {% else %}
-                    {% trans 'Utente anonimo' %}
+                    <b>{% trans 'Utente anonimo' %}</b> - {{ ticket.created }}
                 {% endif %}
             </td>
         </tr>
