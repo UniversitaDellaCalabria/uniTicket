@@ -591,8 +591,8 @@ class Ticket(SavedFormContent):
     def compress_modulo_compilato(self, check_length=True):
         # if check on length is abled and length is short
         if (
-            check_length
-            and not len(self.modulo_compilato) > TICKET_MIN_DIGITS_TO_COMPRESS
+            check_length and
+            not len(self.modulo_compilato) > TICKET_MIN_DIGITS_TO_COMPRESS
         ):
             return
         self.modulo_compilato = compress_text_to_b64(
@@ -680,6 +680,7 @@ class Ticket(SavedFormContent):
         return self.created_by
 
     def get_owners(self):
+        if not self.created_by: return []
         owners = [self.created_by]
         if self.compiled_by:
             owners.append(self.compiled_by)

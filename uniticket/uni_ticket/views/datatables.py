@@ -63,10 +63,10 @@ class TicketDTD(DjangoDatatablesServerProc):
                 )
             if text:
                 self.aqs = self.aqs.filter(
-                    Q(ticket__code__icontains=text)
-                    | Q(ticket__subject__icontains=text)
-                    | Q(ticket__created_by__last_name__icontains=text)
-                    | Q(ticket__compiled_by__last_name__icontains=text)
+                    Q(ticket__code__icontains=text) |
+                    Q(ticket__subject__icontains=text) |
+                    Q(ticket__created_by__last_name__icontains=text) |
+                    Q(ticket__compiled_by__last_name__icontains=text)
                 )
 
     def fill_data(self):
@@ -90,7 +90,7 @@ class TicketDTD(DjangoDatatablesServerProc):
             for e in self.columns:
                 # this avoid null json value
                 # v = getattr(r, e)
-                v = r.get(e, None) if type(r) == dict else getattr(r,e)
+                v = r.get(e, None) if isinstance(r, dict) else getattr(r,e)
                 if v:
                     if isinstance(v, datetime.datetime):
                         default_datetime_format = settings.DEFAULT_DATETIME_FORMAT
@@ -106,7 +106,7 @@ class TicketDTD(DjangoDatatablesServerProc):
                     vrepr = ''
                 cleaned_data.append(vrepr)
 
-            self.d['data'].append( cleaned_data )
+            self.d['data'].append(cleaned_data)
         self.d['recordsTotal'] = self.queryset.count()
         self.d['recordsFiltered'] = self.aqs.count()
 

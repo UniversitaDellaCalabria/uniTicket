@@ -296,6 +296,8 @@ class TicketAddNew(View):
     def get_modulo_and_form(self) -> None:
         # if there is an encrypted token with ticket params in URL
         if self.request.GET.get("import"):
+            if not self.request.user.is_authenticated:
+                return custom_message(self.request, _("E' necessario effettuare l'autenticazione per accedere alla richiesta"))
             CompiledTicket.clear()
             encoded_data = self.request.GET["import"]
             try:
@@ -672,21 +674,12 @@ class TicketAddNew(View):
                 # destination office
                 office = self.category.organizational_office
 
-                # take a random operator (or manager)
-                # only if category is_notification or user is anonymous
-                random_office_operator = None
-                if self.category.is_notification or not request.user.is_authenticated:
-                    # get random operator from the office
-                    random_office_operator = OrganizationalStructureOfficeEmployee.get_default_operator_or_manager(
-                        office
-                    )
-
                 # set users for current operations and for log
                 # if current_user isn't authenticated, for logging we use 'anonymous'
                 self.current_user = (
                     request.user
                     if request.user.is_authenticated
-                    else random_office_operator
+                    else None
                 )
                 self.log_user = (
                     request.user.username
@@ -758,8 +751,6 @@ class TicketAddNew(View):
                         ticket=self.ticket,
                         user=self.current_user
                     )
-                    # operator=random_office_operator,
-                    # ticket_assignment=ticket_assignment)
 
                 else:
                     # category default tasks assigned to ticket (if present)

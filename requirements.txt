@@ -62,3 +62,4 @@ setuptools>=78.1.1 # not directly required, pinned by Snyk to avoid a vulnerabil
 urllib3>=2.6.3 # not directly required, pinned by Snyk to avoid a vulnerability
 zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
 requests-toolbelt>=1.0.0
+fonttools>=4.61.0 # not directly required, pinned by Snyk to avoid a vulnerability
