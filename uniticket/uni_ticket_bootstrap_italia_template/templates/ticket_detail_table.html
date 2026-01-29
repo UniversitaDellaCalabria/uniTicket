@@ -36,27 +36,31 @@
         <tr>
             <th scope="row">{% trans 'Creato da' %}</th>
             <td>
-                <b>{{ ticket.created_by.first_name }} {{ ticket.created_by.last_name }}</b> - {{ ticket.created }}
-                {% if ticket.created_by.email %}
-                    <br><b>E-mail</b>: {{ticket.created_by.email}}
-                {% endif %}
-                {% if ticket.created_by.taxpayer_id %}
-                    <br><b>{% trans "Codice fiscale" %}</b>: {{ticket.created_by.taxpayer_id}}
-                {% endif %}
-                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
-                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
-                {% obj_get_attr ticket.created_by employee_attribute_name as user_employee_attribute %}
-                {% if user_employee_attribute %}
-                    <br><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}
-                {% endif %}
-                {% uni_ticket_settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
-                {% uni_ticket_settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
-                {% obj_get_attr ticket.created_by user_attribute_name as user_user_attribute %}
-                {% if user_user_attribute %}
-                    <br><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}
-                {% endif %}
-                {% if ticket.protocol_number %}
-                    <br><b>{% trans "Protocollo" %}</b>: {{ticket.protocol_number}} {% trans " / " %} {{ticket.protocol_date}}
+                {% if ticket.created_by %}
+                    <b>{{ ticket.created_by.first_name }} {{ ticket.created_by.last_name }}</b> - {{ ticket.created }}
+                    {% if ticket.created_by.email %}
+                        <br><b>E-mail</b>: {{ticket.created_by.email}}
+                    {% endif %}
+                    {% if ticket.created_by.taxpayer_id %}
+                        <br><b>{% trans "Codice fiscale" %}</b>: {{ticket.created_by.taxpayer_id}}
+                    {% endif %}
+                    {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                    {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
+                    {% obj_get_attr ticket.created_by employee_attribute_name as user_employee_attribute %}
+                    {% if user_employee_attribute %}
+                        <br><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}
+                    {% endif %}
+                    {% uni_ticket_settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
+                    {% uni_ticket_settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
+                    {% obj_get_attr ticket.created_by user_attribute_name as user_user_attribute %}
+                    {% if user_user_attribute %}
+                        <br><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}
+                    {% endif %}
+                    {% if ticket.protocol_number %}
+                        <br><b>{% trans "Protocollo" %}</b>: {{ticket.protocol_number}} {% trans " / " %} {{ticket.protocol_date}}
+                    {% endif %}
+                {% else %}
+                    {% trans 'Utente anonimo' %}
                 {% endif %}
             </td>
         </tr>

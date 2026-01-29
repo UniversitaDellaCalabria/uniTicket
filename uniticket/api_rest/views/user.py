@@ -121,7 +121,10 @@ class TicketAPIView(TicketAPIBaseView):
                 k: getattr(self.legacy_view.ticket, k)
                 for k in ("code", "created", "is_closed", "protocol_number", "protocol_date")
             }
-            _res['status']["created_by"] = self.legacy_view.ticket.created_by.__str__()
+            if self.legacy_view.ticket.created_by:
+                _res['status']["created_by"] = self.legacy_view.ticket.created_by.__str__()
+            else:
+                _res['status']["created_by"] = _("Utente anonimo")
             # _res['assigned'] = self.legacy_view.ticket_assignment.__str__()
             return Response(_res)
 
