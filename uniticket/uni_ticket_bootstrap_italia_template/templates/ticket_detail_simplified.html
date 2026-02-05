@@ -7,7 +7,9 @@
         <div class="callout-title">
             <svg class="icon icon-danger">
                 <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
-            </svg> {% trans "C'è un problema" %}</div>
+            </svg>
+            <span class="text">{% trans "C'è un problema" %}</span>
+        </div>
         <p>{% trans "Uno o più allegati obbligatori risultano mancanti" %}</p>
     </div>
 </div>

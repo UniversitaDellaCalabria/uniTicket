@@ -12,7 +12,9 @@
         <div class="callout-title">
             <svg class="icon icon-primary icon-danger">
                 <use xlink:href="{% static 'svg/sprites.svg' %}#it-close-circle"></use>
-            </svg> {% trans "Oops! C'è qualcosa che non va" %}</div>
+            </svg>
+            <span class="text">{% trans "Oops! C'è qualcosa che non va" %}</span>
+        </div>
         <p>
             {{ avviso }}
             <hr>
