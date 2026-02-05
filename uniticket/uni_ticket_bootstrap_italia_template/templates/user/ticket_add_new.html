@@ -28,15 +28,6 @@
 {% endif %}
 {% endblock top_buttons %}
 
-{% block page_content %}
-{{ block.super }}
-<p class="mt-3 text-muted">
-    <small>
-        {% trans "I campi contrassegnati con l'asterisco (*) sono obbligatori" %}
-    </small>
-</p>
-{% endblock page_content %}
-
 {% block over_content %}
 {% block user_ticket_head %}
 {% if request.user.is_authenticated and categoria.show_heading_text or category_conditions %}

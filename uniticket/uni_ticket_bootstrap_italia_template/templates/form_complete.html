@@ -22,15 +22,18 @@
             <div class="card card-bg no-after">
                 <div class="card-body">
     {% block page_content %}
-        {% block pre_form %}
-        {% endblock pre_form %}
+        {% block pre_form %}{% endblock pre_form %}
         <form method="post" enctype="multipart/form-data" novalidate>
             {% include 'form_template.html' %}
-            {% block allegati %}{% endblock allegati %}
             {% block form_buttons %}{% endblock form_buttons %}
         </form>
-        {% block post_form %}
-        {% endblock post_form %}
+        <p class="mt-3 text-muted">
+            <small>
+                {% trans "I campi contrassegnati con l'asterisco (*) sono obbligatori" %}
+            </small>
+        </p>
+        {% block post_form %}{% endblock post_form %}
+        {% block allegati %}{% endblock allegati %}
     {% endblock page_content %}
     </div>
 </div>
