@@ -162,10 +162,10 @@ name: uniTicket
 platforms:
   - linux
   - web
-releaseDate: '2026-01-29'
+releaseDate: '2026-02-12'
 roadmap: 'https://github.com/UniversitaDellaCalabria/uniTicket/issues'
 softwareType: standalone/web
-softwareVersion: v2.9.0
+softwareVersion: v2.9.1
 url: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 usedBy:
   - Università della Calabria - https://www.unical.it
