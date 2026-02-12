@@ -171,11 +171,10 @@ MIDDLEWARE = [
 MARKDOWNX_UPLOAD_CONTENT_TYPES = []
 # END markdownx
 
-if "djangosaml2" in INSTALLED_APPS:
+# DjangoSAML2 conf
+if 'djangosaml2' and 'saml2_sp' in INSTALLED_APPS:
     MIDDLEWARE.append("djangosaml2.middleware.SamlSessionMiddleware")
 
-# DjangoSAML2 conf
-if 'djangosaml2'  in INSTALLED_APPS:
     from saml2_sp.settings import *
     # pySAML2 SP mandatory
     SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -187,7 +186,7 @@ if 'djangosaml2'  in INSTALLED_APPS:
     AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
         # 'djangosaml2.backends.Saml2Backend', default djangosaml2 backend
-        'saml2_sp.backends.CustomSaml2Backend, # custom backend for fields manual update
+        'saml2_sp.backends.CustomSaml2Backend', # custom backend for fields manual update
     )
 elif 'spid_oidc_rp' in INSTALLED_APPS:
     LOGIN_URL = f'/oidc/rp/begin?issuer_id=agid_login'
@@ -244,7 +243,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_PAGINATION_CLASS':
-        'api_rest.pagination.StandardPagination'
+        'api_rest.pagination.StandardPagination',
     'PAGE_SIZE': 10
 }
 

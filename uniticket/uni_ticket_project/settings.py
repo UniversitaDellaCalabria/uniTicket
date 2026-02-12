@@ -2,7 +2,6 @@ from django_form_builder.settings import *
 
 from .settingslocal import *
 
-
 ROOT_URLCONF = "uni_ticket_project.urls"
 
 STATICFILES_FINDERS = [
