@@ -1,5 +1,5 @@
 # DOCKER-VERSION 17.10.0-ce
-FROM python:3.15-rc-alpine3.22
+FROM python:3.11-slim-bookworm
 MAINTAINER Giuseppe De Marco <giuseppe.demarco@unical.it>
 # thanks to Marco Spasiano to have moved things :)
 
