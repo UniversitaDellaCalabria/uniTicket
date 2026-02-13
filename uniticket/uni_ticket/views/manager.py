@@ -6,12 +6,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.db.models import Count
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-
 from django_form_builder.utils import get_labeled_errors
 from organizational_area.models import *
 
@@ -27,7 +25,6 @@ from uni_ticket.utils import (
     user_is_manager,
     uuid_code,
 )
-
 
 logger = logging.getLogger(__name__)
 
@@ -47,34 +44,34 @@ def dashboard(request, structure_slug, structure):
     :return: render
     """
     title = _("Pannello di Controllo")
-    sub_title = _(
-        "Gestisci le richieste per la struttura {}"
-    ).format(structure)
+    sub_title = _("Gestisci le richieste per la struttura {}").format(structure)
     template = "manager/dashboard.html"
 
     # unassigned = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                               # closed=False,
-                                                               # taken=False))
+    # closed=False,
+    # taken=False))
     # opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                           # closed=False,
-                                                           # taken=True))
+    # closed=False,
+    # taken=True))
     # my_opened = len(TicketAssignment.get_ticket_per_structure(structure=structure,
-                                                              # closed=False,
-                                                              # taken=True,
-                                                              # taken_by=request.user))
+    # closed=False,
+    # taken=True,
+    # taken_by=request.user))
 
     om = OrganizationalStructureOffice
-    offices = om.objects.filter(organizational_structure=structure)\
-                        .prefetch_related('organizationalstructureofficeemployee_set')\
-                        .prefetch_related('ticketcategory_set')
+    offices = (
+        om.objects.filter(organizational_structure=structure)
+        .prefetch_related("organizationalstructureofficeemployee_set")
+        .prefetch_related("ticketcategory_set")
+    )
 
     cm = TicketCategory
-    categories = cm.objects.filter(organizational_structure=structure)\
-                           .select_related('organizational_office')\
-                           .prefetch_related('ticketcategorytask_set')\
-                           .prefetch_related('ticketcategorycondition_set')
-
-
+    categories = (
+        cm.objects.filter(organizational_structure=structure)
+        .select_related("organizational_office")
+        .prefetch_related("ticketcategorytask_set")
+        .prefetch_related("ticketcategorycondition_set")
+    )
 
     d = {
         "categories": categories,
@@ -107,9 +104,11 @@ def offices(request, structure_slug, structure):
     title = _("Gestione uffici")
     template = "manager/offices.html"
     os = OrganizationalStructureOffice
-    offices = os.objects.filter(organizational_structure=structure)\
-                        .prefetch_related('organizationalstructureofficeemployee_set')\
-                        .prefetch_related('ticketcategory_set')
+    offices = (
+        os.objects.filter(organizational_structure=structure)
+        .prefetch_related("organizationalstructureofficeemployee_set")
+        .prefetch_related("ticketcategory_set")
+    )
 
     d = {
         "offices": offices,
@@ -149,10 +148,7 @@ def office_add_new(request, structure_slug, structure):
                 messages.add_message(
                     request,
                     messages.ERROR,
-                    _(
-                        "Esiste già un ufficio con"
-                        " nome {} o slug {}"
-                    ).format(name, slug)
+                    _("Esiste già un ufficio con nome {} o slug {}").format(name, slug),
                 )
             else:
                 new_office = form.save(commit=False)
@@ -162,8 +158,7 @@ def office_add_new(request, structure_slug, structure):
 
                 # log action
                 logger.info(
-                    "[{}] manager of structure {}"
-                    " {} created new office {}".format(
+                    "[{}] manager of structure {} {} created new office {}".format(
                         timezone.localtime(), structure, request.user, new_office
                     )
                 )
@@ -230,21 +225,19 @@ def office_edit(request, structure_slug, office_slug, structure):
                 messages.add_message(
                     request,
                     messages.ERROR,
-                    _("Esiste già un ufficio con questo" " nome o slug"),
+                    _("Esiste già un ufficio con questo nome o slug"),
                 )
             else:
                 edited_office = form.save(commit=False)
                 edited_office.slug = slug
                 edited_office.save()
                 messages.add_message(
-                    request, messages.SUCCESS, _(
-                        "Ufficio modificato con successo")
+                    request, messages.SUCCESS, _("Ufficio modificato con successo")
                 )
 
                 # log action
                 logger.info(
-                    "[{}] manager of structure {}"
-                    " {} edited office {}".format(
+                    "[{}] manager of structure {} {} edited office {}".format(
                         timezone.localtime(), structure, request.user, edited_office
                     )
                 )
@@ -257,8 +250,7 @@ def office_edit(request, structure_slug, office_slug, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     template = "manager/office_edit.html"
     d = {
@@ -294,13 +286,13 @@ def office_detail(request, structure_slug, office_slug, structure):
     )
     title = _("Gestione ufficio")
     template = "manager/office_detail.html"
-    category_form = OfficeAddCategoryForm(structure=structure,
-                                          office=office)
+    category_form = OfficeAddCategoryForm(structure=structure, office=office)
     em = OrganizationalStructureOfficeEmployee
-    employees = em.objects.filter(office=office,
-                                  employee__is_active=True)\
-                  .order_by('employee__last_name')\
-                  .select_related('employee')
+    employees = (
+        em.objects.filter(office=office, employee__is_active=True)
+        .order_by("employee__last_name")
+        .select_related("employee")
+    )
     d = {
         "category_form": category_form,
         "employees": employees,
@@ -334,8 +326,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
             organizational_structure=structure,
             slug=office_slug,
         )
-        form = OfficeAddCategoryForm(
-            request.POST, structure=structure, office=office)
+        form = OfficeAddCategoryForm(request.POST, structure=structure, office=office)
         if form.is_valid():
             category = form.cleaned_data["category"]
             if category.organizational_office:
@@ -364,9 +355,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
 
             # log action
             logger.info(
-                "[{}] manager of structure {}"
-                " {} added category {}"
-                " to office {}".format(
+                "[{}] manager of structure {} {} added category {} to office {}".format(
                     timezone.localtime(), structure, request.user, category, office
                 )
             )
@@ -374,8 +363,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
         return redirect(
             "uni_ticket:manager_office_detail",
@@ -384,7 +372,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
         )
     return custom_message(
         request,
-        _("Impossibile accedere a questo URL " "senza passare dal form collegato."),
+        _("Impossibile accedere a questo URL senza passare dal form collegato."),
         structure_slug=structure.slug,
     )
 
@@ -422,7 +410,7 @@ def office_remove_category(
         messages.add_message(
             request,
             messages.ERROR,
-            _("La tipologia di richiesta non è di competenza di" " questo ufficio"),
+            _("La tipologia di richiesta non è di competenza di questo ufficio"),
         )
     else:
         category.organizational_office = None
@@ -434,16 +422,12 @@ def office_remove_category(
             _(
                 "La tipologia di richiesta <b>{}</b> non è più di competenza "
                 " dell'ufficio <b>{}</b> ed è stato disattivato"
-            ).format(
-                category, office
-            )
+            ).format(category, office),
         )
 
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} removed category {}"
-            " from office {}".format(
+            "[{}] manager of structure {} {} removed category {} from office {}".format(
                 timezone.localtime(), structure, request.user, category, office
             )
         )
@@ -479,13 +463,27 @@ def office_add_operator(request, structure_slug, office_slug, structure):
     title = _("Aggiungi nuovo operatore all'ufficio")
     template = "manager/office_add_operator.html"
     key = request.GET.get("search", "")
-    q_filter = (Q(taxpayer_id__icontains=key)
-                | Q(first_name__icontains=key)
-                | Q(last_name__icontains=key)) if key else Q()
-    all_users = get_user_model().objects.filter(q_filter, is_active=True)\
-                                .values("pk", "taxpayer_id",
-                                        "last_name", "first_name",
-                                        "email", EMPLOYEE_ATTRIBUTE_NAME)
+    q_filter = (
+        (
+            Q(taxpayer_id__icontains=key)
+            | Q(first_name__icontains=key)
+            | Q(last_name__icontains=key)
+        )
+        if key
+        else Q()
+    )
+    all_users = (
+        get_user_model()
+        .objects.filter(q_filter, is_active=True)
+        .values(
+            "pk",
+            "taxpayer_id",
+            "last_name",
+            "first_name",
+            "email",
+            EMPLOYEE_ATTRIBUTE_NAME,
+        )
+    )
     paginator = Paginator(all_users, 20)
     page = request.GET.get("page")
     users = paginator.get_page(page)
@@ -494,36 +492,29 @@ def office_add_operator(request, structure_slug, office_slug, structure):
         form = OfficeAddOperatorForm(request.POST)
         if form.is_valid():
             osoe = OrganizationalStructureOfficeEmployee
-            user = get_user_model().objects.get(pk=form.cleaned_data['user'])
+            user = get_user_model().objects.get(pk=form.cleaned_data["user"])
 
             # check if operator exists
-            operator_exists = osoe.objects.filter(
-                employee=user,
-                office=office
-            ).exists()
+            operator_exists = osoe.objects.filter(employee=user, office=office).exists()
             if operator_exists:
                 return custom_message(
-                    request,
-                    _("Operatore già assegnato all'ufficio.")
+                    request, _("Operatore già assegnato all'ufficio.")
                 )
 
             new_officeemployee = osoe(
                 employee=user,
                 office=office,
-                description=form.cleaned_data['description']
+                description=form.cleaned_data["description"],
             )
             new_officeemployee.save()
 
             messages.add_message(
-                request, messages.SUCCESS, _(
-                    "Operatore assegnato con successo")
+                request, messages.SUCCESS, _("Operatore assegnato con successo")
             )
 
             # log action
             logger.info(
-                "[{}] manager of structure {}"
-                " {} added employee {}"
-                " to office {}".format(
+                "[{}] manager of structure {} {} added employee {} to office {}".format(
                     timezone.localtime(), structure, request.user, user, office
                 )
             )
@@ -534,9 +525,7 @@ def office_add_operator(request, structure_slug, office_slug, structure):
                 office_slug=office_slug,
             )
         else:
-            messages.add_message(
-                request, messages.ERROR, _("Scelta non valida")
-            )
+            messages.add_message(request, messages.ERROR, _("Scelta non valida"))
 
     d = {
         "office": office,
@@ -544,7 +533,7 @@ def office_add_operator(request, structure_slug, office_slug, structure):
         "sub_title": office,
         "title": title,
         "users": users,
-        "key": key
+        "key": key,
     }
     return render(request, template, base_context(d))
 
@@ -596,15 +585,12 @@ def office_remove_operator(
     office_employee = m.objects.get(office=office, employee=employee)
     if not office_employee:
         messages.add_message(
-            request, messages.ERROR, _(
-                "L'operatore non è assegnato a questo ufficio")
+            request, messages.ERROR, _("L'operatore non è assegnato a questo ufficio")
         )
     else:
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} removed employee {}"
-            " from office {}".format(
+            "[{}] manager of structure {} {} removed employee {} from office {}".format(
                 timezone.localtime(), structure, request.user, employee, office
             )
         )
@@ -659,8 +645,7 @@ def office_disable(request, structure_slug, office_slug, structure):
 
     if office.is_default:
         messages.add_message(
-            request, messages.ERROR, _(
-                "Impossibile disattivare questo ufficio")
+            request, messages.ERROR, _("Impossibile disattivare questo ufficio")
         )
     elif one_tickets_for_this_office:
         messages.add_message(
@@ -693,16 +678,14 @@ def office_disable(request, structure_slug, office_slug, structure):
 
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} disabled office {}".format(
+            "[{}] manager of structure {} {} disabled office {}".format(
                 timezone.localtime(), structure, request.user, office
             )
         )
 
     else:
         messages.add_message(
-            request, messages.ERROR, _(
-                "Ufficio {} già disattivato").format(office)
+            request, messages.ERROR, _("Ufficio {} già disattivato").format(office)
         )
     return redirect(
         "uni_ticket:manager_office_detail",
@@ -734,8 +717,7 @@ def office_enable(request, structure_slug, office_slug, structure):
     )
     if office.is_active:
         messages.add_message(
-            request, messages.ERROR, _(
-                "Ufficio {} già attivato").format(office)
+            request, messages.ERROR, _("Ufficio {} già attivato").format(office)
         )
     else:
         office.is_active = True
@@ -748,8 +730,7 @@ def office_enable(request, structure_slug, office_slug, structure):
 
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} enabled office {}".format(
+            "[{}] manager of structure {} {} enabled office {}".format(
                 timezone.localtime(), structure, request.user, office
             )
         )
@@ -802,8 +783,7 @@ def office_delete(request, structure_slug, office_slug, structure):
 
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} deleted office {}".format(
+            "[{}] manager of structure {} {} deleted office {}".format(
                 timezone.localtime(), structure, request.user, office
             )
         )
@@ -879,21 +859,18 @@ def category_detail(request, structure_slug, category_slug, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     slug_url = request.build_absolute_uri(
         reverse(
             "uni_ticket:add_new_ticket",
-            kwargs={"structure_slug": structure.slug,
-                    "category_slug": category.slug},
+            kwargs={"structure_slug": structure.slug, "category_slug": category.slug},
         )
     )
     pk_url = request.build_absolute_uri(
         reverse(
             "uni_ticket:add_new_ticket",
-            kwargs={"structure_slug": structure.pk,
-                    "category_slug": category.pk},
+            kwargs={"structure_slug": structure.pk, "category_slug": category.pk},
         )
     )
     category_urls = (slug_url, pk_url)
@@ -930,13 +907,27 @@ def category_add_ticket_user(request, structure_slug, category_slug, structure):
     title = _("Aggiungi nuovo utente abilitato all'apertura dei ticket")
     template = "manager/category_add_ticket_user.html"
     key = request.GET.get("search", "")
-    q_filter = (Q(taxpayer_id__icontains=key)
-                | Q(first_name__icontains=key)
-                | Q(last_name__icontains=key)) if key else Q()
-    all_users = get_user_model().objects.filter(q_filter, is_active=True)\
-                                .values("pk", "taxpayer_id",
-                                        "last_name", "first_name",
-                                        "email", EMPLOYEE_ATTRIBUTE_NAME)
+    q_filter = (
+        (
+            Q(taxpayer_id__icontains=key)
+            | Q(first_name__icontains=key)
+            | Q(last_name__icontains=key)
+        )
+        if key
+        else Q()
+    )
+    all_users = (
+        get_user_model()
+        .objects.filter(q_filter, is_active=True)
+        .values(
+            "pk",
+            "taxpayer_id",
+            "last_name",
+            "first_name",
+            "email",
+            EMPLOYEE_ATTRIBUTE_NAME,
+        )
+    )
     paginator = Paginator(all_users, 20)
     page = request.GET.get("page")
     users = paginator.get_page(page)
@@ -945,15 +936,12 @@ def category_add_ticket_user(request, structure_slug, category_slug, structure):
         form = AddUserForm(request.POST)
 
         if form.is_valid():
-            user = get_user_model().objects.get(pk=form.cleaned_data['user'])
+            user = get_user_model().objects.get(pk=form.cleaned_data["user"])
             users = category.allowed_users
 
             # check if user exists
             if users.filter(pk=user.pk):
-                return custom_message(
-                    request,
-                    _("Utente già selezionato")
-                )
+                return custom_message(request, _("Utente già selezionato"))
 
             users.add(user)
 
@@ -966,24 +954,19 @@ def category_add_ticket_user(request, structure_slug, category_slug, structure):
                 "[{}] manager of structure {}"
                 " {} added new user {} that can"
                 " open tickets in {}".format(
-                    timezone.localtime(),
-                    structure,
-                    request.user,
-                    user,
-                    category
+                    timezone.localtime(), structure, request.user, user, category
                 )
             )
 
             return redirect(
                 "uni_ticket:manager_category_detail",
                 structure_slug=structure_slug,
-                category_slug=category_slug
+                category_slug=category_slug,
             )
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     d = {
         "category_slug": category_slug,
@@ -991,11 +974,11 @@ def category_add_ticket_user(request, structure_slug, category_slug, structure):
         "sub_title": category,
         "title": title,
         "users": users,
-        "key": key
+        "key": key,
     }
     return render(request, template, base_context(d))
 
-    
+
 @login_required
 @is_manager
 def category_add_ticket_users_list(request, structure_slug, category_slug, structure):
@@ -1020,10 +1003,9 @@ def category_add_ticket_users_list(request, structure_slug, category_slug, struc
     key = request.GET.get("search", "")
     q_filter = Q(name__icontains=key) if key else Q()
     all_lists = OrganizationalStructureAllowedUsersList.objects.filter(
-        q_filter
-    ).values(
-        "pk", "name", "description"
-    )
+        q_filter,
+        organizational_structure=structure,
+    ).values("pk", "name", "description")
     paginator = Paginator(all_lists, 20)
     page = request.GET.get("page")
     lists = paginator.get_page(page)
@@ -1032,16 +1014,13 @@ def category_add_ticket_users_list(request, structure_slug, category_slug, struc
         form = AddUsersListForm(request.POST)
         if form.is_valid():
             users_list = OrganizationalStructureAllowedUsersList.objects.get(
-                pk=form.cleaned_data['users_list']
+                organizational_structure=structure, pk=form.cleaned_data["users_list"]
             )
             lists = category.allowed_users_lists
 
             # check if user exists
             if lists.filter(pk=users_list.pk):
-                return custom_message(
-                    request,
-                    _("Lista già selezionata")
-                )
+                return custom_message(request, _("Lista già selezionata"))
 
             lists.add(users_list)
 
@@ -1053,24 +1032,19 @@ def category_add_ticket_users_list(request, structure_slug, category_slug, struc
             logger.info(
                 "[{}] manager of structure {}"
                 " {} added new list {} of allowed users in {}".format(
-                    timezone.localtime(),
-                    structure,
-                    request.user,
-                    users_list,
-                    category
+                    timezone.localtime(), structure, request.user, users_list, category
                 )
             )
 
             return redirect(
                 "uni_ticket:manager_category_detail",
                 structure_slug=structure_slug,
-                category_slug=category_slug
+                category_slug=category_slug,
             )
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     d = {
         "category_slug": category_slug,
@@ -1078,7 +1052,7 @@ def category_add_ticket_users_list(request, structure_slug, category_slug, struc
         "sub_title": category,
         "title": title,
         "lists": lists,
-        "key": key
+        "key": key,
     }
     return render(request, template, base_context(d))
 
@@ -1103,27 +1077,25 @@ def category_remove_ticket_users_list(
 
     :return: render
     """
-    users_list = OrganizationalStructureAllowedUsersList.objects.get(pk=list_id)
+    users_list = get_object_or_404(
+        OrganizationalStructureAllowedUsersList,
+        organizational_structure=structure,
+        pk=list_id,
+    )
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
     lists = category.allowed_users_lists
     if not lists.filter(pk=list_id):
         messages.add_message(
-            request, messages.ERROR, _(
-                "La lista non è tra quelle presenti")
+            request, messages.ERROR, _("La lista non è tra quelle presenti")
         )
     else:
         lists.remove(users_list)
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} removed users list{} from {}".format(
-                timezone.localtime(),
-                structure,
-                request.user,
-                users_list,
-                category
+            "[{}] manager of structure {} {} removed users list{} from {}".format(
+                timezone.localtime(), structure, request.user, users_list, category
             )
         )
         messages.add_message(
@@ -1136,7 +1108,7 @@ def category_remove_ticket_users_list(
         structure_slug=structure_slug,
         category_slug=category_slug,
     )
-    
+
 
 @login_required
 @is_manager
@@ -1165,8 +1137,7 @@ def category_remove_ticket_user(
     users = category.allowed_users
     if not users.filter(pk=user_id):
         messages.add_message(
-            request, messages.ERROR, _(
-                "L'utente non è tra quelli abilitati")
+            request, messages.ERROR, _("L'utente non è tra quelli abilitati")
         )
     else:
         users.remove(user)
@@ -1175,11 +1146,7 @@ def category_remove_ticket_user(
             "[{}] manager of structure {}"
             " {} removed user {} from those that"
             " can open tickets in {}".format(
-                timezone.localtime(),
-                structure,
-                request.user,
-                user,
-                category
+                timezone.localtime(), structure, request.user, user, category
             )
         )
         messages.add_message(
@@ -1226,7 +1193,7 @@ def category_remove_office(
         messages.add_message(
             request,
             messages.ERROR,
-            _("La tipologia di richiesta non è di competenza di" " questo ufficio"),
+            _("La tipologia di richiesta non è di competenza di questo ufficio"),
         )
     else:
         category.organizational_office = None
@@ -1241,7 +1208,7 @@ def category_remove_office(
             request,
             messages.ERROR,
             _(
-                "Tipo di richieste {} disattivato poichè" " priva di ufficio competente"
+                "Tipo di richieste {} disattivato poichè priva di ufficio competente"
             ).format(category),
         )
 
@@ -1303,7 +1270,7 @@ def category_add_new(request, structure_slug, structure):
                     request,
                     messages.ERROR,
                     _(
-                        "Esiste già una tipologia di richiesta con" " nome {} o slug {}"
+                        "Esiste già una tipologia di richiesta con nome {} o slug {}"
                     ).format(name, slug),
                 )
             else:
@@ -1330,8 +1297,7 @@ def category_add_new(request, structure_slug, structure):
                 new_category.organizational_structure = structure
                 new_category.save()
                 messages.add_message(
-                    request, messages.SUCCESS, _(
-                        "Categoria creata con successo")
+                    request, messages.SUCCESS, _("Categoria creata con successo")
                 )
 
                 # log action
@@ -1351,8 +1317,7 @@ def category_add_new(request, structure_slug, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     template = "manager/category_add_new.html"
     d = {
@@ -1387,7 +1352,6 @@ def category_edit(request, structure_slug, category_slug, structure):
     if request.method == "POST":
         form = CategoryForm(instance=category, data=request.POST)
         if form.is_valid():
-
             name = form.cleaned_data["name"]
 
             # check if protocol can be activated
@@ -1430,10 +1394,7 @@ def category_edit(request, structure_slug, category_slug, structure):
                 messages.add_message(
                     request,
                     messages.ERROR,
-                    _(
-                        "Esiste già una tipologia di richiesta con questo"
-                        " nome o slug"
-                    ),
+                    _("Esiste già una tipologia di richiesta con questo nome o slug"),
                 )
             else:
                 edited_category = form.save(commit=False)
@@ -1461,21 +1422,19 @@ def category_edit(request, structure_slug, category_slug, structure):
                         "user_multiple_open_tickets",
                         "max_requests_per_user",
                         "modified",
-                        "is_hidden"
+                        "is_hidden",
                     ]
                 )
                 form.save_m2m()
                 # log action
                 logger.info(
-                    "[{}] manager of structure {}"
-                    " {} edited the category {}".format(
+                    "[{}] manager of structure {} {} edited the category {}".format(
                         timezone.localtime(), structure, request.user, category
                     )
                 )
 
                 messages.add_message(
-                    request, messages.SUCCESS, _(
-                        "Categoria modificata con successo")
+                    request, messages.SUCCESS, _("Categoria modificata con successo")
                 )
                 return redirect(
                     "uni_ticket:manager_category_detail",
@@ -1485,8 +1444,7 @@ def category_edit(request, structure_slug, category_slug, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     template = "manager/category_edit.html"
     title = _("Modifica tipologia di richiesta")
@@ -1531,8 +1489,7 @@ def category_disable(request, structure_slug, category_slug, structure):
 
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} disabled the category {}".format(
+            "[{}] manager of structure {} {} disabled the category {}".format(
                 timezone.localtime(), structure, request.user, category
             )
         )
@@ -1594,14 +1551,13 @@ def category_enable(request, structure_slug, category_slug, structure):
                 request,
                 messages.WARNING,
                 _(
-                    "Tipo di richieste {} attivato con successo. " "Data di inizio {}"
+                    "Tipo di richieste {} attivato con successo. Data di inizio {}"
                 ).format(category, start_string),
             )
 
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} enabled the category {}".format(
+            "[{}] manager of structure {} {} enabled the category {}".format(
                 timezone.localtime(), structure, request.user, category
             )
         )
@@ -1633,11 +1589,9 @@ def category_delete(request, structure_slug, category_slug, structure):
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
     if category.can_be_deleted():
-
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} deleted the category {}".format(
+            "[{}] manager of structure {} {} deleted the category {}".format(
                 timezone.localtime(), structure, request.user, category
             )
         )
@@ -1708,7 +1662,7 @@ def category_input_module_new(request, structure_slug, category_slug, structure)
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _("Modulo di inserimento <b>{}</b>" " creato con successo").format(
+                _("Modulo di inserimento <b>{}</b> creato con successo").format(
                     new_module.name
                 ),
             )
@@ -1721,8 +1675,7 @@ def category_input_module_new(request, structure_slug, category_slug, structure)
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
 
     template = "manager/category_input_module_add_new.html"
@@ -1792,8 +1745,7 @@ def category_input_module_edit(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     title = _("Rinomina modulo [{}]").format(module)
     sub_title = "{} - {}".format(category, structure)
@@ -1893,8 +1845,7 @@ def category_input_module_disable(
     )
     if not module.is_active:
         messages.add_message(
-            request, messages.ERROR, _(
-                "Modulo {} già disattivato").format(module)
+            request, messages.ERROR, _("Modulo {} già disattivato").format(module)
         )
     else:
         category.is_active = False
@@ -1950,7 +1901,6 @@ def category_input_module_delete(
         TicketCategoryModule, pk=module_id, ticket_category=category
     )
     if not module.can_be_deleted():
-
         # log action
         logger.info(
             "[{}] manager of structure {}"
@@ -1964,8 +1914,7 @@ def category_input_module_delete(
             request,
             messages.ERROR,
             _(
-                "Impossibile eliminare il modulo {}."
-                " Ci sono delle richieste collegate"
+                "Impossibile eliminare il modulo {}. Ci sono delle richieste collegate"
             ).format(module),
         )
     else:
@@ -2048,7 +1997,7 @@ def category_input_module_details(
                 messages.add_message(
                     request,
                     messages.ERROR,
-                    _("Esiste già un campo con questo" " nome: <b>{}</b>").format(name),
+                    _("Esiste già un campo con questo nome: <b>{}</b>").format(name),
                 )
             else:
                 # is_required_value = form.cleaned_data['is_required']
@@ -2059,8 +2008,7 @@ def category_input_module_details(
                 input_list.pre_text = strip_tags(form.cleaned_data["pre_text"])
                 input_list.save()
                 messages.add_message(
-                    request, messages.SUCCESS, _(
-                        "Campo di input creato con successo")
+                    request, messages.SUCCESS, _("Campo di input creato con successo")
                 )
 
                 # log action
@@ -2086,8 +2034,7 @@ def category_input_module_details(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     title = _("Gestione modulo [{}]").format(module)
     template = "manager/category_input_module_detail.html"
@@ -2132,7 +2079,6 @@ def category_input_field_delete(
         TicketCategoryModule, pk=module_id, ticket_category=category
     )
     if not module.can_be_deleted():
-
         # log action
         logger.info(
             "[{}] manager of structure {}"
@@ -2146,8 +2092,7 @@ def category_input_field_delete(
             request,
             messages.ERROR,
             _(
-                "Impossibile eliminare il modulo {}."
-                " Ci sono delle richieste collegate"
+                "Impossibile eliminare il modulo {}. Ci sono delle richieste collegate"
             ).format(module),
         )
     else:
@@ -2229,8 +2174,7 @@ def category_input_module_preview(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     return render(request, template, base_context(d))
 
@@ -2269,7 +2213,6 @@ def category_input_field_edit(
     form = CategoryInputListForm(instance=field)
     if request.method == "POST":
         if not module.can_be_deleted():
-
             # log action
             logger.info(
                 "[{}] manager of structure {}"
@@ -2309,8 +2252,7 @@ def category_input_field_edit(
             )
 
             messages.add_message(
-                request, messages.SUCCESS, _(
-                    "Campo di input modificato con successo")
+                request, messages.SUCCESS, _("Campo di input modificato con successo")
             )
             return redirect(
                 "uni_ticket:manager_category_input_module",
@@ -2321,13 +2263,11 @@ def category_input_field_edit(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
 
     title = _("Modifica campo di input [{}]").format(field.name)
-    sub_title = "{} - {} - {}".format(module,
-                                      module.ticket_category, structure)
+    sub_title = "{} - {} - {}".format(module, module.ticket_category, structure)
     template = "manager/category_input_field_edit.html"
     d = {
         "category": category,
@@ -2390,8 +2330,7 @@ def category_condition_new(request, structure_slug, category_slug, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
 
     template = "manager/category_condition_add_new.html"
@@ -2451,8 +2390,7 @@ def category_condition_edit(
             )
 
             messages.add_message(
-                request, messages.SUCCESS, _(
-                    "Clausola modificata con successo")
+                request, messages.SUCCESS, _("Clausola modificata con successo")
             )
             return redirect(
                 "uni_ticket:manager_category_condition_detail",
@@ -2463,8 +2401,7 @@ def category_condition_edit(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     template = "manager/category_condition_edit.html"
     title = _("Modifica clausola")
@@ -2513,9 +2450,7 @@ def category_condition_delete(
 
     # log action
     logger.info(
-        "[{}] manager of structure {}"
-        " {} deleted a condition"
-        " for category {}".format(
+        "[{}] manager of structure {} {} deleted a condition for category {}".format(
             timezone.localtime(), structure, request.user, category
         )
     )
@@ -2572,8 +2507,7 @@ def category_condition_disable(
         )
     else:
         messages.add_message(
-            request, messages.ERROR, _(
-                "Clausola {} già disattivata").format(condition)
+            request, messages.ERROR, _("Clausola {} già disattivata").format(condition)
         )
     return redirect(
         "uni_ticket:manager_category_detail",
@@ -2610,8 +2544,7 @@ def category_condition_enable(
     )
     if condition.is_active:
         messages.add_message(
-            request, messages.ERROR, _(
-                "Clausola {} già attivata").format(condition)
+            request, messages.ERROR, _("Clausola {} già attivata").format(condition)
         )
     else:
         condition.is_active = True
@@ -2692,11 +2625,12 @@ def categories(request, structure_slug, structure):
     title = _("Gestione tipologie di richieste")
     template = "manager/categories.html"
     # sub_title = _("gestione ufficio livello manager")
-    categories = TicketCategory.objects\
-                               .filter(organizational_structure=structure)\
-                               .select_related('organizational_office')\
-                               .prefetch_related('ticketcategorytask_set')\
-                               .prefetch_related('ticketcategorycondition_set')
+    categories = (
+        TicketCategory.objects.filter(organizational_structure=structure)
+        .select_related("organizational_office")
+        .prefetch_related("ticketcategorytask_set")
+        .prefetch_related("ticketcategorycondition_set")
+    )
     # disable_expired_items(categories)
 
     d = {
@@ -2732,8 +2666,7 @@ def category_input_module_clone_preload(
     for struct in structures:
         if user_is_manager(request.user, struct):
             my_structures.append(struct)
-    title = _(
-        "Clona modulo [{}] ({} - {})").format(module, category, structure)
+    title = _("Clona modulo [{}] ({} - {})").format(module, category, structure)
     template = "manager/category_input_module_clone.html"
     sub_title = _("Seleziona la struttura")
     if selected_structure_slug:
@@ -2907,8 +2840,7 @@ def category_task_new(request, structure_slug, category_slug, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
 
     template = "manager/category_task_add_new.html"
@@ -2945,8 +2877,7 @@ def category_task_detail(request, structure_slug, category_slug, task_id, struct
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
-    task = get_object_or_404(
-        TicketCategoryTask, code=task_id, category=category)
+    task = get_object_or_404(TicketCategoryTask, code=task_id, category=category)
     d = {
         "category": category,
         "structure": structure,
@@ -2981,15 +2912,13 @@ def category_task_download_attachment(
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
-    task = get_object_or_404(
-        TicketCategoryTask, code=task_id, category=category)
+    task = get_object_or_404(TicketCategoryTask, code=task_id, category=category)
     # if task has attachment
     if task.attachment:
         # get ticket folder path
         path_allegato = get_path(task.get_folder())
         # get file
-        result = download_file(
-            path_allegato, os.path.basename(task.attachment.name))
+        result = download_file(path_allegato, os.path.basename(task.attachment.name))
         return result
     raise Http404
 
@@ -3015,8 +2944,7 @@ def category_task_edit(request, structure_slug, category_slug, task_id, structur
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
-    task = get_object_or_404(
-        TicketCategoryTask, code=task_id, category=category)
+    task = get_object_or_404(TicketCategoryTask, code=task_id, category=category)
 
     form = CategoryTaskForm(instance=task)
 
@@ -3032,29 +2960,24 @@ def category_task_edit(request, structure_slug, category_slug, task_id, structur
         del form.fields["attachment"]
 
     if request.method == "POST":
-        form = CategoryTaskForm(
-            instance=task, data=request.POST, files=request.FILES)
+        form = CategoryTaskForm(instance=task, data=request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
 
             # log action
             logger.info(
-                "[{}] manager of structure {}"
-                " {} edited a task"
-                " for category {}".format(
+                "[{}] manager of structure {} {} edited a task for category {}".format(
                     timezone.localtime(), structure, request.user, category
                 )
             )
 
             messages.add_message(
-                request, messages.SUCCESS, _(
-                    "Attività modificata con successo")
+                request, messages.SUCCESS, _("Attività modificata con successo")
             )
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
 
     d = {
@@ -3092,8 +3015,7 @@ def category_task_attachment_delete(
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
-    task = get_object_or_404(
-        TicketCategoryTask, code=task_id, category=category)
+    task = get_object_or_404(TicketCategoryTask, code=task_id, category=category)
 
     # Rimuove l'allegato dal disco
     delete_directory(task.get_folder())
@@ -3105,8 +3027,7 @@ def category_task_attachment_delete(
 
     # log action
     logger.info(
-        "[{}] {} deleted attachment"
-        " from task {} of category {}".format(
+        "[{}] {} deleted attachment from task {} of category {}".format(
             timezone.localtime(), request.user, task, category
         )
     )
@@ -3141,8 +3062,7 @@ def category_task_enable(request, structure_slug, category_slug, task_id, struct
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
-    task = get_object_or_404(
-        TicketCategoryTask, code=task_id, category=category)
+    task = get_object_or_404(TicketCategoryTask, code=task_id, category=category)
     if task.is_active:
         messages.add_message(
             request, messages.ERROR, _("Attività {} già attivata").format(task)
@@ -3157,9 +3077,7 @@ def category_task_enable(request, structure_slug, category_slug, task_id, struct
         )
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} enabled a task"
-            " for category {}".format(
+            "[{}] manager of structure {} {} enabled a task for category {}".format(
                 timezone.localtime(), structure, request.user, category
             )
         )
@@ -3192,8 +3110,7 @@ def category_task_disable(request, structure_slug, category_slug, task_id, struc
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
-    task = get_object_or_404(
-        TicketCategoryTask, code=task_id, category=category)
+    task = get_object_or_404(TicketCategoryTask, code=task_id, category=category)
     if task.is_active:
         task.is_active = False
         task.save(update_fields=["is_active"])
@@ -3204,16 +3121,13 @@ def category_task_disable(request, structure_slug, category_slug, task_id, struc
         )
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} disabled a task"
-            " for category {}".format(
+            "[{}] manager of structure {} {} disabled a task for category {}".format(
                 timezone.localtime(), structure, request.user, category
             )
         )
     else:
         messages.add_message(
-            request, messages.ERROR, _(
-                "Attività {} già disattivata").format(task)
+            request, messages.ERROR, _("Attività {} già disattivata").format(task)
         )
 
     return redirect(
@@ -3244,18 +3158,14 @@ def category_task_delete(request, structure_slug, category_slug, task_id, struct
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
-    task = get_object_or_404(
-        TicketCategoryTask, code=task_id, category=category)
+    task = get_object_or_404(TicketCategoryTask, code=task_id, category=category)
     messages.add_message(
-        request, messages.SUCCESS, _(
-            "Attività {} eliminata correttamente").format(task)
+        request, messages.SUCCESS, _("Attività {} eliminata correttamente").format(task)
     )
 
     # log action
     logger.info(
-        "[{}] manager of structure {}"
-        " {} deleted a task"
-        " for category {}".format(
+        "[{}] manager of structure {} {} deleted a task for category {}".format(
             timezone.localtime(), structure, request.user, category
         )
     )
@@ -3331,13 +3241,27 @@ def manager_settings_add_manager(request, structure_slug, structure):
     title = _("Aggiungi nuovo manager alla struttura")
     template = "manager/settings_add_manager.html"
     key = request.GET.get("search", "")
-    q_filter = (Q(taxpayer_id__icontains=key)
-                | Q(first_name__icontains=key)
-                | Q(last_name__icontains=key)) if key else Q()
-    all_users = get_user_model().objects.filter(q_filter, is_active=True)\
-                                .values("pk", "taxpayer_id",
-                                        "last_name", "first_name",
-                                        "email", EMPLOYEE_ATTRIBUTE_NAME)
+    q_filter = (
+        (
+            Q(taxpayer_id__icontains=key)
+            | Q(first_name__icontains=key)
+            | Q(last_name__icontains=key)
+        )
+        if key
+        else Q()
+    )
+    all_users = (
+        get_user_model()
+        .objects.filter(q_filter, is_active=True)
+        .values(
+            "pk",
+            "taxpayer_id",
+            "last_name",
+            "first_name",
+            "email",
+            EMPLOYEE_ATTRIBUTE_NAME,
+        )
+    )
     paginator = Paginator(all_users, 20)
     page = request.GET.get("page")
     users = paginator.get_page(page)
@@ -3346,37 +3270,31 @@ def manager_settings_add_manager(request, structure_slug, structure):
         form = AddUserForm(request.POST)
 
         if form.is_valid():
-            user = get_user_model().objects.get(pk=form.cleaned_data['user'])
+            user = get_user_model().objects.get(pk=form.cleaned_data["user"])
             osoe = OrganizationalStructureOfficeEmployee
             default_office = OrganizationalStructureOffice.objects.get(
                 organizational_structure=structure, is_default=True
             )
             # add user to default office
             operator_exists = osoe.objects.filter(
-                employee=user,
-                office=default_office
+                employee=user, office=default_office
             ).exists()
             if not operator_exists:
-                new_officeemployee = osoe(
-                    employee=user,
-                    office=default_office)
+                new_officeemployee = osoe(employee=user, office=default_office)
                 new_officeemployee.save()
 
             # check if manager exists
             manager_exists = UserManageOrganizationalStructure.objects.filter(
-                user=user,
-                organizational_structure=structure
+                user=user, organizational_structure=structure
             ).exists()
             if manager_exists:
                 return custom_message(
-                    request,
-                    _("Manager già assegnato alla struttura.")
+                    request, _("Manager già assegnato alla struttura.")
                 )
 
             # add user to structure managers
             new_manager = UserManageOrganizationalStructure(
-                user=user,
-                organizational_structure=structure
+                user=user, organizational_structure=structure
             )
             new_manager.save()
 
@@ -3386,8 +3304,7 @@ def manager_settings_add_manager(request, structure_slug, structure):
 
             # log action
             logger.info(
-                "[{}] manager of structure {}"
-                " {} added new manager {}".format(
+                "[{}] manager of structure {} {} added new manager {}".format(
                     timezone.localtime(), structure, request.user, user
                 )
             )
@@ -3398,15 +3315,14 @@ def manager_settings_add_manager(request, structure_slug, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     d = {
         "structure": structure,
         "sub_title": structure,
         "title": title,
         "users": users,
-        "key": key
+        "key": key,
     }
     return render(request, template, base_context(d))
 
@@ -3703,17 +3619,14 @@ def category_protocol_configuration_detail(
     form = CategoryWSProtocolloModelForm(instance=configuration)
 
     if request.method == "POST":
-        form = CategoryWSProtocolloModelForm(
-            instance=configuration, data=request.POST)
+        form = CategoryWSProtocolloModelForm(instance=configuration, data=request.POST)
         if form.is_valid():
             configuration.name = form.cleaned_data.get("name")
             configuration.protocollo_cod_titolario = form.cleaned_data.get(
                 "protocollo_cod_titolario"
             )
-            configuration.protocollo_uo = form.cleaned_data.get(
-                "protocollo_uo")
-            configuration.protocollo_uo_rpa = form.cleaned_data.get(
-                "protocollo_uo_rpa")
+            configuration.protocollo_uo = form.cleaned_data.get("protocollo_uo")
+            configuration.protocollo_uo_rpa = form.cleaned_data.get("protocollo_uo_rpa")
             configuration.protocollo_uo_rpa_username = form.cleaned_data.get(
                 "protocollo_uo_rpa_username"
             )
@@ -3723,8 +3636,7 @@ def category_protocol_configuration_detail(
             configuration.protocollo_send_email = form.cleaned_data.get(
                 "protocollo_send_email"
             )
-            configuration.protocollo_email = form.cleaned_data.get(
-                "protocollo_email")
+            configuration.protocollo_email = form.cleaned_data.get("protocollo_email")
             configuration.protocollo_fascicolo_numero = form.cleaned_data.get(
                 "protocollo_fascicolo_numero"
             )
@@ -3761,8 +3673,7 @@ def category_protocol_configuration_detail(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     d = {
         "category": category,
@@ -3822,8 +3733,7 @@ def category_protocol_configuration_new(
             )
 
             messages.add_message(
-                request, messages.SUCCESS, _(
-                    "Configurazione creata con successo")
+                request, messages.SUCCESS, _("Configurazione creata con successo")
             )
 
             return redirect(
@@ -3835,8 +3745,7 @@ def category_protocol_configuration_new(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
 
     template = "manager/category_protocol_configuration_new.html"
@@ -4024,9 +3933,7 @@ def category_protocol_configuration_enable(
         messages.add_message(
             request,
             messages.SUCCESS,
-            _("Configurazione <b>{}</b> attivata con successo").format(
-                configuration
-            ),
+            _("Configurazione <b>{}</b> attivata con successo").format(configuration),
         )
 
         # log action
@@ -4071,8 +3978,7 @@ def manager_settings_check_protocol(request, structure_slug, structure):
     except Exception as e:
         logger.error("Errore Protocollazione: {} - {}".format(request.user, e))
         messages.add_message(
-            request, messages.ERROR, _(
-                "<b>Errore protocollo</b>: {}").format(e)
+            request, messages.ERROR, _("<b>Errore protocollo</b>: {}").format(e)
         )
     return redirect("uni_ticket:manager_user_settings", structure_slug=structure_slug)
 
@@ -4120,8 +4026,7 @@ def category_default_reply_new(request, structure_slug, category_slug, structure
             )
 
             messages.add_message(
-                request, messages.SUCCESS, _(
-                    "Risposta predefinita creata con successo")
+                request, messages.SUCCESS, _("Risposta predefinita creata con successo")
             )
             return redirect(
                 "uni_ticket:manager_category_detail",
@@ -4131,8 +4036,7 @@ def category_default_reply_new(request, structure_slug, category_slug, structure
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
 
     template = "manager/category_default_reply_add_new.html"
@@ -4173,8 +4077,7 @@ def category_default_reply_delete(
         TicketCategoryDefaultReply, pk=default_reply_id, ticket_category=category
     )
     messages.add_message(
-        request, messages.SUCCESS, _(
-            "Risposta predefinita eliminata correttamente")
+        request, messages.SUCCESS, _("Risposta predefinita eliminata correttamente")
     )
 
     # log action
@@ -4281,8 +4184,7 @@ def category_default_reply_enable(
         default_reply.is_active = True
         default_reply.save(update_fields=["is_active"])
         messages.add_message(
-            request, messages.SUCCESS, _(
-                "Risposta predefinita attivata con successo")
+            request, messages.SUCCESS, _("Risposta predefinita attivata con successo")
         )
         # log action
         logger.info(
@@ -4330,8 +4232,7 @@ def category_default_reply_detail(
     )
     form = CategoryDefaultReplyForm(instance=default_reply)
     if request.method == "POST":
-        form = CategoryDefaultReplyForm(
-            instance=default_reply, data=request.POST)
+        form = CategoryDefaultReplyForm(instance=default_reply, data=request.POST)
         if form.is_valid():
             # edited_default_reply = form.save(commit=False)
             default_reply.text = strip_tags(form.cleaned_data["text"])
@@ -4360,8 +4261,7 @@ def category_default_reply_detail(
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     d = {
         "category": category,
@@ -4398,9 +4298,9 @@ def structure_alert_new(request, structure_slug, structure):
 
             # log action
             logger.info(
-                "[{}] manager of structure {}"
-                " {} created the new alert {}"
-                "".format(timezone.localtime(), structure, request.user, alert)
+                "[{}] manager of structure {} {} created the new alert {}".format(
+                    timezone.localtime(), structure, request.user, alert
+                )
             )
 
             messages.add_message(
@@ -4412,8 +4312,7 @@ def structure_alert_new(request, structure_slug, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
 
     template = "manager/structure_alert_add_new.html"
@@ -4446,14 +4345,12 @@ def structure_alert_delete(request, structure_slug, alert_id, structure):
         OrganizationalStructureAlert, pk=alert_id, organizational_structure=structure
     )
     messages.add_message(
-        request, messages.SUCCESS, _(
-            "Alert {} eliminato correttamente").format(alert)
+        request, messages.SUCCESS, _("Alert {} eliminato correttamente").format(alert)
     )
 
     # log action
     logger.info(
-        "[{}] manager of structure {}"
-        " {} deleted alert {}".format(
+        "[{}] manager of structure {} {} deleted alert {}".format(
             timezone.localtime(), structure, request.user, alert
         )
     )
@@ -4484,8 +4381,7 @@ def structure_alert_edit(request, structure_slug, alert_id, structure):
     # alert.disable_if_expired()
     form = OrganizationalStructureAlertForm(instance=alert)
     if request.method == "POST":
-        form = OrganizationalStructureAlertForm(
-            instance=alert, data=request.POST)
+        form = OrganizationalStructureAlertForm(instance=alert, data=request.POST)
         if form.is_valid():
             alert_condition = form.save(commit=False)
             alert_condition.text = strip_tags(form.cleaned_data["text"])
@@ -4493,8 +4389,7 @@ def structure_alert_edit(request, structure_slug, alert_id, structure):
 
             # log action
             logger.info(
-                "[{}] manager of structure {}"
-                " {} edited alert {}".format(
+                "[{}] manager of structure {} {} edited alert {}".format(
                     timezone.localtime(), structure, request.user, alert
                 )
             )
@@ -4508,8 +4403,7 @@ def structure_alert_edit(request, structure_slug, alert_id, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     template = "manager/structure_alert_edit.html"
     title = _("Modifica alert")
@@ -4562,8 +4456,7 @@ def structure_users_list_new(request, structure_slug, structure):
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
 
     template = "manager/structure_users_list_add_new.html"
@@ -4595,19 +4488,19 @@ def structure_users_list_edit(request, structure_slug, list_id, structure):
     users_list = get_object_or_404(
         OrganizationalStructureAllowedUsersList,
         pk=list_id,
-        organizational_structure=structure
+        organizational_structure=structure,
     )
     form = OrganizationalStructureAllowedUsersListForm(instance=users_list)
     if request.method == "POST":
         form = OrganizationalStructureAllowedUsersListForm(
-            instance=users_list, data=request.POST)
+            instance=users_list, data=request.POST
+        )
         if form.is_valid():
             users_list = form.save()
 
             # log action
             logger.info(
-                "[{}] manager of structure {}"
-                " {} edited alert {}".format(
+                "[{}] manager of structure {} {} edited alert {}".format(
                     timezone.localtime(), structure, request.user, users_list
                 )
             )
@@ -4618,13 +4511,12 @@ def structure_users_list_edit(request, structure_slug, list_id, structure):
             return redirect(
                 "uni_ticket:manager_structure_users_list_edit",
                 structure_slug=structure_slug,
-                list_id=list_id
+                list_id=list_id,
             )
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
     template = "manager/structure_users_list_edit.html"
     title = _("Modifica lista di utenti")
@@ -4635,11 +4527,11 @@ def structure_users_list_edit(request, structure_slug, list_id, structure):
         "structure": structure,
         "sub_title": sub_title,
         "title": title,
-        "users": users_list.allowed_users
+        "users": users_list.allowed_users,
     }
     return render(request, template, base_context(d))
 
-    
+
 @login_required
 @is_manager
 def structure_users_list_delete(request, structure_slug, list_id, structure):
@@ -4659,21 +4551,18 @@ def structure_users_list_delete(request, structure_slug, list_id, structure):
     users_list = get_object_or_404(
         OrganizationalStructureAllowedUsersList,
         pk=list_id,
-        organizational_structure=structure
+        organizational_structure=structure,
     )
     messages.add_message(
-        request, messages.SUCCESS, _(
-            "Lista {} eliminata correttamente").format(users_list)
+        request,
+        messages.SUCCESS,
+        _("Lista {} eliminata correttamente").format(users_list),
     )
 
     # log action
     logger.info(
-        "[{}] manager of structure {}"
-        " {} deleted allowed users list {}".format(
-            timezone.localtime(),
-            structure,
-            request.user,
-            users_list
+        "[{}] manager of structure {} {} deleted allowed users list {}".format(
+            timezone.localtime(), structure, request.user, users_list
         )
     )
 
@@ -4700,16 +4589,30 @@ def structure_users_list_add_user(request, structure_slug, list_id, structure):
     users_list = get_object_or_404(
         OrganizationalStructureAllowedUsersList,
         pk=list_id,
-        organizational_structure=structure
+        organizational_structure=structure,
     )
     key = request.GET.get("search", "")
-    q_filter = (Q(taxpayer_id__icontains=key)
-                | Q(first_name__icontains=key)
-                | Q(last_name__icontains=key)) if key else Q()
-    all_users = get_user_model().objects.filter(q_filter, is_active=True)\
-                                .values("pk", "taxpayer_id",
-                                        "last_name", "first_name",
-                                        "email", EMPLOYEE_ATTRIBUTE_NAME)
+    q_filter = (
+        (
+            Q(taxpayer_id__icontains=key)
+            | Q(first_name__icontains=key)
+            | Q(last_name__icontains=key)
+        )
+        if key
+        else Q()
+    )
+    all_users = (
+        get_user_model()
+        .objects.filter(q_filter, is_active=True)
+        .values(
+            "pk",
+            "taxpayer_id",
+            "last_name",
+            "first_name",
+            "email",
+            EMPLOYEE_ATTRIBUTE_NAME,
+        )
+    )
     paginator = Paginator(all_users, 20)
     page = request.GET.get("page")
     users = paginator.get_page(page)
@@ -4718,15 +4621,12 @@ def structure_users_list_add_user(request, structure_slug, list_id, structure):
         form = AddUserForm(request.POST)
 
         if form.is_valid():
-            user = get_user_model().objects.get(pk=form.cleaned_data['user'])
+            user = get_user_model().objects.get(pk=form.cleaned_data["user"])
             users = users_list.allowed_users
 
             # check if user exists
             if user in users.all():
-                return custom_message(
-                    request,
-                    _("Utente già selezionato")
-                )
+                return custom_message(request, _("Utente già selezionato"))
 
             users.add(user)
 
@@ -4738,26 +4638,21 @@ def structure_users_list_add_user(request, structure_slug, list_id, structure):
             logger.info(
                 "[{}] manager of structure {}"
                 " {} added new user {} to users list {}".format(
-                    timezone.localtime(),
-                    structure,
-                    request.user,
-                    user,
-                    users_list
+                    timezone.localtime(), structure, request.user, user, users_list
                 )
             )
 
             return redirect(
                 "uni_ticket:manager_structure_users_list_edit",
                 structure_slug=structure_slug,
-                list_id=list_id
+                list_id=list_id,
             )
         else:  # pragma: no cover
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(
-                        k, strip_tags(v))
+                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
-                
+
     template = "manager/structure_users_list_add_user.html"
     title = _("Aggiungi utente alla lista")
     sub_title = users_list
@@ -4767,14 +4662,16 @@ def structure_users_list_add_user(request, structure_slug, list_id, structure):
         "title": title,
         "users": users,
         "list_id": list_id,
-        "key": key
+        "key": key,
     }
     return render(request, template, base_context(d))
 
 
 @login_required
 @is_manager
-def structure_users_list_remove_user(request, structure_slug, list_id, user_id, structure):
+def structure_users_list_remove_user(
+    request, structure_slug, list_id, user_id, structure
+):
     """
     Remove user from users list
 
@@ -4794,25 +4691,19 @@ def structure_users_list_remove_user(request, structure_slug, list_id, user_id, 
     users_list = get_object_or_404(
         OrganizationalStructureAllowedUsersList,
         pk=list_id,
-        organizational_structure=structure
+        organizational_structure=structure,
     )
     users = users_list.allowed_users
     if not users.filter(pk=user_id):
         messages.add_message(
-            request, messages.ERROR, _(
-                "L'utente non è tra quelli abilitati")
+            request, messages.ERROR, _("L'utente non è tra quelli abilitati")
         )
     else:
         users.remove(user)
         # log action
         logger.info(
-            "[{}] manager of structure {}"
-            " {} removed user {} from list {}".format(
-                timezone.localtime(),
-                structure,
-                request.user,
-                user,
-                users_list
+            "[{}] manager of structure {} {} removed user {} from list {}".format(
+                timezone.localtime(), structure, request.user, user, users_list
             )
         )
         messages.add_message(
