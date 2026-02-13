@@ -1013,8 +1013,10 @@ def category_add_ticket_users_list(request, structure_slug, category_slug, struc
     if request.POST:
         form = AddUsersListForm(request.POST)
         if form.is_valid():
-            users_list = OrganizationalStructureAllowedUsersList.objects.get(
-                organizational_structure=structure, pk=form.cleaned_data["users_list"]
+            users_list = get_object_or_404(
+                OrganizationalStructureAllowedUsersList,
+                organizational_structure=structure,
+                pk=form.cleaned_data["users_list"],
             )
             lists = category.allowed_users_lists
 
