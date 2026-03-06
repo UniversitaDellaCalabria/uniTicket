@@ -1,0 +1,69 @@
+site_name: uniTicket - Documentazione
+site_author: Università della Calabria
+
+theme:
+  name: material
+  logo: assets/logo_unical_white.svg
+  # palette:
+  #   scheme: default # o 'slate' per il tema scuro
+  #   primary: indigo
+  #   accent: indigo
+  scheme: default   # "default" per tema chiaro, "slate" per tema scuro
+  features:
+    - navigation.tabs    # Menu orizzontale in alto
+    - search.suggest     # Suggerimenti durante la ricerca
+    - content.code.copy  # Bottone per copiare il codice
+    - content.code.annotate  # Abilita le annotazioni (1) (2)
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/UniversitaDellaCalabria
+
+extra_css:
+  - stylesheets/extra.css
+
+copyright: |
+  Università della Calabria (www.unical.it)
+
+nav:
+  - Panoramica: index.md
+  - Setup:
+    - Installazione: setup/01_installazione.md
+    - Configurazione: 
+        - Configurazione globale: setup/configurazione/01_globale.md
+        - Override impostazioni di default: setup/configurazione/02_override.md
+        - Database: setup/configurazione/03_database.md
+        - Bootstrap Italia: setup/configurazione/04_bootstrap_italia.md
+        - Run: setup/configurazione/05_run.md
+    - Migrazione da v1 a v2: setup/migrazione/01_migrazione_v1_v2.md
+  - Aree organizzative:
+    - Strutture: strutture/strutture.md
+    - Uffici: strutture/uffici.md
+  - Ticket, Tipologie e Attività:
+    - Ticket: 
+      - Panoramica: objects/ticket/index.md
+      - Nuovo ticket: objects/ticket/nuovo.md
+      - Gestione: objects/ticket/gestione.md
+    - Tipologie di richiesta: objects/tipologie.md
+    - Attività: objects/attivita.md
+  - Ruoli: 
+    - Utente: 
+      - Panoramica: ruoli/utente/index.md
+      - Gestione ticket: ruoli/utente/ticket.md
+      - Gestione dati personali: ruoli/utente/dati-personali.md
+    - Operatore: ruoli/operatore/index.md
+    - Manager: 
+      - Panoramica: ruoli/manager/index.md
+      - Gestione tipologie: ruoli/manager/tipologie.md
+      - Gestione uffici: ruoli/manager/uffici.md
+  - Caratteristiche: plus/index.md

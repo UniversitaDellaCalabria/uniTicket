@@ -1,0 +1,74 @@
+# Caratteristiche
+
+## Template Bootstrap Italia
+
+La libreria Bootstrap Italia è il modo più semplice e sicuro per costruire interfacce web moderne, inclusive e semplici da mantenere.  
+
+Completamente open-source, costruita sulle fondamenta di Bootstrap 5.2.3, di cui eredita tutte le funzionalità, componenti, griglie e classi di utilità, personalizzandole secondo le Linee Guida di Design per i siti web della Pubblica Amministrazione, Bootstrap Italia usa i pattern e i componenti definiti nello UI Kit di Designers Italia e li trasforma in codice già pronto all’uso!  
+
+[https://github.com/italia/design-django-theme](https://github.com/italia/design-django-theme)
+
+## Costruzione dinamica dei form
+
+App django-form-builder integrata per la costruzione di form dinamici e la definizione di nuovi campi custom.
+
+[https://github.com/UniversitaDellaCalabria/django-form-builder](https://github.com/UniversitaDellaCalabria/django-form-builder)
+
+## Gestione allegati firmati digitalmente
+
+Grazie all’integrazione della libreria Django Dynamic Form e di FileSig, la piattaforma è in grado di gestire file PDF firmati digitalmente e P7M e di effettuare una validazione delle firme, visualizzandone i dettagli.
+
+Il Django Form Field utilizzato per questa feature è stato basato su:
+[https://github.com/peppelinux/FileSignatureValidator](https://github.com/peppelinux/FileSignatureValidator)
+
+## Gestione Javascript di Django Formsets
+
+Implementazione javascript del controllo frontend per la gestione di campi di input “complessi”, costruiti da field elementari e pertanto adattabili alle più disparate esigenze di configurazione dei moduli di input.
+
+[https://docs.djangoproject.com/en/2.2/topics/forms/formsets/](https://docs.djangoproject.com/en/2.2/topics/forms/formsets/)
+
+## JQuery Datatables
+
+Gestione ottimizzata dei record delle tabelle, che velocizza il caricamento delle pagine e non sovraccarica il server e il client in fase di renderizzazione dei risultati di una ricerca.
+
+[https://datatables.net/](https://datatables.net/)  
+[https://github.com/peppelinux/django-datatables-ajax](https://github.com/peppelinux/django-datatables-ajax)
+
+## Single Sign On (SAML2)
+
+Federare uniTicket in un systema SSO SAML2 è una operazione estremamente semplice. All’interno dei requirements già otteniamo le dipendenze a djangosaml2 e pysaml2. Per federare uniTicket presso un IdP basterà ereditare la configurazione in *saml2_sp/settings.py* e modificarla a proprio piacimento.
+
+Nello specifico i parametri rilevanti sono:
+
+* entityid
+* required_attributes
+* metadata[“remote”]
+
+Modificare questi ultimi ed eventuali altri sulla base dei parametri tecnici per la federazione alla organizzazione di propria appartenenza. Per attivare la configurazione scelta basterà includere in settingslocal.py una dichiarazione di questo genere:
+
+``` py
+if 'saml2_sp' in INSTALLED_APPS:
+    from saml2_sp.settings import *
+```
+
+Per rendere operativa l’autenticazione tramite SAML2 includere le app djangosaml2 e saml2_sp
+
+``` py
+INSTALLED_APPS = [
+     ...
+
+    ##SAML2 SP
+    'djngosaml2',
+        'saml2_sp',
+]
+```
+
+e commentare gli url login e logout nel file urls.py del progetto
+
+``` py
+# Login/Logou URLs
+# for local auth
+# disable these for SAML2 auth or others
+path('{}/'.format(settings.LOGIN_URL), auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+path('{}/'.format(settings.LOGOUT_URL), auth_views.LogoutView.as_view(template_name='logout.html', next_page='../'), name='logout'),
+```

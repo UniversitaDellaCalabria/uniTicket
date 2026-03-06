@@ -1,0 +1,6 @@
+:root {
+    /* Colore primario personalizzato */
+    --md-primary-fg-color: #b71918;
+    --md-primary-fg-color--light: #b71918;
+    --md-primary-fg-color--dark: #b71918;
+}
