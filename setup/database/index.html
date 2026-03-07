@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../..">
+        <link rel="prev" href="../configurazione/05_sso_saml2/">
       
       
-        <link rel="next" href="../configurazione/01_globale/">
+        <link rel="next" href="../run/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Installazione - uniTicket - Documentazione</title>
+        <title>Database - uniTicket - Documentazione</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#installazione" class="md-skip">
+        <a href="#inizializzazione-del-database-e-del-sistema" class="md-skip">
           Skip to content
         </a>
       
@@ -80,7 +80,9 @@
     
       
 
-<header class="md-header" data-md-component="header">
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="uniTicket - Documentazione" class="md-header__button md-logo" aria-label="uniTicket - Documentazione" data-md-component="logo">
       
@@ -101,7 +103,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Installazione
+              Database
             
           </span>
         </div>
@@ -165,155 +167,6 @@
       
         
           
-            
-<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
-  <div class="md-grid">
-    <ul class="md-tabs__list">
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../.." class="md-tabs__link">
-        
-  
-  
-    
-  
-  Panoramica
-
-      </a>
-    </li>
-  
-
-      
-        
-  
-  
-  
-    
-  
-  
-    
-    
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
-          
-  
-  
-  Setup
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../strutture/strutture/" class="md-tabs__link">
-          
-  
-  
-  Aree organizzative
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../objects/ticket/" class="md-tabs__link">
-          
-  
-  
-  Ticket, Tipologie e Attività
-
-        </a>
-      </li>
-    
-  
-
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../ruoli/utente/" class="md-tabs__link">
-          
-  
-  
-  Ruoli
-
-        </a>
-      </li>
-    
-  
-
-    
-  
-
-      
-        
-  
-  
-  
-  
-    <li class="md-tabs__item">
-      <a href="../../plus/" class="md-tabs__link">
-        
-  
-  
-    
-  
-  Caratteristiche
-
-      </a>
-    </li>
-  
-
-      
-    </ul>
-  </div>
-</nav>
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -327,10 +180,8 @@
                     
 
 
-  
 
-
-<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="uniTicket - Documentazione" class="md-nav__button md-logo" aria-label="uniTicket - Documentazione" data-md-component="logo">
       
@@ -348,8 +199,55 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../home/" class="md-nav__link">
         
   
   
@@ -368,34 +266,92 @@
     </li>
   
 
-    
-      
-      
+              
+            
+              
+                
   
   
-    
   
   
-  
-    
-    
-    
-    
-      
+    <li class="md-nav__item">
+      <a href="../../home/caratteristiche/" class="md-nav__link">
         
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Caratteristiche
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../home/componenti/" class="md-nav__link">
         
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Componenti
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
       
       
+  
+  
+    
+  
+  
+  
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   
@@ -428,37 +384,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Installazione
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../installazione/" class="md-nav__link">
         
   
   
@@ -474,48 +403,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#requisiti" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Requisiti
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#download-del-software-e-dipendenze" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Download del software e dipendenze
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -530,9 +417,6 @@
     
     
     
-    
-      
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -578,14 +462,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../configurazione/01_globale/" class="md-nav__link">
+      <a href="../configurazione/settingslocal/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Configurazione globale
+    File settingslocal.py
   
 
     
@@ -606,14 +490,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../configurazione/02_override/" class="md-nav__link">
+      <a href="../configurazione/parametri-obbligatori/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Override impostazioni di default
+    Parametri obbligatori
   
 
     
@@ -634,14 +518,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../configurazione/03_database/" class="md-nav__link">
+      <a href="../configurazione/personalizzazione/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Database
+    Personalizzazione
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configurazione/parametri-avanzati/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametri avanzati
   
 
     
@@ -690,14 +602,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../configurazione/05_run/" class="md-nav__link">
+      <a href="../configurazione/05_sso_saml2/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Run
+    Autenticazione SAML2
   
 
     
@@ -723,10 +635,146 @@
                 
   
   
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#creazione-dello-schema-esempio-per-mariadb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creazione dello Schema (Esempio per MariaDB)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creazione-delle-tabelle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creazione delle tabelle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creazione-del-superuser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creazione del Superuser
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
-      <a href="../migrazione/01_migrazione_v1_v2/" class="md-nav__link">
+      <a href="../run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migrazione/v1-v2/" class="md-nav__link">
         
   
   
@@ -763,9 +811,6 @@
     
     
     
-    
-      
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -877,9 +922,6 @@
     
     
     
-      
-      
-    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -926,9 +968,6 @@
     
     
     
-    
-      
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1132,9 +1171,6 @@
     
     
     
-      
-      
-    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -1181,9 +1217,6 @@
     
     
     
-    
-      
-      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -1352,9 +1385,6 @@
     
     
     
-      
-      
-    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -1491,33 +1521,6 @@
   
 
     
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../plus/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Caratteristiche
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -1545,10 +1548,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#requisiti" class="md-nav__link">
+  <a href="#creazione-dello-schema-esempio-per-mariadb" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Requisiti
+        Creazione dello Schema (Esempio per MariaDB)
       
     </span>
   </a>
@@ -1556,10 +1559,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#download-del-software-e-dipendenze" class="md-nav__link">
+  <a href="#creazione-delle-tabelle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Download del software e dipendenze
+        Creazione delle tabelle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creazione-del-superuser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creazione del Superuser
       
     </span>
   </a>
@@ -1577,30 +1591,49 @@
           
             <div class="md-content" data-md-component="content">
               
+                
+
+
+
+
+              
               <article class="md-content__inner md-typeset">
                 
                   
 
 
 
-<h1 id="installazione">Installazione</h1>
-<h2 id="requisiti">Requisiti</h2>
-<div class="highlight"><pre><span></span><code>sudo apt install xmlsec1 mariadb-server libmariadbclient-dev python3-dev python3-pip libssl-dev libmariadb-dev-compat libsasl2-dev libldap2-dev
-
-pip3 install virtualenv
-python3 -m venv uniticket.env
-source uniticket.env/bin/activate
-</code></pre></div>
-<h2 id="download-del-software-e-dipendenze">Download del software e dipendenze</h2>
-<div class="highlight"><pre><span></span><code>git clone https://github.com/UniversitaDellaCalabria/uniTicket.git
-cd uniTicket
-pip3 install -r requirements.txt
-</code></pre></div>
-<p>Convert HTML to PDF using Webkit (QtWebKit)</p>
-<div class="highlight"><pre><span></span><code>wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb
-sudo dpkg -i wkhtmltox_0.12.5-1.buster_amd64.deb
-sudo apt install -f
-</code></pre></div>
+<h1 id="inizializzazione-del-database-e-del-sistema">Inizializzazione del Database e del Sistema</h1>
+<p>Una volta completata la configurazione del file settingslocal.py, è necessario preparare l'ambiente del database e generare la struttura delle tabelle. Di seguito sono riportati i passaggi per la configurazione su MariaDB e la creazione dell'utenza amministrativa.</p>
+<h3 id="creazione-dello-schema-esempio-per-mariadb">Creazione dello Schema (Esempio per MariaDB)</h3>
+<p>Il seguente script automatizza la creazione dell'utente di sistema e del database dedicato. È fondamentale che il set di caratteri sia impostato su utf8 con collation utf8_general_ci per garantire la corretta memorizzazione di simboli e accenti.</p>
+<div class="admonition info">
+<p class="admonition-title">Nota</p>
+<p>L'host '%' permette la connessione da qualsiasi indirizzo IP; per una maggiore sicurezza in produzione, si consiglia di limitarlo a 'localhost' o all'IP specifico del server applicativo.</p>
+</div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Bash
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a># Definizione delle variabili d&#39;ambiente per la configurazione
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>export USER=&#39;that-user&#39;
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>export PASS=&#39;that-password&#39;
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>export HOST=&#39;%&#39;
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>export DB=&#39;uniticket&#39;
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a># Esecuzione dei comandi SQL (testato su Debian 10/11/12 con MariaDB)
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>sudo mysql -u root -e &quot;\
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>CREATE USER IF NOT EXISTS &#39;${USER}&#39;@&#39;${HOST}&#39; IDENTIFIED BY &#39;${PASS}&#39;;\
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>CREATE DATABASE IF NOT EXISTS ${DB} CHARACTER SET = &#39;utf8&#39; COLLATE = &#39;utf8_general_ci&#39;;\
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>GRANT ALL PRIVILEGES ON ${DB}.* TO &#39;${USER}&#39;@&#39;${HOST}&#39;;&quot;
+</span></code></pre></div>
+<h3 id="creazione-delle-tabelle">Creazione delle tabelle</h3>
+<p>Dopo aver creato il database vuoto, è necessario istruire Django affinché generi tutte le tabelle, gli indici e le relazioni necessarie al funzionamento dei vari moduli (ticket, account, organizzazione, ecc.). Questo processo viene gestito tramite il sistema delle migrazioni.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Bash
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>./manage.py migrate
+</span></code></pre></div>
+<h3 id="creazione-del-superuser">Creazione del Superuser</h3>
+<p>Per poter accedere al pannello di amministrazione e iniziare a configurare gli uffici e le aree organizzative, è necessario creare almeno un account con privilegi massimi. Il comando richiederà l'inserimento di un nome utente, un indirizzo email e una password.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Bash
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>./manage.py createsuperuser
+</span></code></pre></div>
 
 
 
@@ -1671,7 +1704,7 @@ sudo apt install -f
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "search.suggest", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.path", "search.suggest", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
