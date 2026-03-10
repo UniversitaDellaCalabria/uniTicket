@@ -28,7 +28,7 @@ dependsOn:
       versionMin: ''
 description:
   it:
-    documentation: 'https://uniticket.readthedocs.io/it/latest/index.html'
+    documentation: 'https://universitadellacalabria.github.io/uniTicket/'
     features:
       - >-
         Multi Tenant. Un unico sistema a supporto di diversi uffici e aree
