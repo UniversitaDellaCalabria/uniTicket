@@ -25,7 +25,7 @@ Principali caratteristiche:
 - Template grafico Bootstrap Italia (Linee Guida di Design pe la P.A.) reponsive per una esperienza di navigazione ottimale anche sui dispositivi mobili;
 - Integazione SAML2 SSO (pySAML2);
 
-[Documentazione ufficiale](https://universitadellacalabria.github.io/uniTicket/) su **readthedocs** per installazione e utilizzo del software.
+[Documentazione ufficiale](https://universitadellacalabria.github.io/uniTicket/) per installazione e utilizzo del software.
 
 
 Dump example data
