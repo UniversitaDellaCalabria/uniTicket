@@ -1,17 +1,9 @@
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
-
-# for javascript datepickers
-JS_DEFAULT_DATETIME_FORMAT = getattr(
-    settings, "JS_DEFAULT_DATETIME_FORMAT", "DD/MM/YYYY HH:mm"
-)
-
 # system attachments folders
-TICKET_ATTACHMENT_FOLDER = getattr(
-    settings, "TICKET_ATTACHMENT_FOLDER", "ticket")
-TICKET_CATEGORIES_FOLDER = getattr(
-    settings, "TICKET_CATEGORIES_FOLDER", "categories")
+TICKET_ATTACHMENT_FOLDER = getattr(settings, "TICKET_ATTACHMENT_FOLDER", "ticket")
+TICKET_CATEGORIES_FOLDER = getattr(settings, "TICKET_CATEGORIES_FOLDER", "categories")
 TICKET_MESSAGES_ATTACHMENT_SUBFOLDER = getattr(
     settings, "TICKET_MESSAGES_ATTACHMENT_SUBFOLDER", "messages"
 )
@@ -32,8 +24,7 @@ UNITICKET_JWE_ENC = getattr(settings, "UNITICKET_JWE_ENC", "A128CBC-HS256")
 SUPER_USER_VIEW_ALL = getattr(settings, "SUPER_USER_VIEW_ALL", True)
 
 # show ticket priority to simple userse
-SIMPLE_USER_SHOW_PRIORITY = getattr(
-    settings, "SIMPLE_USER_SHOW_PRIORITY", False)
+SIMPLE_USER_SHOW_PRIORITY = getattr(settings, "SIMPLE_USER_SHOW_PRIORITY", False)
 
 # category conditions form field
 TICKET_CONDITIONS_FIELD_ID = getattr(
@@ -64,7 +55,7 @@ TICKET_HEADING_TEXT = getattr(
 TICKET_COMPILED_HEADING_TEXT = getattr(
     settings,
     "TICKET_COMPILED_HEADING_TEXT",
-    _("Compilato da: <b>{user}</b>" '<br><span class="x-small">[{taxpayer}]</span>'),
+    _('Compilato da: <b>{user}</b><br><span class="x-small">[{taxpayer}]</span>'),
 )
 
 # form fields names
@@ -86,8 +77,7 @@ TICKET_SUBJECT_HELP_TEXT = getattr(
 )
 
 # ticket description
-TICKET_DESCRIPTION_ID = getattr(
-    settings, "TICKET_DESCRIPTION_ID", "ticket_description")
+TICKET_DESCRIPTION_ID = getattr(settings, "TICKET_DESCRIPTION_ID", "ticket_description")
 TICKET_DESCRIPTION_LABEL = getattr(
     settings, "TICKET_DESCRIPTION_LABEL", _("Descrizione")
 )
@@ -103,9 +93,7 @@ TICKET_DESCRIPTION_HELP_TEXT = getattr(
 )
 
 # captcha
-TICKET_CAPTCHA_ID = getattr(
-    settings, "TICKET_CAPTCHA_ID", "ticket_captcha"
-)
+TICKET_CAPTCHA_ID = getattr(settings, "TICKET_CAPTCHA_ID", "ticket_captcha")
 TICKET_CAPTCHA_HIDDEN_ID = getattr(
     settings, "TICKET_CAPTCHA_HIDDEN_ID", "ticket_captcha_hidden"
 )
@@ -179,8 +167,7 @@ MANAGEMENT_URL_PREFIX = {
 
 # ticket competence abandoned
 NO_MORE_COMPETENCE_OVER_TICKET = getattr(
-    settings, "NO_MORE_COMPETENCE_OVER_TICKET", _(
-        "Nessuna competenza sulla richiesta")
+    settings, "NO_MORE_COMPETENCE_OVER_TICKET", _("Nessuna competenza sulla richiesta")
 )
 # ticket readonly access
 READONLY_COMPETENCE_OVER_TICKET = getattr(
@@ -190,8 +177,7 @@ READONLY_COMPETENCE_OVER_TICKET = getattr(
 )
 
 # min ticket content length (digits) to compress
-TICKET_MIN_DIGITS_TO_COMPRESS = getattr(
-    settings, "TICKET_MIN_DIGITS_TO_COMPRESS", 90)
+TICKET_MIN_DIGITS_TO_COMPRESS = getattr(settings, "TICKET_MIN_DIGITS_TO_COMPRESS", 90)
 
 # Access level to categories
 # Override for your own context
@@ -212,22 +198,17 @@ ORGANIZATION_EMPLOYEE_LABEL = getattr(
 )
 # If True, an internal user (not guest) is a user that has this filled (in user model)
 # If False, an internal user is a user that is mapped as OrganizationalStructureOfficeEmployee
-USER_ATTRIBUTE_NAME = getattr(
-    settings, "USER_ATTRIBUTE_NAME", "identificativo_utente")
-USER_ATTRIBUTE_LABEL = getattr(
-    settings, "USER_ATTRIBUTE_LABEL", "Matricola utente")
+USER_ATTRIBUTE_NAME = getattr(settings, "USER_ATTRIBUTE_NAME", "identificativo_utente")
+USER_ATTRIBUTE_LABEL = getattr(settings, "USER_ATTRIBUTE_LABEL", "Matricola utente")
 
 # Ticket categories CSV export
 # additional user fields to export
 ADDITIONAL_USER_FIELDS = getattr(
-    settings, "ADDITIONAL_USER_FIELDS", [
-        EMPLOYEE_ATTRIBUTE_NAME,
-        USER_ATTRIBUTE_NAME]
+    settings, "ADDITIONAL_USER_FIELDS", [EMPLOYEE_ATTRIBUTE_NAME, USER_ATTRIBUTE_NAME]
 )
 
 # Label
-ORGANIZATION_USER_LABEL = getattr(
-    settings, "ORGANIZATION_USER_LABEL", "Studenti")
+ORGANIZATION_USER_LABEL = getattr(settings, "ORGANIZATION_USER_LABEL", "Studenti")
 
 # error message for user that has compiled a request but it's not the owner
 TICKET_SHARING_USER_ERROR_MESSAGE = getattr(
@@ -277,8 +258,7 @@ UNAVAILABLE_TICKET_CATEGORY = getattr(
 )
 
 NEW_TICKET_CREATED_ALERT = getattr(
-    settings, "NEW_TICKET_CREATED_ALERT", _(
-        """Richiesta "{}" creata con successo""")
+    settings, "NEW_TICKET_CREATED_ALERT", _("""Richiesta "{}" creata con successo""")
 )
 
 NEW_TICKET_CREATED = getattr(
@@ -499,61 +479,44 @@ STATS_TIME_SLOTS = getattr(
     "STATS_TIME_SLOTS",
     {
         1: range(8, 14),  # 8 - 13:59
-        2: range(14, 19), # 14 - 18:59
-        3: range(19, 22), # 19 - 21:59
+        2: range(14, 19),  # 14 - 18:59
+        3: range(19, 22),  # 19 - 21:59
         4: range(22, 24),  # 22 - 23:59
-        5: range(0, 8)    # 0 - 7:59
-    }
+        5: range(0, 8),  # 0 - 7:59
+    },
 )
 
 STATS_MAX_DAYS = getattr(settings, "STATS_MAX_DAYS", 332)
 
-STATS_HEAT_MAP_RANGES = getattr(settings, "STATS_HEAT_MAP_RANGES",
+STATS_HEAT_MAP_RANGES = getattr(
+    settings,
+    "STATS_HEAT_MAP_RANGES",
     [
-        {
-            "from": 0,
-            "to": 5,
-            "name": 'low',
-            "color": '#00A100'
-        },
-        {
-            "from": 6,
-            "to": 20,
-            "name": 'medium',
-            "color": '#128FD9'
-        },
-        {
-            "from": 21,
-            "to": 50,
-            "name": 'high',
-            "color": '#FFB200'
-        },
-        {
-            "from": 51,
-            "to": 250,
-            "name": 'extreme',
-            "color": '#FF0000'
-        }
-    ]
+        {"from": 0, "to": 5, "name": "low", "color": "#00A100"},
+        {"from": 6, "to": 20, "name": "medium", "color": "#128FD9"},
+        {"from": 21, "to": 50, "name": "high", "color": "#FFB200"},
+        {"from": 51, "to": 250, "name": "extreme", "color": "#FF0000"},
+    ],
 )
 
-STATS_SHOW_TICKETS_BY_USER = getattr(
-    settings, 'STATS_SHOW_TICKETS_BY_USER', True)
+STATS_SHOW_TICKETS_BY_USER = getattr(settings, "STATS_SHOW_TICKETS_BY_USER", True)
 
-PRECOMPILED_TICKET_EXPIRE_DAYS = getattr(
-    settings, 'PRECOMPILED_TICKET_EXPIRE_DAYS', 7)
+PRECOMPILED_TICKET_EXPIRE_DAYS = getattr(settings, "PRECOMPILED_TICKET_EXPIRE_DAYS", 7)
 
 MARKDOWN_EXTENSIONS = getattr(
-    settings, "MARKDOWN_EXTENSIONS",
-    ["markdown.extensions.fenced_code",
-     "markdown.extensions.tables"]
+    settings,
+    "MARKDOWN_EXTENSIONS",
+    ["markdown.extensions.fenced_code", "markdown.extensions.tables"],
 )
 
 SPID_CIE_ALLOWED_CONTEXTS = getattr(
-    settings, "SPID_CIE_ALLOWED_CONTEXTS",
-    ["https://www.spid.gov.it/SpidL1",
-     "https://www.spid.gov.it/SpidL2",
-     "https://www.spid.gov.it/SpidL3",
-     "https://www.cartaidentita.interno.gov.it/CIE",
-     "https://www.cartaidentita.interno.gov.it/AutenticazioneCIE"]
+    settings,
+    "SPID_CIE_ALLOWED_CONTEXTS",
+    [
+        "https://www.spid.gov.it/SpidL1",
+        "https://www.spid.gov.it/SpidL2",
+        "https://www.spid.gov.it/SpidL3",
+        "https://www.cartaidentita.interno.gov.it/CIE",
+        "https://www.cartaidentita.interno.gov.it/AutenticazioneCIE",
+    ],
 )

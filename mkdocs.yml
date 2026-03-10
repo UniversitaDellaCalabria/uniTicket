@@ -8,12 +8,13 @@ theme:
   #   scheme: default # o 'slate' per il tema scuro
   #   primary: indigo
   #   accent: indigo
-  scheme: default   # "default" per tema chiaro, "slate" per tema scuro
+  # scheme: state   # "default" per tema chiaro, "slate" per tema scuro
   features:
-    - navigation.tabs    # Menu orizzontale in alto
+    - navigation.path    # breadcrumbs
+    # - navigation.tabs    # Menu orizzontale in alto
     - search.suggest     # Suggerimenti durante la ricerca
     - content.code.copy  # Bottone per copiare il codice
-    - content.code.annotate  # Abilita le annotazioni (1) (2)
+    # - content.code.annotate  # Abilita le annotazioni (1) (2)
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -23,47 +24,56 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - admonition
+  - pymdownx.details  # Opzionale: per alert collassabili
 
 extra:
+  version: 2.9.2
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/UniversitaDellaCalabria
 
 extra_css:
-  - stylesheets/extra.css
+  - assets/stylesheets/extra.css
 
 copyright: |
   Università della Calabria (www.unical.it)
 
 nav:
-  - Panoramica: index.md
+  - Cos'è?: index.md
+  - Caratteristiche: caratteristiche.md
+  - Componenti: componenti.md
   - Setup:
-    - Installazione: setup/01_installazione.md
+    - Installazione: setup/installazione.md
+    - Database: setup/database.md
     - Configurazione: 
-        - Configurazione globale: setup/configurazione/01_globale.md
-        - Override impostazioni di default: setup/configurazione/02_override.md
-        - Database: setup/configurazione/03_database.md
-        - Bootstrap Italia: setup/configurazione/04_bootstrap_italia.md
-        - Run: setup/configurazione/05_run.md
-    - Migrazione da v1 a v2: setup/migrazione/01_migrazione_v1_v2.md
+        - File settingslocal.py: setup/configurazione/settingslocal.md
+        - Parametri obbligatori: setup/configurazione/parametri-obbligatori.md
+        - Personalizzazione: setup/configurazione/personalizzazione.md
+        - Parametri avanzati: setup/configurazione/parametri-avanzati.md
+        - Bootstrap Italia: setup/configurazione/bootstrap_italia.md
+        - Autenticazione SAML2: setup/configurazione/sso_saml2.md
+    - Run: setup/run.md
+    - Docker: setup/docker.md
+    - Migrazione da v1 a v2: setup/migrazione/v1-v2.md
   - Aree organizzative:
-    - Strutture: strutture/strutture.md
-    - Uffici: strutture/uffici.md
-  - Ticket, Tipologie e Attività:
-    - Ticket: 
-      - Panoramica: objects/ticket/index.md
-      - Nuovo ticket: objects/ticket/nuovo.md
-      - Gestione: objects/ticket/gestione.md
-    - Tipologie di richiesta: objects/tipologie.md
-    - Attività: objects/attivita.md
-  - Ruoli: 
-    - Utente: 
+    - Strutture: aree-organizzative/strutture.md
+    - Uffici: aree-organizzative/uffici.md
+  - Richieste (Ticket): ticket/index.md
+  - Attività (Task): task/index.md
+  - Tipologie di richieste: tipologie/index.md
+  - Ruoli degli utenti:
+    - Utente semplice:
       - Panoramica: ruoli/utente/index.md
-      - Gestione ticket: ruoli/utente/ticket.md
-      - Gestione dati personali: ruoli/utente/dati-personali.md
-    - Operatore: ruoli/operatore/index.md
-    - Manager: 
+      - Dashboard: ruoli/utente/dashboard.md
+      - Nuova richiesta: ruoli/utente/nuovo-ticket.md
+      - Messaggi: ruoli/utente/messaggi.md
+      - Account: ruoli/utente/account.md
+    - Operatore:
+      - Panoramica: ruoli/operatore/index.md
+      - Dashboard: ruoli/operatore/dashboard.md
+      - Gestione delle richieste: ruoli/operatore/gestione.md
+    - Manager:
       - Panoramica: ruoli/manager/index.md
-      - Gestione tipologie: ruoli/manager/tipologie.md
-      - Gestione uffici: ruoli/manager/uffici.md
-  - Caratteristiche: plus/index.md
+      - Dashboard: ruoli/manager/dashboard.md
+      - Gestione delle tipollgie: ruoli/manager/gestione-tipologie.md

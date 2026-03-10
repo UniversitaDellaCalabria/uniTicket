@@ -11,9 +11,6 @@ AUTH_USER_MODEL = "accounts.User"
 # Administration backed available at /admin or whatever configured above
 ADMIN_PATH = 'admin_path'
 
-# from django 3.2
-DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-
 # custom date/datetime format
 DEFAULT_DATE_FORMAT = '%d/%m/%Y'
 DEFAULT_TIME_FORMAT = '%H:%M'
@@ -104,19 +101,14 @@ INSTALLED_APPS = [
     # 'channels',
     # 'chat',
 
-    # Libreria per la generazione dei PDF
-    # 'wkhtmltopdf',
-
     # SAML2 SP
     # 'djangosaml2',
     # 'saml2_sp',
 
-    # protocollo webservice in uso
-    # ogni università dovrebbe interfacciare il proprio
-    # 'archipro_ws',
-
     # advanced search builder
     'admin_adv_search_builder',
+
+    'markdownx',
 ]
 
 TEMPLATES = [
@@ -134,8 +126,6 @@ TEMPLATES = [
         },
     },
 ]
-
-HOME_PAGE = "/"
 
 # Static files (CSS, JavaScript, Images)
 DATA_DIR = os.path.join(BASE_DIR, "data")
