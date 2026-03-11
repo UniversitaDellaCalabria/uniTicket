@@ -1696,7 +1696,7 @@
 
 
 <h1 id="autenticazione-saml2">Autenticazione SAML2</h1>
-<p>Federare uniTicket in un sistema SSO (Single Sign-On) basato su protocollo SAML2 è un'operazione estremamente lineare. Grazie all'architettura modulare, l'applicativo include già nei propri requisiti le librerie djangosaml2 e pysaml2, standard di riferimento per l'integrazione di Django con i Service Provider SAML2.</p>
+<p>Federare uniTicket in un sistema SSO (Single Sign-On) basato su protocollo SAML2 è un'operazione estremamente lineare. Grazie all'architettura modulare, l'applicativo include già nei propri requisiti le librerie <strong>djangosaml2</strong> e <strong>pysaml2</strong>, standard di riferimento per l'integrazione di Django con i Service Provider SAML2.</p>
 <p>Per federare uniTicket presso un Identity Provider (IdP), come ad esempio sistemi SPID o CIE, è sufficiente configurare il modulo dedicato ereditando i parametri presenti in saml2_sp/settings.py e adattandoli alle specifiche tecniche della propria infrastruttura.</p>
 <h3 id="parametri-di-configurazione">Parametri di configurazione</h3>
 <p>I parametri fondamentali su cui agire all'interno del file di configurazione sono:</p>
@@ -1713,7 +1713,7 @@
 </ul>
 <p>È possibile modificare questi e altri parametri avanzati (come i certificati X.509) sulla base dei requisiti tecnici della federazione della propria organizzazione.</p>
 <h3 id="attivazione-del-modulo">Attivazione del modulo</h3>
-<p>Per rendere operativa l'autenticazione tramite SAML2, è necessario includere le applicazioni djangosaml2 e saml2_sp all'interno della lista INSTALLED_APPS nel proprio settingslocal.py:</p>
+<p>Per rendere operativa l'autenticazione tramite SAML2, è necessario includere le applicazioni <strong>djangosaml2</strong> e <strong>saml2_sp</strong> all'interno della lista <a href="../parametri-avanzati/#lista-app-installate">INSTALLED_APPS</a> nel proprio settingslocal.py:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">INSTALLED_APPS</span> <span class="o">=</span> <span class="p">[</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>     <span class="o">...</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
