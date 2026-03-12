@@ -13,4 +13,4 @@ Il profilo raccoglie le informazioni anagrafiche e di carriera che determinano i
 * **Email di contatto**: indirizzo predefinito per la ricezione di tutte le notifiche di sistema (solitamente modificabile).
 
 !!! info "Informazione"
-    I campi modificabili sono definiti in [EDITABLE_FIELDS](/setup/configurazione/parametri-avanzati/#modifica-profilo-utente) (uniticket/accounts/settings.py) e personalizzabili definendo la variabile nel settingslocal.py.
+    I campi modificabili sono definiti in [EDITABLE_FIELDS](../../setup/configurazione/parametri-avanzati.md#modifica-profilo-utente) (uniticket/accounts/settings.py) e personalizzabili definendo la variabile nel settingslocal.py.

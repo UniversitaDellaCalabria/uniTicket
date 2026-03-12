@@ -2,9 +2,9 @@
 
 ### Architettura e Flussi Organizzativi
 
-* **Multi-tenant nativo**: il sistema consente la coesistenza di più uffici o [aree organizzative](/aree-organizzative/strutture/) indipendenti (es. Risorse Umane, IT, Segreteria Didattica) all'interno di un'unica installazione. Ogni tenant mantiene la propria autonomia configurativa, i propri operatori e i propri database di richeste, garantendo isolamento dei dati e scalabilità.
+* **Multi-tenant nativo**: il sistema consente la coesistenza di più uffici o [aree organizzative](aree-organizzative/strutture.md) indipendenti (es. Risorse Umane, IT, Segreteria Didattica) all'interno di un'unica installazione. Ogni tenant mantiene la propria autonomia configurativa, i propri operatori e i propri database di richeste, garantendo isolamento dei dati e scalabilità.
 
-* **Trasferimento e Condivisione Inter-ufficio**: supera la compartimentazione stagnante permettendo di smistare una richiesta verso un altro [ufficio](/aree-organizzative/uffici/) competente o di condividerne la visibilità. Questo assicura che l'utente non debba mai riaprire una pratica se ha sbagliato destinatario, migliorando la collaborazione interna.
+* **Trasferimento e Condivisione Inter-ufficio**: supera la compartimentazione stagnante permettendo di smistare una richiesta verso un altro [ufficio](aree-organizzative/uffici.md) competente o di condividerne la visibilità. Questo assicura che l'utente non debba mai riaprire una pratica se ha sbagliato destinatario, migliorando la collaborazione interna.
 
 * **Interdipendenza tra Richieste**: consente di legare la risoluzione di una richiesta principale (Parent) alla chiusura di uno o più richieste secondarie (Child) aperti verso altri uffici. È la funzione chiave per gestire processi complessi che richiedono il "nulla osta" di diversi dipartimenti.
 

@@ -20,11 +20,11 @@ In uniTicket, la visibilità delle tipologie di richieste non è uguale per tutt
 
 Il sistema classifica l'utente in tre macro-categorie operative, determinate dalle configurazioni d'ambiente (settingslocal.py):
 
-* **Dipendente (Employee)**: utente identificato dalla presenza di un codice specifico (parametro [EMPLOYEE_ATTRIBUTE_NAME](/setup/configurazione/parametri-avanzati/#utenti-employee-e-internal-user), ad esempio la matricola dipendente):
+* **Dipendente (Employee)**: utente identificato dalla presenza di un codice specifico (parametro [EMPLOYEE_ATTRIBUTE_NAME](../../setup/configurazione/parametri-avanzati.md#utenti-employee-e-internal-user), ad esempio la matricola dipendente):
 
     * **Accesso**: visualizza tutte le tipologie di richieste riservate al personale interno dell'ente.
 
-* **Utente Interno (es. Studente)**: utente identificato da un attributo di carriera (parametro [USER_ATTRIBUTE_NAME](/setup/configurazione/parametri-avanzati/#utenti-employee-e-internal-user), ad esempio la matricola studente):
+* **Utente Interno (es. Studente)**: utente identificato da un attributo di carriera (parametro [USER_ATTRIBUTE_NAME](../../setup/configurazione/parametri-avanzati.md#utenti-employee-e-internal-user), ad esempio la matricola studente):
 
     * **Accesso**: abilita la visione dei servizi core (iscrizioni, certificati, tasse) che richiedono uno status di appartenenza attiva all'organizzazione.
 

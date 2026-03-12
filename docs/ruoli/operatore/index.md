@@ -1,6 +1,6 @@
 # Operatore
 
-L'area dedicata all'Operatore rappresenta il cuore gestionale di uniTicket. Questo spazio è progettato per fornire agli addetti agli [uffici](/aree-organizzative/uffici/) tutti gli strumenti necessari per prendere in carico, lavorare e risolvere le richieste pervenute, garantendo un flusso di lavoro ordinato e tracciabile.
+L'area dedicata all'Operatore rappresenta il cuore gestionale di uniTicket. Questo spazio è progettato per fornire agli addetti agli [uffici](../../aree-organizzative/uffici.md) tutti gli strumenti necessari per prendere in carico, lavorare e risolvere le richieste pervenute, garantendo un flusso di lavoro ordinato e tracciabile.
 
 L'Operatore non si limita a rispondere ai messaggi, ma agisce come il gestore del ciclo di vita della richiesta all'interno della propria sfera di competenza.
 
@@ -20,7 +20,7 @@ In uniTicket, l'identità dell'utente è unica, ma le sue funzioni possono cambi
 
 Per passare alla gestione operativa delle richieste, l'utente deve effettuare un cambio di contesto manuale: nell'header, in alto a destra, è presente un pulsante "Ruolo", che consente di cambiare contesto in base ai ruoli ricoperti nelle varie strutture;
 
-In alternativa a ciò, è possibile utilizzare direttamente gli URL di accesso alle varie risorse. uniTicket non memorizza il cambio di profilo in sessione ma utilizza [appositi path](/setup/configurazione/parametri-avanzati/#url-path-ruoli) per accedere alle singole risorse, effettuando dei check sui permessi (es: /operator/struttura/risorsa-da-gestire/).
+In alternativa a ciò, è possibile utilizzare direttamente gli URL di accesso alle varie risorse. uniTicket non memorizza il cambio di profilo in sessione ma utilizza [appositi path](../../setup/configurazione/parametri-avanzati.md#url-path-ruoli) per accedere alle singole risorse, effettuando dei check sui permessi (es: /operator/struttura/risorsa-da-gestire/).
 
 ### Ambiti di Competenza e Permessi
 

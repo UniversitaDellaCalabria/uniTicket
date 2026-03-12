@@ -1,6 +1,6 @@
 # Manager
 
-L’utente Manager rappresenta il vertice decisionale e configurativo di una [Struttura](/aree-organizzative/strutture/) all'interno di uniTicket.  
+L’utente Manager rappresenta il vertice decisionale e configurativo di una [Struttura](../../aree-organizzative/strutture.md) all'interno di uniTicket.  
 Se l’Operatore è la figura che lavora sulla singola istanza, il Manager è colui che progetta l’intero ecosistema in cui le istanze si muovono.
 
 Il suo ruolo combina responsabilità organizzative e configurazione tecnica: egli ha la facoltà di decidere quali uffici debbano esistere, quali persone vi debbano lavorare e, soprattutto, quali servizi (tipologie di richiesta) l'ente debba offrire all'utenza esterna e interna.
@@ -41,7 +41,7 @@ Per garantire che il servizio sia efficiente e uniforme, il Manager configura st
 
 Come per l'operatore, per passare al profilo da Manager, l'utente deve effettuare un cambio di contesto manuale: nell'header, in alto a destra, è presente un pulsante "Ruolo", che consente di cambiare contesto in base ai ruoli ricoperti nelle varie strutture;
 
-In alternativa a ciò, è possibile utilizzare direttamente gli URL di accesso alle varie risorse. uniTicket non memorizza il cambio di profilo in sessione ma utilizza [appositi path](/setup/configurazione/parametri-avanzati/#url-path-ruoli) per accedere alle singole risorse, effettuando dei check sui permessi (es: /manager/struttura/risorsa-da-gestire/).
+In alternativa a ciò, è possibile utilizzare direttamente gli URL di accesso alle varie risorse. uniTicket non memorizza il cambio di profilo in sessione ma utilizza [appositi path](../../setup/configurazione/parametri-avanzati.md#url-path-ruoli) per accedere alle singole risorse, effettuando dei check sui permessi (es: /manager/struttura/risorsa-da-gestire/).
 
 ### La Doppia Natura Operativa (Lo Switch di Ruolo)
 
