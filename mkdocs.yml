@@ -1,4 +1,4 @@
-site_name: uniTicket - docs (v2.9.2)
+site_name: uniTicket - docs (v2.9.3)
 site_author: Università della Calabria
 
 theme:
@@ -28,7 +28,7 @@ markdown_extensions:
   - pymdownx.details  # Opzionale: per alert collassabili
 
 extra:
-  version: 2.9.2
+  version: 2.9.3
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/UniversitaDellaCalabria
