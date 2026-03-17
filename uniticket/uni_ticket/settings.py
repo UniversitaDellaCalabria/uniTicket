@@ -251,6 +251,34 @@ Cordiali saluti.
     ),
 )
 
+MSG_HEADER_HTML = getattr(
+    settings,
+    "MSG_HEADER_HTML",
+    _(
+        """Gentile utente,<br>
+questo messaggio è stato inviato da {hostname}.<br>
+Per favore non rispondere a questa email.
+<br><br>
+-------------------
+<br><br>
+"""
+    ),
+)
+
+MSG_FOOTER_HTML = getattr(
+    settings,
+    "MSG_FOOTER_HTML",
+    _(
+        """
+<br><br>
+-------------------
+<br><br>
+Per problemi tecnici contatta il nostro staff.<br>
+Cordiali saluti.
+"""
+    ),
+)
+
 UNAVAILABLE_TICKET_CATEGORY = getattr(
     settings,
     "UNAVAILABLE_TICKET_CATEGORY",

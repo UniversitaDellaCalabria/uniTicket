@@ -10,7 +10,7 @@ from django.utils.dateparse import parse_datetime
 from django.utils.translation import gettext_lazy as _
 
 from uni_ticket.jwts import encrypt_to_jwe, decrypt_from_jwe
-from uni_ticket.settings import MSG_FOOTER, MSG_HEADER
+from uni_ticket.settings import MSG_FOOTER, MSG_HEADER, MSG_HEADER_HTML, MSG_FOOTER_HTML
 from uni_ticket.utils import base_context, send_custom_mail
 
 from . forms import UserDataForm
@@ -48,9 +48,12 @@ def changeData(request): # pragma: no cover
                 url = f'{base_url}?token={encrypted_data}'
                 body=_("Conferma la tua email cliccando qui:\n\n<{}>").format(url)
                 msg_body = f'{MSG_HEADER.format(hostname=settings.HOSTNAME)}{body}{MSG_FOOTER}'
+                html_body=_('Conferma la tua email cliccando qui:<br><br><a href="{}">{}</a>').format(url, url)
+                html_msg_body = f'{MSG_HEADER_HTML.format(hostname=settings.HOSTNAME)}{html_body}{MSG_FOOTER_HTML}'
                 result = send_mail(
                     subject=_("Conferma email"),
                     message=msg_body,
+                    html_message=html_msg_body,
                     from_email=settings.EMAIL_SENDER,
                     recipient_list=[email],
                     fail_silently=True,
