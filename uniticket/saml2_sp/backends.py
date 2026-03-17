@@ -38,8 +38,9 @@ class CustomSaml2Backend(Saml2Backend):
             # pop to avoid the saml2 default update
             saml_attr = attributes.pop(el, [])
             attr = saml_attr[0] if saml_attr else None
+            if not attr: continue
             # if attribute exists and user haven't done a manual update
-            if attr and not user.manual_user_update:
+            if not getattr(user, mapping[el], None) or not user.manual_user_update:
                 # update field for user
                 setattr(user, mapping[el], attr)
                 force_save = True
