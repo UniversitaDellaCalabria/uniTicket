@@ -65,9 +65,9 @@ Nel file di configurazione generale **uni_ticket_project/settingslocal.py** è p
 
     # for javascript datepickers
     # BootstrapItalia datepicker
-    JS_DEFAULT_DATE_FORMAT = "dd/MM/yyyy"
+    JS_DEFAULT_DATE_FORMAT = "DD/MM/yyyy"
     # Cutstom datetimepicker
-    JS_DEFAULT_DATETIME_FORMAT = 'DD/MM/Y hh:mm'
+    JS_DEFAULT_DATETIME_FORMAT = 'DD/MM/yyyy hh:mm'
 
 - Definire l'ADMIN_PATH
 - Definire i database

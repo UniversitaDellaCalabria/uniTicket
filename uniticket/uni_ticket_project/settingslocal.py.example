@@ -22,9 +22,9 @@ DATETIME_INPUT_FORMATS = [DEFAULT_DATETIME_FORMAT, f'%Y-%m-%d {DEFAULT_TIME_FORM
 
 # for javascript datepickers
 # BootstrapItalia datepicker
-JS_DEFAULT_DATE_FORMAT = "dd/MM/yyyy"
+JS_DEFAULT_DATE_FORMAT = "DD/MM/yyyy"
 # Cutstom datetimepicker
-JS_DEFAULT_DATETIME_FORMAT = 'DD/MM/YYYY HH:mm'
+JS_DEFAULT_DATETIME_FORMAT = 'DD/MM/yyyy HH:mm'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
