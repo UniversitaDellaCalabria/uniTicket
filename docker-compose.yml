@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   uniticket.local:
     image: ghcr.io/universitadellacalabria/uniticket:latest

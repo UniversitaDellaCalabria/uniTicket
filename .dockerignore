@@ -2,3 +2,29 @@
 docs/
 examples/
 data/
+
+# Byte-code files
+__pycache__
+*.pyc
+*.pyd
+*.pyo
+*.egg-info
+*.dist-info
+*.manifest
+
+# OS generated files
+.DS_Store
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Project metadata and git
+.gitignore
+.vscode
+.idea
+*/coverage
+README.md
