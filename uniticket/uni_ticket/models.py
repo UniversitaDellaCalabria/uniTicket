@@ -428,6 +428,7 @@ class TicketCategoryModule(models.Model):
         custom_params["show_conditions"] = show_conditions
         custom_params["category_owner"] = self.ticket_category
         custom_params["subject_initial"] = self.ticket_category.name
+        custom_params["subject_max_length"] = Ticket._meta.get_field('subject').max_length
         custom_params["description_initial"] = self.ticket_category.description
         custom_params["current_user"] = kwargs.get("current_user")
         custom_params["lang"] = settings.LANGUAGE_CODE

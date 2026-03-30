@@ -27,6 +27,7 @@ class DynamicForm(BaseDynamicForm):
         category_owner = custom_params.get("category_owner")
         show_conditions = custom_params.get("show_conditions")
         subject_initial = custom_params.get("subject_initial")
+        subject_max_length = custom_params.get("subject_max_length")
         description_initial = custom_params.get("description_initial")
         current_user = custom_params.get("current_user")
 
@@ -53,6 +54,7 @@ class DynamicForm(BaseDynamicForm):
             "label": TICKET_SUBJECT_LABEL,
             "help_text": TICKET_SUBJECT_HELP_TEXT,
             "initial": subject_initial,
+            "max_length": subject_max_length
         }
         subject_field = getattr(
             dynamic_fields, "CustomCharField")(**subject_data)
