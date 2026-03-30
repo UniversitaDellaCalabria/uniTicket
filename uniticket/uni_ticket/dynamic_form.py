@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django_form_builder.forms import BaseDynamicForm
 from django_form_builder import dynamic_fields
 from uni_ticket.settings import (
@@ -28,6 +29,7 @@ class DynamicForm(BaseDynamicForm):
         show_conditions = custom_params.get("show_conditions")
         subject_initial = custom_params.get("subject_initial")
         subject_max_length = custom_params.get("subject_max_length")
+        subject_min_length = getattr(settings, "PROTOCOL_SUBJECT_MIN_LENGTH", 1) if category_owner.protocol_required else 1
         description_initial = custom_params.get("description_initial")
         current_user = custom_params.get("current_user")
 
@@ -54,7 +56,8 @@ class DynamicForm(BaseDynamicForm):
             "label": TICKET_SUBJECT_LABEL,
             "help_text": TICKET_SUBJECT_HELP_TEXT,
             "initial": subject_initial,
-            "max_length": subject_max_length
+            "max_length": subject_max_length,
+            "min_length": subject_min_length
         }
         subject_field = getattr(
             dynamic_fields, "CustomCharField")(**subject_data)
