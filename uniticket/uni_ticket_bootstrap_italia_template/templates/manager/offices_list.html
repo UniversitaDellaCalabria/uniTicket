@@ -25,9 +25,8 @@
       {% for office in offices %}
       <div class="col-12 col-lg-4 office-box">
         <!--start card-->
-        <div class="card-wrapper card-space">
-          <div class="card card-bg no-after">
-            <div class="card-body">
+        <article class="it-card rounded shadow">
+            <div class="it-card-body">
                 {% if office.is_active %}
                     <span class="badge bg-success mb-2">
                         {% trans "Attivo" %}
@@ -44,10 +43,10 @@
                 {% endif %}
                 <br>
                 <a class="read-more" href="{% url 'uni_ticket:manager_office_detail' structure_slug=structure.slug office_slug=office.slug %}">
-                    <h5 class="card-title">{{ office.name }}</h5>
+                    <h5 class="it-card-title">{{ office.name }}</h5>
                 </a>
-              <p class="card-text">{{ office.description }}</p>
-              <p class="card-text">
+              <p class="it-card-text">{{ office.description }}</p>
+              <p class="it-card-text">
                   <b>{% trans 'Operatori' %}:</b>
                   {{ office.organizationalstructureofficeemployee_set.count }}
                   <br>
@@ -77,9 +76,8 @@
                         {% trans "Nessuna" %}
                     {% endif %}
               </p>
-            </div>
           </div>
-        </div>
+        </article>
         <!--end card-->
       </div>
       {% endfor %}

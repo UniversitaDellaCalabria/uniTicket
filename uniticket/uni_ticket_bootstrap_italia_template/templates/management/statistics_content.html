@@ -5,274 +5,247 @@
 <div class="pb-3">
     <div class="row">
         <div class="col">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
+            <article class="it-card rounded shadow">
+                <div class="it-card-body">
 
-                        <!-- Filtri Statistiche -->
-                        <div class="accordion accordion-left-icon" id="accordionDiv-filtri-statistiche-lft">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header " id="heading-filtri-statistiche-l">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-filtri-statistiche-l" aria-expanded="false" aria-controls="collapse-filtri-statistiche-l">
-                                        {% trans "Filtri sulle statistiche" %}
-                                    </button>
-                                </h2>
-                                <div id="collapse-filtri-statistiche-l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv-filtri-statistiche-lft" role="region" aria-labelledby="heading-filtri-statistiche-l">
-                                    <div class="accordion-body">
-                                        <form method="post" class="mt-4">
-                                            {% csrf_token %}
-                                            <!-- Date picker -->
-                                            <div class="form-group">
-                                                <div class="row">
-                                                    <div class="col-sm">
-                                                        <label for="date_start">
-                                                            {% trans 'Data di inizio' %} {% if date_start %} ({{ date_start }}) {% endif %}
+                    <!-- Filtri Statistiche -->
+                    <div class="accordion accordion-left-icon" id="accordionDiv-filtri-statistiche-lft">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header " id="heading-filtri-statistiche-l">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-filtri-statistiche-l" aria-expanded="false" aria-controls="collapse-filtri-statistiche-l">
+                                    {% trans "Filtri sulle statistiche" %}
+                                </button>
+                            </h2>
+                            <div id="collapse-filtri-statistiche-l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv-filtri-statistiche-lft" role="region" aria-labelledby="heading-filtri-statistiche-l">
+                                <div class="accordion-body">
+                                    <form method="post" class="mt-4">
+                                        {% csrf_token %}
+                                        <!-- Date picker -->
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm">
+                                                    <label for="date_start">
+                                                        {% trans 'Data di inizio' %} {% if date_start %} ({{ date_start }}) {% endif %}
+                                                    </label>
+                                                    <input
+                                                        id="date_start"
+                                                        type="date"
+                                                        name="date_start"
+                                                        placeholder="{% trans 'Data di inizio' %}">
+                                                </div>
+                                                <div class="col-sm mt-5 mt-sm-0">
+                                                    <label for="date_end">
+                                                        {% trans 'Data di fine' %} {% if date_end %} ({{ date_end }}) {% endif %}
+                                                    </label>
+                                                    <input
+                                                        id="date_end"
+                                                        name="date_end"
+                                                        type="date"
+                                                        placeholder="{% trans 'Data di fine' %}">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Offices -->
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm">
+                                                    <div class="bootstrap-select-wrapper">
+                                                        <label for="office_slug">
+                                                            {% trans "Uffici" %}
                                                         </label>
-                                                        <input
-                                                            id="date_start"
-                                                            type="date"
-                                                            name="date_start"
-                                                            placeholder="{% trans 'Data di inizio' %}">
+                                                        <select
+                                                            id="office_slug"
+                                                            name="office_slug"
+                                                            multiple="true"
+                                                            data-multiple-separator=" ">
+                                                            {% for office in offices %}
+                                                                <option {% if office.slug in office_slugs %}selected{% endif %} value="{{ office.slug }}">{{ office.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
                                                     </div>
-                                                    <div class="col-sm mt-5 mt-sm-0">
-                                                        <label for="date_end">
-                                                            {% trans 'Data di fine' %} {% if date_end %} ({{ date_end }}) {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Ticket category -->
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm">
+                                                    <div class="bootstrap-select-wrapper">
+                                                        <label for="category_slug">
+                                                            {% trans "Categorie della richiesta" %}
                                                         </label>
-                                                        <input
-                                                            id="date_end"
-                                                            name="date_end"
-                                                            type="date"
-                                                            placeholder="{% trans 'Data di fine' %}">
+                                                        <select
+                                                            id="category_slug"
+                                                            multiple="true"
+                                                            name="category_slug"
+                                                            data-multiple-separator=" ">
+                                                            {% for category in tickets %}
+                                                                <option {% if category.slug in category_slugs %}selected{% endif %} value="{{ category.slug }}">{{ category.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <!-- Offices -->
-                                            <div class="form-group">
-                                                <div class="row">
-                                                    <div class="col-sm">
-                                                        <div class="bootstrap-select-wrapper">
-                                                            <label for="office_slug">
-                                                                {% trans "Uffici" %}
-                                                            </label>
-                                                            <select
-                                                                id="office_slug"
-                                                                name="office_slug"
-                                                                multiple="true"
-                                                                data-multiple-separator=" ">
-                                                                {% for office in offices %}
-                                                                    <option {% if office.slug in office_slugs %}selected{% endif %} value="{{ office.slug }}">{{ office.name }}</option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                        </div>
+                                        <div class="btn-example pt-3 clearfix">
+                                            <div class="d-grid gap-2">
+                                                <button type="submit" class="btn btn-success btn mb-3" data-focus-mouse="false">
+                                                    <svg class="icon icon-xs icon-white">
+                                                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-chart-line"></use>
+                                                    </svg>
+                                                    {% trans "Esegui" %}
+                                                </button>
                                             </div>
-
-                                            <!-- Ticket category -->
-                                            <div class="form-group">
-                                                <div class="row">
-                                                    <div class="col-sm">
-                                                        <div class="bootstrap-select-wrapper">
-                                                            <label for="category_slug">
-                                                                {% trans "Categorie della richiesta" %}
-                                                            </label>
-                                                            <select
-                                                                id="category_slug"
-                                                                multiple="true"
-                                                                name="category_slug"
-                                                                data-multiple-separator=" ">
-                                                                {% for category in tickets %}
-                                                                    <option {% if category.slug in category_slugs %}selected{% endif %} value="{{ category.slug }}">{{ category.name }}</option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="btn-example pt-3 clearfix">
-                                                <div class="d-grid gap-2">
-                                                    <button type="submit" class="btn btn-success btn mb-3" data-focus-mouse="false">
-                                                        <svg class="icon icon-xs icon-white">
-                                                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-chart-line"></use>
-                                                        </svg>
-                                                        {% trans "Esegui" %}
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </article>
         </div>
-        <div class="row">
-            <div class="col">
-                <div class="card-wrapper card-space">
-                    <div class="card card-bg no-after">
+    </div>
+    <div class="row mt-3">
+        <div class="col">
+            <article class="it-card rounded shadow">
+                <div class="it-card-body">
 
-                        <div class="card-body">
+                    <!-- <h6>{% trans "Sommario" %}<h6> -->
 
-                            <!-- <h6>{% trans "Sommario" %}<h6> -->
-
-                            <!-- Tabella sommario -->
-                            <div class="container">
-                                <div class="row">
-                                    <h6 class="text-muted">{% trans "Sommario" %}</h6>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6 p-2"><b>{% trans "Periodo" %}</b>: {{ date_start}} - {{ date_end }} </div>
-                                    <div class="col-sm-6 p-2"><b>{% trans "Settore" %}</b>: {{ structure|default:"-" }} </div>
-                                    {% if stats.office_slug %}
-                                    <div class="col-sm-6 p-2"><b>{% trans "Ufficio" %}</b>: {{ stats.office_slug}} </div>
-                                    {% endif %}
-                                    {% if stats.category_slug %}
-                                    <div class="col-sm-6 p-2"><b>{% trans "Categoria" %}</b>: {{ stats.category_slug}} </div>
-                                    {% endif %}
-                                    <div class="col-sm-6 p-2"><b>{% trans "Aperti" %}</b>: {{ stats.open}} </div>
-                                    <div class="col-sm-6 p-2"><b>{% trans "Chiusi" %}</b>: {{ stats.closed}} </div>
-                                    <div class="col-sm-6 p-2"><b>{% trans "Chiusi da operatori" %}</b>: {{ stats.closed_by_ops_count}} </div>
-                                    <div class="col-sm-6 p-2"><b>{% trans "Chiusi da utenti" %}</b>: {{ stats.closed_by_users}} </div>
-                                    <div class="col-sm-6 p-2"><b>{% trans "Riaperti" %}</b>: {{ stats.reopened}} </div>
-                                    <div class="col-sm-6 p-2"><b>{% trans "Notifiche" %}</b>: {{ stats.notifications}} </div>
-                                    <div class="col-sm-6 p-2"><b>{% trans "Assegnati" %}</b>: {{ stats.assigned}} </div>
-                                    <div class="col-sm-6 p-2"><b>{% trans "Messaggi per richiesta (media)" %}</b>: {{ stats.avg_msg_to_close|floatformat:2}} </div>
-                                </div>
-                            </div>
+                    <!-- Tabella sommario -->
+                    <div class="container">
+                        <div class="row">
+                            <h6 class="text-muted">{% trans "Sommario" %}</h6>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 p-2"><b>{% trans "Periodo" %}</b>: {{ date_start}} - {{ date_end }} </div>
+                            <div class="col-sm-6 p-2"><b>{% trans "Settore" %}</b>: {{ structure|default:"-" }} </div>
+                            {% if stats.office_slug %}
+                            <div class="col-sm-6 p-2"><b>{% trans "Ufficio" %}</b>: {{ stats.office_slug}} </div>
+                            {% endif %}
+                            {% if stats.category_slug %}
+                            <div class="col-sm-6 p-2"><b>{% trans "Categoria" %}</b>: {{ stats.category_slug}} </div>
+                            {% endif %}
+                            <div class="col-sm-6 p-2"><b>{% trans "Aperti" %}</b>: {{ stats.open}} </div>
+                            <div class="col-sm-6 p-2"><b>{% trans "Chiusi" %}</b>: {{ stats.closed}} </div>
+                            <div class="col-sm-6 p-2"><b>{% trans "Chiusi da operatori" %}</b>: {{ stats.closed_by_ops_count}} </div>
+                            <div class="col-sm-6 p-2"><b>{% trans "Chiusi da utenti" %}</b>: {{ stats.closed_by_users}} </div>
+                            <div class="col-sm-6 p-2"><b>{% trans "Riaperti" %}</b>: {{ stats.reopened}} </div>
+                            <div class="col-sm-6 p-2"><b>{% trans "Notifiche" %}</b>: {{ stats.notifications}} </div>
+                            <div class="col-sm-6 p-2"><b>{% trans "Assegnati" %}</b>: {{ stats.assigned}} </div>
+                            <div class="col-sm-6 p-2"><b>{% trans "Messaggi per richiesta (media)" %}</b>: {{ stats.avg_msg_to_close|floatformat:2}} </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col">
-                <div class="card-wrapper card-space">
-                    <div class="card card-bg no-after">
-                        <div class="card-body">
-
-                            <div class="row">
-                                <h6 class="text-muted">{% trans "Durate ed intervalli" %}</h6>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-sm-6 p-2"><b>{% trans "Apertura - Assegnazione" %}</b>: {{ stats.avg_pre_processing }} min</div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Assegnazione - Chiusura" %}</b>: {{ stats.avg_time_created_taken }} min</div>
-                                <div class="col-sm-6 p-2"><b>{% trans "Primo tempo di risposta" %}</b>: {{ stats.avg_first_time_op_answer }} min</div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-    <div class="row">
-        <div class="col">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
-                        <h6 class="text-muted">{% trans "Grafico dell'istogramma" %}</h6>
-                        {% include "management/statistics_histogram_tickets.html" %}
-                    </div>
-                </div>
-            </div>
+            </article>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
         <div class="col">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
-                        <h6 class="text-muted">{% trans "Mappa delle richieste aperte nei giorni della settimana per fascia oraria" %}</h6>
-                        {% include "management/statistics_heatmap_tickets.html" %}
+            <article class="it-card rounded shadow">
+                <div class="it-card-body">
+                    <div class="row">
+                        <h6 class="text-muted">{% trans "Durate ed intervalli" %}</h6>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 p-2"><b>{% trans "Apertura - Assegnazione" %}</b>: {{ stats.avg_pre_processing }} min</div>
+                        <div class="col-sm-6 p-2"><b>{% trans "Assegnazione - Chiusura" %}</b>: {{ stats.avg_time_created_taken }} min</div>
+                        <div class="col-sm-6 p-2"><b>{% trans "Primo tempo di risposta" %}</b>: {{ stats.avg_first_time_op_answer }} min</div>
                     </div>
                 </div>
-            </div>
+            </article>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
         <div class="col">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                <div class="card-body">
-
-                <h6 class="text-muted">{% trans "Richieste chiuse per operatore" %}</h6>
-                <div class="row">
-                    <table class="table">
-                        <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">{% trans "Operatore" %}</th>
-                            <th scope="col">{% trans "Numero" %}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for op, closed in stats.closed_by_ops.items %}
-                          <tr>
-                            <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ op }}</td>
-                            <td>{{ closed }}</td>
-                          </tr>
-                          {% endfor %}
-                        </tbody>
-                      </table>
+            <article class="it-card rounded shadow">
+                <div class="it-card-body">
+                    <h6 class="text-muted">{% trans "Grafico dell'istogramma" %}</h6>
+                    {% include "management/statistics_histogram_tickets.html" %}
                 </div>
-            </div>
+            </article>
+        </div>
+    </div>
 
+    <div class="row mt-3">
+        <div class="col">
+            <article class="it-card rounded shadow">
+                <div class="it-card-body">
+                    <h6 class="text-muted">{% trans "Mappa delle richieste aperte nei giorni della settimana per fascia oraria" %}</h6>
+                    {% include "management/statistics_heatmap_tickets.html" %}
                 </div>
-            </div>
+            </article>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col">
+            <article class="it-card rounded shadow">
+                <div class="it-card-body">
+
+                    <h6 class="text-muted">{% trans "Richieste chiuse per operatore" %}</h6>
+                    <div class="row">
+                        <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">{% trans "Operatore" %}</th>
+                                <th scope="col">{% trans "Numero" %}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for op, closed in stats.closed_by_ops.items %}
+                              <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ op }}</td>
+                                <td>{{ closed }}</td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                    </div>
+                </div>
+            </article>
         </div>
     </div>
 
     {% uni_ticket_settings_value "STATS_SHOW_TICKETS_BY_USER" as stats_show_tickets_by_user %}
     {% if stats_show_tickets_by_user %}
-    <div class="row">
+    <div class="row mt-3">
         <div class="col">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                <div class="card-body">
+            <article class="it-card rounded shadow">
+                <div class="it-card-body">
 
-                <h6 class="text-muted">{% trans "Richieste create per utente" %}</h6>
-                <div class="row">
+                    <h6 class="text-muted">{% trans "Richieste create per utente" %}</h6>
+                    <div class="row">
 
-                    <table class="table">
-                        <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">{% trans "Utente" %}</th>
-                            <th scope="col">{% trans "Numero" %}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for user,opened in stats.open_by_user.items%}
-                          <tr>
-                            <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ user }}</td>
-                            <td>{{ opened }}</td>
-                          </tr>
-                          {% endfor %}
-                        </tbody>
-                      </table>
-
+                        <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">{% trans "Utente" %}</th>
+                                <th scope="col">{% trans "Numero" %}</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for user,opened in stats.open_by_user.items%}
+                              <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ user }}</td>
+                                <td>{{ opened }}</td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-
-            </div>
+            </article>
         </div>
     </div>
     {% endif %}
-
-</div>
 </div>

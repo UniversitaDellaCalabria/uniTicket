@@ -4,43 +4,41 @@
 {% if request.user.email %}
 <div class="row">
     <div class="col">
-        <div class="card-wrapper card-space pb-3">
-            <div class="card card-bg no-after">
-                <div class="card-body">
-                    <div id="email-notify-message"></div>
-                    <form>
-                        <div class="form-check form-check-group">
-                            <div class="toggles">
-                              <label for="notifyEmail">
-                                    <svg class="icon icon-xs">
-                                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-mail"></use>
-                                    </svg> {% trans "Notifiche e-mail" %}
+        <article class="it-card rounded shadow mb-3">
+            <div class="it-card-body">
+                <div id="email-notify-message"></div>
+                <form>
+                    <div class="form-check form-check-group">
+                        <div class="toggles">
+                          <label for="notifyEmail">
+                                <svg class="icon icon-xs">
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-mail"></use>
+                                </svg> {% trans "Notifiche e-mail" %}
 
-                                <input type="checkbox"
-                                       ic-post-to="{% url 'uni_ticket:email_notify_change' %}"
-                                       ic-target="#email-notify-message"
-                                       ic-select-from-response="#intercooler-notify"
-                                       id="notifyEmail"
-                                       aria-labelledby="notify-email-help"
-                                       {% if request.user.email_notify %}
-                                       checked
-                                       {% endif %}
-                                        >
-                                <span class="lever"></span>
-                              </label>
-                            </div>
-                            <small id="notify-email-help" class="form-text">
-                                    {% trans "Se attiva, questa funzione invierà sulla mail" %}
-                                    <b>{{ request.user.email }}</b>
-                                    {% trans "le notifiche inerenti alle tue richieste e un rapporto periodico di riepilogo." %}
-                                    {% trans "Disattivandola, non verrà recapitato alcun messaggio." %}
-                            </small>
+                            <input type="checkbox"
+                                   ic-post-to="{% url 'uni_ticket:email_notify_change' %}"
+                                   ic-target="#email-notify-message"
+                                   ic-select-from-response="#intercooler-notify"
+                                   id="notifyEmail"
+                                   aria-labelledby="notify-email-help"
+                                   {% if request.user.email_notify %}
+                                   checked
+                                   {% endif %}
+                                    >
+                            <span class="lever"></span>
+                          </label>
                         </div>
-                        {% csrf_token %}
-                    </form>
-                </div>
+                        <small id="notify-email-help" class="form-text">
+                                {% trans "Se attiva, questa funzione invierà sulla mail" %}
+                                <b>{{ request.user.email }}</b>
+                                {% trans "le notifiche inerenti alle tue richieste e un rapporto periodico di riepilogo." %}
+                                {% trans "Disattivandola, non verrà recapitato alcun messaggio." %}
+                        </small>
+                    </div>
+                    {% csrf_token %}
+                </form>
             </div>
-        </div>
+        </article>
    </div>
 </div>
 {% else %}

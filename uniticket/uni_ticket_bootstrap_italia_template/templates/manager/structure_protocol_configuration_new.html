@@ -25,62 +25,60 @@
 {% block clean_content %}
 <div class="row">
     <div class="col">
-        <div class="card-space card-wrapper">
-            <div class="card card-bg no-after">
-                <div class="card-body">
-                    <div class="alert alert-info" role="alert">
-                        {% trans "La configurazione di un flusso di protocollo prevede la compilazione dei parametri di base." %}
-                        <br>
-                        {% trans "Eventuali <b>parametri errati</b> comporteranno un <b>errore in fase di protocollazione</b>." %}
+        <article class="it-card rounded shadow">
+            <div class="it-card-body">
+                <div class="alert alert-info" role="alert">
+                    {% trans "La configurazione di un flusso di protocollo prevede la compilazione dei parametri di base." %}
+                    <br>
+                    {% trans "Eventuali <b>parametri errati</b> comporteranno un <b>errore in fase di protocollazione</b>." %}
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    {% include 'form_template.html' %}
+                    {% block form_buttons %}
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success"
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#updateConfiguration">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
+                            </svg> {% trans 'Crea configurazione' %}
+                        </button>
                     </div>
-                    <form method="post" enctype="multipart/form-data">
-                        {% include 'form_template.html' %}
-                        {% block form_buttons %}
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-success"
-                                    type="button"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#updateConfiguration">
-                                <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
-                                </svg> {% trans 'Crea configurazione' %}
-                            </button>
-                        </div>
-                        <div class="modal fade" tabindex="-1" role="dialog" id="updateConfiguration">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">
-                                            {% trans "Creazione configurazione protocollo informatico" %}
-                                        </h5>
-                                        <button class="btn-close"
-                                                type="button"
-                                                data-bs-dismiss="modal"
-                                                aria-label="Close">
-                                           <svg class="icon">
-                                              <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
-                                           </svg>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>
-                                            {% trans "Vuoi davvero creare la configurazione" %}?
-                                        </p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <input class="btn btn-success"
-                                               type="submit"
-                                               id="submitForm"
-                                               value="{% trans 'Si, procedi' %}">
-                                    </div>
+                    <div class="modal fade" tabindex="-1" role="dialog" id="updateConfiguration">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        {% trans "Creazione configurazione protocollo informatico" %}
+                                    </h5>
+                                    <button class="btn-close"
+                                            type="button"
+                                            data-bs-dismiss="modal"
+                                            aria-label="Close">
+                                       <svg class="icon">
+                                          <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                       </svg>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        {% trans "Vuoi davvero creare la configurazione" %}?
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <input class="btn btn-success"
+                                           type="submit"
+                                           id="submitForm"
+                                           value="{% trans 'Si, procedi' %}">
                                 </div>
                             </div>
                         </div>
-                        {% endblock form_buttons %}
-                    </form>
-                </div>
+                    </div>
+                    {% endblock form_buttons %}
+                </form>
             </div>
-        </div>
+        </article>
     </div>
 </div>
 {% endblock clean_content %}

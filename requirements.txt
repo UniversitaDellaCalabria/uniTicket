@@ -25,7 +25,7 @@ djangosaml2>=1.0.3
 
 # Bootstrap Italia
 #git+https://github.com/italia/design-django-theme.git@v1
-design-django-theme==2.15.2
+design-django-theme>=2.18.0,<3
 # Unical template
 # django-unical-bootstrap-italia==1.2.0
 

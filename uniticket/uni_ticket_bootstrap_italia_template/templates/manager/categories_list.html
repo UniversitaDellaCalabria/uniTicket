@@ -26,19 +26,18 @@
       {% for category in categories %}
       <div class="col-12 col-lg-4 category-box">
         <!--start card-->
-        <div class="card-wrapper card-space">
-          <div class="card card-bg no-after">
-            <div class="card-body">
+        <article class="it-card it-card-height-full rounded shadow">
+            <div class="it-card-body">
                 {% include "manager/category_status.html" %}
                 {% if category.allow_spid_cie %}
                 <span class="badge c-line primary-bg-b1 mb-2">SPID/CIE</span>
                 {% endif %}
                 <br>
                 <a class="read-more" href="{% url 'uni_ticket:manager_category_detail' structure_slug=structure.slug category_slug=category.slug %}">
-                    <h5 class="card-title">{{ category.name }}</h5>
+                    <h5 class="it-card-title">{{ category.name }}</h5>
                 </a>
-              <p class="card-text">{{ category.description }}</p>
-              <p class="card-text">
+              <p class="it-card-text">{{ category.description }}</p>
+              <p class="it-card-text">
                   <b>{% trans 'Ufficio competente' %}:</b>
                   {% if category.organizational_office %}
                   <a href="{% url 'uni_ticket:manager_office_detail' structure_slug=structure.slug office_slug=category.organizational_office.slug %}">
@@ -87,9 +86,8 @@
                   {% endif %}
                   </svg>
               </p>
-            </div>
           </div>
-        </div>
+        </article>
         <!--end card-->
       </div>
       {% endfor %}

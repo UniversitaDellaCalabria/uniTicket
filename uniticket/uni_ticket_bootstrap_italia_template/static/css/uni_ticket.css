@@ -58,27 +58,35 @@ label{
 /**
  * Cards
  */
-.card a.read-more{
+article.it-card a.read-more{
     position: inherit;
     bottom: 0px;
 }
-.card .card-body .category-top a.category{
+article.it-card .it-card-body {
+    padding: 24px;
+}
+article.it-card .it-card-body .category-top a.category{
     color: #435a70;
 }
-.card .card-body p,
-.card .card-body p.card-text,
+article.it-card .it-card-body p,
+article.it-card .it-card-body p.card-text,
 .callout p{
     font-family: "Titillium Web",Geneva,Tahoma,sans-serif;
 }
-.card .card-body{
+article.it-card .it-card-body{
     // overflow-x: auto;
 }
-.card .card-body a h5.card-title{
+article.it-card .it-card-body .it-card-title{
+    padding: 0;
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    margin-bottom: 16px;
+}
+article.it-card .it-card-body a h5.it-card-title{
     text-transform: none;
     color: #17324d;
-
 }
-.card .card-body a h5.card-title.light-style{
+article.it-card .card-body a h5.it-card-title.light-style{
     font-weight: normal;
     margin-bottom: 0;
 }
@@ -87,7 +95,7 @@ label{
     display: inline;
 }
 */
-h5.card-title .badge{
+h5.it-card-title .badge{
     font-size: 1.1rem;
     margin-right: 20px;
 }
@@ -157,7 +165,7 @@ a.paginate_button.current{
 /*
  * Callout
  */
-.card .card-body .callout p{
+article.it-card .it-card-body .callout p{
     font-size: 1rem;
 }
 
@@ -310,8 +318,8 @@ select{
 /**
  * Ticket messages
  */
-.ticket_notes .card .card-body p,
-.ticket_replies .card .card-body p{
+.ticket_notes .it-card .it-card-body p,
+.ticket_replies .it-card .it-card-body p{
     font-size: 1rem;
 }
 

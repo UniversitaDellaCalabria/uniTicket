@@ -18,27 +18,25 @@
 {% block clean_content %}
 <div class="row">
     <div class="col">
-        <div class="card-space card-wrapper">
-            <div class="card card-bg no-after">
-                <div class="card-body">
-    {% block page_content %}
-        {% block pre_form %}{% endblock pre_form %}
-        <form method="post" enctype="multipart/form-data" novalidate>
-            {% include 'form_template.html' %}
-            {% block form_buttons %}{% endblock form_buttons %}
-        </form>
-        <p class="mt-3 text-muted">
-            <small>
-                {% trans "I campi contrassegnati con l'asterisco (*) sono obbligatori" %}
-            </small>
-        </p>
-        {% block post_form %}{% endblock post_form %}
-        {% block allegati %}{% endblock allegati %}
-    {% endblock page_content %}
+        <article class="it-card rounded shadow">
+            <div class="it-card-body">
+                {% block page_content %}
+                    {% block pre_form %}{% endblock pre_form %}
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% include 'form_template.html' %}
+                        {% block form_buttons %}{% endblock form_buttons %}
+                    </form>
+                    <p class="mt-3 text-muted">
+                        <small>
+                            {% trans "I campi contrassegnati con l'asterisco (*) sono obbligatori" %}
+                        </small>
+                    </p>
+                    {% block post_form %}{% endblock post_form %}
+                    {% block allegati %}{% endblock allegati %}
+                {% endblock page_content %}
+            </div>
+        </article>
     </div>
-</div>
-</div>
-</div>
 </div>
 {% endblock clean_content %}
 

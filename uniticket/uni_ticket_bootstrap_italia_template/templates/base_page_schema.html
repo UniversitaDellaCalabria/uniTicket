@@ -19,14 +19,12 @@
     {% block clean_content %}
     <div class="row">
         <div class="col">
-            <div class="card-space card-wrapper">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
-                        {% block page_content %}
-                        {% endblock page_content %}
-                    </div>
+            <article class="it-card rounded shadow">
+                <div class="it-card-body">
+                    {% block page_content %}
+                    {% endblock page_content %}
                 </div>
-            </div>
+            </article>
         </div>
     </div>
     {% endblock clean_content %}

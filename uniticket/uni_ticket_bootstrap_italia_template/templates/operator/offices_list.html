@@ -3,12 +3,11 @@
 
 <div class="pb-3">
     <div class="row">
-      {% for office in offices %}
-      <div class="col-12 col-lg-4">
-        <!--start card-->
-        <div class="card-wrapper card-space">
-          <div class="card card-bg no-after">
-            <div class="card-body">
+        {% for office in offices %}
+        <div class="col-12 col-lg-4">
+            <!--start card-->
+            <article class="it-card rounded shadow">
+                <div class="it-card-body">
                 {% if office.is_active %}
                     <span class="badge bg-success mb-2">
                         {% trans "Attivo" %}
@@ -23,9 +22,9 @@
                         {% trans "Ufficio speciale" %}
                     </span>
                 {% endif %}
-              <h5 class="card-title">{{ office.name }}</h5>
-              <p class="card-text">{{ office.description }}</p>
-              <p class="card-text">
+              <h5 class="it-card-title">{{ office.name }}</h5>
+              <p class="it-card-text">{{ office.description }}</p>
+              <p class="it-card-text">
                   <b>{% trans 'Operatori' %}:</b>
                   {{ office.organizationalstructureofficeemployee_set.all|length }}
                   <br>
@@ -47,11 +46,10 @@
                         {% trans "Nessuna" %}
                     {% endif %}
               </p>
-            </div>
-          </div>
+              </div>
+            </article>
+            <!--end card-->
         </div>
-        <!--end card-->
-      </div>
-      {% endfor %}
+        {% endfor %}
     </div>
 </div>

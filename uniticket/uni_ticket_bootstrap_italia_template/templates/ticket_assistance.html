@@ -8,91 +8,89 @@
     {% for reply in ticket_replies %}
     <div class="row" class="ticket_replies">
         <div class="col">
-            <div class="card-wrapper card-space">
-                <div class="card card-bg no-after">
-                    {% if reply.structure and not management %}
-                        <div class="card-body" style="background: #eff7ff">
-                    {% elif not reply.structure and management %}
-                        <div class="card-body" style="background: #eff7ff">
-                    {% else %}
-                        <div class="card-body">
-                    {% endif %}
-                    <div class="category-top">
-                        {% comment %}
-                        <div class="avatar size-sm">
-                            <img src="{% static 'images/avatar.png' %}" alt="user">
-                        </div>
-                        {% endcomment %}
-                    {% if reply.structure %}
-                        <a class="category">{{ reply.owner }} ({{ reply.structure }})</a>
-                    {% else %}
-                        <a class="category">{{ reply.owner }} ({% trans "Utente" %})</a>
-                    {% endif %}
-                        <span class="data">
-                            <svg class="icon icon-xs icon-secondary">
-                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-calendar"></use>
-                            </svg> {{ reply.created }}
-                        </span>
-                        {% if reply.read_date %}
-                        <span title="{% trans 'Visualizzato da' %} {{ reply.read_by }} - {{ reply.read_date }}" class="float-end">
-                            <svg class="icon icon-xs icon-primary">
-                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use>
-                            </svg>
-                        </span>
-                        {% endif %}
+            <article class="it-card rounded shadow">
+                {% if reply.structure and not management %}
+                <div class="it-card-body" style="background: #eff7ff">
+                {% elif not reply.structure and management %}
+                <div class="it-card-body" style="background: #eff7ff">
+                {% else %}
+                <div class="it-card-body">
+                {% endif %}
+                <div class="category-top">
+                    {% comment %}
+                    <div class="avatar size-sm">
+                        <img src="{% static 'images/avatar.png' %}" alt="user">
                     </div>
-                    <h5 class="card-title">{{ reply.subject }}</h5>
-                    <p class="card-text">{{ reply.text | markdown | safe }}</p>
-                    {% if reply.attachment %}
-                    <p class="card-text">
-                        <a href="{% url 'uni_ticket:download_message_attachment' ticket_id=reply.ticket.code reply_id=reply.id %}">
-                            <svg class="icon">
-                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
-                            </svg> {{ reply.attachment|filename }}
-                        </a>
-                    </p>
+                    {% endcomment %}
+                {% if reply.structure %}
+                    <a class="category">{{ reply.owner }} ({{ reply.structure }})</a>
+                {% else %}
+                    <a class="category">{{ reply.owner }} ({% trans "Utente" %})</a>
+                {% endif %}
+                    <span class="data">
+                        <svg class="icon icon-xs icon-secondary">
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-calendar"></use>
+                        </svg> {{ reply.created }}
+                    </span>
+                    {% if reply.read_date %}
+                    <span title="{% trans 'Visualizzato da' %} {{ reply.read_by }} - {{ reply.read_date }}" class="float-end">
+                        <svg class="icon icon-xs icon-primary">
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-check-circle"></use>
+                        </svg>
+                    </span>
                     {% endif %}
-                    {% if not reply.read_date and reply.owner == request.user %}
-                        {% if reply.structure and management or not reply.structure and not management %}
-                        <button type="button" class="btn btn-outline-danger btn-xs float-end" data-bs-toggle="modal" data-bs-target="#removeOffice{{ reply.pk }}">
-                            {% trans "Elimina il messaggio" %}
-                        </button>
-                        <div class="modal fade" tabindex="-1" role="dialog" id="removeOffice{{ reply.pk }}">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">
-                                            {% trans "Eliminazione messaggio" %}
-                                        </h5>
-                                        <button class="btn-close" type="button"
-                                                data-bs-dismiss="modal" aria-label="Close">
-                                           <svg class="icon">
-                                              <use xlink:href="/static/svg/sprites.svg#it-close"></use>
-                                           </svg>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>{% trans "Puoi eliminare questo messaggio poichè non è stato ancora letto" %}.
-                                            <br>
-                                            {% trans "Vuoi davvero eliminare il messaggio" %}
-                                           <b>{{ reply }}</b> ?
-                                        </p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <a role="button" class="btn btn-danger"
-                                           href="{% url 'uni_ticket:message_delete' ticket_message_id=reply.pk %}">
-                                            {% trans "Si, elimina" %}
-                                        </a>
-                                    </div>
+                </div>
+                <h5 class="it-card-title">{{ reply.subject }}</h5>
+                <p class="it-card-text">{{ reply.text | markdown | safe }}</p>
+                {% if reply.attachment %}
+                <p class="it-card-text">
+                    <a href="{% url 'uni_ticket:download_message_attachment' ticket_id=reply.ticket.code reply_id=reply.id %}">
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
+                        </svg> {{ reply.attachment|filename }}
+                    </a>
+                </p>
+                {% endif %}
+                {% if not reply.read_date and reply.owner == request.user %}
+                    {% if reply.structure and management or not reply.structure and not management %}
+                    <button type="button" class="btn btn-outline-danger btn-xs float-end" data-bs-toggle="modal" data-bs-target="#removeOffice{{ reply.pk }}">
+                        {% trans "Elimina il messaggio" %}
+                    </button>
+                    <div class="modal fade" tabindex="-1" role="dialog" id="removeOffice{{ reply.pk }}">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        {% trans "Eliminazione messaggio" %}
+                                    </h5>
+                                    <button class="btn-close" type="button"
+                                            data-bs-dismiss="modal" aria-label="Close">
+                                       <svg class="icon">
+                                          <use xlink:href="/static/svg/sprites.svg#it-close"></use>
+                                       </svg>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>{% trans "Puoi eliminare questo messaggio poichè non è stato ancora letto" %}.
+                                        <br>
+                                        {% trans "Vuoi davvero eliminare il messaggio" %}
+                                       <b>{{ reply }}</b> ?
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a role="button" class="btn btn-danger"
+                                       href="{% url 'uni_ticket:message_delete' ticket_message_id=reply.pk %}">
+                                        {% trans "Si, elimina" %}
+                                    </a>
                                 </div>
                             </div>
                         </div>
-
-                        {% endif %}
-                    {% endif %}
                     </div>
+
+                    {% endif %}
+                {% endif %}
                 </div>
-            </div>
+            </article>
         </div>
     </div>
     {% endfor %}
@@ -105,24 +103,22 @@
 {% if ticket_taken and not ticket.is_closed %}
 <div class="row">
     <div class="col">
-        <div class="card-wrapper card-space">
-            <div class="card card-bg no-after">
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
-                        {% include 'form_template.html' %}
-                        {% block form_buttons %}
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-success" type="submit">
-                                <svg class="icon icon-xs icon-white">
-                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
-                                </svg> {% trans 'Invia' %}
-                            </button>
-                        </div>
-                        {% endblock form_buttons %}
-                    </form>
-                </div>
+       <article class="it-card rounded shadow">
+            <div class="it-card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% include 'form_template.html' %}
+                    {% block form_buttons %}
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" type="submit">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
+                            </svg> {% trans 'Invia' %}
+                        </button>
+                    </div>
+                    {% endblock form_buttons %}
+                </form>
             </div>
-        </div>
+        </article>
     </div>
 </div>
 {% endif %}

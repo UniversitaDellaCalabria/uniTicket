@@ -34,89 +34,87 @@
 <div class="pb-4">
     <div class="row">
         <div class="col">
-            <div class="card-space card-wrapper">
-                <div class="card card-bg no-after">
-                    <div class="card-body">
-                        {% if categoria.show_heading_text and request.user.is_authenticated %}
-                            <p class="card-title text-start">
-                                {% uni_ticket_settings_value name="TICKET_HEADING_TEXT" user=request.user taxpayer=request.user.taxpayer_id as heading %}
-                                {{ heading|safe  }}
-                                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
-                                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
-                                {% obj_get_attr request.user employee_attribute_name as user_employee_attribute %}
-                                {% if user_employee_attribute %}
-                                    <br><span class="small"><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}</span>
-                                {% endif %}
-                                {% uni_ticket_settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
-                                {% uni_ticket_settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
-                                {% obj_get_attr request.user user_attribute_name as user_user_attribute %}
-                                {% if user_user_attribute %}
-                                    <br><span class="small"><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}</span>
-                                {% endif %}
-                            </p>
-                            {% if compiled_by %}
-                            <p class="card-title text-start">
-                                {% uni_ticket_settings_value name="TICKET_COMPILED_HEADING_TEXT" user=compiled_by taxpayer=compiled_by.taxpayer_id as heading %}
-                                {{ heading|safe  }}
-                                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
-                                {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
-                                {% obj_get_attr compiled_by employee_attribute_name as user_employee_attribute %}
-                                {% if user_employee_attribute %}
-                                    <br><span class="small"><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}</span>
-                                {% endif %}
-                                {% uni_ticket_settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
-                                {% uni_ticket_settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
-                                {% obj_get_attr compiled_by user_attribute_name as user_user_attribute %}
-                                {% if user_user_attribute %}
-                                    <br><span class="small"><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}</span>
-                                {% endif %}
-                            </p>
+            <article class="it-card rounded shadow">
+                <div class="it-card-body">
+                    {% if categoria.show_heading_text and request.user.is_authenticated %}
+                        <p class="it-card-title text-start">
+                            {% uni_ticket_settings_value name="TICKET_HEADING_TEXT" user=request.user taxpayer=request.user.taxpayer_id as heading %}
+                            {{ heading|safe  }}
+                            {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                            {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
+                            {% obj_get_attr request.user employee_attribute_name as user_employee_attribute %}
+                            {% if user_employee_attribute %}
+                                <br><span class="small"><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}</span>
                             {% endif %}
+                            {% uni_ticket_settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
+                            {% uni_ticket_settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
+                            {% obj_get_attr request.user user_attribute_name as user_user_attribute %}
+                            {% if user_user_attribute %}
+                                <br><span class="small"><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}</span>
+                            {% endif %}
+                        </p>
+                        {% if compiled_by %}
+                        <p class="it-card-title text-start">
+                            {% uni_ticket_settings_value name="TICKET_COMPILED_HEADING_TEXT" user=compiled_by taxpayer=compiled_by.taxpayer_id as heading %}
+                            {{ heading|safe  }}
+                            {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_NAME" as employee_attribute_name %}
+                            {% uni_ticket_settings_value "EMPLOYEE_ATTRIBUTE_LABEL" as employee_attribute_label %}
+                            {% obj_get_attr compiled_by employee_attribute_name as user_employee_attribute %}
+                            {% if user_employee_attribute %}
+                                <br><span class="small"><b>{{ employee_attribute_label }}</b>: {{user_employee_attribute}}</span>
+                            {% endif %}
+                            {% uni_ticket_settings_value "USER_ATTRIBUTE_NAME" as user_attribute_name %}
+                            {% uni_ticket_settings_value "USER_ATTRIBUTE_LABEL" as user_attribute_label %}
+                            {% obj_get_attr compiled_by user_attribute_name as user_user_attribute %}
+                            {% if user_user_attribute %}
+                                <br><span class="small"><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}</span>
+                            {% endif %}
+                        </p>
                         {% endif %}
-                        {% if categoria.show_heading_text and category_conditions and request.user.is_authenticated %}
-                        <hr>
-                        {% endif %}
-                        {% if category_conditions %}
-                            {% for condition in category_conditions %}
-                                {% if not forloop.first %}<hr>{% endif %}
-                                {% if condition.is_collapsable %}
-                                    <div class="accordion accordion-left-icon" id="accordionDiv{{ condition.pk }}" style="border: 0">
-                                        <div class="accordion-item">
-                                            <h2 class="accordion-header " id="heading{{ condition.pk }}">
-                                                <button class="accordion-button collapsed" style="border: 0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ condition.pk }}" aria-expanded="false" aria-controls="collapse{{ condition.pk }}">
-                                                    {{ condition.title }}
-                                                </button>
-                                            </h2>
-                                            <div id="collapse{{ condition.pk }}" class="accordion-collapse collapse" data-bs-parent="#accordionDiv{{ condition.pk }}" role="region" aria-labelledby="heading{{ condition.pk }}">
-                                                <div class="accordion-body">
-                                                    <p class="card-text">{{ condition.text | markdown | safe }}</p>
-                                                    {% if condition.attachment %}
-                                                        <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
-                                                            <svg class="icon">
-                                                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
-                                                            </svg>{{ condition.attachment|filename }}
-                                                        </a>
-                                                    {% endif %}
-                                                </div>
+                    {% endif %}
+                    {% if categoria.show_heading_text and category_conditions and request.user.is_authenticated %}
+                    <hr>
+                    {% endif %}
+                    {% if category_conditions %}
+                        {% for condition in category_conditions %}
+                            {% if not forloop.first %}<hr>{% endif %}
+                            {% if condition.is_collapsable %}
+                                <div class="accordion accordion-left-icon" id="accordionDiv{{ condition.pk }}" style="border: 0">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header " id="heading{{ condition.pk }}">
+                                            <button class="accordion-button collapsed" style="border: 0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ condition.pk }}" aria-expanded="false" aria-controls="collapse{{ condition.pk }}">
+                                                {{ condition.title }}
+                                            </button>
+                                        </h2>
+                                        <div id="collapse{{ condition.pk }}" class="accordion-collapse collapse" data-bs-parent="#accordionDiv{{ condition.pk }}" role="region" aria-labelledby="heading{{ condition.pk }}">
+                                            <div class="accordion-body">
+                                                <p class="it-card-text">{{ condition.text | markdown | safe }}</p>
+                                                {% if condition.attachment %}
+                                                    <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
+                                                        <svg class="icon">
+                                                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
+                                                        </svg>{{ condition.attachment|filename }}
+                                                    </a>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
-                                {% else %}
-                                    <h6>{{ condition.title }}</h6>
-                                    <p class="card-text">{{ condition.text | markdown | safe }}</p>
-                                    {% if condition.attachment %}
-                                        <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
-                                            <svg class="icon">
-                                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
-                                            </svg>{{ condition.attachment|filename }}
-                                        </a>
-                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <h6>{{ condition.title }}</h6>
+                                <p class="it-card-text">{{ condition.text | markdown | safe }}</p>
+                                {% if condition.attachment %}
+                                    <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
+                                        <svg class="icon">
+                                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
+                                        </svg>{{ condition.attachment|filename }}
+                                    </a>
                                 {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
-            </div>
+            </article>
         </div>
     </div>
 </div>
