@@ -1,6 +1,8 @@
 {% load i18n %}
 {% load static %}
 
+<script src="{% static 'js/htmx-1.9.10.min.js' %}"></script>
+
 {% if request.user.email %}
 <div class="row">
     <div class="col">
@@ -16,9 +18,9 @@
                                 </svg> {% trans "Notifiche e-mail" %}
 
                             <input type="checkbox"
-                                   ic-post-to="{% url 'uni_ticket:email_notify_change' %}"
-                                   ic-target="#email-notify-message"
-                                   ic-select-from-response="#intercooler-notify"
+                                   hx-post="{% url 'uni_ticket:email_notify_change' %}"
+                                   hx-target="#email-notify-message"
+                                   hx-select="#email-notify"
                                    id="notifyEmail"
                                    aria-labelledby="notify-email-help"
                                    {% if request.user.email_notify %}
