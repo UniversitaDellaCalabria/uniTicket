@@ -23,7 +23,7 @@ from django.utils.translation import gettext_lazy as _
 
 from django_form_builder.forms import BaseDynamicForm
 from django_form_builder.models import DynamicFieldMap, SavedFormContent
-from django_form_builder.utils import get_as_dict, set_as_dict
+from django_form_builder.utils import format_field_name, get_as_dict, set_as_dict
 
 from organizational_area.models import (
     OrganizationalStructure,
@@ -36,6 +36,7 @@ from .dynamic_form import DynamicForm
 from .settings import (
     CATEGORY_CONDITIONS_ATTACHMENT_SUBFOLDER,
     CLOSING_LEVELS,
+    INPUT_MODULE_ACTIONS,
     MAX_DAILY_TICKET_PER_USER,
     NEW_TICKET_CREATED_ALERT,
     ORGANIZATION_EMPLOYEE_LABEL,
@@ -62,10 +63,12 @@ logger = logging.getLogger("__name__")
 
 _protocollo_titolario_list = settings.TITOLARIO_DICT
 _protocollo_uo_list = settings.UO_DICT
+_input_module_rules_action_list = INPUT_MODULE_ACTIONS
 if 'makemigrations' in sys.argv or 'migrate' in sys.argv: # pragma: no cover
     _protocollo_titolario_list = [('', '-')]
     _protocollo_uo_list = [('', '-')]
-
+    _input_module_rules_action_list = [('', '-')]
+    
 
 def _attachment_upload(instance, filename):
     """
@@ -416,14 +419,59 @@ class TicketCategoryModule(models.Model):
         show_conditions=False,
         **kwargs
     ):
-        ticket_input_list = self.ticketcategoryinputlist_set.all().order_by(
-            "ordinamento"
-        )
+
+        copy_data = data.copy() if data else None
+        print(data)
+        # after post
+        if copy_data:
+            fields_to_exclude = list(self.ticketcategoryinputlist_set.filter(visible=False).values_list('pk', flat=True))
+            labels_to_exclude = []
+            
+            rules = self.ticketcategorymodulerule_set.filter(is_active=True)
+            # check rules on fields
+            for rule in rules:
+                source = rule.source_field
+                target = rule.target_field
+                source_label = format_field_name(source.name)
+                target_label = format_field_name(target.name)
+                if source.pk in fields_to_exclude:
+                    continue
+                if copy_data.get(source_label, None) and copy_data[source_label] in rule.condition:
+                    # show
+                    if rule.action == 2 and target.pk in fields_to_exclude:
+                        fields_to_exclude.remove(target.pk)
+                        if target_label in labels_to_exclude:
+                            labels_to_exclude.remove(target_label)
+                    # hide
+                    if rule.action == 1 and not target.pk in fields_to_exclude:
+                        fields_to_exclude.append(target.pk)
+                        if target_label not in labels_to_exclude:
+                            labels_to_exclude.append(target_label)
+
+            for lte in labels_to_exclude:
+                copy_data.pop(lte, None)
+            print("labels_to_exclude", labels_to_exclude)
+            print("fields_to_exclude", fields_to_exclude)
+            print("data", data)
+            print("copy_data", copy_data)
+
+            ticket_input_list = self.ticketcategoryinputlist_set.all().exclude(pk__in=fields_to_exclude).order_by(
+                "ordinamento"
+            )
+            print("ticket_input_list", ticket_input_list)
+            print()
+            print()
+            print()
+        # blank form
+        else:
+            ticket_input_list = self.ticketcategoryinputlist_set.filter(visible=True).order_by(
+                "ordinamento"
+            )
 
         # Static method of BaseDynamicForm
         constructor_dict = BaseDynamicForm.build_constructor_dict(
             ticket_input_list)
-
+        
         custom_params = {}
         custom_params["show_conditions"] = show_conditions
         custom_params["category_owner"] = self.ticket_category
@@ -438,7 +486,7 @@ class TicketCategoryModule(models.Model):
             class_obj=DynamicForm,
             constructor_dict=constructor_dict,
             custom_params=custom_params,
-            data=data,
+            data=copy_data,
             files=files,
             remove_filefields=remove_filefields,
             remove_datafields=remove_datafields,
@@ -459,7 +507,8 @@ class TicketCategoryInputList(DynamicFieldMap):
 
     category_module = models.ForeignKey(
         TicketCategoryModule, on_delete=models.CASCADE)
-
+    visible = models.BooleanField(default=True)
+    
     class Meta:
         verbose_name = _("Modulo di inserimento")
         verbose_name_plural = _("Moduli di inserimento")
@@ -474,6 +523,28 @@ class TicketCategoryInputList(DynamicFieldMap):
             return field_name
         return False
 
+
+class TicketCategoryModuleRule(models.Model):
+    category_module = models.ForeignKey(
+        TicketCategoryModule, on_delete=models.CASCADE)
+    source_field = models.ForeignKey(
+        TicketCategoryInputList,
+        on_delete=models.PROTECT,
+        related_name="source_rules"
+    )
+    target_field = models.ForeignKey(
+        TicketCategoryInputList,
+        on_delete=models.PROTECT,
+        related_name="target_rules"
+    )
+    condition = models.CharField(max_length=255)
+    action = models.IntegerField(
+        choices=INPUT_MODULE_ACTIONS
+    )
+    value = models.TextField(max_length=20000, default="", blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=False)
+    
 
 class Ticket(SavedFormContent):
     """

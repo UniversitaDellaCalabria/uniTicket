@@ -57,7 +57,7 @@ class DynamicForm(BaseDynamicForm):
             "help_text": TICKET_SUBJECT_HELP_TEXT,
             "initial": subject_initial,
             "max_length": subject_max_length,
-            "min_length": subject_min_length
+            "min_length": subject_min_length,
         }
         subject_field = getattr(
             dynamic_fields, "CustomCharField")(**subject_data)
@@ -95,6 +95,7 @@ class DynamicForm(BaseDynamicForm):
             captcha_field.define_value(custom_value="", **custom_params)
             for single_field in captcha_field.get_fields():
                 self.final_fields[single_field.name] = single_field
+
         super().__init__(
             initial_fields=self.initial_fields,
             final_fields=self.final_fields,
@@ -137,6 +138,7 @@ def serialize_form(form, api_source = 'api_source'):
         field_dict['initial'] = field.initial
         field_dict['disabled'] = field.disabled
         field_dict['required'] = True if field.required else False
+        field_dict['visible'] = True if field.visible else False
         field_dict['error_messages'] = field.error_messages
         field_dict['help_text'] = field.help_text
         field_dict['api_source'] = getattr(field, api_source, '')

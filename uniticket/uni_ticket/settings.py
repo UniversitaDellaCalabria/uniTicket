@@ -146,6 +146,17 @@ CLOSING_LEVELS = getattr(
     ),
 )
 
+# input modules rules actions
+INPUT_MODULE_ACTIONS = getattr(
+    settings,
+    "INPUT_MODULE_ACTIONS",
+    (
+        (1, _("Nascondi il campo")),
+        (2, _("Mostra il campo")),
+        # ~ (3, _("Modifica il valore")),
+    ),
+)
+
 # If 0 = Unlimited
 MAX_DAILY_TICKET_PER_USER = getattr(settings, "MAX_DAILY_TICKET_PER_USER", 10)
 

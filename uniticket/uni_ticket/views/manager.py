@@ -1981,6 +1981,8 @@ def category_input_module_details(
     )
     module = get_object_or_404(TicketCategoryModule, pk=module_id)
     form = CategoryInputListForm()
+    rules_form = TicketCategoryModuleRuleForm(module=module)
+
     if request.method == "POST":
         if not module.can_be_deleted():
             messages.add_message(
@@ -1992,58 +1994,99 @@ def category_input_module_details(
                 category_slug=category_slug,
                 module_id=module.pk,
             )
+
         form = CategoryInputListForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data["name"]
-            if TicketCategoryInputList.field_exist(module, name):
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    _("Esiste già un campo con questo nome: <b>{}</b>").format(name),
-                )
-            else:
+        rules_form = TicketCategoryModuleRuleForm(request.POST, module=module)
+
+        if "source_field" in request.POST:
+            if rules_form.is_valid():
                 # is_required_value = form.cleaned_data['is_required']
                 # is_required = False
                 # if is_required_value == 'on': is_required=True
-                input_list = form.save(commit=False)
-                input_list.category_module = module
-                input_list.pre_text = strip_tags(form.cleaned_data["pre_text"])
-                input_list.save()
+                rule = rules_form.save(commit=False)
+                rule.category_module = module
+                rule.save()
                 messages.add_message(
-                    request, messages.SUCCESS, _("Campo di input creato con successo")
+                    request, messages.SUCCESS, _("Regola creata con successo")
                 )
 
                 # log action
                 logger.info(
                     "[{}] manager of structure {}"
-                    " {} inserted the field {}"
+                    " {} created a rule"
                     " in the module {} of category {}".format(
                         timezone.localtime(),
                         structure,
                         request.user,
-                        name,
                         module,
                         category,
                     )
                 )
 
-            return redirect(
-                "uni_ticket:manager_category_input_module",
-                structure_slug=structure_slug,
-                category_slug=category_slug,
-                module_id=module.pk,
-            )
-        else:  # pragma: no cover
-            for k, v in get_labeled_errors(form).items():
-                messages.add_message(
-                    request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                return redirect(
+                    "uni_ticket:manager_category_input_module",
+                    structure_slug=structure_slug,
+                    category_slug=category_slug,
+                    module_id=module.pk,
                 )
+            else:  # pragma: no cover
+                for k, v in get_labeled_errors(form).items():
+                    messages.add_message(
+                        request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    )
+        else:
+            if form.is_valid():
+                name = form.cleaned_data["name"]
+                if TicketCategoryInputList.field_exist(module, name):
+                    messages.add_message(
+                        request,
+                        messages.ERROR,
+                        _("Esiste già un campo con questo nome: <b>{}</b>").format(name),
+                    )
+                else:
+                    # is_required_value = form.cleaned_data['is_required']
+                    # is_required = False
+                    # if is_required_value == 'on': is_required=True
+                    input_list = form.save(commit=False)
+                    input_list.category_module = module
+                    input_list.pre_text = strip_tags(form.cleaned_data["pre_text"])
+                    input_list.save()
+                    messages.add_message(
+                        request, messages.SUCCESS, _("Campo di input creato con successo")
+                    )
+
+                    # log action
+                    logger.info(
+                        "[{}] manager of structure {}"
+                        " {} inserted the field {}"
+                        " in the module {} of category {}".format(
+                            timezone.localtime(),
+                            structure,
+                            request.user,
+                            name,
+                            module,
+                            category,
+                        )
+                    )
+
+                return redirect(
+                    "uni_ticket:manager_category_input_module",
+                    structure_slug=structure_slug,
+                    category_slug=category_slug,
+                    module_id=module.pk,
+                )
+            else:  # pragma: no cover
+                for k, v in get_labeled_errors(form).items():
+                    messages.add_message(
+                        request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
+                    )
     title = _("Gestione modulo [{}]").format(module)
     template = "manager/category_input_module_detail.html"
     sub_title = "{} - {}".format(category, structure)
     d = {
         "category": category,
         "form": form,
+        "rules_form": rules_form,
         "module": module,
         "structure": structure,
         "sub_title": sub_title,
@@ -2154,10 +2197,12 @@ def category_input_module_preview(
     sub_title = "{} in {}".format(module, category)
     template = "manager/category_input_module_preview.html"
     clausole_categoria = category.get_conditions()
+    module_rules = module.ticketcategorymodulerule_set.filter(is_active=True)
     d = {
         "categoria": category,
         "category_conditions": clausole_categoria,
         "form": form,
+        "rules": module_rules,
         "struttura": structure,
         "sub_title": sub_title,
         "title": title,

@@ -958,6 +958,7 @@ def ticket_edit(request, ticket_id):
             if i in json_response:
                 json_response.pop(i)
         json_response = querydict_to_dict(json_response)
+        print("json_response", json_response)
         # Costruisco il form con il json dei dati inviati e tutti gli allegati
         # json_response[settings.ATTACHMENTS_DICT_PREFIX]=allegati
         # rimuovo solo gli allegati che sono stati già inseriti

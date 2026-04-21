@@ -69,8 +69,8 @@
 {% endblock top_buttons %}
 
 
-
 {% block page_content %}
+<h5>{% trans "Campi del form" %}</h5>
 {% if module.ticketcategoryinputlist_set.all %}
 <div class="table-responsive">
     <table class="table table-hover">
@@ -80,6 +80,7 @@
                 <th scope="row">{% trans 'Tipo' %}</th>
                 <th scope="row">{% trans 'Scelte' %}</th>
                 <th scope="row">{% trans 'Obbligatorio' %}</th>
+                <th scope="row">{% trans 'Visibile' %}</th>
                 <th scope="row">{% trans 'Pre-text' %}</th>
                 <th scope="row">{% trans 'Aiuto' %}</th>
                 <th scope="row">{% trans 'Ord.' %}</th>
@@ -101,6 +102,15 @@
                 <td>
                     <svg class="icon icon-xs icon-success">
                     {% if field.is_required %}
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+                <td>
+                    <svg class="icon icon-xs icon-success">
+                    {% if field.visible %}
                         <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
                     {% else %}
                         <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
@@ -256,52 +266,145 @@
 </div>
 {% endif %}
 
-{% if module.can_be_deleted %}
-<h5 class="it-card-title pb-3 mt-5">{% trans "Aggiungi un campo di input" %}</h5>
-<form method="post" enctype="multipart/form-data">
-    {% include 'form_template.html' %}
-    {% block form_buttons %}
-    <div class="d-grid gap-2">
-        <button type="submit"
-                class="btn btn-success">
-                <svg class="icon icon-xs icon-white">
-                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
-                </svg> {% trans "Aggiungi campo di input" %}
-        </button>
-    </div>
-    {% endblock form_buttons %}
-</form>
+<hr>
 
-<div class="modal fade"
-     tabindex="-1"
-     role="dialog"
-     id="deleteModule">
-    <div class="modal-dialog modal-dialog-centered"
-         role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    {% trans "Eliminazione modulo" %}
-                </h5>
-                <button class="btn-close"
-                        type="button"
-                        data-bs-dismiss="modal"
-                        aria-label="Close">
-                   <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
-                   </svg>
-                </button>
+<h5>{% trans "Regole" %}</h5>
+
+{% if module.ticketcategorymodulerule_set.all %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th scope="row">{% trans 'Campo sorgente' %}</th>
+                <th scope="row">{% trans 'Campo destinazione' %}</th>
+                <th scope="row">{% trans 'Condizione' %}</th>
+                <th scope="row">{% trans 'Azione' %}</th>
+                <th scope="row">{% trans 'Attiva' %}</th>
+                {% if module.can_be_deleted %}
+                <th scope="row"></th>
+                {% endif %}
+            </tr>
+            {% for rule in module.ticketcategorymodulerule_set.all %}
+            <tr>
+                <td>{{ rule.source_field.name }}</td>
+                <td>{{ rule.target_field.name }}</td>
+                <td>{{ rule.condition }}</td>
+                <td>{{ rule.action }}</td>
+                <td>
+                    <svg class="icon icon-xs icon-success">
+                    {% if rule.is_active %}
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-check"></use>
+                    {% else %}
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                    {% endif %}
+                    </svg>
+                </td>
+                {% if module.can_be_deleted %}
+                <td class="text-end">
+                    <a role="button"
+                       class="btn btn-outline-secondary btn-sm"
+                       href="#">
+                        {% trans "Modifica" %}
+                    </a>
+                    <button type="button"
+                            class="btn btn-outline-danger btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#">
+                            {% trans "Rimuovi" %}
+                    </button>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+    <div class="alert alert-info" role="alert">
+         {% trans "Nessuna regola inserita" %}
+    </div>
+{% endif %}
+                
+{% if module.can_be_deleted %}
+<div class="accordion accordion-left-icon" id="accordionInputModule">
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading1l">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1l" aria-expanded="false" aria-controls="collapse1l">
+                {% trans "Aggiungi un campo di input" %}
+            </button>
+        </h2>
+        <div id="collapse1l" class="accordion-collapse collapse" data-bs-parent="#accordionInputModule" role="region" aria-labelledby="heading1l">
+            <div class="accordion-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% include 'form_template.html' %}
+                    {% block form_buttons %}
+                    <div class="d-grid gap-2">
+                        <button type="submit"
+                                class="btn btn-success">
+                                <svg class="icon icon-xs icon-white">
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
+                                </svg> {% trans "Aggiungi campo di input" %}
+                        </button>
+                    </div>
+                    {% endblock form_buttons %}
+                </form>
+
+                <div class="modal fade"
+                     tabindex="-1"
+                     role="dialog"
+                     id="deleteModule">
+                    <div class="modal-dialog modal-dialog-centered"
+                         role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    {% trans "Eliminazione modulo" %}
+                                </h5>
+                                <button class="btn-close"
+                                        type="button"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                   <svg class="icon">
+                                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                   </svg>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>{% trans "Vuoi davvero eliminare il modulo " %}
+                                   <b>{{ module }}</b> ?
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <a role="button" class="btn btn-danger"
+                                   href="{% url 'uni_ticket:manager_category_input_module_delete' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
+                                    {% trans "Si, elimina il modulo" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <p>{% trans "Vuoi davvero eliminare il modulo " %}
-                   <b>{{ module }}</b> ?
-                </p>
-            </div>
-            <div class="modal-footer">
-                <a role="button" class="btn btn-danger"
-                   href="{% url 'uni_ticket:manager_category_input_module_delete' structure_slug=structure.slug category_slug=category.slug module_id=module.pk %}">
-                    {% trans "Si, elimina il modulo" %}
-                </a>
+        </div>
+    </div>
+    <div class="accordion-item">
+        <h2 class="accordion-header " id="heading2l">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2l" aria-expanded="false" aria-controls="collapse2l">
+                {% trans "Aggiungi regola" %}
+            </button>
+        </h2>
+        <div id="collapse2l" class="accordion-collapse collapse" data-bs-parent="#accordionInputModule" role="region" aria-labelledby="heading2l">
+            <div class="accordion-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% include 'form_template.html' with form=rules_form %}
+                    <div class="d-grid gap-2">
+                        <button type="submit"
+                            class="btn btn-success">
+                            <svg class="icon icon-xs icon-white">
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
+                            </svg> {% trans "Aggiungi regola" %}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -128,6 +128,7 @@ class CategoryInputListForm(ModelForm):
             "pre_text",
             "aiuto",
             "is_required",
+            "visible",
             "ordinamento",
         ]
         labels = {
@@ -834,5 +835,49 @@ class OrganizationalStructureAllowedUsersListForm(ModelForm):
             "description": forms.Textarea(attrs={"rows": 2}),
         }
 
+    class Media:
+        js = ("js/textarea-autosize.js",)
+
+
+class TicketCategoryModuleRuleForm(ModelForm):
+    """ """
+    def __init__(self, *args, **kwargs):
+        module = kwargs.pop("module", None)
+        super().__init__(*args, **kwargs)
+        allowed_types = [
+            'CustomRadioBoxField',
+            'CustomSelectBoxField',
+            # ~ 'CheckBoxField'
+        ]
+        source_choices = []
+        target_choices = []
+        if module:
+            fields = TicketCategoryInputList.objects.filter(
+                category_module=module,
+            )
+            for f in fields:
+                if f.field_type in allowed_types:
+                    source_choices.append((f.pk, f.name))
+                target_choices.append((f.pk, f.name))
+                self.fields['source_field'].choices = source_choices
+                self.fields['target_field'].choices = target_choices
+            
+    class Meta:
+        model = TicketCategoryModuleRule
+        fields = [
+            "source_field",
+            "condition",
+            "action",
+            "target_field",
+            #"value",
+            "is_active"
+        ]
+        labels = {"visibility": _("Visibilità"),}
+        widgets = {
+            "source_field": BootstrapItaliaSelectWidget,
+            "target_field": BootstrapItaliaSelectWidget,
+            "value": forms.Textarea(attrs={"rows": 2}),
+        }
+        
     class Media:
         js = ("js/textarea-autosize.js",)
