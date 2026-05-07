@@ -1,6 +1,6 @@
 # This repository adheres to the publiccode.yml standard by including this
 # metadata file that makes public software easily discoverable.
-# More info at https://github.com/italia/publiccode.yml
+# More info at https://github.com/publiccodeyml/publiccode.yml
 
 publiccodeYmlVersion: '0.5'
 categories:
@@ -127,24 +127,8 @@ developmentStatus: stable
 intendedAudience:
   scope:
     - employment
-it:
-  conforme:
-    gdpr: true
-    lineeGuidaDesign: true
-    misureMinimeSicurezza: true
-    modelloInteroperabilita: false
-  countryExtensionVersion: '0.2'
-  piattaforme:
-    anpr: false
-    cie: false
-    pagopa: false
-    spid: false
-  riuso:
-    codiceIPA: unical
 landingURL: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 legal:
-  authorsFile: >-
-    https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/AUTHORS
   license: AGPL-3.0-or-later
   mainCopyrightOwner: Università della Calabria
 localisation:
@@ -159,6 +143,8 @@ maintenance:
       name: Francesco Filicetti
   type: internal
 name: uniTicket
+organisation:
+  uri: 'urn:x-italian-pa:unical'
 platforms:
   - linux
   - web
