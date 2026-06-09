@@ -127,24 +127,17 @@ developmentStatus: stable
 intendedAudience:
   scope:
     - employment
-it:
-  conforme:
-    gdpr: true
-    lineeGuidaDesign: true
-    misureMinimeSicurezza: true
-    modelloInteroperabilita: false
+IT:
   countryExtensionVersion: '0.2'
   piattaforme:
     anpr: false
     cie: false
     pagopa: false
     spid: false
-  riuso:
-    codiceIPA: unical
+organisation:
+  uri: urn:x-italian-pa:unical
 landingURL: 'https://github.com/UniversitaDellaCalabria/uniTicket'
 legal:
-  authorsFile: >-
-    https://raw.githubusercontent.com/UniversitaDellaCalabria/uniTicket/master/AUTHORS
   license: AGPL-3.0-or-later
   mainCopyrightOwner: Università della Calabria
 localisation:
