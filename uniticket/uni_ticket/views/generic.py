@@ -43,20 +43,21 @@ def manage(request, structure_slug=None):
 
 @login_required
 @has_access_to_ticket
-def download_attachment(request, ticket_id, attachment, ticket):
+def download_attachment(request, ticket_id, attachment):
     """
     Downloads ticket attachment
 
     :type ticket_id:String
     :type attachment: String
-    :type ticket: Ticket (from @has_access_to_ticket)
 
     :param ticket_id: ticket code
     :param attachment: attachment name
-    :param ticket: ticket object (from @has_access_to_ticket)
 
     :return: file
     """
+    # from decorator @has_access_to_ticket
+    ticket = request.ticket
+
     # get ticket json dictionary
     json_dict = ticket.get_modulo_compilato()
     ticket_details = get_as_dict(compiled_module_json=json_dict)
@@ -76,18 +77,16 @@ def download_attachment(request, ticket_id, attachment, ticket):
 @login_required
 @has_access_to_ticket
 def download_message_attachment(
-    request, ticket_id, reply_id, ticket
+    request, ticket_id, reply_id
 ):  # pragma: no cover
     """
     Downloads ticket message attachment
 
     :type ticket_id: String
     :type reply_id: String
-    :type ticket: Ticket (from @has_access_to_ticket)
 
     :param ticket_id: ticket code
     :param reply_id: message id
-    :param ticket: ticket object (from @has_access_to_ticket)
 
     :return: file
     """

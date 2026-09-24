@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _
 
@@ -91,13 +92,12 @@ def is_the_owner(func_to_decorate):
 
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        ticket_id = original_kwargs["ticket_id"]
-        ticket = get_object_or_404(Ticket, code=ticket_id)
-        user = request.user
-        if not ticket.check_if_owner(user):
-            return custom_message(
-                request, _("Hai accesso solo ai ticket" " aperti da te!")
-            )
+        ticket = get_object_or_404(
+            Ticket, 
+            Q(created_by=request.user) | Q(compiled_by=request.user),
+            code=original_kwargs["ticket_id"]
+        )
+        request.ticket = ticket
         return func_to_decorate(*original_args, **original_kwargs)
 
     return new_func
@@ -158,7 +158,7 @@ def has_access_to_ticket(func_to_decorate):
         ticket_id = original_kwargs["ticket_id"]
         ticket = get_object_or_404(Ticket, code=ticket_id)
         user = request.user
-        original_kwargs["ticket"] = ticket
+        request.ticket = ticket
 
         # Se il ticket è stato creato da me, ok!
         if ticket.check_if_owner(user):
@@ -182,8 +182,7 @@ def ticket_is_not_taken_and_not_closed(func_to_decorate):
 
     def new_func(*original_args, **original_kwargs):
         request = original_args[0]
-        ticket_id = original_kwargs["ticket_id"]
-        ticket = get_object_or_404(Ticket, code=ticket_id)
+        ticket = request.ticket
         assignments_count = TicketAssignment.objects.filter(
             ticket=ticket).count()
         if ticket.has_been_taken() or assignments_count > 1:

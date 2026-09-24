@@ -910,7 +910,8 @@ def ticket_edit(request, ticket_id):
 
     :return: render
     """
-    ticket = get_object_or_404(Ticket, code=ticket_id)
+    # from decorator @is_the_owner
+    ticket = request.ticket
 
     if ticket.protocol_number:
         messages.add_message(
@@ -1032,10 +1033,12 @@ def delete_my_attachment(request, ticket_id, attachment):
 
     :param ticket_id: ticket code
     :param attachment: attachment name
-
+        
     :return: redirect
     """
-    ticket = get_object_or_404(Ticket, code=ticket_id)
+    # from decorator @is_the_owner
+    ticket = request.ticket
+
     json_dict = ticket.get_modulo_compilato()
     ticket_details = get_as_dict(compiled_module_json=json_dict)
     nome_file = ticket_details[settings.ATTACHMENTS_DICT_PREFIX][attachment]
@@ -1086,7 +1089,8 @@ def ticket_delete(request, ticket_id):
 
     :return: redirect
     """
-    ticket = get_object_or_404(Ticket, code=ticket_id)
+    # from decorator @is_the_owner
+    ticket = request.ticket
 
     if ticket.protocol_number:
         messages.add_message(
@@ -1157,7 +1161,7 @@ def ticket_delete(request, ticket_id):
 
 # @login_required
 # @is_the_owner
-# decorators in urls.py (print view call this view but with different decorators)
+# decorators in urls.py (user.views.ticket_detail_print view call this view but with different decorators)
 class TicketDetail(View):
     """
     Shows ticket details
@@ -1171,9 +1175,17 @@ class TicketDetail(View):
     :return: render
     """
     def get(self, request, ticket_id:str, api:bool=False, printable:bool=False, template="user/ticket_detail.html"):
-
-        ticket = get_object_or_404(Ticket.objects.select_related('created_by','compiled_by','input_module__ticket_category'),
-                                   code=ticket_id)
+        ticket = getattr(request, "ticket", None)
+        if not ticket:
+            ticket = get_object_or_404(
+                Ticket.objects.select_related(
+                    'created_by',
+                    'compiled_by',
+                    'input_module__ticket_category'
+                ),
+                Q(created_by=request.user) | Q(compiled_by=request.user),
+                code=ticket_id
+            )
         modulo_compilato = ticket.get_modulo_compilato()
         ticket_details = get_as_dict(
             compiled_module_json=modulo_compilato, allegati=False, formset_management=False
@@ -1246,7 +1258,9 @@ def ticket_message(request, ticket_id):
 
     :return: render
     """
-    ticket = get_object_or_404(Ticket, code=ticket_id)
+    # from decorator @is_the_owner
+    ticket = request.ticket
+
     title = _("Messaggi")
     # Conversazione utente-operatori
     ticket_replies = TicketReply.objects.filter(ticket=ticket)
@@ -1497,7 +1511,8 @@ def ticket_reopen(request, ticket_id):
 
     :return: redirect
     """
-    ticket = get_object_or_404(Ticket, code=ticket_id)
+    # from decorator @is_the_owner
+    ticket = request.ticket
 
     # Se il ticket non è chiuso blocca
     if not ticket.is_closed:
@@ -1636,15 +1651,13 @@ def ticket_clone(request, ticket_id):
 
 @login_required
 @has_access_to_ticket
-def ticket_detail_print(request, ticket_id, ticket):  # pragma: no cover
+def ticket_detail_print(request, ticket_id):  # pragma: no cover
     """
     Displays ticket print version
 
     :type ticket_id: String
-    :type ticket: Ticket (from @has_access_to_ticket)
 
     :param ticket_id: ticket code
-    :param ticket: ticket object (from @has_access_to_ticket)
 
     :return: view response
     """
@@ -1659,7 +1672,6 @@ def ticket_detail_print(request, ticket_id, ticket):  # pragma: no cover
 @has_access_to_ticket
 def download_ticket_pdf(request,
                         ticket_id,
-                        ticket,
                         template="ticket_detail_print_pdf.html"):  # pragma: no cover
     response = TicketDetail().get(request=request,
                                   ticket_id=ticket_id,
@@ -1667,7 +1679,7 @@ def download_ticket_pdf(request,
                                   printable=True)
 
     # file names
-    pdf_fname = "{}.pdf".format(ticket.code)
+    pdf_fname = "{}.pdf".format(ticket_id)
 
     # get PDF
 

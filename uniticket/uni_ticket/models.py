@@ -668,6 +668,7 @@ class Ticket(SavedFormContent):
             return False
         if user == self.created_by or user == self.compiled_by:
             return True
+        return False
 
     def get_owners_html(self):
         if self.compiled_by:
