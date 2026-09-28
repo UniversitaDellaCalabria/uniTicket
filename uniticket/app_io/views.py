@@ -23,9 +23,12 @@ logger = logging.getLogger(__name__)
 
 @login_required
 @is_manager
-def new(request, structure_slug, category_slug, structure):
+def new(request, structure_slug, category_slug):
     """
     """
+    # from @is_manager
+    structure = request.structure
+
     if not structure.app_io_enabled:
         raise PermissionDenied
 
@@ -92,9 +95,12 @@ def new(request, structure_slug, category_slug, structure):
 
 @login_required
 @is_manager
-def edit(request, structure_slug, category_slug, service_id, structure):
+def edit(request, structure_slug, category_slug, service_id):
     """
     """
+    # from @is_manager
+    structure = request.structure
+
     if not structure.app_io_enabled:
         raise PermissionDenied
 
@@ -163,9 +169,12 @@ def edit(request, structure_slug, category_slug, service_id, structure):
 
 @login_required
 @is_manager
-def enable(request, structure_slug, category_slug, service_id, structure):
+def enable(request, structure_slug, category_slug, service_id):
     """
     """
+    # from @is_manager
+    structure = request.structure
+
     if not structure.app_io_enabled:
         raise PermissionDenied
 
@@ -216,9 +225,12 @@ def enable(request, structure_slug, category_slug, service_id, structure):
 
 @login_required
 @is_manager
-def disable(request, structure_slug, category_slug, service_id, structure):
+def disable(request, structure_slug, category_slug, service_id):
     """
     """
+    # from @is_manager
+    structure = request.structure
+
     if not structure.app_io_enabled:
         raise PermissionDenied
 
@@ -268,9 +280,12 @@ def disable(request, structure_slug, category_slug, service_id, structure):
 
 @login_required
 @is_manager
-def delete(request, structure_slug, category_slug, service_id, structure):
+def delete(request, structure_slug, category_slug, service_id):
     """
     """
+    # from @is_manager
+    structure = request.structure
+
     if not structure.app_io_enabled:
         raise PermissionDenied
 

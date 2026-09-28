@@ -168,26 +168,22 @@ def download_task_closing_attachment(request, ticket_id, task_id):
 
 
 @login_required
-def opened_ticket(request, structure_slug=None, structure=None, office_employee=None):
+def opened_ticket(request, structure_slug=None):
     """
     Gets opened tickets list (requires HTML datatable in template)
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager/@is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager/@is_operator)
-    :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
     title = _("Richieste assegnate")
-    user_type = get_user_type(request.user, structure)
+    user_type = get_user_type(request.user, getattr(request, "structure", None))
     template = "{}/opened_ticket.html".format(user_type)
     d = {
-        "structure": structure,
-        "sub_title": structure,
+        "structure": getattr(request, "structure", None),
+        "sub_title": getattr(request, "structure", None),
         "title": title,
     }
     return render(request, template, base_context(d))
@@ -195,27 +191,23 @@ def opened_ticket(request, structure_slug=None, structure=None, office_employee=
 
 @login_required
 def my_opened_ticket(
-    request, structure_slug=None, structure=None, office_employee=None
+    request, structure_slug=None
 ):
     """
     Gets opened tickets list (requires HTML datatable in template)
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager/@is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager/@is_operator)
-    :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
     title = _("Richieste assegnate a me")
-    user_type = get_user_type(request.user, structure)
+    user_type = get_user_type(request.user, getattr(request, "structure", None))
     template = "{}/my_opened_ticket.html".format(user_type)
     d = {
-        "structure": structure,
-        "sub_title": structure,
+        "structure": getattr(request, "structure", None),
+        "sub_title": getattr(request, "structure", None),
         "title": title,
     }
     return render(request, template, base_context(d))
@@ -223,53 +215,45 @@ def my_opened_ticket(
 
 @login_required
 def unassigned_ticket(
-    request, structure_slug=None, structure=None, office_employee=None
+    request, structure_slug=None
 ):
     """
     Gets unassigned tickets list (requires HTML datatable in template)
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager/@is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager/@is_operator)
-    :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
     title = _("Richieste aperte")
-    user_type = get_user_type(request.user, structure)
+    user_type = get_user_type(request.user, getattr(request, "structure", None))
     template = "{}/unassigned_ticket.html".format(user_type)
     d = {
-        "structure": structure,
-        "sub_title": structure,
+        "structure": getattr(request, "structure", None),
+        "sub_title": getattr(request, "structure", None),
         "title": title,
     }
     return render(request, template, base_context(d))
 
 
 @login_required
-def closed_ticket(request, structure_slug=None, structure=None, office_employee=None):
+def closed_ticket(request, structure_slug=None):
     """
     Gets closed tickets list (requires HTML datatable in template)
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager/@is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager/@is_operator)
-    :param office_employee: operator offices queryset (from @is_operator)
 
     :return: render
     """
     title = _("Richieste chiuse")
-    user_type = get_user_type(request.user, structure)
+    user_type = get_user_type(request.user, getattr(request, "structure", None))
     template = "{}/closed_ticket.html".format(user_type)
     d = {
-        "structure": structure,
-        "sub_title": structure,
+        "structure": getattr(request, "structure", None),
+        "sub_title": getattr(request, "structure", None),
         "title": title,
     }
     return render(request, template, base_context(d))
@@ -296,29 +280,23 @@ def email_notify_change(request):
 
 
 @login_required
-def user_settings(
-    request, structure_slug=None, structure=None, office_employee=None
-):  # pragma: no cover
+def user_settings(request, structure_slug=None):  # pragma: no cover
     """
     Gets user settings
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager/@is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager/@is_operator)
-    :param office_employee: operator offices queryset (from @is_operator)
 
     :return: response
     """
-    user_type = get_user_type(request.user, structure)
+    user_type = get_user_type(request.user, getattr(request, "structure", None))
     template = "{}/user_settings.html".format(user_type)
     # title = _("Configurazione impostazioni")
     title = _("Gestione account")
     # sub_title = _("e riepilogo dati personali")
     d = {
-        "structure": structure,
+        "structure": getattr(request, "structure", None),
         # "sub_title": sub_title,
         "title": title,
     }
@@ -327,20 +305,19 @@ def user_settings(
 
 
 @login_required
-def ticket_messages(request, structure_slug=None, structure=None, office_employee=None):
+def ticket_messages(request, structure_slug=None):
     """
     Gets ticket messages
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager/@is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager/@is_operator)
-    :param office_employee: operator offices queryset (from @is_operator)
 
     :return: response
     """
+    structure = getattr(request, "structure", None)
+    office_employee = getattr(request, "office_employee", None)
+
     user_type = get_user_type(request.user, structure)
     by_operator = False
     if user_type == "user":

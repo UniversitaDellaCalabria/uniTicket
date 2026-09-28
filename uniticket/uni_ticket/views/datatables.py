@@ -245,18 +245,19 @@ def user_closed_ticket(request):
 @csrf_exempt
 @login_required
 @is_manager
-def manager_all_tickets(request, structure_slug, structure):
+def manager_all_tickets(request, structure_slug):
     """
     Returns all not closed tickets managed by manager
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: manager structure slug
-    :param structure: manager structure (from @is_manager)
 
     :return: JsonResponse
     """
+    # from @is_manager
+    structure = request.structure
+
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
                                                         priority_first=False)
     dtd = TicketDTD(request, tickets, _ticket_columns)
@@ -266,18 +267,19 @@ def manager_all_tickets(request, structure_slug, structure):
 @csrf_exempt
 @login_required
 @is_manager
-def manager_unassigned_ticket(request, structure_slug, structure):
+def manager_unassigned_ticket(request, structure_slug):
     """
     Returns all unassigned tickets managed by manager
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: manager structure slug
-    :param structure: manager structure (from @is_manager)
 
     :return: JsonResponse
     """
+    # from @is_manager
+    structure = request.structure
+
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
                                                         closed=False,
                                                         taken=False)
@@ -288,18 +290,19 @@ def manager_unassigned_ticket(request, structure_slug, structure):
 @csrf_exempt
 @login_required
 @is_manager
-def manager_opened_ticket(request, structure_slug, structure):
+def manager_opened_ticket(request, structure_slug):
     """
     Returns all assigned and not closed tickets managed by manager
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: manager structure slug
-    :param structure: manager structure (from @is_manager)
 
     :return: JsonResponse
     """
+    # from @is_manager
+    structure = request.structure
+
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
                                                         closed=False,
                                                         taken=True)
@@ -310,18 +313,19 @@ def manager_opened_ticket(request, structure_slug, structure):
 @csrf_exempt
 @login_required
 @is_manager
-def manager_my_opened_ticket(request, structure_slug, structure):
+def manager_my_opened_ticket(request, structure_slug):
     """
     Returns all assigned and not closed tickets taken by manager
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: manager structure slug
-    :param structure: manager structure (from @is_manager)
 
     :return: JsonResponse
     """
+    # from @is_manager
+    structure = request.structure
+
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
                                                         closed=False,
                                                         taken=True,
@@ -333,7 +337,7 @@ def manager_my_opened_ticket(request, structure_slug, structure):
 @csrf_exempt
 @login_required
 @is_manager
-def manager_closed_ticket(request, structure_slug, structure):
+def manager_closed_ticket(request, structure_slug):
     """
     Returns all closed tickets managed by manager
 
@@ -345,6 +349,8 @@ def manager_closed_ticket(request, structure_slug, structure):
 
     :return: JsonResponse
     """
+    # from @is_manager
+    structure = request.structure
     tickets = TicketAssignment.get_ticket_per_structure(structure=structure,
                                                         closed=True,
                                                         priority_first=False)
@@ -355,20 +361,20 @@ def manager_closed_ticket(request, structure_slug, structure):
 @csrf_exempt
 @login_required
 @is_operator
-def operator_all_tickets(request, structure_slug, structure, office_employee):
+def operator_all_tickets(request, structure_slug):
     """
     Returns all not closed tickets managed by operator
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: operator structure slug
-    :param structure: operator structure (from @is_operator)
-    :param office_employee: queryset with operator and his offices (from @is_operator)
 
     :return: JsonResponse
     """
+    # from @is_operator
+    structure = request.structure
+    office_employee = request.office_employee
+
     tickets = visible_tickets_to_user(request.user, structure, office_employee)
     # is_closed=False)
     dtd = TicketDTD(request, tickets, _ticket_columns)
@@ -378,20 +384,20 @@ def operator_all_tickets(request, structure_slug, structure, office_employee):
 @csrf_exempt
 @login_required
 @is_operator
-def operator_unassigned_ticket(request, structure_slug, structure, office_employee):
+def operator_unassigned_ticket(request, structure_slug):
     """
     Returns all unassigned tickets managed by operator
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: operator structure slug
-    :param structure: operator structure (from @is_operator)
-    :param office_employee: queryset with operator and his offices (from @is_operator)
 
     :return: JsonResponse
     """
+    # from @is_operator
+    structure = request.structure
+    office_employee = request.office_employee
+
     tickets = visible_tickets_to_user(user=request.user,
                                       structure=structure,
                                       office_employee=office_employee,
@@ -404,20 +410,20 @@ def operator_unassigned_ticket(request, structure_slug, structure, office_employ
 @csrf_exempt
 @login_required
 @is_operator
-def operator_opened_ticket(request, structure_slug, structure, office_employee):
+def operator_opened_ticket(request, structure_slug):
     """
     Returns all assigned and not closed tickets managed by operator
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: operator structure slug
-    :param structure: operator structure (from @is_operator)
-    :param office_employee: queryset with operator and his offices (from @is_operator)
 
     :return: JsonResponse
     """
+    # from @is_operator
+    structure = request.structure
+    office_employee = request.office_employee
+    
     tickets = visible_tickets_to_user(user=request.user,
                                       structure=structure,
                                       office_employee=office_employee,
@@ -430,20 +436,20 @@ def operator_opened_ticket(request, structure_slug, structure, office_employee):
 @csrf_exempt
 @login_required
 @is_operator
-def operator_my_opened_ticket(request, structure_slug, structure, office_employee):
+def operator_my_opened_ticket(request, structure_slug):
     """
     Returns all assigned and not closed tickets taken by operator
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: operator structure slug
-    :param structure: operator structure (from @is_operator)
-    :param office_employee: queryset with operator and his offices (from @is_operator)
 
     :return: JsonResponse
     """
+    # from @is_operator
+    structure = request.structure
+    office_employee = request.office_employee
+
     tickets = visible_tickets_to_user(user=request.user,
                                       structure=structure,
                                       office_employee=office_employee,
@@ -457,20 +463,20 @@ def operator_my_opened_ticket(request, structure_slug, structure, office_employe
 @csrf_exempt
 @login_required
 @is_operator
-def operator_closed_ticket(request, structure_slug, structure, office_employee):
+def operator_closed_ticket(request, structure_slug):
     """
     Returns all closed tickets managed by operator
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: operator structure slug
-    :param structure: operator structure (from @is_operator)
-    :param office_employee: queryset with operator and his offices (from @is_operator)
 
     :return: JsonResponse
     """
+    # from @is_operator
+    structure = request.structure
+    office_employee = request.office_employee
+    
     tickets = visible_tickets_to_user(user=request.user,
                                       structure=structure,
                                       office_employee=office_employee,

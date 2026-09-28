@@ -31,18 +31,19 @@ logger = logging.getLogger(__name__)
 
 @login_required
 @is_manager
-def dashboard(request, structure_slug, structure):
+def dashboard(request, structure_slug):
     """
     Manager Dashboard
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Pannello di Controllo")
     sub_title = _("Gestisci le richieste per la struttura {}").format(structure)
     template = "manager/dashboard.html"
@@ -89,18 +90,19 @@ def dashboard(request, structure_slug, structure):
 
 @login_required
 @is_manager
-def offices(request, structure_slug, structure):
+def offices(request, structure_slug):
     """
     Retrieves structure offices list
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Gestione uffici")
     template = "manager/offices.html"
     os = OrganizationalStructureOffice
@@ -120,18 +122,19 @@ def offices(request, structure_slug, structure):
 
 @login_required
 @is_manager
-def office_add_new(request, structure_slug, structure):
+def office_add_new(request, structure_slug):
     """
     Adds new office to structure
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Nuovo ufficio")
     sub_title = _("Crea un nuovo ufficio nella struttura {}").format(structure)
     form = OfficeForm()
@@ -188,20 +191,21 @@ def office_add_new(request, structure_slug, structure):
 
 @login_required
 @is_manager
-def office_edit(request, structure_slug, office_slug, structure):
+def office_edit(request, structure_slug, office_slug):
     """
     Edits office details
 
     :type structure_slug: String
     :type office_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param office_slug: office slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     office = get_object_or_404(
         OrganizationalStructureOffice,
         organizational_structure=structure,
@@ -265,20 +269,21 @@ def office_edit(request, structure_slug, office_slug, structure):
 
 @login_required
 @is_manager
-def office_detail(request, structure_slug, office_slug, structure):
+def office_detail(request, structure_slug, office_slug):
     """
     Views office details
 
     :type structure_slug: String
     :type office_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param office_slug: office slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     office = get_object_or_404(
         OrganizationalStructureOffice,
         organizational_structure=structure,
@@ -306,20 +311,21 @@ def office_detail(request, structure_slug, office_slug, structure):
 
 @login_required
 @is_manager
-def office_add_category(request, structure_slug, office_slug, structure):
+def office_add_category(request, structure_slug, office_slug):
     """
     Assings new category to office competences
 
     :type structure_slug: String
     :type office_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param office_slug: office slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     if request.method == "POST":
         office = get_object_or_404(
             OrganizationalStructureOffice,
@@ -380,7 +386,7 @@ def office_add_category(request, structure_slug, office_slug, structure):
 @login_required
 @is_manager
 def office_remove_category(
-    request, structure_slug, office_slug, category_slug, structure
+    request, structure_slug, office_slug, category_slug
 ):
     """
     Remove category from office competences
@@ -388,15 +394,16 @@ def office_remove_category(
     :type structure_slug: String
     :type office_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param office_slug: office slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+    
     office = get_object_or_404(
         OrganizationalStructureOffice,
         organizational_structure=structure,
@@ -441,20 +448,21 @@ def office_remove_category(
 
 @login_required
 @is_manager
-def office_add_operator(request, structure_slug, office_slug, structure):
+def office_add_operator(request, structure_slug, office_slug):
     """
     Add employee to office
 
     :type structure_slug: String
     :type office_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param office_slug: office slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     office = get_object_or_404(
         OrganizationalStructureOffice,
         organizational_structure=structure,
@@ -541,7 +549,7 @@ def office_add_operator(request, structure_slug, office_slug, structure):
 @login_required
 @is_manager
 def office_remove_operator(
-    request, structure_slug, office_slug, employee_id, structure
+    request, structure_slug, office_slug, employee_id
 ):
     """
     Remove employee from office
@@ -549,15 +557,16 @@ def office_remove_operator(
     :type structure_slug: String
     :type office_slug: String
     :type employee_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param office_slug: office slug
     :param employee_id: employee_id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     user_model = get_user_model()
     employee = user_model.objects.get(pk=employee_id)
     usertype = get_user_type(employee, structure)
@@ -609,20 +618,21 @@ def office_remove_operator(
 
 @login_required
 @is_manager
-def office_disable(request, structure_slug, office_slug, structure):
+def office_disable(request, structure_slug, office_slug):
     """
     Disables an office
 
     :type structure_slug: String
     :type office_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param office_slug: office slug
-    :param structure: structure object (from @is_manager)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     office = get_object_or_404(
         OrganizationalStructureOffice,
         organizational_structure=structure,
@@ -696,20 +706,21 @@ def office_disable(request, structure_slug, office_slug, structure):
 
 @login_required
 @is_manager
-def office_enable(request, structure_slug, office_slug, structure):
+def office_enable(request, structure_slug, office_slug):
     """
     Enables an office
 
     :type structure_slug: String
     :type office_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param office_slug: office slug
-    :param structure: structure object (from @is_manager)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     office = get_object_or_404(
         OrganizationalStructureOffice,
         organizational_structure=structure,
@@ -744,20 +755,21 @@ def office_enable(request, structure_slug, office_slug, structure):
 
 @login_required
 @is_manager
-def office_delete(request, structure_slug, office_slug, structure):
+def office_delete(request, structure_slug, office_slug):
     """
     Deletes an office
 
     :type structure_slug: String
     :type office_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param office_slug: office slug
-    :param structure: structure object (from @is_manager)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     office = get_object_or_404(
         OrganizationalStructureOffice,
         organizational_structure=structure,
@@ -808,20 +820,21 @@ def office_delete(request, structure_slug, office_slug, structure):
 
 @login_required
 @is_manager
-def category_detail(request, structure_slug, category_slug, structure):
+def category_detail(request, structure_slug, category_slug):
     """
     Shows category details
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -887,20 +900,21 @@ def category_detail(request, structure_slug, category_slug, structure):
 
 @login_required
 @is_manager
-def category_add_ticket_user(request, structure_slug, category_slug, structure):
+def category_add_ticket_user(request, structure_slug, category_slug):
     """
     Add user that can open tickets
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -981,20 +995,21 @@ def category_add_ticket_user(request, structure_slug, category_slug, structure):
 
 @login_required
 @is_manager
-def category_add_ticket_users_list(request, structure_slug, category_slug, structure):
+def category_add_ticket_users_list(request, structure_slug, category_slug):
     """
     Add user that can open tickets
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1062,7 +1077,7 @@ def category_add_ticket_users_list(request, structure_slug, category_slug, struc
 @login_required
 @is_manager
 def category_remove_ticket_users_list(
-    request, structure_slug, category_slug, list_id, structure
+    request, structure_slug, category_slug, list_id
 ):
     """
     Remove employee from office
@@ -1070,15 +1085,16 @@ def category_remove_ticket_users_list(
     :type structure_slug: String
     :type category_slug: String
     :type list_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param list_id: list id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     users_list = get_object_or_404(
         OrganizationalStructureAllowedUsersList,
         organizational_structure=structure,
@@ -1115,7 +1131,7 @@ def category_remove_ticket_users_list(
 @login_required
 @is_manager
 def category_remove_ticket_user(
-    request, structure_slug, category_slug, user_id, structure
+    request, structure_slug, category_slug, user_id
 ):
     """
     Remove employee from office
@@ -1123,15 +1139,16 @@ def category_remove_ticket_user(
     :type structure_slug: String
     :type category_slug: String
     :type user_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param user_id: user_id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     user = get_user_model().objects.get(pk=user_id)
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
@@ -1166,7 +1183,7 @@ def category_remove_ticket_user(
 @login_required
 @is_manager
 def category_remove_office(
-    request, structure_slug, category_slug, office_slug, structure
+    request, structure_slug, category_slug, office_slug
 ):
     """
     Remove office competence from category
@@ -1174,15 +1191,16 @@ def category_remove_office(
     :type structure_slug: String
     :type category_slug: String
     :type office_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param office_slug: office slug
-    :param structure: structure object (from @is_manager)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1233,18 +1251,19 @@ def category_remove_office(
 
 @login_required
 @is_manager
-def category_add_new(request, structure_slug, structure):
+def category_add_new(request, structure_slug):
     """
     Adds new category
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Nuova tipologia di richiesta")
     sub_title = _("Crea una nuova tipologia di richieste nella struttura {}").format(
         structure
@@ -1333,20 +1352,21 @@ def category_add_new(request, structure_slug, structure):
 
 @login_required
 @is_manager
-def category_edit(request, structure_slug, category_slug, structure):
+def category_edit(request, structure_slug, category_slug):
     """
     Edits category details
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1463,20 +1483,21 @@ def category_edit(request, structure_slug, category_slug, structure):
 
 @login_required
 @is_manager
-def category_disable(request, structure_slug, category_slug, structure):
+def category_disable(request, structure_slug, category_slug):
     """
     Disables a category
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1511,20 +1532,21 @@ def category_disable(request, structure_slug, category_slug, structure):
 
 @login_required
 @is_manager
-def category_enable(request, structure_slug, category_slug, structure):
+def category_enable(request, structure_slug, category_slug):
     """
     Enables a category
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1573,20 +1595,21 @@ def category_enable(request, structure_slug, category_slug, structure):
 
 @login_required
 @is_manager
-def category_delete(request, structure_slug, category_slug, structure):
+def category_delete(request, structure_slug, category_slug):
     """
     Deletes a category
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1623,20 +1646,21 @@ def category_delete(request, structure_slug, category_slug, structure):
 
 @login_required
 @is_manager
-def category_input_module_new(request, structure_slug, category_slug, structure):
+def category_input_module_new(request, structure_slug, category_slug):
     """
     Creates new input module for category
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1694,7 +1718,7 @@ def category_input_module_new(request, structure_slug, category_slug, structure)
 @login_required
 @is_manager
 def category_input_module_edit(
-    request, structure_slug, category_slug, module_id, structure
+    request, structure_slug, category_slug, module_id
 ):
     """
     Edits input module details
@@ -1702,15 +1726,16 @@ def category_input_module_edit(
     :type structure_slug: String
     :type category_slug: String
     :type module_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param module_id: input module id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1766,7 +1791,7 @@ def category_input_module_edit(
 @login_required
 @is_manager
 def category_input_module_enable(
-    request, structure_slug, category_slug, module_id, structure
+    request, structure_slug, category_slug, module_id
 ):
     """
     Enables input module
@@ -1774,15 +1799,16 @@ def category_input_module_enable(
     :type structure_slug: String
     :type category_slug: String
     :type module_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param module_id: input module id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1822,7 +1848,7 @@ def category_input_module_enable(
 @login_required
 @is_manager
 def category_input_module_disable(
-    request, structure_slug, category_slug, module_id, structure
+    request, structure_slug, category_slug, module_id
 ):
     """
     Disables input module
@@ -1830,15 +1856,16 @@ def category_input_module_disable(
     :type structure_slug: String
     :type category_slug: String
     :type module_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param module_id: input module id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1879,7 +1906,7 @@ def category_input_module_disable(
 @login_required
 @is_manager
 def category_input_module_delete(
-    request, structure_slug, category_slug, module_id, structure
+    request, structure_slug, category_slug, module_id
 ):
     """
     Deletes input module
@@ -1887,15 +1914,16 @@ def category_input_module_delete(
     :type structure_slug: String
     :type category_slug: String
     :type module_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param module_id: input module id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -1959,7 +1987,7 @@ def category_input_module_delete(
 @login_required
 @is_manager
 def category_input_module_details(
-    request, structure_slug, category_slug, module_id, structure
+    request, structure_slug, category_slug, module_id
 ):
     """
     Shows category input module details
@@ -1967,15 +1995,16 @@ def category_input_module_details(
     :type structure_slug: String
     :type category_slug: String
     :type module_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param module_id: input module id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2055,7 +2084,7 @@ def category_input_module_details(
 @login_required
 @is_manager
 def category_input_field_delete(
-    request, structure_slug, category_slug, module_id, field_id, structure
+    request, structure_slug, category_slug, module_id, field_id
 ):
     """
     Deletes a field from a category input module
@@ -2064,16 +2093,17 @@ def category_input_field_delete(
     :type category_slug: String
     :type module_id: Integer
     :type field_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param module_id: input module id
     :param field_id: module field id
-    :param structure: structure object (from @is_manager)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2126,7 +2156,7 @@ def category_input_field_delete(
 @login_required
 @is_manager
 def category_input_module_preview(
-    request, structure_slug, category_slug, module_id, structure
+    request, structure_slug, category_slug, module_id
 ):
     """
     Shows input module form preview
@@ -2134,15 +2164,16 @@ def category_input_module_preview(
     :type structure_slug: String
     :type category_slug: String
     :type module_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param module_id: input module id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2184,7 +2215,7 @@ def category_input_module_preview(
 @login_required
 @is_manager
 def category_input_field_edit(
-    request, structure_slug, category_slug, module_id, field_id, structure
+    request, structure_slug, category_slug, module_id, field_id
 ):
     """
     Edits field details from a category input module
@@ -2193,16 +2224,17 @@ def category_input_field_edit(
     :type category_slug: String
     :type module_id: Integer
     :type field_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param module_id: input module id
     :param field_id: module field id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2285,20 +2317,21 @@ def category_input_field_edit(
 
 @login_required
 @is_manager
-def category_condition_new(request, structure_slug, category_slug, structure):
+def category_condition_new(request, structure_slug, category_slug):
     """
     Creates a new condition for category
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Nuova clausola per inserimento ticket")
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
@@ -2349,7 +2382,7 @@ def category_condition_new(request, structure_slug, category_slug, structure):
 @login_required
 @is_manager
 def category_condition_edit(
-    request, structure_slug, category_slug, condition_id, structure
+    request, structure_slug, category_slug, condition_id
 ):
     """
     Edits condition details
@@ -2357,15 +2390,16 @@ def category_condition_edit(
     :type structure_slug: String
     :type category_slug: String
     :type condition_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param condition_id: condition id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2421,7 +2455,7 @@ def category_condition_edit(
 @login_required
 @is_manager
 def category_condition_delete(
-    request, structure_slug, category_slug, condition_id, structure
+    request, structure_slug, category_slug, condition_id
 ):
     """
     Deletes condition from a category
@@ -2429,15 +2463,16 @@ def category_condition_delete(
     :type structure_slug: String
     :type category_slug: String
     :type condition_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param condition_id: condition id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2468,7 +2503,7 @@ def category_condition_delete(
 @login_required
 @is_manager
 def category_condition_disable(
-    request, structure_slug, category_slug, condition_id, structure
+    request, structure_slug, category_slug, condition_id
 ):
     """
     Disables a condition from a category
@@ -2476,15 +2511,16 @@ def category_condition_disable(
     :type structure_slug: String
     :type category_slug: String
     :type condition_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param condition_id: condition id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2521,7 +2557,7 @@ def category_condition_disable(
 @login_required
 @is_manager
 def category_condition_enable(
-    request, structure_slug, category_slug, condition_id, structure
+    request, structure_slug, category_slug, condition_id
 ):
     """
     Enables a condition from a category
@@ -2529,15 +2565,16 @@ def category_condition_enable(
     :type structure_slug: String
     :type category_slug: String
     :type condition_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param condition_id: condition id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2575,7 +2612,7 @@ def category_condition_enable(
 @login_required
 @is_manager
 def category_condition_detail(
-    request, structure_slug, category_slug, condition_id, structure
+    request, structure_slug, category_slug, condition_id
 ):
     """
     Shows condition details
@@ -2583,15 +2620,16 @@ def category_condition_detail(
     :type structure_slug: String
     :type category_slug: String
     :type condition_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param condition_id: condition id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Gestione dettaglio clausola")
     template = "manager/category_condition_detail.html"
     category = get_object_or_404(
@@ -2612,18 +2650,19 @@ def category_condition_detail(
 
 @login_required
 @is_manager
-def categories(request, structure_slug, structure):
+def categories(request, structure_slug):
     """
     Retrieves structure categories list
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Gestione tipologie di richieste")
     template = "manager/categories.html"
     # sub_title = _("gestione ufficio livello manager")
@@ -2653,9 +2692,11 @@ def category_input_module_clone_preload(
     module_id,
     selected_structure_slug=None,
     selected_category_slug=None,
-    structure=None,
 ):
     """ """
+    # from @is_manager
+    structure = request.structure
+    
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2717,10 +2758,12 @@ def category_input_module_clone(
     category_slug,
     module_id,
     selected_structure_slug,
-    selected_category_slug,
-    structure,
+    selected_category_slug
 ):
     """ """
+    # from @is_manager
+    structure = request.structure
+    
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2794,20 +2837,21 @@ def category_input_module_clone(
 
 @login_required
 @is_manager
-def category_task_new(request, structure_slug, category_slug, structure):
+def category_task_new(request, structure_slug, category_slug):
     """
     Creates a new task for category
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Nuova attività per inserimento ticket")
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
@@ -2858,22 +2902,23 @@ def category_task_new(request, structure_slug, category_slug, structure):
 
 @login_required
 @is_manager
-def category_task_detail(request, structure_slug, category_slug, task_id, structure):
+def category_task_detail(request, structure_slug, category_slug, task_id):
     """
     Shows task details
 
     :type structure_slug: String
     :type category_slug: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param task_id: task code
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Gestione dettaglio attività")
     template = "manager/category_task_detail.html"
     category = get_object_or_404(
@@ -2893,7 +2938,7 @@ def category_task_detail(request, structure_slug, category_slug, task_id, struct
 @login_required
 @is_manager
 def category_task_download_attachment(
-    request, structure_slug, category_slug, task_id, structure
+    request, structure_slug, category_slug, task_id
 ):
     """
     Downloads category task attachment
@@ -2901,15 +2946,16 @@ def category_task_download_attachment(
     :type structure_slug: String
     :type category_slug: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param task_id: task code
-    :param structure: structure object (from @is_manager)
 
     :return: file
     """
+    # from @is_manager
+    structure = request.structure
+
     # get task
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
@@ -2927,22 +2973,23 @@ def category_task_download_attachment(
 
 @login_required
 @is_manager
-def category_task_edit(request, structure_slug, category_slug, task_id, structure):
+def category_task_edit(request, structure_slug, category_slug, task_id):
     """
     Edits condition details
 
     :type structure_slug: String
     :type category_slug: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param task_id: task code
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -2997,7 +3044,7 @@ def category_task_edit(request, structure_slug, category_slug, task_id, structur
 @login_required
 @is_manager
 def category_task_attachment_delete(
-    request, structure_slug, category_slug, task_id, structure
+    request, structure_slug, category_slug, task_id
 ):
     """
      Delete a task attachment (it must be called by a dialog to confirm action)
@@ -3005,15 +3052,16 @@ def category_task_attachment_delete(
     :type structure_slug: String
      :type category_slug: String
      :type task_id: String
-     :type structure: OrganizationalStructure (from @is_manager)
 
      :param structure_slug: structure slug
      :param category_slug: category slug
      :param task_id: task code
-     :param structure: structure object (from @is_manager)
 
      :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -3045,22 +3093,23 @@ def category_task_attachment_delete(
 
 @login_required
 @is_manager
-def category_task_enable(request, structure_slug, category_slug, task_id, structure):
+def category_task_enable(request, structure_slug, category_slug, task_id):
     """
     Enables a task from a category
 
     :type structure_slug: String
     :type category_slug: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param task_id: task code
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -3093,22 +3142,23 @@ def category_task_enable(request, structure_slug, category_slug, task_id, struct
 
 @login_required
 @is_manager
-def category_task_disable(request, structure_slug, category_slug, task_id, structure):
+def category_task_disable(request, structure_slug, category_slug, task_id):
     """
     Disables a task from a category
 
     :type structure_slug: String
     :type category_slug: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param task_id: tak code
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -3141,22 +3191,23 @@ def category_task_disable(request, structure_slug, category_slug, task_id, struc
 
 @login_required
 @is_manager
-def category_task_delete(request, structure_slug, category_slug, task_id, structure):
+def category_task_delete(request, structure_slug, category_slug, task_id):
     """
     Deletes task from a category
 
     :type structure_slug: String
     :type category_slug: String
     :type task_id: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param task_id: task code
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -3184,18 +3235,19 @@ def category_task_delete(request, structure_slug, category_slug, task_id, struct
 
 @login_required
 @is_manager
-def manager_settings(request, structure_slug, structure):
+def manager_settings(request, structure_slug):
     """
     Gets manager settings (personal and structure)
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager/@is_operator)
 
     :return: response
     """
+    # from @is_manager
+    structure = request.structure
+
     user_type = get_user_type(request.user, structure)
     template = "{}/user_settings.html".format(user_type)
     title = _("Configurazione impostazioni")
@@ -3228,18 +3280,19 @@ def manager_settings(request, structure_slug, structure):
 
 @login_required
 @is_manager
-def manager_settings_add_manager(request, structure_slug, structure):
+def manager_settings_add_manager(request, structure_slug):
     """
     Add manager to structure
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Aggiungi nuovo manager alla struttura")
     template = "manager/settings_add_manager.html"
     key = request.GET.get("search", "")
@@ -3332,21 +3385,22 @@ def manager_settings_add_manager(request, structure_slug, structure):
 @login_required
 @is_manager
 def structure_protocol_configuration_detail(
-    request, structure_slug, configuration_id, structure
+    request, structure_slug, configuration_id
 ):
     """
     Structure protocol configuration details
 
     :type structure_slug: String
     :type configuration_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param configuration_id: protocol configuration pk
-    :param structure: structure object (from @is_manager/@is_operator)
 
     :return: response
     """
+    # from @is_manager
+    structure = request.structure
+
     configuration = get_object_or_404(
         OrganizationalStructureWSProtocollo,
         organizational_structure=structure,
@@ -3591,7 +3645,7 @@ def structure_protocol_configuration_detail(
 @login_required
 @is_manager
 def category_protocol_configuration_detail(
-    request, structure_slug, category_slug, configuration_id, structure
+    request, structure_slug, category_slug, configuration_id
 ):
     """
     Category protocol configuration detail
@@ -3599,15 +3653,16 @@ def category_protocol_configuration_detail(
     :type structure_slug: String
     :type category_slug: String
     :type configuration_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param configuration_id: protocol configuration pk
-    :param structure: structure object (from @is_manager/@is_operator)
 
     :return: response
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -3692,21 +3747,22 @@ def category_protocol_configuration_detail(
 @login_required
 @is_manager
 def category_protocol_configuration_new(
-    request, structure_slug, category_slug, structure
+    request, structure_slug, category_slug
 ):
     """
     Creates a new protocol configuration for category
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Nuova configuratione del protocollo informatico")
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
@@ -3764,7 +3820,7 @@ def category_protocol_configuration_new(
 @login_required
 @is_manager
 def category_protocol_configuration_delete(
-    request, structure_slug, category_slug, configuration_id, structure
+    request, structure_slug, category_slug, configuration_id
 ):
     """
     Deletes a category protocol configuration
@@ -3772,15 +3828,16 @@ def category_protocol_configuration_delete(
     :type structure_slug: String
     :type category_slug: String
     :type configuration_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param configuration_id: protocol configuration pk
-    :param structure: structure object (from @is_manager/@is_operator)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -3818,7 +3875,7 @@ def category_protocol_configuration_delete(
 @login_required
 @is_manager
 def category_protocol_configuration_disable(
-    request, structure_slug, category_slug, configuration_id, structure
+    request, structure_slug, category_slug, configuration_id
 ):
     """
     Disables a category protocol configuration
@@ -3826,15 +3883,16 @@ def category_protocol_configuration_disable(
     :type structure_slug: String
     :type category_slug: String
     :type configuration_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param configuration_id: protocol configuration pk
-    :param structure: structure object (from @is_manager/@is_operator)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -3893,7 +3951,7 @@ def category_protocol_configuration_disable(
 @login_required
 @is_manager
 def category_protocol_configuration_enable(
-    request, structure_slug, category_slug, configuration_id, structure
+    request, structure_slug, category_slug, configuration_id
 ):
     """
     Enables a category protocol configuration
@@ -3901,15 +3959,16 @@ def category_protocol_configuration_enable(
     :type structure_slug: String
     :type category_slug: String
     :type configuration_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param configuration_id: protocol configuration pk
-    :param structure: structure object (from @is_manager/@is_operator)
 
     :return: redirect
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -3956,20 +4015,18 @@ def category_protocol_configuration_enable(
 
 @login_required
 @is_manager
-def manager_settings_check_protocol(request, structure_slug, structure):
+def manager_settings_check_protocol(request, structure_slug):
     """
     Test the protocol system
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager/@is_operator)
 
     :return: redirect
     """
     try:
-        protocol_number = ticket_protocol(
+        ticket_protocol(
             user=request.user, subject="test {}".format(request.user), test=True
         )
         messages.add_message(
@@ -3987,20 +4044,21 @@ def manager_settings_check_protocol(request, structure_slug, structure):
 
 @login_required
 @is_manager
-def category_default_reply_new(request, structure_slug, category_slug, structure):
+def category_default_reply_new(request, structure_slug, category_slug):
     """
     Creates a new default ticket reply for category
 
     :type structure_slug: String
     :type category_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Nuova risposta predefinita per chiusura ticket")
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
@@ -4055,7 +4113,7 @@ def category_default_reply_new(request, structure_slug, category_slug, structure
 @login_required
 @is_manager
 def category_default_reply_delete(
-    request, structure_slug, category_slug, default_reply_id, structure
+    request, structure_slug, category_slug, default_reply_id
 ):
     """
     Deletes default_reply from a category
@@ -4063,15 +4121,16 @@ def category_default_reply_delete(
     :type structure_slug: String
     :type category_slug: String
     :type default_reply_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param default_reply_id: default_reply id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -4102,7 +4161,7 @@ def category_default_reply_delete(
 @login_required
 @is_manager
 def category_default_reply_disable(
-    request, structure_slug, category_slug, default_reply_id, structure
+    request, structure_slug, category_slug, default_reply_id
 ):
     """
     Disables a default_reply from a category
@@ -4110,15 +4169,16 @@ def category_default_reply_disable(
     :type structure_slug: String
     :type category_slug: String
     :type default_reply_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param default_reply_id: default_reply id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -4155,7 +4215,7 @@ def category_default_reply_disable(
 @login_required
 @is_manager
 def category_default_reply_enable(
-    request, structure_slug, category_slug, default_reply_id, structure
+    request, structure_slug, category_slug, default_reply_id
 ):
     """
     Enables a default_reply from a category
@@ -4163,15 +4223,16 @@ def category_default_reply_enable(
     :type structure_slug: String
     :type category_slug: String
     :type default_reply_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param default_reply_id: default_reply id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
@@ -4207,7 +4268,7 @@ def category_default_reply_enable(
 @login_required
 @is_manager
 def category_default_reply_detail(
-    request, structure_slug, category_slug, default_reply_id, structure
+    request, structure_slug, category_slug, default_reply_id
 ):
     """
     Shows default_reply details
@@ -4215,15 +4276,16 @@ def category_default_reply_detail(
     :type structure_slug: String
     :type category_slug: String
     :type default_reply_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param category_slug: category slug
     :param default_reply_id: default_reply id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Gestione dettaglio risposta predefinita")
     template = "manager/category_default_reply_detail.html"
     category = get_object_or_404(
@@ -4277,18 +4339,19 @@ def category_default_reply_detail(
 
 @login_required
 @is_manager
-def structure_alert_new(request, structure_slug, structure):
+def structure_alert_new(request, structure_slug):
     """
     Creates a new alert for organizational structure
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Nuovo alert per gli utenti")
     form = OrganizationalStructureAlertForm()
     if request.method == "POST":
@@ -4329,20 +4392,21 @@ def structure_alert_new(request, structure_slug, structure):
 
 @login_required
 @is_manager
-def structure_alert_delete(request, structure_slug, alert_id, structure):
+def structure_alert_delete(request, structure_slug, alert_id):
     """
     Deletes alert from a structure
 
     :type structure_slug: String
     :type alert_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param alert_id: alert id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     alert = get_object_or_404(
         OrganizationalStructureAlert, pk=alert_id, organizational_structure=structure
     )
@@ -4363,20 +4427,21 @@ def structure_alert_delete(request, structure_slug, alert_id, structure):
 
 @login_required
 @is_manager
-def structure_alert_edit(request, structure_slug, alert_id, structure):
+def structure_alert_edit(request, structure_slug, alert_id):
     """
     Edits alert details
 
     :type structure_slug: String
     :type alert_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param alert_id: alert id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     alert = get_object_or_404(
         OrganizationalStructureAlert, pk=alert_id, organizational_structure=structure
     )
@@ -4421,18 +4486,19 @@ def structure_alert_edit(request, structure_slug, alert_id, structure):
 
 @login_required
 @is_manager
-def structure_users_list_new(request, structure_slug, structure):
+def structure_users_list_new(request, structure_slug):
     """
     Creates a new allowed users list for organizational structure
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     title = _("Nuova lista di utenti per la struttura")
     form = OrganizationalStructureAllowedUsersListForm()
     if request.method == "POST":
@@ -4473,20 +4539,21 @@ def structure_users_list_new(request, structure_slug, structure):
 
 @login_required
 @is_manager
-def structure_users_list_edit(request, structure_slug, list_id, structure):
+def structure_users_list_edit(request, structure_slug, list_id):
     """
     Edits allowed users list details
 
     :type structure_slug: String
     :type list_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param list_id: alert list_id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     users_list = get_object_or_404(
         OrganizationalStructureAllowedUsersList,
         pk=list_id,
@@ -4536,20 +4603,21 @@ def structure_users_list_edit(request, structure_slug, list_id, structure):
 
 @login_required
 @is_manager
-def structure_users_list_delete(request, structure_slug, list_id, structure):
+def structure_users_list_delete(request, structure_slug, list_id):
     """
     Deletes allowed users list from a structure
 
     :type structure_slug: String
     :type list_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param list_id: list_id id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     users_list = get_object_or_404(
         OrganizationalStructureAllowedUsersList,
         pk=list_id,
@@ -4574,20 +4642,21 @@ def structure_users_list_delete(request, structure_slug, list_id, structure):
 
 @login_required
 @is_manager
-def structure_users_list_add_user(request, structure_slug, list_id, structure):
+def structure_users_list_add_user(request, structure_slug, list_id):
     """
     Edits allowed users list details
 
     :type structure_slug: String
     :type list_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param list_id: alert list_id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+
     users_list = get_object_or_404(
         OrganizationalStructureAllowedUsersList,
         pk=list_id,
@@ -4672,7 +4741,7 @@ def structure_users_list_add_user(request, structure_slug, list_id, structure):
 @login_required
 @is_manager
 def structure_users_list_remove_user(
-    request, structure_slug, list_id, user_id, structure
+    request, structure_slug, list_id, user_id
 ):
     """
     Remove user from users list
@@ -4680,15 +4749,16 @@ def structure_users_list_remove_user(
     :type structure_slug: String
     :type list_id: Integer
     :type user_id: Integer
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: structure slug
     :param list_id: list_id
     :param user_id: user_id
-    :param structure: structure object (from @is_manager)
 
     :return: render
     """
+    # from @is_manager
+    structure = request.structure
+    
     user = get_user_model().objects.get(pk=user_id)
     users_list = get_object_or_404(
         OrganizationalStructureAllowedUsersList,

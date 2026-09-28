@@ -12,20 +12,20 @@ from uni_ticket.utils import base_context, user_offices_list, visible_tickets_to
 
 @login_required
 @is_operator
-def dashboard(request, structure_slug, structure, office_employee):
+def dashboard(request, structure_slug):
     """
     Operator Dashboard
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_operator)
-    :type office_employee: OrganizationalStructureOfficeEmployee (from @is_operator)
 
     :param structure_slug: structure slug
-    :param structure: structure object (from @is_operator)
-    :param office_employee: employe offices queryset (from @is_operator)
 
     :return: render
     """
+    # from @is_operator
+    structure = request.structure
+    office_employee = request.office_employee
+    
     title = _("Pannello di Controllo")
     sub_title = _("Gestisci le richieste in modalità {}").format(
         OPERATOR_PREFIX)
