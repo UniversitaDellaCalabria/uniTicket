@@ -342,10 +342,8 @@ def manager_closed_ticket(request, structure_slug):
     Returns all closed tickets managed by manager
 
     :type structure_slug: String
-    :type structure: OrganizationalStructure (from @is_manager)
 
     :param structure_slug: manager structure slug
-    :param structure: manager structure (from @is_manager)
 
     :return: JsonResponse
     """

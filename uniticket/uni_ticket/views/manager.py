@@ -3499,7 +3499,7 @@ def structure_protocol_configuration_detail(
 
 # :type structure_slug: String
 # :type configuration_id: Integer
-# :type structure: OrganizationalStructure (from @is_manager)
+# :type  (from @is_manager)
 
 # :param structure_slug: structure slug
 # :param configuration_id: protocol configuration pk

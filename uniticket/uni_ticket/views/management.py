@@ -2858,10 +2858,12 @@ def export_detailed_report(request, structure_slug):
     return custom_message(request, _("Forbidden"), 403)
 
 @login_required
-def statistics(request, structure_slug:str = None, structure: OrganizationalStructure = None):
+def statistics(request, structure_slug:str = None):
     """
     uniTicket general statistics per structure
     """
+    structure = request.structure
+    
     _default_start = timezone.localtime() - timezone.timedelta(days=STATS_DEFAULT_DATE_START_DELTA_DAYS)
     date_start = _default_start
     _default_end = timezone.localtime()
