@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _
 
@@ -170,7 +171,8 @@ def has_access_to_ticket(func_to_decorate):
         for office in offices:
             if user_manage_office(user, office):
                 return func_to_decorate(*original_args, **original_kwargs)
-        return custom_message(request, _("Accesso al ticket negato."))
+        # return custom_message(request, _("Accesso al ticket negato."))
+        raise Http404
 
     return new_func
 
@@ -224,8 +226,7 @@ def ticket_assigned_to_structure(func_to_decorate):
         ticket_id = original_kwargs["ticket_id"]
         if not hasattr(request, "ticket"):
             request.ticket = get_object_or_404(Ticket, code=ticket_id)
-        structure = request.structure
-        if structure not in request.ticket.get_assigned_to_structures():
+        if request.structure not in request.ticket.get_assigned_to_structures():
             return custom_message(
                 request,
                 _("Il ticket non è stato assegnato a questa struttura"),
