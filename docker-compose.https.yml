@@ -1,0 +1,31 @@
+# HTTPS overlay — use together with docker-compose.yml:
+#
+#   DOMAIN=your.fqdn.example docker compose \
+#     -f docker-compose.yml \
+#     -f docker-compose.https.yml \
+#     up -d
+#
+# Ports 80 and 443 must be reachable from the internet (Let's Encrypt HTTP-01 challenge).
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      - DOMAIN
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - uniticket
+    depends_on:
+      - uniticket.local
+
+volumes:
+  caddy_data:
+  caddy_config:
