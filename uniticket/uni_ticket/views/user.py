@@ -1795,7 +1795,10 @@ def ticket_submit_draft(request, ticket_id):
     :return: render
     """
     ticket = get_object_or_404(
-        Ticket,
+        Ticket.objects.select_related(
+            "input_module",
+            "input_module__ticket_category"
+        ),
         code=ticket_id,
         created_by=request.user,
         draft=True,
@@ -1808,7 +1811,7 @@ def ticket_submit_draft(request, ticket_id):
             ticket_id=ticket.code
         )
     
-    if not request.POST.get(TICKET_CONDITIONS_FIELD_ID, None):
+    if ticket.input_module.ticket_category.get_conditions() and not request.POST.get(TICKET_CONDITIONS_FIELD_ID, None):
         messages.add_message(request, messages.ERROR, _("E' obbligatorio accettare le clausole della richiesta"))
         return redirect(
             "uni_ticket:ticket_detail", 
