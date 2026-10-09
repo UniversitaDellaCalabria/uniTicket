@@ -1822,6 +1822,7 @@ def ticket_submit_draft(request, ticket_id):
     if request.POST.get(TICKET_SUBMIT_DRAFT_BUTTON_NAME, None):
 
         category = ticket.input_module.ticket_category
+        structure = category.organizational_structure
         office = category.organizational_office
 
         # if user is not allowed (category allowed users list)
@@ -1890,7 +1891,7 @@ def ticket_submit_draft(request, ticket_id):
         )
 
         compiled_message = ticket_message.format(ticket.subject)
-
+        
         # Protocol
         if category.protocol_required:
             protocolla_ticket(
@@ -1906,7 +1907,6 @@ def ticket_submit_draft(request, ticket_id):
         # if office operators must receive notification email
         if category.receive_email:
             # Send mail to ticket
-            structure = category.organizational_structure
             mail_params = {
                 "hostname": settings.HOSTNAME,
                 "ticket_url": request.build_absolute_uri(
