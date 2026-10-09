@@ -216,9 +216,10 @@
 {% endblock top_buttons %}
 
 {% block page_content %}
+        
     {% include 'ticket_detail.html' with is_simple_user=request.user %}
 
-    {% if ticket.draft %}
+    {% if ticket.draft and ticket.is_valid %}
     <form method="post" action="{% url 'uni_ticket:ticket_submit_draft' ticket_id=ticket.code %}" novalidate>
 
         {% if category_conditions and ticket.created_by == request.user %}

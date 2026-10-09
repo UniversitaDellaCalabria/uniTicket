@@ -1230,6 +1230,7 @@ class TicketDetail(View):
                 Q(created_by=request.user) | Q(compiled_by=request.user),
                 code=ticket_id
             )
+        
         category = ticket.input_module.ticket_category
         modulo_compilato = ticket.get_modulo_compilato()
         ticket_details = get_as_dict(
@@ -1797,6 +1798,13 @@ def ticket_submit_draft(request, ticket_id):
         created_by=request.user,
         draft=True,
     )
+    
+    if not ticket.is_valid():
+        messages.add_message(request, messages.ERROR, _("Uno o più allegati obbligatori risultano mancanti"))
+        return redirect(
+            "uni_ticket:ticket_detail", 
+            ticket_id=ticket.code
+        )
     
     if not request.POST.get(TICKET_CONDITIONS_FIELD_ID, None):
         messages.add_message(request, messages.ERROR, _("E' obbligatorio accettare le clausole della richiesta"))
