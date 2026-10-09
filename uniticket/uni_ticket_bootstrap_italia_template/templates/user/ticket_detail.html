@@ -34,7 +34,7 @@
 
 {% block under_content_title %}
     {% ticket_has_been_taken ticket=ticket as ticket_taken %}
-    {% if not ticket.is_closed and not ticket_taken and ticket_assignments.count == 1 %}
+    {% if ticket.created_by == request.user and not ticket.is_closed and not ticket_taken and ticket_assignments.count == 1 %}
         {% include "ticket_protocol_required_alert.html" with ticket=ticket %}
         {% if not ticket.protocol_number %}
         <div class="alert alert-info alert-dismissible fade show mb-5" role="alert">

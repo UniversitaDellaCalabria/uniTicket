@@ -1272,13 +1272,9 @@ class TicketDetail(View):
         else:
             category_conditions = category.get_conditions()
 
-        allowed_users = category.get_users_allowed_to_open_tickets()
-
         self.data = {
             "title": title,
             "allegati": allegati,
-            "allowed_users": allowed_users,
-            "category": category,
             "category_conditions": category_conditions,
             "dependences": ticket_dependences,
             "details": ticket_details,
@@ -1290,13 +1286,19 @@ class TicketDetail(View):
             "ticket_form": ticket_form,
             "ticket_messages": ticket_messages,
             "logs": ticket_logs,
-            "ticket_task": ticket_task,
-            "user_can_open_tickets": category.user_can_open_tickets(request.user) if ticket.draft else None
+            "ticket_task": ticket_task
         }
         if api:
             return self.data
-        else:
-            return render(request, template, base_context(self.data))
+
+        # other data for submission in ticket detail page
+        if ticket.draft:
+            allowed_users = category.get_users_allowed_to_open_tickets()
+            self.data["allowed_users"] = allowed_users
+            self.data["category"] = category
+            self.data["user_can_open_tickets"] = category.user_can_open_tickets(request.user)
+
+        return render(request, template, base_context(self.data))
 
 
 @login_required
