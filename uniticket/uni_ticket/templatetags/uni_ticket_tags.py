@@ -186,7 +186,7 @@ def app_is_installed(name):
 @register.simple_tag
 def ticket_can_be_deleted(ticket, ticket_taken, ticket_assignments, user):
     if ticket.created_by != user: return False
-    if ticket.draft and ticket.compiled_by: return False
+    if ticket.compiled_by: return False
     if ticket.protocol_number: return False
     if ticket.is_closed: return False
     if ticket_taken: return False

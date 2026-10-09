@@ -1145,11 +1145,11 @@ def ticket_delete(request, ticket_id):
         return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
 
     # deny action if ticket is draft and has been shared
-    if ticket.draft and ticket.compiled_by:
+    if ticket.compiled_by:
         messages.add_message(
             request,
             messages.ERROR,
-            _("Impossibile eliminare una bozza condivisa")
+            _("Impossibile eliminare una richiesta condivisa")
         )
         return redirect("uni_ticket:ticket_detail", ticket_id=ticket.code)
 
