@@ -783,6 +783,8 @@ class TicketAddNew(View):
 
                     compiled_message = ticket_message.format(self.ticket.subject)
 
+                    structure = self.category.organizational_structure
+                    
                     # Protocol
                     if self.category.protocol_required:
                         protocolla_ticket(
@@ -798,7 +800,6 @@ class TicketAddNew(View):
                     # if office operators must receive notification email
                     if self.category.receive_email:
                         # Send mail to ticket
-                        structure = self.category.organizational_structure
                         mail_params = {
                             "hostname": settings.HOSTNAME,
                             "ticket_url": request.build_absolute_uri(
