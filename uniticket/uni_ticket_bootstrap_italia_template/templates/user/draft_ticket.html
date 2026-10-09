@@ -1,0 +1,30 @@
+{% extends "base_page_schema.html" %}
+
+{% load i18n %}
+{% load static %}
+{% load uni_ticket_tags %}
+
+{% block menu_links %}
+{% include 'user/main_menu.html' %}
+{% endblock menu_links %}
+
+{% block top_buttons %}
+<a role="button" class="btn btn-outline-secondary"
+   href="{% url 'uni_ticket:user_dashboard' %}">
+    <svg class="icon icon-xs">
+        <use xlink:href="{% static 'svg/sprites.svg' %}#it-arrow-left"></use>
+    </svg> {% trans "Dashboard" %}
+</a>
+{% endblock top_buttons %}
+
+{% block page_content %}
+    {% uni_ticket_settings_value name="SIMPLE_USER_SHOW_PRIORITY" as user_show_priority %}
+    {% include 'datatables/table.html' with user_show_priority=user_show_priority %}
+{% endblock page_content %}
+
+{% block extra_scripts %}
+{% uni_ticket_settings_value name="SIMPLE_USER_SHOW_PRIORITY" as user_show_priority %}
+{% url 'uni_ticket:user_ticket_url' as var_url %}
+{% url 'uni_ticket:user_draft_ticket_json' as ajax_url %}
+{% include 'datatables/datatable_script.html' with var_url=var_url ajax_url=ajax_url user_show_priority=user_show_priority %}
+{% endblock extra_scripts %}

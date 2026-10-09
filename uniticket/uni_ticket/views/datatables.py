@@ -158,6 +158,30 @@ def user_all_tickets(request):
 
 @csrf_exempt
 @login_required
+def user_draft_ticket(request):
+    """
+    Returns all draft tickets opened by user
+
+    :return: JsonResponse
+    """
+    columns = _no_priority
+    if SIMPLE_USER_SHOW_PRIORITY:
+        columns = _ticket_columns
+
+    tickets = Ticket.objects.filter(
+        Q(created_by=request.user) |
+        Q(compiled_by=request.user),
+        draft=True,
+        is_closed=False,
+    ).values_list('pk', flat=True)\
+    .order_by("priority", "-created")
+
+    dtd = TicketDTD(request, tickets, columns)
+    return JsonResponse(dtd.get_dict())
+
+
+@csrf_exempt
+@login_required
 def user_unassigned_ticket(request):
     """
     Returns all unassigned tickets opened by user
@@ -168,26 +192,61 @@ def user_unassigned_ticket(request):
     if SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
 
+    # tickets = TicketAssignment.objects.filter(
+    #     Q(ticket__created_by=request.user) |
+    #     Q(ticket__compiled_by=request.user),
+    #     Q(taken_date__isnull=True) | Q(follow=False),
+    #     ticket__is_closed=False,
+    # ).values_list('ticket__pk', flat=True)\
+    # .order_by("ticket__priority", "-ticket__created")\
+    # .distinct()
+
+    # to_exclude = TicketAssignment.objects.filter(
+    #     Q(ticket__created_by=request.user) |
+    #     Q(ticket__compiled_by=request.user),
+    #     ticket__is_closed=False,
+    #     follow=True,
+    #     taken_date__isnull=False
+    # ).values_list('ticket__pk', flat=True)\
+    # .order_by("ticket__priority", "-ticket__created")\
+    # .distinct()
+
+    # tickets = tickets.exclude(ticket__pk__in=to_exclude)
+
     tickets = TicketAssignment.objects.filter(
-        Q(ticket__created_by=request.user) |
-        Q(ticket__compiled_by=request.user),
-        Q(taken_date__isnull=True) | Q(follow=False),
+        Q(ticket__created_by=request.user) | Q(ticket__compiled_by=request.user),
         ticket__is_closed=False,
+    ).filter(
+        Q(follow=False) | Q(taken_date__isnull=True)
     ).values_list('ticket__pk', flat=True)\
     .order_by("ticket__priority", "-ticket__created")\
     .distinct()
+    
+    dtd = TicketDTD(request, tickets, columns)
+    return JsonResponse(dtd.get_dict())
 
-    to_exclude = TicketAssignment.objects.filter(
-        Q(ticket__created_by=request.user) |
-        Q(ticket__compiled_by=request.user),
-        ticket__is_closed=False,
-        follow=True,
-        taken_date__isnull=False
-    ).values_list('ticket__pk', flat=True)\
-    .order_by("ticket__priority", "-ticket__created")\
+
+@csrf_exempt
+@login_required
+def user_draft_ticket(request):
+    """
+    Returns all draft tickets opened by user
+
+    :return: JsonResponse
+    """
+    columns = _no_priority
+    if SIMPLE_USER_SHOW_PRIORITY:
+        columns = _ticket_columns
+
+    tickets = Ticket.objects.filter(
+        Q(created_by=request.user) |
+        Q(compiled_by=request.user),
+        draft=True,
+        is_closed=False
+    ).values_list('pk', flat=True)\
+    .order_by("-created")\
     .distinct()
 
-    tickets = tickets.exclude(ticket__pk__in=to_exclude)
     dtd = TicketDTD(request, tickets, columns)
     return JsonResponse(dtd.get_dict())
 
@@ -230,12 +289,12 @@ def user_closed_ticket(request):
     if SIMPLE_USER_SHOW_PRIORITY:
         columns = _ticket_columns
 
-    tickets = TicketAssignment.objects.filter(
-        Q(ticket__created_by=request.user) |
-        Q(ticket__compiled_by=request.user),
-        ticket__is_closed=True
-    ).values_list('ticket__pk', flat=True)\
-    .order_by("-ticket__created")\
+    tickets = Ticket.objects.filter(
+        Q(created_by=request.user) |
+        Q(compiled_by=request.user),
+        is_closed=True
+    ).values_list('pk', flat=True)\
+    .order_by("-created")\
     .distinct()
 
     dtd = TicketDTD(request, tickets, columns)

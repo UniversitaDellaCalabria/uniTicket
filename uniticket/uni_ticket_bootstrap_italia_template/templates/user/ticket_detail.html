@@ -57,6 +57,12 @@
             </svg> {% trans "Dashboard" %}
         </a>
         <a role="button" class="btn btn-outline-secondary"
+           href="{% url 'uni_ticket:user_draft_ticket' %}">
+            <svg class="icon icon-xs">
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-file"></use>
+            </svg> {% trans "Torna alle bozze" %}
+        </a>
+        <a role="button" class="btn btn-outline-secondary"
            href="{% url 'uni_ticket:user_unassigned_ticket' %}">
             <svg class="icon icon-xs">
                 <use xlink:href="{% static 'svg/sprites.svg' %}#it-warning-circle"></use>
@@ -128,6 +134,7 @@
        </svg> {% trans "Effettua richiesta simile" %}
     </a>
 
+    {% ticket_can_be_edited ticket=ticket ticket_taken=ticket_taken user=request.user as can_be_edited %}
     {% if ticket_taken %}
         <a role="button" href="{% url 'uni_ticket:ticket_message' ticket_id=ticket.code %}"
            class="btn btn-outline-secondary">
@@ -140,7 +147,7 @@
             {% endif %}
             {% trans "Messaggi" %}
         </a>
-    {% elif not ticket.is_closed and ticket_assignments.count == 1 and not ticket.protocol_number %}
+    {% elif can_be_edited %}
         <a role="button"
            class="btn btn-outline-secondary"
            href="{% url 'uni_ticket:ticket_edit' ticket_id=ticket.code %}">
@@ -149,7 +156,9 @@
             </svg> {% trans 'Modifica' %}
         </a>
     {% endif %}
-    {% if not ticket.is_closed %}
+    
+    {% ticket_can_be_closed_from_user ticket=ticket user=request.user as can_be_closed %}
+    {% if can_be_closed %}
         <a role="button"
            href="{% url 'uni_ticket:user_close_ticket' ticket_id=ticket.code %}"
            class="btn btn-outline-success">
@@ -159,7 +168,11 @@
         </a>
     {% endif %}
 
+    {% ticket_can_be_deleted user=request.user ticket=ticket ticket_taken=ticket_taken ticket_assignments=ticket_assignments as can_be_deleted %}
+    {% if can_be_deleted %}
+    {% comment %}
     {% if not ticket_taken and not ticket.is_closed and ticket_assignments.count == 1 and not ticket.protocol_number %}
+    {% endcomment %}
         <button type="button" class="btn btn-outline-danger"
                 data-bs-toggle="modal"  data-bs-target="#modalCenter">
             <svg class="icon icon-xs icon-danger">
@@ -204,7 +217,198 @@
 
 {% block page_content %}
     {% include 'ticket_detail.html' with is_simple_user=request.user %}
+
+    {% if ticket.draft %}
+    <form method="post" action="{% url 'uni_ticket:ticket_submit_draft' ticket_id=ticket.code %}" novalidate>
+
+        {% if category_conditions and ticket.created_by == request.user %}
+            {% for condition in category_conditions %}
+                {% if not forloop.first %}<hr>{% endif %}
+                {% if condition.is_collapsable %}
+                    <div class="accordion accordion-left-icon" id="accordionDiv{{ condition.pk }}" style="border: 0">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header " id="heading{{ condition.pk }}">
+                                <button class="accordion-button collapsed" style="border: 0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ condition.pk }}" aria-expanded="false" aria-controls="collapse{{ condition.pk }}">
+                                    {{ condition.title }}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ condition.pk }}" class="accordion-collapse collapse" data-bs-parent="#accordionDiv{{ condition.pk }}" role="region" aria-labelledby="heading{{ condition.pk }}">
+                                <div class="accordion-body">
+                                    <p class="it-card-text">{{ condition.text | markdown | safe }}</p>
+                                    {% if condition.attachment %}
+                                        <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
+                                            <svg class="icon">
+                                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
+                                            </svg>{{ condition.attachment|filename }}
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <h6>{{ condition.title }}</h6>
+                    <p class="it-card-text">{{ condition.text | markdown | safe }}</p>
+                    {% if condition.attachment %}
+                        <a href="{% url 'uni_ticket:download_condition_attachment' structure_slug=struttura.slug category_slug=condition.category.slug condition_id=condition.pk %}">
+                            <svg class="icon">
+                                <use xlink:href="{% static 'svg/sprites.svg' %}#it-clip"></use>
+                            </svg>{{ condition.attachment|filename }}
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            {% uni_ticket_settings_value name="TICKET_CONDITIONS_FIELD_ID" as ticket_conditions_field_id %}
+            {% uni_ticket_settings_value name="TICKET_CONDITIONS_TEXT" as ticket_conditions_text %}
+            <div class="alert alert-danger my-4" role="alert">
+                <h4 class="alert-heading">{% trans "Attenzione" %}</h4>
+                <label for="{{ ticket_conditions_field_id }}">{{ ticket_conditions_text }}: *</label>
+                <input type="checkbox" name="{{ ticket_conditions_field_id }}" required id="{{ ticket_conditions_field_id }}">
+            </div>
+
+        {% endif %}
+
+        {% if user_can_open_tickets %}
+        <div class="d-grid gap-2">
+            <button class="btn btn-success"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#submit_draft">
+                <svg class="icon icon-xs icon-white">
+                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
+                </svg>
+                {% if category.protocol_required %}
+                    {% trans "Converti bozza in richiesta e protocolla" %}
+                {% else %}
+                    {% trans "Converti bozza in richiesta" %}
+                {% endif %}
+            </button>
+        </div>
+        <div class="modal fade"
+            tabindex="-1"
+            role="dialog"
+            id="submit_draft">
+            <div class="modal-dialog modal-dialog-centered"
+                role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            {% if category.protocol_required %}
+                                {% trans "Conferma e protocolla" %}
+                            {% else %}
+                                {% trans "Conferma" %}
+                            {% endif %}
+                        </h5>
+                        <button class="btn-close"
+                                type="button"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+                        <svg class="icon">
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                        </svg>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            {% if category.protocol_required %}
+                                {% trans "Desideri procedere, confermare i dati immessi e protocollare la tua richiesta?" %}
+                            {% else %}
+                                {% trans "Desideri procedere e confermare i dati immessi?" %}
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        {% uni_ticket_settings_value name="TICKET_SUBMIT_DRAFT_BUTTON_NAME" as submit_draft_button_name %}
+                        <input class="btn btn-success"
+                            type="submit"
+                            id="submitForm"
+                            name="{{ submit_draft_button_name }}"
+                            value="{% trans 'Si, procedi' %}">
+                        {% csrf_token %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif%}
+        
+        {% if allowed_users and not ticket.compiled_by %}
+
+            {% if user_can_open_tickets%}
+            <hr class="my-3"/>
+            {% endif%}
+            <div class="alert alert-info" role="alert">
+                <p>
+                    {% trans "Questo tipo di richiesta può essere inoltrato esclusivamente da uno degli utenti di seguito." %}
+                    <br>
+                    {% trans "Scegli con chi vuoi condividere la tua bozza." %}
+                </p>
+                <div class="bootstrap-select-wrapper">
+                    <select id="sharing_user" name="sharing_user">
+                        <option value="" selected></option>
+                        {% for au in allowed_users %}
+                        {% if au != request.user %}
+                        <option value="{{ au.pk }}">{{ au }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <br>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-info"
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#submit_draft">
+                        <svg class="icon icon-xs icon-white">
+                            <use xlink:href="{% static 'svg/sprites.svg' %}#it-share"></use>
+                        </svg>
+                        {% trans "Condividi bozza per approvazione" %}
+                    </button>
+                </div>
+                <div class="modal fade"
+                    tabindex="-1"
+                    role="dialog"
+                    id="submit_draft">
+                    <div class="modal-dialog modal-dialog-centered"
+                        role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    {% trans "Conferma" %}
+                                </h5>
+                                <button class="btn-close"
+                                        type="button"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                <svg class="icon">
+                                    <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                                </svg>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    {% trans "Desideri procedere e confermare i dati immessi?" %}
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                {% uni_ticket_settings_value name="TICKET_SHARE_DRAFT_BUTTON_NAME" as share_draft_button_name %}
+                                <input class="btn btn-info"
+                                    type="submit"
+                                    id="shareForm"
+                                    name="{{ share_draft_button_name }}"
+                                    value="{% trans 'Si, procedi' %}">
+                                {% csrf_token %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        </form>
+    {% endif %}
+
     {% include 'ticket_options.html' %}
+    
 {% endblock page_content %}
 
 {% block extra_scripts %}
@@ -214,4 +418,18 @@ document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
     new bootstrap.Tooltip(el);
 });
 </script>
+<script src="{% static 'js/accessible-autocomplete.2.0.4.min.js' %}"></script>
+<script type="text/javascript">
+let sharingUsersElement = document.querySelector('#sharing_user');
+let sharingUsersAutocomplete = accessibleAutocomplete.enhanceSelectElement({
+    selectElement: sharingUsersElement,
+    showAllValues: true,
+    defaultValue: '',
+    placeholder: "- {% trans 'Scegli una opzione' %}- ",
+    autoselect: false,
+    showNoOptionsFound: false,
+    dropdownArrow: () => '',
+});
+</script>
 {% endblock %}
+

@@ -37,7 +37,7 @@
             <th scope="row">{% trans 'Creato da' %}</th>
             <td>
                 {% if ticket.created_by %}
-                    <b>{{ ticket.created_by.first_name }} {{ ticket.created_by.last_name }}</b> - {{ ticket.created }}
+                    <b>{{ ticket.created_by.first_name }} {{ ticket.created_by.last_name }}</b>{% if not ticket.draft%} - {{ ticket.created }}{% endif%}
                     {% if ticket.created_by.email %}
                         <br><b>E-mail</b>: {{ticket.created_by.email}}
                     {% endif %}
@@ -95,6 +95,7 @@
         <tr>
             <th scope="row">{% trans 'Competenza' %}</th>
             <td>
+                {% if ticket_assignments %}
                 <ul class="list-unstyled">
                     {% for assignment in ticket_assignments %}
                     <li>
@@ -147,6 +148,7 @@
                         </li>
                     {% endfor %}
                 </ul>
+                {% else%}-{% endif %}
             </td>
         </tr>
         {% endblock ticket_competence_infos %}

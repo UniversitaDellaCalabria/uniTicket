@@ -526,6 +526,7 @@ class Ticket(SavedFormContent):
         help_text=_("Quando la richiesta è stata protocollata"),
         blank=True, null=True
     )
+    draft = models.BooleanField(default=False)
 
     class Meta:
         ordering = [
@@ -740,6 +741,11 @@ class Ticket(SavedFormContent):
     # TODO: please do not nest HTML code in the model ...
     # HTML representation of status
     def get_status(self):
+        if self.draft:
+            status = _('<span class="badge bg-info">Bozza</span>')
+            if self.is_closed: 
+                status += " " + _('<span class="badge bg-success">Chiusa</span>')
+            return status
         if self.is_closed:
             # if is a notification ticket
             if self.is_notification or not self.closed_by:
@@ -768,6 +774,11 @@ class Ticket(SavedFormContent):
     # TODO: please do not nest HTML code in the model ...
     # for datatables (show icons)
     def get_status_table(self):
+        if self.draft:
+            status = _('<span class="badge bg-info">Bozza</span>')
+            if self.is_closed: 
+                status += " " + _('<span class="badge bg-success">Chiusa</span>')
+            return status
         if self.is_closed:
             # if is a notification ticket
             if self.is_notification or not self.closed_by:
@@ -977,6 +988,8 @@ class Ticket(SavedFormContent):
 
     def is_closable(self):
         """ """
+        if self.draft:
+            return False
         if not self.has_been_taken():
             return False
         if self.is_closed:
@@ -1088,7 +1101,7 @@ class Ticket(SavedFormContent):
             q_follow = Q(follow=True)
             # assignments = assignments.filter(follow=True)
             if exclude_readonly:
-                q_redonly = Q(readonly=False)
+                q_readonly = Q(readonly=False)
                 # assignments = assignments.filter(readonly=False)
         if structure:
             q_structure = Q(office__organizational_structure=structure)
@@ -1791,7 +1804,6 @@ class OrganizationalStructureAlert(ExpirableModel, TimeStampedModel):
 class CompiledTicket(models.Model):
     url_path = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
     content = models.TextField()
-    one_time = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 
     @staticmethod

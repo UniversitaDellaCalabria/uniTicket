@@ -401,14 +401,14 @@ Configura gli elementi di interfaccia e i flag di sistema relativi alla creazion
 TICKET_CREATE_BUTTON_NAME = getattr(
     settings, "TICKET_CREATE_BUTTON_NAME", "confirm_submit"
 )
+TICKET_DRAFT_BUTTON_NAME = getattr(
+    settings, "TICKET_DRAFT_BUTTON_NAME", "confirm_draft"
+)
 TICKET_GENERATE_URL_BUTTON_NAME = getattr(
     settings, "TICKET_GENERATE_URL_BUTTON_NAME", "generate_url_submit"
 )
 TICKET_COMPILED_BY_USER_NAME = getattr(
     settings, "TICKET_COMPILED_BY_USER_NAME", "compiled_by_user"
-)
-TICKET_COMPILED_ONE_TIME_FLAG = getattr(
-    settings, "TICKET_COMPILED_ONE_TIME_FLAG", "compiled_one_time"
 )
 TICKET_COMPILED_CREATION_DATE = getattr(
     settings, "TICKET_COMPILED_CREATION_DATE", "compiled_date"

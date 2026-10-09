@@ -80,6 +80,11 @@ urlpatterns += [
         name="user_all_tickets_json",
     ),
     path(
+        "user_draft_ticket.json",
+        datatables.user_draft_ticket,
+        name="user_draft_ticket_json",
+    ),
+    path(
         "user_opened_ticket.json",
         datatables.user_opened_ticket,
         name="user_opened_ticket_json",
@@ -93,6 +98,11 @@ urlpatterns += [
         "user_unassigned_ticket.json",
         datatables.user_unassigned_ticket,
         name="user_unassigned_ticket_json",
+    ),
+    path(
+        "user_draft_ticket.json",
+        datatables.user_draft_ticket,
+        name="user_draft_ticket",
     ),
     # Manager json
     path(
@@ -893,6 +903,9 @@ ticket_id = "{}/<str:ticket_id>".format(tickets)
 urlpatterns += [
     path("{}/".format(_dashboard_name), user.dashboard, name="user_dashboard"),
     path(
+        "{}/draft/".format(tickets), user.draft_ticket, name="user_draft_ticket"
+    ),
+    path(
         "{}/opened/".format(tickets), generic.opened_ticket, name="user_opened_ticket"
     ),
     path(
@@ -919,6 +932,8 @@ urlpatterns += [
     path("{}/messages/".format(ticket_id),
          user.ticket_message, name="ticket_message"),
     path("{}/edit/".format(ticket_id), user.ticket_edit, name="ticket_edit"),
+    path("{}/submit-draft/".format(ticket_id), user.ticket_submit_draft, name="ticket_submit_draft"),
+    # path("{}/share-draft/".format(ticket_id), user.ticket_share_draft, name="ticket_share_draft"),
     path(
         "{}/edit/remove-attachment/<str:attachment>/".format(ticket_id),
         user.delete_my_attachment,

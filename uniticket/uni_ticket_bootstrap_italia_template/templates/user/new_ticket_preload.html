@@ -111,8 +111,6 @@ document.addEventListener('DOMContentLoaded', function () {
         dropdownArrow: () => '',
         onConfirm:  (selected) => {
             const selectedCategory = Array.from(categoryElement.options).find(option => option.textContent === selected);
-            console.log(selected);
-            console.log(categoryElement.options);
             if (selectedCategory) {
                 window.location.href = window.location.href + selectedCategory.value;
             }

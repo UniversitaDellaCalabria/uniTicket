@@ -206,6 +206,18 @@ Clicca qui {url} per prenderne visione."""
     ),
 )
 
+DRAFT_TICKET_SHARED = getattr(
+    settings,
+    "DRAFT_TICKET_SHARED",
+    _(
+        """{added_text}
+
+L'identificativo univoco di questa transazione è {ticket}.
+
+Clicca qui {url} per prenderne visione."""
+    ),
+)
+
 TICKET_UPDATED = getattr(
     settings,
     "TICKET_UPDATED",

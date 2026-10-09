@@ -37,7 +37,7 @@ TICKET_CONDITIONS_TEXT = getattr(
         "Dichiaro di aver letto "
         "e compreso quanto scritto sopra "
         "e di assumermi ogni responsabilità "
-        "su quanto di seguito dichiarato"
+        "su quanto dichiarato"
     ),
 )
 
@@ -105,14 +105,20 @@ TICKET_CAPTCHA_LABEL = getattr(
 TICKET_CREATE_BUTTON_NAME = getattr(
     settings, "TICKET_CREATE_BUTTON_NAME", "confirm_submit"
 )
+TICKET_DRAFT_BUTTON_NAME = getattr(
+    settings, "TICKET_DRAFT_BUTTON_NAME", "confirm_draft"
+)
+TICKET_SUBMIT_DRAFT_BUTTON_NAME = getattr(
+    settings, "TICKET_SUBMIT_DRAFT_BUTTON_NAME", "submit_draft"
+)
+TICKET_SHARE_DRAFT_BUTTON_NAME = getattr(
+    settings, "TICKET_SHARE_DRAFT_BUTTON_NAME", "share_draft"
+)
 TICKET_GENERATE_URL_BUTTON_NAME = getattr(
     settings, "TICKET_GENERATE_URL_BUTTON_NAME", "generate_url_submit"
 )
 TICKET_COMPILED_BY_USER_NAME = getattr(
     settings, "TICKET_COMPILED_BY_USER_NAME", "compiled_by_user"
-)
-TICKET_COMPILED_ONE_TIME_FLAG = getattr(
-    settings, "TICKET_COMPILED_ONE_TIME_FLAG", "compiled_one_time"
 )
 TICKET_COMPILED_CREATION_DATE = getattr(
     settings, "TICKET_COMPILED_CREATION_DATE", "compiled_date"
@@ -292,6 +298,18 @@ NEW_TICKET_CREATED_ALERT = getattr(
 NEW_TICKET_CREATED = getattr(
     settings,
     "NEW_TICKET_CREATED",
+    _(
+        """{added_text}
+
+L'identificativo univoco di questa transazione è {ticket}.
+
+Clicca qui {url} per prenderne visione."""
+    ),
+)
+
+DRAFT_TICKET_SHARED = getattr(
+    settings,
+    "DRAFT_TICKET_SHARED",
     _(
         """{added_text}
 

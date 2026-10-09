@@ -124,6 +124,57 @@
 {% endblock over_content %}
 
 {% block form_buttons %}
+
+<!-- Salva come bozza -->
+<div class="d-grid gap-2 mb-2">
+    <button class="btn btn-outline-info"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#draft">
+        <svg class="icon icon-xs icon-info">
+            <use xlink:href="{% static 'svg/sprites.svg' %}#it-file"></use>
+        </svg>
+        {% trans "Salva come bozza" %}
+    </button>
+</div>
+<div class="modal fade"
+     tabindex="-1"
+     role="dialog"
+     id="draft">
+    <div class="modal-dialog modal-dialog-centered"
+         role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    {% trans "Conferma" %}
+                </h5>
+                <button class="btn-close"
+                        type="button"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                   <svg class="icon">
+                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                   </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    {% trans "Desideri procedere e creare la bozza?" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                {% uni_ticket_settings_value "TICKET_DRAFT_BUTTON_NAME" as draft_button_name %}
+                <input class="btn btn-info"
+                       type="submit"
+                       id="submitDraftForm"
+                       name="{{ draft_button_name }}"
+                       value="{% trans 'Si, procedi' %}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Crea ticket -->
 {% if user_can_open_tickets %}
 <div class="d-grid gap-2">
     <button class="btn btn-success"
@@ -196,32 +247,22 @@
 </div>
 {% endif %}
 
-
-<div class="accordion accordion-left-icon" id="accordionDiv1lft">
+<div class="accordion accordion-left-icon mt-4" id="accordionDiv1lft">
     <div class="accordion-item">
-        <h2 class="accordion-header " id="heading2l">
+        <h2 class="accordion-header" id="heading2l">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2l" aria-expanded="false" aria-controls="collapse2l">
-                {% trans "Se la richiesta che stai compilando deve essere completata e sottoscritta da un altro utente (es. Direttore Dipartimento, responsabile ufficio, ecc.), clicca qui" %}
+                {% trans "Genera URL per richiesta precompilata" %}
             </button>
         </h2>
         <div id="collapse2l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading2l">
             <div class="accordion-body">
-                {% uni_ticket_settings_value name="TICKET_GENERATE_URL_BUTTON_NAME" as generate_url_button_name %}
+                {% uni_ticket_settings_value "TICKET_GENERATE_URL_BUTTON_NAME" as generate_url_button_name %}
                 {% uni_ticket_settings_value "TICKET_COMPILED_BY_USER_NAME" as compiled_by_name %}
-                {% uni_ticket_settings_value "TICKET_COMPILED_ONE_TIME_FLAG" as compiled_one_time %}
                 <input type="checkbox"
                        id="{{ compiled_by_name }}"
-                       name="{{ compiled_by_name }}"
-                       checked>
+                       name="{{ compiled_by_name }}">
                 <label for="{{ compiled_by_name }}">
                     <b>{% trans "Tieni traccia della mia compilazione nella richiesta" %}</b>
-                </label>
-                <br>
-                <input type="checkbox"
-                       id="{{ compiled_one_time }}"
-                       name="{{ compiled_one_time }}">
-                <label for="{{ compiled_one_time }}">
-                    <b>{% trans "L'URL potrà essere aperto una sola volta" %}</b>
                 </label>
                 <br>
                 <small class="form-text text-muted">
@@ -235,7 +276,7 @@
                             value="{{ generate_url_button_name }}">
                         <svg class="icon icon-xs icon-success">
                             <use xlink:href="{% static 'svg/sprites.svg' %}#it-link"></use>
-                        </svg> {% trans "Genera URL per richiesta precompilata" %}
+                        </svg> {% trans "Genera URL" %}
                     </button>
                 </div>
             </div>

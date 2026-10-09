@@ -181,3 +181,31 @@ def ticket_is_open(ticket, user=None):
 @register.simple_tag
 def app_is_installed(name):
     return name in settings.INSTALLED_APPS
+
+
+@register.simple_tag
+def ticket_can_be_deleted(ticket, ticket_taken, ticket_assignments, user):
+    if ticket.created_by != user: return False
+    if ticket.draft and ticket.compiled_by: return False
+    if ticket.protocol_number: return False
+    if ticket.is_closed: return False
+    if ticket_taken: return False
+    if ticket_assignments.count() > 1: return False
+    return True
+
+@register.simple_tag
+def ticket_can_be_edited(ticket, ticket_taken, user):
+    if ticket.created_by != user: return False
+    if ticket.protocol_number: return False
+    if ticket.is_closed: return False
+    if ticket_taken: return False
+    return True
+
+@register.simple_tag
+def ticket_can_be_closed_from_user(ticket, user):
+    if ticket.created_by != user: return False
+    if ticket.draft:
+        if not ticket.compiled_by: return False
+        if ticket.created_by != user: return False
+    if ticket.is_closed: return False
+    return True
