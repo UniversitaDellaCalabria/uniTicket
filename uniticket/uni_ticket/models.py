@@ -361,10 +361,11 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         return conf if conf else False
 
     def get_users_allowed_to_open_tickets(self):
-        result = self.allowed_users.all()
-        for users_list in self.allowed_users_lists.all():
-            result = result | users_list.allowed_users.all()
-        return result
+        return get_user_model().objects.filter(
+            Q(pk__in=self.allowed_users.values_list('pk', flat=True)) | 
+            Q(organizationalstructurealloweduserslist__ticketcategory=self),
+            is_active=True
+        ).distinct()
 
     def user_can_open_tickets(self, user):
         allowed_users = self.get_users_allowed_to_open_tickets()
