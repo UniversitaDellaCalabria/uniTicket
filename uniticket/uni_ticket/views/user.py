@@ -1093,7 +1093,11 @@ def delete_my_attachment(request, ticket_id, attachment):
     )
 
     set_as_dict(ticket, ticket_details)
-    ticket.update_log(user=request.user, note=_("Elimina allegato"))
+    ticket.update_log(
+        user=request.user, 
+        note=_("Elimina allegato"),
+        send_mail=False
+    )
 
     # log action
     logger.info(
@@ -1852,7 +1856,11 @@ def ticket_submit_draft(request, ticket_id):
             )
         )
 
-        ticket.update_log(user=request.user, note=_("Bozza convertita in richiesta"))
+        ticket.update_log(
+            user=request.user, 
+            note=_("Bozza convertita in richiesta"),
+            send_mail=False
+        )
 
         ticket_assignment = TicketAssignment(
             ticket=ticket,
