@@ -99,11 +99,6 @@ urlpatterns += [
         datatables.user_unassigned_ticket,
         name="user_unassigned_ticket_json",
     ),
-    path(
-        "user_draft_ticket.json",
-        datatables.user_draft_ticket,
-        name="user_draft_ticket",
-    ),
     # Manager json
     path(
         "{}/manager_unassigned_ticket.json".format(structure),

@@ -228,31 +228,6 @@ def user_unassigned_ticket(request):
 
 @csrf_exempt
 @login_required
-def user_draft_ticket(request):
-    """
-    Returns all draft tickets opened by user
-
-    :return: JsonResponse
-    """
-    columns = _no_priority
-    if SIMPLE_USER_SHOW_PRIORITY:
-        columns = _ticket_columns
-
-    tickets = Ticket.objects.filter(
-        Q(created_by=request.user) |
-        Q(compiled_by=request.user),
-        draft=True,
-        is_closed=False
-    ).values_list('pk', flat=True)\
-    .order_by("-created")\
-    .distinct()
-
-    dtd = TicketDTD(request, tickets, columns)
-    return JsonResponse(dtd.get_dict())
-
-
-@csrf_exempt
-@login_required
 def user_opened_ticket(request):
     """
     Returns all assigned and not closed tickets opened by user

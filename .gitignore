@@ -41,3 +41,5 @@ uniticket/uni_ticket_project_cache/*
 examples-docker/*
 
 site/*
+
+.claudeignore
