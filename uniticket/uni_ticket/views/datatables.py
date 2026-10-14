@@ -4,7 +4,7 @@ import json
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -76,14 +76,28 @@ class TicketDTD(DjangoDatatablesServerProc):
         if not self.fqs:
             self.get_paging()
 
-        tickets = []
-        for entry in self.fqs:
-            t = Ticket.objects.filter(pk=entry)\
-                                 .select_related('created_by',
-                                                 'compiled_by',
-                                                 'input_module__ticket_category',
-                                                 'closed_by')
-            tickets.append(t.first())
+        pks = list(self.fqs)
+        tickets_qs = Ticket.objects.filter(pk__in=pks)\
+                             .select_related('created_by',
+                                             'compiled_by',
+                                             'input_module__ticket_category',
+                                             'closed_by')\
+                             .defer('modulo_compilato',
+                                   'description',
+                                   'closing_reason')\
+                             .prefetch_related(
+                                 Prefetch(
+                                     'ticketassignment_set',
+                                     queryset=TicketAssignment.objects.select_related(
+                                         'office',
+                                         'taken_by',
+                                         'office__organizational_structure'
+                                     ),
+                                 )
+                             )
+        tickets_by_pk = {t.pk: t for t in tickets_qs}
+        # pk__in non preserva l'ordine: lo ripristiniamo secondo self.fqs
+        tickets = [tickets_by_pk[pk] for pk in pks if pk in tickets_by_pk]
 
         for r in tickets:
             cleaned_data = []

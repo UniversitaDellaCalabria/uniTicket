@@ -136,4 +136,4 @@ USER_ATTRIBUTE_NAME = 'identificativo_utente'
 SIMPLE_USER_SHOW_PRIORITY = False
 
 # from django 3.2
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

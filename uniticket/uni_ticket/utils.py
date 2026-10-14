@@ -127,14 +127,11 @@ def user_is_in_default_office(user, structure):
     if SUPER_USER_VIEW_ALL and user.is_superuser:
         return True
     osoe = OrganizationalStructureOfficeEmployee
-    help_desk_assigned = osoe.objects.filter(
+    return osoe.objects.filter(
         employee=user,
         office__organizational_structure=structure,
         office__is_default=True,
     ).exists()
-    if help_desk_assigned:
-        return True
-    return False
 
 
 def user_is_operator(user, structure):
@@ -171,10 +168,7 @@ def user_manage_office(user, office, strictly_assigned=False):
     ):
         return True
     osoe = OrganizationalStructureOfficeEmployee
-    oe = osoe.objects.filter(employee=user, office=office).first()
-    if oe:
-        return True
-    return False
+    return osoe.objects.filter(employee=user, office=office).exists()
 
 
 def get_user_type(user, structure=None):
@@ -302,8 +296,7 @@ def office_can_be_deleted(office):
     if office.is_default:
         return False
     model = apps.get_model("uni_ticket", "TicketAssignment")
-    ticket_assegnati = model.objects.filter(office=office)
-    if ticket_assegnati:
+    if model.objects.filter(office=office).exists():
         return False
     return True
 

@@ -543,6 +543,7 @@ class Ticket(SavedFormContent):
             models.Index(fields=["priority"]),
             models.Index(fields=["created"]),
             models.Index(fields=["priority", "created"]),
+            models.Index(fields=["draft", "is_closed"]),
         ]
 
     @property
@@ -1028,29 +1029,12 @@ class Ticket(SavedFormContent):
         # return dict(PRIORITY_LEVELS).get(str(self.priority))
         return dict(PRIORITY_LEVELS).get(self.priority)
 
-    def get_messages_count(self, by_operator=False):
-        all_messages = TicketReply.objects.filter(ticket=self)
-        first_created = all_messages.first()
-        # If I'm a manager/operator
-        unread_messages = all_messages.filter(read_date=None)
-        # if I'm a simple user, I want my agents replies
-        if by_operator:
-            unread_messages = unread_messages.exclude(structure=None)
-        else:
-            unread_messages = unread_messages.filter(structure=None)
-        return unread_messages.exists()
-        # (
-            # all_messages.exists(),
-            # unread_messages.exists(),
-            # first_created.created if first_created else None,
-        # )
-
     def _check_assignment_privileges(self, queryset):
-        if not queryset:
+        if not queryset.exists():
             return False
-        if queryset.filter(readonly=False):
+        if queryset.filter(readonly=False).exists():
             readonly_value = False
-        elif queryset.filter(readonly=True):
+        else:
             readonly_value = True
         d = {"follow": True, "readonly": readonly_value}
         return d
@@ -1090,6 +1074,22 @@ class Ticket(SavedFormContent):
     def has_been_taken(
         self, user=None, follow=True, exclude_readonly=False, structure=None
     ):
+        # se ticketassignment_set è già stato prefetchato (es. datatables),
+        # evitiamo una query aggiuntiva filtrando in Python la cache
+        if 'ticketassignment_set' in getattr(self, '_prefetched_objects_cache', {}):
+            assignments = [a for a in self.ticketassignment_set.all()
+                          if a.taken_date is not None]
+            if follow:
+                assignments = [a for a in assignments if a.follow]
+                if exclude_readonly:
+                    assignments = [a for a in assignments if not a.readonly]
+            if structure:
+                assignments = [a for a in assignments
+                               if a.office.organizational_structure_id == structure.pk]
+            if user:
+                assignments = [a for a in assignments if a.taken_by_id == user.pk]
+            return bool(assignments)
+
         q_base = Q(ticket=self, taken_date__isnull=False)
         q_follow = Q()
         q_readonly = Q()
@@ -1129,11 +1129,14 @@ class Ticket(SavedFormContent):
                                    structure=structure)
 
     def taken_by_html_list(self):
-        assignments = TicketAssignment.objects\
-                                      .filter(ticket=self)\
-                                      .select_related('office',
-                                                      'taken_by',
-                                                      'office__organizational_structure')
+        if 'ticketassignment_set' in getattr(self, '_prefetched_objects_cache', {}):
+            assignments = self.ticketassignment_set.all()
+        else:
+            assignments = TicketAssignment.objects\
+                                          .filter(ticket=self)\
+                                          .select_related('office',
+                                                          'taken_by',
+                                                          'office__organizational_structure')
         elements = ""
         for assignment in assignments:
             assignment.taken_by or _("Da assegnare")

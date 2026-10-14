@@ -126,11 +126,6 @@ def get_dyn_field_name(value):
 
 
 @register.simple_tag
-def get_unread_messages(ticket, by_operator=True):
-    return ticket.get_messages_count(by_operator)
-
-
-@register.simple_tag
 def user_from_pk(user_id):
     if not user_id:
         return False
