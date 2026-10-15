@@ -1,9 +1,8 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
@@ -11,7 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 from uni_ticket.jwts import encrypt_to_jwe, decrypt_from_jwe
 from uni_ticket.settings import MSG_FOOTER, MSG_HEADER, MSG_HEADER_HTML, MSG_FOOTER_HTML
-from uni_ticket.utils import base_context, send_custom_mail
+from uni_ticket.utils import base_context
 
 from . forms import UserDataForm
 from . settings import *
@@ -50,7 +49,7 @@ def changeData(request):
                 msg_body = f'{MSG_HEADER.format(hostname=settings.HOSTNAME)}{body}{MSG_FOOTER}'
                 html_body=_('Conferma la tua email cliccando qui:<br><br><a href="{}">{}</a>').format(url, url)
                 html_msg_body = f'{MSG_HEADER_HTML.format(hostname=settings.HOSTNAME)}{html_body}{MSG_FOOTER_HTML}'
-                result = send_mail(
+                send_mail(
                     subject=_("Conferma email"),
                     message=msg_body,
                     html_message=html_msg_body,
@@ -81,23 +80,21 @@ def confirmEmail(request):
         return redirect("accounts:change_data")
 
     try:
-        data = decrypt_from_jwe(token).decode()
-        items = data.split("|")
-        user_id = items[0]
-        email = items[1]
-        timestamp = items[2]
-    
-        user = get_object_or_404(get_user_model(), pk=user_id)
+        user_id, email, timestamp = decrypt_from_jwe(token).decode().split("|")
         token_date = parse_datetime(timestamp)
-        time_diff = timezone.now() - token_date
-    
-        token_life_expired = time_diff.total_seconds() / 60 > CHANGE_EMAIL_TOKEN_LIFE
-        token_invalid = user.manual_user_update and token_date < user.manual_user_update
-    except:
+    except Exception:
+        user_id = email = token_date = None
+
+    if not token_date or user_id != str(request.user.pk):
         messages.add_message(
             request, messages.ERROR, _("Token non valido")
         )
         return redirect("accounts:change_data")
+
+    user = request.user
+    time_diff = timezone.now() - token_date
+    token_life_expired = time_diff.total_seconds() / 60 > CHANGE_EMAIL_TOKEN_LIFE
+    token_invalid = user.manual_user_update and token_date < user.manual_user_update
 
     if token_life_expired or token_invalid:
         messages.add_message(

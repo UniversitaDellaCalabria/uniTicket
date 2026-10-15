@@ -161,8 +161,26 @@ class Test_AccountsConfirmEmail(AccountsMixin, TestCase):
         self.assertEqual(self.user.email, 'old@test.it')
 
     def test_not_existent_user(self):
-        # Http404 is caught by the try/except: treated as an invalid token
         self._assert_invalid_token(self._token(user_id=999999))
+
+    def test_token_of_another_user(self):
+        other = get_user_model().objects.create_user(username='other-user',
+                                                     password='passw',
+                                                     email='other@test.it')
+        self._assert_invalid_token(self._token(user_id=other.pk))
+        other.refresh_from_db()
+        self.assertEqual(other.email, 'other@test.it')
+
+    def test_invalid_token_date(self):
+        # well formatted but not existent date: parse_datetime raises ValueError
+        self._assert_invalid_token(
+            encrypt_to_jwe(f'{self.user.pk}|new@test.it|2026-13-45 10:00:00+00:00')
+        )
+
+    def test_token_with_extra_fields(self):
+        self._assert_invalid_token(
+            encrypt_to_jwe(f'{self.user.pk}|new@test.it|{timezone.now()}|extra')
+        )
 
 
 class Test_AccountsTemplatetags(TestCase):
