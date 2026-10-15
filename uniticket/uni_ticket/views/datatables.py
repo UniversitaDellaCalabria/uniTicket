@@ -8,6 +8,9 @@ from django.db.models import Prefetch, Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from functools import reduce
+from operator import or_
+
 from datatables_ajax.datatables import DjangoDatatablesServerProc
 from uni_ticket.decorators import is_manager, is_operator
 from uni_ticket.models import Ticket, TicketAssignment
@@ -43,6 +46,8 @@ class TicketDTD(DjangoDatatablesServerProc):
         Sets DataTable tickets common queryset
         """
         self.aqs = self.queryset
+        model_prefix = "" if self.aqs.model.__name__ == "Ticket" else "ticket__"
+
         if self.search_key:
             params = json.loads(self.search_key)
             year = params["year"]
@@ -51,23 +56,36 @@ class TicketDTD(DjangoDatatablesServerProc):
             structure = params["structure"]
             if year:
                 if year.isnumeric():
-                    self.aqs = self.aqs.filter(ticket__created__year=year)
+                    self.aqs = self.aqs.filter(
+                        **{
+                            f"{model_prefix}created__year": year
+                        }
+                    )
                 else:
                     days = 7 if year == "last_week" else 30
                     delta_day = get_datetime_delta(days=days)
-                    self.aqs = self.aqs.filter(ticket__created__gte=delta_day)
+                    self.aqs = self.aqs.filter(
+                        **{
+                            f"{model_prefix}created__gte": delta_day
+                        }
+                    )
             if category:
                 self.aqs = self.aqs.filter(
-                    ticket__input_module__ticket_category__slug=category,
-                    ticket__input_module__ticket_category__organizational_structure__slug=structure,
+                    **{
+                        f"{model_prefix}input_module__ticket_category__slug": category,
+                        f"{model_prefix}input_module__ticket_category__organizational_structure__slug": structure,
+                    }
                 )
             if text:
-                self.aqs = self.aqs.filter(
-                    Q(ticket__code__icontains=text) |
-                    Q(ticket__subject__icontains=text) |
-                    Q(ticket__created_by__last_name__icontains=text) |
-                    Q(ticket__compiled_by__last_name__icontains=text)
-                )
+                filters = [
+                    f"{model_prefix}code__icontains",
+                    f"{model_prefix}subject__icontains",
+                    f"{model_prefix}created_by__last_name__icontains",
+                    f"{model_prefix}compiled_by__last_name__icontains",
+                ]
+                # Crea una lista di singoli oggetti Q e li unisce con OR (|)
+                q_filter = reduce(or_, (Q(**{filter: text}) for filter in filters))
+                self.aqs = self.aqs.filter(q_filter)
 
     def fill_data(self):
         """
@@ -113,7 +131,8 @@ class TicketDTD(DjangoDatatablesServerProc):
                         default_date_format = settings.DEFAULT_DATE_FORMAT
                         vrepr = v.strftime(default_date_format)
                     elif callable(v):
-                        vrepr = str(v())
+                        result = v()
+                        vrepr = str(result) if result else ''
                     else:
                         vrepr = v.__str__()
                 else:
@@ -140,7 +159,8 @@ class TicketDTD(DjangoDatatablesServerProc):
         # bisogna mappare la colonna con il numero di sequenza eppoi
         # fare order_by
         if self.order_col:
-            self.col_name = f'ticket__{self.columns[self.order_col]}'
+            model_prefix = "" if self.aqs.model.__name__ == "Ticket" else "ticket__"
+            self.col_name = f'{model_prefix}{self.columns[self.order_col]}'
             if self.order_dir == 'asc':
                 self.aqs = self.aqs.order_by(self.col_name)
             else:

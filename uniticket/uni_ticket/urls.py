@@ -186,11 +186,6 @@ urlpatterns += [
         management.manage_closed_ticket_url,
         name="manage_closed_ticket_url",
     ),
-    path(
-        "{}/".format(tickets),
-        management.manage_not_closed_ticket_url,
-        name="manage_not_closed_ticket_url",
-    ),
     path("{}/".format(tickets), management.manage_ticket_url,
          name="manage_ticket_url"),
     path(

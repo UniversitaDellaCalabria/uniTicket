@@ -25,15 +25,15 @@ class AuthorizationToken(TokenAuthentication):
     def authenticate_credentials(self, token):
         try:
             token = self.model.objects.select_related('user').get(value=token)
-        except self.model.DoesNotExist: # pragma: no cover
+        except self.model.DoesNotExist:
             logger.warning(AuthenticationFailed(_('Invalid token.')))
             return None
 
-        if not token.user.is_active: # pragma: no cover
+        if not token.user.is_active:
             logger.warning(AuthenticationFailed(_('User inactive or deleted.')))
             return None
 
-        if not token.is_active: # pragma: no cover
+        if not token.is_active:
             logger.warning(AuthenticationFailed(_('Token expired.')))
             return None
 

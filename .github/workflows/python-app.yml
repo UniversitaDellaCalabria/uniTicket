@@ -45,12 +45,14 @@ jobs:
 
     - name: Test with Django tests
       working-directory: uniticket/
+      env:
+        COVERAGE_RCFILE: ../.coveragerc
       run: |
         DJANGO_SETTINGS_MODULE=tests.settings
         coverage erase
         coverage run ./manage.py test --settings tests.settings --failfast -v 2
         coverage report -m
-        coverage report --fail-under=80
+        coverage report --fail-under=97
         coverage xml
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5

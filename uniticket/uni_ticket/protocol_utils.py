@@ -18,7 +18,7 @@ def ticket_protocol(
     configuration=None,
     file_name="",
     response=b"",
-    attachments_folder=settings.MEDIA_ROOT,
+    attachments_folder="",
     attachments_dict={},
     test=False,
 ):

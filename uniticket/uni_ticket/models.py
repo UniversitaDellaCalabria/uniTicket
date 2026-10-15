@@ -62,7 +62,7 @@ logger = logging.getLogger("__name__")
 
 _protocollo_titolario_list = settings.TITOLARIO_DICT
 _protocollo_uo_list = settings.UO_DICT
-if 'makemigrations' in sys.argv or 'migrate' in sys.argv: # pragma: no cover
+if 'makemigrations' in sys.argv or 'migrate' in sys.argv:
     _protocollo_titolario_list = [('', '-')]
     _protocollo_uo_list = [('', '-')]
 
@@ -1194,6 +1194,7 @@ class Ticket(SavedFormContent):
                 "is_closed",
                 "closing_reason",
                 "closed_date",
+                "closed_by"
             ]
         )
 

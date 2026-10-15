@@ -18,6 +18,24 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         super().setUp()
         self.structure_1_manager_login()
 
+    def test_create_category_without_permissions(self):
+        # Structure 2 Manager login
+        self.structure_2_manager_login()
+
+        # Create in Structure 1
+        cat = self.add_new_category(cat_name='Cat',
+                                    structure_slug=self.structure_1.slug)
+        self.assertFalse(cat)
+
+    def test_create_category_by_operator(self):
+        # Structure 1 Operator login
+        self.structure_1_default_office_operator_login()
+
+        # Create in Structure 1
+        cat = self.add_new_category(cat_name='Cat',
+                                    structure_slug=self.structure_1.slug)
+        self.assertFalse(cat)
+
     def test_user_ismanager(self):
         # self.staff1 is a staff user
         assert user_is_manager(self.staff_1, self.structure_1)

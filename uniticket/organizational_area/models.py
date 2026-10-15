@@ -191,9 +191,6 @@ class OrganizationalStructureLocation(AbstractLocation):
         verbose_name = _("Organizational Structure location")
         verbose_name_plural = _("Organizational Structure locations")
 
-    def __str__(self):
-        return '{} - {}'.format(self.organizational_structure, self.location)
-
 
 class OrganizationalStructureOffice(models.Model):
     """

@@ -80,10 +80,13 @@
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <a role="button" class="btn btn-success"
-                               href="{% url 'app_io:app_io_services_enable' structure_slug=structure.slug category_slug=category.slug service_id=service.pk %}">
-                                {% trans "Si, attiva il servizio" %}
-                            </a>
+                            <form method="post" action="{% url 'app_io:app_io_services_enable' structure_slug=structure.slug category_slug=category.slug service_id=service.pk %}">
+                                <input class="btn btn-success"
+                                    type="submit"
+                                    id="submitEnable"
+                                    value="{% trans 'Si, attiva il servizio' %}">
+                                {% csrf_token %}
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -107,10 +110,13 @@
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <a role="button" class="btn btn-danger"
-                               href="{% url 'app_io:app_io_services_disable' structure_slug=structure.slug category_slug=category.slug service_id=service.pk %}">
-                                {% trans "Si, disattiva il servizio" %}
-                            </a>
+                            <form method="post" action="{% url 'app_io:app_io_services_disable' structure_slug=structure.slug category_slug=category.slug service_id=service.pk %}">
+                                <input class="btn btn-danger"
+                                    type="submit"
+                                    id="submitDisable"
+                                    value="{% trans 'Si, disattiva il servizio' %}">
+                                {% csrf_token %}
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -135,10 +141,13 @@
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <a role="button" class="btn btn-danger"
-                               href="{% url 'app_io:app_io_services_delete' structure_slug=structure.slug category_slug=category.slug service_id=service.pk %}">
-                                {% trans "Si, elimina il servizio" %}
-                            </a>
+                            <form method="post" action="{% url 'app_io:app_io_services_delete' structure_slug=structure.slug category_slug=category.slug service_id=service.pk %}">
+                                <input class="btn btn-danger"
+                                    type="submit"
+                                    id="submitDelete"
+                                    value="{% trans 'Si, elimina il servizio' %}">
+                                {% csrf_token %}
+                            </form>
                         </div>
                     </div>
                 </div>

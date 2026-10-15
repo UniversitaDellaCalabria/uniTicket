@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 
 from django_form_builder.utils import get_labeled_errors
 
@@ -76,7 +77,7 @@ def new(request, structure_slug, category_slug):
                 structure_slug=structure_slug,
                 category_slug=category_slug
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(
@@ -150,7 +151,7 @@ def edit(request, structure_slug, category_slug, service_id):
                 structure_slug=structure_slug,
                 category_slug=category_slug
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(
@@ -168,6 +169,7 @@ def edit(request, structure_slug, category_slug, service_id):
 
 
 @login_required
+@require_POST
 @is_manager
 def enable(request, structure_slug, category_slug, service_id):
     """
@@ -224,6 +226,7 @@ def enable(request, structure_slug, category_slug, service_id):
 
 
 @login_required
+@require_POST
 @is_manager
 def disable(request, structure_slug, category_slug, service_id):
     """
@@ -279,6 +282,7 @@ def disable(request, structure_slug, category_slug, service_id):
 
 
 @login_required
+@require_POST
 @is_manager
 def delete(request, structure_slug, category_slug, service_id):
     """

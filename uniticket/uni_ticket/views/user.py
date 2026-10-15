@@ -870,7 +870,7 @@ class TicketAddNew(View):
                         structure_slug=structure_slug,
                         category_slug=category_slug,
                     )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(self.form).items():
                 messages.add_message(
                     request, messages.ERROR, f"<b>{k}</b>: {strip_tags(v)}"
@@ -1044,7 +1044,7 @@ def ticket_edit(request, ticket_id):
                     "Modifica effettuata con successo")
             )
             return redirect("uni_ticket:ticket_edit", ticket_id=ticket_id)
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(
@@ -1432,7 +1432,7 @@ def ticket_message(request, ticket_id):
                 request, messages.SUCCESS, _("Messaggio inviato con successo")
             )
             return redirect("uni_ticket:ticket_message", ticket_id=ticket_id)
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(
@@ -1452,7 +1452,7 @@ def ticket_message(request, ticket_id):
 
 @method_decorator(login_required, name="dispatch")
 @method_decorator(is_the_owner, name="dispatch")
-class TaskDetail(View):  # pragma: no cover
+class TaskDetail(View):
     """
     Task details page
 
@@ -1542,16 +1542,17 @@ class TicketClose(View):
         self.form = BaseTicketCloseForm()
         self.context_data['form'] = self.form
         if api:
-            return self.contenxt_data
+            return self.context_data
         else:
             return render(request, self.template, base_context(self.context_data))
 
     def post(self, request, api:bool = False):
-        self.form = BaseTicketCloseForm(request.POST or getattr(request, "api_data")) # API csrf token workaround
+        post_data = request.POST if not api else getattr(request, "api_data")
+        self.form = BaseTicketCloseForm(post_data) # API csrf token workaround
         self.context_data['form'] = self.form
         if self.form.is_valid():
             motivazione = self.form.cleaned_data["note"]
-            self.ticket.close(user= request.user, motivazione=motivazione)
+            self.ticket.close(user=None, motivazione=motivazione)
             self.ticket.update_log(
                 user=request.user,
                 note=_("Chiusura richiesta da utente proprietario: {}").format(
@@ -1569,15 +1570,14 @@ class TicketClose(View):
                 f"[{timezone.localtime()}] user {request.user} "
                 f"closed ticket {self.ticket}"
             )
-
-            return redirect("uni_ticket:ticket_detail", self.ticket.code)
-        else:  # pragma: no cover
+        else: 
             for k, v in get_labeled_errors(self.form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(
                         k, strip_tags(v))
                 )
-
+        return redirect("uni_ticket:ticket_detail", self.ticket.code)
+    
 
 @login_required
 @require_POST
@@ -1663,7 +1663,7 @@ def ticket_reopen(request, ticket_id):
 
 
 @login_required
-def chat_new_preload(request, structure_slug=None):  # pragma: no cover
+def chat_new_preload(request, structure_slug=None):
     """
     Choose the OrganizationalStructure and the category of the ticket
 
@@ -1734,7 +1734,7 @@ def ticket_clone(request, ticket_id):
 
 @login_required
 @has_access_to_ticket
-def ticket_detail_print(request, ticket_id):  # pragma: no cover
+def ticket_detail_print(request, ticket_id):
     """
     Displays ticket print version
 
@@ -1755,7 +1755,7 @@ def ticket_detail_print(request, ticket_id):  # pragma: no cover
 @has_access_to_ticket
 def download_ticket_pdf(request,
                         ticket_id,
-                        template="ticket_detail_print_pdf.html"):  # pragma: no cover
+                        template="ticket_detail_print_pdf.html"):
     response = TicketDetail().get(request=request,
                                   ticket_id=ticket_id,
                                   template=template,
@@ -1969,11 +1969,6 @@ def ticket_submit_draft(request, ticket_id):
         
         messages.add_message(request, messages.SUCCESS, compiled_message)
 
-        return redirect(
-            "uni_ticket:ticket_detail", 
-            ticket_id=ticket.code
-        )
-
     elif request.POST.get(TICKET_SHARE_DRAFT_BUTTON_NAME, None):
         if ticket.compiled_by:
             return custom_message(
@@ -2056,7 +2051,7 @@ def ticket_submit_draft(request, ticket_id):
         
         messages.add_message(request, messages.SUCCESS, compiled_message)
 
-        return redirect(
-            "uni_ticket:ticket_detail", 
-            ticket_id=ticket.code
-        )
+    return redirect(
+        "uni_ticket:ticket_detail", 
+        ticket_id=ticket.code
+    )

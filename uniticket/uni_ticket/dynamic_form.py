@@ -110,14 +110,11 @@ class DynamicForm(BaseDynamicForm):
 
 def _get_choices(choices):
     elements = []
-    for choice in choices:
-        if (type(choice[1]) == tuple):
-            elements.extend(_get_choices(choice[1]))
+    for value, label in choices:
+        if isinstance(label, (list, tuple)):
+            elements.extend(_get_choices(label))
         else:
-            elements.append(
-                {"text": choice[1],
-                 "value": choice[0]}
-            )
+            elements.append({"text": label, "value": value})
     return elements
 
 

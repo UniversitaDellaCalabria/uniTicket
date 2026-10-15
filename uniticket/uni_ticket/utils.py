@@ -233,11 +233,11 @@ def download_file(path, nome_file):
     """
     Downloads a file
     """
-    mime = magic.Magic(mime=True)
     file_path = "{}/{}".format(path, nome_file)
-    content_type = mime.from_file(file_path)
 
     if os.path.exists(file_path):
+        mime = magic.Magic(mime=True)
+        content_type = mime.from_file(file_path)
         with open(file_path, "rb") as fh:
             response = HttpResponse(fh.read(), content_type=content_type)
             response["Content-Disposition"] = "inline; filename=" + os.path.basename(
@@ -338,17 +338,24 @@ def ticket_user_summary_dict(user):
     d = dict()
     oso = OrganizationalStructureOffice
     osoe = OrganizationalStructureOfficeEmployee
-    office_employee = osoe.objects.filter(employee=user)
+    office_employee = osoe.objects.filter(
+        employee=user
+    ).values_list("office", flat=True)
     for structure in structures:
         d[structure] = {}
         user_type = get_user_type(user, structure)
         offices = oso.objects.filter(
-            organizational_structure=structure, is_active=True)
+            organizational_structure=structure, 
+            is_active=True
+        )
         for office in offices:
-            if user_type == "operator" and office not in office_employee:
+            if user_type == "operator" and office.pk not in office_employee:
                 continue
             assignments = assign_model.objects.filter(
-                office=office, follow=True, readonly=False, ticket__is_closed=False
+                office=office, 
+                follow=True, 
+                readonly=False, 
+                ticket__is_closed=False
             )
             if assignments:
                 d[structure][office] = []

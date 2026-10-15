@@ -10,6 +10,7 @@ from django.core.exceptions import BadRequest
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import PermissionDenied
@@ -111,7 +112,7 @@ class TicketAPIView(TicketAPIBaseView):
         request.api_data[TICKET_CREATE_BUTTON_NAME] = 1
         legacy_response = self.legacy_view.post(request, structure_slug, category_slug)
         logger.debug(legacy_response)
-        if self.legacy_view.form.errors:
+        if not getattr(self.legacy_view, "form", None) or self.legacy_view.form.errors:
             return Response(self.build_response())
 
         elif getattr(self.legacy_view, 'ticket_assignment', None):
@@ -218,10 +219,11 @@ class TicketAPIClose(TicketAPIBaseView):
     def close(self, request, ticket_id, *args, **kwargs):
         request.api_data = getattr(request, "data", {})
         self.legacy_view.dispatch(
-            request, ticket_id=ticket_id
+            request, 
+            ticket_id=ticket_id,
         )
         legacy_response = self.legacy_view.post(
-            request
+            request=request, api=True
         )
         logger.debug(legacy_response)
         return Response(self.build_response())

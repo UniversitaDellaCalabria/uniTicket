@@ -347,31 +347,6 @@ class ReplyForm(ModelForm):
         js = ("js/textarea-autosize.js",)
 
 
-class TicketCompetenceForm(forms.Form):
-    structures = forms.ModelChoiceField(
-        queryset=None, required=True, widget=BootstrapItaliaSelectWidget
-    )
-    offices = forms.ModelChoiceField(
-        queryset=None, required=True, widget=BootstrapItaliaSelectWidget
-    )
-
-    def __init__(self, *args, **kwargs):
-        structure_slug = kwargs.pop("structure_slug", None)
-        current_ticket_id = kwargs.pop("ticket_id", None)
-        ticket_dependences_code_list = kwargs.pop("ticket_dependences", [])
-        structure = OrganizationalStructure.objects.get(slug=structure_slug)
-        ticket_id_list = TicketAssignment.get_ticket_per_structure(structure,
-                                                                   closed=False,
-                                                                   taken=True)
-        ticket_id_list.remove(current_ticket_id)
-        ticket_list = Ticket.objects.filter(
-            code__in=ticket_id_list,
-        ).exclude(code__in=ticket_dependences_code_list)
-        super().__init__(*args, **kwargs)
-        self.fields["ticket"].queryset = ticket_list
-        self.fields["ticket"].to_field_name = "code"
-
-
 class TicketCompetenceSchemeForm(forms.Form):
     """
     Build a form scheme to have cleaned data submitted
@@ -389,17 +364,8 @@ class TicketCompetenceSchemeForm(forms.Form):
         label=_("Ufficio selezionato"), required=False)
 
 
-class MyDependenceChoiceField(ModelChoiceField):
-    def label_from_instance(self, obj):
-        return "{} - {}".format(obj.created_by, obj)
-
-
 class TicketDependenceForm(forms.Form):
     """ """
-
-    # ticket = MyDependenceChoiceField(
-        # queryset=None, required=True, widget=BootstrapItaliaSelectWidget
-    # )
     ticket = forms.CharField(label=_("Ticket"), required=True,
                              help_text=_("Codice univoco identificativo della richiesta"))
     note = forms.CharField(

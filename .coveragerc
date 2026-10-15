@@ -1,13 +1,32 @@
-# .coveragerc to control coverage.py
+# coverage.py configuration
+# paths are relative to the uniticket/ directory, where tests are run from:
+#   cd uniticket && COVERAGE_RCFILE=../.coveragerc coverage run ./manage.py test --settings tests.settings
 [run]
-include = */uni_ticket/views/*
-          */uni_ticket/decorators.py
-          */uni_ticket/dynamic_form.py
-          */uni_ticket/models.py
-          */uni_ticket/forms.py
-          */uni_ticket/utils.py
+source =
+    accounts
+    api_rest
+    app_io
+    organizational_area
+    uni_ticket
+    uni_ticket_bootstrap_italia_template
+    uni_ticket_project
+omit =
+    */migrations/*
+    */tests/*
+    */tests.py
+    */settings.py
+    */settingslocal.py
+    */settingslocal.py.example
+    uni_ticket_project/asgi.py
+    uni_ticket_project/wsgi.py
+    uni_ticket_project/routing.py
+    # dead code: not imported/referenced anywhere
+    uni_ticket/admin_inlines.py
+    uni_ticket/context_processors.py
 
-          */organizational_area/models.py
-          */organizational_area/views.py
-          */organizational_area/signals.py
-
+[report]
+show_missing = True
+skip_covered = True
+exclude_also =
+    if __name__ == .__main__.:
+    raise NotImplementedError

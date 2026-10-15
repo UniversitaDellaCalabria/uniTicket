@@ -99,7 +99,7 @@ def send_message(ticket, subject, body, log=None):
         else:
             message_id = None
             error_detail = response['data'].get('detail', response['status'])
-            logger.info("Appi IO error: " + error_detail)
+            logger.info("App IO error: " + str(error_detail))
 
         result = {
             'message_id': message_id,

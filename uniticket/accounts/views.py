@@ -18,7 +18,7 @@ from . settings import *
 
 
 @login_required
-def changeData(request): # pragma: no cover
+def changeData(request):
     initial = {}
     for field in EDITABLE_FIELDS:
         initial[field] = getattr(request.user, field)
@@ -72,7 +72,7 @@ def changeData(request): # pragma: no cover
 
 
 @login_required
-def confirmEmail(request): # pragma: no cover
+def confirmEmail(request):
     token = request.GET.get('token')
     if not token:
         messages.add_message(
@@ -83,22 +83,21 @@ def confirmEmail(request): # pragma: no cover
     try:
         data = decrypt_from_jwe(token).decode()
         items = data.split("|")
+        user_id = items[0]
+        email = items[1]
+        timestamp = items[2]
+    
+        user = get_object_or_404(get_user_model(), pk=user_id)
+        token_date = parse_datetime(timestamp)
+        time_diff = timezone.now() - token_date
+    
+        token_life_expired = time_diff.total_seconds() / 60 > CHANGE_EMAIL_TOKEN_LIFE
+        token_invalid = user.manual_user_update and token_date < user.manual_user_update
     except:
         messages.add_message(
             request, messages.ERROR, _("Token non valido")
         )
         return redirect("accounts:change_data")
-
-    user_id = items[0]
-    email = items[1]
-    timestamp = items[2]
-
-    user = get_object_or_404(get_user_model(), pk=user_id)
-    token_date = parse_datetime(timestamp)
-    time_diff = timezone.now() - token_date
-
-    token_life_expired = time_diff.total_seconds() / 60 > CHANGE_EMAIL_TOKEN_LIFE
-    token_invalid = user.manual_user_update and token_date < user.manual_user_update
 
     if token_life_expired or token_invalid:
         messages.add_message(

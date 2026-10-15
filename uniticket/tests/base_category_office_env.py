@@ -265,21 +265,3 @@ class BaseCategoryOfficeEnvironment(BaseTest):
 
         # Now we have 2 active categories (category_1_str_1 and category_1_str_2)
         # with their own active offices (office_1_str_1 and office_1_str_2)
-
-    def test_create_category_without_permissions(self):
-        # Structure 2 Manager login
-        self.structure_2_manager_login()
-
-        # Create in Structure 1
-        cat = self.add_new_category(cat_name='Cat',
-                                    structure_slug=self.structure_1.slug)
-        self.assertFalse(cat)
-
-    def test_create_category_by_operator(self):
-        # Structure 1 Operator login
-        self.structure_1_default_office_operator_login()
-
-        # Create in Structure 1
-        cat = self.add_new_category(cat_name='Cat',
-                                    structure_slug=self.structure_1.slug)
-        self.assertFalse(cat)

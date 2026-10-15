@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.html import strip_tags
 from django.utils.text import slugify
@@ -174,7 +175,7 @@ def office_add_new(request, structure_slug):
                     structure_slug=structure_slug,
                     office_slug=new_office.slug,
                 )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "{}: {}".format(k, strip_tags(v))
@@ -251,7 +252,7 @@ def office_edit(request, structure_slug, office_slug):
                     structure_slug=structure_slug,
                     office_slug=edited_office.slug,
                 )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -366,7 +367,7 @@ def office_add_category(request, structure_slug, office_slug):
                 )
             )
 
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -591,7 +592,10 @@ def office_remove_operator(
             structure_slug=structure.slug,
         )
     m = OrganizationalStructureOfficeEmployee
-    office_employee = m.objects.get(office=office, employee=employee)
+    office_employee = m.objects.filter(
+        office=office, 
+        employee=employee
+    ).first()
     if not office_employee:
         messages.add_message(
             request, messages.ERROR, _("L'operatore non è assegnato a questo ufficio")
@@ -869,7 +873,7 @@ def category_detail(request, structure_slug, category_slug):
                 structure_slug=structure_slug,
                 category_slug=category_slug,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -977,7 +981,7 @@ def category_add_ticket_user(request, structure_slug, category_slug):
                 structure_slug=structure_slug,
                 category_slug=category_slug,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -1058,7 +1062,7 @@ def category_add_ticket_users_list(request, structure_slug, category_slug):
                 structure_slug=structure_slug,
                 category_slug=category_slug,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -1335,7 +1339,7 @@ def category_add_new(request, structure_slug):
                     structure_slug=structure_slug,
                     category_slug=new_category.slug,
                 )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -1463,7 +1467,7 @@ def category_edit(request, structure_slug, category_slug):
                     structure_slug=structure_slug,
                     category_slug=edited_category.slug,
                 )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -1698,7 +1702,7 @@ def category_input_module_new(request, structure_slug, category_slug):
                 category_slug=category_slug,
                 module_id=new_module.pk,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -1769,7 +1773,7 @@ def category_input_module_edit(
                 category_slug=category_slug,
                 module_id=module_id,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -2062,7 +2066,7 @@ def category_input_module_details(
                 category_slug=category_slug,
                 module_id=module.pk,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -2204,7 +2208,7 @@ def category_input_module_preview(
                 messages.SUCCESS,
                 _("Dati inseriti nel modulo formalmente corretti"),
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -2294,7 +2298,7 @@ def category_input_field_edit(
                 category_slug=category_slug,
                 module_id=module.pk,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -2362,7 +2366,7 @@ def category_condition_new(request, structure_slug, category_slug):
                 structure_slug=structure_slug,
                 category_slug=category_slug,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -2434,7 +2438,7 @@ def category_condition_edit(
                 category_slug=category_slug,
                 condition_id=condition_id,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -2883,7 +2887,7 @@ def category_task_new(request, structure_slug, category_slug):
                 structure_slug=structure_slug,
                 category_slug=category_slug,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -3023,7 +3027,7 @@ def category_task_edit(request, structure_slug, category_slug, task_id):
             messages.add_message(
                 request, messages.SUCCESS, _("Attività modificata con successo")
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -3367,7 +3371,7 @@ def manager_settings_add_manager(request, structure_slug):
             return redirect(
                 "uni_ticket:manager_user_settings", structure_slug=structure_slug
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -3727,7 +3731,7 @@ def category_protocol_configuration_detail(
                 category_slug=category_slug,
                 configuration_id=configuration.pk,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -3800,7 +3804,7 @@ def category_protocol_configuration_new(
                 category_slug=category_slug,
                 configuration_id=configuration.pk,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -4093,7 +4097,7 @@ def category_default_reply_new(request, structure_slug, category_slug):
                 structure_slug=structure_slug,
                 category_slug=category_slug,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -4322,7 +4326,7 @@ def category_default_reply_detail(
                 category_slug=category_slug,
                 default_reply_id=default_reply_id,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -4374,7 +4378,7 @@ def structure_alert_new(request, structure_slug):
             return redirect(
                 "uni_ticket:manager_user_settings", structure_slug=structure_slug
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -4467,7 +4471,7 @@ def structure_alert_edit(request, structure_slug, alert_id):
             return redirect(
                 "uni_ticket:manager_user_settings", structure_slug=structure_slug
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -4521,7 +4525,7 @@ def structure_users_list_new(request, structure_slug):
             return redirect(
                 "uni_ticket:manager_user_settings", structure_slug=structure_slug
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -4582,7 +4586,7 @@ def structure_users_list_edit(request, structure_slug, list_id):
                 structure_slug=structure_slug,
                 list_id=list_id,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
@@ -4718,7 +4722,7 @@ def structure_users_list_add_user(request, structure_slug, list_id):
                 structure_slug=structure_slug,
                 list_id=list_id,
             )
-        else:  # pragma: no cover
+        else:
             for k, v in get_labeled_errors(form).items():
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
