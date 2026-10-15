@@ -707,7 +707,12 @@ class TicketAddNew(View):
                     input_module=self.modulo,
                     draft=True if draft else False
                 )
-                
+
+                # if ticket has been compiled by another user
+                if create and self.compiled_by_user:
+                    self.ticket.compiled_by = self.compiled_by_user
+                    self.ticket.compiled = self.compiled_date
+
                 # save ticket
                 self.ticket.save()
 
