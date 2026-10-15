@@ -2514,7 +2514,7 @@ def task_edit(
 
         if form.is_valid():
             msg = _("Modifica attività {}").format(task)
-            if task.priority != form.cleaned_data["priority"]:
+            if "priority" in form.changed_data:
                 msg = msg + _(
                         " e Priorità assegnata: {}"
                     ).format(

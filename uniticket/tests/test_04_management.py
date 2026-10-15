@@ -449,6 +449,12 @@ class Test_ManagementFunctions(BaseTicketEnvironment):
         assert task.priority == -1
         assert task.attachment
         assert task.subject == subject
+        # priority change is logged
+        assert Log.objects.filter(
+            content_type=ContentType.objects.get_for_model(task),
+            object_id=task.pk,
+            change_message__contains=" e Priorità assegnata",
+        ).exists()
 
         # Download attachment
         response = self.client.get(reverse('uni_ticket:download_task_attachment',

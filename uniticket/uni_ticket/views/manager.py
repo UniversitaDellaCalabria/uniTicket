@@ -1374,6 +1374,10 @@ def category_edit(request, structure_slug, category_slug):
     category = get_object_or_404(
         TicketCategory, organizational_structure=structure, slug=category_slug
     )
+    template = "manager/category_edit.html"
+    title = _("Modifica tipologia di richiesta")
+    sub_title = category.name
+
     form = CategoryForm(instance=category)
     if request.method == "POST":
         form = CategoryForm(instance=category, data=request.POST)
@@ -1472,9 +1476,6 @@ def category_edit(request, structure_slug, category_slug):
                 messages.add_message(
                     request, messages.ERROR, "<b>{}</b>: {}".format(k, strip_tags(v))
                 )
-    template = "manager/category_edit.html"
-    title = _("Modifica tipologia di richiesta")
-    sub_title = category
     d = {
         "category": category,
         "form": form,
