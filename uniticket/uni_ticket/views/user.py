@@ -4,7 +4,7 @@ import json
 import logging
 import re
 import shutil
-from typing import Union
+from typing import Optional, Union
 
 from django.conf import settings
 from django.contrib import messages
@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.urls import reverse
@@ -353,8 +353,14 @@ class TicketAddNew(View):
 
     compiled_by_user = None
     compiled_date = None
+    # reason of the last denied request, used by the REST API
+    error_message = None
 
     template = "user/ticket_add_new.html"
+
+    def _error(self, message, status=403) -> HttpResponse:
+        self.error_message = message
+        return custom_message(self.request, message, status=status)
 
     def get_assets(self, structure_slug, category_slug) -> None:
         # get structure by pk or by slug
@@ -381,29 +387,29 @@ class TicketAddNew(View):
         )
         self.title = self.category
 
-    def get_modulo_and_form(self) -> None:
+    def get_modulo_and_form(self) -> Optional[HttpResponse]:
         # if there is an encrypted token with ticket params in URL
         if self.request.GET.get("import"):
             if not self.request.user.is_authenticated:
-                return custom_message(self.request, _("E' necessario effettuare l'autenticazione per accedere alla richiesta"))
+                return self._error(_("E' necessario effettuare l'autenticazione per accedere alla richiesta"))
             CompiledTicket.clear()
             encoded_data = self.request.GET["import"]
             try:
                 compiled_ticket = get_object_or_404(CompiledTicket, url_path=encoded_data)
             except Exception:
-                return custom_message(self.request, _("Il ticket precompilato è scaduto"))
+                return self._error(_("Il ticket precompilato è scaduto"), status=404)
             try:
                 # decrypt and get imported form content
                 imported_data = json.loads(decrypt_from_jwe(compiled_ticket.content))
                 # one time
             except Exception:
-                return custom_message(self.request, _("Dati da importare non consistenti."))
+                return self._error(_("Dati da importare non consistenti."), status=400)
             # get input_module id from imported data
             module_id = imported_data.get(TICKET_INPUT_MODULE_NAME)
             if not module_id:
-                return custom_message(
-                    self.request,
+                return self._error(
                     _("Dati da importare non consistenti. Modulo di input mancante"),
+                    status=400
                 )
             self.modulo = get_object_or_404(
                 TicketCategoryModule, ticket_category=self.category, pk=module_id
@@ -433,11 +439,11 @@ class TicketAddNew(View):
             )
         self.clausole_categoria = self.category.get_conditions()
 
-    def deny_response(self):
+    def deny_response(self) -> Optional[HttpResponse]:
         # if category is not active, return an error message
         if not self.category.is_published():
             unavailable_msg = self.category.not_available_message or UNAVAILABLE_TICKET_CATEGORY
-            return custom_message(self.request, unavailable_msg, status=404)
+            return self._error(unavailable_msg, status=404)
 
         # TODO: not covered yet in the unit tests
         # if anonymous user and category only for logged users
@@ -463,16 +469,13 @@ class TicketAddNew(View):
             # check if user is allowed to access this category
             user_permission = self.category.allowed_to_user(self.request.user)
             if not user_permission[0]:
-                return custom_message(
-                    self.request, user_permission[1]
-                )
+                return self._error(user_permission[1])
 
             # check if user has already open a ticket of this category
             if not self.category.user_multiple_open_tickets and Ticket.existent_open_ticket(
                 self.request.user, self.category
             ):
-                return custom_message(
-                    self.request,
+                return self._error(
                     _(
                         "Esistono già tue richieste aperte"
                         " di questa tipologia."
@@ -486,8 +489,7 @@ class TicketAddNew(View):
                 created_by=self.request.user,
                 input_module__ticket_category=self.category
             ).count() >= self.category.max_requests_per_user:
-                return custom_message(
-                    self.request,
+                return self._error(
                     _(
                         "Non è possibile aprire ulteriori richieste"
                         " per questa tipologia."
@@ -513,7 +515,7 @@ class TicketAddNew(View):
 
         # user that compiled ticket
         error = self.get_modulo_and_form()
-        if error and not api:
+        if error:
             return error
 
         self.context_data = {
@@ -538,7 +540,7 @@ class TicketAddNew(View):
             return deny_response
 
         error = self.get_modulo_and_form()
-        if error and not api:
+        if error:
             return error
         self.context_data = {
             "categoria": self.category,
@@ -645,14 +647,12 @@ class TicketAddNew(View):
             elif create or draft:
                 # if user is not allowed (category allowed users list)
                 if create and not self.category.user_can_open_tickets(request.user):
-                    return custom_message(
-                        request,
+                    return self._error(
                         _(
                             "Solo gli utenti abilitati "
                             "possono generare richieste "
                             "di questo tipo"
-                        ),
-                        status=403,
+                        )
                     )
 
                 # extends fields_to_pop list
@@ -1847,6 +1847,22 @@ def ticket_submit_draft(request, ticket_id):
                 status=403,
             )
 
+        # check ticket number limit
+        if Ticket.number_limit_reached_by_user(request.user):
+            messages.add_message(
+                request,
+                messages.ERROR,
+                _(
+                    "Hai raggiunto il limite massimo giornaliero"
+                    " di richieste: <b>{}</b>"
+                ).format(MAX_DAILY_TICKET_PER_USER)
+
+            )
+            return redirect(
+                "uni_ticket:ticket_detail", 
+                ticket_id=ticket.code
+            )
+            
         ticket.created = timezone.localtime()
         ticket.draft = False
         ticket.save()

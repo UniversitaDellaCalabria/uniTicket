@@ -15,7 +15,11 @@ from api_rest.views import user as api_user
 from api_rest.views.generic import message_level
 from organizational_area.models import OrganizationalStructure, OrganizationalStructureOffice
 from tests.base_ticket_env import BaseTicketEnvironment
-from uni_ticket.models import Ticket, TicketCategory, TicketCategoryModule, TicketReply
+from uni_ticket.models import (CompiledTicket,
+                               Ticket,
+                               TicketCategory,
+                               TicketCategoryModule,
+                               TicketReply)
 from uni_ticket.settings import TICKET_GENERATE_URL_BUTTON_NAME
 from uni_ticket.views.user import TicketAddNew, TicketDetail
 
@@ -156,7 +160,61 @@ class uniTicketAPIUserTest(TestCase):
         self.category.is_active = False
         self.category.save()
         res = self.client.get(self.url, **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_new_ticket_user_not_allowed(self):
+        self.category.allow_guest = False
+        self.category.allow_user = False
+        self.category.allow_employee = False
+        self.category.save()
+        res = self.client.get(self.url, **self.at.as_http_header)
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(res.json()['detail'])
+        res = self._post(self.data)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(res.json()['detail'])
+        self.assertFalse(Ticket.objects.exists())
+
+    def test_new_ticket_existent_open_ticket(self):
+        self._create_ticket()
+        self.category.user_multiple_open_tickets = False
+        self.category.save()
+        res = self.client.get(self.url, **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIn('richieste aperte', res.json()['detail'])
+        res = self._post(self.data)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIn('richieste aperte', res.json()['detail'])
+        self.assertEqual(Ticket.objects.count(), 1)
+
+    def test_new_ticket_post_not_in_allowed_users(self):
+        other_user = get_user_model().objects.create(username="other-user")
+        self.category.allowed_users.add(other_user)
+        res = self._post(self.data)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(res.json()['detail'])
+        self.assertFalse(Ticket.objects.exists())
+
+    def test_new_ticket_post_daily_limit_reached(self):
+        with mock.patch.object(Ticket, 'number_limit_reached_by_user',
+                               return_value=True):
+            res = self._post(self.data)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(res.json()['redirect_url'], reverse('uni_ticket:user_dashboard'))
+        self.assertFalse(Ticket.objects.exists())
+
+    def test_new_ticket_import_errors(self):
+        # expired compiled ticket
+        res = self.client.get(f'{self.url}?import=not-existent',
+                              **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertIn('scaduto', res.json()['detail'])
+        # not decryptable content
+        CompiledTicket.objects.create(url_path='invalid', content='garbage')
+        res = self.client.get(f'{self.url}?import=invalid',
+                              **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('non consistenti', res.json()['detail'])
 
     def test_new_ticket_get_daily_limit_reached(self):
         with mock.patch.object(Ticket, 'number_limit_reached_by_user',

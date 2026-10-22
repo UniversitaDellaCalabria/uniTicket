@@ -26,7 +26,7 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
                                   content_type=content_type)
 
     def create_ticket(self, subject, attachment,
-                      structure_slug, category):
+                      structure_slug, category, status_code=200):
         """
          Create new ticket
          this may fail silently -> ticket object would be None
@@ -50,7 +50,7 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
                                                     'category_slug': category.slug}),
                                     params,
                                     follow=True)
-        self.assertTrue(response.status_code == 200)
+        self.assertEqual(response.status_code, status_code)
         ticket = Ticket.objects.filter(subject=subject).first()
         return ticket
 
@@ -103,7 +103,8 @@ class BaseTicketEnvironment(BaseCategoryOfficeEnvironment):
             subject='Ticket 2',
             attachment=None,
             structure_slug=self.structure_1.slug,
-            category=self.category_1_str_1
+            category=self.category_1_str_1,
+            status_code=403
         )
         assert not self.ticket_2
 

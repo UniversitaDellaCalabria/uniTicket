@@ -614,7 +614,11 @@ class Ticket(SavedFormContent):
     def get_user_ticket_per_day(user, date=None):
         """ """
         dt = date if date else timezone.now().date()
-        tickets = Ticket.objects.filter(created_by=user, created__contains=dt)
+        tickets = Ticket.objects.filter(
+            created_by=user, 
+            created__contains=dt,
+            draft=False
+        )
         return tickets
 
     def get_url(self, structure=None):
@@ -637,9 +641,7 @@ class Ticket(SavedFormContent):
         _max = getattr(settings, "MAX_DAILY_TICKET_PER_USER", MAX_DAILY_TICKET_PER_USER)
         if _max == 0:
             return False
-        today_tickets = Ticket.get_user_ticket_per_day(
-            user=user, draft=False
-        ).count()
+        today_tickets = Ticket.get_user_ticket_per_day(user=user).count()
         if today_tickets < _max:
             return False
         return True

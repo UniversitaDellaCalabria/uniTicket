@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -86,6 +86,27 @@ class TicketAPIView(TicketAPIBaseView):
         self.legacy_view.request = request
         return super().dispatch(request, *args, **kwargs)
 
+    def raise_legacy_error(self, legacy_response):
+        """
+        raises the API exception matching a denied legacy view response
+        """
+        if legacy_response.status_code == 302:
+            raise PermissionDenied(
+                {
+                    "redirect_url": legacy_response.url,
+                    "messages": self.get_messages()
+                }
+            )
+        detail = {
+            "detail": self.legacy_view.error_message,
+            "messages": self.get_messages()
+        }
+        if legacy_response.status_code == 404:
+            raise NotFound(detail)
+        if legacy_response.status_code == 400:
+            raise ValidationError(detail)
+        raise PermissionDenied(detail)
+
     def get(self, request, structure_slug, category_slug):
         """
         Return a ticket by structure_slug, category_slug
@@ -96,15 +117,8 @@ class TicketAPIView(TicketAPIBaseView):
             category_slug=category_slug,
             api=True
         )
-        if legacy_response.status_code == 302:
-            raise PermissionDenied(
-                {
-                    "redirect_url": legacy_response.url,
-                    "messages": self.get_messages()
-                }
-            )
-        if legacy_response.status_code != 200:
-            raise PermissionDenied()
+        if not isinstance(legacy_response, dict):
+            self.raise_legacy_error(legacy_response)
         return Response(self.build_response())
 
     def post(self, request, structure_slug, category_slug):
@@ -122,7 +136,11 @@ class TicketAPIView(TicketAPIBaseView):
             api=True
         )
         logger.debug(legacy_response)
-        if not getattr(self.legacy_view, "form", None) or self.legacy_view.form.errors:
+        # denied before the form was built or before the ticket creation
+        if not hasattr(self.legacy_view, "form") or self.legacy_view.error_message:
+            self.raise_legacy_error(legacy_response)
+
+        if self.legacy_view.form.errors:
             return Response(self.build_response())
 
         elif getattr(self.legacy_view, 'ticket_assignment', None):

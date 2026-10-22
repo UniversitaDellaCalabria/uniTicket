@@ -342,6 +342,10 @@ class Test_Ticket(ORMFixtureMixin, TestCase):
             self.assertFalse(Ticket.number_limit_reached_by_user(self.user))
         with override_settings(MAX_DAILY_TICKET_PER_USER=1):
             self.assertTrue(Ticket.number_limit_reached_by_user(self.user))
+        # drafts are ignored
+        Ticket.objects.filter(created_by=self.user).update(draft=True)
+        with override_settings(MAX_DAILY_TICKET_PER_USER=1):
+            self.assertFalse(Ticket.number_limit_reached_by_user(self.user))
 
     def test_existent_open_ticket(self):
         self.assertTrue(Ticket.existent_open_ticket(self.user, self.category))

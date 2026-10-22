@@ -140,13 +140,13 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
     def test_user_type_not_allowed(self):
         self._update_category(allow_guest=False, allow_user=False, allow_employee=False)
         response = self.client.get(self._new_ticket_url())
-        self._assert_custom_message(response)
+        self._assert_custom_message(response, 403)
         self.assertNotIn('form', response.context)
 
     def test_max_requests_per_user(self):
         self._update_category(max_requests_per_user=1)
         response = self._post_new_ticket(subject='Over the limit')
-        self._assert_custom_message(response)
+        self._assert_custom_message(response, 403)
         self.assertFalse(Ticket.objects.filter(subject='Over the limit').exists())
 
     def test_user_not_in_allowed_users(self):
@@ -159,28 +159,28 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
         self._update_category(allow_anonymous=True)
         self.client.logout()
         response = self.client.get(self._new_ticket_url() + '?import=something')
-        self._assert_custom_message(response)
+        self._assert_custom_message(response, 403)
 
     def test_import_expired_ticket(self):
         response = self.client.get(self._new_ticket_url() + '?import=not-existent')
-        self._assert_custom_message(response)
+        self._assert_custom_message(response, 404)
         self.assertIn('scaduto', response.context['avviso'])
         response = self._post_new_ticket(subject='Imported',
                                          url_suffix='?import=not-existent')
-        self._assert_custom_message(response)
+        self._assert_custom_message(response, 404)
         self.assertFalse(Ticket.objects.filter(subject='Imported').exists())
 
     def test_import_invalid_content(self):
         compiled = CompiledTicket.objects.create(url_path='invalid', content='garbage')
         response = self.client.get(self._new_ticket_url() + f'?import={compiled.url_path}')
-        self._assert_custom_message(response)
+        self._assert_custom_message(response, 400)
         self.assertIn('non consistenti', response.context['avviso'])
 
     def test_import_without_input_module(self):
         content = encrypt_to_jwe(json.dumps({'ticket_subject': 'x'}).encode())
         compiled = CompiledTicket.objects.create(url_path='no-module', content=content)
         response = self.client.get(self._new_ticket_url() + f'?import={compiled.url_path}')
-        self._assert_custom_message(response)
+        self._assert_custom_message(response, 400)
         self.assertIn('Modulo di input mancante', response.context['avviso'])
 
     def test_generate_url_compiled_by_user(self):
@@ -196,6 +196,12 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['compiled_by'], self.staff_1)
         self.assertEqual(response.context['form'].data['ticket_subject'], 'Generated')
+        # create it
+        self._post_new_ticket(subject='Imported',
+                              url_suffix=f'?import={compiled.url_path}')
+        ticket = Ticket.objects.get(subject='Imported')
+        self.assertEqual(ticket.compiled_by, self.staff_1)
+        self.assertTrue(ticket.compiled)
 
     def test_api_get_and_post(self):
         factory = RequestFactory()
@@ -596,6 +602,13 @@ class Test_UserSubmitDraft(UserViewsMixin, TempMediaRootMixin, BaseTicketEnviron
         self.category_1_str_1.allowed_users.add(self.user_2)
         response = self._submit()
         self._assert_custom_message(response, 403)
+        self.draft.refresh_from_db()
+        self.assertTrue(self.draft.draft)
+
+    def test_submit_daily_limit_reached(self):
+        with patch.object(Ticket, 'number_limit_reached_by_user', return_value=True):
+            response = self._submit()
+        self.assertRedirects(response, self.detail_url)
         self.draft.refresh_from_db()
         self.assertTrue(self.draft.draft)
 
