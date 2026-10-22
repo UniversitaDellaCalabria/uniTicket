@@ -125,6 +125,10 @@ class uniTicketAPITest(TestCase):
     def test_openapi_schema(self):
         req = Client()
         for name in ('api_rest:openapi-schema', 'api_rest:openapi-schema-json'):
+            # no auth
+            res = req.get(reverse(name))
+            self.assertEqual(res.status_code, 401)
+            # auth
             res = req.get(reverse(name), **self.at.as_http_header)
             self.assertEqual(res.status_code, 200)
         self.assertIn('/api/strutture/list/', res.json()['paths'])
