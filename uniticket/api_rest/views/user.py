@@ -90,7 +90,12 @@ class TicketAPIView(TicketAPIBaseView):
         """
         Return a ticket by structure_slug, category_slug
         """
-        legacy_response = self.legacy_view.get(request, structure_slug, category_slug)
+        legacy_response = self.legacy_view.get(
+            request=request, 
+            structure_slug=structure_slug, 
+            category_slug=category_slug,
+            api=True
+        )
         if legacy_response.status_code == 302:
             raise PermissionDenied(
                 {
@@ -110,7 +115,12 @@ class TicketAPIView(TicketAPIBaseView):
         # request._set_post(request.data)
         request.api_data = deepcopy(request.data)
         request.api_data[TICKET_CREATE_BUTTON_NAME] = 1
-        legacy_response = self.legacy_view.post(request, structure_slug, category_slug)
+        legacy_response = self.legacy_view.post(
+            request=request, 
+            structure_slug=structure_slug, 
+            category_slug=category_slug,
+            api=True
+        )
         logger.debug(legacy_response)
         if not getattr(self.legacy_view, "form", None) or self.legacy_view.form.errors:
             return Response(self.build_response())
