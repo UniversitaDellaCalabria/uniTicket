@@ -122,6 +122,13 @@ class uniTicketAPITest(TestCase):
                 category_module = self.modulo, **i
             )
 
+    def test_openapi_schema(self):
+        req = Client()
+        for name in ('api_rest:openapi-schema', 'api_rest:openapi-schema-json'):
+            res = req.get(reverse(name), **self.at.as_http_header)
+            self.assertEqual(res.status_code, 200)
+        self.assertIn('/api/strutture/list/', res.json()['paths'])
+
     def test_strutture_list(self):
         req = Client()
         url = reverse('api_rest:api-strutture-list')

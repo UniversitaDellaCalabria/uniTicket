@@ -8,6 +8,7 @@ django-nested-admin>=3.2.4
 
 uritemplate>4.1
 pyyaml>=6.0,<7.0
+inflection>=0.5.1
 
 pillow>=10.3.0
 python-magic>=0.4.15
@@ -31,7 +32,6 @@ design-django-theme>=2.18.0,<3
 
 # Django REST
 djangorestframework>=3.15.1
-django-filter>=2.4.0
 
 # Django channels only for chat
 channels>=2.4.0
