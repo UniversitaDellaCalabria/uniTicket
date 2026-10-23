@@ -97,6 +97,21 @@ class Test_AccountsChangeData(AccountsMixin, TestCase):
         self.assertEqual(self.user.email, 'old@test.it')
         self.assertTrue(self.user.manual_user_update)
 
+    def test_one_other_editable_field(self):
+        form_class = modelform_factory(get_user_model(),
+                                       form=UserDataForm,
+                                       fields=['email', 'taxpayer_id'])
+        with mock.patch('accounts.views.UserDataForm', form_class):
+            response = self.client.post(self.change_url,
+                                        {'email': 'old@test.it',
+                                         'taxpayer_id': 'TAXPAYER01'},
+                                        follow=True)
+        self.assertIn('Dati salvati con successo', self._messages(response))
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.taxpayer_id, 'TAXPAYER01')
+        self.assertEqual(self.user.email, 'old@test.it')
+        self.assertTrue(self.user.manual_user_update)
+
     def test_form_save_keeps_initial_email(self):
         form = UserDataForm({'email': 'new@test.it'}, instance=self.user)
         self.assertTrue(form.is_valid())

@@ -43,7 +43,7 @@ def changeData(request):
         form = UserDataForm(request.POST, instance=user)
         if form.is_valid():
             email = form.cleaned_data.pop('email', '')
-            if len(form.cleaned_data) > 1:
+            if form.cleaned_data:
                 user = form.save(commit=False)
                 user.manual_user_update = timezone.now()
                 user.save()
