@@ -219,7 +219,7 @@
     {% include 'ticket_detail.html' with is_simple_user=request.user %}
 
     {% if ticket.draft and ticket.is_valid %}
-    <form method="post" action="{% url 'uni_ticket:ticket_submit_draft' ticket_id=ticket.code %}" novalidate>
+    <form method="post" action="{% url 'uni_ticket:ticket_submit_draft' ticket_id=ticket.code %}">
 
         {% if category_conditions and ticket.created_by == request.user %}
             {% for condition in category_conditions %}
@@ -273,8 +273,7 @@
         <div class="d-grid gap-2">
             <button class="btn btn-success"
                     type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#submit_draft">
+                    data-confirm-modal="#submit_draft">
                 <svg class="icon icon-xs icon-white">
                     <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
                 </svg>
@@ -357,8 +356,7 @@
                 <div class="d-grid gap-2">
                     <button class="btn btn-info"
                             type="button"
-                            data-bs-toggle="modal"
-                            data-bs-target="#share_draft">
+                            data-confirm-modal="#share_draft">
                         <svg class="icon icon-xs icon-white">
                             <use xlink:href="{% static 'svg/sprites.svg' %}#it-share"></use>
                         </svg>

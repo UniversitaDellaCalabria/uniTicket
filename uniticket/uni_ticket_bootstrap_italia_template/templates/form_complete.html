@@ -22,7 +22,7 @@
             <div class="it-card-body">
                 {% block page_content %}
                     {% block pre_form %}{% endblock pre_form %}
-                    <form method="post" enctype="multipart/form-data" novalidate>
+                    <form method="post" enctype="multipart/form-data">
                         {% include 'form_template.html' %}
                         {% block form_buttons %}{% endblock form_buttons %}
                     </form>

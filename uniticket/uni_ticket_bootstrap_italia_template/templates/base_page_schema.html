@@ -32,6 +32,16 @@
 
 {% block bottom_scripts %}
 {{ block.super }}
+<!-- validate form before opening the submit confirmation modal -->
+<script>
+document.addEventListener('click', function(e) {
+    const btn = e.target.closest('[data-confirm-modal]');
+    if (!btn) return;
+    if (btn.form.reportValidity()) {
+        bootstrap.Modal.getOrCreateInstance(btn.dataset.confirmModal).show();
+    }
+});
+</script>
 <script>
 <!-- Close modal window on submit first click -->
 $('.modal :submit').on('click', function(e){
