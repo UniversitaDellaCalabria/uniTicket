@@ -19,9 +19,19 @@ logger = logging.getLogger(__name__)
 @receiver(post_save, sender=OrganizationalStructure)
 @disable_for_loaddata
 def create_manager_office(sender, instance, created, **kwargs):
-    """
-    Help-desk Office created by default
-    after Structure is created
+    """Create the default office of a new structure.
+
+    Structure managers must be employees of this office: being listed
+    in UserManageOrganizationalStructure is not enough on its own.
+
+    Args:
+        sender: The model class (OrganizationalStructure).
+        instance: The saved structure.
+        created: True if the structure has just been created.
+        **kwargs: Other post_save arguments.
+
+    Returns:
+        None.
     """
     if created:
         OrganizationalStructureOffice.objects.create(
@@ -32,7 +42,6 @@ def create_manager_office(sender, instance, created, **kwargs):
             is_default=True,
             is_active=True
         )
-        # log action
         logger.info('[{}] default office {}'
                     ' created in structure {}'.format(
                         timezone.localtime(),

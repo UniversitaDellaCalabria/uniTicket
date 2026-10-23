@@ -5,21 +5,25 @@ from .models import *
 
 
 class AbstractAdmin(admin.ModelAdmin):
+    """Base admin for models that only need name and description in the list."""
     list_display = ('name', 'description')
 
 
 @admin.register(OrganizationalStructureFunction)
 class OrganizationalStructureFunctionAdmin(AbstractAdmin):
+    """Admin for the functions a structure location can provide."""
     pass
 
 
 @admin.register(OrganizationalStructureType)
 class OrganizationalStructureTypeAdmin(AbstractAdmin):
+    """Admin for structure types (department, secretariat, service...)."""
     pass
 
 
 @admin.register(OrganizationalStructure)
 class OrganizationalStructureAdmin(AbstractAdmin):
+    """Admin for structures, with locations, offices and managers inline."""
     prepopulated_fields = {'slug': ('name',)}
     list_display = ('name', 'structure_type',
                     'description', 'app_io_enabled', 'is_active')
@@ -32,6 +36,7 @@ class OrganizationalStructureAdmin(AbstractAdmin):
 
 @admin.register(OrganizationalStructureOffice)
 class OrganizationalStructureOfficeAdmin(AbstractAdmin):
+    """Admin for structure offices, with employees and locations inline."""
     prepopulated_fields = {'slug': ('name',)}
     list_display = ('name', 'organizational_structure',
                     'is_default', 'is_private', 'is_active')
@@ -44,18 +49,3 @@ class OrganizationalStructureOfficeAdmin(AbstractAdmin):
 
     inlines = [OrganizationalStructureOfficeEmployeeInline,
                OrganizationalStructureOfficeLocationInline,]
-
-
-# @admin.register(TipoDotazione)
-# class TipoDotazioneAdmin(admin.ModelAdmin):
-    #list_display = ('nome', 'descrizione')
-
-
-# @admin.register(Locazione)
-# class LocazioneAdmin(admin.ModelAdmin):
-    #list_display = ('nome', 'indirizzo', 'descrizione_breve',)
-
-
-# @admin.register(OrganizationalStructureFunction)
-# class OrganizationalStructureFunction(AbstractAdmin):
-    # pass

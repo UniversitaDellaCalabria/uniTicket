@@ -12,17 +12,21 @@ from . settings import (DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
 
 
 def _logo_upload(instance, filename):
-    """
-    Returns the location to upload the logo file
+    """Return the upload path of a structure banner.
+
+    Args:
+        instance: The OrganizationalStructure that owns the banner.
+        filename: The name of the uploaded file.
+
+    Returns:
+        The path of the file, relative to MEDIA_ROOT.
     """
     folder = instance.get_logo_folder()
     return os.path.join('{}/{}'.format(folder, filename))
 
 
 class OrganizationalStructureType(models.Model):
-    """
-    Classroom, department, secretary, center, service (canteen, accommodation ...)
-    """
+    """Type of a structure: department, secretariat, center, service..."""
     name = models.CharField(max_length=128, blank=True, unique=True)
     description = models.TextField(max_length=768, null=True,blank=True)
     create_date = models.DateTimeField(auto_now_add=True)
@@ -37,10 +41,13 @@ class OrganizationalStructureType(models.Model):
 
 
 class OrganizationalStructure(models.Model):
-    """
-    Department, structure
+    """Top level organizational unit (e.g. a department).
+
+    Ticket categories, offices and managers belong to a structure.
+    On creation a default office is added by signals.create_manager_office.
     """
     name = models.CharField(max_length=255, blank=True, unique=True)
+    # Used in URLs: the validator rejects numeric-only slugs.
     slug = models.SlugField(max_length=255,
                             blank=False, null=False, unique=True,
                             validators=[
@@ -61,6 +68,7 @@ class OrganizationalStructure(models.Model):
                                null=True, blank=True,
                                max_length=255)
     url = models.CharField(max_length=768, null=True, blank=True)
+    # Enables the App IO services configuration for the structure.
     app_io_enabled = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
@@ -69,22 +77,41 @@ class OrganizationalStructure(models.Model):
         verbose_name = _("Organizational Structure")
         verbose_name_plural = _("Organizational Structures")
 
-    # OnCreate -> signals.py per creazione ufficio di Default
-
     def get_employees(self, **kwargs):
+        """Return the employee-office relationships of all structure offices.
+
+        A user employed in more offices appears once per office.
+
+        Args:
+            **kwargs: Extra filters on OrganizationalStructureOfficeEmployee.
+
+        Returns:
+            QuerySet of OrganizationalStructureOfficeEmployee.
+        """
         offices_pks = self.get_offices().values_list('pk', flat=True)
         return OrganizationalStructureOfficeEmployee.objects.filter(
             office__pk__in=offices_pks, **kwargs
         )
 
     def get_offices(self, **kwargs):
+        """Return the structure offices.
+
+        Args:
+            **kwargs: Extra filters on OrganizationalStructureOffice.
+
+        Returns:
+            QuerySet of OrganizationalStructureOffice.
+        """
         return OrganizationalStructureOffice.objects.filter(
             organizational_structure=self, **kwargs
         )
 
     def get_default_office(self):
-        """
-        Returns the default structure office
+        """Return the structure default office.
+
+        Returns:
+            The OrganizationalStructureOffice with is_default=True,
+            or None if missing.
         """
         office = OrganizationalStructureOffice.objects.filter(
             organizational_structure=self,
@@ -92,20 +119,32 @@ class OrganizationalStructure(models.Model):
         if office: return office
 
     def get_folder(self):
-        """
-        Returns structure attachments folder path
+        """Return the folder of the structure attachments.
+
+        Returns:
+            The folder path, relative to MEDIA_ROOT.
         """
         folder = '{}/{}'.format(STRUCTURES_FOLDER, self.slug)
         return folder
 
     def get_logo_folder(self):
-        """
-        Returns logos folder path
+        """Return the folder of the structure banner.
+
+        Returns:
+            The folder path, relative to MEDIA_ROOT.
         """
         folder = '{}/{}'.format(LOGOS_FOLDER, self.slug)
         return folder
 
     def get_structure_managers(self):
+        """Return the manager assignments of the structure.
+
+        Only users that are also employees of the default office are
+        included, as in uni_ticket.utils.user_is_manager.
+
+        Returns:
+            QuerySet of UserManageOrganizationalStructure.
+        """
         osoe = OrganizationalStructureOfficeEmployee
         default_office_users = osoe.objects.filter(office__organizational_structure=self,
                                                    office__is_default=True).values_list('employee', flat=True)
@@ -121,9 +160,7 @@ class OrganizationalStructure(models.Model):
 
 
 class OrganizationalStructureFunction(models.Model):
-    """
-    Organizational structure function
-    """
+    """Function a location can provide."""
     name = models.CharField(max_length=128, blank=True, unique=True)
     description = models.TextField(max_length=768, null=True,blank=True)
     create_date = models.DateTimeField(auto_now_add=True)
@@ -138,9 +175,7 @@ class OrganizationalStructureFunction(models.Model):
 
 
 class EquipmentType(models.Model):
-    """
-    Equipment
-    """
+    """Type of equipment available in a location."""
     name = models.CharField(max_length=128, blank=True, unique=True)
     description = models.TextField(max_length=1024, null=True,blank=True)
 
@@ -154,11 +189,13 @@ class EquipmentType(models.Model):
 
 
 class AbstractLocation(models.Model):
-    """
-    Location
+    """Common fields of a physical location.
+
+    Address, coordinates, contacts, provided functions and equipment.
     """
     address = models.CharField(max_length=768, null=True,blank=True)
     coordinate = models.CharField(max_length=64, null=True,blank=True)
+    # Spatial reference system of the coordinate.
     srs = models.CharField(max_length=13, null=True,blank=True,
                            help_text=_("riferimento spaziale coordinate"))
     description_short = models.CharField(max_length=255, null=True,blank=True)
@@ -180,9 +217,7 @@ class AbstractLocation(models.Model):
 
 
 class OrganizationalStructureLocation(AbstractLocation):
-    """
-    An organizational structure can be located in multiple locations
-    """
+    """Location of a structure (a structure can have many)."""
     organizational_structure = models.ForeignKey(OrganizationalStructure,
                                                  on_delete=models.CASCADE)
 
@@ -193,10 +228,12 @@ class OrganizationalStructureLocation(AbstractLocation):
 
 
 class OrganizationalStructureOffice(models.Model):
-    """
-    Organizational structure office
+    """Office of a structure.
+
+    Tickets and tasks are assigned to offices and handled by their employees.
     """
     name = models.CharField(max_length=128, null=False, blank=False)
+    # Unique only inside the structure.
     slug = models.SlugField(max_length=255,
                             blank=False, null=False)
     organizational_structure = models.ForeignKey(
@@ -204,7 +241,9 @@ class OrganizationalStructureOffice(models.Model):
         on_delete=models.CASCADE
     )
     description = models.TextField(max_length=1024, null=True,blank=True)
+    # Office created with the structure: its employees can be managers.
     is_default = models.BooleanField(default=False)
+    # Hidden to other structures when they transfer a ticket competence.
     is_private = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
 
@@ -221,9 +260,7 @@ class OrganizationalStructureOffice(models.Model):
 
 
 class OrganizationalStructureOfficeLocation(AbstractLocation):
-    """
-    An organizational structure office can be located in multiple locations
-    """
+    """Location of an office (an office can have many)."""
     office = models.ForeignKey(OrganizationalStructureOffice,
                                on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now_add=True)
@@ -238,9 +275,7 @@ class OrganizationalStructureOfficeLocation(AbstractLocation):
 
 
 class OrganizationalStructureOfficeEmployee(models.Model):
-    """
-    Employee-office relationship
-    """
+    """Assignment of a user (operator) to an office."""
     employee = models.ForeignKey(get_user_model(),
                                  on_delete=models.CASCADE)
     office = models.ForeignKey(OrganizationalStructureOffice,
@@ -259,8 +294,10 @@ class OrganizationalStructureOfficeEmployee(models.Model):
 
 
 class UserManageOrganizationalStructure(models.Model):
-    """
-    Organizational structure manager users
+    """Manager role of a user in a structure.
+
+    The role is effective only if the user is also an employee of the
+    structure default office.
     """
     user = models.ForeignKey(get_user_model(),
                              on_delete=models.CASCADE)
