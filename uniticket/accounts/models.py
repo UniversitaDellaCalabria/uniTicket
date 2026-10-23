@@ -4,6 +4,8 @@ from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
+    """Custom user, with personal data mostly filled in by SAML login."""
+    # Not used by any field at the moment.
     GENDER = (
                 ('male', _('Maschio')),
                 ('female', _('Femmina')),
@@ -12,12 +14,14 @@ class User(AbstractUser):
 
     is_active = models.BooleanField(_('attivo'), default=True)
     email = models.EmailField('email address', blank=True, null=True)
+    # Shown in tickets as EMPLOYEE_ATTRIBUTE_NAME (uni_ticket settings).
     identificativo_dipendente = models.CharField(
         _('Identificativo Dipendente'),
         max_length=10,
         blank=True, null=True,
         help_text=_("employee unique id")
     )
+    # Shown in tickets as USER_ATTRIBUTE_NAME (uni_ticket settings).
     identificativo_utente = models.CharField(
         _('Identificativo utente'),
         max_length=10,
@@ -32,9 +36,14 @@ class User(AbstractUser):
                                    max_length=50,
                                    blank=True, null=True)
     email_notify = models.BooleanField(_('Notifiche mail'), default=True)
+    # Last change made by the user: once set, SAML login no longer
+    # overwrites the EDITABLE_FIELDS that have a value, and older email
+    # confirmation links become invalid.
     manual_user_update = models.DateTimeField(_('Ultimo aggiornamento manuale dei dati'), blank=True, null=True)
+    # SAML authentication context of the last login (e.g. the SPID level),
+    # checked by categories that allow only SPID/CIE users.
     last_login_context = models.CharField(default="", max_length=70, blank=True)
-    
+
     class Meta:
         ordering = ['last_name', 'first_name']
         verbose_name_plural = _("Utenti")

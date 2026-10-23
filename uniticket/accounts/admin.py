@@ -7,6 +7,7 @@ from .models import User
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
+    """Admin for the custom User, with personal data and login info."""
     readonly_fields = ('date_joined', 'last_login', 'manual_user_update','last_login_context')
     list_display = ('username', 'last_name', 'first_name',
                     'identificativo_dipendente', 'identificativo_utente',
@@ -23,13 +24,8 @@ class CustomUserAdmin(UserAdmin):
                                       'identificativo_utente'),
                                      ('email', 'email_notify'),
                                      ('taxpayer_id',),
-                                     # ('gender',
-                                     # 'place_of_birth', 'birth_date',),
                                         )
                           }),
-
-        # (_('Ruoli (impostazioni manuali)'), {'fields': ('is_operator', 'is_utente',)
-        # }),
 
         (_('Permissions'), {'fields': ('groups', 'user_permissions'),
                             'classes':('collapse',)

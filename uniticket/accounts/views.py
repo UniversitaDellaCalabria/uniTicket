@@ -18,6 +18,19 @@ from . settings import *
 
 @login_required
 def changeData(request):
+    """Show and save the personal data form of the logged user.
+
+    The fields in EDITABLE_FIELDS are saved immediately, except the email:
+    a new address is sent a confirmation link and is updated only by
+    confirmEmail.
+
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        The rendered form page, or a redirect to the same page
+        after a valid submission.
+    """
     initial = {}
     for field in EDITABLE_FIELDS:
         initial[field] = getattr(request.user, field)
@@ -42,6 +55,8 @@ def changeData(request):
                 base_url = request.build_absolute_uri(
                     reverse("accounts:confirm_email")
                 )
+                # Encrypted token "user id|new email|creation time",
+                # checked by confirmEmail.
                 token = f'{request.user.id}|{email}|{timezone.now()}'
                 encrypted_data = encrypt_to_jwe(token)
                 url = f'{base_url}?token={encrypted_data}'
@@ -72,6 +87,19 @@ def changeData(request):
 
 @login_required
 def confirmEmail(request):
+    """Update the user email from a confirmation link.
+
+    The token is rejected if it cannot be decrypted, belongs to another
+    user, is older than CHANGE_EMAIL_TOKEN_LIFE minutes, or was created
+    before the last manual data update (so each link works only once).
+
+    Args:
+        request: The current HttpRequest, with the token in GET['token'].
+
+    Returns:
+        A redirect to the user settings page on success,
+        otherwise a redirect to the personal data page.
+    """
     token = request.GET.get('token')
     if not token:
         messages.add_message(
