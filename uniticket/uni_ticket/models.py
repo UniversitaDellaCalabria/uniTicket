@@ -317,6 +317,9 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         """ """
         conditions = TicketCategoryCondition.objects.filter(
             category=self, is_active=True
+        ).select_related(
+            'category',
+            'category__organizational_structure'
         )
         if is_printable:
             conditions = conditions.filter(is_printable=True)
