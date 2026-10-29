@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.storage import FileSystemStorage
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect
@@ -219,6 +220,8 @@ def _save_new_ticket_attachments(ticket, json_stored, form, request_files):
         if not json_stored.get(settings.ATTACHMENTS_DICT_PREFIX):
             json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
         path_allegati = get_path(ticket.get_folder())
+        # used only to pick a free file name, with Django's standard logic
+        storage = FileSystemStorage(location=path_allegati)
         attach_key = ""
         attach_value = ""
 
@@ -233,11 +236,14 @@ def _save_new_ticket_attachments(ticket, json_stored, form, request_files):
                         int(index)
                     ].cleaned_data
                     attach_key = formset_data[sub_field_name]
-                    attach_value = attach_key._name
+                    attach_value = attach_key.name
             else:
                 attach_key = form.cleaned_data[key]
-                attach_value = attach_key._name
+                attach_value = attach_key.name
 
+            # keep the original name unless a file with the same name
+            # already exists in the ticket folder (Django adds a random suffix)
+            attach_value = storage.get_available_name(attach_value)
             save_file(attach_key, path_allegati, attach_value)
             json_stored[settings.ATTACHMENTS_DICT_PREFIX][key] = attach_value
 
@@ -1087,8 +1093,9 @@ def delete_my_attachment(request, ticket_id, attachment):
     del ticket_details[settings.ATTACHMENTS_DICT_PREFIX][attachment]
     path_allegato = get_path(ticket.get_folder())
 
-    # Rimuove l'allegato dal disco
-    delete_file(file_name=nome_file, path=path_allegato)
+    # Rimuove l'allegato dal disco solo se non è usato da altri campi
+    if nome_file not in ticket_details[settings.ATTACHMENTS_DICT_PREFIX].values():
+        delete_file(file_name=nome_file, path=path_allegato)
 
     # log action
     logger.info(
