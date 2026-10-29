@@ -17,7 +17,7 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.mail import send_mail
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.html import strip_tags
@@ -244,7 +244,7 @@ def download_file(path, nome_file):
                 file_path
             )
             return response
-    return None
+    raise Http404
 
 
 def format_slugged_name(field_name, capitalize=True):
