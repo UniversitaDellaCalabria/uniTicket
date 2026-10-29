@@ -97,6 +97,13 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
             try:
                 if os.path.exists(source):
                     shutil.copytree(source, destination)
+                    # point the attachment to the copy in ticket task folder
+                    # (if copy fails, the category file reference is kept)
+                    ticket_task.attachment.name = "{}/{}".format(
+                        ticket_task.get_folder(),
+                        os.path.basename(task.attachment.name),
+                    )
+                    ticket_task.save(update_fields=["attachment"])
             except Exception:
                 logger.error(
                     "[{}] {} try to copy not existent folder {}"

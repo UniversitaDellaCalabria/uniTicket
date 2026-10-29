@@ -291,14 +291,32 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
         task = Task.objects.get(ticket=ticket, subject='Default task')
         self.assertTrue(os.path.exists(os.path.join(settings.MEDIA_ROOT,
                                                     task.get_folder())))
+        # the attachment points to the copy in ticket task folder
+        self.assertEqual(task.attachment.name,
+                         '{}/default_task.pdf'.format(task.get_folder()))
+        self.assertTrue(os.path.exists(task.attachment.path))
+
+    def test_default_task_attachment_after_category_task_delete(self):
+        category_task = self._create_category_task()
+        self._post_new_ticket(subject='With tasks')
+        ticket = Ticket.objects.get(subject='With tasks')
+        task = Task.objects.get(ticket=ticket, subject='Default task')
+        category_task.delete()
+        response = self.client.get(reverse('uni_ticket:download_task_attachment',
+                                           kwargs={'ticket_id': ticket.code,
+                                                   'task_id': task.code}))
+        self.assertEqual(response.status_code, 200)
 
     def test_create_ticket_with_default_tasks_copy_error(self):
-        self._create_category_task()
+        category_task = self._create_category_task()
         with patch('uni_ticket.views.user.shutil.copytree', side_effect=OSError), \
              self.assertLogs('uni_ticket.views.user', level='ERROR'):
             self._post_new_ticket(subject='With tasks error')
         ticket = Ticket.objects.get(subject='With tasks error')
-        self.assertTrue(Task.objects.filter(ticket=ticket).exists())
+        task = Task.objects.get(ticket=ticket, subject='Default task')
+        # the category file reference is kept
+        self.assertEqual(task.attachment.name,
+                         category_task.attachment.name)
 
     @patch('uni_ticket.views.user.download_ticket_pdf',
            return_value=MagicMock(content=b'%PDF'))
