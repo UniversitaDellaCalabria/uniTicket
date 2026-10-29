@@ -11,7 +11,7 @@ from unittest import mock
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.http import QueryDict
+from django.http import Http404, QueryDict
 from django.test import RequestFactory, TestCase, override_settings
 
 from organizational_area.models import OrganizationalStructureOfficeEmployee
@@ -221,7 +221,8 @@ class Test_FileUtils(TestCase):
         self.assertFalse(utils.delete_file("test.txt", path=path))
 
     def test_download_missing_file(self):
-        self.assertIsNone(utils.download_file(self.tmp, "missing.txt"))
+        with self.assertRaises(Http404):
+            utils.download_file(self.tmp, "missing.txt")
 
     def test_delete_directory(self):
         with override_settings(MEDIA_ROOT=self.tmp):
