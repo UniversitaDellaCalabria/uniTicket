@@ -13,6 +13,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from django_form_builder.enc import encrypt
+from django_form_builder.utils import set_as_dict
 from uni_ticket.jwts import encrypt_to_jwe
 from uni_ticket.models import (CompiledTicket,
                                Task,
@@ -30,6 +31,7 @@ from uni_ticket.settings import (TICKET_COMPILED_BY_USER_NAME,
                                  TICKET_SHARE_DRAFT_BUTTON_NAME,
                                  TICKET_SUBMIT_DRAFT_BUTTON_NAME)
 from uni_ticket.forms import BaseTicketCloseForm
+from uni_ticket.utils import get_path
 from uni_ticket.views.user import (TicketAddNew,
                                   TicketClose,
                                   TicketDetail,
@@ -70,6 +72,18 @@ class UserViewsMixin:
         for k, v in fields.items():
             setattr(self.category_1_str_1, k, v)
         self.category_1_str_1.save()
+
+    def _add_second_file_field(self):
+        TicketCategoryInputList.objects.create(
+            category_module=self.module_2,
+            name='file_field_2',
+            field_type='CustomFileField',
+            is_required=False,
+        )
+
+    def _attachment_exists(self, ticket, file_name):
+        return os.path.exists(os.path.join(get_path(ticket.get_folder()),
+                                           file_name))
 
     def _assert_custom_message(self, response, status_code=200):
         self.assertEqual(response.status_code, status_code)
@@ -273,14 +287,32 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
         task = Task.objects.get(ticket=ticket, subject='Default task')
         self.assertTrue(os.path.exists(os.path.join(settings.MEDIA_ROOT,
                                                     task.get_folder())))
+        # the attachment points to the copy in ticket task folder
+        self.assertEqual(task.attachment.name,
+                         '{}/default_task.pdf'.format(task.get_folder()))
+        self.assertTrue(os.path.exists(task.attachment.path))
+
+    def test_default_task_attachment_after_category_task_delete(self):
+        category_task = self._create_category_task()
+        self._post_new_ticket(subject='With tasks')
+        ticket = Ticket.objects.get(subject='With tasks')
+        task = Task.objects.get(ticket=ticket, subject='Default task')
+        category_task.delete()
+        response = self.client.get(reverse('uni_ticket:download_task_attachment',
+                                           kwargs={'ticket_id': ticket.code,
+                                                   'task_id': task.code}))
+        self.assertEqual(response.status_code, 200)
 
     def test_create_ticket_with_default_tasks_copy_error(self):
-        self._create_category_task()
+        category_task = self._create_category_task()
         with patch('uni_ticket.views.user.shutil.copytree', side_effect=OSError), \
              self.assertLogs('uni_ticket.views.user', level='ERROR'):
             self._post_new_ticket(subject='With tasks error')
         ticket = Ticket.objects.get(subject='With tasks error')
-        self.assertTrue(Task.objects.filter(ticket=ticket).exists())
+        task = Task.objects.get(ticket=ticket, subject='Default task')
+        # the category file reference is kept
+        self.assertEqual(task.attachment.name,
+                         category_task.attachment.name)
 
     @patch('uni_ticket.views.user.protocolla_ticket')
     def test_create_ticket_protocol_disabled(self, mock_protocol):
@@ -308,6 +340,18 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
         ticket = Ticket.objects.get(subject='Formset')
         allegati = ticket.get_allegati_dict()
         self.assertEqual(allegati.get('tabella-0-documento'), 'formset_file.pdf')
+
+    def test_create_ticket_attachments_with_same_name(self):
+        self._add_second_file_field()
+        extra = {'file_field_1': self.create_fake_file(name='same_name'),
+                 'file_field_2': self.create_fake_file(name='same_name')}
+        self._post_new_ticket(subject='Same name', extra=extra)
+        ticket = Ticket.objects.get(subject='Same name')
+        allegati = ticket.get_allegati_dict()
+        self.assertEqual(len(allegati), 2)
+        self.assertNotEqual(allegati['file_field_1'], allegati['file_field_2'])
+        for file_name in allegati.values():
+            self.assertTrue(self._attachment_exists(ticket, file_name))
 
 
 class Test_UserTicketViews(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironment):
@@ -354,6 +398,45 @@ class Test_UserTicketViews(UserViewsMixin, TempMediaRootMixin, BaseTicketEnviron
         self.assertEqual(self.ticket_2.subject, 'Ticket 2 edited')
         self.assertEqual(self.ticket_2.get_allegati_dict(),
                          {'file_field_1': 'new_file.pdf'})
+
+    def test_edit_ticket_add_attachment_with_existing_name(self):
+        self._add_second_file_field()
+        self.assertEqual(self.ticket.get_allegati_dict(),
+                         {'file_field_1': 'test.pdf'})
+        params = {'ticket_subject': 'Ticket 1 edited',
+                  'ticket_description': 'Ticket 1 edited',
+                  TICKET_CONDITIONS_FIELD_ID: 'on',
+                  'file_field_2': self.create_fake_file()}
+        response = self.client.post(self._ticket_url('ticket_edit'), params)
+        self.assertRedirects(response, self._ticket_url('ticket_edit'))
+        self.ticket.refresh_from_db()
+        allegati = self.ticket.get_allegati_dict()
+        self.assertEqual(allegati['file_field_1'], 'test.pdf')
+        self.assertNotEqual(allegati['file_field_2'], 'test.pdf')
+        for file_name in allegati.values():
+            self.assertTrue(self._attachment_exists(self.ticket, file_name))
+
+    def test_delete_attachment_shared_by_another_field(self):
+        # legacy tickets may have two fields pointing to the same file
+        json_dict = self.ticket.get_modulo_compilato()
+        json_dict[settings.ATTACHMENTS_DICT_PREFIX]['file_field_2'] = 'test.pdf'
+        set_as_dict(self.ticket, json_dict)
+        response = self.client.post(reverse('uni_ticket:delete_my_attachment',
+                                            kwargs={'ticket_id': self.ticket.code,
+                                                    'attachment': 'file_field_1'}))
+        self.assertRedirects(response, self._ticket_url('ticket_edit'))
+        self.ticket.refresh_from_db()
+        self.assertEqual(self.ticket.get_allegati_dict(),
+                         {'file_field_2': 'test.pdf'})
+        self.assertTrue(self._attachment_exists(self.ticket, 'test.pdf'))
+
+        # the file is removed when no other field uses it
+        self.client.post(reverse('uni_ticket:delete_my_attachment',
+                                 kwargs={'ticket_id': self.ticket.code,
+                                         'attachment': 'file_field_2'}))
+        self.ticket.refresh_from_db()
+        self.assertFalse(self.ticket.get_allegati_dict())
+        self.assertFalse(self._attachment_exists(self.ticket, 'test.pdf'))
 
     # delete
     def test_delete_ticket_by_compiler(self):
