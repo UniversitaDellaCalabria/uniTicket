@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load static %}
 {% load uni_ticket_tags %}
+{% load uni_ticket_bootstrap_italia_tags %}
 
 {% block menu_links %}
 {% include 'user/main_menu.html' %}
@@ -175,6 +176,7 @@
 
 <!-- Crea ticket -->
 {% if user_can_open_tickets %}
+{% uni_ticket_settings_value "PROTOCOL_ENABLED" as protocol_enabled %}
 <div class="d-grid gap-2">
     <button class="btn btn-success"
             type="button"
@@ -182,7 +184,7 @@
         <svg class="icon icon-xs icon-white">
             <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
         </svg>
-        {% if categoria.protocol_required %}
+        {% if categoria.protocol_required and protocol_enabled %}
             {% trans "Invia e protocolla la richiesta" %}
         {% else %}
             {% trans "Invia la richiesta" %}
@@ -198,7 +200,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
-                    {% if categoria.protocol_required %}
+                    {% if categoria.protocol_required and protocol_enabled %}
                         {% trans "Conferma e protocolla" %}
                     {% else %}
                         {% trans "Conferma" %}
@@ -215,7 +217,7 @@
             </div>
             <div class="modal-body">
                 <p>
-                    {% if categoria.protocol_required %}
+                    {% if categoria.protocol_required and protocol_enabled %}
                         {% trans "Desideri procedere, confermare i dati immessi e protocollare la tua richiesta?" %}
                     {% else %}
                         {% trans "Desideri procedere e confermare i dati immessi?" %}

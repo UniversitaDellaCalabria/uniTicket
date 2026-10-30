@@ -24,7 +24,6 @@ from django.utils.html import strip_tags
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
-
 from django_form_builder.utils import (
     get_as_dict,
     get_labeled_errors,
@@ -41,8 +40,8 @@ from uni_ticket.forms import *
 from uni_ticket.jwts import *
 from uni_ticket.models import *
 from uni_ticket.pdf_utils import response_as_pdf
-from uni_ticket.protocol_utils import ticket_protocol
 from uni_ticket.settings import (
+    PROTOCOL_ENABLED,
     NEW_MESSAGE_RECEIVED_EMPLOYEE_BODY,
     NEW_TICKET_CREATED,
     NEW_TICKET_CREATED_EMPLOYEE_BODY,
@@ -65,6 +64,12 @@ from uni_ticket.settings import (
     USER_TICKET_MESSAGE
 )
 from uni_ticket.utils import *
+
+if PROTOCOL_ENABLED:
+    import importlib
+    app_name = getattr(settings, "PROTOCOL_APP", None)
+    if app_name:
+        utils = importlib.import_module(f"{app_name}.utils")
 
 
 logger = logging.getLogger(__name__)
@@ -105,11 +110,14 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
 
 def protocolla_ticket(request, ticket, structure, category, user, log_user) -> None:
     try:
-        protocol_struct_configuration = OrganizationalStructureWSProtocollo.get_active_protocol_configuration(
-            structure
+        protocol_struct_configuration = get_object_or_404(
+            utils.get_credentials_class(),
+            content_type=ContentType.objects.get_for_model(structure),
+            object_id=str(structure.pk)
         )
-        protocol_configuration = (
-            category.get_active_protocol_configuration()
+        protocol_configuration = utils.get_active_protocol_configuration(
+            structure=structure, 
+            category=category
         )
 
         response = download_ticket_pdf(
@@ -119,32 +127,41 @@ def protocolla_ticket(request, ticket, structure, category, user, log_user) -> N
             template="ticket_detail_print_pdf_simplified.html",
         ).content
 
-        protocol_response = ticket_protocol(
-            structure_configuration=protocol_struct_configuration,
-            configuration=protocol_configuration,
+        protocol_response = utils.protocolla(
+            credential_ws_protocollo=protocol_struct_configuration,
+            configuration_ws_protocollo=protocol_configuration,
             user=user,
             subject=ticket.subject,
-            file_name=ticket.code,
-            response=response,
-            attachments_folder=ticket.get_folder(),
-            attachments_dict=ticket.get_allegati_dict(),
+            principal_file_name=ticket.code,
+            principal_file=response,
+            attachments_folder=get_path(ticket.get_folder()),
+            attachments=list(ticket.get_allegati_dict().values()),
         )
-        protocol_number = protocol_response["numero"]
+
+        protocol_number = protocol_response["num_prot"]
+        protocol_nrecord = protocol_response["nrecord"]
+        protocol_url = protocol_response["url"]
 
         # set protocol data in ticket
         ticket.protocol_number = protocol_number
+        ticket.protocol_nrecord = protocol_nrecord
+        ticket.protocol_url = protocol_url
         ticket.protocol_date = timezone.localtime()
-        ticket.save(update_fields=[
-                    "protocol_number", "protocol_date"])
-        messages.add_message(
-            request,
-            messages.SUCCESS,
-            _(
-                "Richiesta protocollata "
-                "correttamente: n. <b>{}/{}</b>"
-                ""
-            ).format(protocol_number, timezone.localtime().year),
+        ticket.save(
+            update_fields=[
+                "protocol_number", 
+                "protocol_nrecord",
+                "protocol_url",
+                "protocol_date"
+            ]
         )
+
+        if protocol_number:
+            msg = _("Richiesta protocollata correttamente: n. <b>{}/{}</b>").format(protocol_number, timezone.localtime().year)
+        elif protocol_nrecord:
+            msg = _("Iter di protocollazione avviato: n. <b>{}/{}</b>").format(protocol_nrecord, timezone.localtime().year)
+        messages.add_message(request, messages.SUCCESS, msg)
+
         if protocol_response.get("message"):
             messages.add_message(
                 request, 
@@ -165,14 +182,6 @@ def protocolla_ticket(request, ticket, structure, category, user, log_user) -> N
                 e
             )
         )
-
-        # TODO: @francesco what to do with the following comments/legacy code?
-        # delete attachments
-        # delete_directory(ticket.get_folder())
-        # delete assignment
-        # ticket_assignment.delete()
-        # delete ticket
-        # ticket.delete()
 
         messages.add_message(
             request,
@@ -791,7 +800,7 @@ class TicketAddNew(View):
                     structure = self.category.organizational_structure
                     
                     # Protocol
-                    if self.category.protocol_required:
+                    if self.category.protocol_required and PROTOCOL_ENABLED:
                         protocolla_ticket(
                             request=request, 
                             ticket=self.ticket, 
@@ -952,7 +961,7 @@ def ticket_edit(request, ticket_id):
     # from decorator @is_the_owner
     ticket = request.ticket
 
-    if ticket.protocol_number:
+    if ticket.protocol_number or ticket.protocol_nrecord:
         messages.add_message(
             request,
             messages.ERROR,
@@ -1059,8 +1068,8 @@ def ticket_edit(request, ticket_id):
     return render(request, template, base_context(d))
 
 
-@login_required
 @require_POST
+@login_required
 @is_the_owner
 @ticket_is_not_taken_and_not_closed
 def delete_my_attachment(request, ticket_id, attachment):
@@ -1118,8 +1127,8 @@ def delete_my_attachment(request, ticket_id, attachment):
     return redirect("uni_ticket:ticket_edit", ticket_id=ticket_id)
 
 
-@login_required
 @require_POST
+@login_required
 @is_the_owner
 @ticket_is_not_taken_and_not_closed
 def ticket_delete(request, ticket_id):
@@ -1136,7 +1145,7 @@ def ticket_delete(request, ticket_id):
     # from decorator @is_the_owner
     ticket = request.ticket
 
-    if ticket.protocol_number:
+    if ticket.protocol_number or ticket.protocol_nrecord:
         messages.add_message(
             request,
             messages.ERROR,
@@ -1584,8 +1593,8 @@ class TicketClose(View):
         return redirect("uni_ticket:ticket_detail", self.ticket.code)
     
 
-@login_required
 @require_POST
+@login_required
 @is_the_owner
 def ticket_reopen(request, ticket_id):
     """
@@ -1790,8 +1799,8 @@ def draft_ticket(request):
     return render(request, template, base_context(d))
 
 
-@login_required
 @require_POST
+@login_required
 # @is_the_owner
 # @ticket_is_not_taken_and_not_closed
 def ticket_submit_draft(request, ticket_id):
@@ -1923,7 +1932,7 @@ def ticket_submit_draft(request, ticket_id):
         compiled_message = ticket_message.format(ticket.subject)
         
         # Protocol
-        if category.protocol_required:
+        if category.protocol_required and PROTOCOL_ENABLED:
             protocolla_ticket(
                 request=request, 
                 ticket=ticket, 

@@ -69,23 +69,6 @@ class TicketCategoryModuleNestedInline(nested_admin.NestedTabularInline):
     readonly_fields = ("name", "ticket_category", "created", "is_active")
 
 
-# TicketCategoryWSProtocollo Form
-class TicketCategoryWSProtocolloModelForm(forms.ModelForm):
-    class Meta:
-        model = TicketCategoryWSProtocollo
-        fields = "__all__"
-
-
-class TicketCategoryWSProtocolloNestedInline(nested_admin.NestedTabularInline):
-    model = TicketCategoryWSProtocollo
-    form = TicketCategoryWSProtocolloModelForm
-    # sortable_field_name = "name"
-    extra = 0
-    classes = [
-        "collapse",
-    ]
-
-
 # Ticket Category Task Form
 class TicketCategoryTaskModelForm(forms.ModelForm):
     class Meta:

@@ -60,11 +60,11 @@ from .validators import *
 logger = logging.getLogger("__name__")
 
 
-_protocollo_titolario_list = settings.TITOLARIO_DICT
-_protocollo_uo_list = settings.UO_DICT
-if 'makemigrations' in sys.argv or 'migrate' in sys.argv:
-    _protocollo_titolario_list = [('', '-')]
-    _protocollo_uo_list = [('', '-')]
+# _protocollo_titolario_list = settings.TITOLARIO_DICT
+# _protocollo_uo_list = settings.UO_DICT
+# if 'makemigrations' in sys.argv or 'migrate' in sys.argv:
+#     _protocollo_titolario_list = [('', '-')]
+#     _protocollo_uo_list = [('', '-')]
 
 
 def _attachment_upload(instance, filename):
@@ -344,22 +344,6 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
             return (True,)
         return (False, _("Permesso negato a questa tipologia di utente"))
 
-    def get_active_protocol_configuration(self):
-        # if structure hasn't an active configuration returns False
-        oswap = OrganizationalStructureWSProtocollo
-        str_conf = oswap.get_active_protocol_configuration(
-            self.organizational_structure
-        )
-        if not str_conf:
-            return False
-
-        # returns category active configuration or False
-        tcwap = TicketCategoryWSProtocollo
-        conf = tcwap.objects.filter(
-            ticket_category=self, is_active=True).first()
-
-        return conf if conf else False
-
     def get_users_allowed_to_open_tickets(self):
         return get_user_model().objects.filter(
             Q(pk__in=self.allowed_users.values_list('pk', flat=True)) | 
@@ -523,6 +507,8 @@ class Ticket(SavedFormContent):
 
     # protocol
     protocol_number = models.CharField(blank=True, default="", max_length=32)
+    protocol_nrecord = models.CharField(blank=True, default="", max_length=255)
+    protocol_url = models.CharField(blank=True, default="", max_length=255)
     protocol_date = models.DateTimeField(
         help_text=_("Quando la richiesta è stata protocollata"),
         blank=True, null=True
@@ -1657,140 +1643,6 @@ class TicketCategoryTask(AbstractTask):
 
     def __str__(self):
         return "{} - {}".format(self.subject, self.category)
-
-
-# class AbstractWSProtocollo(models.Model):
-# """
-# """
-# name = models.CharField(max_length=255)
-# created = models.DateTimeField(auto_now_add=True)
-# modified = models.DateTimeField(auto_now=True)
-# is_active = models.BooleanField(default=False)
-
-# protocollo_aoo = models.CharField('AOO', max_length=12)
-# protocollo_agd = models.CharField('AGD', max_length=12)
-# protocollo_uo = models.CharField('UO', max_length=12,)
-# protocollo_email = models.EmailField('E-mail',
-# max_length=255,
-# blank=True, null=True)
-# protocollo_id_uo = models.CharField(_('ID Unità Organizzativa'),
-# max_length=12)
-# protocollo_cod_titolario = models.CharField(_('Codice titolario'),
-# max_length=12,
-# choices=settings.TITOLARIO_DICT)
-# protocollo_fascicolo_numero = models.CharField(_('Fascicolo numero'),
-# max_length=12)
-# default=settings.PROTOCOLLO_FASCICOLO_DEFAULT)
-# protocollo_fascicolo_anno = models.IntegerField(_('Fascicolo anno'))
-# protocollo_template = models.TextField('XML template',
-# help_text=_('Template XML che '
-# 'descrive il flusso'))
-
-# class Meta:
-# abstract = True
-
-
-class OrganizationalStructureWSProtocollo(models.Model):
-    organizational_structure = models.ForeignKey(
-        OrganizationalStructure, on_delete=models.CASCADE
-    )
-    name = models.CharField(_("Denominazione configurazione"), max_length=255)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=False)
-
-    protocollo_username = models.CharField("Username", max_length=255)
-    protocollo_password = models.CharField("Password", max_length=255)
-    protocollo_aoo = models.CharField("AOO", max_length=12)
-    protocollo_agd = models.CharField(
-        "AGD", max_length=12, default="", blank=True)
-
-    # protocollo_template = models.TextField('XML template',
-    # help_text=_('Template XML che '
-    # 'descrive il flusso'))
-
-    class Meta:
-        ordering = ["-created"]
-        verbose_name = _("Configurazione WS Protocollo Struttura")
-        verbose_name_plural = _("Configurazioni WS Protocollo Strutture")
-
-    def disable_other_configurations(self):
-        others = OrganizationalStructureWSProtocollo.objects.filter(
-            organizational_structure=self.organizational_structure
-        ).exclude(pk=self.pk)
-        for other in others:
-            other.is_active = False
-            other.save(update_fields=["is_active", "modified"])
-
-    @staticmethod
-    def get_active_protocol_configuration(organizational_structure):
-        oswsap = OrganizationalStructureWSProtocollo
-        conf = oswsap.objects.filter(
-            organizational_structure=organizational_structure, is_active=True
-        ).first()
-        return conf if conf else False
-
-    def __str__(self):
-        return "{} - {}".format(self.name, self.organizational_structure)
-
-
-class TicketCategoryWSProtocollo(TimeStampedModel):
-    ticket_category = models.ForeignKey(
-        TicketCategory, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=False)
-    protocollo_uo = models.CharField("UO", max_length=12, choices=_protocollo_uo_list)
-    protocollo_uo_rpa = models.CharField(
-        "RPA", max_length=255, default="", blank=True, help_text=_("Nominativo RPA")
-    )
-    protocollo_uo_rpa_username = models.CharField(
-        "RPA username",
-        max_length=255,
-        default="",
-        blank=True,
-        help_text=_("Username RPA sul sistema di protocollo"),
-    )
-    protocollo_uo_rpa_matricola = models.CharField(
-        "RPA matricola",
-        max_length=255,
-        default="",
-        blank=True,
-        help_text=_("Matricola RPA sul sistema di protocollo"),
-    )
-    protocollo_send_email = models.BooleanField(
-        _("Invia e-mail a RPA"), default=True)
-    protocollo_email = models.EmailField(
-        "E-mail",
-        max_length=255,
-        blank=True,
-        null=True,
-        help_text="default: settings.PROTOCOL_EMAIL_DEFAULT",
-    )
-    protocollo_cod_titolario = models.CharField(
-        _("Codice titolario"), max_length=12, choices=_protocollo_titolario_list
-    )
-    protocollo_fascicolo_numero = models.CharField(
-        _("Fascicolo numero"), max_length=255, default="", blank=True
-    )
-    protocollo_fascicolo_anno = models.IntegerField(
-        _("Fascicolo anno"), null=True, blank=True
-    )
-
-    class Meta:
-        ordering = ["-created"]
-        verbose_name = _("Configurazione WS Protocollo Categoria")
-        verbose_name_plural = _("Configurazioni WS Protocollo Categorie")
-
-    def disable_other_configurations(self):
-        others = TicketCategoryWSProtocollo.objects.filter(
-            ticket_category=self.ticket_category
-        ).exclude(pk=self.pk)
-        for other in others:
-            other.is_active = False
-            other.save(update_fields=["is_active", "modified"])
-
-    def __str__(self):
-        return "{} - {}".format(self.name, self.ticket_category)
 
 
 class OrganizationalStructureAlert(ExpirableModel, TimeStampedModel):

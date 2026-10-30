@@ -9,8 +9,7 @@ from uni_ticket.models import (OrganizationalStructureAlert,
                                TicketCategoryDefaultReply,
                                TicketCategoryInputList,
                                TicketCategoryModule,
-                               TicketCategoryTask,
-                               TicketCategoryWSProtocollo)
+                               TicketCategoryTask)
 
 from . base_category_office_env import BaseCategoryOfficeEnvironment
 from . test_10_manager_views import ManagerViewsMixin
@@ -137,26 +136,6 @@ class Test_ManagerInvalidForms(ManagerInvalidFormsMixin, BaseCategoryOfficeEnvir
         self._assert_invalid_post(self.cat_url('manager_category_task_edit',
                                                task_id=task.code),
                                   model_snapshot(TicketCategoryTask))
-
-    # protocol configurations
-    def test_category_protocol_configuration_new(self):
-        self._assert_invalid_post(
-            self.cat_url('manager_category_protocol_configuration_new'),
-            model_snapshot(TicketCategoryWSProtocollo)
-        )
-
-    def test_category_protocol_configuration_detail(self):
-        configuration = TicketCategoryWSProtocollo.objects.create(
-            ticket_category=self.category_1_str_1,
-            name='Conf',
-            protocollo_cod_titolario='1/1',
-            protocollo_fascicolo_numero='1',
-        )
-        self._assert_invalid_post(
-            self.cat_url('manager_category_protocol_configuration_detail',
-                         configuration_id=configuration.pk),
-            model_snapshot(TicketCategoryWSProtocollo)
-        )
 
     # default replies
     def test_category_default_reply_new(self):

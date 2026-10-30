@@ -1,8 +1,9 @@
 from django import forms
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.forms import ModelChoiceField, ModelForm
+from django.forms import inlineformset_factory, ModelChoiceField, ModelForm
 from django.forms.widgets import CheckboxSelectMultiple
 from django.utils.translation import gettext_lazy as _
 
@@ -637,111 +638,6 @@ class TicketOperatorOfficesForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields["office"].queryset = offices
         self.fields["office"].to_field_name = "slug"
-
-
-class OrganizationalStructureWSProtocolloModelForm(ModelForm):
-    """ """
-
-    class Meta:
-        model = OrganizationalStructureWSProtocollo
-        fields = [
-            "name",
-            "protocollo_username",
-            # 'protocollo_password',
-            "protocollo_aoo",
-            "protocollo_agd",
-        ]
-        # 'protocollo_uo',
-        # 'protocollo_email',]
-        # 'protocollo_id_uo',
-        # 'protocollo_cod_titolario',
-        # 'protocollo_fascicolo_numero',
-        # 'protocollo_fascicolo_anno',
-        # 'protocollo_template']
-        # help_texts = {'protocollo_email': _('Se vuoto: {}').format(settings.PROTOCOL_EMAIL_DEFAULT)}
-        # labels = {'protocollo_cod_titolario': _('Codice titolario')}
-        widgets = {
-            "name": forms.TextInput(attrs={"disabled": True}),
-            "protocollo_username": forms.TextInput(attrs={"disabled": True}),
-            "protocollo_password": forms.TextInput(attrs={"disabled": True}),
-            "protocollo_aoo": forms.TextInput(attrs={"disabled": True}),
-            "protocollo_agd": forms.TextInput(attrs={"disabled": True}),
-        }
-        # 'protocollo_uo': forms.TextInput(attrs={'disabled': True}),
-        # 'protocollo_email': forms.TextInput(attrs={'disabled': True}),}
-        # 'protocollo_template': forms.Textarea(attrs={'disabled': True})}
-
-    class Media:
-        js = ("js/textarea-autosize.js",)
-
-
-class CategoryWSProtocolloModelForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # required fields depending on used protocol system
-        fields_required = getattr(self.Meta, "fields_required", [])
-
-        if fields_required:
-            for key in self.fields:
-                if key in fields_required:
-                    self.fields[key].required = True
-
-    class Meta:
-        model = TicketCategoryWSProtocollo
-        fields = [
-            "name",
-            "protocollo_uo",
-            "protocollo_cod_titolario",
-            "protocollo_fascicolo_numero",
-        ]
-
-        # show condi
-
-        if settings.PROTOCOL_PACKAGE == "titulus_ws":
-            fields.extend(
-                [
-                    "protocollo_uo_rpa",
-                    "protocollo_uo_rpa_username",
-                    "protocollo_uo_rpa_matricola",
-                    "protocollo_send_email",
-                ]
-            )
-            fields_required = [
-                "protocollo_uo_rpa",
-                "protocollo_uo_rpa_username",
-            ]
-
-        elif settings.PROTOCOL_PACKAGE == "archipro_ws":
-            fields.extend(["protocollo_fascicolo_anno", "protocollo_email"])
-
-            fields_required = [
-                "protocollo_fascicolo_numero",
-                "protocollo_fascicolo_anno",
-            ]
-
-        labels = {
-            "name": _("Denominazione configurazione"),
-            "protocollo_uo": _("Unità Organizzativa"),
-            "protocollo_uo_rpa": _("RPA Unità Organizzativa"),
-            "protocollo_uo_rpa_username": _("Username RPA Unità Organizzativa"),
-            "protocollo_uo_rpa_matricola": _("Matricola RPA Unità Organizzativa"),
-            "protocollo_send_email": _("Invia e-mail a RPA"),
-            "protocollo_email": _("Email riferimento"),
-            "protocollo_cod_titolario": _("Titolario"),
-            "protocollo_fascicolo_numero": _("Numero Fascicolo"),
-            "protocollo_fascicolo_anno": _("Anno Fascicolo"),
-        }
-        help_texts = {
-            "name": _('A discrezione dell\'utente. Es: "Configurazione anno 2020"'),
-        }
-        widgets = {
-            "protocollo_cod_titolario": BootstrapItaliaSelectWidget,
-            "protocollo_uo": BootstrapItaliaSelectWidget,
-        }
-
-    class Media:
-        js = ("js/textarea-autosize.js",)
 
 
 class OrganizationalStructureAlertForm(ModelForm):

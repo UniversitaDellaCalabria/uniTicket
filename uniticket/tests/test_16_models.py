@@ -17,7 +17,6 @@ from uni_ticket.models import (
     CompiledTicket,
     Log,
     OrganizationalStructureAllowedUsersList,
-    OrganizationalStructureWSProtocollo,
     Task,
     Ticket,
     Ticket2Ticket,
@@ -28,7 +27,6 @@ from uni_ticket.models import (
     TicketCategoryInputList,
     TicketCategoryModule,
     TicketCategoryTask,
-    TicketCategoryWSProtocollo,
     TicketReply,
 )
 from uni_ticket.utils import compress_text_to_b64
@@ -240,25 +238,6 @@ class Test_TicketCategory(ORMFixtureMixin, TestCase):
         self.user.identificativo_dipendente = None
         self.user.identificativo_utente = "ABC"
         self.assertEqual(cat.allowed_to_user(self.user), (True,))
-
-    def test_get_active_protocol_configuration(self):
-        # no structure configuration
-        self.assertFalse(self.category.get_active_protocol_configuration())
-
-        OrganizationalStructureWSProtocollo.objects.create(
-            organizational_structure=self.structure,
-            name="conf", is_active=True,
-            protocollo_username="u", protocollo_password="p",
-            protocollo_aoo="aoo",
-        )
-        # structure configuration but no category configuration
-        self.assertFalse(self.category.get_active_protocol_configuration())
-
-        conf = TicketCategoryWSProtocollo.objects.create(
-            ticket_category=self.category, name="cat conf", is_active=True,
-            protocollo_uo="uo", protocollo_cod_titolario="tit",
-        )
-        self.assertEqual(self.category.get_active_protocol_configuration(), conf)
 
     def test_user_can_open_tickets(self):
         self.assertTrue(self.category.user_can_open_tickets(self.user))
@@ -701,32 +680,6 @@ class Test_OtherModels(ORMFixtureMixin, TestCase):
         )
         self.assertEqual(str(task), "T - {}".format(self.category))
         self.assertIn("ct", task.get_folder())
-
-    def test_protocol_configurations(self):
-        conf_1 = OrganizationalStructureWSProtocollo.objects.create(
-            organizational_structure=self.structure, name="c1", is_active=True,
-            protocollo_username="u", protocollo_password="p", protocollo_aoo="a",
-        )
-        conf_2 = OrganizationalStructureWSProtocollo.objects.create(
-            organizational_structure=self.structure, name="c2", is_active=True,
-            protocollo_username="u", protocollo_password="p", protocollo_aoo="a",
-        )
-        conf_1.refresh_from_db()
-        # signal disables the other configurations
-        self.assertFalse(conf_1.is_active)
-        self.assertEqual(str(conf_2), "c2 - {}".format(self.structure))
-
-        cat_conf_1 = TicketCategoryWSProtocollo.objects.create(
-            ticket_category=self.category, name="cc1", is_active=True,
-            protocollo_uo="uo", protocollo_cod_titolario="t",
-        )
-        TicketCategoryWSProtocollo.objects.create(
-            ticket_category=self.category, name="cc2", is_active=True,
-            protocollo_uo="uo", protocollo_cod_titolario="t",
-        )
-        cat_conf_1.refresh_from_db()
-        self.assertFalse(cat_conf_1.is_active)
-        self.assertEqual(str(cat_conf_1), "cc1 - {}".format(self.category))
 
     def test_compiled_ticket_clear(self):
         old = CompiledTicket.objects.create(content="{}")

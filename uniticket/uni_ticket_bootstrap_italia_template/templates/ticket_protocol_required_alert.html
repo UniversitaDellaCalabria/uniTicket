@@ -2,11 +2,13 @@
 {% load static %}
 
 
-{% if ticket.input_module.ticket_category.protocol_required and not ticket.protocol_number %}
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-  {% trans "<b>Attenzione</b>: questa tipologia di richiesta prevede il numero di protocollo obbligatorio, che risulta assente." %}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-        <svg class="icon"><use href="{% static 'svg/sprites.svg' %}#it-close"></use></svg>
-    </button>
-</div>
+{% if ticket.input_module.ticket_category.protocol_required %}
+  {% if not ticket.protocol_number or not ticket.protocol_nrecord  %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {% trans "<b>Attenzione</b>: questa tipologia di richiesta prevede il numero di protocollo obbligatorio, che risulta assente." %}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+          <svg class="icon"><use href="{% static 'svg/sprites.svg' %}#it-close"></use></svg>
+      </button>
+  </div>
+  {% endif %}
 {% endif %}

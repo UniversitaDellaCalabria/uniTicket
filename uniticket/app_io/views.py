@@ -168,8 +168,8 @@ def edit(request, structure_slug, category_slug, service_id):
     return render(request, template, base_context(d))
 
 
-@login_required
 @require_POST
+@login_required
 @is_manager
 def enable(request, structure_slug, category_slug, service_id):
     """
@@ -225,8 +225,8 @@ def enable(request, structure_slug, category_slug, service_id):
     )
 
 
-@login_required
 @require_POST
+@login_required
 @is_manager
 def disable(request, structure_slug, category_slug, service_id):
     """
@@ -281,8 +281,8 @@ def disable(request, structure_slug, category_slug, service_id):
     )
 
 
-@login_required
 @require_POST
+@login_required
 @is_manager
 def delete(request, structure_slug, category_slug, service_id):
     """

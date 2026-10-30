@@ -148,7 +148,7 @@ class TicketAPIView(TicketAPIBaseView):
             _res['compiled_form'] = self.legacy_view.form.cleaned_data
             _res['status'] = {
                 k: getattr(self.legacy_view.ticket, k)
-                for k in ("code", "created", "is_closed", "protocol_number", "protocol_date")
+                for k in ("code", "created", "is_closed", "protocol_number", "protocol_nrecord", "protocol_date")
             }
             if self.legacy_view.ticket.created_by:
                 _res['status']["created_by"] = self.legacy_view.ticket.created_by.__str__()

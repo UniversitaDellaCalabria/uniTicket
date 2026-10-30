@@ -20,6 +20,9 @@ UNITICKET_JWE_RSA_KEY_PATH = getattr(
 UNITICKET_JWE_ALG = getattr(settings, "UNITICKET_JWE_ALG", "RSA-OAEP")
 UNITICKET_JWE_ENC = getattr(settings, "UNITICKET_JWE_ENC", "A128CBC-HS256")
 
+# protocol integration (provided by an external app)
+PROTOCOL_ENABLED = getattr(settings, "PROTOCOL_ENABLED", False)
+
 # superusers view all
 SUPER_USER_VIEW_ALL = getattr(settings, "SUPER_USER_VIEW_ALL", True)
 

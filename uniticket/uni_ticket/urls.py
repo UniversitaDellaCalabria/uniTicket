@@ -288,17 +288,7 @@ default_reply_id = "{}/<int:default_reply_id>".format(default_reply)
 category_task = "{}/default-tasks".format(category_id)
 category_task_id = "{}/<str:task_id>".format(category_task)
 
-structure_protocol_configurations = "{}/settings/protocol-configurations".format(
-    base)
-structure_protocol_configuration = "{}/<int:configuration_id>".format(
-    structure_protocol_configurations
-)
 
-category_protocol_configurations = "{}/protocol-configurations".format(
-    category_id)
-category_protocol_configuration = "{}/<int:configuration_id>".format(
-    category_protocol_configurations
-)
 
 urlpatterns += [
     path(
@@ -672,43 +662,6 @@ urlpatterns += [
         manager.category_default_reply_detail,
         name="manager_category_default_reply_detail",
     ),
-    # Structure Protocol configurations
-    path(
-        "{}/".format(structure_protocol_configuration),
-        manager.structure_protocol_configuration_detail,
-        name="manager_structure_protocol_configuration_detail",
-    ),
-    # FRONTEND ACTIONS DISABLED
-    # path('{}/new/'.format(structure_protocol_configurations), manager.structure_protocol_configuration_new, name='manager_structure_protocol_configuration_new'),
-    # path('{}/delete/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_delete, name='manager_structure_protocol_configuration_delete'),
-    # path('{}/disable/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_disable, name='manager_structure_protocol_configuration_disable'),
-    # path('{}/enable/'.format(structure_protocol_configuration), manager.structure_protocol_configuration_enable, name='manager_structure_protocol_configuration_enable'),
-    # Category Protocol configurations
-    path(
-        "{}/".format(category_protocol_configuration),
-        manager.category_protocol_configuration_detail,
-        name="manager_category_protocol_configuration_detail",
-    ),
-    path(
-        "{}/new/".format(category_protocol_configurations),
-        manager.category_protocol_configuration_new,
-        name="manager_category_protocol_configuration_new",
-    ),
-    path(
-        "{}/delete/".format(category_protocol_configuration),
-        manager.category_protocol_configuration_delete,
-        name="manager_category_protocol_configuration_delete",
-    ),
-    path(
-        "{}/disable/".format(category_protocol_configuration),
-        manager.category_protocol_configuration_disable,
-        name="manager_category_protocol_configuration_disable",
-    ),
-    path(
-        "{}/enable/".format(category_protocol_configuration),
-        manager.category_protocol_configuration_enable,
-        name="manager_category_protocol_configuration_enable",
-    ),
     # Settings
     path(
         "{}/settings/".format(base),
@@ -719,11 +672,6 @@ urlpatterns += [
         "{}/settings/add-manager/".format(base),
         manager.manager_settings_add_manager,
         name="manager_user_settings_add_manager",
-    ),
-    path(
-        "{}/settings/check-protocol/".format(base),
-        manager.manager_settings_check_protocol,
-        name="manager_user_settings_check_protocol",
     ),
     path(
         "{}/settings/alerts/new/".format(base),

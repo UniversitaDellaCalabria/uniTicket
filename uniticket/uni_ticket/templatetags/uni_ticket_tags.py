@@ -183,6 +183,7 @@ def ticket_can_be_deleted(ticket, ticket_taken, ticket_assignments, user):
     if ticket.created_by != user: return False
     if ticket.compiled_by: return False
     if ticket.protocol_number: return False
+    if ticket.protocol_nrecord: return False
     if ticket.is_closed: return False
     if ticket_taken: return False
     if ticket_assignments.count() > 1: return False
@@ -192,6 +193,7 @@ def ticket_can_be_deleted(ticket, ticket_taken, ticket_assignments, user):
 def ticket_can_be_edited(ticket, ticket_taken, user):
     if ticket.created_by != user: return False
     if ticket.protocol_number: return False
+    if ticket.protocol_nrecord: return False
     if ticket.is_closed: return False
     if ticket_taken: return False
     return True

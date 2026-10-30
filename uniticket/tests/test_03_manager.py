@@ -339,92 +339,6 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         assert response.status_code == 200
         assert not office_deleted
 
-    def test_category_protocol_configuration(self):
-        # Create
-        name = 'Conf test 1'
-        protocollo_uo_rpa = 'test uo rpa'
-        protocollo_uo_rpa_username = '111'
-        protocollo_fascicolo_numero = 1
-        protocollo_fascicolo_anno = 2020
-
-        if settings.PROTOCOL_PACKAGE == 'titulus_ws':
-            params = {'name': name,
-                      'protocollo_uo': '0',
-                      'protocollo_uo_rpa': protocollo_uo_rpa,
-                      'protocollo_uo_rpa_username': protocollo_uo_rpa_username,
-                      'protocollo_cod_titolario': '1/1',
-                      'protocollo_fascicolo_numero': protocollo_fascicolo_numero}
-        elif settings.PROTOCOL_PACKAGE == 'archi_pro':
-            params = {'name': name,
-                      'protocollo_uo': '0',
-                      'protocollo_cod_titolario': '1/1',
-                      'protocollo_fascicolo_numero': protocollo_fascicolo_numero,
-                      'protocollo_fascicolo_anno': protocollo_fascicolo_anno}
-
-        response = self.client.post(reverse('uni_ticket:manager_category_protocol_configuration_new',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1_str_1.slug}),
-                                    params,
-                                    follow=True)
-
-        configuration = TicketCategoryWSProtocollo.objects.get(ticket_category=self.category_1_str_1, name=name)
-        assert response.status_code == 200
-        assert configuration
-        assert not configuration.is_active
-
-        # Edit
-        new_name = 'Conf test 1 - edited'
-
-        params['name'] = new_name
-
-        response = self.client.post(reverse('uni_ticket:manager_category_protocol_configuration_detail',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1_str_1.slug,
-                                                    'configuration_id': configuration.pk}),
-                                    params,
-                                    follow=True)
-
-        assert response.status_code == 200
-
-        configuration.refresh_from_db()
-        assert configuration.name == new_name
-        # assert condition.is_active
-
-        #Enable
-        response = self.client.get(reverse('uni_ticket:manager_category_protocol_configuration_enable',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1_str_1.slug,
-                                                    'configuration_id': configuration.pk}),
-                                    follow=True)
-
-        assert response.status_code == 200
-
-        configuration.refresh_from_db()
-        assert configuration.is_active
-
-        #Disable
-        response = self.client.get(reverse('uni_ticket:manager_category_protocol_configuration_disable',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1_str_1.slug,
-                                                    'configuration_id': configuration.pk}),
-                                    follow=True)
-
-        assert response.status_code == 200
-
-        configuration.refresh_from_db()
-        assert not configuration.is_active
-
-        #Delete
-        response = self.client.get(reverse('uni_ticket:manager_category_protocol_configuration_delete',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'category_slug': self.category_1_str_1.slug,
-                                                    'configuration_id': configuration.pk}),
-                                    follow=True)
-
-        assert response.status_code == 200
-        assert not TicketCategoryWSProtocollo.objects.filter(ticket_category=self.category_1_str_1,
-                                                           name=new_name)
-
     def test_category_default_reply(self):
         # Create
         text = 'Default reply'
@@ -571,13 +485,6 @@ class Test_ManagerFunctions(BaseCategoryOfficeEnvironment):
         assert response.status_code == 200
         assert not TicketCategoryTask.objects.filter(category=self.category_1_str_1,
                                                      subject=subject)
-
-    def test_structure_protocol_configuration_detail(self):
-        response = self.client.get(reverse('uni_ticket:manager_structure_protocol_configuration_detail',
-                                            kwargs={'structure_slug': self.structure_1.slug,
-                                                    'configuration_id': self.structure_1_protocol_conf.pk}),
-                                   follow=True)
-        assert response.status_code == 200
 
     def test_category_module_preview(self):
         params = {'ticket_subject': "subject",

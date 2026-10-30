@@ -19,7 +19,7 @@ from django.urls import clear_url_caches, reverse
 from django.utils import timezone
 
 from uni_ticket import admin_actions, jwts, pdf_utils
-from uni_ticket.admin import OrganizationalStructureWSProtocolloAdmin, TaskAdmin
+from uni_ticket.admin import TaskAdmin
 from uni_ticket.dynamic_form import serialize_form
 from uni_ticket.forms import (
     AssignTicketToOperatorForm,
@@ -27,13 +27,11 @@ from uni_ticket.forms import (
 )
 from uni_ticket.models import (
     Log,
-    OrganizationalStructureWSProtocollo,
     Task,
     Ticket,
     TicketAssignment,
     TicketCategory,
     TicketCategoryCondition,
-    TicketCategoryWSProtocollo,
     TicketReply,
 )
 from uni_ticket.statistics import uniTicketStats
@@ -245,8 +243,6 @@ class Test_UniTicketTags(ORMFixtureMixin, TestCase):
         self.assertFalse(tags.ticket_can_be_deleted(t, True, assignments, self.user))
         t.is_closed = True
         self.assertFalse(tags.ticket_can_be_deleted(t, False, assignments, self.user))
-        t.protocol_number = "1"
-        self.assertFalse(tags.ticket_can_be_deleted(t, False, assignments, self.user))
         t.compiled_by = self.operator
         self.assertFalse(tags.ticket_can_be_deleted(t, False, assignments, self.user))
 
@@ -263,8 +259,6 @@ class Test_UniTicketTags(ORMFixtureMixin, TestCase):
         self.assertFalse(tags.ticket_can_be_edited(t, False, self.operator))
         self.assertFalse(tags.ticket_can_be_edited(t, True, self.user))
         t.is_closed = True
-        self.assertFalse(tags.ticket_can_be_edited(t, False, self.user))
-        t.protocol_number = "1"
         self.assertFalse(tags.ticket_can_be_edited(t, False, self.user))
 
     def test_ticket_can_be_closed_from_user(self):
@@ -285,56 +279,6 @@ class Test_Signals(ORMFixtureMixin, TestCase):
     def setUpTestData(cls):
         cls.build_fixture()
 
-    def _structure_conf(self, is_active=True):
-        return OrganizationalStructureWSProtocollo.objects.create(
-            organizational_structure=self.structure, name="conf",
-            is_active=is_active, protocollo_username="u",
-            protocollo_password="p", protocollo_aoo="a",
-        )
-
-    def _category_conf(self, is_active=True):
-        return TicketCategoryWSProtocollo.objects.create(
-            ticket_category=self.category, name="cconf", is_active=is_active,
-            protocollo_uo="uo", protocollo_cod_titolario="t",
-        )
-
-    def _set_protocol_required(self):
-        TicketCategory.objects.filter(pk=self.category.pk).update(
-            protocol_required=True
-        )
-
-    def test_structure_conf_disabled(self):
-        conf = self._structure_conf()
-        self._set_protocol_required()
-        conf.is_active = False
-        conf.save()
-        self.category.refresh_from_db()
-        self.assertFalse(self.category.protocol_required)
-
-    def test_structure_conf_deleted(self):
-        conf = self._structure_conf()
-        self._set_protocol_required()
-        conf.delete()
-        self.category.refresh_from_db()
-        self.assertFalse(self.category.protocol_required)
-
-    def test_category_conf_disabled(self):
-        conf = self._category_conf()
-        self._set_protocol_required()
-        conf.ticket_category.refresh_from_db()
-        conf.is_active = False
-        conf.save()
-        self.category.refresh_from_db()
-        self.assertFalse(self.category.protocol_required)
-
-    def test_category_conf_deleted(self):
-        conf = self._category_conf()
-        self._set_protocol_required()
-        conf.ticket_category.refresh_from_db()
-        conf.delete()
-        self.category.refresh_from_db()
-        self.assertFalse(self.category.protocol_required)
-
     @mock.patch("uni_ticket.signals.delete_file")
     @mock.patch("uni_ticket.signals.delete_directory")
     def test_delete_attachments(self, mocked_dir, mocked_file):
@@ -353,23 +297,6 @@ class Test_Forms(ORMFixtureMixin, TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.build_fixture()
-
-    def test_category_protocol_form_archipro(self):
-        import uni_ticket.forms as uni_ticket_forms
-        try:
-            with override_settings(PROTOCOL_PACKAGE="archipro_ws"):
-                importlib.reload(uni_ticket_forms)
-            meta = uni_ticket_forms.CategoryWSProtocolloModelForm.Meta
-            self.assertIn("protocollo_fascicolo_anno", meta.fields)
-            self.assertIn("protocollo_fascicolo_anno", meta.fields_required)
-            form = uni_ticket_forms.CategoryWSProtocolloModelForm()
-            self.assertTrue(form.fields["protocollo_fascicolo_anno"].required)
-        finally:
-            importlib.reload(uni_ticket_forms)
-        self.assertIn(
-            "protocollo_uo_rpa",
-            uni_ticket_forms.CategoryWSProtocolloModelForm.Meta.fields,
-        )
 
     def _dependence_form(self, code, user, **kwargs):
         return TicketDependenceForm(
@@ -545,24 +472,6 @@ class Test_Admin(ORMFixtureMixin, TestCase):
     def test_task_admin(self):
         model_admin = TaskAdmin(Task, django_admin.site)
         self.assertFalse(model_admin.has_add_permission(RequestFactory().get("/")))
-
-    def test_protocol_admin_actions(self):
-        conf = OrganizationalStructureWSProtocollo.objects.create(
-            organizational_structure=self.structure, name="conf",
-            protocollo_username="u", protocollo_password="p", protocollo_aoo="a",
-        )
-        model_admin = OrganizationalStructureWSProtocolloAdmin(
-            OrganizationalStructureWSProtocollo, django_admin.site
-        )
-        queryset = OrganizationalStructureWSProtocollo.objects.all()
-        with mock.patch.object(model_admin, "message_user") as m:
-            model_admin.enable_selected(None, queryset)
-            conf.refresh_from_db()
-            self.assertTrue(conf.is_active)
-            model_admin.disable_selected(None, queryset)
-            conf.refresh_from_db()
-            self.assertFalse(conf.is_active)
-        self.assertEqual(m.call_count, 2)
 
     def test_download_report_csv(self):
         queryset = TicketCategory.objects.filter(pk=self.category.pk)

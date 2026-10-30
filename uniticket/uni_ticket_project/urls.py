@@ -25,6 +25,7 @@ from django.urls import path, include
 
 from djangosaml2 import views
 
+from uni_ticket.settings import PROTOCOL_ENABLED
 from uni_ticket.views import handlers
 
 
@@ -207,3 +208,7 @@ if "accounts" in settings.INSTALLED_APPS:
     # urlpatterns += [
         # path('__debug__/', include(debug_toolbar.urls)),
     # ]
+
+# protocollo informatico (esempio Titulus)
+if PROTOCOL_ENABLED and "uni_ticket_titulus" in settings.INSTALLED_APPS:
+    urlpatterns += (path("", include("uni_ticket_titulus.urls")),)

@@ -3,7 +3,7 @@ import json
 import logging
 import os
 from datetime import timedelta
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from django.conf import settings
 from django.core import mail
@@ -40,10 +40,6 @@ from . test_14_generic_decorators import TempMediaRootMixin
 
 
 logger = logging.getLogger('my_logger')
-
-# protocolled tickets require a minimum subject length
-PROTOCOL_SUBJECT = 'Ticket subject long enough to be protocolled'
-
 
 class UserViewsMixin:
 
@@ -286,30 +282,14 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
         ticket = Ticket.objects.get(subject='With tasks error')
         self.assertTrue(Task.objects.filter(ticket=ticket).exists())
 
-    @patch('uni_ticket.views.user.download_ticket_pdf',
-           return_value=MagicMock(content=b'%PDF'))
-    @patch('uni_ticket.views.user.ticket_protocol',
-           return_value={'numero': '42', 'message': 'protocol message'})
-    def test_create_ticket_with_protocol(self, mock_protocol, mock_pdf):
+    @patch('uni_ticket.views.user.protocolla_ticket')
+    def test_create_ticket_protocol_disabled(self, mock_protocol):
+        # protocol is an optional feature, disabled in the standard project
         self._update_category(protocol_required=True)
-        self._post_new_ticket(subject=PROTOCOL_SUBJECT)
-        ticket = Ticket.objects.get(subject=PROTOCOL_SUBJECT)
-        self.assertTrue(mock_protocol.called)
-        self.assertEqual(ticket.protocol_number, '42')
-        self.assertTrue(ticket.protocol_date)
-
-    @patch('uni_ticket.views.user.download_ticket_pdf',
-           return_value=MagicMock(content=b'%PDF'))
-    @patch('uni_ticket.views.user.ticket_protocol',
-           side_effect=Exception('protocol error'))
-    def test_create_ticket_with_protocol_error(self, mock_protocol, mock_pdf):
-        self._update_category(protocol_required=True)
-        response = self._post_new_ticket(subject=PROTOCOL_SUBJECT, follow=True)
-        ticket = Ticket.objects.get(subject=PROTOCOL_SUBJECT)
-        # ticket is created anyway
+        self._post_new_ticket(subject='Protocol disabled')
+        ticket = Ticket.objects.get(subject='Protocol disabled')
+        self.assertFalse(mock_protocol.called)
         self.assertFalse(ticket.protocol_number)
-        msgs = [str(m) for m in response.context['messages']]
-        self.assertTrue(any('protocol error' in m for m in msgs))
 
     def test_create_ticket_with_formset_attachment(self):
         TicketCategoryInputList.objects.create(
@@ -355,12 +335,6 @@ class Test_UserTicketViews(UserViewsMixin, TempMediaRootMixin, BaseTicketEnviron
         self.assertEqual(response.status_code, 200)
 
     # edit
-    def test_edit_protocolled_ticket(self):
-        self.ticket.protocol_number = '1'
-        self.ticket.save()
-        response = self.client.get(self._ticket_url('ticket_edit'))
-        self.assertRedirects(response, self._ticket_url('ticket_detail'))
-
     def test_edit_ticket_compiled_by_other_user(self):
         self._share_ticket_with_user_1()
         self.structure_1_default_office_operator_login()
@@ -382,13 +356,6 @@ class Test_UserTicketViews(UserViewsMixin, TempMediaRootMixin, BaseTicketEnviron
                          {'file_field_1': 'new_file.pdf'})
 
     # delete
-    def test_delete_protocolled_ticket(self):
-        self.ticket.protocol_number = '1'
-        self.ticket.save()
-        response = self.client.post(self._ticket_url('ticket_delete'))
-        self.assertRedirects(response, self._ticket_url('ticket_detail'))
-        self.assertTrue(Ticket.objects.filter(pk=self.ticket.pk).exists())
-
     def test_delete_ticket_by_compiler(self):
         self._share_ticket_with_user_1()
         self.structure_1_default_office_operator_login()
@@ -631,18 +598,17 @@ class Test_UserSubmitDraft(UserViewsMixin, TempMediaRootMixin, BaseTicketEnviron
         self.assertIn(self.user_1.email, recipients)
         self.assertIn(self.staff_1.email, recipients)
 
-    @patch('uni_ticket.views.user.download_ticket_pdf',
-           return_value=MagicMock(content=b'%PDF'))
-    @patch('uni_ticket.views.user.ticket_protocol',
-           return_value={'numero': '7'})
-    def test_submit_notification_draft_with_protocol(self, mock_protocol, mock_pdf):
+    @patch('uni_ticket.views.user.protocolla_ticket')
+    def test_submit_notification_draft_protocol_disabled(self, mock_protocol):
+        # protocol is an optional feature, disabled in the standard project
         self._update_category(is_notification=True, protocol_required=True)
         response = self._submit()
         self.assertRedirects(response, self.detail_url)
         self.draft.refresh_from_db()
         self.assertFalse(self.draft.draft)
         self.assertTrue(self.draft.is_closed)
-        self.assertEqual(self.draft.protocol_number, '7')
+        self.assertFalse(mock_protocol.called)
+        self.assertFalse(self.draft.protocol_number)
 
     def test_share_already_shared_draft(self):
         self.draft.compiled_by = self.user_1

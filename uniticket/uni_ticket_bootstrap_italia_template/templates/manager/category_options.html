@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load static %}
+{% load uni_ticket_tags %}
 
 
 <div class="accordion accordion-left-icon" id="accordionDiv1lft">
@@ -63,26 +64,10 @@
             </div>
         </div>
     </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header " id="heading4l">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4l" aria-expanded="false" aria-controls="collapse4l">
-                {% trans "Configurazioni protocollo informatico" %} ({{ category.ticketcategorywsprotocollo_set.all.count }})
-            </button>
-        </h2>
-        <div id="collapse4l" class="accordion-collapse collapse" data-bs-parent="#accordionDiv1lft" role="region" aria-labelledby="heading4l">
-            <div class="accordion-body">
-                {% include "manager/category_protocol_configurations.html" %}
-                <div class="d-grid gap-2">
-                    <a class="btn btn-outline-success mt-4"
-                       href="{% url 'uni_ticket:manager_category_protocol_configuration_new' structure_slug=structure.slug category_slug=category.slug %}">
-                        <svg class="icon icon-xs icon-success">
-                            <use xlink:href="/static/svg/sprites.svg#it-plus-circle"></use>
-                        </svg> {% trans "Aggiungi nuova configurazione" %}
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% uni_ticket_settings_value "PROTOCOL_ENABLED" as protocol_enabled %}
+    {% if protocol_enabled %}
+    {% include "protocol/category_options.html" %}
+    {% endif %}
     <div class="accordion-item">
         <h2 class="accordion-header " id="heading5l">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5l" aria-expanded="false" aria-controls="collapse5l">

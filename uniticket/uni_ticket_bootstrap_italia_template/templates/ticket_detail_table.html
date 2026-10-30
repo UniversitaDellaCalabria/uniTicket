@@ -57,7 +57,9 @@
                         <br><b>{{ user_attribute_label }}</b>: {{user_user_attribute}}
                     {% endif %}
                     {% if ticket.protocol_number %}
-                        <br><b>{% trans "Protocollo" %}</b>: {{ticket.protocol_number}} {% trans " / " %} {{ticket.protocol_date}}
+                        <br><b>{% trans "Protocollo" %}</b>: {{ticket.protocol_number}}
+                    {% elif ticket.protocol_nrecord %}
+                        <br><b class="text-warning">{% trans "Iter protocollo in corso" %}</b>: {{ticket.protocol_nrecord}}
                     {% endif %}
                 {% else %}
                     <b>{% trans 'Utente anonimo' %}</b> - {{ ticket.created }}

@@ -68,4 +68,4 @@ jobs:
     - name: Bandit Security Scan
       working-directory: uniticket/
       run: |
-        bandit -r -x docs,tests uni_ticket/*,organizational_area/*,uni_ticket_bootstrap_italia_template/*,chat/*,archipro_ws/*
+        bandit -r -x docs,tests uni_ticket/*,organizational_area/*,uni_ticket_bootstrap_italia_template/*,chat/*

@@ -3,7 +3,6 @@ import shutil
 import tempfile
 
 from datetime import timedelta
-from unittest import mock
 
 from django.test import override_settings
 from django.urls import reverse
@@ -19,8 +18,7 @@ from uni_ticket.models import (OrganizationalStructureAlert,
                                TicketCategoryDefaultReply,
                                TicketCategoryInputList,
                                TicketCategoryModule,
-                               TicketCategoryTask,
-                               TicketCategoryWSProtocollo)
+                               TicketCategoryTask)
 
 from . base_category_office_env import BaseCategoryOfficeEnvironment
 from . base_ticket_env import BaseTicketEnvironment
@@ -312,43 +310,10 @@ class Test_ManagerCategoryViews(ManagerViewsMixin, BaseCategoryOfficeEnvironment
         self.assertMessage(response, 'Esiste già una tipologia di richiesta')
         self.assertEqual(TicketCategory.objects.count(), count)
 
-    def test_category_add_new_protocol_required(self):
-        response = self.client.post(self.url('manager_category_add_new'),
-                                    {'name': 'Protocol category',
-                                     'max_requests_per_user': 0,
-                                     'protocol_required': True},
-                                    follow=True)
-        self.assertMessage(response, 'Prima di attivare il protocollo')
-        category = TicketCategory.objects.get(name='Protocol category')
-        self.assertFalse(category.protocol_required)
-
     def test_category_edit_get(self):
         response = self.client.get(self.cat_url('manager_category_edit'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['category'], self.category_1_str_1)
-
-    def test_category_edit_protocol_with_anonymous(self):
-        response = self.client.post(self.cat_url('manager_category_edit'),
-                                    {'name': 'edited',
-                                     'max_requests_per_user': 0,
-                                     'protocol_required': True,
-                                     'allow_anonymous': True},
-                                    follow=True)
-        self.assertMessage(response, 'utenti anonimi')
-        self.category_1_str_1.refresh_from_db()
-        self.assertEqual(self.category_1_str_1.name, 'Category 1 Structure 1')
-        self.assertFalse(self.category_1_str_1.allow_anonymous)
-
-    def test_category_edit_protocol_without_configuration(self):
-        response = self.client.post(self.cat_url('manager_category_edit'),
-                                    {'name': 'edited',
-                                     'max_requests_per_user': 0,
-                                     'protocol_required': True},
-                                    follow=True)
-        self.assertMessage(response, 'Il protocollo non può essere attivato')
-        self.category_1_str_1.refresh_from_db()
-        self.assertEqual(self.category_1_str_1.name, 'edited')
-        self.assertFalse(self.category_1_str_1.protocol_required)
 
     def test_category_disable_already_disabled(self):
         self.disable_category(self.structure_1.slug, self.category_1_str_1)
@@ -537,59 +502,6 @@ class Test_ManagerCategoryViews(ManagerViewsMixin, BaseCategoryOfficeEnvironment
                                                 default_reply_id=reply.pk))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['default_reply'], reply)
-
-    def test_protocol_configuration_views(self):
-        response = self.client.get(
-            self.cat_url('manager_category_protocol_configuration_new')
-        )
-        self.assertEqual(response.status_code, 200)
-
-        configuration = TicketCategoryWSProtocollo.objects.create(
-            ticket_category=self.category_1_str_1,
-            name='Conf',
-            protocollo_cod_titolario='1/1',
-            protocollo_fascicolo_numero='1',
-        )
-        self.assertFalse(configuration.is_active)
-
-        disable_url = self.cat_url('manager_category_protocol_configuration_disable',
-                                   configuration_id=configuration.pk)
-        enable_url = self.cat_url('manager_category_protocol_configuration_enable',
-                                  configuration_id=configuration.pk)
-
-        response = self.client.get(disable_url, follow=True)
-        self.assertMessage(response, 'già disattivata')
-
-        response = self.client.get(enable_url, follow=True)
-        self.assertMessage(response, 'attivata con successo')
-        configuration.refresh_from_db()
-        self.assertTrue(configuration.is_active)
-
-        response = self.client.get(enable_url, follow=True)
-        self.assertMessage(response, 'già attivata')
-
-        response = self.client.get(
-            self.cat_url('manager_category_protocol_configuration_detail',
-                         configuration_id=configuration.pk)
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['configuration'], configuration)
-
-    def test_check_protocol_success(self):
-        with mock.patch('uni_ticket.views.manager.ticket_protocol') as protocol:
-            response = self.client.get(self.url('manager_user_settings_check_protocol'),
-                                       follow=True)
-        protocol.assert_called_once()
-        self.assertTrue(protocol.call_args.kwargs['test'])
-        self.assertMessage(response, 'ha risposto correttamente')
-
-    def test_check_protocol_error(self):
-        with mock.patch('uni_ticket.views.manager.ticket_protocol',
-                        side_effect=Exception('protocol down')):
-            response = self.client.get(self.url('manager_user_settings_check_protocol'),
-                                       follow=True)
-        self.assertMessage(response, 'protocol down')
-
 
 class Test_ManagerTaskViews(ManagerViewsMixin, BaseCategoryOfficeEnvironment):
 
