@@ -38,6 +38,7 @@ from uni_ticket.views.user import (TicketAddNew,
                                   chat_new_preload)
 
 from . base_ticket_env import BaseTicketEnvironment
+from . test_10_manager_views import get_messages_list
 from . test_14_generic_decorators import TempMediaRootMixin
 
 
@@ -322,6 +323,71 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
         ticket = Ticket.objects.get(subject='Protocol disabled')
         self.assertFalse(mock_protocol.called)
         self.assertFalse(ticket.protocol_number)
+
+    def _post_protocol_ticket(self, subject, protocol_response=None,
+                              protocol_error=None):
+        # protocol enabled with a mocked external app
+        self._update_category(protocol_required=True)
+        with patch('uni_ticket.views.user.PROTOCOL_ENABLED', True), \
+             patch('uni_ticket.views.user.protocol_utils', create=True) as mock_utils, \
+             patch('uni_ticket.views.user.download_ticket_pdf',
+                   return_value=HttpResponse(b'%PDF')):
+            mock_utils.protocolla.return_value = protocol_response
+            mock_utils.protocolla.side_effect = protocol_error
+            response = self._post_new_ticket(subject=subject, follow=True)
+        return response, mock_utils
+
+    def test_create_ticket_protocol_enabled(self):
+        response, mock_utils = self._post_protocol_ticket(
+            subject='Protocol enabled',
+            protocol_response={'num_prot': '123',
+                               'nrecord': '000123-UNICAL',
+                               'url': 'https://protocol.example.org/123',
+                               'message': 'Protocol WS message'}
+        )
+        ticket = Ticket.objects.get(subject='Protocol enabled')
+        kwargs = mock_utils.protocolla.call_args.kwargs
+        self.assertEqual(kwargs['subject'], ticket.subject)
+        self.assertEqual(kwargs['principal_file_name'], ticket.code)
+        self.assertEqual(kwargs['principal_file'], b'%PDF')
+        mock_utils.get_active_protocol_configuration.assert_called_once_with(
+            structure=self.structure_1, category=self.category_1_str_1
+        )
+        self.assertEqual(ticket.protocol_number, '123')
+        self.assertEqual(ticket.protocol_nrecord, '000123-UNICAL')
+        self.assertEqual(ticket.protocol_url, 'https://protocol.example.org/123')
+        self.assertTrue(ticket.protocol_date)
+        msgs = get_messages_list(response)
+        self.assertTrue(any('Richiesta protocollata correttamente' in m for m in msgs))
+        self.assertIn('Protocol WS message', msgs)
+
+    def test_create_ticket_protocol_iter_started(self):
+        # protocol WS returns only the record number (no protocol number yet)
+        response, mock_utils = self._post_protocol_ticket(
+            subject='Protocol iter',
+            protocol_response={'num_prot': '',
+                               'nrecord': '000123-UNICAL',
+                               'url': ''}
+        )
+        ticket = Ticket.objects.get(subject='Protocol iter')
+        self.assertFalse(ticket.protocol_number)
+        self.assertEqual(ticket.protocol_nrecord, '000123-UNICAL')
+        msgs = get_messages_list(response)
+        self.assertTrue(any('Iter di protocollazione avviato' in m for m in msgs))
+
+    def test_create_ticket_protocol_error(self):
+        with self.assertLogs('uni_ticket.views.user', level='ERROR'):
+            response, mock_utils = self._post_protocol_ticket(
+                subject='Protocol error',
+                protocol_error=Exception('Protocol WS unavailable')
+            )
+        # ticket is created anyway
+        ticket = Ticket.objects.get(subject='Protocol error')
+        self.assertFalse(ticket.protocol_number)
+        self.assertFalse(ticket.protocol_date)
+        msgs = get_messages_list(response)
+        self.assertTrue(any('Protocol WS unavailable' in m for m in msgs))
+        self.assertTrue(any('comunque creata' in m for m in msgs))
 
     def test_create_ticket_with_formset_attachment(self):
         TicketCategoryInputList.objects.create(
@@ -692,6 +758,20 @@ class Test_UserSubmitDraft(UserViewsMixin, TempMediaRootMixin, BaseTicketEnviron
         self.assertTrue(self.draft.is_closed)
         self.assertFalse(mock_protocol.called)
         self.assertFalse(self.draft.protocol_number)
+
+    @patch('uni_ticket.views.user.PROTOCOL_ENABLED', True)
+    @patch('uni_ticket.views.user.protocolla_ticket')
+    def test_submit_draft_protocol_enabled(self, mock_protocol):
+        self._update_category(protocol_required=True)
+        response = self._submit()
+        self.assertRedirects(response, self.detail_url)
+        self.draft.refresh_from_db()
+        self.assertFalse(self.draft.draft)
+        mock_protocol.assert_called_once()
+        kwargs = mock_protocol.call_args.kwargs
+        self.assertEqual(kwargs['ticket'], self.draft)
+        self.assertEqual(kwargs['category'], self.category_1_str_1)
+        self.assertEqual(kwargs['structure'], self.structure_1)
 
     def test_share_already_shared_draft(self):
         self.draft.compiled_by = self.user_1

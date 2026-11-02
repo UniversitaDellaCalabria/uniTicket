@@ -210,5 +210,6 @@ if "accounts" in settings.INSTALLED_APPS:
     # ]
 
 # protocollo informatico (esempio Titulus)
-if PROTOCOL_ENABLED and "uni_ticket_titulus" in settings.INSTALLED_APPS:
-    urlpatterns += (path("", include("uni_ticket_titulus.urls")),)
+if PROTOCOL_ENABLED:
+    urlpatterns += (path("", include(f"{settings.PROTOCOL_APP}.urls")),)
+    

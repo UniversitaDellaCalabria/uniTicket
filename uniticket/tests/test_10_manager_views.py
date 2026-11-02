@@ -3,6 +3,7 @@ import shutil
 import tempfile
 
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.test import override_settings
 from django.urls import reverse
@@ -315,6 +316,78 @@ class Test_ManagerCategoryViews(ManagerViewsMixin, BaseCategoryOfficeEnvironment
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['category'], self.category_1_str_1)
 
+    def _edit_category_protocol(self, **params):
+        data = {'name': self.category_1_str_1.name,
+                'max_requests_per_user': 0,
+                'protocol_required': True}
+        data.update(params)
+        return self.client.post(self.cat_url('manager_category_edit'),
+                                data, follow=True)
+
+    def test_category_add_new_protocol_required(self):
+        # protocol needs a configuration: never active on new categories
+        response = self.client.post(self.url('manager_category_add_new'),
+                                    {'name': 'Protocol category',
+                                     'max_requests_per_user': 0,
+                                     'protocol_required': True},
+                                    follow=True)
+        self.assertMessage(response, 'Prima di attivare il protocollo')
+        category = TicketCategory.objects.get(name='Protocol category')
+        self.assertFalse(category.protocol_required)
+
+    @patch('uni_ticket.views.manager.PROTOCOL_ENABLED', True)
+    @patch('uni_ticket.views.manager.protocol_utils', create=True)
+    def test_category_edit_protocol_anonymous(self, mock_utils):
+        response = self._edit_category_protocol(allow_anonymous=True)
+        self.assertMessage(response, 'accessibile a utenti anonimi')
+        self.assertFalse(mock_utils.get_active_protocol_configuration.called)
+        self.category_1_str_1.refresh_from_db()
+        self.assertFalse(self.category_1_str_1.protocol_required)
+        self.assertFalse(self.category_1_str_1.allow_anonymous)
+
+    @patch('uni_ticket.views.manager.PROTOCOL_ENABLED', False)
+    def test_category_edit_protocol_disabled(self):
+        # protocol app not active: protocol_required is forced to False
+        response = self._edit_category_protocol()
+        self.assertMessage(response, 'Il protocollo non può essere attivato')
+        self.category_1_str_1.refresh_from_db()
+        self.assertFalse(self.category_1_str_1.protocol_required)
+
+    @patch('uni_ticket.views.manager.PROTOCOL_ENABLED', True)
+    @patch('uni_ticket.views.manager.protocol_utils', create=True)
+    def test_category_edit_protocol_without_configuration(self, mock_utils):
+        mock_utils.get_active_protocol_configuration.return_value = None
+        response = self._edit_category_protocol()
+        self.assertMessage(response, 'Il protocollo non può essere attivato')
+        mock_utils.get_active_protocol_configuration.assert_called_once_with(
+            structure=self.structure_1, category=self.category_1_str_1
+        )
+        self.category_1_str_1.refresh_from_db()
+        self.assertFalse(self.category_1_str_1.protocol_required)
+
+    @patch('uni_ticket.views.manager.PROTOCOL_ENABLED', True)
+    @patch('uni_ticket.views.manager.protocol_utils', create=True)
+    def test_category_edit_protocol_with_configuration(self, mock_utils):
+        mock_utils.get_active_protocol_configuration.return_value = 'configuration'
+        response = self._edit_category_protocol()
+        self.assertMessage(response, 'Categoria modificata con successo')
+        self.category_1_str_1.refresh_from_db()
+        self.assertTrue(self.category_1_str_1.protocol_required)
+
+    def test_category_detail_protocol_disabled(self):
+        response = self.client.get(self.cat_url('manager_category_detail'))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('protocol_configurations', response.context)
+
+    @patch('uni_ticket.views.manager.PROTOCOL_ENABLED', True)
+    @patch('uni_ticket.views.manager.protocol_utils', create=True)
+    def test_category_detail_protocol_enabled(self, mock_utils):
+        configurations = mock_utils.get_configuration_class.return_value.objects.all.return_value
+        response = self.client.get(self.cat_url('manager_category_detail'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['protocol_configurations'],
+                         configurations)
+
     def test_category_disable_already_disabled(self):
         self.disable_category(self.structure_1.slug, self.category_1_str_1)
         response = self.client.get(self.cat_url('manager_disable_category'),
@@ -593,6 +666,23 @@ class Test_ManagerSettingsViews(ManagerViewsMixin, BaseCategoryOfficeEnvironment
     def setUp(self):
         super().setUp()
         self.structure_1_manager_login()
+
+    def test_user_settings_protocol_disabled(self):
+        response = self.client.get(self.url('manager_user_settings'))
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('protocol_configurations', response.context)
+
+    @patch('uni_ticket.views.manager.PROTOCOL_ENABLED', True)
+    @patch('uni_ticket.views.manager.protocol_utils', create=True)
+    def test_user_settings_protocol_enabled(self, mock_utils):
+        credentials = mock_utils.get_credentials_class.return_value.objects.filter
+        response = self.client.get(self.url('manager_user_settings'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['protocol_configurations'],
+                         credentials.return_value)
+        # credentials are filtered by structure
+        self.assertEqual(credentials.call_args.kwargs['object_id'],
+                         str(self.structure_1.pk))
 
     def test_add_manager(self):
         url = self.url('manager_user_settings_add_manager')

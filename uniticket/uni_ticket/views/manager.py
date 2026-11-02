@@ -31,7 +31,7 @@ if PROTOCOL_ENABLED:
     import importlib
     app_name = getattr(settings, "PROTOCOL_APP", None)
     if app_name:
-        utils = importlib.import_module(f"{app_name}.utils")
+        protocol_utils = importlib.import_module(f"{app_name}.utils")
 
 
 logger = logging.getLogger(__name__)
@@ -908,7 +908,7 @@ def category_detail(request, structure_slug, category_slug):
         "title": title,
     }
     if PROTOCOL_ENABLED:
-        d["protocol_configurations"] = utils.get_configuration_class().objects.all()
+        d["protocol_configurations"] = protocol_utils.get_configuration_class().objects.all()
     return render(request, template, base_context(d))
 
 
@@ -1412,7 +1412,7 @@ def category_edit(request, structure_slug, category_slug):
                         category_slug=category.slug,
                     )
                 # no active category protocol configuration
-                if not utils.get_active_protocol_configuration(
+                if not PROTOCOL_ENABLED or not protocol_utils.get_active_protocol_configuration(
                     structure=structure,
                     category=category
                 ):
@@ -2709,7 +2709,24 @@ def category_input_module_clone_preload(
     selected_structure_slug=None,
     selected_category_slug=None,
 ):
-    """ """
+    """
+    Choose the structure and the category where to clone
+    the input module
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type module_id: Integer
+    :type selected_structure_slug: String
+    :type selected_category_slug: String
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param module_id: input module id
+    :param selected_structure_slug: destination structure slug
+    :param selected_category_slug: destination category slug
+
+    :return: render
+    """
     # from @is_manager
     structure = request.structure
     
@@ -2776,7 +2793,23 @@ def category_input_module_clone(
     selected_structure_slug,
     selected_category_slug
 ):
-    """ """
+    """
+    Clones the input module (with its fields) in the selected category
+
+    :type structure_slug: String
+    :type category_slug: String
+    :type module_id: Integer
+    :type selected_structure_slug: String
+    :type selected_category_slug: String
+
+    :param structure_slug: structure slug
+    :param category_slug: category slug
+    :param module_id: input module id
+    :param selected_structure_slug: destination structure slug
+    :param selected_category_slug: destination category slug
+
+    :return: redirect
+    """
     # from @is_manager
     structure = request.structure
     
@@ -3286,7 +3319,7 @@ def manager_settings(request, structure_slug):
     }
 
     if PROTOCOL_ENABLED:
-        protocol_configurations = utils.get_credentials_class().objects.filter(
+        protocol_configurations = protocol_utils.get_credentials_class().objects.filter(
             content_type=ContentType.objects.get_for_model(structure),
             object_id=str(structure.pk)
         )

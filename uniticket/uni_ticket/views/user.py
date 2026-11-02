@@ -70,7 +70,7 @@ if PROTOCOL_ENABLED:
     import importlib
     app_name = getattr(settings, "PROTOCOL_APP", None)
     if app_name:
-        utils = importlib.import_module(f"{app_name}.utils")
+        protocol_utils = importlib.import_module(f"{app_name}.utils")
 
 
 logger = logging.getLogger(__name__)
@@ -117,13 +117,37 @@ def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
 
 
 def protocolla_ticket(request, ticket, structure, category, user, log_user) -> None:
+    """
+    Registers the ticket in the protocol system provided by the
+    external app configured in settings.PROTOCOL_APP.
+    The ticket PDF and its attachments are sent to the protocol WS
+    and the protocol data are saved in the ticket.
+    If the operation fails, the ticket is kept and the user is
+    notified with an error message
+
+    :type request: HttpRequest
+    :type ticket: Ticket
+    :type structure: OrganizationalStructure
+    :type category: TicketCategory
+    :type user: User
+    :type log_user: String
+
+    :param request: the request
+    :param ticket: the ticket to register
+    :param structure: ticket structure
+    :param category: ticket category
+    :param user: user that owns the ticket
+    :param log_user: user identifier for logs
+
+    :return: None
+    """
     try:
         protocol_struct_configuration = get_object_or_404(
-            utils.get_credentials_class(),
+            protocol_utils.get_credentials_class(),
             content_type=ContentType.objects.get_for_model(structure),
             object_id=str(structure.pk)
         )
-        protocol_configuration = utils.get_active_protocol_configuration(
+        protocol_configuration = protocol_utils.get_active_protocol_configuration(
             structure=structure, 
             category=category
         )
@@ -135,7 +159,7 @@ def protocolla_ticket(request, ticket, structure, category, user, log_user) -> N
             template="ticket_detail_print_pdf_simplified.html",
         ).content
 
-        protocol_response = utils.protocolla(
+        protocol_response = protocol_utils.protocolla(
             credential_ws_protocollo=protocol_struct_configuration,
             configuration_ws_protocollo=protocol_configuration,
             user=user,
@@ -166,9 +190,10 @@ def protocolla_ticket(request, ticket, structure, category, user, log_user) -> N
 
         if protocol_number:
             msg = _("Richiesta protocollata correttamente: n. <b>{}/{}</b>").format(protocol_number, timezone.localtime().year)
+            messages.add_message(request, messages.SUCCESS, msg)
         elif protocol_nrecord:
             msg = _("Iter di protocollazione avviato: n. <b>{}/{}</b>").format(protocol_nrecord, timezone.localtime().year)
-        messages.add_message(request, messages.SUCCESS, msg)
+            messages.add_message(request, messages.SUCCESS, msg)
 
         if protocol_response.get("message"):
             messages.add_message(
@@ -232,6 +257,23 @@ def _close_notification_ticket(ticket, user):  # operator, ticket_assignment):
 
 
 def _save_new_ticket_attachments(ticket, json_stored, form, request_files):
+    """
+    Saves uploaded files in ticket folder and updates
+    the attachments dict in ticket stored data.
+    If a file with the same name already exists, a free name is used
+
+    :type ticket: Ticket
+    :type json_stored: dict
+    :type form: Form
+    :type request_files: MultiValueDict
+
+    :param ticket: the new ticket
+    :param json_stored: ticket stored data
+    :param form: ticket form
+    :param request_files: uploaded files
+
+    :return: None
+    """
     if request_files:
         if not json_stored.get(settings.ATTACHMENTS_DICT_PREFIX):
             json_stored[settings.ATTACHMENTS_DICT_PREFIX] = {}
@@ -274,6 +316,16 @@ def _save_new_ticket_attachments(ticket, json_stored, form, request_files):
 
 
 def get_structures_by_request(request, structure_slug):
+    """
+    Returns a dict with structure (by pk or by slug), its active
+    alerts and its categories available for the current user
+
+    :type structure_slug: String
+
+    :param structure_slug: structure pk or slug
+
+    :return: dict
+    """
     try:
         structure = get_object_or_404(
             OrganizationalStructure, pk=structure_slug, is_active=True
@@ -372,6 +424,18 @@ def ticket_new_preload(request, structure_slug:str = None):
 
 
 class TicketAddNew(View):
+    """
+    Creates a new ticket (or a draft) for the selected category.
+    Used also by the REST API (api=True)
+
+    :type structure_slug: String
+    :type category_slug: String
+
+    :param structure_slug: structure pk or slug
+    :param category_slug: category pk or slug
+
+    :return: render
+    """
 
     compiled_by_user = None
     compiled_date = None
@@ -1509,6 +1573,15 @@ class TaskDetail(View):
 @method_decorator(login_required, 'dispatch')
 @method_decorator(is_the_owner, 'dispatch')
 class TicketClose(View):
+    """
+    Closes ticket by owner. Used also by the REST API (api=True)
+
+    :type ticket_id: String
+
+    :param ticket_id: ticket code
+
+    :return: render
+    """
     template = "user/ticket_close.html"
 
     def dispatch(self, request, ticket_id:str, *args, **kwargs) -> Union[HttpResponse, HttpResponseRedirect]:
@@ -1721,6 +1794,17 @@ def chat_new_preload(request, structure_slug=None):
 
 @login_required
 def ticket_clone(request, ticket_id):
+    """
+    Creates a new ticket with the same data of the selected one,
+    redirecting user to new ticket form with an encrypted
+    reference to compiled data
+
+    :type ticket_id: String
+
+    :param ticket_id: ticket code
+
+    :return: redirect
+    """
     main_ticket = get_object_or_404(
         Ticket, 
         Q(created_by=request.user) | Q(compiled_by=request.user), 
@@ -1784,6 +1868,17 @@ def ticket_detail_print(request, ticket_id):
 def download_ticket_pdf(request,
                         ticket_id,
                         template="ticket_detail_print_pdf.html"):
+    """
+    Downloads ticket PDF version
+
+    :type ticket_id: String
+    :type template: String
+
+    :param ticket_id: ticket code
+    :param template: template to use (can change if specified)
+
+    :return: file
+    """
     response = TicketDetail().get(request=request,
                                   ticket_id=ticket_id,
                                   template=template,

@@ -1,6 +1,6 @@
 import logging
 
-from django.urls import NoReverseMatch, reverse
+from django.urls import reverse
 
 from uni_ticket.models import (
     Task,
@@ -62,12 +62,16 @@ class Test_ManagementRoleRedirects(ManagementExtraMixin, BaseTicketEnvironment):
             self._check_roles(url_name, target, kwargs)
 
     def test_redirect_structure_ticket_lists_simple_user(self):
-        # simple users are not expected to reach management dispatchers:
-        # the "user_*_ticket" redirect has no structure_slug (NoReverseMatch)
+        # simple users have no role in the structure: "Permesso negato"
         self.client.force_login(self.create_user(name='Simple user'))
-        with self.assertRaises(NoReverseMatch):
-            self.client.get(reverse('uni_ticket:manage_opened_ticket_url',
-                                    kwargs=self._structure_kwargs()))
+        for url_name in ('manage_opened_ticket_url',
+                         'manage_unassigned_ticket_url',
+                         'manage_closed_ticket_url'):
+            response = self.client.get(reverse(f'uni_ticket:{url_name}',
+                                               kwargs=self._structure_kwargs()))
+            self.assertEqual(response.status_code, 200)
+            self.assertTemplateUsed(response, 'custom_message.html')
+            self.assertEqual(str(response.context['avviso']), 'Permesso negato')
 
     def test_redirect_manage_ticket_url(self):
         # fake URL used by datatables <href> tags: always "Permesso negato"

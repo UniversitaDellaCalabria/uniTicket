@@ -54,6 +54,18 @@ from uni_ticket.statistics import uniTicketStats
 logger = logging.getLogger(__name__)
 
 
+def _redirect_to_role_ticket_list(request, structure_slug, target):
+    """
+    Redirects to the role-based ticket list of the structure
+    (manager/operator); simple users get "Permesso negato"
+    """
+    structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
+    user_type = get_user_type(request.user, structure)
+    if user_type not in ("manager", "operator"):
+        return custom_message(request, _("Permesso negato"), structure_slug)
+    return redirect("uni_ticket:{}_{}".format(user_type, target), structure_slug)
+
+
 @login_required
 def manage_opened_ticket_url(request, structure_slug):
     """
@@ -63,11 +75,9 @@ def manage_opened_ticket_url(request, structure_slug):
 
     :param structure_slug: slug of structure to manage
 
-    :return: redirect
+    :return: redirect or render
     """
-    structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
-    user_type = get_user_type(request.user, structure)
-    return redirect("uni_ticket:{}_opened_ticket".format(user_type), structure_slug)
+    return _redirect_to_role_ticket_list(request, structure_slug, "opened_ticket")
 
 
 @login_required
@@ -79,11 +89,9 @@ def manage_unassigned_ticket_url(request, structure_slug):
 
     :param structure_slug: slug of structure to manage
 
-    :return: redirect
+    :return: redirect or render
     """
-    structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
-    user_type = get_user_type(request.user, structure)
-    return redirect("uni_ticket:{}_unassigned_ticket".format(user_type), structure_slug)
+    return _redirect_to_role_ticket_list(request, structure_slug, "unassigned_ticket")
 
 
 @login_required
@@ -95,11 +103,9 @@ def manage_closed_ticket_url(request, structure_slug):
 
     :param structure_slug: slug of structure to manage
 
-    :return: redirect
+    :return: redirect or render
     """
-    structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
-    user_type = get_user_type(request.user, structure)
-    return redirect("uni_ticket:{}_closed_ticket".format(user_type), structure_slug)
+    return _redirect_to_role_ticket_list(request, structure_slug, "closed_ticket")
 
 
 @login_required
