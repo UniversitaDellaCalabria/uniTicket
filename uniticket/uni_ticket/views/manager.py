@@ -908,7 +908,10 @@ def category_detail(request, structure_slug, category_slug):
         "title": title,
     }
     if PROTOCOL_ENABLED:
-        d["protocol_configurations"] = protocol_utils.get_configuration_class().objects.all()
+        d["protocol_configurations"] = protocol_utils.get_configuration_class().objects.filter(
+            content_type=ContentType.objects.get_for_model(category),
+            object_id=category.pk
+        )
     return render(request, template, base_context(d))
 
 
