@@ -5,6 +5,7 @@ import tempfile
 from datetime import timedelta
 from unittest.mock import patch
 
+from django.contrib.contenttypes.models import ContentType
 from django.test import override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -382,11 +383,15 @@ class Test_ManagerCategoryViews(ManagerViewsMixin, BaseCategoryOfficeEnvironment
     @patch('uni_ticket.views.manager.PROTOCOL_ENABLED', True)
     @patch('uni_ticket.views.manager.protocol_utils', create=True)
     def test_category_detail_protocol_enabled(self, mock_utils):
-        configurations = mock_utils.get_configuration_class.return_value.objects.all.return_value
+        objects = mock_utils.get_configuration_class.return_value.objects
         response = self.client.get(self.cat_url('manager_category_detail'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['protocol_configurations'],
-                         configurations)
+                         objects.filter.return_value)
+        objects.filter.assert_called_once_with(
+            content_type=ContentType.objects.get_for_model(self.category_1_str_1),
+            object_id=self.category_1_str_1.pk
+        )
 
     def test_category_disable_already_disabled(self):
         self.disable_category(self.structure_1.slug, self.category_1_str_1)
