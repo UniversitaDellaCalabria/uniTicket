@@ -325,13 +325,15 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
         self.assertFalse(ticket.protocol_number)
 
     def _post_protocol_ticket(self, subject, protocol_response=None,
-                              protocol_error=None):
+                              protocol_error=None, iter_id=None):
         # protocol enabled with a mocked external app
         self._update_category(protocol_required=True)
         with patch('uni_ticket.views.user.PROTOCOL_ENABLED', True), \
              patch('uni_ticket.views.user.protocol_utils', create=True) as mock_utils, \
              patch('uni_ticket.views.user.download_ticket_pdf',
                    return_value=HttpResponse(b'%PDF')):
+            configuration = mock_utils.get_active_protocol_configuration.return_value
+            configuration.additional_configuration.iter_id = iter_id
             mock_utils.protocolla.return_value = protocol_response
             mock_utils.protocolla.side_effect = protocol_error
             response = self._post_new_ticket(subject=subject, follow=True)
@@ -374,6 +376,34 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
         self.assertEqual(ticket.protocol_nrecord, '000123-UNICAL')
         msgs = get_messages_list(response)
         self.assertTrue(any('Iter di protocollazione avviato' in m for m in msgs))
+
+    def test_create_ticket_protocol_without_iter(self):
+        # no iter configured: end-of-iter notification is not requested
+        response, mock_utils = self._post_protocol_ticket(
+            subject='Protocol no iter',
+            protocol_response={'num_prot': '123'}
+        )
+        kwargs = mock_utils.protocolla.call_args.kwargs
+        self.assertNotIn('invia_notifica', kwargs)
+        self.assertNotIn('label_notifica', kwargs)
+        self.assertNotIn('method_notifica', kwargs)
+
+    def test_create_ticket_protocol_with_iter_notification(self):
+        # iter configured: end-of-iter notification is requested
+        response, mock_utils = self._post_protocol_ticket(
+            subject='Protocol iter notification',
+            protocol_response={'nrecord': '000123-UNICAL'},
+            iter_id='ITER-1'
+        )
+        kwargs = mock_utils.protocolla.call_args.kwargs
+        self.assertTrue(kwargs['invia_notifica'])
+        self.assertEqual(kwargs['label_notifica'], 'Notifica fine ITER')
+        self.assertEqual(kwargs['method_notifica'], 'GET')
+        ticket = Ticket.objects.get(subject='Protocol iter notification')
+        # missing keys in WS response are saved as empty values
+        self.assertFalse(ticket.protocol_number)
+        self.assertFalse(ticket.protocol_url)
+        self.assertEqual(ticket.protocol_nrecord, '000123-UNICAL')
 
     def test_create_ticket_protocol_error(self):
         with self.assertLogs('uni_ticket.views.user', level='ERROR'):

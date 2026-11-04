@@ -159,16 +159,23 @@ def protocolla_ticket(request, ticket, structure, category, user, log_user) -> N
             template="ticket_detail_print_pdf_simplified.html",
         ).content
 
-        protocol_response = protocol_utils.protocolla(
-            credential_ws_protocollo=protocol_struct_configuration,
-            configuration_ws_protocollo=protocol_configuration,
-            user=user,
-            subject=ticket.subject,
-            principal_file_name=ticket.code,
-            principal_file=response,
-            attachments_folder=get_path(ticket.get_folder()),
-            attachments=list(ticket.get_allegati_dict().values()),
-        )
+        protocol_kwargs = {
+            "credential_ws_protocollo": protocol_struct_configuration,
+            "configuration_ws_protocollo": protocol_configuration,
+            "user": user,
+            "subject": ticket.subject,
+            "principal_file_name": ticket.code,
+            "principal_file": response,
+            "attachments_folder": get_path(ticket.get_folder()),
+            "attachments": list(ticket.get_allegati_dict().values()),
+        }
+
+        if protocol_configuration.additional_configuration.iter_id:
+            protocol_kwargs["invia_notifica"] = True
+            protocol_kwargs["label_notifica"] ='Notifica fine ITER'
+            protocol_kwargs["method_notifica"] ='GET'
+
+        protocol_response = protocol_utils.protocolla(**protocol_kwargs)
 
         protocol_number = protocol_response.get("num_prot", "")
         protocol_nrecord = protocol_response.get("nrecord", "")
