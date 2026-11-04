@@ -170,9 +170,9 @@ def protocolla_ticket(request, ticket, structure, category, user, log_user) -> N
             attachments=list(ticket.get_allegati_dict().values()),
         )
 
-        protocol_number = protocol_response["num_prot"]
-        protocol_nrecord = protocol_response["nrecord"]
-        protocol_url = protocol_response["url"]
+        protocol_number = protocol_response.get("num_prot", "")
+        protocol_nrecord = protocol_response.get("nrecord", "")
+        protocol_url = protocol_response.get("url", "")
 
         # set protocol data in ticket
         ticket.protocol_number = protocol_number
