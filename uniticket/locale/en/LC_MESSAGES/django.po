@@ -6007,7 +6007,7 @@ msgid "Desideri procedere e creare la bozza?"
 msgstr "Do you wish to proceed and create the draft?"
 
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:188
-msgid "Invia e protocolla la richiesta"
+msgid "Invia la richiesta e trasmetti al sistema di protocollo"
 msgstr "Submit and register the request"
 
 #: uni_ticket_bootstrap_italia_template/templates/user/ticket_add_new.html:190
