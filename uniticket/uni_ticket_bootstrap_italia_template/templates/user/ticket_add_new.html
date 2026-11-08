@@ -127,6 +127,7 @@
 {% block form_buttons %}
 
 <!-- Salva come bozza -->
+{% if request.user.is_authenticated %}
 <div class="d-grid gap-2 mb-2">
     <button class="btn btn-outline-info"
             type="button"
@@ -173,6 +174,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <!-- Crea ticket -->
 {% if user_can_open_tickets %}

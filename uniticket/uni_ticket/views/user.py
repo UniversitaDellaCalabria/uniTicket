@@ -646,6 +646,15 @@ class TicketAddNew(View):
             "user_can_open_tickets": self.category.user_can_open_tickets(request.user)
         }
 
+        # only authenticated users can save drafts
+        if not request.user.is_authenticated and (
+            request.POST.get(TICKET_DRAFT_BUTTON_NAME)
+            or getattr(request, "api_data", {}).get(TICKET_DRAFT_BUTTON_NAME)
+        ):
+            return self._error(
+                _("Solo gli utenti autenticati possono salvare una bozza")
+            )
+
         self.form = self.modulo.get_form(
             data=request.POST or getattr(request, "api_data", {}), # csrf except workaround for API integration
             files=request.FILES,

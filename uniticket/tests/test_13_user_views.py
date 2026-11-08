@@ -255,6 +255,26 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
         ticket = Ticket.objects.get(subject='Anonymous ticket')
         self.assertIsNone(ticket.created_by)
 
+    def test_anonymous_draft_button_hidden(self):
+        self._update_category(allow_anonymous=True)
+        self.client.logout()
+        response = self.client.get(self._new_ticket_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, f'name="{TICKET_DRAFT_BUTTON_NAME}"')
+        self.assertContains(response, f'name="{TICKET_CREATE_BUTTON_NAME}"')
+
+    def test_authenticated_draft_button_visible(self):
+        response = self.client.get(self._new_ticket_url())
+        self.assertContains(response, f'name="{TICKET_DRAFT_BUTTON_NAME}"')
+
+    def test_anonymous_cannot_create_draft(self):
+        self._update_category(allow_anonymous=True)
+        self.client.logout()
+        response = self._post_new_ticket(subject='Anonymous draft',
+                                         button=TICKET_DRAFT_BUTTON_NAME)
+        self._assert_custom_message(response, 403)
+        self.assertFalse(Ticket.objects.filter(subject='Anonymous draft').exists())
+
     def test_create_notification_ticket(self):
         self._update_category(is_notification=True)
         self._post_new_ticket(subject='Notification')
