@@ -44,6 +44,11 @@ class User(AbstractUser):
     # checked by categories that allow only SPID/CIE users.
     last_login_context = models.CharField(default="", max_length=70, blank=True)
 
+    def spid_cie_logged(self):
+        # default values live in uni_ticket.settings
+        from uni_ticket.settings import SPID_CIE_ALLOWED_CONTEXTS
+        return self.last_login_context in SPID_CIE_ALLOWED_CONTEXTS
+
     class Meta:
         ordering = ['last_name', 'first_name']
         verbose_name_plural = _("Utenti")

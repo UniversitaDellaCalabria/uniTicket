@@ -43,6 +43,8 @@ from . test_14_generic_decorators import TempMediaRootMixin
 
 
 logger = logging.getLogger('my_logger')
+SPID_CONTEXT = 'https://www.spid.gov.it/SpidL2'
+SPID_CIE_REQUIRED_MSG = 'necessario autenticarsi con SPID o CIE'
 
 class UserViewsMixin:
 
@@ -68,6 +70,10 @@ class UserViewsMixin:
         draft = Ticket.objects.get(subject=subject)
         self.assertTrue(draft.draft)
         return draft
+
+    def _set_spid_cie_login(self, user, logged=True):
+        user.last_login_context = SPID_CONTEXT if logged else ''
+        user.save()
 
     def _update_category(self, **fields):
         for k, v in fields.items():
@@ -274,6 +280,49 @@ class Test_UserNewTicket(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironme
                                          button=TICKET_DRAFT_BUTTON_NAME)
         self._assert_custom_message(response, 403)
         self.assertFalse(Ticket.objects.filter(subject='Anonymous draft').exists())
+
+    # SPID/CIE categories
+    def test_spid_cie_form_accessible_without_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        response = self.client.get(self._new_ticket_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, SPID_CIE_REQUIRED_MSG)
+        self.assertContains(response, f'name="{TICKET_DRAFT_BUTTON_NAME}"')
+        self.assertNotContains(response, f'name="{TICKET_CREATE_BUTTON_NAME}"')
+
+    def test_spid_cie_form_with_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        self._set_spid_cie_login(self.staff_1)
+        response = self.client.get(self._new_ticket_url())
+        self.assertNotContains(response, SPID_CIE_REQUIRED_MSG)
+        self.assertContains(response, f'name="{TICKET_CREATE_BUTTON_NAME}"')
+
+    def test_spid_cie_create_without_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        response = self._post_new_ticket(subject='No SPID ticket')
+        self._assert_custom_message(response, 403)
+        self.assertFalse(Ticket.objects.filter(subject='No SPID ticket').exists())
+
+    def test_spid_cie_draft_without_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        draft = self._create_draft(subject='No SPID draft')
+        self.assertTrue(draft.draft)
+
+    def test_spid_cie_create_with_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        self._set_spid_cie_login(self.staff_1)
+        self._post_new_ticket(subject='SPID ticket')
+        ticket = Ticket.objects.get(subject='SPID ticket')
+        self.assertFalse(ticket.draft)
+
+    def test_spid_cie_anonymous_redirected_to_login(self):
+        self._update_category(allow_spid_cie=True, allow_anonymous=True)
+        self.client.logout()
+        response = self.client.get(self._new_ticket_url())
+        self.assertEqual(response.status_code, 302)
+        response = self._post_new_ticket(subject='Anonymous SPID ticket')
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Ticket.objects.filter(subject='Anonymous SPID ticket').exists())
 
     def test_create_notification_ticket(self):
         self._update_category(is_notification=True)
@@ -860,6 +909,67 @@ class Test_UserSubmitDraft(UserViewsMixin, TempMediaRootMixin, BaseTicketEnviron
         response = self.client.get(reverse('uni_ticket:user_close_ticket',
                                            kwargs={'ticket_id': self.draft.code}))
         self._assert_custom_message(response)
+
+    # SPID/CIE categories
+    def test_spid_cie_submit_without_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        response = self._submit()
+        self.assertRedirects(response, self.detail_url)
+        self.draft.refresh_from_db()
+        self.assertTrue(self.draft.draft)
+
+    def test_spid_cie_share_without_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        response = self._submit({TICKET_SHARE_DRAFT_BUTTON_NAME: 'ok',
+                                 'sharing_user': self.user_1.pk})
+        self.assertRedirects(response, self.detail_url)
+        self.draft.refresh_from_db()
+        self.assertEqual(self.draft.created_by, self.staff_1)
+        self.assertIsNone(self.draft.compiled_by)
+
+    def test_spid_cie_submit_with_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        self._set_spid_cie_login(self.staff_1)
+        response = self._submit()
+        self.assertRedirects(response, self.detail_url)
+        self.draft.refresh_from_db()
+        self.assertFalse(self.draft.draft)
+
+    def test_spid_cie_share_with_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        self._set_spid_cie_login(self.staff_1)
+        response = self._submit({TICKET_SHARE_DRAFT_BUTTON_NAME: 'ok',
+                                 'sharing_user': self.user_1.pk})
+        self.assertRedirects(response, self.detail_url, fetch_redirect_response=False)
+        self.draft.refresh_from_db()
+        self.assertEqual(self.draft.compiled_by, self.staff_1)
+
+    def test_spid_cie_detail_without_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        self.category_1_str_1.allowed_users.add(self.staff_1, self.user_1)
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, SPID_CIE_REQUIRED_MSG, count=1)
+        self.assertNotContains(response, f'name="{TICKET_SUBMIT_DRAFT_BUTTON_NAME}"')
+        self.assertNotContains(response, f'name="{TICKET_SHARE_DRAFT_BUTTON_NAME}"')
+
+    def test_spid_cie_detail_without_spid_cie_user_not_allowed(self):
+        # the user can't submit the draft (not in category allowed users):
+        # the SPID/CIE message must be shown anyway
+        self._update_category(allow_spid_cie=True)
+        self.category_1_str_1.allowed_users.add(self.user_1)
+        response = self.client.get(self.detail_url)
+        self.assertContains(response, SPID_CIE_REQUIRED_MSG, count=1)
+        self.assertNotContains(response, f'name="{TICKET_SHARE_DRAFT_BUTTON_NAME}"')
+
+    def test_spid_cie_detail_with_spid_cie(self):
+        self._update_category(allow_spid_cie=True)
+        self._set_spid_cie_login(self.staff_1)
+        self.category_1_str_1.allowed_users.add(self.staff_1, self.user_1)
+        response = self.client.get(self.detail_url)
+        self.assertNotContains(response, SPID_CIE_REQUIRED_MSG)
+        self.assertContains(response, f'name="{TICKET_SUBMIT_DRAFT_BUTTON_NAME}"')
+        self.assertContains(response, f'name="{TICKET_SHARE_DRAFT_BUTTON_NAME}"')
 
     def test_submit_without_action(self):
         # neither submit nor share button: nothing changes

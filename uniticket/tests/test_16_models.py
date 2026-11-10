@@ -219,9 +219,9 @@ class Test_TicketCategory(ORMFixtureMixin, TestCase):
         self.assertEqual(cat.allowed_to_user(self.user), (True,))
         cat.allow_anonymous = False
 
+        # SPID/CIE login is checked only when the ticket is submitted,
+        # users can access the form (and save drafts) anyway
         cat.allow_spid_cie = True
-        self.assertFalse(cat.allowed_to_user(self.user)[0])
-        self.user.last_login_context = "https://www.spid.gov.it/SpidL2"
         self.assertTrue(cat.allowed_to_user(self.user)[0])
         cat.allow_spid_cie = False
 

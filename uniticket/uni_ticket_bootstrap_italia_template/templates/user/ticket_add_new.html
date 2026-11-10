@@ -178,65 +178,77 @@
 
 <!-- Crea ticket -->
 {% if user_can_open_tickets %}
-{% uni_ticket_settings_value "PROTOCOL_ENABLED" as protocol_enabled %}
-<div class="d-grid gap-2">
-    <button class="btn btn-success"
-            type="button"
-            data-confirm-modal="#action">
-        <svg class="icon icon-xs icon-white">
-            <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
-        </svg>
-        {% if categoria.protocol_required and protocol_enabled %}
-            {% trans "Invia la richiesta e trasmetti al sistema di protocollo" %}
-        {% else %}
-            {% trans "Invia la richiesta" %}
-        {% endif %}
-    </button>
-</div>
-<div class="modal fade"
-     tabindex="-1"
-     role="dialog"
-     id="action">
-    <div class="modal-dialog modal-dialog-centered"
-         role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    {% if categoria.protocol_required and protocol_enabled %}
-                        {% trans "Conferma e protocolla" %}
-                    {% else %}
-                        {% trans "Conferma" %}
-                    {% endif %}
-                </h5>
-                <button class="btn-close"
-                        type="button"
-                        data-bs-dismiss="modal"
-                        aria-label="Close">
-                   <svg class="icon">
-                      <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
-                   </svg>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>
-                    {% if categoria.protocol_required and protocol_enabled %}
-                        {% trans "Desideri procedere, confermare i dati immessi e protocollare la tua richiesta?" %}
-                    {% else %}
-                        {% trans "Desideri procedere e confermare i dati immessi?" %}
-                    {% endif %}
-                </p>
-            </div>
-            <div class="modal-footer">
-                {% uni_ticket_settings_value name="TICKET_CREATE_BUTTON_NAME" as confirm_button_name %}
-                <input class="btn btn-success"
-                       type="submit"
-                       id="submitForm"
-                       name="{{ confirm_button_name }}"
-                       value="{% trans 'Si, procedi' %}">
+    {% if not categoria.allow_spid_cie or request.user.spid_cie_logged %}
+    {% uni_ticket_settings_value "PROTOCOL_ENABLED" as protocol_enabled %}
+    <div class="d-grid gap-2">
+        <button class="btn btn-success"
+                type="button"
+                data-confirm-modal="#action">
+            <svg class="icon icon-xs icon-white">
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-plus-circle"></use>
+            </svg>
+            {% if categoria.protocol_required and protocol_enabled %}
+                {% trans "Invia la richiesta e trasmetti al sistema di protocollo" %}
+            {% else %}
+                {% trans "Invia la richiesta" %}
+            {% endif %}
+        </button>
+    </div>
+    <div class="modal fade"
+        tabindex="-1"
+        role="dialog"
+        id="action">
+        <div class="modal-dialog modal-dialog-centered"
+            role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {% if categoria.protocol_required and protocol_enabled %}
+                            {% trans "Conferma e protocolla" %}
+                        {% else %}
+                            {% trans "Conferma" %}
+                        {% endif %}
+                    </h5>
+                    <button class="btn-close"
+                            type="button"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    <svg class="icon">
+                        <use xlink:href="{% static 'svg/sprites.svg' %}#it-close"></use>
+                    </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        {% if categoria.protocol_required and protocol_enabled %}
+                            {% trans "Desideri procedere, confermare i dati immessi e protocollare la tua richiesta?" %}
+                        {% else %}
+                            {% trans "Desideri procedere e confermare i dati immessi?" %}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    {% uni_ticket_settings_value name="TICKET_CREATE_BUTTON_NAME" as confirm_button_name %}
+                    <input class="btn btn-success"
+                        type="submit"
+                        id="submitForm"
+                        name="{{ confirm_button_name }}"
+                        value="{% trans 'Si, procedi' %}">
+                </div>
             </div>
         </div>
     </div>
-</div>
+    {% else %}
+    <div class="d-grid gap-2">
+        <button class="btn btn-secondary disabled"
+                type="button">
+            <svg class="icon icon-xs icon-white">
+                <use xlink:href="{% static 'svg/sprites.svg' %}#it-ban"></use>
+            </svg>
+            {% trans "Per inoltrare richieste di questo tipo è necessario autenticarsi con SPID o CIE" %}
+        </button>
+    </div>
+    {% endif %}
 {% else %}
 <div class="d-grid gap-2">
     <button class="btn btn-secondary disabled"

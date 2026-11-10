@@ -43,7 +43,6 @@ from .settings import (
     PRECOMPILED_TICKET_EXPIRE_DAYS,
     PRIORITY_LEVELS,
     SHOW_HEADING_TEXT,
-    SPID_CIE_ALLOWED_CONTEXTS,
     TICKET_ATTACHMENT_FOLDER,
     TICKET_CATEGORIES_FOLDER,
     TICKET_DESCRIPTION_ID,
@@ -336,8 +335,6 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
             return (False,)
         if self.allow_anonymous:
             return (True,)
-        if self.allow_spid_cie and not user.last_login_context in SPID_CIE_ALLOWED_CONTEXTS:
-            return (False, _("Per accedere a questo modulo è necessario autenticarsi con SPID o CIE"))
         if self.allow_guest:
             return (True,)
         is_employee = user_is_employee(user)

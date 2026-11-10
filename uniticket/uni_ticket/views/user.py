@@ -543,6 +543,10 @@ class TicketAddNew(View):
         if not self.category.allow_anonymous and not self.request.user.is_authenticated:
             return redirect_after_login(self.request.get_full_path())
 
+        # SPID/CIE login requested
+        if self.category.allow_spid_cie and not self.request.user.is_authenticated:
+            return redirect_after_login(self.request.get_full_path())
+        
         # is user is authenticated
         if self.request.user.is_authenticated:
 
@@ -654,6 +658,12 @@ class TicketAddNew(View):
             return self._error(
                 _("Solo gli utenti autenticati possono salvare una bozza")
             )
+        
+        # SPID/CIE login requested
+        if not request.user.is_authenticated and self.category.allow_spid_cie:
+            return self._error(
+                _("Per inoltrare richieste di questo tipo è necessario autenticarsi con SPID o CIE")
+            )
 
         self.form = self.modulo.get_form(
             data=request.POST or getattr(request, "api_data", {}), # csrf except workaround for API integration
@@ -666,6 +676,11 @@ class TicketAddNew(View):
         create = self.form.data.get(TICKET_CREATE_BUTTON_NAME) or getattr(request, "api_data", {})
         draft = self.form.data.get(TICKET_DRAFT_BUTTON_NAME)
         generate_url = self.form.data.get(TICKET_GENERATE_URL_BUTTON_NAME)
+
+        if create and self.category.allow_spid_cie and not request.user.spid_cie_logged():
+            return self._error(
+                _("Per inoltrare richieste di questo tipo è necessario autenticarsi con SPID o CIE")
+            )
         
         if self.form.is_valid():
             # get form data in json
@@ -1957,6 +1972,17 @@ def ticket_submit_draft(request, ticket_id):
     
     if ticket.input_module.ticket_category.get_conditions() and not request.POST.get(TICKET_CONDITIONS_FIELD_ID, None):
         messages.add_message(request, messages.ERROR, _("E' obbligatorio accettare le clausole della richiesta"))
+        return redirect(
+            "uni_ticket:ticket_detail", 
+            ticket_id=ticket.code
+        )
+    
+    if ticket.input_module.ticket_category.allow_spid_cie and not request.user.spid_cie_logged():
+        messages.add_message(
+            request, 
+            messages.ERROR, 
+            _("Per inoltrare richieste di questo tipo è necessario autenticarsi con SPID o CIE")
+        )
         return redirect(
             "uni_ticket:ticket_detail", 
             ticket_id=ticket.code

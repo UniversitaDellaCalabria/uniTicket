@@ -65,3 +65,17 @@ class Test_AccountsChangeDataMiddleware(TestCase):
                                 self.user_no_email)
         response = self.middleware(request)
         self.assertEqual(response.content, b"ok")
+
+
+class Test_UserSpidCieLogged(TestCase):
+
+    def test_spid_cie_logged(self):
+        user = get_user_model().objects.create_user(username='spid-user',
+                                                    password='passw')
+        self.assertFalse(user.spid_cie_logged())
+        user.last_login_context = 'https://www.spid.gov.it/SpidL2'
+        self.assertTrue(user.spid_cie_logged())
+        user.last_login_context = 'https://www.cartaidentita.interno.gov.it/CIE'
+        self.assertTrue(user.spid_cie_logged())
+        user.last_login_context = 'urn:oasis:names:tc:SAML:2.0:ac:classes:Password'
+        self.assertFalse(user.spid_cie_logged())
