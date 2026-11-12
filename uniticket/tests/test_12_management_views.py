@@ -698,6 +698,27 @@ class Test_ManagementViews(BaseTicketEnvironment):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/zip')
 
+    def test_export_detailed_report_only_accessible_tickets(self):
+        # user_1 is an operator of the structure 1 default office:
+        # the office follows ticket but not ticket_2 (same category)
+        TicketAssignment.objects.create(
+            ticket=self.ticket,
+            office=self.structure_1.get_default_office(),
+            assigned_by=self.staff_1,
+        )
+        self.structure_1_default_office_operator_login()
+        export_url = reverse('uni_ticket:manage_export_detailed_report',
+                             kwargs={'structure_slug': self.structure_1.slug})
+        with patch('uni_ticket.views.management.export_category_zip',
+                   return_value=HttpResponse(b'zip-content')) as mock_export:
+            response = self.client.post(
+                export_url, {'ticket_code': [self.ticket.code, self.ticket_2.code]}
+            )
+        self.assertEqual(response.status_code, 200)
+        # ticket_2 code, forced in POST, must not be exported
+        mock_export.assert_called_once_with(self.category_1_str_1,
+                                            [self.ticket.code])
+
     def test_export_detailed_report_multiple_categories(self):
         category_2 = self.add_new_category(cat_name='Category 2 Structure 1',
                                            structure_slug=self.structure_1.slug)

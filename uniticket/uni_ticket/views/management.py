@@ -2844,12 +2844,14 @@ def export_detailed_report(request, structure_slug):
 
         # export categories zip files
         if categories:
+            # only the tickets the user can access, not the raw POST codes
+            allowed_codes = [ticket.code for ticket in ticket_list]
             output = io.BytesIO()
             f = zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED)
 
             for cat in categories:
                 try:
-                    cat_zip = export_category_zip(cat, ticket_codes)
+                    cat_zip = export_category_zip(cat, allowed_codes)
                     if len(categories) == 1:
                         return cat_zip
                     f.writestr(cat.name.replace("/", "_") +
