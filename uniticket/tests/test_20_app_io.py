@@ -49,6 +49,31 @@ class Test_AppIOUtils(BaseTicketEnvironment):
             change_message='closed',
         )
 
+    @mock.patch('app_io.utils.requests.request',
+                side_effect=requests.exceptions.ConnectionError)
+    def test_call_io_api_connection_error(self, mock_request):
+        result = app_io_utils._callIOApi()
+        self.assertEqual(result, {'data': {}, 'status': 503})
+
+    @mock.patch('app_io.utils.requests.request')
+    def test_call_io_api_not_json_response(self, mock_request):
+        response = mock.Mock(status_code=502)
+        response.json.side_effect = ValueError
+        mock_request.return_value = response
+        result = app_io_utils._callIOApi()
+        self.assertEqual(result, {'data': {}, 'status': 502})
+
+    @mock.patch('app_io.utils._callIOApi')
+    def test_send_message_without_fiscal_code(self, mock_call):
+        # user without fiscal code
+        self.ticket.created_by.taxpayer_id = ''
+        self.ticket.created_by.save()
+        self.assertFalse(app_io_utils.send_message(self.ticket, 'subject', 'body'))
+        # anonymous ticket
+        self.ticket.created_by = None
+        self.assertFalse(app_io_utils.send_message(self.ticket, 'subject', 'body'))
+        mock_call.assert_not_called()
+
     def test_service_str(self):
         self.assertEqual(str(self.service), 'Service (srv-1)')
 

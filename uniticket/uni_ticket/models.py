@@ -1760,7 +1760,12 @@ class Task(AbstractTask):
             user: The user who made the change.
             is_public: Whether the log entry is publicly visible.
             note: The log message.
+
+        Returns:
+            The created Log, or False if user is empty (like Ticket.update_log).
         """
+        if not user:
+            return False
         log = Log.objects.log_action(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(self).pk,
@@ -1771,6 +1776,7 @@ class Task(AbstractTask):
         )
         log.is_public = is_public
         log.save(update_fields=['is_public'])
+        return log
 
     def get_folder(self):
         """

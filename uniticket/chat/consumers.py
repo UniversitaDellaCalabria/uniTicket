@@ -88,12 +88,13 @@ class ChatConsumer(WebsocketConsumer):
         Then stores the user channel, purges the inactive channels and
         notifies the room.
         """
-        user_id = self.scope["session"]["_auth_user_id"]
+        # only for logged users (scope user is set by AuthMiddlewareStack)
+        user = self.scope.get("user")
+        if not user or not user.is_authenticated:
+            self.close()
+            return
 
-        # only for logged users
-        if not user_id: self.close()
-
-        self.user = get_user_model().objects.get(pk=user_id)
+        self.user = user
 
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.group_name = self.room_name
@@ -118,10 +119,11 @@ class ChatConsumer(WebsocketConsumer):
     def disconnect(self, close_code):
         """Deletes the channel, notifies the room and leaves the room group."""
         logger.info("disconnected from websocket")
+        # connection refused in connect(): nothing to clean up
+        if not hasattr(self, "user"):
+            return
         UserChannel.objects.filter(channel=self.channel_name,
                                    room=self.room_name).delete()
-        user_id = self.scope["session"]["_auth_user_id"]
-        user = get_user_model().objects.get(pk=user_id)
 
         # Send message to room group
         notification = {
@@ -151,8 +153,11 @@ class ChatConsumer(WebsocketConsumer):
         user is another user who is an operator.
         """
         user = get_user_model().objects.filter(pk=event['user']).first()
+        # the joining user may have been deleted in the meantime
+        if not user:
+            return
         if chat_operator(self.user, event['room']) or \
-           (user and event['user'] != self.user.pk and
+           (event['user'] != self.user.pk and
            chat_operator(user, event['room'])):
             self.send(
                 text_data=json.dumps({
@@ -192,8 +197,18 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     # Receive one-to-one message from WebSocket
-    def receive(self, event):
-        """Sends a one-to-one message event to the WebSocket."""
+    def receive(self, event=None, text_data=None, bytes_data=None):
+        """
+        Sends a one-to-one message event to the WebSocket.
+
+        The method handles the "receive" events sent through the channel
+        layer (see ChatMessageModel.notify_single_client). WebsocketConsumer
+        calls it also for the frames sent by the client, with text_data or
+        bytes_data: they are ignored, the client sends messages through the
+        REST API.
+        """
+        if event is None:
+            return
         self.send(
             text_data=json.dumps({
                 'message': event['message'],

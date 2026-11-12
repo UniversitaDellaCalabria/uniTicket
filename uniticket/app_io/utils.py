@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 def _callIOApi(method='get',
                endpoint='',
                key='',
-               data={}):
+               data=None):
     """
     Calls an App IO API endpoint.
 
@@ -24,7 +24,8 @@ def _callIOApi(method='get',
 
     Returns:
         A dict with the JSON response in "data" and the HTTP status in
-        "status"; on timeout, empty data and status 503.
+        "status". On network errors data is empty and status is 503; if
+        the response is not JSON, data is empty.
     """
     url = f'{APP_IO_API_BASE_URL}/{endpoint}'
     headers = {APP_IO_API_HEADER_KEY: key}
@@ -33,16 +34,22 @@ def _callIOApi(method='get',
             method=method,
             url=url,
             headers=headers,
-            data=json.dumps(data),
+            data=json.dumps(data or {}),
             timeout=5
         )
-    except requests.exceptions.Timeout:
+    except requests.exceptions.RequestException as e:
+        logger.error(f'App IO API {url} error: {e}')
         return {
             'data': {},
             'status': 503
         }
+    try:
+        response_data = response.json()
+    except ValueError:
+        logger.error(f'App IO API {url}: not JSON response ({response.status_code})')
+        response_data = {}
     return {
-        'data': response.json(),
+        'data': response_data,
         'status': response.status_code
     }
 
@@ -96,15 +103,19 @@ def send_message(ticket, subject, body, log=None):
         log: Optional Log entry; if given, the result is stored in an IOLog.
 
     Returns:
-        False if the category has no active service, otherwise a dict
-        with "message_id" and "error".
+        False if the category has no active service or the ticket has no
+        creator with a fiscal code, otherwise a dict with "message_id"
+        and "error".
     """
     io_service = IOServiceTicketCategory.objects.filter(category=ticket.input_module.ticket_category,
                                                         service__is_active=True,
                                                         is_active=True).select_related('service').first()
     if not io_service: return False
 
-    user = ticket.created_by.taxpayer_id
+    # anonymous ticket or user without fiscal code: nobody to notify
+    user = getattr(ticket.created_by, 'taxpayer_id', None)
+    if not user: return False
+
     service_id = io_service.service.service_id
     service_key = io_service.service.api_key
 

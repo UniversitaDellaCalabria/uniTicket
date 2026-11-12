@@ -672,10 +672,10 @@ class Test_OtherModels(ORMFixtureMixin, TestCase):
         self.assertEqual(task.get_priority(), "Normale")
         self.assertIn("Aperta", task.get_basic_status())
         self.assertIn("Aperta", task.get_status())
-        task.update_log(self.operator, is_public=False, note="n")
-        self.assertTrue(
-            Log.objects.filter(object_id=task.pk, is_public=False).exists()
-        )
+        log = task.update_log(self.operator, is_public=False, note="n")
+        self.assertEqual(log, Log.objects.get(object_id=task.pk, is_public=False))
+        # like Ticket.update_log, no user means no log
+        self.assertFalse(task.update_log(None, note="n"))
         task.is_closed = True
         task.closed_by = self.operator
         self.assertIn("Chiusa", task.get_basic_status())

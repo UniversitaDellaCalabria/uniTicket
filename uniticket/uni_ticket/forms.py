@@ -225,7 +225,7 @@ class TaskCloseForm(forms.ModelForm):
             active_offices: Keyword argument, the offices that can be
                 notified by email.
         """
-        active_offices = kwargs.pop("active_offices", None)
+        active_offices = kwargs.pop("active_offices", None) or []
         super().__init__(*args, **kwargs)
         choices = []
         for ao in active_offices:

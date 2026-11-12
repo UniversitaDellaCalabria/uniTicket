@@ -19,7 +19,7 @@ class CustomSaml2Backend(Saml2Backend):
             session_info: The SAML session data of the assertion.
 
         Returns:
-            The authenticated user.
+            The authenticated user, or None if authentication failed.
         """
         user = super().authenticate(
             request,
@@ -29,7 +29,10 @@ class CustomSaml2Backend(Saml2Backend):
             **kwargs
         )
 
-        auth_info = session_info.get('authn_info')
+        if not user:
+            return None
+
+        auth_info = (session_info or {}).get('authn_info')
         if auth_info:
             user.last_login_context = auth_info[0][0]
         else:
@@ -47,13 +50,15 @@ class CustomSaml2Backend(Saml2Backend):
 
         Args:
             user: The user to update.
-            attributes: The SAML attributes; the editable ones are removed.
+            attributes: The SAML attributes (not modified).
             attribute_mapping: Map from SAML attributes to user fields.
             force_save: Whether to save the user even if nothing changed.
 
         Returns:
             The value returned by the parent _update_user.
         """
+        # copy: don't change the attributes dict of the caller
+        attributes = dict(attributes)
         mapping = {}
         # get editable fields from accounts app
         for ef in EDITABLE_FIELDS:

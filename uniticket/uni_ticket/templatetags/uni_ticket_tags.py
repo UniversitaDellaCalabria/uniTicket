@@ -187,12 +187,12 @@ def user_from_pk(user_id):
     Returns the user with the given pk.
 
     Returns:
-        The user, or False if user_id is empty.
+        The user, or False if user_id is empty or the user does not exist.
     """
     if not user_id:
         return False
     user_model = get_user_model()
-    user = user_model.objects.get(pk=user_id)
+    user = user_model.objects.filter(pk=user_id).first()
     if not user:
         return False
     return user

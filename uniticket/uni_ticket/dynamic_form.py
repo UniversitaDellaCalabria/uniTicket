@@ -26,7 +26,7 @@ class DynamicForm(BaseDynamicForm):
     users, a captcha.
     """
 
-    def __init__(self, constructor_dict={}, custom_params={}, *args, **kwargs):
+    def __init__(self, constructor_dict=None, custom_params=None, *args, **kwargs):
         """
         Builds the fixed fields of the ticket form.
 
@@ -34,12 +34,15 @@ class DynamicForm(BaseDynamicForm):
             constructor_dict: The definition of the dynamic fields of the
                 category module.
             custom_params: Extra parameters: category_owner (the
-                TicketCategory, required), show_conditions, subject_initial,
+                TicketCategory; without it there are no conditions and the
+                subject min length is 1), show_conditions, subject_initial,
                 subject_max_length, description_initial and current_user.
                 The subject min length is PROTOCOL_SUBJECT_MIN_LENGTH if the
                 category requires protocol, 1 otherwise.
         """
 
+        constructor_dict = constructor_dict or {}
+        custom_params = custom_params or {}
         self.initial_fields = {}
         self.final_fields = {}
 
@@ -47,11 +50,12 @@ class DynamicForm(BaseDynamicForm):
         show_conditions = custom_params.get("show_conditions")
         subject_initial = custom_params.get("subject_initial")
         subject_max_length = custom_params.get("subject_max_length")
-        subject_min_length = getattr(settings, "PROTOCOL_SUBJECT_MIN_LENGTH", 1) if category_owner.protocol_required else 1
+        protocol_required = getattr(category_owner, "protocol_required", False)
+        subject_min_length = getattr(settings, "PROTOCOL_SUBJECT_MIN_LENGTH", 1) if protocol_required else 1
         description_initial = custom_params.get("description_initial")
         current_user = custom_params.get("current_user")
 
-        conditions = category_owner.get_conditions()
+        conditions = category_owner.get_conditions() if category_owner else []
         # If conditions to accept, generate checkbox field
         # and put it in initial fields
         if conditions and show_conditions:
