@@ -92,14 +92,14 @@ class TicketAPIBaseView(APIView):
         Consumes the django.contrib.messages stored for the current request.
 
         Returns:
-            A list with a single dict that maps each level name to a message.
+            A list with a dict {level name: message} for each message, so
+            that messages of the same level are not lost; a list with an
+            empty dict if there are no messages (clients read messages[0]).
         """
         return [
-            {
-                message_level(i.level): i.message
-                for i in messages.get_messages(self.request)
-            }
-        ]
+            {message_level(i.level): i.message}
+            for i in messages.get_messages(self.request)
+        ] or [{}]
 
 
 class TicketAPIStruttureList(uniTicketROGenericList):

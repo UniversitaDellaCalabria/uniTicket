@@ -1,6 +1,8 @@
 from unittest import mock
 
+from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.messages.storage.fallback import FallbackStorage
 from django.http import HttpResponse
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -12,7 +14,7 @@ from rest_framework.test import APIRequestFactory
 
 from api_rest.models import AuthorizationToken
 from api_rest.views import user as api_user
-from api_rest.views.generic import message_level
+from api_rest.views.generic import TicketAPIBaseView, message_level
 from organizational_area.models import OrganizationalStructure, OrganizationalStructureOffice
 from tests.base_ticket_env import BaseTicketEnvironment
 from uni_ticket.models import (CompiledTicket,
@@ -60,6 +62,30 @@ class uniTicketAPIModelsTest(TestCase):
     def test_message_level(self):
         self.assertEqual(message_level(25), 'SUCCESS')
         self.assertEqual(message_level(99), 99)
+
+    def _view_with_messages(self, *msgs):
+        request = APIRequestFactory().get('/')
+        request.session = {}
+        request._messages = FallbackStorage(request)
+        for level, text in msgs:
+            messages.add_message(request, level, text)
+        view = TicketAPIBaseView()
+        view.request = request
+        return view
+
+    def test_get_messages(self):
+        view = self._view_with_messages((messages.SUCCESS, 'first'),
+                                        (messages.SUCCESS, 'second'),
+                                        (messages.WARNING, 'warning'))
+        # one dict per message: messages of the same level are not lost
+        self.assertEqual(view.get_messages(),
+                         [{'SUCCESS': 'first'},
+                          {'SUCCESS': 'second'},
+                          {'WARNING': 'warning'}])
+
+    def test_get_messages_empty(self):
+        # a list with an empty dict, as before (clients read messages[0])
+        self.assertEqual(self._view_with_messages().get_messages(), [{}])
 
 
 class uniTicketAPIOperatorTest(BaseTicketEnvironment):
