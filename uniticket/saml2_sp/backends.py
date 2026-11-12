@@ -5,8 +5,22 @@ from saml2_sp.settings import SAML_ATTRIBUTE_MAPPING
 
 
 class CustomSaml2Backend(Saml2Backend):
+    """SAML2 backend that stores the login context and keeps the user's manual changes."""
     
     def authenticate(self, request, session_info=None, attribute_mapping=None, create_unknown_user=True, **kwargs):
+        """
+        Authenticates the user and stores the SAML authentication context.
+
+        The first authn_info context class (e.g. the SPID level) is saved in
+        last_login_context.
+
+        Args:
+            request: The current HttpRequest.
+            session_info: The SAML session data of the assertion.
+
+        Returns:
+            The authenticated user.
+        """
         user = super().authenticate(
             request,
             session_info=session_info,
@@ -24,6 +38,22 @@ class CustomSaml2Backend(Saml2Backend):
         return user
 
     def _update_user(self, user, attributes: dict, attribute_mapping: dict, force_save: bool = False):
+        """
+        Updates the user from the SAML attributes.
+
+        Attributes mapped to EDITABLE_FIELDS are popped from attributes and
+        set only if the field is empty or the user has never changed their
+        data manually; the remaining ones are handled by the parent backend.
+
+        Args:
+            user: The user to update.
+            attributes: The SAML attributes; the editable ones are removed.
+            attribute_mapping: Map from SAML attributes to user fields.
+            force_save: Whether to save the user even if nothing changed.
+
+        Returns:
+            The value returned by the parent _update_user.
+        """
         mapping = {}
         # get editable fields from accounts app
         for ef in EDITABLE_FIELDS:

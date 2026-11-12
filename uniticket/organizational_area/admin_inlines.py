@@ -69,7 +69,8 @@ class UserManageOrganizationalStructureModelForm(forms.ModelForm):
 
 
 class UserManageOrganizationalStructureInline(admin.TabularInline):
-    """Manager users of a structure, edited in the structure admin page.
+    """
+    Manager users of a structure, edited in the structure admin page.
 
     A user listed here is a real manager only if also an employee of the
     structure default office (see uni_ticket.utils.user_is_manager).

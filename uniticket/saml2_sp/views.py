@@ -6,8 +6,7 @@ from djangosaml2.signals import pre_user_save
 
 
 def index(request):
-    """ Barebone 'diagnostics' view, print user attributes if logged in + login/logout links.
-    """
+    """Barebone diagnostics view: shows the user attributes if logged in, plus login/logout links."""
     if request.user.is_authenticated:
         out = "LOGGED IN: <a href={0}>LOGOUT</a><br>".format(settings.LOGOUT_URL)
         out += "".join(['%s: %s</br>' % (field.name, getattr(request.user, field.name))
@@ -21,8 +20,8 @@ def index(request):
 # TODO fix this in IdP side?
 @receiver(pre_user_save, sender=User)
 def custom_update_user(sender, instance, attributes, user_modified, **kargs):
-    """ Default behaviour does not play nice with booleans encoded in SAML as u'true'/u'false'.
-        This will convert those attributes to real booleans when saving.
+    """
+    Converts SAML boolean attributes ('true'/'false' strings) to real booleans before saving the user.
     """
     for k, v in attributes.items():
         u = set.intersection(set(v), set([u'true', u'false']))

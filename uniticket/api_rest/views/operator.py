@@ -25,7 +25,19 @@ logger = logging.getLogger(__name__)
 
 
 class TicketAPIUnassignedCounter(TicketAPIBaseView):
+    """Counts the open tickets visible to an operator and not yet taken."""
     def get(self, request, structure_slug, *args, **kwargs):
+        """
+        Returns the number of open tickets visible to the user not yet taken.
+
+        Raises PermissionDenied if the user is not an operator of the structure.
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            A Response with the "count" key.
+        """
         structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
         oe = user_is_operator(request.user, structure)
         if not oe: raise PermissionDenied
@@ -38,7 +50,19 @@ class TicketAPIUnassignedCounter(TicketAPIBaseView):
 
 
 class TicketAPIOpenCounter(TicketAPIBaseView):
+    """Counts the open tickets visible to an operator and already taken."""
     def get(self, request, structure_slug, *args, **kwargs):
+        """
+        Returns the number of open tickets visible to the user already taken.
+
+        Raises PermissionDenied if the user is not an operator of the structure.
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            A Response with the "count" key.
+        """
         structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
         oe = user_is_operator(request.user, structure)
         if not oe: raise PermissionDenied
@@ -51,7 +75,19 @@ class TicketAPIOpenCounter(TicketAPIBaseView):
 
 
 class TicketAPIMyOpenCounter(TicketAPIBaseView):
+    """Counts the open tickets visible to an operator and taken by them."""
     def get(self, request, structure_slug, *args, **kwargs):
+        """
+        Returns the number of open tickets visible to the user taken by them.
+
+        Raises PermissionDenied if the user is not an operator of the structure.
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            A Response with the "count" key.
+        """
         structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
         oe = user_is_operator(request.user, structure)
         if not oe: raise PermissionDenied
@@ -65,7 +101,22 @@ class TicketAPIMyOpenCounter(TicketAPIBaseView):
 
 
 class TicketAPIMessagesCounter(TicketAPIBaseView):
+    """Tells an operator whether the open tickets visible to them have unread messages."""
     def get(self, request, structure_slug, *args, **kwargs):
+        """
+        Checks the open tickets visible to the user for unread messages.
+
+        Only messages sent by users are checked.
+
+        Raises PermissionDenied if the user is not an operator of the structure.
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            A Response whose "count" key is a boolean, as returned by
+            TicketReply.get_unread_messages_count.
+        """
         structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
         oe = user_is_operator(request.user, structure)
         if not oe: raise PermissionDenied

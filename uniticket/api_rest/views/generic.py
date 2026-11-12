@@ -41,6 +41,7 @@ logger = logging.getLogger(__name__)
 
 # ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
+    """API endpoint that allows admin users to view or edit users."""
     permission_classes = [permissions.IsAdminUser]
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
@@ -56,11 +57,21 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 class uniTicketROGenericList(generics.ListAPIView):
+    """Base read-only list view for authenticated users."""
     # authentication_classes = [AuthorizationToken, SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 
 def message_level(level:int):
+    """
+    Returns the name of a message level.
+
+    Args:
+        level: A django.contrib.messages level value.
+
+    Returns:
+        The level name (e.g. "INFO"), or the level itself if unknown.
+    """
     levels = {v:k for k,v in messages.DEFAULT_LEVELS.items()}
     return levels.get(level, level)
 
@@ -77,6 +88,12 @@ class TicketAPIBaseView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_messages(self):
+        """
+        Consumes the django.contrib.messages stored for the current request.
+
+        Returns:
+            A list with a single dict that maps each level name to a message.
+        """
         return [
             {
                 message_level(i.level): i.message
@@ -86,12 +103,14 @@ class TicketAPIBaseView(APIView):
 
 
 class TicketAPIStruttureList(uniTicketROGenericList):
+    """Lists the active organizational structures."""
     queryset = OrganizationalStructure.objects.filter(is_active=True)
     lookup_field = 'pk'
     serializer_class = OrganizationalStructureSerializer
 
 
 class TicketAPITicketCategoryList(uniTicketROGenericList):
+    """Lists the active ticket categories."""
     queryset = TicketCategory.objects.filter(is_active=True)
     lookup_field = 'pk'
     serializer_class = TicketCategorySerializer

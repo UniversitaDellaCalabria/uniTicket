@@ -45,6 +45,7 @@ class User(AbstractUser):
     last_login_context = models.CharField(default="", max_length=70, blank=True)
 
     def spid_cie_logged(self):
+        """Returns True if the last login context is an allowed SPID/CIE context."""
         # default values live in uni_ticket.settings
         from uni_ticket.settings import SPID_CIE_ALLOWED_CONTEXTS
         return self.last_login_context in SPID_CIE_ALLOWED_CONTEXTS

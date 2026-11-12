@@ -26,6 +26,16 @@ logger = logging.getLogger(__name__)
 @is_manager
 def new(request, structure_slug, category_slug):
     """
+    Links a new App IO service to a ticket category of the structure.
+
+    Raises PermissionDenied if App IO is not enabled for the structure.
+
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        The rendered form, or a redirect to the category detail after a
+        valid submission.
     """
     # from @is_manager
     structure = request.structure
@@ -98,6 +108,17 @@ def new(request, structure_slug, category_slug):
 @is_manager
 def edit(request, structure_slug, category_slug, service_id):
     """
+    Edits the link between an App IO service and a ticket category.
+
+    Raises PermissionDenied if App IO is not enabled for the structure.
+
+    Args:
+        request: The current HttpRequest.
+        service_id: Primary key of the IOServiceTicketCategory.
+
+    Returns:
+        The rendered form, or a redirect to the category detail after a
+        valid submission.
     """
     # from @is_manager
     structure = request.structure
@@ -173,6 +194,16 @@ def edit(request, structure_slug, category_slug, service_id):
 @is_manager
 def enable(request, structure_slug, category_slug, service_id):
     """
+    Activates an App IO service of a category and deactivates the others.
+
+    Raises PermissionDenied if App IO is not enabled for the structure.
+
+    Args:
+        request: The current HttpRequest.
+        service_id: Primary key of the IOServiceTicketCategory.
+
+    Returns:
+        A redirect to the category detail.
     """
     # from @is_manager
     structure = request.structure
@@ -230,6 +261,16 @@ def enable(request, structure_slug, category_slug, service_id):
 @is_manager
 def disable(request, structure_slug, category_slug, service_id):
     """
+    Deactivates an App IO service of a category.
+
+    Raises PermissionDenied if App IO is not enabled for the structure.
+
+    Args:
+        request: The current HttpRequest.
+        service_id: Primary key of the IOServiceTicketCategory.
+
+    Returns:
+        A redirect to the category detail.
     """
     # from @is_manager
     structure = request.structure
@@ -286,6 +327,16 @@ def disable(request, structure_slug, category_slug, service_id):
 @is_manager
 def delete(request, structure_slug, category_slug, service_id):
     """
+    Removes the link between an App IO service and a category.
+
+    Raises PermissionDenied if App IO is not enabled for the structure.
+
+    Args:
+        request: The current HttpRequest.
+        service_id: Primary key of the IOServiceTicketCategory.
+
+    Returns:
+        A redirect to the category detail.
     """
     # from @is_manager
     structure = request.structure

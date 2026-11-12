@@ -19,7 +19,8 @@ logger = logging.getLogger(__name__)
 @receiver(post_save, sender=OrganizationalStructure)
 @disable_for_loaddata
 def create_manager_office(sender, instance, created, **kwargs):
-    """Create the default office of a new structure.
+    """
+    Creates the default office of a new structure.
 
     Structure managers must be employees of this office: being listed
     in UserManageOrganizationalStructure is not enough on its own.

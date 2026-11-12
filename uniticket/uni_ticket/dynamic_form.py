@@ -18,9 +18,27 @@ from uni_ticket.settings import (
 
 
 class DynamicForm(BaseDynamicForm):
-    """ """
+    """
+    Dynamic form used to create a ticket of a category.
+
+    Adds to the category module fields the conditions checkbox (if
+    any), the subject and the description fields and, for anonymous
+    users, a captcha.
+    """
 
     def __init__(self, constructor_dict={}, custom_params={}, *args, **kwargs):
+        """
+        Builds the fixed fields of the ticket form.
+
+        Args:
+            constructor_dict: The definition of the dynamic fields of the
+                category module.
+            custom_params: Extra parameters: category_owner (the
+                TicketCategory, required), show_conditions, subject_initial,
+                subject_max_length, description_initial and current_user.
+                The subject min length is PROTOCOL_SUBJECT_MIN_LENGTH if the
+                category requires protocol, 1 otherwise.
+        """
 
         self.initial_fields = {}
         self.final_fields = {}
@@ -109,6 +127,18 @@ class DynamicForm(BaseDynamicForm):
 
 
 def _get_choices(choices):
+    """
+    Converts form field choices to a list of text/value dicts.
+
+    Grouped choices are flattened.
+
+    Args:
+        choices: A sequence of (value, label) pairs, where a label can be
+            a nested sequence of choices.
+
+    Returns:
+        A list of {"text": label, "value": value} dicts.
+    """
     elements = []
     for value, label in choices:
         if isinstance(label, (list, tuple)):
@@ -119,6 +149,19 @@ def _get_choices(choices):
 
 
 def serialize_form(form, api_source = 'api_source'):
+    """
+    Serializes the fields of a form for the REST API.
+
+    Args:
+        form: The form to serialize.
+        api_source: Name of the field attribute that holds the API URL
+            to load the options from. Fields with this attribute don't
+            get the options of their queryset.
+
+    Returns:
+        A list of dicts, one per field, with id, label, initial, type,
+        options, rendered html and other field properties.
+    """
 
     form_fields = []
 

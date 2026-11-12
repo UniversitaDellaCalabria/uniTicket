@@ -2,7 +2,8 @@ from functools import wraps
 
 
 def disable_for_loaddata(signal_handler):
-    """Turn off a signal handler when loading fixture data.
+    """
+    Turns off a signal handler when loading fixture data.
 
     loaddata saves objects with raw=True: without this check a handler
     would create again objects already in the fixture (e.g. the default
@@ -16,6 +17,7 @@ def disable_for_loaddata(signal_handler):
     """
     @wraps(signal_handler)
     def wrapper(*args, **kwargs):
+        """Calls the signal handler unless the instance comes from raw fixture data."""
         if kwargs.get('raw'):
             return
         signal_handler(*args, **kwargs)

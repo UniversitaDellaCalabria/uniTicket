@@ -5,7 +5,16 @@ from . models import IOServiceTicketCategory
 
 
 class IOServiceTicketCategoryForm(forms.ModelForm):
+    """Form to link an App IO service to a ticket category."""
     def __init__(self, *args, **kwargs):
+        """
+        Hides the services already linked to the category.
+
+        The service of the edited link stays selectable.
+
+        Args:
+            category: The TicketCategory of the link (required keyword argument).
+        """
         category = kwargs.pop('category')
         super().__init__(*args, **kwargs)
         services = IOServiceTicketCategory.objects.filter(category=category).values_list('service__pk', flat=True)

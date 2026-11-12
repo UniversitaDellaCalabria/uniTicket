@@ -14,6 +14,7 @@ from uni_ticket.settings import STATS_TIME_SLOTS, STATS_DEFAULT_DATE_START_DELTA
 
 
 class StatsArgsModel(BaseModel):
+    """Validation model for the uniTicketStats arguments."""
     date_start : Union[timezone.datetime, None]
     date_end : Union[timezone.datetime, None]
     structure_slug : Union[str, None]
@@ -22,6 +23,11 @@ class StatsArgsModel(BaseModel):
 
 
 class uniTicketStats:
+    """
+    Collects the ticket statistics in a date range.
+
+    Tickets can be filtered by structure, offices and categories.
+    """
 
     def __init__(
         self,
@@ -31,6 +37,16 @@ class uniTicketStats:
         office_slug : Union[list, None] = None,
         category_slug:Union[list, None] = None
     ):
+        """
+        Validates the arguments and initializes counters and per-day series.
+
+        Args:
+            date_start: Start date (default: STATS_DEFAULT_DATE_START_DELTA_DAYS days before date_end).
+            date_end: End date (default: now).
+            structure_slug: Structure slug.
+            office_slug: List of office slugs.
+            category_slug: List of category slugs.
+        """
         # args validation
         StatsArgsModel(
             **dict(
@@ -107,6 +123,7 @@ class uniTicketStats:
         }
 
     def ticket_data_query(self):
+        """Returns the ticket filter kwargs for the selected structure, offices and categories."""
         _q = {}
 
         if self.structure_slug:
@@ -137,6 +154,7 @@ class uniTicketStats:
         return _q
 
     def get_operators_pks(self):
+        """Returns the pks of the operators of the selected structure (all operators if not set)."""
         _q = {}
 
         if self.structure_slug:

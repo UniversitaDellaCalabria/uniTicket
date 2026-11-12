@@ -19,9 +19,13 @@ from .utils import (
 
 def is_super_admin(func_to_decorate):
     """
+    Allows access to the view only to superusers.
+
+    Otherwise renders a "not allowed" message.
     """
 
     def new_func(*original_args, **original_kwargs):
+        """Runs the view if the user is a superuser."""
         request = original_args[0]
         if request.user.is_superuser:
             return func_to_decorate(*original_args, **original_kwargs)
@@ -35,11 +39,12 @@ def is_super_admin(func_to_decorate):
 
 def is_manager(func_to_decorate):
     """
-    Check if user is manager in some OrganizationalStructure
+    Checks if user is manager in some OrganizationalStructure
     Employee of structure default office + staff in Django
     """
 
     def new_func(*original_args, **original_kwargs):
+        """Runs the view if the user is a manager of the structure, setting request.structure."""
         request = original_args[0]
         structure_slug = original_kwargs["structure_slug"]
         structure = OrganizationalStructure.objects.filter(
@@ -59,10 +64,15 @@ def is_manager(func_to_decorate):
 
 def is_operator(func_to_decorate):
     """
-    Check if user is employee in some Office
+    Checks if user is employee in some Office
     """
 
     def new_func(*original_args, **original_kwargs):
+        """
+        Redirects managers to their dashboard and runs the view for operators.
+
+        Sets request.office_employee and request.structure.
+        """
         request = original_args[0]
         structure_slug = original_kwargs["structure_slug"]
         structure = get_object_or_404(
@@ -88,10 +98,11 @@ def is_operator(func_to_decorate):
 
 def is_the_owner(func_to_decorate):
     """
-    Check if the current user is the owner of the ticket
+    Checks if the current user is the owner of the ticket
     """
 
     def new_func(*original_args, **original_kwargs):
+        """Sets request.ticket to the ticket created or compiled by the user and runs the view."""
         request = original_args[0]
         if not hasattr(request, "ticket"):
             request.ticket = get_object_or_404(
@@ -110,6 +121,11 @@ def has_ticket_admin_privileges(func_to_decorate):
     """
 
     def new_func(*original_args, **original_kwargs):
+        """
+        Runs the view if the ticket is followed by the user offices.
+
+        Sets request.structure, request.ticket and request.can_manage.
+        """
         request = original_args[0]
         structure_slug = original_kwargs["structure_slug"]
         structure = get_object_or_404(
@@ -151,10 +167,11 @@ def has_ticket_admin_privileges(func_to_decorate):
 
 def has_access_to_ticket(func_to_decorate):
     """
-    Check if current user has access to the ticket
+    Checks if current user has access to the ticket
     """
 
     def new_func(*original_args, **original_kwargs):
+        """Runs the view if the user owns the ticket or manages one of its offices, otherwise raises Http404."""
         request = original_args[0]
         ticket_id = original_kwargs["ticket_id"]
         if not hasattr(request, "ticket"):
@@ -179,10 +196,11 @@ def has_access_to_ticket(func_to_decorate):
 
 def ticket_is_not_taken_and_not_closed(func_to_decorate):
     """
-    Check if current ticket is not taken
+    Checks if current ticket is not taken
     """
 
     def new_func(*original_args, **original_kwargs):
+        """Runs the view if the ticket is not taken, not assigned to more offices and not closed."""
         request = original_args[0]
         ticket = request.ticket
         assignments_count = TicketAssignment.objects.filter(
@@ -198,10 +216,11 @@ def ticket_is_not_taken_and_not_closed(func_to_decorate):
 
 def ticket_is_taken_and_not_closed(func_to_decorate):
     """
-    Check if current ticket is taken
+    Checks if current ticket is taken
     """
 
     def new_func(*original_args, **original_kwargs):
+        """Runs the view if the ticket is taken and not closed."""
         request = original_args[0]
         ticket_id = original_kwargs["ticket_id"]
         if not hasattr(request, "ticket"):
@@ -217,10 +236,11 @@ def ticket_is_taken_and_not_closed(func_to_decorate):
 
 def ticket_assigned_to_structure(func_to_decorate):
     """
-    Check if current ticket is assigned to a structure
+    Checks if current ticket is assigned to a structure
     """
 
     def new_func(*original_args, **original_kwargs):
+        """Runs the view if the ticket is assigned to request.structure."""
         request = original_args[0]
         structure_slug = original_kwargs["structure_slug"]
         ticket_id = original_kwargs["ticket_id"]
@@ -238,7 +258,17 @@ def ticket_assigned_to_structure(func_to_decorate):
 
 
 def ticket_is_taken_for_employee(func_to_decorate):
+    """
+    Checks that the ticket has been taken in the current structure.
+
+    Requires request.can_manage and request.structure (set by
+    has_ticket_admin_privileges). Redirects to the ticket detail page with an
+    error if the user has a readonly competence or if the ticket has not been
+    taken yet (excluding readonly assignments). Attaches the ticket to
+    request.ticket if missing.
+    """
     def new_func(*original_args, **original_kwargs):
+        """Runs the view if the ticket is taken and the user competence is not readonly."""
         request = original_args[0]
         structure_slug = original_kwargs["structure_slug"]
         ticket_id = original_kwargs["ticket_id"]

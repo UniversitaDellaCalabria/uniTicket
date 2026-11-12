@@ -6,7 +6,8 @@ register = template.Library()
 
 @register.filter(name='has_group')
 def has_group(user, group_name):
-    """Check if a user belongs to a group.
+    """
+    Checks if a user belongs to a group.
 
     Args:
         user: The user to check.

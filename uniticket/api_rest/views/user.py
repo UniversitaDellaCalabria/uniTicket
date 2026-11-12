@@ -82,6 +82,7 @@ class TicketAPIView(TicketAPIBaseView):
         )
 
     def dispatch(self, request, *args, **kwargs):
+        """Binds a legacy TicketAddNew view to the request, then dispatches it."""
         self.legacy_view = TicketAddNew()
         self.legacy_view.request = request
         return super().dispatch(request, *args, **kwargs)
@@ -109,7 +110,7 @@ class TicketAPIView(TicketAPIBaseView):
 
     def get(self, request, structure_slug, category_slug):
         """
-        Return a ticket by structure_slug, category_slug
+        Returns a ticket by structure_slug, category_slug
         """
         legacy_response = self.legacy_view.get(
             request=request, 
@@ -123,7 +124,7 @@ class TicketAPIView(TicketAPIBaseView):
 
     def post(self, request, structure_slug, category_slug):
         """
-        Return a ticket by structure_slug, category_slug
+        Returns a ticket by structure_slug, category_slug
         """
         # useless ... untill you don't except csrf on the legacy view ... but no.
         # request._set_post(request.data)
@@ -167,13 +168,14 @@ class TicketAPIDetail(TicketAPIBaseView):
     """
 
     def dispatch(self, request, *args, **kwargs):
+        """Binds a legacy TicketDetail view to the request, then dispatches it."""
         self.legacy_view = TicketDetail()
         self.legacy_view.request = request
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, ticket_uid):
         """
-        Return a ticket by structure_slug, category_slug
+        Returns a ticket by structure_slug, category_slug
         """
         legacy_response = self.legacy_view.get(request, ticket_uid, api=True)
         if isinstance(legacy_response, dict):
@@ -202,10 +204,22 @@ class TicketAPIDetail(TicketAPIBaseView):
 
 
 class TicketAPIListCreated(uniTicketROGenericList):
+    """Lists the tickets created or compiled by the current user."""
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
 
     def list(self, request, *args, **kwargs):
+        """
+        Lists the tickets created or compiled by the current user.
+
+        The results are paginated if a paginator is configured.
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            A Response with the serialized tickets.
+        """
         if not request.user.is_authenticated:
             raise PermissionDenied()
 
@@ -225,6 +239,7 @@ class TicketAPIListCreated(uniTicketROGenericList):
 
 
 class TicketAPIClose(TicketAPIBaseView):
+    """Closes a ticket through the legacy TicketClose view."""
 
     def build_response(self) -> dict:
         """
@@ -239,12 +254,23 @@ class TicketAPIClose(TicketAPIBaseView):
         )
 
     def dispatch(self, request, *args, **kwargs):
+        """Binds a legacy TicketClose view to the request, then dispatches it."""
         self.legacy_view = TicketClose()
         self.legacy_view.request = request
         self.user = request.user
         return super().dispatch(request, *args, **kwargs)
 
     def close(self, request, ticket_id, *args, **kwargs):
+        """
+        Runs the legacy TicketClose view with the request data.
+
+        Args:
+            request: The current HttpRequest.
+            ticket_id: Code of the ticket to close.
+
+        Returns:
+            A Response with the messages, the ticket and the closing form.
+        """
         request.api_data = getattr(request, "data", {})
         self.legacy_view.dispatch(
             request, 
@@ -257,7 +283,9 @@ class TicketAPIClose(TicketAPIBaseView):
         return Response(self.build_response())
 
     def get(self, request, ticket_id, *args, **kwargs):
+        """Closes the ticket, like post."""
         return self.close(request, ticket_id, *args, **kwargs)
 
     def post(self, request, ticket_id, *args, **kwargs):
+        """Closes the ticket."""
         return self.close(request, ticket_id, *args, **kwargs)

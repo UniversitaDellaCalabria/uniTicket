@@ -20,6 +20,19 @@ from uni_ticket.utils import (base_context,
 
 @login_required
 def room(request, room_name):
+    """
+    Shows the chat room of a structure.
+
+    Default office operators always enter; the other users enter only if
+    the structure has active categories allowed to their user type.
+
+    Args:
+        request: The current HttpRequest.
+        room_name: Slug of the structure.
+
+    Returns:
+        The rendered room page, or an error message page.
+    """
     structure = get_object_or_404(OrganizationalStructure,
                                   slug=room_name,
                                   is_active=True)
@@ -76,4 +89,5 @@ def room(request, room_name):
 
 
 def random_vc_provider(request):
+    """Returns a random video conference provider from VIDEOCONF_PROVIDERS."""
     return HttpResponse(random.choice(VIDEOCONF_PROVIDERS))

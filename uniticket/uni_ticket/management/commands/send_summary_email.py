@@ -6,9 +6,11 @@ from organizational_area.models import OrganizationalStructureOfficeEmployee
 
 
 class Command(BaseCommand):
+    """Sends to active operators a summary email of their open tickets."""
     help = "Send a summary of open tickets to Operators"
 
     def add_arguments(self, parser):
+        """Adds the -debug option."""
         # parser.add_argument('-test', required=False, action="store_true",
         # help="do send any email, just test")
         parser.add_argument(
@@ -16,6 +18,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        """Sends the summary email to the operators with notifications enabled."""
         users = OrganizationalStructureOfficeEmployee.objects.filter(
             employee__is_active=True, employee__email_notify=True
         ).values_list("employee")

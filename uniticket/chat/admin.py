@@ -5,6 +5,7 @@ from .models import ChatMessageModel, UserChannel
 
 @admin.register(ChatMessageModel)
 class ChatMessageModelAdmin(admin.ModelAdmin):
+    """Read-only admin of the chat messages."""
     readonly_fields = ('user', 'recipient', 'read_date',
                        'body', 'room', 'broadcast', 'created',)
     search_fields = ('id', 'body',
@@ -16,6 +17,7 @@ class ChatMessageModelAdmin(admin.ModelAdmin):
     date_hierarchy = 'created'
 
     def has_add_permission(self, request):
+        """Returns False: messages cannot be added from the admin."""
         return False
 
     # def has_delete_permission(self, request, obj=None):
@@ -24,6 +26,7 @@ class ChatMessageModelAdmin(admin.ModelAdmin):
 
 @admin.register(UserChannel)
 class UserChannel(admin.ModelAdmin):
+    """Read-only admin of the user chat channels."""
     readonly_fields = ('user', 'channel', 'room',
                        'created', 'last_seen', 'status')
     search_fields = ('user__username', 'room', 'channel')
@@ -32,4 +35,5 @@ class UserChannel(admin.ModelAdmin):
     date_hierarchy = 'created'
 
     def has_add_permission(self, request):
+        """Returns False: channels cannot be added from the admin."""
         return False

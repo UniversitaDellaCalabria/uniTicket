@@ -10,6 +10,13 @@ from .models import *
 
 @admin.register(TicketCategory)
 class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
+    """
+    Admin for TicketCategory.
+
+    Most fields are read-only. Shows the category modules (with their
+    fields), conditions and tasks as nested inlines and provides the
+    download_report_csv action.
+    """
     # prepopulated_fields = {'slug': ('name',)}
     readonly_fields = (
         "name",
@@ -76,6 +83,7 @@ class TicketCategoryAdmin(nested_admin.NestedModelAdmin):
 
 @admin.register(Ticket)
 class TicketAdmin(nested_admin.NestedModelAdmin):
+    """Admin for Ticket, with assignments, replies and dependencies inline."""
     # readonly_fields = ('code', 'subject', 'description', 'modulo_compilato',
     # 'created', 'created_by', 'input_module',
     # 'is_closed', 'closed_date', 'closed_by',
@@ -129,6 +137,7 @@ class TicketAdmin(nested_admin.NestedModelAdmin):
 
 @admin.register(Task)
 class TaskAdmin(nested_admin.NestedModelAdmin):
+    """Read-only admin for the tasks of the tickets."""
     list_display = (
         "ticket",
         "subject",
@@ -156,6 +165,7 @@ class TaskAdmin(nested_admin.NestedModelAdmin):
     )
 
     def has_add_permission(self, request):
+        """Returns False: tasks cannot be added from the admin."""
         return False
 
     # def has_delete_permission(self, request, obj=None):

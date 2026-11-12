@@ -30,6 +30,7 @@ from .utils import *
 
 
 class CategoryForm(ModelForm):
+    """ModelForm to create and edit a TicketCategory, with Markdown footer."""
     footer_text = MarkdownxFormField(label=_("Testo in calce per versione stampabile"),
                                      help_text=_(
                                          "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
@@ -90,6 +91,7 @@ class CategoryForm(ModelForm):
 
 
 class CategoryAddOfficeForm(forms.Form):
+    """Form to assign a ticket category to an office of the structure."""
     office = forms.ModelChoiceField(
         label=_("Assegna competenza ufficio"),
         queryset=None,
@@ -98,6 +100,13 @@ class CategoryAddOfficeForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        """
+        Limits the office choices to the active offices of the structure.
+
+        Args:
+            structure: Keyword argument, the OrganizationalStructure of the
+                category.
+        """
         structure = kwargs.pop("structure", None)
         offices = OrganizationalStructureOffice.objects.filter(
             organizational_structure=structure, is_active=True
@@ -108,6 +117,7 @@ class CategoryAddOfficeForm(forms.Form):
 
 
 class CategoryInputModuleForm(ModelForm):
+    """ModelForm to create and rename a TicketCategoryModule."""
     class Meta:
         model = TicketCategoryModule
         fields = ["name"]
@@ -115,6 +125,7 @@ class CategoryInputModuleForm(ModelForm):
 
 
 class CategoryInputListForm(ModelForm):
+    """ModelForm to create and edit a TicketCategoryInputList (module field)."""
     pre_text = MarkdownxFormField(label=_("Testo statico (Pre-text)"),
                                   help_text=_("Da visualizzare prima del campo.") + _("Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"),
                                   widget=MarkdownxWidget(attrs={'rows': 4}),
@@ -201,11 +212,19 @@ class CategoryInputListForm(ModelForm):
 
 
 class TaskCloseForm(forms.ModelForm):
+    """ModelForm to close a Task, optionally notifying offices by email."""
     mail_to_offices = forms.MultipleChoiceField(label=_("Email agli uffici"),
                                                 required=False,
                                                 widget=CheckboxSelectMultiple)
 
     def __init__(self, *args, **kwargs):
+        """
+        Sets the office choices and makes closing status and reason required.
+
+        Args:
+            active_offices: Keyword argument, the offices that can be
+                notified by email.
+        """
         active_offices = kwargs.pop("active_offices", None)
         super().__init__(*args, **kwargs)
         choices = []
@@ -233,6 +252,7 @@ class TaskCloseForm(forms.ModelForm):
 
 
 class BaseTicketCloseForm(forms.Form):
+    """Base form with the closing note of a ticket."""
     note = forms.CharField(
         label=_("Motivazione"),
         help_text=_(
@@ -249,6 +269,7 @@ class BaseTicketCloseForm(forms.Form):
 
 
 class TicketCloseForm(BaseTicketCloseForm):
+    """Form to close a ticket with a closing status and a note."""
     status = forms.TypedChoiceField(
         choices=CLOSING_LEVELS,
         required=True,
@@ -262,7 +283,7 @@ class TicketCloseForm(BaseTicketCloseForm):
 
 
 class OfficeForm(ModelForm):
-    """ """
+    """ModelForm to create and edit an OrganizationalStructureOffice."""
 
     class Meta:
         model = OrganizationalStructureOffice
@@ -286,18 +307,22 @@ class OfficeForm(ModelForm):
 
 
 class AddUserForm(forms.Form):
+    """Form with the primary key of a user to add (e.g. to allowed users)."""
     user = forms.CharField(required=True)
 
     
 class AddUsersListForm(forms.Form):
+    """Form with the primary key of an allowed users list to add."""
     users_list = forms.CharField(required=True)
 
 
 class OfficeAddOperatorForm(AddUserForm):
+    """Form to add an operator, with an optional description, to an office."""
     description = forms.CharField(required=False)
 
 
 class PriorityForm(forms.Form):
+    """Form to change the priority of a ticket."""
     priorita = forms.TypedChoiceField(
         choices=PRIORITY_LEVELS,
         required=True,
@@ -309,6 +334,7 @@ class PriorityForm(forms.Form):
 
 
 class TakeTicketForm(forms.Form):
+    """Form to take a ticket in charge, setting its priority."""
     priority = forms.TypedChoiceField(
         choices=PRIORITY_LEVELS,
         required=True,
@@ -320,6 +346,13 @@ class TakeTicketForm(forms.Form):
     office = forms.CharField(required=True)
 
     def __init__(self, *args, **kwargs):
+        """
+        Renders the office field as a hidden input.
+
+        Args:
+            office_referred: Keyword argument, the value of the hidden
+                office field.
+        """
         office_arg = kwargs.pop("office_referred", None)
         super().__init__(*args, **kwargs)
         self.fields["office"].widget = forms.HiddenInput(
@@ -327,7 +360,7 @@ class TakeTicketForm(forms.Form):
 
 
 class ReplyForm(ModelForm):
-    """ """
+    """ModelForm to send a TicketReply, with Markdown text."""
     text = MarkdownxFormField(label=_("Testo"),
                               help_text=_(
                                 "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
@@ -366,7 +399,7 @@ class TicketCompetenceSchemeForm(forms.Form):
 
 
 class TicketDependenceForm(forms.Form):
-    """ """
+    """Form to make the current ticket depend on another ticket."""
     ticket = forms.CharField(label=_("Ticket"), required=True,
                              help_text=_("Codice univoco identificativo della richiesta"))
     note = forms.CharField(
@@ -374,6 +407,17 @@ class TicketDependenceForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        """
+        Stores the context used to validate the ticket code.
+
+        Args:
+            user: Keyword argument, the current user.
+            structure: Keyword argument, the current structure.
+            ticket_code: Keyword argument, the code of the current ticket.
+            ticket_id: Keyword argument, the id of the current ticket.
+            ticket_dependences: Keyword argument, the codes of the tickets
+                the current ticket already depends on.
+        """
         self.user = kwargs.pop("user", None)
         self.structure = kwargs.pop("structure", None)
         self.current_ticket_code = kwargs.pop("ticket_code", None)
@@ -382,6 +426,20 @@ class TicketDependenceForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def clean_ticket(self):
+        """
+        Validates the code of the ticket to depend on.
+
+        The ticket must not be the current one or an existing dependence and
+        must be managed by the user: among the structure tickets for managers
+        and default office operators, among the tickets taken by the user
+        offices for the other operators.
+
+        Returns:
+            The Ticket with the given code.
+
+        Raises:
+            ValidationError: If the ticket cannot be used as dependence.
+        """
         code = self.cleaned_data["ticket"]
 
         if code == self.current_ticket_code:
@@ -414,7 +472,7 @@ class TicketDependenceForm(forms.Form):
 
 
 class TaskForm(ModelForm):
-    """ """
+    """ModelForm to create and edit a Task, optionally notifying offices."""
     description = MarkdownxFormField(label=_("Testo"),
                                       help_text=_(
                                         "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
@@ -426,6 +484,13 @@ class TaskForm(ModelForm):
                                                 widget=CheckboxSelectMultiple)
 
     def __init__(self, *args, **kwargs):
+        """
+        Sets the office choices, removing the field if there are none.
+
+        Args:
+            active_offices: Keyword argument, the offices that can be
+                notified by email.
+        """
         active_offices = kwargs.pop("active_offices", [])
         super().__init__(*args, **kwargs)
         choices = []
@@ -460,6 +525,7 @@ class TaskForm(ModelForm):
 
 
 class CategoryConditionForm(ModelForm):
+    """ModelForm to create and edit a TicketCategoryCondition (Markdown)."""
     text = MarkdownxFormField(label=_("Testo"),
                               help_text=_(
                                   "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
@@ -493,6 +559,7 @@ class CategoryConditionForm(ModelForm):
 
 
 class CategoryDefaultReplyForm(ModelForm):
+    """ModelForm to create and edit a TicketCategoryDefaultReply."""
     class Meta:
         model = TicketCategoryDefaultReply
         fields = [
@@ -517,6 +584,7 @@ class CategoryDefaultReplyForm(ModelForm):
 
 
 class OfficeAddCategoryForm(forms.Form):
+    """Form to assign a ticket category to an office."""
     category = forms.ModelChoiceField(
         label=_("Assegna tipologia di richiesta"),
         queryset=None,
@@ -525,6 +593,13 @@ class OfficeAddCategoryForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        """
+        Limits the choices to the structure categories without an office.
+
+        Args:
+            structure: Keyword argument, the OrganizationalStructure of the
+                office.
+        """
         structure = kwargs.pop("structure", None)
         kwargs.pop("office", None)
         categories = TicketCategory.objects.filter(
@@ -538,7 +613,7 @@ class OfficeAddCategoryForm(forms.Form):
 # class CategoryTaskForm(TaskForm):
 # is_active = forms.BooleanField(label=_('Attiva'), required=False)
 class CategoryTaskForm(ModelForm):
-    """ """
+    """ModelForm to create and edit a TicketCategoryTask (Markdown)."""
     description = MarkdownxFormField(label=_("Testo"),
                                       help_text=_(
                                         "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
@@ -577,6 +652,7 @@ class CategoryTaskForm(ModelForm):
 
 
 class AssignTicketToOperatorForm(forms.Form):
+    """Form to assign a ticket to an office operator, setting its priority."""
     priorita = forms.TypedChoiceField(
         choices=PRIORITY_LEVELS,
         required=True,
@@ -593,6 +669,16 @@ class AssignTicketToOperatorForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        """
+        Limits the choices to the active operators of the office.
+
+        The current user is excluded.
+
+        Args:
+            office: Keyword argument, the office whose operators can be
+                selected.
+            current_user: Keyword argument, the user assigning the ticket.
+        """
         kwargs.pop("structure", None)
         office = kwargs.pop("office", None)
         current_user = kwargs.pop("current_user", None)
@@ -610,6 +696,7 @@ class AssignTicketToOperatorForm(forms.Form):
 
 
 class TicketOperatorOfficesForm(forms.Form):
+    """Form to select one of the operator offices that follow a ticket."""
     office = forms.ModelChoiceField(
         label=_("Seleziona l'ufficio"),
         queryset=None,
@@ -618,6 +705,17 @@ class TicketOperatorOfficesForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
+        """
+        Limits the choices to the operator offices that took the ticket.
+
+        Only active offices of the structure that still follow the ticket are
+        considered.
+
+        Args:
+            structure: Keyword argument, the current structure.
+            operator: Keyword argument, the current user.
+            ticket: Keyword argument, the ticket.
+        """
         structure = kwargs.pop("structure", None)
         operator = kwargs.pop("operator", None)
         ticket = kwargs.pop("ticket", None)
@@ -641,6 +739,7 @@ class TicketOperatorOfficesForm(forms.Form):
 
 
 class OrganizationalStructureAlertForm(ModelForm):
+    """ModelForm to create and edit an OrganizationalStructureAlert."""
     class Meta:
         model = OrganizationalStructureAlert
         fields = ["name", "text", "ordinamento",
@@ -669,6 +768,7 @@ class OrganizationalStructureAlertForm(ModelForm):
 
 
 class TicketOperatorNoteForm(ModelForm):
+    """ModelForm to add a TicketOperatorNote, with Markdown text."""
     text = MarkdownxFormField(label=_("Testo"),
                               help_text=_(
                                 "Accetta formattazione Markdown: https://www.markdownguide.org/cheat-sheet/"
@@ -685,6 +785,7 @@ class TicketOperatorNoteForm(ModelForm):
 
 
 class OrganizationalStructureAllowedUsersListForm(ModelForm):
+    """ModelForm to create and edit an allowed users list of a structure."""
     class Meta:
         model = OrganizationalStructureAllowedUsersList
         fields = ["name", "description"]

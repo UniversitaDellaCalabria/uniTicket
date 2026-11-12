@@ -18,7 +18,8 @@ from . settings import *
 
 @login_required
 def changeData(request):
-    """Show and save the personal data form of the logged user.
+    """
+    Shows and save the personal data form of the logged user.
 
     The fields in EDITABLE_FIELDS are saved immediately, except the email:
     a new address is sent a confirmation link and is updated only by
@@ -87,7 +88,8 @@ def changeData(request):
 
 @login_required
 def confirmEmail(request):
-    """Update the user email from a confirmation link.
+    """
+    Updates the user email from a confirmation link.
 
     The token is rejected if it cannot be decrypted, belongs to another
     user, is older than CHANGE_EMAIL_TOKEN_LIFE minutes, or was created

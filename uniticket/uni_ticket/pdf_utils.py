@@ -17,6 +17,19 @@ except ModuleNotFoundError:
 
 
 def response_as_pdf(response, pdf_fname):
+    """
+    Converts an HTML response to a PDF response.
+
+    Static URLs are made absolute (except in DEBUG with ASGI) and the PDF is
+    generated in TMP_DIR, read and removed.
+
+    Args:
+        response: The HTML response.
+        pdf_fname: PDF file name.
+
+    Returns:
+        An HttpResponse with the PDF inline.
+    """
     html_page = response.content.decode("utf-8")
 
     # if ASGI

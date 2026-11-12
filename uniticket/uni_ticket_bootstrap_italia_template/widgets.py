@@ -2,6 +2,7 @@ from django.forms.widgets import DateTimeInput
 
 
 class UniTicketDateTimeWidget(DateTimeInput):
+    """DateTime input widget with a bootstrap datetimepicker."""
     template_name = "widgets/uniticket_datetime.html"
 
     class Media:

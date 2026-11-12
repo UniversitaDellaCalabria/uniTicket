@@ -8,6 +8,15 @@ from django.utils.translation import gettext_lazy as _
 
 
 def create_token(length:int = 128) -> str:
+    """
+    Generates a random token value.
+
+    Args:
+        length: Number of characters of the token.
+
+    Returns:
+        A random string of hexadecimal digits.
+    """
     return ''.join(
         random.sample(string.hexdigits * 12, length)
     )
@@ -53,6 +62,7 @@ class AuthorizationToken(models.Model):
 
     @property
     def is_active(self):
+        """Returns True if the token has not expired yet."""
         try:
             return timezone.localtime() < self.active_until
         except TypeError:
@@ -60,6 +70,7 @@ class AuthorizationToken(models.Model):
 
     @property
     def as_http_header(self):
+        """Returns the token as a request META dict with the HTTP_AUTHORIZATION key."""
         return {"HTTP_AUTHORIZATION": f"Token {self.value}"}
 
     def __str__(self):

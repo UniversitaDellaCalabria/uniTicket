@@ -16,11 +16,12 @@ def dashboard(request, structure_slug):
     """
     Operator Dashboard
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_operator
     structure = request.structure

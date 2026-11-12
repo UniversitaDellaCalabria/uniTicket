@@ -40,6 +40,7 @@ _no_priority = [
 
 
 class TicketDTD(DjangoDatatablesServerProc):
+    """Server side DataTables processor for ticket (or ticket assignment) querysets."""
 
     def get_queryset(self):
         """
@@ -173,7 +174,11 @@ def user_all_tickets(request):
     """
     Returns all tickets opened by user
 
-    :return: JsonResponse
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        A JsonResponse.
     """
     columns = _no_priority
     if SIMPLE_USER_SHOW_PRIORITY:
@@ -196,7 +201,11 @@ def user_draft_ticket(request):
     """
     Returns all draft tickets opened by user
 
-    :return: JsonResponse
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        A JsonResponse.
     """
     columns = _no_priority
     if SIMPLE_USER_SHOW_PRIORITY:
@@ -220,7 +229,11 @@ def user_unassigned_ticket(request):
     """
     Returns all unassigned tickets opened by user
 
-    :return: JsonResponse
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        A JsonResponse.
     """
     columns = _no_priority
     if SIMPLE_USER_SHOW_PRIORITY:
@@ -266,7 +279,11 @@ def user_opened_ticket(request):
     """
     Returns all assigned and not closed tickets opened by user
 
-    :return: JsonResponse
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        A JsonResponse.
     """
     columns = _no_priority
     if SIMPLE_USER_SHOW_PRIORITY:
@@ -292,7 +309,11 @@ def user_closed_ticket(request):
     """
     Returns all closed tickets opened by user
 
-    :return: JsonResponse
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        A JsonResponse.
     """
     columns = _no_priority
     if SIMPLE_USER_SHOW_PRIORITY:
@@ -317,11 +338,12 @@ def manager_all_tickets(request, structure_slug):
     """
     Returns all not closed tickets managed by manager
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Manager structure slug.
 
-    :param structure_slug: manager structure slug
-
-    :return: JsonResponse
+    Returns:
+        A JsonResponse.
     """
     # from @is_manager
     structure = request.structure
@@ -339,11 +361,12 @@ def manager_unassigned_ticket(request, structure_slug):
     """
     Returns all unassigned tickets managed by manager
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Manager structure slug.
 
-    :param structure_slug: manager structure slug
-
-    :return: JsonResponse
+    Returns:
+        A JsonResponse.
     """
     # from @is_manager
     structure = request.structure
@@ -362,11 +385,12 @@ def manager_opened_ticket(request, structure_slug):
     """
     Returns all assigned and not closed tickets managed by manager
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Manager structure slug.
 
-    :param structure_slug: manager structure slug
-
-    :return: JsonResponse
+    Returns:
+        A JsonResponse.
     """
     # from @is_manager
     structure = request.structure
@@ -385,11 +409,12 @@ def manager_my_opened_ticket(request, structure_slug):
     """
     Returns all assigned and not closed tickets taken by manager
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Manager structure slug.
 
-    :param structure_slug: manager structure slug
-
-    :return: JsonResponse
+    Returns:
+        A JsonResponse.
     """
     # from @is_manager
     structure = request.structure
@@ -409,11 +434,12 @@ def manager_closed_ticket(request, structure_slug):
     """
     Returns all closed tickets managed by manager
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Manager structure slug.
 
-    :param structure_slug: manager structure slug
-
-    :return: JsonResponse
+    Returns:
+        A JsonResponse.
     """
     # from @is_manager
     structure = request.structure
@@ -431,11 +457,12 @@ def operator_all_tickets(request, structure_slug):
     """
     Returns all not closed tickets managed by operator
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Operator structure slug.
 
-    :param structure_slug: operator structure slug
-
-    :return: JsonResponse
+    Returns:
+        A JsonResponse.
     """
     # from @is_operator
     structure = request.structure
@@ -454,11 +481,12 @@ def operator_unassigned_ticket(request, structure_slug):
     """
     Returns all unassigned tickets managed by operator
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Operator structure slug.
 
-    :param structure_slug: operator structure slug
-
-    :return: JsonResponse
+    Returns:
+        A JsonResponse.
     """
     # from @is_operator
     structure = request.structure
@@ -480,11 +508,12 @@ def operator_opened_ticket(request, structure_slug):
     """
     Returns all assigned and not closed tickets managed by operator
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Operator structure slug.
 
-    :param structure_slug: operator structure slug
-
-    :return: JsonResponse
+    Returns:
+        A JsonResponse.
     """
     # from @is_operator
     structure = request.structure
@@ -506,11 +535,12 @@ def operator_my_opened_ticket(request, structure_slug):
     """
     Returns all assigned and not closed tickets taken by operator
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Operator structure slug.
 
-    :param structure_slug: operator structure slug
-
-    :return: JsonResponse
+    Returns:
+        A JsonResponse.
     """
     # from @is_operator
     structure = request.structure
@@ -533,11 +563,12 @@ def operator_closed_ticket(request, structure_slug):
     """
     Returns all closed tickets managed by operator
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Operator structure slug.
 
-    :param structure_slug: operator structure slug
-
-    :return: JsonResponse
+    Returns:
+        A JsonResponse.
     """
     # from @is_operator
     structure = request.structure

@@ -49,6 +49,7 @@ logger = logging.getLogger(__name__)
 
 
 def base_context(context):
+    """Adds the DEFAULT_BASE_TEMPLATE setting to the context as 'base_template' and returns it."""
     context['base_template'] = getattr(settings,
                                        'DEFAULT_BASE_TEMPLATE',
                                        '')
@@ -70,7 +71,18 @@ def decompress_text(b64text):
 
 
 def custom_message(request, message="", structure_slug="", status=None):
-    """ """
+    """
+    Renders a page with a custom message.
+
+    Args:
+        request: The current HttpRequest.
+        message: The message to show.
+        structure_slug: Structure slug, added to the context.
+        status: HTTP status code of the response.
+
+    Returns:
+        The rendered page.
+    """
     return render(
         request,
         "custom_message.html",
@@ -333,6 +345,15 @@ def uuid_code():
 
 
 def ticket_user_summary_dict(user):
+    """
+    Returns the open tickets followed (not in readonly) by the offices of the user.
+
+    Operators get only their offices, managers all the structure offices.
+
+    Returns:
+        A dict {structure: {office: [{"subject", "code", "url"}, ...]}}
+        without the structures with no tickets.
+    """
     assign_model = apps.get_model("uni_ticket", "TicketAssignment")
     structures = OrganizationalStructure.objects.filter(is_active=True)
     d = dict()
@@ -373,6 +394,15 @@ def ticket_user_summary_dict(user):
 
 
 def send_summary_email(users=[]):
+    """
+    Sends to each user an email with the summary of the open tickets.
+
+    Args:
+        users: The users to notify.
+
+    Returns:
+        A dict with the "success" and "failed" lists of users.
+    """
     failed = []
     success = []
     for user in users:
@@ -427,6 +457,12 @@ def send_summary_email(users=[]):
 
 
 def user_offices_list(office_employee_queryset):
+    """
+    Returns the distinct offices of an office employee queryset.
+
+    Returns:
+        A list of offices.
+    """
     if not office_employee_queryset:
         return []
     offices = []
@@ -440,6 +476,24 @@ def user_offices_list(office_employee_queryset):
 
 
 def send_custom_mail(subject, recipients, body, params={}, force=False):
+    """
+    Sends an email to the recipients.
+
+    Recipients without email, or with notifications disabled (unless force),
+    are skipped. The body is wrapped with header and footer and formatted
+    with params.
+
+    Args:
+        subject: Email subject.
+        recipients: The users to notify.
+        body: Email body template.
+        params: Values used to format the body.
+        force: If True, ignores the user email_notify setting.
+
+    Returns:
+        The send_mail result, False if there are no recipients, or None if
+        no recipient has a valid email.
+    """
     if not recipients:
         return False
     recipients_list = []
@@ -468,6 +522,7 @@ def send_custom_mail(subject, recipients, body, params={}, force=False):
 
 
 def user_is_employee(user):
+    """Returns True if the user is an employee (EMPLOYEE_ATTRIBUTE_NAME attribute or method)."""
     if not user:
         return False
     attr = getattr(user, EMPLOYEE_ATTRIBUTE_NAME, False)
@@ -482,7 +537,7 @@ def user_is_employee(user):
 
 
 def user_is_in_organization(user):
-    """ """
+    """Returns True if the user belongs to the organization (USER_ATTRIBUTE_NAME attribute or method)."""
     if not user:
         return False
     attr = getattr(user, USER_ATTRIBUTE_NAME, False)
@@ -498,7 +553,8 @@ def user_is_in_organization(user):
 
 
 def get_text_with_hrefs(text):
-    """Transforms a text with url in text with <a href=></a> tags
+    """
+    Transforms a text with url in text with <a href=></a> tags
        text = ("Allora considerando quanto scritto quì "
                "https://ingoalla.it/sdfsd/.well-known/ini.php?sdf=3244&df23=FDS3_ "
                "dovresti piuttosto - se vuoi - andare qui "
@@ -517,11 +573,13 @@ def get_text_with_hrefs(text):
 
 
 def get_datetime_delta(days):
+    """Returns the datetime of the given number of days ago, at midnight."""
     delta_date = timezone.now() - datetime.timedelta(days=days)
     return delta_date.replace(hour=0, minute=0, second=0)
 
 
 def disable_expired_items(items):
+    """Disables the items whose validity has expired."""
     for item in items:
         item.disable_if_expired()
 
@@ -534,6 +592,23 @@ def export_input_module_csv(
     quotechar ='"',
     quoting=csv.QUOTE_ALL
 ):
+    """
+    Exports the tickets of an input module as a CSV file.
+
+    Columns include ticket and users data and one column per module field
+    (complex fields are split in their sub-fields).
+
+    Args:
+        module: The category input module.
+        ticket_codes_list: If not empty, exports only these tickets.
+        file_name: Name of the attachment.
+        delimiter: CSV delimiter.
+        quotechar: CSV quote char.
+        quoting: CSV quoting mode.
+
+    Returns:
+        An HttpResponse with the CSV file, or False if there are no tickets.
+    """
 
     module.ticket_category
 
@@ -651,6 +726,16 @@ def export_input_module_csv(
 
 
 def export_category_zip(category, ticket_codes_list=[]):
+    """
+    Exports the tickets of a category as a zip with a CSV file per input module.
+
+    Args:
+        category: The ticket category.
+        ticket_codes_list: If not empty, exports only these tickets.
+
+    Returns:
+        An HttpResponse with the zip file.
+    """
     output = io.BytesIO()
     f = zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED)
 
@@ -681,6 +766,15 @@ def export_category_zip(category, ticket_codes_list=[]):
 
 
 def redirect_after_login(fullpath):
+    """
+    Redirects to the login page with the given path as redirect parameter.
+
+    Args:
+        fullpath: The path to go back to after login.
+
+    Returns:
+        A redirect response.
+    """
     _sep = "?"
     if _sep in settings.LOGIN_URL:
         _sep = "&"
@@ -692,6 +786,12 @@ def redirect_after_login(fullpath):
 
 
 def querydict_to_dict(querydict):
+    """
+    Converts a QueryDict to a dict.
+
+    Keys with a single value get the value, the others the list of values.
+    Dicts are returned as they are.
+    """
     if type(querydict) == dict:
         return querydict
     data = {}
@@ -713,6 +813,22 @@ def send_ticket_mail_to_operators(
     office=None,
     send_to_default_office=True
 ):
+    """
+    Sends an email to the operators of an office about a ticket.
+
+    If no office is given, the category office is used. If the office has no
+    operators to notify, the structure default office operators are used
+    (if send_to_default_office).
+
+    Args:
+        request: The current HttpRequest.
+        ticket: The ticket.
+        category: The ticket category.
+        message_template: Email body template.
+        mail_params: Values used to format the body.
+        office: Destination office.
+        send_to_default_office: If True, falls back to the default office operators.
+    """
     if not office:
         office = category.organizational_office
         structure = category.organizational_structure

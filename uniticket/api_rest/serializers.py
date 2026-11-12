@@ -8,6 +8,7 @@ from organizational_area.models import OrganizationalStructure
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    """Serializes the main fields of a user."""
     class Meta:
         model = User
         fields = ['username',
@@ -19,18 +20,25 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
+    """Serializes a group with its URL and name."""
     class Meta:
         model = Group
         fields = ['url', 'name']
 
 
 class OrganizationalStructureSerializer(serializers.ModelSerializer):
+    """Serializes all the fields of an organizational structure."""
     class Meta:
         model = OrganizationalStructure
         fields = '__all__'
 
 
 class TicketCategorySerializer(serializers.ModelSerializer):
+    """
+    Serializes a ticket category, with structure and office as slugs.
+
+    Allowed users, allowed user lists and the confirm message are excluded.
+    """
     organizational_structure = serializers.SlugRelatedField(
         read_only=True,
         slug_field='slug'
@@ -51,6 +59,7 @@ class TicketCategorySerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
+    """Serializes a ticket, with its users as last names and without the input module."""
     created_by = serializers.SlugRelatedField(
         read_only=True,
         slug_field='last_name'

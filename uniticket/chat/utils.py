@@ -5,6 +5,7 @@ from uni_ticket.utils import user_is_operator  # , user_is_in_default_office
 
 
 def chat_operator(user, structure_slug):
+    """Returns True if the user is an operator of the active structure with the given slug."""
     if not structure_slug: return False
     if not user: return False
     structure = OrganizationalStructure.objects.filter(slug=structure_slug,
@@ -17,6 +18,12 @@ def chat_operator(user, structure_slug):
 
 
 def chat_operator_online(user, structure_slug):
+    """
+    Returns True if the user can find an operator in the structure chat.
+
+    That is, if the user is an operator of the active structure, or if
+    another user in its room is.
+    """
     structure = OrganizationalStructure.objects.filter(slug=structure_slug,
                                                        is_active=True).first()
     if not structure: return False

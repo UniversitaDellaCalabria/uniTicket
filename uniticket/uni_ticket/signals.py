@@ -23,7 +23,7 @@ from .utils import delete_directory, delete_file
 @receiver(pre_delete, sender=TicketCategoryTask)
 def delete_attachments_folder(sender, instance, *args, **kwargs):
     """
-    Delete recursively a folder
+    Deletes recursively a folder
     """
     delete_directory(instance.get_folder())
 
@@ -32,6 +32,6 @@ def delete_attachments_folder(sender, instance, *args, **kwargs):
 @receiver(pre_delete, sender=TicketReply)
 def delete_single_attachment(sender, instance, *args, **kwargs):
     """
-    Delete a file
+    Deletes a file
     """
     delete_file(file_name=instance.attachment)

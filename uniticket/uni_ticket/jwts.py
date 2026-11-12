@@ -17,7 +17,8 @@ JWE_ENC = UNITICKET_JWE_ENC
 
 
 def encrypt_to_jwe(content):
-    """Returns a string
+    """
+    Returns a string
     a serialized encryption from cryptojwt.jwe.jwe_rsa.JWE_RSA
     """
     if isinstance(content, dict):
@@ -36,6 +37,7 @@ def encrypt_to_jwe(content):
 
 
 def decrypt_from_jwe(jwe):
+    """Returns the content decrypted from a JWE with the configured RSA key."""
     priv_key = import_private_rsa_key_from_file(RSA_KEY)
     _decryptor = factory(jwe, alg=JWE_ALG, enc=JWE_ENC)
     _dkey = RSAKey(priv_key=priv_key)

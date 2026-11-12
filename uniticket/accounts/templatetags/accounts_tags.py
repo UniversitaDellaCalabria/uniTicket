@@ -8,7 +8,8 @@ register = template.Library()
 
 @register.simple_tag
 def accounts_settings_value(name, **kwargs):
-    """Return an accounts setting by name.
+    """
+    Returns an accounts setting by name.
 
     Args:
         name: The setting name (e.g. EDITABLE_FIELDS).

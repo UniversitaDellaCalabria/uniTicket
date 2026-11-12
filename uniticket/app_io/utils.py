@@ -13,6 +13,19 @@ def _callIOApi(method='get',
                endpoint='',
                key='',
                data={}):
+    """
+    Calls an App IO API endpoint.
+
+    Args:
+        method: The HTTP method.
+        endpoint: Path appended to APP_IO_API_BASE_URL.
+        key: The API key of the service.
+        data: The payload, sent as JSON.
+
+    Returns:
+        A dict with the JSON response in "data" and the HTTP status in
+        "status"; on timeout, empty data and status 503.
+    """
     url = f'{APP_IO_API_BASE_URL}/{endpoint}'
     headers = {APP_IO_API_HEADER_KEY: key}
     try:
@@ -35,6 +48,18 @@ def _callIOApi(method='get',
 
 
 def check_user_profile(fiscal_code, service_id, service_key):
+    """
+    Checks whether a user accepts messages from an App IO service.
+
+    Args:
+        fiscal_code: The fiscal code of the user.
+        service_id: The App IO service ID, used only in the logs.
+        service_key: The API key of the service.
+
+    Returns:
+        A (allowed, error) tuple: (True, None) if the service can send
+        messages to the user, otherwise False and the error detail.
+    """
     # check if Io can notify user (/profiles API)
     data = {"fiscal_code": fiscal_code}
     logger.info(f'Getting App IO {fiscal_code} profile for service {service_id}')
@@ -58,6 +83,22 @@ def check_user_profile(fiscal_code, service_id, service_key):
 
 
 def send_message(ticket, subject, body, log=None):
+    """
+    Sends an App IO message to the creator of a ticket.
+
+    Uses the active App IO service of the ticket category, after checking
+    that the user accepts its messages.
+
+    Args:
+        ticket: The Ticket whose creator receives the message.
+        subject: The subject of the message.
+        body: The Markdown body of the message.
+        log: Optional Log entry; if given, the result is stored in an IOLog.
+
+    Returns:
+        False if the category has no active service, otherwise a dict
+        with "message_id" and "error".
+    """
     io_service = IOServiceTicketCategory.objects.filter(category=ticket.input_module.ticket_category,
                                                         service__is_active=True,
                                                         is_active=True).select_related('service').first()

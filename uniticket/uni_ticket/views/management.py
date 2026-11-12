@@ -71,11 +71,12 @@ def manage_opened_ticket_url(request, structure_slug):
     """
     Makes URL redirect to opened ticket page depending of user role
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Slug of structure to manage.
 
-    :param structure_slug: slug of structure to manage
-
-    :return: redirect or render
+    Returns:
+        A redirect, or the rendered page.
     """
     return _redirect_to_role_ticket_list(request, structure_slug, "opened_ticket")
 
@@ -85,11 +86,12 @@ def manage_unassigned_ticket_url(request, structure_slug):
     """
     Makes URL redirect to unassigned ticket page depending of user role
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Slug of structure to manage.
 
-    :param structure_slug: slug of structure to manage
-
-    :return: redirect or render
+    Returns:
+        A redirect, or the rendered page.
     """
     return _redirect_to_role_ticket_list(request, structure_slug, "unassigned_ticket")
 
@@ -99,11 +101,12 @@ def manage_closed_ticket_url(request, structure_slug):
     """
     Makes URL redirect to closed ticket page depending of user role
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Slug of structure to manage.
 
-    :param structure_slug: slug of structure to manage
-
-    :return: redirect or render
+    Returns:
+        A redirect, or the rendered page.
     """
     return _redirect_to_role_ticket_list(request, structure_slug, "closed_ticket")
 
@@ -113,11 +116,12 @@ def manage_ticket_url(request, structure_slug):
     """
     Builds a fake URL to ticket detail page for datatables <href> tags
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Slug of structure to manage.
 
-    :param structure_slug: slug of structure to manage
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     return custom_message(request, _("Permesso negato"), structure_slug)
 
@@ -131,13 +135,13 @@ def manage_ticket_url_detail(
     """
     Redirects URL ticket detail page depending of user role
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Slug of structure to manage.
+        ticket_id: Code of ticket.
 
-    :param structure_slug: slug of structure to manage
-    :param ticket_id: code of ticket
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @has_ticket_admin_privileges
     structure = request.structure
@@ -161,13 +165,13 @@ def ticket_detail(
     """
     Ticket detail management page
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Slug of structure to manage.
+        ticket_id: Code.
 
-    :param structure_slug: slug of structure to manage
-    :param ticket_id: code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     
     # from @has_ticket_admin_privileges
@@ -434,11 +438,12 @@ def tickets(request, structure_slug):
     """
     All tickets to manage
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: The slug of structure to manage.
 
-    :param structure_slug: the slug of structure to manage
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     structure = getattr(request, "structure", None)
     user_type = get_user_type(request.user, structure)
@@ -463,13 +468,13 @@ def ticket_dependence_add_url(request, structure_slug, ticket_id):
     """
     Makes URL redirect to add ticket dependence by user role
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
@@ -493,13 +498,13 @@ def ticket_dependence_add_new(
     """
     Adds ticket dependence
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
 
     # from @ticket_assigned_to_structure
@@ -626,15 +631,14 @@ def ticket_dependence_remove(
     """
     Removes ticket dependence
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type main_ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        main_ticket_id: Main ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param main_ticket_id: main ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -687,13 +691,12 @@ def ticket_close_url(request, structure_slug, ticket_id):
     """
     Makes URL redirect to closing ticket page depending of user role
 
-    :type structure_slug: String
-    :type ticket_id: String
-
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
     :render: redirect
+
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
     """
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
@@ -716,13 +719,13 @@ def ticket_close(
     """
     Closes ticket
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -879,15 +882,15 @@ def ticket_close(
 @ticket_assigned_to_structure
 def ticket_reopen(request, structure_slug, ticket_id):
     """
-    Reopen ticket
+    Reopens ticket
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -1026,13 +1029,13 @@ def ticket_competence_add_url(request, structure_slug, ticket_id):
     """
     Makes URL redirect to adding ticket competence page depending of user role
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
@@ -1056,13 +1059,13 @@ def ticket_competence_add_new(
     """
     Adds new ticket competence (first step)
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -1109,15 +1112,14 @@ def ticket_competence_add_final(
     """
     Adds new ticket competence (second step)
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type new_structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        new_structure_slug: Selected structure slug.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param new_structure_slug: selected structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket 
@@ -1332,13 +1334,13 @@ def ticket_message_url(request, structure_slug, ticket_id):
     """
     Makes URL redirect to add ticket message by user role
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
@@ -1353,13 +1355,13 @@ def ticket_note_url(request, structure_slug, ticket_id, note_id):
     """
     Makes URL redirect to edit ticket note by user role
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
@@ -1376,13 +1378,13 @@ def ticket_notes_url(request, structure_slug, ticket_id):
     """
     Makes URL redirect to add ticket note by user role
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
@@ -1405,13 +1407,13 @@ def ticket_message(
     """
     View ticket messages
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -1567,13 +1569,13 @@ def ticket_notes(
     """
     View ticket notes
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -1680,17 +1682,16 @@ def ticket_note(
     note_id,
 ):
     """
-    Edit ticket note
+    Edits ticket note
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type note_id: Int
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        note_id: Note primary key.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param note_id: note primary key
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -1763,17 +1764,16 @@ def ticket_note_delete(
     note_id,
 ):
     """
-    Edit ticket note
+    Edits ticket note
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type note_id: Int
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        note_id: Note primary key.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param note_id: note primary key
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -1815,13 +1815,13 @@ def task_add_new_url(request, structure_slug, ticket_id):
     """
     Makes URL redirect to add new ticket task according to user role
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
@@ -1842,15 +1842,15 @@ def task_add_new(
     ticket_id,
 ):
     """
-    Add new ticket task
+    Adds new ticket task
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -1961,17 +1961,16 @@ def task_remove(
     request, structure_slug, ticket_id, task_id
 ):
     """
-    Remove ticket task
+    Removes ticket task
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -2021,15 +2020,14 @@ def task_detail_url(request, structure_slug, ticket_id, task_id):
     """
     Makes URL redirect to view ticket task details according to user role
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
@@ -2053,15 +2051,14 @@ def task_detail(
     """
     View task details
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -2171,15 +2168,14 @@ def task_close_url(request, structure_slug, ticket_id, task_id):
     """
     Makes URL redirect to close ticket task details according to user role
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
@@ -2205,15 +2201,14 @@ def task_close(
     """
     Closes task details
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -2347,17 +2342,16 @@ def task_reopen(
     request, structure_slug, ticket_id, task_id
 ):
     """
-    Reopen task
+    Reopens task
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -2431,15 +2425,14 @@ def task_edit_url(request, structure_slug, ticket_id, task_id):
     """
     Makes URL redirect to edit ticket task according to user role
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     structure = get_object_or_404(OrganizationalStructure, slug=structure_slug)
     user_type = get_user_type(request.user, structure)
@@ -2463,17 +2456,16 @@ def task_edit(
     task_id,
 ):
     """
-    Edit task details
+    Edits task details
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -2581,17 +2573,16 @@ def task_attachment_delete(
     task_id,
 ):
     """
-    Delete a task attachment (it must be called by a dialog to confirm action)
+    Deletes a task attachment (it must be called by a dialog to confirm action)
 
-    :type structure_slug: String
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -2643,6 +2634,17 @@ def task_attachment_delete(
 def ticket_taken_by_unassigned_offices(
     request, structure_slug, ticket_id
 ):
+    """
+    Takes the ticket for all the offices of the user that have not taken it yet.
+
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
+
+    Returns:
+        A redirect to the ticket detail page.
+    """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
 
@@ -2686,13 +2688,13 @@ def ticket_competence_leave(
     """
     Leaves single office ticket competence
 
-    :type structure_slug: String
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        ticket_id: Ticket code.
 
-    :param structure_slug: structure slug
-    :param ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @ticket_assigned_to_structure
     ticket = request.ticket
@@ -2787,6 +2789,19 @@ def ticket_competence_leave(
 
 @login_required
 def export_detailed_report(request, structure_slug):
+    """
+    Exports the selected tickets as zip of CSV files (POST only).
+
+    Only tickets accessible to the manager or operator are considered. With a
+    single category, the category zip is returned directly.
+
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+
+    Returns:
+        The zip file response, or a message page.
+    """
     if request.POST:
         # get structure
         structure = get_object_or_404(

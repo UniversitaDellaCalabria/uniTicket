@@ -21,6 +21,7 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
     """
 
     def enforce_csrf(self, request):
+        """Skips the CSRF check."""
         return
 
 
@@ -32,6 +33,7 @@ class ChatMessagePagination(PageNumberPagination):
 
 
 class ChatMessageModelViewSet(ModelViewSet):
+    """API endpoint for the chat messages of the current user."""
     queryset = ChatMessageModel.objects.all()
     serializer_class = ChatMessageModelSerializer
     allowed_methods = ('GET', 'POST', 'HEAD', 'OPTIONS')
@@ -39,6 +41,20 @@ class ChatMessageModelViewSet(ModelViewSet):
     pagination_class = ChatMessagePagination
 
     def list(self, request, *args, **kwargs):
+        """
+        Lists the messages sent or received by the current user.
+
+        The "room" query param filters by room and updates last_seen of the
+        user channel in that room. The "target" query param (a user pk) keeps
+        the messages exchanged with that user or, if it is the current user,
+        their broadcast messages.
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            A paginated Response, or an error message if target is not a number.
+        """
         self.queryset = self.queryset.filter(Q(recipient=request.user) |
                                              Q(user=request.user))
         target = self.request.query_params.get('target', None)
@@ -65,6 +81,17 @@ class ChatMessageModelViewSet(ModelViewSet):
             return Response(_("Argomenti errati"))
 
     def retrieve(self, request, *args, **kwargs):
+        """
+        Returns a message of the current user in the "room" query param room.
+
+        If the message exists, updates last_seen of the user channel in the room.
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            A Response with the serialized message.
+        """
         room = self.request.query_params.get('room')
         msg = self.queryset.filter(Q(recipient=request.user) | Q(user=request.user),
                                    pk=kwargs['pk'],
@@ -78,6 +105,7 @@ class ChatMessageModelViewSet(ModelViewSet):
 
 
 class UserModelViewSet(ModelViewSet):
+    """API endpoint to read a user and toggle their chat status."""
     queryset = get_user_model().objects.all()
     serializer_class = UserModelSerializer
     allowed_methods = ('PUT',)
@@ -85,6 +113,16 @@ class UserModelViewSet(ModelViewSet):
     pagination_class = None  # Get all user
 
     def retrieve(self, request, *args, **kwargs):
+        """
+        Returns the requested user, if it is the current user or the current
+        user is a superuser.
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            A Response with the user pk, or an error message.
+        """
         try:
             if not request.user.is_superuser and int(kwargs.get('pk')) != request.user.pk:
                 return Response(_("Non hai accesso a questa risorsa"))
@@ -95,6 +133,17 @@ class UserModelViewSet(ModelViewSet):
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
+        """
+        Toggles the status of the user channel in the POSTed room.
+
+        Allowed only on the current user, unless the current user is a superuser.
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            A Response with "updated", or an error message.
+        """
         if not request.user.is_superuser and int(kwargs.get('pk')) != request.user.pk:
             return Response(_("Non hai accesso a questa risorsa"))
         channel = UserChannel.objects.filter(room=request.POST['room'],

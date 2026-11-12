@@ -46,13 +46,15 @@ class ChatMessageModel(Model):
     def characters(self):
         """
         Toy function to count body characters.
-        :return: body's char number
+
+        Returns:
+            The number of characters in the body.
         """
         return len(self.body)
 
     def notify_single_client(self, sender, recipient):
         """
-        Inform client there is a new message.
+        Informs client there is a new message.
         """
         channel_layer = get_channel_layer()
         sender_channel = UserChannel.objects.filter(user__pk=sender.pk,
@@ -81,7 +83,7 @@ class ChatMessageModel(Model):
 
     def notify_ws_clients(self):
         """
-        Inform client there is a new message.
+        Informs client there is a new message.
         """
         channel_layer = get_channel_layer()
         sender_channel = UserChannel.objects.filter(user=self.user,
@@ -150,6 +152,7 @@ class UserChannel(Model):
     status = BooleanField(default=True)
 
     def change_status(self):
+        """Toggles the channel status and notifies the room group."""
         self.status = not self.status
         self.save(update_fields=['status'])
 

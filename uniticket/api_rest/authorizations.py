@@ -12,17 +12,44 @@ logger = logging.getLogger('__name__')
 
 
 class AuthorizationToken(TokenAuthentication):
+    """
+    DRF token authentication backed by the api_rest AuthorizationToken model.
+
+    Clients send the header "Authorization: Token <value>".
+    """
 
     keyword = 'Token'
     model = AuthorizationToken
 
     def authenticate(self, request):
+        """
+        Authenticates the request through its Authorization header.
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            A (user, token) tuple, or None if the header is missing or the
+            token is not valid.
+        """
         auth = get_authorization_header(request).split()
         if not auth:
             return None
         return super().authenticate(request)
 
     def authenticate_credentials(self, token):
+        """
+        Validates a token value.
+
+        Unknown or expired tokens and inactive users are logged as warnings
+        instead of raising AuthenticationFailed.
+
+        Args:
+            token: The token value sent by the client.
+
+        Returns:
+            A (user, token) tuple, or None if the token is not valid.
+        """
         try:
             token = self.model.objects.select_related('user').get(value=token)
         except self.model.DoesNotExist:

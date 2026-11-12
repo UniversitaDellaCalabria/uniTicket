@@ -12,7 +12,8 @@ from . settings import (DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE,
 
 
 def _logo_upload(instance, filename):
-    """Return the upload path of a structure banner.
+    """
+    Returns the upload path of a structure banner.
 
     Args:
         instance: The OrganizationalStructure that owns the banner.
@@ -41,7 +42,8 @@ class OrganizationalStructureType(models.Model):
 
 
 class OrganizationalStructure(models.Model):
-    """Top level organizational unit (e.g. a department).
+    """
+    Top level organizational unit (e.g. a department).
 
     Ticket categories, offices and managers belong to a structure.
     On creation a default office is added by signals.create_manager_office.
@@ -78,7 +80,8 @@ class OrganizationalStructure(models.Model):
         verbose_name_plural = _("Organizational Structures")
 
     def get_employees(self, **kwargs):
-        """Return the employee-office relationships of all structure offices.
+        """
+        Returns the employee-office relationships of all structure offices.
 
         A user employed in more offices appears once per office.
 
@@ -94,7 +97,8 @@ class OrganizationalStructure(models.Model):
         )
 
     def get_offices(self, **kwargs):
-        """Return the structure offices.
+        """
+        Returns the structure offices.
 
         Args:
             **kwargs: Extra filters on OrganizationalStructureOffice.
@@ -107,7 +111,8 @@ class OrganizationalStructure(models.Model):
         )
 
     def get_default_office(self):
-        """Return the structure default office.
+        """
+        Returns the structure default office.
 
         Returns:
             The OrganizationalStructureOffice with is_default=True,
@@ -119,7 +124,8 @@ class OrganizationalStructure(models.Model):
         if office: return office
 
     def get_folder(self):
-        """Return the folder of the structure attachments.
+        """
+        Returns the folder of the structure attachments.
 
         Returns:
             The folder path, relative to MEDIA_ROOT.
@@ -128,7 +134,8 @@ class OrganizationalStructure(models.Model):
         return folder
 
     def get_logo_folder(self):
-        """Return the folder of the structure banner.
+        """
+        Returns the folder of the structure banner.
 
         Returns:
             The folder path, relative to MEDIA_ROOT.
@@ -137,7 +144,8 @@ class OrganizationalStructure(models.Model):
         return folder
 
     def get_structure_managers(self):
-        """Return the manager assignments of the structure.
+        """
+        Returns the manager assignments of the structure.
 
         Only users that are also employees of the default office are
         included, as in uni_ticket.utils.user_is_manager.
@@ -189,7 +197,8 @@ class EquipmentType(models.Model):
 
 
 class AbstractLocation(models.Model):
-    """Common fields of a physical location.
+    """
+    Common fields of a physical location.
 
     Address, coordinates, contacts, provided functions and equipment.
     """
@@ -228,7 +237,8 @@ class OrganizationalStructureLocation(AbstractLocation):
 
 
 class OrganizationalStructureOffice(models.Model):
-    """Office of a structure.
+    """
+    Office of a structure.
 
     Tickets and tasks are assigned to offices and handled by their employees.
     """
@@ -294,7 +304,8 @@ class OrganizationalStructureOfficeEmployee(models.Model):
 
 
 class UserManageOrganizationalStructure(models.Model):
-    """Manager role of a user in a structure.
+    """
+    Manager role of a user in a structure.
 
     The role is effective only if the user is also an employee of the
     structure default office.

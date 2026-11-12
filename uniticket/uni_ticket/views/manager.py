@@ -43,11 +43,12 @@ def dashboard(request, structure_slug):
     """
     Manager Dashboard
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -102,11 +103,12 @@ def offices(request, structure_slug):
     """
     Retrieves structure offices list
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -134,11 +136,12 @@ def office_add_new(request, structure_slug):
     """
     Adds new office to structure
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -203,13 +206,13 @@ def office_edit(request, structure_slug, office_slug):
     """
     Edits office details
 
-    :type structure_slug: String
-    :type office_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        office_slug: Office slug.
 
-    :param structure_slug: structure slug
-    :param office_slug: office slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -281,13 +284,13 @@ def office_detail(request, structure_slug, office_slug):
     """
     Views office details
 
-    :type structure_slug: String
-    :type office_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        office_slug: Office slug.
 
-    :param structure_slug: structure slug
-    :param office_slug: office slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -323,13 +326,13 @@ def office_add_category(request, structure_slug, office_slug):
     """
     Assings new category to office competences
 
-    :type structure_slug: String
-    :type office_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        office_slug: Office slug.
 
-    :param structure_slug: structure slug
-    :param office_slug: office slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -397,17 +400,16 @@ def office_remove_category(
     request, structure_slug, office_slug, category_slug
 ):
     """
-    Remove category from office competences
+    Removes category from office competences
 
-    :type structure_slug: String
-    :type office_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        office_slug: Office slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param office_slug: office slug
-    :param category_slug: category slug
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @is_manager
     structure = request.structure
@@ -458,15 +460,15 @@ def office_remove_category(
 @is_manager
 def office_add_operator(request, structure_slug, office_slug):
     """
-    Add employee to office
+    Adds employee to office
 
-    :type structure_slug: String
-    :type office_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        office_slug: Office slug.
 
-    :param structure_slug: structure slug
-    :param office_slug: office slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -560,17 +562,16 @@ def office_remove_operator(
     request, structure_slug, office_slug, employee_id
 ):
     """
-    Remove employee from office
+    Removes employee from office
 
-    :type structure_slug: String
-    :type office_slug: String
-    :type employee_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        office_slug: Office slug.
+        employee_id: Employee_id.
 
-    :param structure_slug: structure slug
-    :param office_slug: office slug
-    :param employee_id: employee_id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -633,13 +634,13 @@ def office_disable(request, structure_slug, office_slug):
     """
     Disables an office
 
-    :type structure_slug: String
-    :type office_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        office_slug: Office slug.
 
-    :param structure_slug: structure slug
-    :param office_slug: office slug
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @is_manager
     structure = request.structure
@@ -721,13 +722,13 @@ def office_enable(request, structure_slug, office_slug):
     """
     Enables an office
 
-    :type structure_slug: String
-    :type office_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        office_slug: Office slug.
 
-    :param structure_slug: structure slug
-    :param office_slug: office slug
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @is_manager
     structure = request.structure
@@ -770,13 +771,13 @@ def office_delete(request, structure_slug, office_slug):
     """
     Deletes an office
 
-    :type structure_slug: String
-    :type office_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        office_slug: Office slug.
 
-    :param structure_slug: structure slug
-    :param office_slug: office slug
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @is_manager
     structure = request.structure
@@ -835,13 +836,13 @@ def category_detail(request, structure_slug, category_slug):
     """
     Shows category details
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -919,15 +920,15 @@ def category_detail(request, structure_slug, category_slug):
 @is_manager
 def category_add_ticket_user(request, structure_slug, category_slug):
     """
-    Add user that can open tickets
+    Adds user that can open tickets
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -1014,15 +1015,15 @@ def category_add_ticket_user(request, structure_slug, category_slug):
 @is_manager
 def category_add_ticket_users_list(request, structure_slug, category_slug):
     """
-    Add user that can open tickets
+    Adds user that can open tickets
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -1097,17 +1098,16 @@ def category_remove_ticket_users_list(
     request, structure_slug, category_slug, list_id
 ):
     """
-    Remove employee from office
+    Removes employee from office
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type list_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        list_id: List id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param list_id: list id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -1151,17 +1151,16 @@ def category_remove_ticket_user(
     request, structure_slug, category_slug, user_id
 ):
     """
-    Remove employee from office
+    Removes employee from office
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type user_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        user_id: User_id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param user_id: user_id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -1203,17 +1202,16 @@ def category_remove_office(
     request, structure_slug, category_slug, office_slug
 ):
     """
-    Remove office competence from category
+    Removes office competence from category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type office_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        office_slug: Office slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param office_slug: office slug
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @is_manager
     structure = request.structure
@@ -1272,11 +1270,12 @@ def category_add_new(request, structure_slug):
     """
     Adds new category
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -1371,13 +1370,13 @@ def category_edit(request, structure_slug, category_slug):
     """
     Edits category details
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -1506,13 +1505,13 @@ def category_disable(request, structure_slug, category_slug):
     """
     Disables a category
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @is_manager
     structure = request.structure
@@ -1555,13 +1554,13 @@ def category_enable(request, structure_slug, category_slug):
     """
     Enables a category
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @is_manager
     structure = request.structure
@@ -1618,13 +1617,13 @@ def category_delete(request, structure_slug, category_slug):
     """
     Deletes a category
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @is_manager
     structure = request.structure
@@ -1669,13 +1668,13 @@ def category_input_module_new(request, structure_slug, category_slug):
     """
     Creates new input module for category
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -1742,15 +1741,14 @@ def category_input_module_edit(
     """
     Edits input module details
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type module_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        module_id: Input module id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param module_id: input module id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -1815,15 +1813,14 @@ def category_input_module_enable(
     """
     Enables input module
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type module_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        module_id: Input module id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param module_id: input module id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -1872,15 +1869,14 @@ def category_input_module_disable(
     """
     Disables input module
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type module_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        module_id: Input module id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param module_id: input module id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -1930,15 +1926,14 @@ def category_input_module_delete(
     """
     Deletes input module
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type module_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        module_id: Input module id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param module_id: input module id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2011,15 +2006,14 @@ def category_input_module_details(
     """
     Shows category input module details
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type module_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        module_id: Input module id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param module_id: input module id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2108,17 +2102,15 @@ def category_input_field_delete(
     """
     Deletes a field from a category input module
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type module_id: Integer
-    :type field_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        module_id: Input module id.
+        field_id: Module field id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param module_id: input module id
-    :param field_id: module field id
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @is_manager
     structure = request.structure
@@ -2180,15 +2172,14 @@ def category_input_module_preview(
     """
     Shows input module form preview
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type module_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        module_id: Input module id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param module_id: input module id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2239,17 +2230,15 @@ def category_input_field_edit(
     """
     Edits field details from a category input module
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type module_id: Integer
-    :type field_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        module_id: Input module id.
+        field_id: Module field id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param module_id: input module id
-    :param field_id: module field id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2340,13 +2329,13 @@ def category_condition_new(request, structure_slug, category_slug):
     """
     Creates a new condition for category
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2406,15 +2395,14 @@ def category_condition_edit(
     """
     Edits condition details
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type condition_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        condition_id: Condition id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param condition_id: condition id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2479,15 +2467,14 @@ def category_condition_delete(
     """
     Deletes condition from a category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type condition_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        condition_id: Condition id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param condition_id: condition id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2527,15 +2514,14 @@ def category_condition_disable(
     """
     Disables a condition from a category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type condition_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        condition_id: Condition id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param condition_id: condition id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2581,15 +2567,14 @@ def category_condition_enable(
     """
     Enables a condition from a category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type condition_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        condition_id: Condition id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param condition_id: condition id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2636,15 +2621,14 @@ def category_condition_detail(
     """
     Shows condition details
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type condition_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        condition_id: Condition id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param condition_id: condition id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2673,11 +2657,12 @@ def categories(request, structure_slug):
     """
     Retrieves structure categories list
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2713,22 +2698,19 @@ def category_input_module_clone_preload(
     selected_category_slug=None,
 ):
     """
-    Choose the structure and the category where to clone
+    Chooses the structure and the category where to clone
     the input module
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type module_id: Integer
-    :type selected_structure_slug: String
-    :type selected_category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        module_id: Input module id.
+        selected_structure_slug: Destination structure slug.
+        selected_category_slug: Destination category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param module_id: input module id
-    :param selected_structure_slug: destination structure slug
-    :param selected_category_slug: destination category slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2799,19 +2781,16 @@ def category_input_module_clone(
     """
     Clones the input module (with its fields) in the selected category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type module_id: Integer
-    :type selected_structure_slug: String
-    :type selected_category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        module_id: Input module id.
+        selected_structure_slug: Destination structure slug.
+        selected_category_slug: Destination category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param module_id: input module id
-    :param selected_structure_slug: destination structure slug
-    :param selected_category_slug: destination category slug
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from @is_manager
     structure = request.structure
@@ -2893,13 +2872,13 @@ def category_task_new(request, structure_slug, category_slug):
     """
     Creates a new task for category
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2958,15 +2937,14 @@ def category_task_detail(request, structure_slug, category_slug, task_id):
     """
     Shows task details
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param task_id: task code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -2995,15 +2973,14 @@ def category_task_download_attachment(
     """
     Downloads category task attachment
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param task_id: task code
-
-    :return: file
+    Returns:
+        The file as a download response.
     """
     # from @is_manager
     structure = request.structure
@@ -3029,15 +3006,14 @@ def category_task_edit(request, structure_slug, category_slug, task_id):
     """
     Edits condition details
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param task_id: task code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3099,17 +3075,16 @@ def category_task_attachment_delete(
     request, structure_slug, category_slug, task_id
 ):
     """
-     Delete a task attachment (it must be called by a dialog to confirm action)
+    Deletes a task attachment (it must be called by a dialog to confirm action)
 
-    :type structure_slug: String
-     :type category_slug: String
-     :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        task_id: Task code.
 
-     :param structure_slug: structure slug
-     :param category_slug: category slug
-     :param task_id: task code
-
-     :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3149,15 +3124,14 @@ def category_task_enable(request, structure_slug, category_slug, task_id):
     """
     Enables a task from a category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param task_id: task code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3198,15 +3172,14 @@ def category_task_disable(request, structure_slug, category_slug, task_id):
     """
     Disables a task from a category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        task_id: Tak code.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param task_id: tak code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3247,15 +3220,14 @@ def category_task_delete(request, structure_slug, category_slug, task_id):
     """
     Deletes task from a category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        task_id: Task code.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param task_id: task code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3291,11 +3263,12 @@ def manager_settings(request, structure_slug):
     """
     Gets manager settings (personal and structure)
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: response
+    Returns:
+        The HTTP response.
     """
     # from @is_manager
     structure = request.structure
@@ -3336,13 +3309,14 @@ def manager_settings(request, structure_slug):
 @is_manager
 def manager_settings_add_manager(request, structure_slug):
     """
-    Add manager to structure
+    Adds manager to structure
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3442,13 +3416,13 @@ def category_default_reply_new(request, structure_slug, category_slug):
     """
     Creates a new default ticket reply for category
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3512,15 +3486,14 @@ def category_default_reply_delete(
     """
     Deletes default_reply from a category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type default_reply_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        default_reply_id: Default_reply id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param default_reply_id: default_reply id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3560,15 +3533,14 @@ def category_default_reply_disable(
     """
     Disables a default_reply from a category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type default_reply_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        default_reply_id: Default_reply id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param default_reply_id: default_reply id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3614,15 +3586,14 @@ def category_default_reply_enable(
     """
     Enables a default_reply from a category
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type default_reply_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        default_reply_id: Default_reply id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param default_reply_id: default_reply id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3667,15 +3638,14 @@ def category_default_reply_detail(
     """
     Shows default_reply details
 
-    :type structure_slug: String
-    :type category_slug: String
-    :type default_reply_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        category_slug: Category slug.
+        default_reply_id: Default_reply id.
 
-    :param structure_slug: structure slug
-    :param category_slug: category slug
-    :param default_reply_id: default_reply id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3737,11 +3707,12 @@ def structure_alert_new(request, structure_slug):
     """
     Creates a new alert for organizational structure
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3790,13 +3761,13 @@ def structure_alert_delete(request, structure_slug, alert_id):
     """
     Deletes alert from a structure
 
-    :type structure_slug: String
-    :type alert_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        alert_id: Alert id.
 
-    :param structure_slug: structure slug
-    :param alert_id: alert id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3825,13 +3796,13 @@ def structure_alert_edit(request, structure_slug, alert_id):
     """
     Edits alert details
 
-    :type structure_slug: String
-    :type alert_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        alert_id: Alert id.
 
-    :param structure_slug: structure slug
-    :param alert_id: alert id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3884,11 +3855,12 @@ def structure_users_list_new(request, structure_slug):
     """
     Creates a new allowed users list for organizational structure
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -3937,13 +3909,13 @@ def structure_users_list_edit(request, structure_slug, list_id):
     """
     Edits allowed users list details
 
-    :type structure_slug: String
-    :type list_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        list_id: Alert list_id.
 
-    :param structure_slug: structure slug
-    :param list_id: alert list_id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -4001,13 +3973,13 @@ def structure_users_list_delete(request, structure_slug, list_id):
     """
     Deletes allowed users list from a structure
 
-    :type structure_slug: String
-    :type list_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        list_id: List_id id.
 
-    :param structure_slug: structure slug
-    :param list_id: list_id id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -4040,13 +4012,13 @@ def structure_users_list_add_user(request, structure_slug, list_id):
     """
     Edits allowed users list details
 
-    :type structure_slug: String
-    :type list_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        list_id: Alert list_id.
 
-    :param structure_slug: structure slug
-    :param list_id: alert list_id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure
@@ -4138,17 +4110,16 @@ def structure_users_list_remove_user(
     request, structure_slug, list_id, user_id
 ):
     """
-    Remove user from users list
+    Removes user from users list
 
-    :type structure_slug: String
-    :type list_id: Integer
-    :type user_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
+        list_id: List_id.
+        user_id: User_id.
 
-    :param structure_slug: structure slug
-    :param list_id: list_id
-    :param user_id: user_id
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from @is_manager
     structure = request.structure

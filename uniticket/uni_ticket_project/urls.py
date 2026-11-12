@@ -37,6 +37,15 @@ handler404 = "uni_ticket.views.generic.custom_404"
 
 @login_required
 def test500(request):
+    """
+    Raises an exception to test the 500 error page.
+
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        An HttpResponse with status 500 if the request has no META (unit tests).
+    """
     from django.http import HttpResponse
 
     # this avoid conflicts with unit tests

@@ -10,6 +10,21 @@ from .utils import export_category_zip
 
 
 def _download_report_csv(modeladmin, request, queryset):
+    """
+    Exports the selected ticket categories as a zip file.
+
+    If a single category is selected, its zip is returned as is.
+    Otherwise the zip of each category is added to a new zip archive;
+    categories whose export fails are skipped.
+
+    Args:
+        modeladmin: The TicketCategoryAdmin running the action.
+        request: The current request.
+        queryset: The selected TicketCategory objects.
+
+    Returns:
+        An HttpResponse with the zip file as attachment.
+    """
 
     output = io.BytesIO()
     f = zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED)
@@ -31,7 +46,12 @@ def _download_report_csv(modeladmin, request, queryset):
 
 
 def download_report_csv(modeladmin, request, queryset):
-    """ """
+    """
+    Admin action that downloads the selected categories as a zip file.
+
+    Returns:
+        The response built by _download_report_csv.
+    """
     return _download_report_csv(
         modeladmin=modeladmin, request=request, queryset=queryset
     )

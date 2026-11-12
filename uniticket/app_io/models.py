@@ -5,6 +5,7 @@ from uni_ticket.models import Log, TicketCategory, TimeStampedModel
 
 
 class IOService(TimeStampedModel):
+    """App IO service, with the API key used to send messages."""
     is_active = models.BooleanField(_('attivo'), default=True)
     name = models.CharField(_('Nome'), max_length=255)
     service_id = models.CharField(_('ID del servizio'), max_length=50)
@@ -19,6 +20,11 @@ class IOService(TimeStampedModel):
 
 
 class IOServiceTicketCategory(TimeStampedModel):
+    """
+    Link between an App IO service and a ticket category.
+
+    Only the active link of a category is used to send messages.
+    """
     service = models.ForeignKey(IOService,
                                 on_delete=models.PROTECT,
                                 limit_choices_to={'is_active': True})
@@ -27,6 +33,7 @@ class IOServiceTicketCategory(TimeStampedModel):
     is_active = models.BooleanField(_('attivo'), default=False)
 
     def disable_other_services(self):
+        """Deactivates the other App IO services linked to the same category."""
         others = IOServiceTicketCategory.objects.filter(
             category=self.category
         ).exclude(pk=self.pk)
@@ -44,5 +51,6 @@ class IOServiceTicketCategory(TimeStampedModel):
 
 
 class IOLog(models.Model):
+    """App IO API response stored for a ticket log entry."""
     log = models.OneToOneField(Log, on_delete=models.CASCADE, related_name="app_io_message")
     response = models.JSONField()

@@ -78,6 +78,16 @@ logger = logging.getLogger(__name__)
 
 # assign category default tasks to new ticket created by user
 def _assign_default_tasks_to_new_ticket(ticket, category, log_user):
+    """
+    Copies the active category default tasks to the new ticket.
+
+    Task attachments are copied in the ticket task folder.
+
+    Args:
+        ticket: The new ticket.
+        category: The ticket category.
+        log_user: User identifier for logs.
+    """
     tasks = category.get_tasks(is_active=True)
     for task in tasks:
         ticket_task = Task()
@@ -125,21 +135,13 @@ def protocolla_ticket(request, ticket, structure, category, user, log_user) -> N
     If the operation fails, the ticket is kept and the user is
     notified with an error message
 
-    :type request: HttpRequest
-    :type ticket: Ticket
-    :type structure: OrganizationalStructure
-    :type category: TicketCategory
-    :type user: User
-    :type log_user: String
-
-    :param request: the request
-    :param ticket: the ticket to register
-    :param structure: ticket structure
-    :param category: ticket category
-    :param user: user that owns the ticket
-    :param log_user: user identifier for logs
-
-    :return: None
+    Args:
+        request: The request.
+        ticket: The ticket to register.
+        structure: Ticket structure.
+        category: Ticket category.
+        user: User that owns the ticket.
+        log_user: User identifier for logs.
     """
     try:
         protocol_struct_configuration = get_object_or_404(
@@ -241,6 +243,7 @@ def protocolla_ticket(request, ticket, structure, category, user, log_user) -> N
 
 # close ticket as soon as opened if it's a notification ticket
 def _close_notification_ticket(ticket, user):  # operator, ticket_assignment):
+    """Marks the notification ticket as closed with success status."""
     # close ticket
     ticket.is_notification = True
     ticket.is_closed = True
@@ -269,17 +272,11 @@ def _save_new_ticket_attachments(ticket, json_stored, form, request_files):
     the attachments dict in ticket stored data.
     If a file with the same name already exists, a free name is used
 
-    :type ticket: Ticket
-    :type json_stored: dict
-    :type form: Form
-    :type request_files: MultiValueDict
-
-    :param ticket: the new ticket
-    :param json_stored: ticket stored data
-    :param form: ticket form
-    :param request_files: uploaded files
-
-    :return: None
+    Args:
+        ticket: The new ticket.
+        json_stored: Ticket stored data.
+        form: Ticket form.
+        request_files: Uploaded files.
     """
     if request_files:
         if not json_stored.get(settings.ATTACHMENTS_DICT_PREFIX):
@@ -327,11 +324,12 @@ def get_structures_by_request(request, structure_slug):
     Returns a dict with structure (by pk or by slug), its active
     alerts and its categories available for the current user
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure pk or slug.
 
-    :param structure_slug: structure pk or slug
-
-    :return: dict
+    Returns:
+        A dict with the structure, its alerts and its categories.
     """
     try:
         structure = get_object_or_404(
@@ -392,13 +390,14 @@ def get_structures_by_request(request, structure_slug):
 @login_required
 def ticket_new_preload(request, structure_slug:str = None):
     """
-    Choose the OrganizationalStructure and the category of the ticket
+    Chooses the OrganizationalStructure and the category of the ticket
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Slug of structure.
 
-    :param structure_slug: slug of structure
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     template = "user/new_ticket_preload.html"
 
@@ -435,13 +434,13 @@ class TicketAddNew(View):
     Creates a new ticket (or a draft) for the selected category.
     Used also by the REST API (api=True)
 
-    :type structure_slug: String
-    :type category_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure pk or slug.
+        category_slug: Category pk or slug.
 
-    :param structure_slug: structure pk or slug
-    :param category_slug: category pk or slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
 
     compiled_by_user = None
@@ -452,10 +451,27 @@ class TicketAddNew(View):
     template = "user/ticket_add_new.html"
 
     def _error(self, message, status=403) -> HttpResponse:
+        """
+        Stores the error message and renders it.
+
+        Args:
+            message: The error message.
+            status: HTTP status code of the response.
+
+        Returns:
+            The rendered error page.
+        """
         self.error_message = message
         return custom_message(self.request, message, status=status)
 
     def get_assets(self, structure_slug, category_slug) -> None:
+        """
+        Sets structure, category, title and sub_title from pk or slug.
+
+        Args:
+            structure_slug: Structure pk or slug.
+            category_slug: Category pk or slug.
+        """
         # get structure by pk or by slug
         try:
             self.struttura = get_object_or_404(
@@ -481,6 +497,15 @@ class TicketAddNew(View):
         self.title = self.category
 
     def get_modulo_and_form(self) -> Optional[HttpResponse]:
+        """
+        Sets the input module and its form.
+
+        If the "import" GET param is present, the form is filled with the data of
+        the encrypted precompiled ticket and the compiling user is set.
+
+        Returns:
+            An error response if the precompiled ticket is not valid, else None.
+        """
         # if there is an encrypted token with ticket params in URL
         if self.request.GET.get("import"):
             if not self.request.user.is_authenticated:
@@ -533,6 +558,15 @@ class TicketAddNew(View):
         self.clausole_categoria = self.category.get_conditions()
 
     def deny_response(self) -> Optional[HttpResponse]:
+        """
+        Checks if the user can open a ticket in the category.
+
+        Checks category availability, authentication requirements, daily limit,
+        allowed users, open tickets and maximum requests per user.
+
+        Returns:
+            An error or redirect response if denied, else None.
+        """
         # if category is not active, return an error message
         if not self.category.is_published():
             unavailable_msg = self.category.not_available_message or UNAVAILABLE_TICKET_CATEGORY
@@ -595,15 +629,14 @@ class TicketAddNew(View):
 
     def get(self, request, structure_slug, category_slug, api:bool = False):
         """
-        Create the ticket
+        Creates the ticket
 
-        :type structure_slug: String
-        :type category_slug: String
+        Args:
+            structure_slug: Slug of structure.
+            category_slug: Slug of category.
 
-        :param structure_slug: slug of structure
-        :param category_slug: slug of category
-
-        :return: render
+        Returns:
+            The rendered page.
         """
         self.get_assets(structure_slug, category_slug)
         deny_response = self.deny_response()
@@ -631,6 +664,22 @@ class TicketAddNew(View):
             return render(request, self.template, base_context(self.context_data))
 
     def post(self, request, structure_slug, category_slug, api=False):
+        """
+        Creates the ticket, a draft or a precompiled ticket URL.
+
+        On creation the ticket is assigned to the category office, default
+        tasks are added (or it is closed, if notification), it is protocolled if
+        required and operators and owner are notified.
+
+        Args:
+            request: The current HttpRequest.
+            structure_slug: Structure pk or slug.
+            category_slug: Category pk or slug.
+            api: If True, returns the context data instead of the page.
+
+        Returns:
+            A redirect response, the rendered page, or the context data if api is True.
+        """
         self.get_assets(structure_slug, category_slug)
         deny_response = self.deny_response()
         if deny_response:
@@ -1009,7 +1058,11 @@ def dashboard(request):
     """
     Dashboard of user, with tickets list
 
-    :return: render
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        The rendered page.
     """
 
     # Ci pensa datatables a popolare la tabella
@@ -1057,14 +1110,15 @@ def dashboard(request):
 @ticket_is_not_taken_and_not_closed
 def ticket_edit(request, ticket_id):
     """
-    Edit ticket details while it is unassigned
+    Edits ticket details while it is unassigned
     Note: formset validation is in widget (._fill_body method)
 
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
 
-    :param ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from decorator @is_the_owner
     ticket = request.ticket
@@ -1182,16 +1236,16 @@ def ticket_edit(request, ticket_id):
 @ticket_is_not_taken_and_not_closed
 def delete_my_attachment(request, ticket_id, attachment):
     """
-    Delete ticket attachment while it is unassigned
+    Deletes ticket attachment while it is unassigned
     Note: it must be called by a dialogbox with user confirmation
 
-    :type ticket_id: String
-    :type attachment: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
+        attachment: Attachment name.
 
-    :param ticket_id: ticket code
-    :param attachment: attachment name
-        
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from decorator @is_the_owner
     ticket = request.ticket
@@ -1242,14 +1296,15 @@ def delete_my_attachment(request, ticket_id, attachment):
 @ticket_is_not_taken_and_not_closed
 def ticket_delete(request, ticket_id):
     """
-    Delete ticket while it is unassigned
+    Deletes ticket while it is unassigned
     Note: it must be called by a dialogbox with user confirmation
 
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
 
-    :param ticket_id: ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from decorator @is_the_owner
     ticket = request.ticket
@@ -1338,15 +1393,28 @@ class TicketDetail(View):
     """
     Shows ticket details
 
-    :type ticket_id: String
-    :type template: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
+        template: Template to use (can change if specified).
 
-    :param ticket_id: ticket code
-    :param attachment: template to user (can change if specified)
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     def get(self, request, ticket_id:str, api:bool=False, printable:bool=False, template="user/ticket_detail.html"):
+        """
+        Shows the ticket details.
+
+        Args:
+            request: The current HttpRequest.
+            ticket_id: Ticket code.
+            api: If True, returns the data instead of the page.
+            printable: If True, shows only printable tasks and conditions.
+            template: Template to use.
+
+        Returns:
+            The rendered page, or the data if api is True.
+        """
         ticket = getattr(request, "ticket", None)
         if not ticket:
             ticket = get_object_or_404(
@@ -1443,11 +1511,12 @@ def ticket_message(request, ticket_id):
     """
     Ticket messages page
 
-    :param ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: String.
 
-    :type ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     # from decorator @is_the_owner
     ticket = request.ticket
@@ -1579,16 +1648,27 @@ class TaskDetail(View):
     """
     Task details page
 
-    :param ticket_id: String
-    :param task_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :type ticket_id: ticket code
-    :type task_id: task code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
 
     def get(self, request, ticket_id:str, task_id:str):
+        """
+        Shows the task details, if the task is public.
+
+        Args:
+            request: The current HttpRequest.
+            ticket_id: Ticket code.
+            task_id: Task code.
+
+        Returns:
+            The rendered page.
+        """
         ticket = get_object_or_404(Ticket, code=ticket_id)
         task = get_object_or_404(Task, code=task_id, ticket=ticket)
         if not task.is_public:
@@ -1607,15 +1687,29 @@ class TicketClose(View):
     """
     Closes ticket by owner. Used also by the REST API (api=True)
 
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
 
-    :param ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     template = "user/ticket_close.html"
 
     def dispatch(self, request, ticket_id:str, *args, **kwargs) -> Union[HttpResponse, HttpResponseRedirect]:
+        """
+        Loads the ticket and checks that the user can close it.
+
+        Closed tickets, drafts not owned by the user and tickets compiled only by
+        the user are rejected.
+
+        Args:
+            request: The current HttpRequest.
+            ticket_id: Ticket code.
+
+        Returns:
+            The HTTP response.
+        """
         self.ticket = get_object_or_404(Ticket, code=ticket_id)
         self.title = _("Chiusura della richiesta")
         self.sub_title = self.ticket
@@ -1665,11 +1759,12 @@ class TicketClose(View):
         """
         Ticket closing by owner user
 
-        :param ticket_id: String
+        Args:
+            request: The current HttpRequest.
+            api: If True, returns the context data instead of the page.
 
-        :type ticket_id: ticket code
-
-        :return: render
+        Returns:
+            The rendered page, or the context data if api is True.
         """
         self.form = BaseTicketCloseForm()
         self.context_data['form'] = self.form
@@ -1679,6 +1774,16 @@ class TicketClose(View):
             return render(request, self.template, base_context(self.context_data))
 
     def post(self, request, api:bool = False):
+        """
+        Closes the ticket with the reason given in the form.
+
+        Args:
+            request: The current HttpRequest.
+            api: If True, reads data from request.api_data.
+
+        Returns:
+            A redirect to the ticket detail page.
+        """
         post_data = request.POST if not api else getattr(request, "api_data")
         self.form = BaseTicketCloseForm(post_data) # API csrf token workaround
         self.context_data['form'] = self.form
@@ -1716,13 +1821,14 @@ class TicketClose(View):
 @is_the_owner
 def ticket_reopen(request, ticket_id):
     """
-    Reopen ticket
+    Reopens ticket
 
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
 
-    :param ticket_id: ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     # from decorator @is_the_owner
     ticket = request.ticket
@@ -1797,13 +1903,14 @@ def ticket_reopen(request, ticket_id):
 @login_required
 def chat_new_preload(request, structure_slug=None):
     """
-    Choose the OrganizationalStructure and the category of the ticket
+    Chooses the OrganizationalStructure and the category of the ticket
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Slug of structure.
 
-    :param structure_slug: slug of structure
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     strutture = OrganizationalStructure.objects.filter(is_active=True)
     template = "user/new_chat_preload.html"
@@ -1830,11 +1937,12 @@ def ticket_clone(request, ticket_id):
     redirecting user to new ticket form with an encrypted
     reference to compiled data
 
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
 
-    :param ticket_id: ticket code
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     main_ticket = get_object_or_404(
         Ticket, 
@@ -1881,11 +1989,12 @@ def ticket_detail_print(request, ticket_id):
     """
     Displays ticket print version
 
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
 
-    :param ticket_id: ticket code
-
-    :return: view response
+    Returns:
+        The rendered print page.
     """
     response = TicketDetail().get(request=request,
                                   ticket_id=ticket_id,
@@ -1902,13 +2011,13 @@ def download_ticket_pdf(request,
     """
     Downloads ticket PDF version
 
-    :type ticket_id: String
-    :type template: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
+        template: Template to use (can change if specified).
 
-    :param ticket_id: ticket code
-    :param template: template to use (can change if specified)
-
-    :return: file
+    Returns:
+        The file as a download response.
     """
     response = TicketDetail().get(request=request,
                                   ticket_id=ticket_id,
@@ -1929,7 +2038,11 @@ def draft_ticket(request):
     """
     Gets draft tickets list (requires HTML datatable in template)
 
-    :return: render
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        The rendered page.
     """
     title = _("Richieste in bozza")
     template = "user/draft_ticket.html"
@@ -1945,13 +2058,14 @@ def draft_ticket(request):
 # @ticket_is_not_taken_and_not_closed
 def ticket_submit_draft(request, ticket_id):
     """
-    Create ticket from draft
+    Creates ticket from draft
 
-    :type ticket_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
 
-    :param ticket_id: ticket code
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     ticket = get_object_or_404(
         Ticket.objects.select_related(

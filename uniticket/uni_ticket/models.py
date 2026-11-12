@@ -89,6 +89,7 @@ exec(inspect.getsource(LogEntry).replace('db_table = "django_admin_log"',
 
 
 class ExpirableModel(models.Model):
+    """Abstract model with an optional activity window (date_start/date_end)."""
     date_start = models.DateTimeField(_("Attiva dal"), null=True, blank=True)
     date_end = models.DateTimeField(_("Attiva fino al"), null=True, blank=True)
 
@@ -96,28 +97,34 @@ class ExpirableModel(models.Model):
         abstract = True
 
     def is_expired(self):
+        """Returns True if date_end is set and has already been reached."""
         if not self.date_end:
             return False
         return timezone.localtime() >= self.date_end
 
     def is_started(self):
+        """Returns True if date_start is not set or has already been reached."""
         if not self.date_start:
             return True
         return timezone.localtime() >= self.date_start
 
     def is_in_progress(self):
+        """Returns True if the object is started and not expired."""
         return self.is_started() and not self.is_expired()
 
     def is_published(self):
+        """Returns True if the object is active and within its activity window."""
         return self.is_active and self.is_in_progress()
 
     def disable_if_expired(self):
+        """Sets is_active to False and saves it if the object is active but expired."""
         if self.is_active and self.is_expired():
             self.is_active = False
             self.save(update_fields=["is_active"])
 
 
 class TimeStampedModel(models.Model):
+    """Abstract model with automatic creation and modification timestamps."""
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -126,6 +133,7 @@ class TimeStampedModel(models.Model):
 
 
 class OrganizationalStructureAllowedUsersList(TimeStampedModel):
+    """Named list of users of a structure, enabled to open tickets in the categories that use it."""
     organizational_structure = models.ForeignKey(OrganizationalStructure,
                                                  on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
@@ -263,7 +271,7 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
 
     def can_be_deleted(self):
         """
-        Ritorna True se è possibile eliminare la categoria
+        Returns True if the category can be deleted.
         """
         moduli = TicketCategoryModule.objects.filter(ticket_category=self)
         for modulo in moduli:
@@ -272,6 +280,14 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         return True
 
     def something_stops_activation(self):
+        """
+        Checks whether the category can be activated.
+
+        Returns:
+            A translated HTML message explaining what prevents the activation
+            (missing or inactive office, no active input module, expired
+            category), or False if nothing stops it.
+        """
         category_module = TicketCategoryModule.objects.filter(
             ticket_category=self, is_active=True
         )
@@ -313,7 +329,13 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         return folder
 
     def get_conditions(self, is_printable=False):
-        """ """
+        """
+        Returns the active conditions (clauses) of the category.
+
+        Args:
+            is_printable: If True, returns only the conditions visible in
+                the printable version.
+        """
         conditions = TicketCategoryCondition.objects.filter(
             category=self, is_active=True
         ).select_related(
@@ -325,12 +347,29 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         return conditions
 
     def get_tasks(self, is_active=True):
+        """
+        Returns the predefined tasks of the category.
+
+        Args:
+            is_active: If True, returns only the active tasks.
+        """
         tasks = TicketCategoryTask.objects.filter(category=self)
         if is_active:
             tasks = tasks.filter(is_active=True)
         return tasks
 
     def allowed_to_user(self, user):
+        """
+        Checks whether the user type is allowed to open tickets of the category.
+
+        Anonymous and guest-enabled categories allow any user; otherwise
+        employees and organization users are checked against allow_employee
+        and allow_user.
+
+        Returns:
+            A tuple whose first item is True if the user is allowed; when
+            denied for an existing user, the second item is the error message.
+        """
         if not user:
             return (False,)
         if self.allow_anonymous:
@@ -345,6 +384,7 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         return (False, _("Permesso negato a questa tipologia di utente"))
 
     def get_users_allowed_to_open_tickets(self):
+        """Returns the active users enabled directly or through an allowed users list."""
         return get_user_model().objects.filter(
             Q(pk__in=self.allowed_users.values_list('pk', flat=True)) | 
             Q(organizationalstructurealloweduserslist__ticketcategory=self),
@@ -352,6 +392,7 @@ class TicketCategory(ExpirableModel, TimeStampedModel):
         ).distinct()
 
     def user_can_open_tickets(self, user):
+        """Returns True if the category has no allowed users restriction or the user is among the allowed ones."""
         allowed_users = self.get_users_allowed_to_open_tickets()
         if not allowed_users: return True
         return user in allowed_users
@@ -377,7 +418,7 @@ class TicketCategoryModule(models.Model):
         verbose_name_plural = _("Moduli di Inserimento Richieste")
 
     def can_be_deleted(self):
-        """ """
+        """Returns True if no ticket has been created with this input module."""
         # if self.is_active: return False
         ticket_collegati = Ticket.objects.filter(input_module=self).first()
         if ticket_collegati:
@@ -385,6 +426,7 @@ class TicketCategoryModule(models.Model):
         return True
 
     def disable_other_modules(self):
+        """Deactivates all the other input modules of the same category."""
         others = TicketCategoryModule.objects.filter(
             ticket_category=self.ticket_category
         ).exclude(pk=self.pk)
@@ -401,6 +443,20 @@ class TicketCategoryModule(models.Model):
         show_conditions=False,
         **kwargs
     ):
+        """
+        Builds the dynamic ticket form defined by the module input fields.
+
+        Args:
+            data: Form data to bind.
+            files: Uploaded files to bind.
+            remove_filefields: Whether to remove the file fields from the form.
+            remove_datafields: Whether to remove the non-file fields from the form.
+            show_conditions: Whether to show the category conditions in the form.
+            **kwargs: Accepts current_user, passed to the form.
+
+        Returns:
+            The DynamicForm instance.
+        """
         ticket_input_list = self.ticketcategoryinputlist_set.all().order_by(
             "ordinamento"
         )
@@ -452,6 +508,12 @@ class TicketCategoryInputList(DynamicFieldMap):
 
     @staticmethod
     def field_exist(module, field_name):
+        """
+        Checks whether a module has a field with the given name (case insensitive).
+
+        Returns:
+            The field name if the field exists, False otherwise.
+        """
         field = TicketCategoryInputList.objects.filter(
             category_module=module, name__iexact=field_name
         ).first()
@@ -534,11 +596,13 @@ class Ticket(SavedFormContent):
 
     @property
     def taken_date(self):
+        """Returns the taken date of the last assignment that has been taken, if any."""
         return TicketAssignment.objects.filter(
             ticket=self, taken_date__isnull=False
         ).values_list("taken_date", flat=True).last()
 
     def serialize(self):
+        """Returns a dict representation of the ticket, with form data, attachments and assigned offices."""
         _offices = [{
                 "name": i.name
         } for i in self.get_assigned_to_offices()
@@ -569,6 +633,7 @@ class Ticket(SavedFormContent):
         return data
 
     def get_category(self):
+        """Returns the category of the ticket input module."""
         return self.input_module.ticket_category
 
     def get_folder(self):
@@ -579,6 +644,13 @@ class Ticket(SavedFormContent):
         return folder
 
     def compress_modulo_compilato(self, check_length=True):
+        """
+        Compresses the compiled form data to base64 and saves it.
+
+        Args:
+            check_length: If True, compresses only data longer than
+                TICKET_MIN_DIGITS_TO_COMPRESS.
+        """
         # if check on length is abled and length is short
         if (
             check_length and
@@ -590,6 +662,7 @@ class Ticket(SavedFormContent):
         self.save(update_fields=["modulo_compilato"])
 
     def get_modulo_compilato(self):
+        """Returns the compiled form data as a dict, decompressing it if needed."""
         try:
             json_dict = json.loads(decompress_text(self.modulo_compilato))
         except:
@@ -598,7 +671,13 @@ class Ticket(SavedFormContent):
 
     @staticmethod
     def get_user_ticket_per_day(user, date=None):
-        """ """
+        """
+        Returns the non-draft tickets created by the user in a day.
+
+        Args:
+            user: The ticket creator.
+            date: The day to check; defaults to today.
+        """
         dt = date if date else timezone.now().date()
         tickets = Ticket.objects.filter(
             created_by=user, 
@@ -623,6 +702,7 @@ class Ticket(SavedFormContent):
 
     @staticmethod
     def number_limit_reached_by_user(user):
+        """Returns True if the user has reached the daily ticket limit (0 means no limit)."""
         # that's for tests override_settings
         _max = getattr(settings, "MAX_DAILY_TICKET_PER_USER", MAX_DAILY_TICKET_PER_USER)
         if _max == 0:
@@ -634,7 +714,7 @@ class Ticket(SavedFormContent):
 
     @staticmethod
     def existent_open_ticket(user, ticket_category):
-        """ """
+        """Returns True if the user has a not closed ticket of the given category."""
         open_tickets = Ticket.objects.filter(
             created_by=user,
             input_module__ticket_category=ticket_category,
@@ -643,10 +723,16 @@ class Ticket(SavedFormContent):
         return True if open_tickets else False
 
     def get_year(self):
-        """ """
+        """Returns the creation year of the ticket."""
         return self.created.year
 
     def is_open(self, user=None):
+        """
+        Returns True if the ticket is not closed and has been taken.
+
+        Args:
+            user: If given, the ticket must have been taken by this user.
+        """
         if self.is_closed:
             return False
         elif not self.has_been_taken(user=user):
@@ -655,7 +741,7 @@ class Ticket(SavedFormContent):
 
     def check_if_owner(self, user):
         """
-        Ritorna True se l'utente passato come argomento ha creato il ticket
+        Returns True if the given user created or compiled the ticket.
         """
         if not user:
             return False
@@ -664,6 +750,7 @@ class Ticket(SavedFormContent):
         return False
 
     def get_owners_html(self):
+        """Returns an HTML list of creator and compiler, or just the creator if there is no compiler."""
         if self.compiled_by:
             return (
                 '<span style="white-space:nowrap">'
@@ -675,6 +762,7 @@ class Ticket(SavedFormContent):
         return self.created_by
 
     def get_owners(self):
+        """Returns the ticket owners (creator and, if present, compiler)."""
         if not self.created_by: return []
         owners = [self.created_by]
         if self.compiled_by:
@@ -682,6 +770,13 @@ class Ticket(SavedFormContent):
         return owners
 
     def get_allegati_dict(self, ticket_dict={}):
+        """
+        Returns the attachments dict of the ticket.
+
+        Args:
+            ticket_dict: Ticket data dict to read the attachments from; if
+                empty, the compiled form data is used.
+        """
         allegati_dict = {}
         if ticket_dict:
             allegati_dict = ticket_dict.get(settings.ATTACHMENTS_DICT_PREFIX)
@@ -695,7 +790,7 @@ class Ticket(SavedFormContent):
 
     def get_form_module(self):
         """
-        Ritorna il modulo di input con cui il ticket è stato compilato
+        Returns the input module used to compile the ticket.
         """
         return self.input_module
 
@@ -703,7 +798,7 @@ class Ticket(SavedFormContent):
         self, files=None, remove_filefields=True, remove_datafields=False
     ):
         """
-        Torna il form compilato senza allegati
+        Returns the compiled form without attachments.
         """
         modulo = self.get_form_module()
         if not modulo:
@@ -722,6 +817,15 @@ class Ticket(SavedFormContent):
         return form
 
     def save_data(self, subject, description, ticket_dict):
+        """
+        Sets subject, description and compiled form data of the ticket.
+
+        The ticket is not saved.
+
+        Args:
+            ticket_dict: Form data dict; subject and description keys are
+                excluded from the compiled data.
+        """
         self.subject = subject
         self.description = description
         set_as_dict(
@@ -733,6 +837,7 @@ class Ticket(SavedFormContent):
     # TODO: please do not nest HTML code in the model ...
     # HTML representation of status
     def get_status(self):
+        """Returns the HTML badges of the ticket status (draft, closed with closing status, open or assigned)."""
         if self.draft:
             status = _('<span class="badge bg-info">Bozza</span>')
             if self.is_closed: 
@@ -766,6 +871,7 @@ class Ticket(SavedFormContent):
     # TODO: please do not nest HTML code in the model ...
     # for datatables (show icons)
     def get_status_table(self):
+        """Returns the HTML status of the ticket for datatables, with icons for the closing status."""
         if self.draft:
             status = _('<span class="badge bg-info">Bozza</span>')
             if self.is_closed: 
@@ -813,6 +919,19 @@ class Ticket(SavedFormContent):
         )
 
     def update_log(self, user, is_public=True, note="", send_mail=True, mail_msg=""):
+        """
+        Logs a change on the ticket and optionally notifies the owners by email.
+
+        Args:
+            user: The user who made the change.
+            is_public: Whether the log entry is visible to the ticket owners.
+            note: The log message.
+            send_mail: Whether to email the owners (only for public entries).
+            mail_msg: Email message; defaults to note.
+
+        Returns:
+            The created Log entry, or False if no user is given.
+        """
         if not user:
             return False
         if is_public and send_mail:
@@ -883,8 +1002,7 @@ class Ticket(SavedFormContent):
 
     def add_competence(self, office, user, note=None):
         """
-        Aggiunge un nuovo ufficio di competenza per la gestione
-        del ticket
+        Adds a new competent office for the ticket management.
         """
         competence = TicketAssignment.objects.filter(
             ticket=self, office=office).first()
@@ -908,7 +1026,24 @@ class Ticket(SavedFormContent):
     def block_competence(
         self, user, structure, allow_readonly=True, selected_office=None
     ):
-        """ """
+        """
+        Stops the following of the ticket by some offices of a structure.
+
+        If selected_office is managed by the user, only that office is
+        affected; otherwise operators affect their own offices and managers
+        all the structure offices. Default offices are skipped when
+        allow_readonly is True.
+
+        Args:
+            user: The user requesting the action.
+            structure: The organizational structure.
+            allow_readonly: If True, offices keep following the ticket in
+                read-only mode; if False, they stop following it.
+            selected_office: The single office to act on.
+
+        Returns:
+            The list of affected offices, or False if the user is a simple user.
+        """
         usertype = get_user_type(user, structure)
         if usertype == "user":
             return False
@@ -958,12 +1093,12 @@ class Ticket(SavedFormContent):
         return offices_to_disable
 
     def get_dependences(self):
-        """ """
+        """Returns the Ticket2Ticket relations in which this ticket is the subordinate one."""
         t2t_list = Ticket2Ticket.objects.filter(subordinate_ticket=self).all()
         return t2t_list
 
     def get_task(self):
-        """ """
+        """Returns the list of tasks of the ticket."""
         task = []
         ticket_task = Task.objects.filter(ticket=self).all()
         for t in ticket_task:
@@ -971,7 +1106,7 @@ class Ticket(SavedFormContent):
         return task
 
     def blocks_some_ticket(self):
-        """ """
+        """Returns the subordinate tickets that depend on this ticket."""
         dependences = []
         t2t_list = Ticket2Ticket.objects.filter(main_ticket=self).all()
         for t2t in t2t_list:
@@ -979,7 +1114,7 @@ class Ticket(SavedFormContent):
         return dependences
 
     def is_closable(self):
-        """ """
+        """Returns True if the ticket is taken, not draft, not closed and all its main tickets and tasks are closed."""
         if self.draft:
             return False
         if not self.has_been_taken():
@@ -999,7 +1134,7 @@ class Ticket(SavedFormContent):
         return True
 
     def is_valid(self):
-        """ """
+        """Returns True if the ticket has no attachments data or its empty file fields pass form validation."""
         json_dict = self.get_modulo_compilato()
         ticket_dict = get_as_dict(json_dict)
         if settings.ATTACHMENTS_DICT_PREFIX not in ticket_dict:
@@ -1015,11 +1150,21 @@ class Ticket(SavedFormContent):
         return False
 
     def get_priority(self):
-        """ """
+        """Returns the label of the ticket priority."""
         # return dict(PRIORITY_LEVELS).get(str(self.priority))
         return dict(PRIORITY_LEVELS).get(self.priority)
 
     def _check_assignment_privileges(self, queryset):
+        """
+        Returns the follow/readonly privileges given by a set of assignments.
+
+        Args:
+            queryset: The TicketAssignment queryset to check.
+
+        Returns:
+            A dict with follow True and readonly False if at least one
+            assignment is not read-only, or False if the queryset is empty.
+        """
         if not queryset.exists():
             return False
         if queryset.filter(readonly=False).exists():
@@ -1031,6 +1176,15 @@ class Ticket(SavedFormContent):
         # return json.loads(d)
 
     def is_followed_in_structure(self, structure, taken=False):
+        """
+        Checks whether the ticket is followed by an active office of the structure.
+
+        Args:
+            taken: If True, considers only assignments already taken.
+
+        Returns:
+            The privileges dict from _check_assignment_privileges, or False.
+        """
         if not structure:
             return False
         assignment = TicketAssignment.objects.filter(
@@ -1044,6 +1198,15 @@ class Ticket(SavedFormContent):
         return self._check_assignment_privileges(assignment)
 
     def is_followed_by_office(self, office, taken=False):
+        """
+        Checks whether the ticket is followed by the given active office.
+
+        Args:
+            taken: If True, considers only assignments already taken.
+
+        Returns:
+            The privileges dict from _check_assignment_privileges, or False.
+        """
         if not office:
             return False
         assignment = TicketAssignment.objects.filter(
@@ -1054,6 +1217,12 @@ class Ticket(SavedFormContent):
         return self._check_assignment_privileges(assignment)
 
     def is_followed_by_one_of_offices(self, offices):
+        """
+        Checks whether the ticket is followed by one of the given offices.
+
+        Returns:
+            The privileges dict from _check_assignment_privileges, or False.
+        """
         if not offices:
             return False
         assignment = TicketAssignment.objects.filter(
@@ -1064,6 +1233,18 @@ class Ticket(SavedFormContent):
     def has_been_taken(
         self, user=None, follow=True, exclude_readonly=False, structure=None
     ):
+        """
+        Returns True if at least one assignment of the ticket has been taken.
+
+        Uses the prefetched assignments when available, to avoid a query.
+
+        Args:
+            user: If given, the assignment must have been taken by this user.
+            follow: If True, considers only followed assignments.
+            exclude_readonly: If True (with follow), excludes read-only
+                assignments.
+            structure: If given, considers only offices of this structure.
+        """
         # se ticketassignment_set è già stato prefetchato (es. datatables),
         # evitiamo una query aggiuntiva filtrando in Python la cache
         if 'ticketassignment_set' in getattr(self, '_prefetched_objects_cache', {}):
@@ -1111,6 +1292,7 @@ class Ticket(SavedFormContent):
     def has_been_taken_by_user(
         self, user, follow=True, exclude_readonly=False, structure=None
     ):
+        """Returns True if the ticket has been taken by the user (see has_been_taken)."""
         if not user:
             return False
         return self.has_been_taken(user=user,
@@ -1119,6 +1301,7 @@ class Ticket(SavedFormContent):
                                    structure=structure)
 
     def taken_by_html_list(self):
+        """Returns an HTML list of the assigned offices with the operator who took each one."""
         if 'ticketassignment_set' in getattr(self, '_prefetched_objects_cache', {}):
             assignments = self.ticketassignment_set.all()
         else:
@@ -1142,6 +1325,16 @@ class Ticket(SavedFormContent):
         return "<ul>{}</ul>".format(elements)
 
     def take(self, user, structure, assigned_by=None, strictly_assigned=False):
+        """
+        Takes the untaken assignments of the structure whose office the user manages.
+
+        Args:
+            user: The operator who takes the ticket.
+            structure: The organizational structure.
+            assigned_by: If given, is stored as assigner and the assignment
+                creation date is reset.
+            strictly_assigned: Passed to user_manage_office.
+        """
         assignments = TicketAssignment.objects.filter(
             ticket=self, office__organizational_structure=structure
         )
@@ -1162,6 +1355,7 @@ class Ticket(SavedFormContent):
                 assignment.save()
 
     def is_untaken_by_user_offices(self, user, structure):
+        """Returns the offices of the structure managed by the user whose assignment has not been taken yet."""
         assignments = TicketAssignment.objects.filter(
             ticket=self, office__organizational_structure=structure
         )
@@ -1175,6 +1369,13 @@ class Ticket(SavedFormContent):
         return offices
 
     def close(self, user:get_user_model(), motivazione:str):
+        """
+        Closes the ticket and saves closing data.
+
+        Args:
+            user: The user who closes the ticket.
+            motivazione: The closing reason.
+        """
         self.is_closed = True
         self.closing_reason = motivazione
         self.closed_date = timezone.localtime()
@@ -1193,7 +1394,7 @@ class Ticket(SavedFormContent):
 
 
 class TicketCategoryDefaultReply(models.Model):
-    """ """
+    """Predefined reply text that operators can use for tickets of a category."""
 
     ticket_category = models.ForeignKey(
         TicketCategory, on_delete=models.CASCADE)
@@ -1253,7 +1454,21 @@ class TicketAssignment(TimeStampedModel):
                                  taken_by=None,
                                  priority_first=True,
                                  ticket_codes=[]):
-        """ """
+        """
+        Returns the ids of the tickets assigned to active offices of a structure.
+
+        Args:
+            structure: The organizational structure.
+            follow_check: If True, considers only followed assignments.
+            closed: If not None, filters by ticket closed status.
+            taken: If not None, filters by taken/untaken assignments.
+            taken_by: If given, filters by the operator who took the ticket.
+            priority_first: If True, orders by priority before creation date.
+            ticket_codes: If given, filters by ticket codes.
+
+        Returns:
+            A distinct values list of ticket ids.
+        """
         q_base = Q(office__organizational_structure=structure,
                    office__is_active=True)
 
@@ -1293,7 +1508,21 @@ class TicketAssignment(TimeStampedModel):
                                   taken_by=None,
                                   priority_first=True,
                                   ticket_codes=[]):
-        """ """
+        """
+        Returns the ids of the tickets assigned to the given active offices.
+
+        Args:
+            offices_list: The offices to check.
+            follow_check: If True, considers only followed assignments.
+            closed: If not None, filters by ticket closed status.
+            taken: If not None, filters by taken/untaken assignments.
+            taken_by: If given, filters by the operator who took the ticket.
+            priority_first: If True, orders by priority before creation date.
+            ticket_codes: If given, filters by ticket codes.
+
+        Returns:
+            A distinct values list of ticket ids.
+        """
         q_base = Q(office__in=offices_list, office__is_active=True)
 
         if closed is not None:
@@ -1324,6 +1553,7 @@ class TicketAssignment(TimeStampedModel):
         return tickets
 
     def save(self, *args, **kwargs):
+        """Saves the assignment and sets the ticket assigned_date to the taken date if not set yet."""
         super().save(*args, **kwargs)
         if not self.ticket.assigned_date:
             self.ticket.assigned_date = self.taken_date
@@ -1371,6 +1601,7 @@ class TicketReply(models.Model):
         verbose_name_plural = _("Domande/Risposte Ticket")
 
     def serialize(self):
+        """Returns a dict representation of the message."""
         return dict(
             subject = self.subject,
             text = self.text,
@@ -1380,6 +1611,18 @@ class TicketReply(models.Model):
 
     @staticmethod
     def get_unread_messages_count(ticket_ids, by_operator=False):
+        """
+        Checks whether the tickets have unread messages.
+
+        Args:
+            ticket_ids: The ticket ids to check.
+            by_operator: If True, checks messages sent by operators;
+                otherwise messages sent by users.
+
+        Returns:
+            True if at least one unread message exists (despite the name,
+            not a count).
+        """
         # show messages sent by operator
         q_base = Q(ticket__pk__in=ticket_ids,
                    read_date__isnull=True,)
@@ -1427,7 +1670,7 @@ class Ticket2Ticket(models.Model):
 
     @staticmethod
     def main_is_already_used(ticket):
-        """ """
+        """Returns True if the ticket depends on at least one not closed main ticket."""
         relations = Ticket2Ticket.objects.filter(subordinate_ticket=ticket)
         if not relations:
             return False
@@ -1442,7 +1685,7 @@ class Ticket2Ticket(models.Model):
 
 
 class AbstractTask(models.Model):
-    """ """
+    """Abstract model with the common fields of tasks."""
 
     subject = models.CharField(max_length=255)
     code = models.CharField(max_length=255, unique=True)
@@ -1470,7 +1713,7 @@ class AbstractTask(models.Model):
         abstract = True
 
     def get_priority(self):
-        """ """
+        """Returns the label of the task priority."""
         return dict(PRIORITY_LEVELS).get(self.priority)
 
 
@@ -1508,6 +1751,14 @@ class Task(AbstractTask):
         verbose_name_plural = _("Task")
 
     def update_log(self, user, is_public=True, note=""):
+        """
+        Logs a change on the task.
+
+        Args:
+            user: The user who made the change.
+            is_public: Whether the log entry is publicly visible.
+            note: The log message.
+        """
         log = Log.objects.log_action(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(self).pk,
@@ -1530,11 +1781,13 @@ class Task(AbstractTask):
         return folder
 
     def get_basic_status(self):
+        """Returns the HTML badge of the task status (open or closed)."""
         if self.is_closed:
             return _('<span class="badge bg-success">Chiusa</span>')
         return _('<span class="badge bg-danger">Aperta</span>')
 
     def get_status(self):
+        """Returns the HTML badges of the task status, with closing status and closer if closed."""
         if self.is_closed:
             status_literal = dict(CLOSING_LEVELS).get(self.closing_status)
 
@@ -1580,7 +1833,7 @@ class Task2Ticket(models.Model):
 
 
 class TicketCategoryCondition(models.Model):
-    """ """
+    """Condition (clause) shown to users when opening a ticket of a category."""
 
     category = models.ForeignKey(TicketCategory, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=False, null=False)
@@ -1646,6 +1899,7 @@ class TicketCategoryTask(AbstractTask):
 
 
 class OrganizationalStructureAlert(ExpirableModel, TimeStampedModel):
+    """Alert message shown to the users of a structure within its activity window."""
     organizational_structure = models.ForeignKey(
         OrganizationalStructure, on_delete=models.CASCADE
     )
@@ -1663,13 +1917,14 @@ class OrganizationalStructureAlert(ExpirableModel, TimeStampedModel):
 
 
 class CompiledTicket(models.Model):
+    """Precompiled ticket content reachable through a unique URL path."""
     url_path = models.CharField(max_length=255, unique=True, default=uuid.uuid4)
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
 
     @staticmethod
     def clear():
-        """ """
+        """Deletes the precompiled tickets older than PRECOMPILED_TICKET_EXPIRE_DAYS, if set."""
         if PRECOMPILED_TICKET_EXPIRE_DAYS:
             to_clear = []
             precompiled_tickets = CompiledTicket.objects.all()
@@ -1687,6 +1942,7 @@ _TICKET_OPERATOR_NOTES_VISIBILITY_LEVELS = (
 
 
 class TicketOperatorNote(TimeStampedModel):
+    """Internal note written by an operator on a ticket, with a visibility level."""
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL,
                               on_delete=models.PROTECT)

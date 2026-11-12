@@ -7,7 +7,8 @@ class OrganizationalAreaConfig(AppConfig):
     verbose_name = 'Organizational Area'
 
     def ready(self):
-        """Register the app signal handlers.
+        """
+        Registers the app signal handlers.
 
         Returns:
             None.

@@ -9,7 +9,8 @@ register = template.Library()
 
 @register.simple_tag
 def employee_offices(user, structure=None):
-    """Return the employee-office relationships of a user.
+    """
+    Returns the employee-office relationships of a user.
 
     Args:
         user: The user whose offices are returned.
@@ -28,7 +29,8 @@ def employee_offices(user, structure=None):
 
 @register.simple_tag
 def organizational_area_settings_value(name, **kwargs):
-    """Return an organizational_area setting by name.
+    """
+    Returns an organizational_area setting by name.
 
     Args:
         name: The setting name (e.g. DEFAULT_ORGANIZATIONAL_STRUCTURE_OFFICE).

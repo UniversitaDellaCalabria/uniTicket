@@ -24,11 +24,12 @@ def manage(request, structure_slug=None):
     """
     Makes URL redirect to manage a structure depending of user role
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Slug of structure to manage.
 
-    :param structure_slug: slug of structure to manage
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     if not structure_slug:
         return redirect("uni_ticket:user_dashboard")
@@ -47,13 +48,13 @@ def download_attachment(request, ticket_id, attachment):
     """
     Downloads ticket attachment
 
-    :type ticket_id:String
-    :type attachment: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
+        attachment: Attachment name.
 
-    :param ticket_id: ticket code
-    :param attachment: attachment name
-
-    :return: file
+    Returns:
+        The file as a download response.
     """
     # from decorator @has_access_to_ticket
     ticket = request.ticket
@@ -82,13 +83,13 @@ def download_message_attachment(
     """
     Downloads ticket message attachment
 
-    :type ticket_id: String
-    :type reply_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
+        reply_id: Message id.
 
-    :param ticket_id: ticket code
-    :param reply_id: message id
-
-    :return: file
+    Returns:
+        The file as a download response.
     """
     # get the message
     message = get_object_or_404(TicketReply, pk=reply_id)
@@ -108,13 +109,13 @@ def download_task_attachment(request, ticket_id, task_id, closing_attachment=Fal
     """
     Downloads ticket message attachment
 
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: file
+    Returns:
+        The file as a download response.
     """
     # get ticket
     ticket = get_object_or_404(Ticket, code=ticket_id)
@@ -156,13 +157,13 @@ def download_task_closing_attachment(request, ticket_id, task_id):
     """
     Downloads ticket message closing attachment
 
-    :type ticket_id: String
-    :type task_id: String
+    Args:
+        request: The current HttpRequest.
+        ticket_id: Ticket code.
+        task_id: Task code.
 
-    :param ticket_id: ticket code
-    :param task_id: task code
-
-    :return: file
+    Returns:
+        The file as a download response.
     """
     return download_task_attachment(request, ticket_id, task_id, True)
 
@@ -172,11 +173,12 @@ def opened_ticket(request, structure_slug=None):
     """
     Gets opened tickets list (requires HTML datatable in template)
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     title = _("Richieste assegnate")
     user_type = get_user_type(request.user, getattr(request, "structure", None))
@@ -196,11 +198,12 @@ def my_opened_ticket(
     """
     Gets opened tickets list (requires HTML datatable in template)
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     title = _("Richieste assegnate a me")
     user_type = get_user_type(request.user, getattr(request, "structure", None))
@@ -220,11 +223,12 @@ def unassigned_ticket(
     """
     Gets unassigned tickets list (requires HTML datatable in template)
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     title = _("Richieste aperte")
     user_type = get_user_type(request.user, getattr(request, "structure", None))
@@ -242,11 +246,12 @@ def closed_ticket(request, structure_slug=None):
     """
     Gets closed tickets list (requires HTML datatable in template)
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: render
+    Returns:
+        The rendered page.
     """
     title = _("Richieste chiuse")
     user_type = get_user_type(request.user, getattr(request, "structure", None))
@@ -261,6 +266,18 @@ def closed_ticket(request, structure_slug=None):
 
 @login_required
 def email_notify_change(request):
+    """
+    Toggles the email notification setting of the user (POST only).
+
+    Args:
+        request: The current HttpRequest.
+
+    Returns:
+        The rendered intercooler response.
+
+    Raises:
+        Http404: If the request is not a POST.
+    """
     if request.method == "POST":
         data = {}
         user = request.user
@@ -284,11 +301,12 @@ def user_settings(request, structure_slug=None):
     """
     Gets user settings
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: response
+    Returns:
+        The HTTP response.
     """
     user_type = get_user_type(request.user, getattr(request, "structure", None))
     template = "{}/user_settings.html".format(user_type)
@@ -309,11 +327,12 @@ def ticket_messages(request, structure_slug=None):
     """
     Gets ticket messages
 
-    :type structure_slug: String
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Structure slug.
 
-    :param structure_slug: structure slug
-
-    :return: response
+    Returns:
+        The HTTP response.
     """
     structure = getattr(request, "structure", None)
     office_employee = getattr(request, "office_employee", None)
@@ -401,11 +420,12 @@ def ticket_message_delete(request, ticket_message_id):
     """
     Deletes a message from ticket chat
 
-    :type ticket_message_id: Integer
+    Args:
+        request: The current HttpRequest.
+        ticket_message_id: Ticket message id.
 
-    :param ticket_message_id: ticket message id
-
-    :return: redirect
+    Returns:
+        A redirect response.
     """
     ticket_message = get_object_or_404(TicketReply, pk=ticket_message_id)
     structure = ticket_message.structure
@@ -496,15 +516,14 @@ def download_condition_attachment(request, structure_slug, category_slug, condit
     """
     Downloads ticket attachment
 
-    :type structure_slug:String
-    :type category_slug:String
-    :type condition_id: Integer
+    Args:
+        request: The current HttpRequest.
+        structure_slug: Organizational Structure slug.
+        category_slug: Ticket Category slug.
+        condition_id: Condition pk.
 
-    :param structure_slug: Organizational Structure slug
-    :param category_slug: Ticket Category slug
-    :param condition_id: Condition pk
-
-    :return: file
+    Returns:
+        The file as a download response.
     """
     category = get_object_or_404(
         TicketCategory,
@@ -533,5 +552,15 @@ def download_condition_attachment(request, structure_slug, category_slug, condit
 
 
 def custom_404(request, exception):
+    """
+    Renders the 404 page.
+
+    Args:
+        request: The current HttpRequest.
+        exception: The raised exception.
+
+    Returns:
+        The rendered page with status 404.
+    """
     base_template = getattr(settings,'DEFAULT_BASE_TEMPLATE', '')
     return render(request, '404.html', {'base_template': base_template}, status=404)

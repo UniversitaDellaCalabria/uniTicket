@@ -6,5 +6,6 @@ from . models import IOService
 
 @admin.register(IOService)
 class ServiceAdmin(admin.ModelAdmin):
+    """Admin configuration of the App IO services."""
     list_display = ('name', 'service_id', 'is_active' )
     list_editable = ('is_active',)
