@@ -393,7 +393,7 @@ def ticket_user_summary_dict(user):
     return d
 
 
-def send_summary_email(users=[]):
+def send_summary_email(users=None):
     """
     Sends to each user an email with the summary of the open tickets.
 
@@ -403,6 +403,8 @@ def send_summary_email(users=[]):
     Returns:
         A dict with the "success" and "failed" lists of users.
     """
+    if users is None:
+        users = []
     failed = []
     success = []
     for user in users:
@@ -475,7 +477,7 @@ def user_offices_list(office_employee_queryset):
 # Custom email sender
 
 
-def send_custom_mail(subject, recipients, body, params={}, force=False):
+def send_custom_mail(subject, recipients, body, params=None, force=False):
     """
     Sends an email to the recipients.
 
@@ -494,6 +496,8 @@ def send_custom_mail(subject, recipients, body, params={}, force=False):
         The send_mail result, False if there are no recipients, or None if
         no recipient has a valid email.
     """
+    if params is None:
+        params = {}
     if not recipients:
         return False
     recipients_list = []
@@ -586,7 +590,7 @@ def disable_expired_items(items):
 
 def export_input_module_csv(
     module,
-    ticket_codes_list=[],
+    ticket_codes_list=None,
     file_name="export.csv",
     delimiter =',',
     quotechar ='"',
@@ -609,6 +613,8 @@ def export_input_module_csv(
     Returns:
         An HttpResponse with the CSV file, or False if there are no tickets.
     """
+    if ticket_codes_list is None:
+        ticket_codes_list = []
 
     module.ticket_category
 
@@ -725,7 +731,7 @@ def export_input_module_csv(
     return csv_file
 
 
-def export_category_zip(category, ticket_codes_list=[]):
+def export_category_zip(category, ticket_codes_list=None):
     """
     Exports the tickets of a category as a zip with a CSV file per input module.
 
@@ -736,6 +742,8 @@ def export_category_zip(category, ticket_codes_list=[]):
     Returns:
         An HttpResponse with the zip file.
     """
+    if ticket_codes_list is None:
+        ticket_codes_list = []
     output = io.BytesIO()
     f = zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED)
 

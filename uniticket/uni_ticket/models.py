@@ -769,7 +769,7 @@ class Ticket(SavedFormContent):
             owners.append(self.compiled_by)
         return owners
 
-    def get_allegati_dict(self, ticket_dict={}):
+    def get_allegati_dict(self, ticket_dict=None):
         """
         Returns the attachments dict of the ticket.
 
@@ -777,6 +777,8 @@ class Ticket(SavedFormContent):
             ticket_dict: Ticket data dict to read the attachments from; if
                 empty, the compiled form data is used.
         """
+        if ticket_dict is None:
+            ticket_dict = {}
         allegati_dict = {}
         if ticket_dict:
             allegati_dict = ticket_dict.get(settings.ATTACHMENTS_DICT_PREFIX)
@@ -1455,7 +1457,7 @@ class TicketAssignment(TimeStampedModel):
                                  taken=None,
                                  taken_by=None,
                                  priority_first=True,
-                                 ticket_codes=[]):
+                                 ticket_codes=None):
         """
         Returns the ids of the tickets assigned to active offices of a structure.
 
@@ -1471,6 +1473,8 @@ class TicketAssignment(TimeStampedModel):
         Returns:
             A distinct values list of ticket ids.
         """
+        if ticket_codes is None:
+            ticket_codes = []
         q_base = Q(office__organizational_structure=structure,
                    office__is_active=True)
 
@@ -1509,7 +1513,7 @@ class TicketAssignment(TimeStampedModel):
                                   taken=None,
                                   taken_by=None,
                                   priority_first=True,
-                                  ticket_codes=[]):
+                                  ticket_codes=None):
         """
         Returns the ids of the tickets assigned to the given active offices.
 
@@ -1525,6 +1529,8 @@ class TicketAssignment(TimeStampedModel):
         Returns:
             A distinct values list of ticket ids.
         """
+        if ticket_codes is None:
+            ticket_codes = []
         q_base = Q(office__in=offices_list, office__is_active=True)
 
         if closed is not None:
