@@ -138,8 +138,8 @@ def has_ticket_admin_privileges(func_to_decorate):
 
         can_manage = {}
         message_string = _(
-            "Permesso di accesso al ticket " "<b>{}</b> negato".format(request.ticket)
-        )
+            "Permesso di accesso al ticket " "<b>{}</b> negato"
+        ).format(request.ticket)
 
         # if is_manager:
         if user_is_in_default_office(request.user, structure):

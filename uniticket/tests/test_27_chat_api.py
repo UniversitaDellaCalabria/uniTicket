@@ -68,3 +68,29 @@ class ChatApiMethodsTest(TestCase):
                                    "room=room",
                                    content_type="application/x-www-form-urlencoded")
         self.assertEqual(response.status_code, 200)
+
+    def test_user_access_denied(self):
+        url = f"/api/chat/user/{self.other_user.pk}/"
+        self.assertEqual(self.client.get(url).status_code, 403)
+        response = self.client.put(url, "room=room",
+                                   content_type="application/x-www-form-urlencoded")
+        self.assertEqual(response.status_code, 403)
+
+    def test_user_bad_arguments(self):
+        # not numeric pk
+        self.assertEqual(self.client.get("/api/chat/user/abc/").status_code, 400)
+        response = self.client.put("/api/chat/user/abc/", "room=room",
+                                   content_type="application/x-www-form-urlencoded")
+        self.assertEqual(response.status_code, 400)
+        # missing room
+        response = self.client.put(f"/api/chat/user/{self.user.pk}/", "",
+                                   content_type="application/x-www-form-urlencoded")
+        self.assertEqual(response.status_code, 400)
+
+    def test_superuser_not_existent_user(self):
+        self.user.is_superuser = True
+        self.user.save()
+        self.assertEqual(self.client.get("/api/chat/user/999999/").status_code, 404)
+        self.assertEqual(
+            self.client.get(f"/api/chat/user/{self.other_user.pk}/").status_code, 200
+        )

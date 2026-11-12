@@ -280,7 +280,7 @@ def ticket_detail(
                     request.user, priority_text
                 )
                 if not SIMPLE_USER_SHOW_PRIORITY:
-                    msg = _("Ticket preso in carico da {}.".format(request.user))
+                    msg = _("Ticket preso in carico da {}.").format(request.user)
                 ticket.update_log(user=request.user, note=msg)
                 messages.add_message(
                     request,
@@ -1490,10 +1490,8 @@ def ticket_message(
                 ),
             }
             m_subject = _(
-                "{} - richiesta {} nuovo messaggio".format(
-                    settings.HOSTNAME, ticket
-                )
-            )
+                "{} - richiesta {} nuovo messaggio"
+            ).format(settings.HOSTNAME, ticket)
             send_custom_mail(
                 subject=m_subject,
                 recipients=ticket.get_owners(),

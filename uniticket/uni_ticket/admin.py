@@ -148,7 +148,7 @@ class TaskAdmin(nested_admin.NestedModelAdmin):
         "closed_date",
     )
     list_filter = ("created",)
-    search_fields = ("name", "description")
+    search_fields = ("subject", "description")
     readonly_fields = (
         "ticket",
         "subject",

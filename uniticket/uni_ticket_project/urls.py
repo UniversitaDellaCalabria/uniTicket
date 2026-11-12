@@ -26,7 +26,6 @@ from django.urls import path, include
 from djangosaml2 import views
 
 from uni_ticket.settings import PROTOCOL_ENABLED
-from uni_ticket.views import handlers
 
 
 DEFAULT_BASE_TEMPLATE = getattr(settings,'DEFAULT_BASE_TEMPLATE', '')

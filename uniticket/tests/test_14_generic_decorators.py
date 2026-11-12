@@ -23,7 +23,7 @@ from uni_ticket.decorators import (has_access_to_ticket,
 from uni_ticket.models import (Task,
                                TicketCategoryCondition,
                                TicketReply)
-from uni_ticket.views import generic, handlers
+from uni_ticket.views import generic
 
 from . base_ticket_env import BaseTicketEnvironment
 
@@ -447,10 +447,8 @@ class Test_GenericViews(TempMediaRootMixin, BaseTicketEnvironment):
         self.assertEqual(response.status_code, 404)
         self.assertTemplateUsed(response, '404.html')
 
-    def test_handlers_error_404(self):
+    def test_custom_404(self):
         request = RequestFactory().get('/')
         request.user = AnonymousUser()
-        response = handlers.error_404(request, Http404())
-        self.assertEqual(response.status_code, 200)
         response = generic.custom_404(request, Http404())
         self.assertEqual(response.status_code, 404)

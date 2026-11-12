@@ -251,6 +251,22 @@ class uniTicketAPIUserTest(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.json()['status']['created_by'], 'Utente anonimo')
 
+    def test_ticket_detail_with_messages(self):
+        code = self._create_ticket()
+        ticket = Ticket.objects.get(code=code)
+        TicketReply.objects.create(ticket=ticket, owner=self.user,
+                                   subject="no attachment", text="text")
+        TicketReply.objects.create(ticket=ticket, owner=self.user,
+                                   subject="with attachment", text="text",
+                                   attachment="replies/file.pdf")
+        url = reverse("api_rest:api-view-ticket", kwargs={'ticket_uid': code})
+        res = self.client.get(url, **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        messages = {m['subject']: m for m in res.json()['messages']}
+        self.assertEqual(messages['no attachment']['attachment'], '')
+        self.assertEqual(messages['with attachment']['attachment'], 'file.pdf')
+        self.assertIsInstance(messages['no attachment']['created'], float)
+
     def test_ticket_detail_not_found(self):
         url = reverse("api_rest:api-view-ticket", kwargs={'ticket_uid': 'not-existent'})
         res = self.client.get(url, **self.at.as_http_header)

@@ -495,6 +495,23 @@ class Test_Ticket(ORMFixtureMixin, TestCase):
         )
         self.assertEqual(offices, [self.default_office])
 
+    def test_block_competence_selected_office_not_taken(self):
+        # selected office not assigned to the ticket (forced POST)
+        other_office = self.make_office("Not assigned", self.structure)
+        offices = self.ticket.block_competence(
+            self.manager, self.structure, selected_office=other_office
+        )
+        self.assertEqual(offices, [other_office])
+        # selected office assigned but not taken: nothing changes
+        TicketAssignment.objects.create(ticket=self.ticket, office=other_office)
+        self.ticket.block_competence(
+            self.manager, self.structure, selected_office=other_office
+        )
+        assignment = TicketAssignment.objects.get(ticket=self.ticket,
+                                                  office=other_office)
+        self.assertTrue(assignment.follow)
+        self.assertFalse(assignment.readonly)
+
     def test_is_closable(self):
         self.assertFalse(self.ticket.is_closable())
         self._take_all()

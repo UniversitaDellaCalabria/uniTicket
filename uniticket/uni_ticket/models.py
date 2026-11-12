@@ -943,8 +943,8 @@ class Ticket(SavedFormContent):
                 "ticket": self,
             }
             m_subject = _(
-                "{} - richiesta {} aggiornata".format(settings.HOSTNAME, self)
-            )
+                "{} - richiesta {} aggiornata"
+            ).format(settings.HOSTNAME, self)
             # Start send mail to ticket owner
             send_custom_mail(
                 subject=m_subject,
@@ -1055,9 +1055,11 @@ class Ticket(SavedFormContent):
                 competence = TicketAssignment.objects.filter(
                     ticket=self, office=selected_office, taken_date__isnull=False
                 ).first()
-                competence.follow = allow_readonly
-                competence.readonly = allow_readonly
-                competence.save(update_fields=["follow", "readonly"])
+                # the office may not be assigned or may not have taken the ticket
+                if competence:
+                    competence.follow = allow_readonly
+                    competence.readonly = allow_readonly
+                    competence.save(update_fields=["follow", "readonly"])
             offices_to_disable.append(selected_office)
         else:
             offices = self.get_assigned_to_offices(
@@ -1601,12 +1603,12 @@ class TicketReply(models.Model):
         verbose_name_plural = _("Domande/Risposte Ticket")
 
     def serialize(self):
-        """Returns a dict representation of the message."""
+        """Returns a dict representation of the message, with the attachment file name."""
         return dict(
             subject = self.subject,
             text = self.text,
-            attachment = self.attachment,
-            created = self.created.timestamp
+            attachment = os.path.basename(self.attachment.name) if self.attachment else "",
+            created = self.created.timestamp() if self.created else "",
         )
 
     @staticmethod

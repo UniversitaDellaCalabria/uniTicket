@@ -1,8 +1,10 @@
 from django.db.models import Q
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from chat.settings import MESSAGES_TO_LOAD
 
+from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
@@ -123,6 +125,29 @@ class UserModelViewSet(GenericViewSet):
     serializer_class = UserModelSerializer
     authentication_classes = (CsrfExemptSessionAuthentication,)
 
+    def _access_error(self, request, pk):
+        """
+        Checks the user pk in the URL.
+
+        Args:
+            request: The current HttpRequest.
+            pk: The user pk in the URL.
+
+        Returns:
+            A 400 Response if pk is not a number, a 403 Response if it is not
+            the current user and the current user is not a superuser,
+            otherwise None.
+        """
+        try:
+            pk = int(pk)
+        except (TypeError, ValueError):
+            return Response(_("Argomenti errati"),
+                            status=status.HTTP_400_BAD_REQUEST)
+        if not request.user.is_superuser and pk != request.user.pk:
+            return Response(_("Non hai accesso a questa risorsa"),
+                            status=status.HTTP_403_FORBIDDEN)
+        return None
+
     def retrieve(self, request, *args, **kwargs):
         """
         Returns the requested user, if it is the current user or the current
@@ -132,20 +157,19 @@ class UserModelViewSet(GenericViewSet):
             request: The current HttpRequest.
 
         Returns:
-            A Response with the user pk, or an error message.
+            A Response with the user pk, or an error Response
+            (400, 403 or 404).
         """
-        try:
-            if not request.user.is_superuser and int(kwargs.get('pk')) != request.user.pk:
-                return Response(_("Non hai accesso a questa risorsa"))
-        except ValueError:
-            return Response(_("Argomenti errati"))
-        user = self.queryset.filter(pk=kwargs.get('pk')).first()
+        error = self._access_error(request, kwargs.get('pk'))
+        if error:
+            return error
+        user = get_object_or_404(self.queryset, pk=kwargs.get('pk'))
         serializer = self.get_serializer(user)
         return Response(serializer.data)
 
     def update(self, request, *args, **kwargs):
         """
-        Toggles the status of the user channel in the POSTed room.
+        Toggles the status of the user channel in the PUT room.
 
         Allowed only on the current user, unless the current user is a superuser.
 
@@ -153,11 +177,16 @@ class UserModelViewSet(GenericViewSet):
             request: The current HttpRequest.
 
         Returns:
-            A Response with "updated", or an error message.
+            A Response with "updated", or an error Response (400 or 403).
         """
-        if not request.user.is_superuser and int(kwargs.get('pk')) != request.user.pk:
-            return Response(_("Non hai accesso a questa risorsa"))
-        channel = UserChannel.objects.filter(room=request.POST['room'],
+        error = self._access_error(request, kwargs.get('pk'))
+        if error:
+            return error
+        room = request.POST.get('room')
+        if not room:
+            return Response(_("Argomenti errati"),
+                            status=status.HTTP_400_BAD_REQUEST)
+        channel = UserChannel.objects.filter(room=room,
                                              user__pk=kwargs.get('pk')).first()
         if channel:
             channel.change_status()

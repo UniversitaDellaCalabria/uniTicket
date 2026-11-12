@@ -440,7 +440,7 @@ def send_summary_email(users=[]):
             "hostname": settings.HOSTNAME,
             "user": user,
         }
-        m_subject = _("{} - ticket summary".format(settings.HOSTNAME))
+        m_subject = _("{} - ticket summary").format(settings.HOSTNAME)
 
         sent = send_custom_mail(
             subject=m_subject,
