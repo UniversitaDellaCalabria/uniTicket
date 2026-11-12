@@ -5,7 +5,8 @@ from chat.settings import MESSAGES_TO_LOAD
 
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.mixins import CreateModelMixin, ListModelMixin, RetrieveModelMixin
+from rest_framework.viewsets import GenericViewSet
 from rest_framework.authentication import SessionAuthentication
 
 
@@ -32,11 +33,18 @@ class ChatMessagePagination(PageNumberPagination):
     page_size = MESSAGES_TO_LOAD
 
 
-class ChatMessageModelViewSet(ModelViewSet):
-    """API endpoint for the chat messages of the current user."""
+class ChatMessageModelViewSet(CreateModelMixin,
+                              ListModelMixin,
+                              RetrieveModelMixin,
+                              GenericViewSet):
+    """
+    API endpoint for the chat messages of the current user.
+
+    Only list, retrieve and create are exposed: messages cannot be
+    updated or deleted through the API.
+    """
     queryset = ChatMessageModel.objects.all()
     serializer_class = ChatMessageModelSerializer
-    allowed_methods = ('GET', 'POST', 'HEAD', 'OPTIONS')
     authentication_classes = (CsrfExemptSessionAuthentication,)
     pagination_class = ChatMessagePagination
 
@@ -104,13 +112,16 @@ class ChatMessageModelViewSet(ModelViewSet):
         return Response(serializer.data)
 
 
-class UserModelViewSet(ModelViewSet):
-    """API endpoint to read a user and toggle their chat status."""
+class UserModelViewSet(GenericViewSet):
+    """
+    API endpoint to read a user and toggle their chat status.
+
+    Only retrieve (GET) and update (PUT) are exposed: users cannot be
+    listed, created, partially updated or deleted through the API.
+    """
     queryset = get_user_model().objects.all()
     serializer_class = UserModelSerializer
-    allowed_methods = ('PUT',)
     authentication_classes = (CsrfExemptSessionAuthentication,)
-    pagination_class = None  # Get all user
 
     def retrieve(self, request, *args, **kwargs):
         """

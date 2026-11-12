@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 
     # Django channels and chat
     'channels',
-    # 'chat',
+    'chat',
 
     ##SAML2 SP
     # 'djangosaml2',

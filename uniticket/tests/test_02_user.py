@@ -130,8 +130,7 @@ class Test_UserFunctions(BaseTicketEnvironment):
         # assert response.status_code == 200
 
     def test_chat_new_preload(self):
-        if 'chat' in settings.INSTALLED_APPS:
-            response = self.client.get(reverse('uni_ticket:new_chat_preload'),
-                                       follow=True)
-            assert response.status_code == 200
+        response = self.client.get(reverse('uni_ticket:new_chat_preload'),
+                                   follow=True)
+        assert response.status_code == 200
 

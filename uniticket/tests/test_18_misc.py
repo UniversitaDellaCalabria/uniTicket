@@ -532,10 +532,10 @@ class Test_ProjectUrls(ORMFixtureMixin, TestCase):
         return names
 
     def test_optional_apps_urls(self):
-        apps = list(settings.INSTALLED_APPS) + ["saml2_sp", "djangosaml2", "chat"]
+        # chat is already installed in tests settings
+        apps = list(settings.INSTALLED_APPS) + ["saml2_sp", "djangosaml2"]
         fake_modules = {}
         fake_modules.update(self._fake_package("saml2_sp", "saml2_sp"))
-        fake_modules.update(self._fake_package("chat", "chat"))
         try:
             with mock.patch.dict(sys.modules, fake_modules), \
                     mock.patch.object(settings, "INSTALLED_APPS", apps), \

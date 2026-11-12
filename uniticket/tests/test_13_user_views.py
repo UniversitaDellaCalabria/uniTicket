@@ -1054,7 +1054,7 @@ class Test_UserExtraViews(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironm
 
     @patch('uni_ticket.views.user.render', return_value=HttpResponse('ok'))
     def test_chat_new_preload(self, mock_render):
-        # chat app is not installed in tests: call the view directly
+        # call the view directly to check the context passed to the template
         request = RequestFactory().get('/')
         request.user = self.staff_1
         chat_new_preload(request)
