@@ -1917,7 +1917,7 @@ class OrganizationalStructureAlert(ExpirableModel, TimeStampedModel):
     organizational_structure = models.ForeignKey(
         OrganizationalStructure, on_delete=models.CASCADE
     )
-    name = name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     text = models.TextField(max_length=500)
     ordinamento = models.PositiveIntegerField(blank=True, default=0)
     is_active = models.BooleanField(default=False)
