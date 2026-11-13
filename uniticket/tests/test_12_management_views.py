@@ -746,6 +746,10 @@ class Test_ManagementViews(BaseTicketEnvironment):
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], 'application/zip')
+        self.assertRegex(
+            response['Content-Disposition'],
+            r'^attachment; filename="uniticket_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.zip"$'
+        )
         archive = zipfile.ZipFile(io.BytesIO(response.content))
         # the broken category is skipped
         self.assertEqual(len(archive.namelist()), 1)

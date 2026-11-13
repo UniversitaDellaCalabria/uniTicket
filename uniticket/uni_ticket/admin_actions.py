@@ -1,4 +1,5 @@
 import io
+import logging
 import zipfile
 
 
@@ -9,13 +10,16 @@ from django.utils import timezone
 from .utils import export_category_zip
 
 
+logger = logging.getLogger(__name__)
+
+
 def _download_report_csv(modeladmin, request, queryset):
     """
     Exports the selected ticket categories as a zip file.
 
     If a single category is selected, its zip is returned as is.
     Otherwise the zip of each category is added to a new zip archive;
-    categories whose export fails are skipped.
+    categories whose export fails are logged and skipped.
 
     Args:
         modeladmin: The TicketCategoryAdmin running the action.
@@ -25,6 +29,8 @@ def _download_report_csv(modeladmin, request, queryset):
     Returns:
         An HttpResponse with the zip file as attachment.
     """
+    if queryset.count() == 1:
+        return export_category_zip(queryset.first())
 
     output = io.BytesIO()
     f = zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED)
@@ -32,15 +38,14 @@ def _download_report_csv(modeladmin, request, queryset):
     for cat in queryset:
         try:
             cat_zip = export_category_zip(cat)
-            if queryset.count() == 1:
-                return cat_zip
             f.writestr(cat.name.replace("/", "_") + ".zip", cat_zip.content)
-        except:
+        except Exception:
+            logger.exception("Error exporting category {}".format(cat))
             continue
     f.close()
     response = HttpResponse(output.getvalue(), content_type="application/zip")
     response["Content-Disposition"] = 'attachment; filename="uniticket_{}.zip"'.format(
-        timezone.localtime()
+        timezone.localtime().strftime("%Y-%m-%d_%H-%M-%S")
     )
     return response
 

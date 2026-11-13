@@ -14,7 +14,9 @@ from django.contrib import admin as django_admin
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
+from django.db import connection
 from django.test import RequestFactory, TestCase, override_settings
+from django.test.utils import CaptureQueriesContext
 from django.urls import clear_url_caches, reverse
 from django.utils import timezone
 
@@ -505,12 +507,21 @@ class Test_Admin(ORMFixtureMixin, TestCase):
         with mock.patch(
             "uni_ticket.admin_actions.export_category_zip",
             side_effect=[HttpResponse(b"zip"), Exception("err"), HttpResponse(b"zip")],
-        ):
+        ), self.assertLogs("uni_ticket.admin_actions", level="ERROR") as logs, \
+                CaptureQueriesContext(connection) as queries:
             response = admin_actions.download_report_csv(None, None, queryset)
-        self.assertIn("uniticket_", response["Content-Disposition"])
+        disposition = response["Content-Disposition"]
+        self.assertRegex(
+            disposition,
+            r'^attachment; filename="uniticket_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.zip"$'
+        )
         archive = zipfile.ZipFile(io.BytesIO(response.content))
-        # the failing category is skipped
+        # the failing category is skipped and logged
         self.assertEqual(len(archive.namelist()), 2)
+        self.assertTrue(any("err" in line for line in logs.output))
+        # the selected categories are counted only once
+        counts = [q for q in queries.captured_queries if "COUNT(" in q["sql"]]
+        self.assertEqual(len(counts), 1)
 
 
 class Test_ProjectUrls(ORMFixtureMixin, TestCase):

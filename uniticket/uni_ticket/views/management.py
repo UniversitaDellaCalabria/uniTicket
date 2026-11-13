@@ -2861,7 +2861,9 @@ def export_detailed_report(request, structure_slug):
                 output.getvalue(), content_type="application/zip")
             response[
                 "Content-Disposition"
-            ] = 'attachment; filename="uniticket_{}.zip"'.format(timezone.localtime())
+            ] = 'attachment; filename="uniticket_{}.zip"'.format(
+                timezone.localtime().strftime("%Y-%m-%d_%H-%M-%S")
+            )
             return response
         return custom_message(
             request=request, 
