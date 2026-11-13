@@ -1696,21 +1696,16 @@ class TicketClose(View):
     """
     template = "user/ticket_close.html"
 
-    def dispatch(self, request, ticket_id:str, *args, **kwargs) -> Union[HttpResponse, HttpResponseRedirect]:
+    def load_ticket(self, ticket_id:str, ticket:Ticket = None) -> None:
         """
-        Loads the ticket and checks that the user can close it.
-
-        Closed tickets, drafts not owned by the user and tickets compiled only by
-        the user are rejected.
+        Loads the ticket and the context data.
 
         Args:
-            request: The current HttpRequest.
             ticket_id: Ticket code.
-
-        Returns:
-            The HTTP response.
+            ticket: The ticket, if already loaded (e.g. by is_the_owner):
+                avoids a second query.
         """
-        self.ticket = get_object_or_404(Ticket, code=ticket_id)
+        self.ticket = ticket if ticket is not None else get_object_or_404(Ticket, code=ticket_id)
         self.title = _("Chiusura della richiesta")
         self.sub_title = self.ticket
         self.context_data = {
@@ -1718,6 +1713,23 @@ class TicketClose(View):
             "ticket": self.ticket,
             "title": self.title,
         }
+
+    def check_closable(self, request) -> Union[HttpResponse, HttpResponseRedirect, None]:
+        """
+        Checks that the user can close the loaded ticket.
+
+        Closed tickets, drafts not owned by the user and tickets compiled only by
+        the user are rejected. The reason is stored in self.error_message
+        (used by the REST API).
+
+        Args:
+            request: The current HttpRequest.
+
+        Returns:
+            The response that rejects the action, or None if the ticket can
+            be closed.
+        """
+        self.error_message = None
         if self.ticket.is_closed:
             # log action
             logger.info(
@@ -1726,8 +1738,8 @@ class TicketClose(View):
                     timezone.localtime(), request.user, self.ticket
                 )
             )
-
-            return custom_message(request, _("La richiesta è già chiusa!"))
+            self.error_message = _("La richiesta è già chiusa!")
+            return custom_message(request, self.error_message)
 
         if self.ticket.draft:
             if not self.ticket.compiled_by or self.ticket.created_by != request.user:
@@ -1740,19 +1752,39 @@ class TicketClose(View):
                         self.ticket
                     )
                 )
-                return custom_message(request, _("Non hai i permessi per chiudere la bozza"))
+                self.error_message = _("Non hai i permessi per chiudere la bozza")
+                return custom_message(request, self.error_message)
             
         # deny action if user is not the owner but has compiled only
         if not request.user == self.ticket.created_by:
+            self.error_message = TICKET_SHARING_USER_ERROR_MESSAGE.format(
+                self.ticket.created_by)
             messages.add_message(
                 request,
                 messages.ERROR,
-                TICKET_SHARING_USER_ERROR_MESSAGE.format(
-                    self.ticket.created_by),
+                self.error_message,
             )
             return redirect(
                 "uni_ticket:ticket_detail", ticket_id=self.ticket.code
             )
+        return None
+
+    def dispatch(self, request, ticket_id:str, *args, **kwargs) -> Union[HttpResponse, HttpResponseRedirect]:
+        """
+        Loads the ticket and checks that the user can close it (see check_closable).
+
+        Args:
+            request: The current HttpRequest.
+            ticket_id: Ticket code.
+
+        Returns:
+            The HTTP response.
+        """
+        # request.ticket is set by the is_the_owner decorator
+        self.load_ticket(ticket_id, ticket=getattr(request, "ticket", None))
+        denied = self.check_closable(request)
+        if denied:
+            return denied
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, api:bool = False):

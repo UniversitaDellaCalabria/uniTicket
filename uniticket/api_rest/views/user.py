@@ -260,32 +260,65 @@ class TicketAPIClose(TicketAPIBaseView):
         self.user = request.user
         return super().dispatch(request, *args, **kwargs)
 
-    def close(self, request, ticket_id, *args, **kwargs):
+    def load_ticket(self, request, ticket_id):
         """
-        Runs the legacy TicketClose view with the request data.
+        Loads the ticket in the legacy view and checks that it can be closed.
+
+        The legacy view dispatch() is not called: it would run also the
+        legacy handler, and its rejecting response would be ignored.
 
         Args:
             request: The current HttpRequest.
-            ticket_id: Code of the ticket to close.
+            ticket_id: Code of the ticket.
+
+        Raises:
+            Http404: If the ticket doesn't exist or the user isn't its
+                creator or compiler (like the is_the_owner decorator).
+            PermissionDenied: If the ticket can't be closed by the user
+                (already closed, draft not owned, compiled only).
+        """
+        ticket = get_object_or_404(
+            Ticket,
+            Q(created_by=request.user) | Q(compiled_by=request.user),
+            code=ticket_id,
+        )
+        self.legacy_view.load_ticket(ticket_id, ticket=ticket)
+        if self.legacy_view.check_closable(request):
+            raise PermissionDenied(
+                {
+                    "detail": self.legacy_view.error_message,
+                    "messages": self.get_messages(),
+                }
+            )
+
+    def get(self, request, ticket_id, *args, **kwargs):
+        """
+        Returns the ticket and the closing form, without closing the ticket.
+
+        Args:
+            request: The current HttpRequest.
+            ticket_id: Code of the ticket.
 
         Returns:
             A Response with the messages, the ticket and the closing form.
         """
-        request.api_data = getattr(request, "data", {})
-        self.legacy_view.dispatch(
-            request, 
-            ticket_id=ticket_id,
-        )
-        legacy_response = self.legacy_view.post(
-            request=request, api=True
-        )
-        logger.debug(legacy_response)
+        self.load_ticket(request, ticket_id)
+        self.legacy_view.get(request=request, api=True)
         return Response(self.build_response())
 
-    def get(self, request, ticket_id, *args, **kwargs):
-        """Closes the ticket, like post."""
-        return self.close(request, ticket_id, *args, **kwargs)
-
     def post(self, request, ticket_id, *args, **kwargs):
-        """Closes the ticket."""
-        return self.close(request, ticket_id, *args, **kwargs)
+        """
+        Closes the ticket with the "note" closing reason.
+
+        Args:
+            request: The current HttpRequest.
+            ticket_id: Code of the ticket.
+
+        Returns:
+            A Response with the messages, the ticket and the closing form.
+        """
+        self.load_ticket(request, ticket_id)
+        request.api_data = getattr(request, "data", {})
+        legacy_response = self.legacy_view.post(request=request, api=True)
+        logger.debug(legacy_response)
+        return Response(self.build_response())

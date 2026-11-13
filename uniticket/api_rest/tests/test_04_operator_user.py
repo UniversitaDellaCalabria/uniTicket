@@ -4,7 +4,9 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.http import HttpResponse
+from django.db import connection
 from django.test import Client, TestCase
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from django.utils import timezone
 
@@ -18,6 +20,7 @@ from api_rest.views.generic import TicketAPIBaseView, message_level
 from organizational_area.models import OrganizationalStructure, OrganizationalStructureOffice
 from tests.base_ticket_env import BaseTicketEnvironment
 from uni_ticket.models import (CompiledTicket,
+                               Log,
                                Ticket,
                                TicketCategory,
                                TicketCategoryModule,
@@ -338,3 +341,95 @@ class uniTicketAPIUserTest(TestCase):
         self.assertIn('form', res.json())
         # GET doesn't send a closing reason: ticket is still open
         self.assertFalse(Ticket.objects.get(code=code).is_closed)
+
+    def test_close_ticket_not_owner(self):
+        # another user can't read or close the ticket
+        code = self._create_ticket()
+        other = get_user_model().objects.create(username="other-api-user")
+        other_at = _token(other, "other AT")
+        url = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': code})
+        res = self.client.get(url, **other_at.as_http_header)
+        self.assertNotEqual(res.status_code, status.HTTP_200_OK)
+        res = self.client.post(url, {'note': 'closing reason'},
+                               **other_at.as_http_header)
+        self.assertNotEqual(res.status_code, status.HTTP_200_OK)
+        self.assertFalse(Ticket.objects.get(code=code).is_closed)
+
+    def test_close_ticket_already_closed(self):
+        code = self._create_ticket()
+        url = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': code})
+        self.client.post(url, {'note': 'first'}, **self.at.as_http_header)
+        ticket = Ticket.objects.get(code=code)
+        closed_date = ticket.closed_date
+        res = self.client.post(url, {'note': 'second'}, **self.at.as_http_header)
+        # the ticket is not closed again
+        ticket.refresh_from_db()
+        self.assertEqual(ticket.closing_reason, 'first')
+        self.assertEqual(ticket.closed_date, closed_date)
+        self.assertNotEqual(res.status_code, status.HTTP_200_OK)
+
+    def _shared_ticket(self, draft=False):
+        # ticket created by another user and compiled by self.user
+        code = self._create_ticket()
+        ticket = Ticket.objects.get(code=code)
+        ticket.created_by = get_user_model().objects.create(username="creator")
+        ticket.compiled_by = self.user
+        ticket.draft = draft
+        ticket.save()
+        return code
+
+    def test_close_ticket_compiled_only(self):
+        # the user compiled the ticket for another user: can't close it
+        code = self._shared_ticket()
+        url = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': code})
+        for method in (self.client.get, self.client.post):
+            res = method(url, {'note': 'closing reason'}, **self.at.as_http_header)
+            self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+            self.assertTrue(res.json()['detail'])
+        self.assertFalse(Ticket.objects.get(code=code).is_closed)
+
+    def test_close_ticket_draft_not_owned(self):
+        code = self._shared_ticket(draft=True)
+        url = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': code})
+        res = self.client.post(url, {'note': 'closing reason'},
+                               **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(Ticket.objects.get(code=code).is_closed)
+
+    def test_close_ticket_once(self):
+        # a form-encoded POST closes the ticket (and logs it) only once
+        code = self._create_ticket()
+        url = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': code})
+        res = self.client.post(url, {'note': 'closing reason'},
+                               **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.json()['messages']), 1)
+        ticket = Ticket.objects.get(code=code)
+        logs = Log.objects.filter(object_id=ticket.pk,
+                                  change_message__contains='closing reason')
+        self.assertEqual(logs.count(), 1)
+
+    def test_close_ticket_loads_ticket_once(self):
+        code = self._create_ticket()
+        url = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': code})
+        with CaptureQueriesContext(connection) as queries:
+            res = self.client.get(url, **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        by_code = [q for q in queries.captured_queries
+                   if '"uni_ticket_ticket"."code" =' in q['sql']]
+        self.assertEqual(len(by_code), 1)
+
+    def test_close_ticket_get_with_body(self):
+        # GET must never close the ticket, even with a closing reason
+        code = self._create_ticket()
+        url = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': code})
+        res = self.client.generic('GET', url, 'note=closing reason',
+                                  content_type='application/x-www-form-urlencoded',
+                                  **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertFalse(Ticket.objects.get(code=code).is_closed)
+        # POST closes it
+        res = self.client.post(url, {'note': 'closing reason'},
+                               **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(Ticket.objects.get(code=code).is_closed)

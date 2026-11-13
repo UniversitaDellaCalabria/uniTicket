@@ -8,7 +8,9 @@ from unittest.mock import patch
 from django.conf import settings
 from django.core import mail
 from django.http import Http404, HttpResponse
+from django.db import connection
 from django.test import RequestFactory, override_settings
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from django.utils import timezone
 
@@ -701,6 +703,14 @@ class Test_UserTicketViews(UserViewsMixin, TempMediaRootMixin, BaseTicketEnviron
         response = self.client.get(self._ticket_url('user_close_ticket'))
         self.assertEqual(response.status_code, 200)
         self.assertIn('form', response.context)
+
+    def test_close_ticket_loads_ticket_once(self):
+        # the ticket loaded by is_the_owner is reused by the view
+        with CaptureQueriesContext(connection) as queries:
+            self.client.get(self._ticket_url('user_close_ticket'))
+        by_code = [q for q in queries.captured_queries
+                   if '"uni_ticket_ticket"."code" =' in q['sql']]
+        self.assertEqual(len(by_code), 1)
 
     def _assert_close_rejected(self, params):
         response = self.client.post(self._ticket_url('user_close_ticket'), params,
