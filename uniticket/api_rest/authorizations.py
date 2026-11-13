@@ -11,7 +11,7 @@ from api_rest.models import AuthorizationToken
 logger = logging.getLogger(__name__)
 
 
-class AuthorizationToken(TokenAuthentication):
+class AuthorizationTokenAuthentication(TokenAuthentication):
     """
     DRF token authentication backed by the api_rest AuthorizationToken model.
 

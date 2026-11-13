@@ -25,7 +25,7 @@ from uni_ticket.settings import TICKET_CREATE_BUTTON_NAME
 from uni_ticket.utils import user_is_manager, user_is_operator, visible_tickets_to_user
 
 from organizational_area.models import OrganizationalStructure
-from api_rest.authorizations import AuthorizationToken
+from api_rest.authorizations import AuthorizationTokenAuthentication
 
 
 from .. serializers import (
@@ -58,7 +58,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 class uniTicketROGenericList(generics.ListAPIView):
     """Base read-only list view for authenticated users."""
-    # authentication_classes = [AuthorizationToken, SessionAuthentication]
+    # authentication_classes = [AuthorizationTokenAuthentication, SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
 
@@ -83,7 +83,7 @@ class TicketAPIBaseView(APIView):
 
     # TODO: AgID MoDI also here?
     # authentication_classes = [
-        # AuthorizationToken, SessionAuthentication
+        # AuthorizationTokenAuthentication, SessionAuthentication
     # ]
     permission_classes = [permissions.IsAuthenticated]
 

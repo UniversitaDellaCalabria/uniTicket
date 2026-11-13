@@ -7,7 +7,7 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import AuthenticationFailed
 
-from api_rest.authorizations import AuthorizationToken as TokenAuthentication
+from api_rest.authorizations import AuthorizationTokenAuthentication
 from api_rest.models import AuthorizationToken
 
 
@@ -26,7 +26,7 @@ class uniTicketAPIAuthorizationTest(TestCase):
             active_until=timezone.localtime() + timezone.timedelta(hours=1)
         )
         self.url = reverse('api_rest:api-strutture-list')
-        self.auth = TokenAuthentication()
+        self.auth = AuthorizationTokenAuthentication()
 
     def _assert_rejected(self, header, message, client=None):
         client = client or Client()

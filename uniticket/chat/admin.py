@@ -25,7 +25,7 @@ class ChatMessageModelAdmin(admin.ModelAdmin):
 
 
 @admin.register(UserChannel)
-class UserChannel(admin.ModelAdmin):
+class UserChannelAdmin(admin.ModelAdmin):
     """Read-only admin of the user chat channels."""
     readonly_fields = ('user', 'channel', 'room',
                        'created', 'last_seen', 'status')

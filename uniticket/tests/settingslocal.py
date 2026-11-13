@@ -72,7 +72,7 @@ CUSTOM_WIDGETS = {
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'api_rest.authorizations.AuthorizationToken',
+        'api_rest.authorizations.AuthorizationTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
