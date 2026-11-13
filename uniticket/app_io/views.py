@@ -48,7 +48,7 @@ def new(request, structure_slug, category_slug):
         organizational_structure=structure,
         slug=category_slug
     )
-    title = _("Nuovo servizo App IO")
+    title = _("Nuovo servizio App IO")
     sub_title = _("Aggiungi un nuovo servizio alla tipologia di richiesta {}").format(
         category.name
     )
@@ -136,7 +136,7 @@ def edit(request, structure_slug, category_slug, service_id):
         category=category,
         pk=service_id
     )
-    title = _("Modifica servizo App IO")
+    title = _("Modifica servizio App IO")
     sub_title = _("Modifica il servizio {}").format(service.service)
     template = "manager/category_app_io_service_edit.html"
     form = IOServiceTicketCategoryForm(category=category, instance=service)

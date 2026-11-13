@@ -228,7 +228,7 @@ msgid "Servizi App IO"
 msgstr "App IO Services"
 
 #: app_io/views.py:40
-msgid "Nuovo servizo App IO"
+msgid "Nuovo servizio App IO"
 msgstr "New App IO Service"
 
 #: app_io/views.py:41
@@ -240,7 +240,7 @@ msgid "Servizio App IO <b>{}</b> aggiunto con successo"
 msgstr "App IO Service <b>{}</b> added successfully"
 
 #: app_io/views.py:117
-msgid "Modifica servizo App IO"
+msgid "Modifica servizio App IO"
 msgstr "Edit App IO Service"
 
 #: app_io/views.py:118

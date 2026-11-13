@@ -11,7 +11,7 @@ try:
     from weasyprint import HTML
 except ModuleNotFoundError:
     logger.warning(
-        "weasyprint not found - please install it top enable PDF exports. "
+        "weasyprint not found - please install it to enable PDF exports. "
         "pip install WeasyPrint"
     )
 
