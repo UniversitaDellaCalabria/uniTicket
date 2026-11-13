@@ -99,7 +99,10 @@ class Test_PdfUtils(TestCase):
             def __init__(self, string):
                 captured["html"] = string
 
-            def write_pdf(self, target):
+            def write_pdf(self, target=None):
+                # like weasyprint: without target, returns the PDF bytes
+                if target is None:
+                    return b"%PDF"
                 with open(target, "wb") as f:
                     f.write(b"%PDF")
 
@@ -116,13 +119,31 @@ class Test_PdfUtils(TestCase):
             pdf = pdf_utils.response_as_pdf(response, "file.pdf")
         self.assertEqual(pdf.content, b"%PDF")
         self.assertEqual(pdf["Content-Type"], "application/pdf")
+        self.assertEqual(pdf["Content-Disposition"], 'inline; filename="file.pdf"')
         self.assertIn(
             "https://{}{}css/style.css".format(settings.HOSTNAME, settings.STATIC_URL),
             captured["html"],
         )
-        # temporary file has been removed
+        # the PDF is built in memory: no file is written in TMP_DIR
+        with mock.patch("builtins.open", side_effect=AssertionError("file opened")), \
+                mock.patch.object(pdf_utils, "HTML", self._fake_html(captured)), \
+                override_settings(TMP_DIR=tmp, DEBUG=False):
+            pdf_utils.response_as_pdf(response, "file.pdf")
         self.assertEqual(os.listdir(tmp), [])
         os.rmdir(tmp)
+
+    def test_response_as_pdf_static_url_not_regex(self):
+        # STATIC_URL is replaced as plain text, not as a regular expression
+        captured = {}
+        static_url = "/static.v2/"
+        html = '<link href="/static.v2/a.css"><link href="/staticXv2/b.css">'
+        with mock.patch.object(pdf_utils, "HTML", self._fake_html(captured)), \
+                override_settings(STATIC_URL=static_url, DEBUG=False):
+            pdf_utils.response_as_pdf(HttpResponse(html), "file.pdf")
+        self.assertIn("https://{}/static.v2/a.css".format(settings.HOSTNAME),
+                      captured["html"])
+        # "." doesn't match any character
+        self.assertIn('href="/staticXv2/b.css"', captured["html"])
 
     def test_weasyprint_not_installed(self):
         # reload() keeps the old module globals: remove HTML first

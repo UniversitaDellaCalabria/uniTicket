@@ -1052,6 +1052,15 @@ class Test_UserExtraViews(UserViewsMixin, TempMediaRootMixin, BaseTicketEnvironm
         self.assertEqual(pdf_fname, '{}.pdf'.format(self.ticket.code))
         self.assertIn(self.ticket.subject, html_response.content.decode())
 
+    def test_download_ticket_pdf_content(self):
+        # protocolla_ticket sends download_ticket_pdf(...).content to the
+        # protocol app: it must be the PDF bytes
+        with patch('uni_ticket.pdf_utils.HTML') as fake_html:
+            fake_html.return_value.write_pdf.return_value = b'%PDF-bytes'
+            response = self.client.get(self._ticket_url('ticket_detail_print_pdf'))
+        self.assertEqual(response.content, b'%PDF-bytes')
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+
     @patch('uni_ticket.views.user.render', return_value=HttpResponse('ok'))
     def test_chat_new_preload(self, mock_render):
         # call the view directly to check the context passed to the template

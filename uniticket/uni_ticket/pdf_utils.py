@@ -1,6 +1,4 @@
 import logging
-import os
-import re
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -20,8 +18,9 @@ def response_as_pdf(response, pdf_fname):
     """
     Converts an HTML response to a PDF response.
 
-    Static URLs are made absolute (except in DEBUG with ASGI) and the PDF is
-    generated in TMP_DIR, read and removed.
+    Static URLs are made absolute (except in DEBUG with ASGI). The PDF is
+    generated in memory, without temporary files, so concurrent requests
+    for the same ticket don't interfere.
 
     Args:
         response: The HTML response.
@@ -39,16 +38,14 @@ def response_as_pdf(response, pdf_fname):
         protocol = "http://" if settings.DEBUG else "https://"
         production_static_url = protocol + settings.HOSTNAME + settings.STATIC_URL
         # set full path to static files
-        html_page = re.sub(settings.STATIC_URL,
-                           production_static_url, html_page)
+        # plain text replacement: STATIC_URL is not a regular expression
+        html_page = html_page.replace(settings.STATIC_URL,
+                                      production_static_url)
     html = HTML(string=html_page)
 
-    pdf_path = settings.TMP_DIR + os.path.sep + pdf_fname
-    html.write_pdf(target=pdf_path)
+    # without target, write_pdf returns the PDF bytes
+    pdf = html.write_pdf()
 
-    f = open(pdf_path, "rb")
-    response = HttpResponse(f.read(), content_type="application/pdf")
-    response["Content-Disposition"] = "inline; filename=" + pdf_fname
-    f.close()
-    os.remove(pdf_path)
+    response = HttpResponse(pdf, content_type="application/pdf")
+    response["Content-Disposition"] = 'inline; filename="{}"'.format(pdf_fname)
     return response
