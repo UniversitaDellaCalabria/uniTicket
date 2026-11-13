@@ -455,7 +455,7 @@ class Test_Statistics(ORMFixtureMixin, TestCase):
         # reopened ticket
         self.ticket.closed_date = now - timezone.timedelta(hours=1)
         self.ticket.save()
-        Log.objects.log_action(
+        Log.objects.create(
             user_id=self.operator.pk,
             content_type_id=__import__(
                 "django.contrib.contenttypes.models", fromlist=["ContentType"]

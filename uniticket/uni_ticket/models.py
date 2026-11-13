@@ -9,9 +9,8 @@ from django.conf import settings
 from django.contrib.admin.models import (ACTION_FLAG_CHOICES,
                                          ADDITION,
                                          CHANGE,
-                                         DELETION,
-                                         LogEntryManager,
-                                         LogEntry)
+                                         DELETION)
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.templatetags.static import static
 from django.core.validators import RegexValidator
@@ -74,18 +73,46 @@ def _attachment_upload(instance, filename):
     return os.path.join("{}/{}".format(folder, filename))
 
 
-### Custom Logs ###
-# like django.contrib.admin.models.LogEntry
-# but object_id as PositiveIntegerField
-# and with indexes = [models.Index(fields=["content_type", "object_id"])]
-import inspect
-exec(inspect.getsource(LogEntry).replace('db_table = "django_admin_log"',
-                                         'indexes = [models.Index(fields=["content_type", "object_id"])]')\
-                                .replace('class LogEntry(models.Model):',
-                                         'class Log(models.Model):\n    is_public = models.BooleanField(default=True)')\
-                                .replace('object_id = models.TextField(_("object id"), blank=True, null=True)',
-                                         'object_id = models.PositiveIntegerField(_("object id"), blank=True, null=True)')) #nosec
-### END Custom Logs ###
+class Log(models.Model):
+    """
+    Log entry of an action on an object (ticket, task...).
+
+    Like django.contrib.admin.models.LogEntry, but with object_id as
+    PositiveIntegerField, an index on (content_type, object_id) and the
+    is_public flag (public entries are visible to the ticket owner).
+    """
+    action_time = models.DateTimeField(
+        _("action time"), default=timezone.now, editable=False
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("user")
+    )
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.SET_NULL,
+        verbose_name=_("content type"),
+        blank=True,
+        null=True,
+    )
+    object_id = models.PositiveIntegerField(_("object id"), blank=True, null=True)
+    content_object = GenericForeignKey("content_type", "object_id")
+    object_repr = models.CharField(_("object repr"), max_length=200)
+    action_flag = models.PositiveSmallIntegerField(
+        _("action flag"), choices=ACTION_FLAG_CHOICES
+    )
+    change_message = models.TextField(_("change message"), blank=True)
+    is_public = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = _("log entry")
+        verbose_name_plural = _("log entries")
+        ordering = ["-action_time"]
+        indexes = [
+            models.Index(fields=["content_type", "object_id"]),
+        ]
+
+    def __str__(self):
+        return f"{self.action_time}: {self.change_message}"
 
 
 class ExpirableModel(models.Model):
@@ -956,16 +983,16 @@ class Ticket(SavedFormContent):
             )
             # End send mail to ticket owner
 
-        log = Log.objects.log_action(
+        log = Log.objects.create(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(self).pk,
             object_id=self.pk,
-            object_repr=self.__str__(),
+            # max_length of object_repr (like LogEntryManager.log_action)
+            object_repr=self.__str__()[:200],
             action_flag=CHANGE,
             change_message=note,
+            is_public=is_public,
         )
-        log.is_public = is_public
-        log.save(update_fields=['is_public'])
         return log
 
     def get_assigned_to_offices(
@@ -1772,16 +1799,16 @@ class Task(AbstractTask):
         """
         if not user:
             return False
-        log = Log.objects.log_action(
+        log = Log.objects.create(
             user_id=user.pk,
             content_type_id=ContentType.objects.get_for_model(self).pk,
             object_id=self.pk,
-            object_repr=self.__str__(),
+            # max_length of object_repr (like LogEntryManager.log_action)
+            object_repr=self.__str__()[:200],
             action_flag=CHANGE,
             change_message=note,
+            is_public=is_public,
         )
-        log.is_public = is_public
-        log.save(update_fields=['is_public'])
         return log
 
     def get_folder(self):

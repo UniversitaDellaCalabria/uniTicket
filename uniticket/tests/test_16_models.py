@@ -402,7 +402,16 @@ class Test_Ticket(ORMFixtureMixin, TestCase):
         self.assertFalse(self.ticket.update_log(None))
         log = self.ticket.update_log(self.operator, is_public=False, note="note")
         self.assertIsInstance(log, Log)
+        log.refresh_from_db()
         self.assertFalse(log.is_public)
+        self.assertEqual(log.content_object, self.ticket)
+
+    def test_update_log_long_object_repr(self):
+        # str(ticket) is "subject (code)": longer than object_repr max_length
+        self.ticket.subject = "x" * 255
+        self.ticket.save()
+        log = self.ticket.update_log(self.operator, note="note")
+        self.assertEqual(log.object_repr, str(self.ticket)[:200])
 
     def test_assigned_offices_and_structures(self):
         inactive = self.make_office("Inactive", self.structure, is_active=False)

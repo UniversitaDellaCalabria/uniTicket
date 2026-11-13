@@ -40,7 +40,7 @@ class Test_AppIOUtils(BaseTicketEnvironment):
             category=self.category_1_str_1,
             is_active=True
         )
-        self.log = Log.objects.log_action(
+        self.log = Log.objects.create(
             user_id=self.staff_1.pk,
             content_type_id=ContentType.objects.get_for_model(Ticket).pk,
             object_id=self.ticket.pk,
