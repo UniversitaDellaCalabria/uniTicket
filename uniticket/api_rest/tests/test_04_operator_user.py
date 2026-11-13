@@ -388,6 +388,36 @@ class uniTicketAPIUserTest(TestCase):
             self.assertTrue(res.json()['detail'])
         self.assertFalse(Ticket.objects.get(code=code).is_closed)
 
+    def _draft(self, compiled_by=None):
+        # draft of self.user, compiled by another user if given
+        code = self._create_ticket()
+        ticket = Ticket.objects.get(code=code)
+        ticket.draft = True
+        ticket.compiled_by = compiled_by
+        ticket.save()
+        return code
+
+    def test_close_ticket_not_shared_draft(self):
+        # a draft not compiled by another user can't be closed
+        code = self._draft()
+        url = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': code})
+        for method in (self.client.get, self.client.post):
+            res = method(url, {'note': 'closing reason'}, **self.at.as_http_header)
+            self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertFalse(Ticket.objects.get(code=code).is_closed)
+
+    def test_close_ticket_shared_draft_by_owner(self):
+        # a draft compiled by another user can be closed by its current owner
+        compiler = get_user_model().objects.create(username="compiler")
+        code = self._draft(compiled_by=compiler)
+        url = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': code})
+        res = self.client.get(url, **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        res = self.client.post(url, {'note': 'closing reason'},
+                               **self.at.as_http_header)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue(Ticket.objects.get(code=code).is_closed)
+
     def test_close_ticket_draft_not_owned(self):
         code = self._shared_ticket(draft=True)
         url = reverse("api_rest:api-ticket-close", kwargs={'ticket_id': code})

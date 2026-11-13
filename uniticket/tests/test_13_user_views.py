@@ -912,6 +912,22 @@ class Test_UserSubmitDraft(UserViewsMixin, TempMediaRootMixin, BaseTicketEnviron
         self.assertEqual(self.draft.compiled_by, self.staff_1)
         self.assertTrue(self.draft.draft)
 
+    def test_close_shared_draft_by_owner(self):
+        # a draft compiled by another user can be closed by its current owner
+        self.draft.compiled_by = self.staff_1
+        self.draft.created_by = self.user_1
+        self.draft.save()
+        self.structure_1_default_office_operator_login()
+        url = reverse('uni_ticket:user_close_ticket',
+                      kwargs={'ticket_id': self.draft.code})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('form', response.context)
+        response = self.client.post(url, {'note': 'closing reason'})
+        self.assertRedirects(response, self.detail_url)
+        self.draft.refresh_from_db()
+        self.assertTrue(self.draft.is_closed)
+
     def test_close_shared_draft_by_compiler(self):
         self.draft.compiled_by = self.staff_1
         self.draft.created_by = self.user_1
