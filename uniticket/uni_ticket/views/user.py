@@ -1872,7 +1872,7 @@ def ticket_reopen(request, ticket_id):
             "".format(timezone.localtime(), request.user, ticket)
         )
         return custom_message(request, _("La richiesta non è stata chiusa"))
-
+    
     if ticket.closed_by:
         logger.info(
             "[{}] {} tried to reopen ticket {} "
@@ -1897,6 +1897,20 @@ def ticket_reopen(request, ticket_id):
             request,
             _("La richiesta è di tipo " "notifica e non può essere " "riaperta"),
         )
+
+    # Se il ticket non è stato aperto dall'utente
+    if request.user != ticket.created_by:
+        logger.info(
+            "[{}] {} tried to reopen ticket {} open by {}"
+            "".format(
+                timezone.localtime(),
+                request.user,
+                ticket,
+                ticket.created_by
+            )
+        )
+        message = TICKET_SHARING_USER_ERROR_MESSAGE.format(ticket.created_by)
+        return custom_message(request, message)
 
     # check if user has already open a ticket of this category
     category = ticket.input_module.ticket_category
